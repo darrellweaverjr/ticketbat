@@ -11,6 +11,10 @@
 |
 */
 
+//Route::get('/', array('middleware' => 'auth', 'uses' => 'ProfileController@anyOrders'))->name('datatables.dataOrders');
+Route::get('/', 'Admin\UserController@index');
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
