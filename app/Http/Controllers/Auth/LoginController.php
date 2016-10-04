@@ -25,7 +25,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -36,4 +36,21 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
+    /*
+    private function attempt($credentials)
+    {
+        if ( ! isset( $credentials['password'] ) or ! isset( $credentials['email'] )) {
+            return false;
+        }
+
+        $user = User::whereEmail($credentials['email'])
+                    ->wherePassword(md5($credentials['password']))
+                    ->first();
+
+        if ($user) {
+            Auth::login($user);
+        }
+
+        return $user;
+    }*/
 }

@@ -12,6 +12,7 @@ use App\Http\Models\Purchase;
  */
 class UserController extends Controller{
     
+    
     public function index()
     {
         /*$users = Users::all();

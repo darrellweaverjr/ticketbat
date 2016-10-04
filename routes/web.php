@@ -11,10 +11,18 @@
 |
 */
 
+
+Auth::routes();
+Route::get('/', 'Admin\UserController@index')->middleware('auth');
+
+
+
 //Route::get('/', array('middleware' => 'auth', 'uses' => 'ProfileController@anyOrders'))->name('datatables.dataOrders');
-Route::get('/', 'Admin\UserController@index');
 /*
 Route::get('/', function () {
     return view('welcome');
 });
 */
+//Auth::routes();
+//Route::get('/home', 'HomeController@index');
+//Route::get('/home', 'Admin\UserController@index')->middleware('auth');
