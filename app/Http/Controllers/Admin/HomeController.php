@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Mail\Emailx;
+use App\Mail\EmailSG;
 
 class HomeController extends Controller
 {
@@ -25,7 +25,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //Emailx::test();
-        echo 'yes';
+        $email = new EmailSG('nick@ticketbat.com','ivan@ticketbat.com','Welcome to TicketBat!');
+        $email->body('welcome',array('username'=>'ivankbc333@gmail.com','password'=>'mycontrasena'));
+        $email->template('a7b5c451-4d26-4292-97cd-239880e7dd20');
+        $response = $email->send();
+        
+        
+        
+        
+        dd('Mail sent successfully');
     }
 }
