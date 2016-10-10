@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -25,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = 'home';
 
     /**
      * Create a new controller instance.
@@ -36,21 +38,41 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
-    /*
-    private function attempt($credentials)
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function login(Request $request)
     {
-        if ( ! isset( $credentials['password'] ) or ! isset( $credentials['email'] )) {
-            return false;
+        $this->validateLogin($request);
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
         }
-
-        $user = User::whereEmail($credentials['email'])
-                    ->wherePassword(md5($credentials['password']))
-                    ->first();
-
-        if ($user) {
-            Auth::login($user);
+        $credentials = $this->credentials($request);
+        $credentials['password'] = md5($credentials['password']);
+        //if (Auth::attempt(['email' => $email, 'password' => $password, 'active' => 1]))
+        //Auth::login($user);
+        if ($this->guard()->attempt($credentials, $request->has('remember'))) {
+            return $this->sendLoginResponse($request);
         }
-
-        return $user;
-    }*/
+        $this->incrementLoginAttempts($request);
+        return $this->sendFailedLoginResponse($request);
+    }
+    /**
+     * Log the user out of the application.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+        $request->session()->flush();
+        $request->session()->regenerate();
+        return redirect()->route('home');
+    }
 }

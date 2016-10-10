@@ -13,7 +13,14 @@
 
 
 Auth::routes();
-Route::get('/', 'Admin\UserController@index')->middleware('auth');
+Route::get('/', function () { return redirect()->route('home'); });
+Route::get('/logout', 'Auth\LoginController@logout');
+
+Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin'], function () {
+    
+    Route::get('home', 'HomeController@index')->name('home');
+    
+});
 
 
 

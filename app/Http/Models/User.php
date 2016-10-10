@@ -2,7 +2,6 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -27,4 +26,13 @@ class User extends Authenticatable
      * @var bool
      */
     public $timestamps = false;
+    /**
+     * Encrypt the password before check md5/bcrypt.
+     *
+     * @return password
+     */
+    public function getAuthPassword()
+    {
+        return bcrypt($this->password);
+    }
 }
