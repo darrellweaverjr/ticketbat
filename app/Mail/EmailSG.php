@@ -3,9 +3,11 @@
 namespace App\Mail;
 
 use SendGrid;
+use App\Exceptions\Handler;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Description of Email
+ * Class EmailSG sends emails thru SendGrid
  *
  * @author ivan
  */
@@ -51,7 +53,7 @@ class EmailSG {
                 $this->mail->setSubject($subject);
             }
         } catch (Exception $ex) {
-            
+            throw new Exception('Error creating EmailSG: '.$ex->getMessage());
         }
     }
 
@@ -86,167 +88,206 @@ class EmailSG {
             } else
                 return false;
         } catch (Exception $ex) {
-            return false;
+            throw new Exception('Error filtering emails EmailSG: '.$ex->getMessage());
         }
     }
 
     public function reply($replyto) {
-        $this->mail->setReplyTo(new ReplyTo($replyto));
+        try {
+            $this->mail->setReplyTo(new ReplyTo($replyto));
+        } catch (Exception $ex) {
+            throw new Exception('Error adding reply EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function bcc($bcc) {
-        if (is_array($bcc)) {
-            $email = new SendGrid\Email($bcc[0], $bcc[1]);
-        } else {
-            $email = new SendGrid\Email(null, $bcc);
-        }
-        $this->mail->personalization[0]->addBcc($email);
+        try {
+            if (is_array($bcc)) {
+                $email = new SendGrid\Email($bcc[0], $bcc[1]);
+            } else {
+                $email = new SendGrid\Email(null, $bcc);
+            }
+            $this->mail->personalization[0]->addBcc($email);
+        } catch (Exception $ex) {
+            throw new Exception('Error adding bcc EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function cc($cc) {
-        if (is_array($cc)) {
-            $email = new SendGrid\Email($cc[0], $cc[1]);
-        } else {
-            $email = new SendGrid\Email(null, $cc);
-        }
-        $this->mail->personalization[0]->addCc($email);
+        try {
+            if (is_array($cc)) {
+                $email = new SendGrid\Email($cc[0], $cc[1]);
+            } else {
+                $email = new SendGrid\Email(null, $cc);
+            }
+            $this->mail->personalization[0]->addCc($email);
+        } catch (Exception $ex) {
+            throw new Exception('Error adding cc EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function category($category) {
-        $this->mail->addCategory($category);
+        try {
+            $this->mail->addCategory($category);
+        } catch (Exception $ex) {
+            throw new Exception('Error adding category EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function attachment($attach) {
-        if (is_string($attach)) {
-            $attach = explode(",", $attach);
-        }
-        if (is_array($attach) && count($attach) > 0) {
-            foreach ($attach as $a) {
-                $attachment = new SendGrid\Attachment();
-                $attachment->setFilename($a);
-                $attachment->setDisposition("attachment");
-                $this->mail->addAttachment($attachment);
+        try {
+            if (is_string($attach)) {
+                $attach = explode(",", $attach);
             }
-        } else
-            return false;
+            if (is_array($attach) && count($attach) > 0) {
+                foreach ($attach as $a) {
+                    $attachment = new SendGrid\Attachment();
+                    $attachment->setFilename($a);
+                    $attachment->setDisposition("attachment");
+                    $this->mail->addAttachment($attachment);
+                }
+            } else
+                return false;
+        } catch (Exception $ex) {
+            throw new Exception('Error adding attachment EmailSG: '.$ex->getMessage());
+        }         
     }
 
     public function view($view) {
-        $this->html($view->render());
+        try {
+            $this->html($view->render());
+        } catch (Exception $ex) {
+            throw new Exception('Error adding view EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function html($html) {
-        $content = new SendGrid\Content("text/html", $html);
-        $this->mail->addContent($content);
+        try {
+            $content = new SendGrid\Content("text/html", $html);
+            $this->mail->addContent($content);
+        } catch (Exception $ex) {
+            throw new Exception('Error adding html EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function text($text) {
-        $content = new SendGrid\Content("text/plain", $text);
-        $this->mail->addContent($content);
+        try {
+            $content = new SendGrid\Content("text/plain", $text);
+            $this->mail->addContent($content);
+        } catch (Exception $ex) {
+            throw new Exception('Error adding text EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function template($template) {
-        $this->mail->setTemplateId($template);
+        try {
+            $this->mail->setTemplateId($template);
+        } catch (Exception $ex) {
+            throw new Exception('Error adding template EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function body($type, $body) {
-        if (is_array($body)) {
-            $data = $this->replace($type, $body);
-            foreach ($data as $e) {
-                $this->mail->personalization[0]->addSubstitution($e['variable'], $e['value']);
-            }
-        } else
-            return false;
+        try {
+            if (is_array($body)) {
+                $data = $this->replace($type, $body);
+                foreach ($data as $e) {
+                    $this->mail->personalization[0]->addSubstitution($e['variable'], $e['value']);
+                }
+            } else
+                return false;
+        } catch (Exception $ex) {
+            throw new Exception('Error adding body EmailSG: '.$ex->getMessage());
+        }        
     }
 
     public function send() {
         try {
-            $request_body = $this->mail;
-            $response = $this->sendGrid->client->mail()->send()->post($request_body);
+            $response = $this->sendGrid->client->mail()->send()->post($this->mail);
             switch (true)
             {
                 case (int)$response->statusCode() == 202: 
-                    console.log('Email SendGrid sent successfully');
+                    //Log::info('Email sent thru SendGrid successfully');
                     return true;
-                    break;
                 case (int)$response->statusCode() > 500: 
-                    console.log('Error made by SendGrid');
+                    Log::error('Error sending email made by SendGrid');
                     return false;
-                    break;
                 case (int)$response->statusCode() > 400: 
-                    console.log('Error with the request on SendGrid');
+                    Log::error('Error sending email with the request on SendGrid');
                     return false;
-                    break;
                 default: 
-                    console.log('Successful request on SendGrid');
+                    Log::warning('Successful request on SendGrid');
                     return false;
-                    break;
             }
-            return true;
-        } catch (\Exception $e) {            
+        } catch (Exception $ex) { 
+            Handler::reportException($ex);
             return false;
         }
     }
 
     public function replace($type, $data) {
-        $body = array();
-        switch ($type) {
-            case 'manifest': {
-                    if (isset($data)) {
-                        $body[] = array('variable' => ':type', 'value' => $data['type']);
-                        $body[] = array('variable' => ':showname', 'value' => $data['show_time']);
-                        $body[] = array('variable' => ':showdate', 'value' => $data['date_now']);
-                    }
-                    break;
-                }
-            case 'sales_report': {
-                    if (isset($data)) {
-                        $body[] = array('variable' => ':date', 'value' => $data['date']);
-                    }
-                    break;
-                }
-            case 'reminder': {
-                    if (isset($data['purchase']) && is_array($data['purchase'])) {
-                        foreach ($data['purchase'] as $purchase) {
-                            $body[] = array('variable' => ':show_name', 'value' => $purchase->show_name);
-                            $body[] = array('variable' => ':show_date', 'value' => date("Y-m-d", strtotime($purchase->show_time)));
-                            $body[] = array('variable' => ':show_time', 'value' => date("H:i:s", strtotime($purchase->show_time)));
-                            $body[] = array('variable' => ':purchase_id', 'value' => $purchase->id);
-                            $body[] = array('variable' => ':transaction_id', 'value' => $purchase->transaction_id);
-                            $body[] = array('variable' => ':user_id', 'value' => $purchase->user_id);
+        try {
+            $body = array();
+            switch ($type) {
+                case 'manifest': {
+                        if (isset($data)) {
+                            $body[] = array('variable' => ':type', 'value' => $data['type']);
+                            $body[] = array('variable' => ':showname', 'value' => $data['show_time']);
+                            $body[] = array('variable' => ':showdate', 'value' => $data['date_now']);
                         }
+                        break;
                     }
-                    if (isset($data['customer'])) {
-                        $body[] = array('variable' => ':name', 'value' => $data['customer']['first_name'] . ' ' . $data['customer']['last_name']);
+                case 'sales_report': {
+                        if (isset($data)) {
+                            $body[] = array('variable' => ':date', 'value' => $data['date']);
+                        }
+                        break;
                     }
+                case 'reminder': {
+                        if (isset($data['purchase']) && is_array($data['purchase'])) {
+                            foreach ($data['purchase'] as $purchase) {
+                                $body[] = array('variable' => ':show_name', 'value' => $purchase->show_name);
+                                $body[] = array('variable' => ':show_date', 'value' => date("Y-m-d", strtotime($purchase->show_time)));
+                                $body[] = array('variable' => ':show_time', 'value' => date("H:i:s", strtotime($purchase->show_time)));
+                                $body[] = array('variable' => ':purchase_id', 'value' => $purchase->id);
+                                $body[] = array('variable' => ':transaction_id', 'value' => $purchase->transaction_id);
+                                $body[] = array('variable' => ':user_id', 'value' => $purchase->user_id);
+                            }
+                        }
+                        if (isset($data['customer'])) {
+                            $body[] = array('variable' => ':name', 'value' => $data['customer']['first_name'] . ' ' . $data['customer']['last_name']);
+                        }
+                        break;
+                    }
+                case 'recover_cart': {
+                        if (isset($data['email']) && isset($data['name']) && $data['link']) {
+                            $body[] = array('variable' => ':email', 'value' => $data['email']);
+                            $body[] = array('variable' => ':name', 'value' => $data['name']);
+                            $body[] = array('variable' => ':link', 'value' => $data['link']);
+                            $body[] = array('variable' => ':images', 'value' => $data['images']);
+                        }
+                        break;
+                    }
+                case 'promos_weekly': {
+                        if (isset($data['weekly_promos'])) {
+                            $body[] = array('variable' => ':promos', 'value' => $data['weekly_promos']);
+                        }
+                        break;
+                    }
+                case 'welcome': {
+                        if (isset($data)) {
+                            $body[] = array('variable' => ':username', 'value' => $data['username']);
+                            $body[] = array('variable' => ':password', 'value' => $data['password']);
+                        }
+                        break;
+                    }  
+                default:
                     break;
-                }
-            case 'recover_cart': {
-                    if (isset($data['email']) && isset($data['name']) && $data['link']) {
-                        $body[] = array('variable' => ':email', 'value' => $data['email']);
-                        $body[] = array('variable' => ':name', 'value' => $data['name']);
-                        $body[] = array('variable' => ':link', 'value' => $data['link']);
-                        $body[] = array('variable' => ':images', 'value' => $data['images']);
-                    }
-                    break;
-                }
-            case 'promos_weekly': {
-                    if (isset($data['weekly_promos'])) {
-                        $body[] = array('variable' => ':promos', 'value' => $data['weekly_promos']);
-                    }
-                    break;
-                }
-            case 'welcome': {
-                    if (isset($data)) {
-                        $body[] = array('variable' => ':username', 'value' => $data['username']);
-                        $body[] = array('variable' => ':password', 'value' => $data['password']);
-                    }
-                    break;
-                }    
-            default:
-                break;
-        }
-        return $body;
+            }
+            return $body;
+        } catch (Exception $ex) {
+            throw new Exception('Error replacing body EmailSG: '.$ex->getMessage());
+        }        
     }
 
 }
