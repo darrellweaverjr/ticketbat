@@ -5,29 +5,22 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Band class
+ * Deal class
  *
  * @author ivan
  */
-class Band extends Model
+class Deal extends Model
 {    
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'bands';
+    protected $table = 'deals';
     /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
      */
     public $timestamps = false;
-    /**
-     * Get the category record associated with the band.
-     */
-    public function category()
-    {
-        return $this->belongsTo('App\Http\Models\Category','category_id');
-    }
 }

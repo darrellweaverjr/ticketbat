@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
 /**
- * Manage Users
+ * Manage Packages
  *
  * @author ivan
  */

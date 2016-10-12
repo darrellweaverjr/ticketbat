@@ -5,18 +5,18 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Band class
+ * Venue class
  *
  * @author ivan
  */
-class Band extends Model
+class Venue extends Model
 {    
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'bands';
+    protected $table = 'venues';
     /**
      * Indicates if the model should be timestamped.
      *
@@ -24,10 +24,10 @@ class Band extends Model
      */
     public $timestamps = false;
     /**
-     * Get the category record associated with the band.
+     * Get the location record associated with the band.
      */
-    public function category()
+    public function location()
     {
-        return $this->belongsTo('App\Http\Models\Category','category_id');
+        return $this->belongsTo('App\Http\Models\Location','location_id');
     }
 }

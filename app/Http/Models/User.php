@@ -35,4 +35,29 @@ class User extends Authenticatable
     {
         return bcrypt($this->password);
     }
+    /**
+     * Overrides the method to ignore the remember token.
+    */
+    public function setAttribute($key, $value)
+    {
+        $isRememberTokenAttribute = $key == $this->getRememberTokenName();
+        if (!$isRememberTokenAttribute)
+        {
+          parent::setAttribute($key, $value);
+        }
+    }
+    /**
+     * Get the user_type record associated with the user.
+     */
+    public function user_type()
+    {
+        return $this->belongsTo('App\Http\Models\UserType','user_type_id');
+    }
+    /**
+     * Get the location record associated with the user.
+     */
+    public function location()
+    {
+        return $this->belongsTo('App\Http\Models\Location','location_id');
+    }
 }

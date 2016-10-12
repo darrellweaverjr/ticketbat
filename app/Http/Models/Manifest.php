@@ -5,18 +5,18 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Band class
+ * Manifest class
  *
  * @author ivan
  */
-class Band extends Model
+class Manifest extends Model
 {    
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'bands';
+    protected $table = 'manifest_emails';
     /**
      * Indicates if the model should be timestamped.
      *
@@ -24,10 +24,10 @@ class Band extends Model
      */
     public $timestamps = false;
     /**
-     * Get the category record associated with the band.
+     * Get the show_time record associated with the manifest.
      */
-    public function category()
+    public function show_time()
     {
-        return $this->belongsTo('App\Http\Models\Category','category_id');
+        return $this->belongsTo('App\Http\Models\ShowTime','show_time_id');
     }
 }

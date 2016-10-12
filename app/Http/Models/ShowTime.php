@@ -5,22 +5,22 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Ticket class
+ * ShowTime class
  *
  * @author ivan
  */
-class Ticket extends Model
+class ShowTime extends Model
 {    
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'tickets';
+    protected $table = 'show_times';
     /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
      */
-    public $timestamps = false;
+    public $timestamps = false;   
 }

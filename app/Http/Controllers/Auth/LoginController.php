@@ -54,11 +54,13 @@ class LoginController extends Controller
         }
         $credentials = $this->credentials($request);
         $credentials['password'] = md5($credentials['password']);
-        //if (Auth::attempt(['email' => $email, 'password' => $password, 'active' => 1]))
-        //Auth::login($user);
         if ($this->guard()->attempt($credentials, $request->has('remember'))) {
-            return $this->sendLoginResponse($request);
-        }
+            //check conditions
+            if(Auth::user()->is_active > 0){
+                return $this->sendLoginResponse($request);
+            } else
+                Auth::logout();            
+        } 
         $this->incrementLoginAttempts($request);
         return $this->sendFailedLoginResponse($request);
     }
@@ -70,9 +72,10 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->guard()->logout();
+        /*$this->guard()->logout();
         $request->session()->flush();
-        $request->session()->regenerate();
+        $request->session()->regenerate();*/
+        Auth::logout();
         return redirect()->route('home');
     }
 }
