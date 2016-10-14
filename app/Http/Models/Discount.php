@@ -23,6 +23,7 @@ class Discount extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS MANY-MANY
     /**
      * The shows that belong to the discount.
      */

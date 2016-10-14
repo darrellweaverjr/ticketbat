@@ -23,4 +23,12 @@ class ShowTime extends Model
      * @var bool
      */
     public $timestamps = false;   
+    //RELATIONSHIPS MANY-MANY
+    /**
+     * The soldout tickets that belong to the show.
+     */
+    public function soldout_tickets()
+    {
+        return $this->belongsToMany('App\Http\Models\Ticket','soldout_tickets','show_time_id','ticket_id')->withPivot('created');
+    }
 }

@@ -23,4 +23,19 @@ class Ticket extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS ONE-MANY
+    /**
+     * Get the show record associated with the ticket.
+     */
+    public function show()
+    {
+        return $this->belongsTo('App\Http\Models\Show','show_id');
+    }
+    /**
+     * Get the package record associated with the ticket.
+     */
+    public function package()
+    {
+        return $this->belongsTo('App\Http\Models\Package','package_id');
+    }
 }

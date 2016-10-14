@@ -46,6 +46,7 @@ class User extends Authenticatable
           parent::setAttribute($key, $value);
         }
     }
+    //RELATIONSHIPS ONE-MANY
     /**
      * Get the user_type record associated with the user.
      */
@@ -59,5 +60,20 @@ class User extends Authenticatable
     public function location()
     {
         return $this->belongsTo('App\Http\Models\Location','location_id');
+    }
+    //RELATIONSHIPS MANY-MANY
+    /**
+     * The discounts that belong to the user.
+     */
+    public function user_discounts()
+    {
+        return $this->belongsToMany('App\Http\Models\Discount','user_discounts','user_id','discount_id');
+    }
+    /**
+     * The images that belong to the user.
+     */
+    public function user_images()
+    {
+        return $this->belongsToMany('App\Http\Models\Image','user_images','user_id','image_id');
     }
 }

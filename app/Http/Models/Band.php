@@ -23,6 +23,7 @@ class Band extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS ONE-MANY
     /**
      * Get the category record associated with the band.
      */

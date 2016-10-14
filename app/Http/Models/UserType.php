@@ -23,6 +23,7 @@ class UserType extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS MANY-MANY
     /**
      * The permissions that belong to the user_type.
      */

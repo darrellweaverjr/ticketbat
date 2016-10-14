@@ -23,6 +23,7 @@ class Customer extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS ONE-MANY
     /**
      * Get the location record associated with the customer.
      */

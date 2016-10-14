@@ -26,6 +26,7 @@ class Purchase extends Model
     /**
      * Get the transaction record associated with the purchase.
      */
+    //RELATIONSHIPS ONE-MANY
     public function transaction()
     {
         return $this->belongsTo('App\Http\Models\Transaction','transaction_id');
@@ -64,5 +65,10 @@ class Purchase extends Model
     public function show_time()
     {
         return $this->belongsTo('App\Http\Models\ShowTime','show_time_id');
+    }
+    //RELATIONSHIPS MANY-MANY
+    public function ticket_numbers()
+    {
+        return $this->belongsToMany('App\Http\Models\Customer','ticket_number','purchases_id','customers_id')->withPivot('id','tickets','checked','comment');
     }
 }

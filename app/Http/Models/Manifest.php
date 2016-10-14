@@ -23,6 +23,7 @@ class Manifest extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS ONE-MANY
     /**
      * Get the show_time record associated with the manifest.
      */
