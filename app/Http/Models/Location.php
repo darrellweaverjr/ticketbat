@@ -23,4 +23,26 @@ class Location extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS ONE-MANY
+    /**
+     * Get the customers for the location.
+     */
+    public function customers()
+    {
+        return $this->hasMany('App\Http\Models\Customer','location_id');
+    }
+    /**
+     * Get the users for the location.
+     */
+    public function users()
+    {
+        return $this->hasMany('App\Http\Models\User','location_id');
+    }
+    /**
+     * Get the venues for the location.
+     */
+    public function venues()
+    {
+        return $this->hasMany('App\Http\Models\Venue','location_id');
+    }
 }

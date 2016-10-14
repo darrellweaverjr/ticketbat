@@ -61,6 +61,20 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Http\Models\Location','location_id');
     }
+    /**
+     * Get the purchases for the user.
+     */
+    public function purchases()
+    {
+        return $this->hasMany('App\Http\Models\Purchase','user_id');
+    }
+    /**
+     * Get the transactions for the user.
+     */
+    public function transactions()
+    {
+        return $this->hasMany('App\Http\Models\Transaction','user_id');
+    }
     //RELATIONSHIPS MANY-MANY
     /**
      * The discounts that belong to the user.

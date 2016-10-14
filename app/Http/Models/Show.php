@@ -45,6 +45,13 @@ class Show extends Model
     {
         return $this->belongsTo('App\Http\Models\Category','category_id');
     }
+    /**
+     * Get the tickets for the show.
+     */
+    public function tickets()
+    {
+        return $this->hasMany('App\Http\Models\Ticket','show_id');
+    }
     //RELATIONSHIPS MANY-MANY
     /**
      * The awards(images) that belong to the show.

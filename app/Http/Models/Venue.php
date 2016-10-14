@@ -25,11 +25,25 @@ class Venue extends Model
     public $timestamps = false;
     //RELATIONSHIPS ONE-MANY
     /**
-     * Get the location record associated with the band.
+     * Get the location record associated with the venue.
      */
     public function location()
     {
         return $this->belongsTo('App\Http\Models\Location','location_id');
+    }
+    /**
+     * Get the shows for the venue.
+     */
+    public function shows()
+    {
+        return $this->hasMany('App\Http\Models\Show','venue_id');
+    }
+    /**
+     * Get the stages for the venue.
+     */
+    public function stages()
+    {
+        return $this->hasMany('App\Http\Models\Stage','venue_id');
     }
     //RELATIONSHIPS MANY-MANY
     /**

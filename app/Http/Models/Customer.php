@@ -31,4 +31,18 @@ class Customer extends Model
     {
         return $this->belongsTo('App\Http\Models\Location','location_id');
     }
+    /**
+     * Get the purchases for the customer.
+     */
+    public function purchases()
+    {
+        return $this->hasMany('App\Http\Models\Purchase','customer_id');
+    }
+    /**
+     * Get the transactions for the customer.
+     */
+    public function transactions()
+    {
+        return $this->hasMany('App\Http\Models\Transaction','customer_id');
+    }
 }

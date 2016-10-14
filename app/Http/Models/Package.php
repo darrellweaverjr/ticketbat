@@ -23,4 +23,12 @@ class Package extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS ONE-MANY
+    /**
+     * Get the tickets for the package.
+     */
+    public function tickets()
+    {
+        return $this->hasMany('App\Http\Models\Ticket','package_id');
+    }
 }
