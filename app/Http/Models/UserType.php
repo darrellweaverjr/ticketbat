@@ -25,9 +25,9 @@ class UserType extends Model
     public $timestamps = false;
     //RELATIONSHIPS MANY-MANY
     /**
-     * The permissions that belong to the user_type.
+     * The user_type_permissions that belong to the user_type.
      */
-    public function permissions()
+    public function user_type_permissions()
     {
         return $this->belongsToMany('App\Http\Models\Permission','user_type_permissions','user_type_id','permission_id')->withPivot('permission_type', 'permission_scope','audit_user_id','updated');
     }

@@ -54,31 +54,38 @@ class Show extends Model
     }
     //RELATIONSHIPS MANY-MANY
     /**
-     * The awards(images) that belong to the show.
+     * The show_awards that belong to the show.
      */
-    public function awards()
+    public function show_awards()
     {
         return $this->belongsToMany('App\Http\Models\Image','show_awards','show_id','image_id')->withPivot('url', 'updated');
     }
     /**
-     * The bands that belong to the show.
+     * The show_bands that belong to the show.
      */
-    public function bands()
+    public function show_bands()
     {
         return $this->belongsToMany('App\Http\Models\Band','show_bands','show_id','band_id')->withPivot('n_order');
     }
     /**
-     * The images that belong to the show.
+     * The show_images that belong to the show.
      */
-    public function images()
+    public function show_images()
     {
         return $this->belongsToMany('App\Http\Models\Image','show_images','show_id','image_id');
     }
     /**
-     * The videos that belong to the show.
+     * The show_videos that belong to the show.
      */
-    public function videos()
+    public function show_videos()
     {
         return $this->belongsToMany('App\Http\Models\Video','show_videos','show_id','video_id');
-    }    
+    } 
+    /**
+     * The discount_shows that belong to the show.
+     */
+    public function discount_shows()
+    {
+        return $this->belongsToMany('App\Http\Models\Discount','discount_shows','show_id','discount_id');
+    }
 }

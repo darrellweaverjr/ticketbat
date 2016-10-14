@@ -67,6 +67,9 @@ class Purchase extends Model
         return $this->belongsTo('App\Http\Models\ShowTime','show_time_id');
     }
     //RELATIONSHIPS MANY-MANY
+    /**
+     * Get the ticket_number record associated with the purchase.
+     */
     public function ticket_numbers()
     {
         return $this->belongsToMany('App\Http\Models\Customer','ticket_number','purchases_id','customers_id')->withPivot('id','tickets','checked','comment');

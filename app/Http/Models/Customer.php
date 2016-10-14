@@ -45,4 +45,12 @@ class Customer extends Model
     {
         return $this->hasMany('App\Http\Models\Transaction','customer_id');
     }
+    //RELATIONSHIPS MANY-MANY
+    /**
+     * Get the ticket_number record associated with the customer.
+     */
+    public function ticket_numbers()
+    {
+        return $this->belongsToMany('App\Http\Models\Purchase','ticket_number','customers_id','purchases_id')->withPivot('id','tickets','checked','comment');
+    }
 }

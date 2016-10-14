@@ -23,4 +23,19 @@ class Video extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS MANY-MANY
+    /**
+     * The show_videos that belong to the video.
+     */
+    public function show_videos()
+    {
+        return $this->belongsToMany('App\Http\Models\Show','show_videos','video_id','show_id');
+    }
+    /**
+     * The venue_videos that belong to the video.
+     */
+    public function venue_videos()
+    {
+        return $this->belongsToMany('App\Http\Models\Venue','venue_videos','video_id','venue_id');
+    }
 }

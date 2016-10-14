@@ -25,17 +25,24 @@ class Discount extends Model
     public $timestamps = false;
     //RELATIONSHIPS MANY-MANY
     /**
-     * The shows that belong to the discount.
+     * The discount_shows that belong to the discount.
      */
-    public function shows()
+    public function discount_shows()
     {
         return $this->belongsToMany('App\Http\Models\Show','discount_shows','discount_id','show_id');
     }
     /**
-     * The tickets that belong to the discount.
+     * The discount_tickets that belong to the discount.
      */
-    public function tickets()
+    public function discount_tickets()
     {
         return $this->belongsToMany('App\Http\Models\Ticket','discount_tickets','discount_id','ticket_id');
+    }
+    /**
+     * The user_discounts that belong to the discount.
+     */
+    public function user_discounts()
+    {
+        return $this->belongsToMany('App\Http\Models\User','user_discounts','discount_id','user_id');
     }
 }

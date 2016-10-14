@@ -38,4 +38,19 @@ class Ticket extends Model
     {
         return $this->belongsTo('App\Http\Models\Package','package_id');
     }
+    //RELATIONSHIPS MANY-MANY
+    /**
+     * The discount_tickets that belong to the ticket.
+     */
+    public function discount_tickets()
+    {
+        return $this->belongsToMany('App\Http\Models\Discount','discount_tickets','ticket_id','discount_id');
+    }
+    /**
+     * The soldout tickets that belong to the showtime.
+     */
+    public function soldout_tickets()
+    {
+        return $this->belongsToMany('App\Http\Models\ShowTime','soldout_tickets','ticket_id','show_time_id')->withPivot('created');
+    }   
 }

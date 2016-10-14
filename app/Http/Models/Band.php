@@ -31,4 +31,12 @@ class Band extends Model
     {
         return $this->belongsTo('App\Http\Models\Category','category_id');
     }
+    //RELATIONSHIPS MANY-MANY
+    /**
+     * The show_bands that belong to the band.
+     */
+    public function show_bands()
+    {
+        return $this->belongsToMany('App\Http\Models\Show','show_bands','band_id','show_id');
+    }
 }

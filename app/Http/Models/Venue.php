@@ -47,14 +47,14 @@ class Venue extends Model
     }
     //RELATIONSHIPS MANY-MANY
     /**
-     * The images that belong to the venue.
+     * The venue_images that belong to the venue.
      */
     public function venue_images()
     {
         return $this->belongsToMany('App\Http\Models\Image','venue_images','venue_id','image_id');
     }
     /**
-     * The videos that belong to the venue.
+     * The venue_videos that belong to the venue.
      */
     public function venue_videos()
     {

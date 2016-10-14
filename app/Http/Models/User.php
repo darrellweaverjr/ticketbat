@@ -77,14 +77,14 @@ class User extends Authenticatable
     }
     //RELATIONSHIPS MANY-MANY
     /**
-     * The discounts that belong to the user.
+     * The user_discounts that belong to the user.
      */
     public function user_discounts()
     {
         return $this->belongsToMany('App\Http\Models\Discount','user_discounts','user_id','discount_id');
     }
     /**
-     * The images that belong to the user.
+     * The user_images that belong to the user.
      */
     public function user_images()
     {
