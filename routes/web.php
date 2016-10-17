@@ -11,26 +11,24 @@
 |
 */
 
-
+//GENERAL ROUTES
 Auth::routes();
 Route::get('/', function () { return redirect()->route('home'); });
 Route::get('/home', function () { return redirect()->route('home'); });
 Route::get('/logout', 'Auth\LoginController@logout');
 
+//ADMIN ROUTES
 Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin'], function () {
     
     Route::get('home', 'HomeController@index')->name('home');
     
 });
 
-
-
-//Route::get('/', array('middleware' => 'auth', 'uses' => 'ProfileController@anyOrders'))->name('datatables.dataOrders');
-/*
-Route::get('/', function () {
-    return view('welcome');
+//COMMAND ROUTES
+Route::group(['prefix' => 'command'], function () {
+    
+    Route::get('ReportManifest', function () {
+        Artisan::call('Report:manifest');
+    });
+    
 });
-*/
-//Auth::routes();
-//Route::get('/home', 'HomeController@index');
-//Route::get('/home', 'Admin\UserController@index')->middleware('auth');
