@@ -45,13 +45,13 @@ return [
     */
 
     'connections' => [
-
+/*
         'sqlite' => [
             'driver' => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
         ],
-
+*/
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'dev.ticketbat.com'),
@@ -62,10 +62,10 @@ return [
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
         ],
-
+/*
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', 'localhost'),
@@ -78,7 +78,7 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
-
+*/
     ],
 
     /*

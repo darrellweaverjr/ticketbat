@@ -142,10 +142,11 @@ class EmailSG {
             if (is_array($attach) && count($attach) > 0) {
                 foreach ($attach as $a) {
                     $attachment = new SendGrid\Attachment();
+                    $attachment->setContent(base64_encode(file_get_contents($a)));
                     $attachment->setFilename($a);
-                    $attachment->setDisposition("attachment");
                     $this->mail->addAttachment($attachment);
                 }
+                return true;
             } else
                 return false;
         } catch (Exception $ex) {
@@ -203,16 +204,16 @@ class EmailSG {
 
     public function send() {
         try {
-            $response = $this->sendGrid->client->mail()->send()->post($this->mail);
+            $response = $this->sendGrid->client->mail()->send()->post($this->mail); 
             switch (true)
             {
                 case (int)$response->statusCode() == 202: 
                     //Log::info('Email sent thru SendGrid successfully');
                     return true;
-                case (int)$response->statusCode() > 500: 
+                case (int)$response->statusCode() >= 500: 
                     Log::error('Error sending email made by SendGrid');
                     return false;
-                case (int)$response->statusCode() > 400: 
+                case (int)$response->statusCode() >= 400: 
                     Log::error('Error sending email with the request on SendGrid');
                     return false;
                 default: 
