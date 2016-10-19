@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
+use App\Mail\EmailSG;
+
+class ReportSalesReceipt extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'Report:sales_receipt';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Used to push the daily\'s receipts to us';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        try {
+            $days = 20;
+            $info = array();            
+            $venues = DB::select("  SELECT DISTINCT v.id, v.name, v.weekly_email AS email, v.daily_sales_emails AS daily_report
+                                    FROM purchases p 
+                                    INNER JOIN show_times st ON st.id = p.show_time_id 
+                                    INNER JOIN shows s ON s.id = st.show_id 
+                                    INNER JOIN venues v ON v.id = s.venue_id
+                                    WHERE DATE_FORMAT(p.created,'%Y-%m-%d') >= DATE_FORMAT(CURDATE() - INTERVAL ".$days." DAY,'%Y-%m-%d')");       
+            foreach ($venues as $venue) 
+            {
+                $info[$venue->id] = array('name' => $venue->name, 'email'=>$venue->email, 'daily_report' => $venue->daily_report, 'sales'=>array());
+                $sales_per_show =DB::select("   SELECT DISTINCT s.name AS show_name,p.id,c.first_name,c.last_name,t.ticket_type,d.code,p.quantity AS qty,p.retail_price,pa.title,
+                                                p.processing_fee, p.savings, p.price_paid, st.show_time,s.restrictions,st.time_alternative,t.ticket_type AS ticket_type_type,
+                                                ROUND(p.price_paid/p.quantity,2) AS price_each, p.payment_type,v.ticket_info
+                                                FROM purchases p 
+                                                INNER JOIN discounts d ON p.discount_id = d.id
+                                                INNER JOIN show_times st ON st.id = p.show_time_id 
+                                                INNER JOIN shows s ON s.id = st.show_id
+                                                INNER JOIN customers c ON c.id = p.customer_id 
+                                                INNER JOIN venues v ON v.id = s.venue_id
+                                                INNER JOIN tickets t ON t.id = p.ticket_id
+                                                INNER JOIN packages pa ON t.package_id = pa.id
+                                                WHERE DATE_FORMAT(p.created,'%Y-%m-%d') >= (CURDATE() - INTERVAL ".$days." DAY) AND v.id = ? 
+                                                ORDER BY s.name, p.id",array($venue->id));
+                 foreach ($sales_per_show as $p) 
+                     $info[$venue->id]['sales'][] = (array)$p;
+            }   
+            
+            //  PROCESS SENDING EMAILS ACCORDING TO CONDITIONS 
+            function sendEmail($data,$to,$name)
+            {   $to = 'ivan@ticketbat.com';
+                //create file csv 
+                $format = 'csv';
+                $daily_report = View::make('command.report_sales_receipt', compact('data','format'));            
+                $csv_url = '/tmp/ReportSalesReceipt_'.date('Y-m-d').'_'.date('U').'.csv';
+                $file_csv = fopen($csv_url, "w"); fwrite($file_csv, $daily_report->render()); fclose($file_csv);
+                $receipts = [$csv_url];
+                
+                //get all receipts                
+                /*foreach ($data as $purchase) 
+                {   
+                    $format = 'pdf';
+                    $pdfUrl = '/tmp/Receipt_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$purchase['show_name']).'_'.$purchase['id'].'.pdf';
+                    $customer_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
+                    $pdf = PDF::load($customer_receipt->render(), 'A4', 'portrait')->output();
+                    $fp  = fopen($pdfUrl, "w"); fwrite($fp, $pdf); fclose($fp); PDF::reinit();
+                    $receipts[] = $pdfUrl;
+                } */          
+                //send email           
+                $email = new EmailSG(env('MAIL_REPORT_FROM'), $to ,'Daily Sales Report to '.$name);
+                //$email->cc(env('MAIL_REPORT_CC'));
+                $email->category('Reports');
+                $email->text('Daily Sales Report Receipt. Created at '.date('m/d/Y g:ia'));
+                $email->attachment($receipts);
+                $email->send();          
+                
+                //delete all files
+                foreach ($receipts as $r) 
+                    unlink($r);          
+            } 
+            
+            //sending proccess for all venues
+            foreach ($info as $type => $venue) 
+                if($venue['daily_report'] == 1 && $venue['email']) 
+                    sendEmail($venue['sales'],$venue['email'],$venue['name']); 
+        } catch (Exception $ex) {
+            throw new Exception('Error sending emails with ReportSalesReceipt: '.$ex->getMessage());
+        }
+    }
+}

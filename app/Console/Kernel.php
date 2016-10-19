@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\ReportManifest::class,
         Commands\ReportSales::class,
+        Commands\ReportSalesReceipt::class,
     ];
 
     /**

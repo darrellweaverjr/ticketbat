@@ -33,5 +33,8 @@ Route::group(['prefix' => 'command'], function () {
     Route::get('ReportSales', function () {
         Artisan::call('Report:sales');
     });
+    Route::get('ReportSalesReceipt', function () {
+        Artisan::call('Report:sales_receipt');
+    });
     
 });
