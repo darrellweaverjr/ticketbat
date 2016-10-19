@@ -112,15 +112,23 @@ class ReportManifest extends Command
                     //create csv
                     $format = 'csv';
                     $manifest_csv = View::make('command.report_manifest', compact('purchases', 'date', 'gifts','format'));
-                    $csv_path = '/tmp/Manifest_'.$typeName.'_'.$date->id.'_'.date('U').'.csv';
+                    $csv_path = '/tmp/ReportManifest_'.$typeName.'_'.$date->id.'_'.date('U').'.csv';
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
-                    $date->csv_path = $csv_path;
+                    $date->attachments = $csv_path;
 
+                    //create pdf    
+                    /*$pdf =  PDF::load($manifest_email->render(), 'A4', 'landscape')->output();
+                    $pdf_path = "/tmp/" . $date->id . "_".$typeName.".pdf";
+                    $fp_pdf = fopen($pdf_path, "w");
+                    fwrite($fp_pdf, $pdf);
+                    fclose($fp_pdf);
+                    PDF::reinit();*/
+                    
                     $date->type = $typeName;             
                     $email = new EmailSG(env('MAIL_REPORT_FROM'),$date->emails,$emailSubject.$date->name);
                     $email->body('manifest',(array) $date);
                     $email->category('Manifests');
-                    $email->attachment($date->csv_path);
+                    $email->attachment($date->attachments);
                     $email->template('89890051-c3ba-4d94-a2ff-ac237f8295ba');
                     $sent= $email->send();
                     

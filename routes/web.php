@@ -30,5 +30,8 @@ Route::group(['prefix' => 'command'], function () {
     Route::get('ReportManifest', function () {
         Artisan::call('Report:manifest');
     });
+    Route::get('ReportSales', function () {
+        Artisan::call('Report:sales');
+    });
     
 });
