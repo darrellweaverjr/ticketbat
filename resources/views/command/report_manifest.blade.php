@@ -1,13 +1,12 @@
 @if($format == 'csv')
-"#","EVENT NAME","SHOW DATE","DATE PURCHASED","CUSTOMER NAME","CUSTOMER ADDRESS","CUSTOMER PHONE","EMAIL","QTY","CODE","DESCRIPTION","AMOUNT","TICKETS SHARED WITH"
-@foreach ($purchases as $n => $p)
-"{{$n+1}}","{{$p->event_name}}","{{date('m/d/Y g:ia',strtotime($p->show_time))}}","{{date('m/d/Y g:ia',strtotime($p->created))}}","{{$p->customer_name}}","{{$p->address}}","{{$p->phone}}","{{$p->email}}","{{$p->quantity}}","{{$p->code}}","{{$p->description}}","{{$p->amount}}","@foreach($gifts as $g)@if(($p->id == $g->purchases_id) && ($p->customer_id != $g->customers_id)){{$g->customer_name}},@endif @endforeach"
+"#","EVENT NAME","SHOW DATE","DATE PURCHASED","CUSTOMER NAME","CUSTOMER ADDRESS","CUSTOMER PHONE","EMAIL","QTY","CODE","DESCRIPTION","AMOUNT","SHARED TO"
+@foreach ($data['purchases'] as $n => $p)
+"{{$n+1}}","{{$p['event_name']}}","{{date('m/d/Y g:ia',strtotime($p['show_time']))}}","{{date('m/d/Y g:ia',strtotime($p['created']))}}","{{$p['customer_name']}}","{{$p['address']}}","{{$p['phone']}}","{{$p['email']}}","{{$p['quantity']}}","{{$p['code']}}","{{$p['description']}}","{{$p['amount']}}","{{$p['gifts']}}"
 @endforeach
 @else
 <!DOCTYPE html>
 <html>
     <head>
-        @if($format == 'pdf')
         <style>
             table {
                 border-collapse: collapse;
@@ -101,44 +100,37 @@
                 background-color: #ebcccc;
             }
         </style>
-        @endif
     </head>
     <body>
         <h1>TicketBat.com</h1>
-        <p>The following tickets have been purchased for {{$date->name}} - {{date('m/d/Y g:ia',strtotime($date->show_time))}}</p>
+        <p>The following tickets have been purchased for {{$data['name']}} - {{date('m/d/Y g:ia',strtotime($data['show_time']))}}</p>
         <table class="table table-striped table-responsive">
             <thead>
                 <tr>
                     <th></th>
-                    <th>Customer Name</th>
-                    <th>Email</th>
-                    <th>Qty</th>
-                    <th>Code</th>
-                    <th>Amount</th>
-                    <th>Tickets shared with</th>
+                    <th>CUSTOMER NAME</th>
+                    <th>EMAIL</th>
+                    <th>QTY</th>
+                    <th>CODE</th>
+                    <th style='text-align:right'>AMOUNT</th>
+                    <th style='text-align:center'>SHARED TO</th>
                 </tr>
             </thead>
             <tbody>
-            @foreach ($purchases as $n => $p)
+            @foreach ($data['purchases'] as $n => $p)
                 <tr>
                     <td>{{$n+1}}</td>
-                    <td>{{$p->customer_name}}</td>
-                    <td>{{$p->email}}</td>
-                    <td>{{$p->quantity}}</td>
-                    <td>{{$p->code}}</td>
-                    <td>$ {{money_format('%(#10n',$p->amount)}}</td>
-                    <td>
-                        @foreach ($gifts as $g)
-                            @if (($p->id == $g->purchases_id) && ($p->customer_id != $g->customers_id))
-                                {{$g->customer_name}},
-                            @endif
-                        @endforeach
-                    </td>
+                    <td>{{$p['customer_name']}}</td>
+                    <td>{{$p['email']}}</td>
+                    <td>{{$p['quantity']}}</td>
+                    <td>{{$p['code']}}</td>
+                    <td style='text-align:right'>$ {{money_format('%(#10n',$p['amount'])}}</td>
+                    <td style='text-align:center'>{{$p['gifts']}}</td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-        <p>Generated on: {{date('m/d/Y g:ia',strtotime($date->date_now))}}</p>
+        <p>Generated on: {{date('m/d/Y g:ia',strtotime($data['date_now']))}}</p>
     </body>
 </html>
 @endif
