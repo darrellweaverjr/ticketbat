@@ -21,7 +21,7 @@ class ReportSalesReceipt extends Command
      *
      * @var string
      */
-    protected $description = 'Used to push the daily\'s receipts to us';
+    protected $description = 'Used to push the receipts (daily or every X days) to us';
 
     /**
      * Create a new command instance.

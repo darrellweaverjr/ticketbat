@@ -202,9 +202,10 @@ class EmailSG {
         }        
     }
 
-    public function send() {
+    public function send($debug=false) {
         try {
             $response = $this->sendGrid->client->mail()->send()->post($this->mail); 
+            if($debug)return $response;
             switch (true)
             {
                 case (int)$response->statusCode() == 202: 
@@ -269,19 +270,14 @@ class EmailSG {
                         }
                         break;
                     }
-                case 'promos_weekly': {
-                        if (isset($data['weekly_promos'])) {
-                            $body[] = array('variable' => ':promos', 'value' => $data['weekly_promos']);
+                case 'promos_announced': {
+                        if (isset($data['announced']) && isset($data['week'])) {
+                            $body[] = array('variable' => ':announced', 'value' => $data['announced']);
+                            $body[] = array('variable' => ':week', 'value' => $data['week']);
+                            $body[] = array('variable' => ':year', 'value' => date('Y'));
                         }
                         break;
                     }
-                case 'welcome': {
-                        if (isset($data)) {
-                            $body[] = array('variable' => ':username', 'value' => $data['username']);
-                            $body[] = array('variable' => ':password', 'value' => $data['password']);
-                        }
-                        break;
-                    }  
                 default:
                     break;
             }

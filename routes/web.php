@@ -26,7 +26,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 
 //COMMAND ROUTES
 Route::group(['prefix' => 'command'], function () {
-    
+    //reports
     Route::get('ReportManifest', function () {
         Artisan::call('Report:manifest');
     });
@@ -34,7 +34,11 @@ Route::group(['prefix' => 'command'], function () {
         Artisan::call('Report:sales');
     });
     Route::get('ReportSalesReceipt', function () {
-        Artisan::call('Report:sales_receipt',['days'=>100]);
+        Artisan::call('Report:sales_receipt',['days'=>1]);
+    });
+    //promotions
+    Route::get('PromoAnnounced', function () {
+        Artisan::call('Promo:announced',['days'=>70]);
     });
     
 });
