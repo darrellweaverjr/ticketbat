@@ -43,6 +43,10 @@ class ReportManifest extends Command
     {
         try {
             $manifests = array('Preliminary','Primary','LastMinute'); 
+            
+            //create progress bar
+            $progressbar = $this->output->createProgressBar(count($manifests));
+            
             //send reports for each type of manifest
             foreach ($manifests as $type) 
             {
@@ -152,7 +156,11 @@ class ReportManifest extends Command
                         }                    
                     }                     
                 }
+                //advance progress bar
+                $progressbar->advance();                
             } 
+            //finish progress bar
+            $progressbar->finish(); 
             return true;
         } catch (Exception $ex) {
             throw new Exception('Error creating, saving and sending emails with ReportManifest: '.$ex->getMessage());

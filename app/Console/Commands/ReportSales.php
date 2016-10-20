@@ -87,7 +87,7 @@ class ReportSales extends Command
             //FUNCTION SENDING EMAIL
             function sendEmailReport($data,$send,$date_report,$sqlMain,$sqlFrom)
             {
-                $emailx = env('MAIL_REPORT_TO');
+                $emailx = env('MAIL_REPORT_TO');    
                 $namex = 'Administrator';
                 if($send != 'admin')
                 {
@@ -136,7 +136,7 @@ class ReportSales extends Command
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
                     $email->attachment($csv_path);
                 }
-                $response = $email->send();
+                //$response = $email->send();
                 if($send == 'admin')
                 {
                     //unlink($pdf_referrer_);
@@ -150,6 +150,8 @@ class ReportSales extends Command
 
             //CREATING REPORTS FOR VENUES
             $venues = (array)DB::select("SELECT v.id, v.name, v.accounting_email as email, v.daily_sales_emails AS v_daily_sales_emails ".$sqlFrom." GROUP BY v.name;");
+            //create progress bar
+            $progressbar = $this->output->createProgressBar(count($venues));
             foreach ($venues as $venue)
             {
                 $elements = format((array)DB::select($sqlMain.$sqlFrom." WHERE v.id = ? GROUP BY s.name;",array($venue->id)));
@@ -161,11 +163,17 @@ class ReportSales extends Command
                     $dataSend[] = $result;
                     sendEmailReport($dataSend,'regular',$date_report,$sqlMain,$sqlFrom);
                 }
-                $resultArray[] = $result;
+                $resultArray[] = $result;                
+                //advance progress bar
+                $progressbar->advance(); 
             }
+            //finish progress bar
+            $progressbar->finish();             
 
             //CREATING REPORTS FOR SHOWS
             $shows = DB::select($sqlMain.$sqlFrom." GROUP BY s.name;");
+            //create progress bar
+            $progressbar = $this->output->createProgressBar(count($shows));
             foreach ($shows as $show)
             {
                 if($show->s_email && $show->s_daily_sales_emails==1)
@@ -176,10 +184,20 @@ class ReportSales extends Command
                     $dataSend[] = $result;
                     sendEmailReport($dataSend,'regular',$date_report,$sqlMain,$sqlFrom);
                 }
+                //advance progress bar
+                $progressbar->advance(); 
             }
+            //finish progress bar
+            $progressbar->finish(); 
 
             //MERGING REPORTS FOR ADMIN
+            //create progress bar
+            $progressbar = $this->output->createProgressBar(1);
             sendEmailReport($resultArray,'admin',$date_report,$sqlMain,$sqlFrom);
+            //advance progress bar
+            $progressbar->advance(); 
+            //finish progress bar
+            $progressbar->finish(); 
             return true;
         } catch (Exception $ex) {
             throw new Exception('Error creating and sending emails with ReportSales: '.$ex->getMessage());
