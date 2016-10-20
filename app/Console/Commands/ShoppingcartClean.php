@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Http\Models\Shoppingcart;
 
 class ShoppingcartClean extends Command
 {
@@ -11,14 +12,14 @@ class ShoppingcartClean extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'Shoppingcart:clean';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Used for cleaning all sessions saved in shoppingcart';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,10 @@ class ShoppingcartClean extends Command
      */
     public function handle()
     {
-        //
+        try {
+            Shoppingcart::where('timestamp','<',date('Y-m-d H:i:s',strtotime('-10 day',strtotime(date('Y-m-d')))))->delete();
+        } catch (Exception $ex) {
+            throw new Exception('Error cleaning shoppingcart table with ShoppingcartClean: '.$ex->getMessage());
+        }
     }
 }

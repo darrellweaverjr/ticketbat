@@ -18,6 +18,8 @@ class Kernel extends ConsoleKernel
         Commands\ReportSalesReceipt::class,
         
         Commands\PromoAnnounced::class,
+        
+        Commands\ShoppingcartClean::class,
     ];
 
     /**

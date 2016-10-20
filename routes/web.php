@@ -40,5 +40,8 @@ Route::group(['prefix' => 'command'], function () {
     Route::get('PromoAnnounced', function () {
         Artisan::call('Promo:announced',['days'=>70]);
     });
-    
+    //utilities
+    Route::get('ShoppingcartClean', function () {
+        Artisan::call('Shoppingcart:clean');
+    });
 });
