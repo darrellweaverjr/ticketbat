@@ -115,7 +115,7 @@ class PromoAnnounced extends Command
             $progressbar->finish(); 
             return true;
         } catch (Exception $ex) {
-            throw new Exception('Error sending promos with PromoAnnounced: '.$ex->getMessage());
+            throw new Exception('Error sending promos with PromoAnnounced Command: '.$ex->getMessage());
         }
     }
 }

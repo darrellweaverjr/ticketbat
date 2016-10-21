@@ -12,14 +12,14 @@ class ShoppingcartClean extends Command
      *
      * @var string
      */
-    protected $signature = 'Shoppingcart:clean';
+    protected $signature = 'Shoppingcart:clean {days=10}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Used for cleaning all sessions saved in shoppingcart';
+    protected $description = 'Used for cleaning all sessions saved in shoppingcart X days ago (default 10 days)';
 
     /**
      * Create a new command instance.
@@ -39,9 +39,10 @@ class ShoppingcartClean extends Command
     public function handle()
     {
         try {
-            Shoppingcart::where('timestamp','<',date('Y-m-d H:i:s',strtotime('-10 day',strtotime(date('Y-m-d')))))->delete();
+            $days = $this->argument('days');
+            Shoppingcart::where('timestamp','<',date('Y-m-d H:i:s',strtotime('-'.$days.' day',strtotime(date('Y-m-d')))))->delete();
         } catch (Exception $ex) {
-            throw new Exception('Error cleaning shoppingcart table with ShoppingcartClean: '.$ex->getMessage());
+            throw new Exception('Error cleaning shoppingcart table with ShoppingcartClean Command: '.$ex->getMessage());
         }
     }
 }

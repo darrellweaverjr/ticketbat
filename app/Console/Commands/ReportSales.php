@@ -14,14 +14,14 @@ class ReportSales extends Command
      *
      * @var string
      */
-    protected $signature = 'Report:sales';
+    protected $signature = 'Report:sales {days=1}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Used for sending information about sales for the day';
+    protected $description = 'Used for sending information about sales for the day or X days (default yesterday)';
 
     /**
      * Create a new command instance.
@@ -41,7 +41,7 @@ class ReportSales extends Command
     public function handle()
     {
         try {
-            $days = 1;
+            $days = $this->argument('days');
             ($days == 1)? $bound = ' = ' : $bound = ' >= ';
             $date_report = date("F j, Y", strtotime("yesterday"));
             setlocale(LC_MONETARY, 'en_US');
@@ -200,7 +200,7 @@ class ReportSales extends Command
             $progressbar->finish(); 
             return true;
         } catch (Exception $ex) {
-            throw new Exception('Error creating and sending emails with ReportSales: '.$ex->getMessage());
+            throw new Exception('Error creating and sending emails with ReportSales Command: '.$ex->getMessage());
         }
     }
 }

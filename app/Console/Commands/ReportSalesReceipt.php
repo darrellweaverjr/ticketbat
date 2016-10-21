@@ -21,7 +21,7 @@ class ReportSalesReceipt extends Command
      *
      * @var string
      */
-    protected $description = 'Used to push the receipts (daily or every X days) to us';
+    protected $description = 'Used to push the receipts (daily or every X days) to us (default daily)';
 
     /**
      * Create a new command instance.
@@ -131,7 +131,7 @@ class ReportSalesReceipt extends Command
             $progressbar->finish();  
             
         } catch (Exception $ex) {
-            throw new Exception('Error sending emails with ReportSalesReceipt: '.$ex->getMessage());
+            throw new Exception('Error sending emails with ReportSalesReceipt Command: '.$ex->getMessage());
         }
     }
 }

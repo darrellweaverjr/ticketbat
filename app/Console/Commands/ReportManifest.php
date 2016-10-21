@@ -163,7 +163,7 @@ class ReportManifest extends Command
             $progressbar->finish(); 
             return true;
         } catch (Exception $ex) {
-            throw new Exception('Error creating, saving and sending emails with ReportManifest: '.$ex->getMessage());
+            throw new Exception('Error creating, saving and sending emails with ReportManifest Command: '.$ex->getMessage());
         }        
     }
 }

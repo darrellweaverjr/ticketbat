@@ -31,17 +31,20 @@ Route::group(['prefix' => 'command'], function () {
         Artisan::call('Report:manifest');
     });
     Route::get('ReportSales', function () {
-        Artisan::call('Report:sales');
+        Artisan::call('Report:sales',['days'=>1]);
     });
     Route::get('ReportSalesReceipt', function () {
         Artisan::call('Report:sales_receipt',['days'=>1]);
     });
     //promotions
     Route::get('PromoAnnounced', function () {
-        Artisan::call('Promo:announced',['days'=>70]);
+        Artisan::call('Promo:announced',['days'=>7]);
     });
     //utilities
     Route::get('ShoppingcartClean', function () {
-        Artisan::call('Shoppingcart:clean');
+        Artisan::call('Shoppingcart:clean',['days'=>10]);
+    });
+    Route::get('ShoppingcartRecover', function () {
+        Artisan::call('Shoppingcart:recover');
     });
 });
