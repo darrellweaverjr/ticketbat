@@ -47,6 +47,8 @@ class ShoppingcartRecover extends Command
                                             INNER JOIN show_times st ON st.id = sh.item_id INNER JOIN shows s ON st.show_id = s.id 
                                             INNER JOIN show_images si ON s.id = si.show_id INNER JOIN images i ON si.image_id
                                             WHERE sh.status = 0 AND (sh.timestamp + INTERVAL 4 HOUR) <= NOW() AND i.image_type = "Header" GROUP BY id');        
+            //create progress bar
+            $progressbar = $this->output->createProgressBar(count($abandoned_carts));
             foreach ($abandoned_carts as $cart)
             {
                 if(substr($cart->image,0,1)=='/') $cart->image = url()->current().$cart->image;    
@@ -65,7 +67,11 @@ class ShoppingcartRecover extends Command
                 $response = $email->send(); 
                 if($response) 
                     Shoppingcart::where('session_id',$s_id)->update(['status'=>1]);
+                //advance progress bar
+                $progressbar->advance(); 
             }
+            //finish progress bar
+            $progressbar->finish();
         } catch (Exception $ex) {
             throw new Exception('Error recovering shoppingcart sessions with ShoppingcartRecover Command: '.$ex->getMessage());
         }

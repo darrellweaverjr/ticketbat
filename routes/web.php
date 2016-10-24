@@ -36,6 +36,9 @@ Route::group(['prefix' => 'command'], function () {
     Route::get('ReportSalesReceipt', function () {
         Artisan::call('Report:sales_receipt',['days'=>1]);
     });
+    Route::get('ReportFinancial', function () {
+        Artisan::call('Report:financial');
+    });
     //promotions
     Route::get('PromoAnnounced', function () {
         Artisan::call('Promo:announced',['days'=>7]);

@@ -40,7 +40,13 @@ class ShoppingcartClean extends Command
     {
         try {
             $days = $this->argument('days');
+            //create progress bar
+            $progressbar = $this->output->createProgressBar(1);
             Shoppingcart::where('timestamp','<',date('Y-m-d H:i:s',strtotime('-'.$days.' day',strtotime(date('Y-m-d')))))->delete();
+            //advance progress bar
+            $progressbar->advance(); 
+            //finish progress bar
+            $progressbar->finish();
         } catch (Exception $ex) {
             throw new Exception('Error cleaning shoppingcart table with ShoppingcartClean Command: '.$ex->getMessage());
         }
