@@ -14,14 +14,14 @@ class ReportFinancial extends Command
      *
      * @var string
      */
-    protected $signature = 'Report:financial';
+    protected $signature = 'Report:financial {weeks=0}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Used for sending information about financial report previous/current week';
+    protected $description = 'Used for sending information about financial report previous/current week (if a param is added will be X previous week)';
 
     /**
      * Create a new command instance.
@@ -41,10 +41,12 @@ class ReportFinancial extends Command
     public function handle()
     {
         try {
+            $weeks_ago = $this->argument('weeks');
+                        
             //INIT VARIABLES    
             $date_format = 'Y-m-d';
             $days_this_week = array();
-            $week = date ('W')-1;     
+            $week = date ('W')-$weeks_ago;     
             $empty_row = array('qty'=>0,'retail_price'=>0, 'processing_fee'=>0, 'savings'=>0, 'price_paid'=>0, 'commission'=>0, 'coupon'=>0, 'gross_profit'=>0, 'chargeback_qty'=>0, 'chargeback_amount'=>0);
 
             //ARRAYS WITH INFO
@@ -57,7 +59,7 @@ class ReportFinancial extends Command
             {
                 if($div1 == 0 && $div2 == 0) return 0.00;   
                 ($div2 == 0)? $div2 = 1 : $div2;
-                ($div1 == 0)? $value = number_format(1/$div2*100,2) : $value = number_format($div1/$div2*100,2);            
+                ($div1 == 0)? $value = round(1/$div2*100,2) : $value = round($div1/$div2*100,2);            
                 if($sign && ($div1<$div2)){
                     $value = 100-$value; $value *= -1;
                 } 

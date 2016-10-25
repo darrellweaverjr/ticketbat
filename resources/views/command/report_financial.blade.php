@@ -74,15 +74,15 @@
                         @if($t_revenue < 0)  @php $t_revenue = '<b style="color:red">'.$t_revenue.'</b>' @endphp @endif
                         @php $t_qty = number_format($gross['week_total']['qty']) @endphp
                         @if($t_qty < 0)  @php $t_qty = '<b style="color:red">'.$t_qty.'</b>' @endphp @endif  
-                <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif {{$revenue}} @if($type == 'week_perc') %@endif</td>
-                <td style="text-align: center;">{{$qty}} @if($type == 'week_perc') %@endif</td>
+                <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif @php echo $revenue @endphp @if($type == 'week_perc') %@endif</td>
+                <td style="text-align: center;">@php echo $qty @endphp @if($type == 'week_perc') %@endif</td>
                     @else
                 <td style="padding-right: 10px;text-align: center;">-</td>
                 <td style="text-align: center;">-</td>
                     @endif
                 @endforeach
-                <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif {{$t_revenue}} @if($type == 'week_perc') % @endif</td>
-                <td style="text-align: center;font-weight: bold">{{$t_qty}} @if($type == 'week_perc') % @endif</td>
+                <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_revenue @endphp @if($type == 'week_perc') % @endif</td>
+                <td style="text-align: center;font-weight: bold"> @php echo $t_qty @endphp @if($type == 'week_perc') % @endif</td>
                 @if($type=='week_this')
                 <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray" rowspan="5">$ {{number_format($gross_revenue['total_total']['gross_revenue'],2)}}</td>
                 <td style="text-align: center;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray" rowspan="5">{{number_format($gross_revenue['total_total']['qty'])}}</td>
@@ -165,14 +165,14 @@
                     @if($commissions < 0)  @php $commissions = '<b style="color:red">'.$commissions.'</b>' @endphp @endif
                     @php $t_commissions = number_format($profit['week_total']['commissions'],2) @endphp
                     @if($t_commissions < 0)  @php $t_commissions = '<b style="color:red">'.$t_commissions.'</b>' @endphp @endif
-        <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif {{$commissions}} @if($type == 'week_perc') % @endif</td>
+        <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif @php echo $commissions @endphp @if($type == 'week_perc') % @endif</td>
         <td>-</td>
                 @else
         <td style="padding-right: 10px;text-align: center;">-</td>
         <td>-</td>
                 @endif
             @endforeach
-        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif {{$t_commissions}} @if($type == 'week_perc') % @endif</td>
+        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_commissions @endphp @if($type == 'week_perc') % @endif</td>
         <td>-</td>
         <td @if($type != 'week_this')style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;background-color:gray;" 
              @else style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;" @endif 
@@ -186,14 +186,14 @@
                     @if($processing_fees < 0)  @php $processing_fees = '<b style="color:red">'.$processing_fees.'</b>' @endphp @endif
                     @php $t_processing_fees = number_format($profit['week_total']['processing_fees'],2) @endphp
                     @if($t_processing_fees < 0)  @php $t_processing_fees = '<b style="color:red">'.$t_processing_fees.'</b>' @endphp @endif
-            <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif {{$processing_fees}} @if($type == 'week_perc') % @endif</td>
+            <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif @php echo $processing_fees @endphp @if($type == 'week_perc') % @endif</td>
         <td>-</td>
                 @else
         <td style="padding-right: 10px;text-align: center;">-</td>
         <td>-</td>
                 @endif 
             @endforeach
-        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif {{$t_processing_fees}} @if($type == 'week_perc') % @endif</td>
+        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_processing_fees @endphp @if($type == 'week_perc') % @endif</td>
             <td>-</td>
             <td @if($type != 'week_this')style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;background-color:gray;" 
                  @else style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;" @endif 
@@ -215,14 +215,14 @@
                         @if($profitt < 0)  @php $profitt = '<b style="color:red">'.$profitt.'</b>' @endphp @endif
                         @php $t_profit = number_format($profit['week_total']['gross_profit'],2) @endphp
                         @if($t_profit < 0)  @php $t_profit = '<b style="color:red">'.$t_profit.'</b>' @endphp @endif
-            <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif {{$profitt}} @if($type == 'week_perc') % @endif</td>
+            <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $profitt @endphp @if($type == 'week_perc') % @endif</td>
             <td>-</td>
                     @else
             <td style="padding-right: 10px;text-align: center;">-</td>
             <td>-</td>
                     @endif
                 @endforeach
-        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif {{$t_profit}} @if($type == 'week_perc') % @endif</td>
+        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_profit @endphp @if($type == 'week_perc') % @endif</td>
             <td>-</td>
             <td @if($type != 'week_this')style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;background-color:gray;" 
                  @else style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;" @endif
@@ -317,12 +317,12 @@
             <tr>
                 <td style="width:500px;text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$st_time}}</td>
                         @foreach($days_this_week as $week_day=>$date)
-                            @if(date('Y-m-d')>= $date) 
+                            @if(date('Y-m-d')>= $date && isset($st[$date])) 
                 <td style="padding-right: 10px;text-align: right;">$ {{number_format($st[$date]['price_paid'],2)}}</td>
-                <td style="text-align: center;">{{number_format($st[$date]['qty'],2)}}</td>
+                <td style="text-align: center;">{{number_format($st[$date]['qty'])}}</td>
                             @else
-                <td style="padding-right: 10px;text-align: center;">-</td>
-                <td style="text-align: center;">-</td>
+                <td style="padding-right: 10px;text-align: center;">$ 0.00</td>
+                <td style="text-align: center;">0</td>
                             @endif
                         @endforeach
             <td style="padding-right: 10px;text-align: right;font-weight: bold">$ {{number_format($st['week_total']['price_paid'],2)}}</td>
