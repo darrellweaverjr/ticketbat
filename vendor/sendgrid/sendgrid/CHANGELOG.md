@@ -3,11 +3,17 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [5.1.1] - 2016-10-11 ##
+### Added
+- Pull #307, Fixes #276
+- Adds phpdoc and style fixes
+- Thanks to [Avishkar Autar](https://github.com/aautar) for the PR!
+
 ## [5.1.0] - 2016-09-29 ##
 ### Fixed
 - Pull #295: [Upgrade sendgrid/php-http-client](https://github.com/sendgrid/sendgrid-php/pull/295/files)
 - This adds getters for certain properties, please see [this pull request](https://github.com/sendgrid/php-http-client/pull/9) for details
-- Thakns to [Arjan Keeman](https://github.com/akeeman) for the pull request!
+- Thanks to [Arjan Keeman](https://github.com/akeeman) for the pull request!
 
 ## [5.0.9] - 2016-09-13 ##
 ### Fixed

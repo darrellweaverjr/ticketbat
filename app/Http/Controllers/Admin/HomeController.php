@@ -25,17 +25,19 @@ class HomeController extends Controller
      */
     public function index()
     {
-        echo '<a href="../logout">logout</a><br><br><br>';
+        
+        return view('admin.child');
+        //echo '<a href="../logout">logout</a><br><br><br>';
         
         /*$email = new EmailSG('nick@ticketbat.com','ivan@ticketbat.com,ivankbc333@gmail.com','Welcome to TicketBat!');
         $email->body('welcome',array('username'=>'ivankbc333@gmail.com','password'=>'mycontrasena'));
         $email->template('a7b5c451-4d26-4292-97cd-239880e7dd20');*/
         //$response = $email->send();d
        
-        dd(Auth::user()->purchases()->get());
+        //dd(Auth::user()->purchases()->get());
         
-        dd(\App\Http\Models\Customer::find(5)->location   );        
+        //dd(\App\Http\Models\Customer::find(5)->location   );        
         
-        dd('TicketBat Admin request successfully');
+        //dd('TicketBat Admin request successfully');
     }
 }
