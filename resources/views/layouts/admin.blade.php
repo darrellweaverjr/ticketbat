@@ -49,7 +49,7 @@
                 <div class="page-header-inner ">
                     <!-- BEGIN LOGO -->
                     <div class="page-logo">
-                        <a href="index.html">
+                        <a href="">
                             <img src="/themes/admin/assets/layouts/layout/img/logo.png" alt="logo" class="logo-default" /> </a>
                         <div class="menu-toggler sidebar-toggler">
                             <span></span>
@@ -69,7 +69,7 @@
                             <li class="dropdown dropdown-user">
                                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                     <img alt="" class="img-circle" src="/themes/admin/assets/layouts/layout/img/avatar3_small.jpg" />
-                                    <span class="username username-hide-on-mobile"><b> Hello, {{Auth::user()->first_name}} <b></span>
+                                    <span class="username username-hide-on-mobile"> Hello, {{Auth::user()->first_name}} </span>
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-default">
@@ -86,11 +86,20 @@
                                     <li class="divider"> </li>
                                     <li>
                                         <a href="../logout">
-                                            <i class="icon-key"></i> Log Out </a>
+                                            <i class="icon-key"></i> Log Out 
+                                        </a>
                                     </li>
                                 </ul>
                             </li>
                             <!-- END USER LOGIN DROPDOWN -->
+                            <!-- BEGIN QUICK SIDEBAR TOGGLER -->
+                            <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+                            <li class="dropdown dropdown-quick-sidebar-toggler">
+                                <a href="../logout" class="dropdown-toggle">
+                                    <i class="icon-logout"></i>
+                                </a>
+                            </li>
+                            <!-- END QUICK SIDEBAR TOGGLER -->
                         </ul>
                     </div>
                     <!-- END TOP NAVIGATION MENU -->
