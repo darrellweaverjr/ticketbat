@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Mail\EmailSG;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class ReportSales extends Command
 {
@@ -103,60 +104,59 @@ class ReportSales extends Command
                     array_unshift($data,$result);
                 }
                 
-                //MANIFEST SALES CUTOMIZED ACCORDING TO VENUES, SHOWS OR ADMIN
-                /*$format = 'customized';
+                //MANIFEST SALES CUTOMIZED ACCORDING TO VENUES, SHOWS OR ADMIN                
+                $format = 'customized';
+                $pdf_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $manifest_email = View::make('command.report_sales', compact('data','send','format'));
-                $pdf =  PDF::load($manifest_email->render(), 'A4', 'landscape')->output();
-                $pdf_path = '/tmp/ReportSales_'.$namex.'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                $fp_pdf = fopen($pdf_path, "w"); fwrite($fp_pdf, $pdf); fclose($fp_pdf); PDF::reinit();*/
-               
+                PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
+
                 //SENDING EMAIL
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Daily Sales Report to '.$namex);
                 //$email->cc(env('MAIL_REPORT_CC'));
                 $email->category('Reports');
                 $email->body('sales_report',array('date'=>date('m/d/Y',strtotime($date_report))));
                 $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
-                //$email->attachment($pdf_path);
+                $email->attachment($pdf_path);
                 if($send == 'admin')
                 {
                     //SALES REFERRER PDF
-                    /*$format = 'referrer';
+                    $format = 'referrer';
+                    $pdf_referrer_ = '/tmp/ReportSales_Referrer_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                     $purchases = DB::select($sqlMain.$sqlFrom." GROUP BY referrer_url,p.show_time_id, p.ticket_type;");
                     $manifest_email = View::make('command.report_sales', compact('purchases', 'date_report','format'));
-                    $pdf_ =  PDF::load($manifest_email->render(), 'A4', 'landscape')->output();
-                    $pdf_referrer_ = '/tmp/ReportSales_Referrer_'.$namex.'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                    $fp_pdf_ = fopen($pdf_referrer_, "w"); fwrite($fp_pdf_, $pdf_); fclose($fp_pdf_); PDF::reinit();
-                    $email->attachment($pdf_referrer_);*/
+                    PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_referrer_);
 
                     //MANIFES SALES CSV
                     $format = 'csv';
                     $purchases = DB::select($sqlMain.$sqlFrom." GROUP BY p.show_time_id, p.ticket_type;");
                     $manifest_csv = View::make('command.report_sales', compact('purchases' ,'date_report','format'));
-                    $csv_path = '/tmp/ReportSales_'.$namex.'_'.date('Y-m-d').'_'.date('U').'.csv';
+                    $csv_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.csv';
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
-                    $email->attachment($csv_path);
+                    
+                    $email->attachment([$csv_path,$pdf_referrer_]);
                 }
-                //$response = $email->send();
-                if($send == 'admin')
+                if($email->send())
                 {
-                    //unlink($pdf_referrer_);
-                    unlink($csv_path);
-                }
-                //unlink($pdf_path);
+                    if($send == 'admin')
+                    {
+                        unlink($pdf_referrer_);
+                        unlink($csv_path);
+                    }
+                    unlink($pdf_path);
+                }                
             }
 
             //ARRAY TO MERGE BOTH REPORTS
             $resultArray = array();
 
             //CREATING REPORTS FOR VENUES
-            $venues = (array)DB::select("SELECT v.id, v.name, v.accounting_email as email, v.daily_sales_emails AS v_daily_sales_emails ".$sqlFrom." GROUP BY v.name;");
+            $venues = (array)DB::select("SELECT v.id, v.name, v.accounting_email as email, v.daily_sales_emails AS v_daily_sales_emails ".$sqlFrom." GROUP BY v.name");
             //create progress bar
             $progressbar = $this->output->createProgressBar(count($venues));
             foreach ($venues as $venue)
-            {
-                $elements = format((array)DB::select($sqlMain.$sqlFrom." WHERE v.id = ? GROUP BY s.name;",array($venue->id)));
+            {   
+                $elements = format((array)DB::select($sqlMain.$sqlFrom." WHERE v.id = ? GROUP BY s.name;",array($venue->id)));                
                 $result = array('elements'=>$elements, 'total'=>calculate_total($elements), 'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
-
                 if($venue->email && $venue->v_daily_sales_emails==1)
                 {
                     $dataSend = array();
@@ -168,10 +168,10 @@ class ReportSales extends Command
                 $progressbar->advance(); 
             }
             //finish progress bar
-            $progressbar->finish();             
-
+            $progressbar->finish();               
+/*
             //CREATING REPORTS FOR SHOWS
-            $shows = DB::select($sqlMain.$sqlFrom." GROUP BY s.name;");
+            $shows = DB::select($sqlMain.$sqlFrom." GROUP BY s.name");
             //create progress bar
             $progressbar = $this->output->createProgressBar(count($shows));
             foreach ($shows as $show)
@@ -189,7 +189,7 @@ class ReportSales extends Command
             }
             //finish progress bar
             $progressbar->finish(); 
-
+*/
             //MERGING REPORTS FOR ADMIN
             //create progress bar
             $progressbar = $this->output->createProgressBar(1);

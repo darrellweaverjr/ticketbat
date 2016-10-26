@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Mail\EmailSG;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class ReportFinancial extends Command
 {
@@ -475,22 +476,16 @@ class ReportFinancial extends Command
             function sendEmail($data,$filter,$to,$name)
             {
                 $data['filter'] = $filter;
-                $financial_report = View::make('command.report_financial', $data);
-                
-                
-                print_r($financial_report->render());
-                exit();
-                /*
-                $pdf = PDF::load($financial_report->render(), 'tabloid', 'landscape')->output();
-                $pdf_url = '/tmp/ReportFinancial_'.$filter.'_'.date('Y-m-d').'_'.date('U').'.pdf';                
-                $file_pdf = fopen($pdf_url, "w");fwrite($file_pdf, $pdf);fclose($file_pdf);PDF::reinit();
-                */
+                $financial_report = View::make('command.report_financial', $data);  
+                $pdf_url = '/tmp/ReportFinancial_'.$filter.'_'.date('Y-m-d').'_'.date('U').'.pdf';   
+                PDF::loadHTML($financial_report->render())->setPaper('tabloid', 'landscape')->setWarnings(false)->save($pdf_url);
+
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $to ,'TicketBat Financial Report to '.$name);
                 $email->category('Reports');
                 $email->text('TicketBat Financial Report. Created at '.date('Y-m-d'));
-                //$email->attachment($pdf_url);
-                $email->send();
-                unlink($pdf_url);   
+                $email->attachment($pdf_url);
+                if($email->send())
+                    unlink($pdf_url);   
             }
 
             //create progress bar

@@ -129,7 +129,7 @@
             </table>
         @else
             @foreach($data as $d)
-            <div style=" page-break-inside:avoid;page-break-after:always;">
+            <div style="page-break-after:always;">
               <h1>TicketBat.com</h1>
               @if($d['name'] == 'Totals')
               <p><h3>Total Sales</h3></p>
@@ -179,6 +179,6 @@
             </div>
             @endforeach
         @endif
-    </body>
-</html>
+    {{--</body>
+</html>--}}
 @endif

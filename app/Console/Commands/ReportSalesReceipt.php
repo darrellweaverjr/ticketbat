@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Mail\EmailSG;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class ReportSalesReceipt extends Command
 {
@@ -96,15 +97,14 @@ class ReportSalesReceipt extends Command
                 $receipts = [$csv_url];
                 
                 //get all receipts                
-                /*foreach ($data as $purchase) 
+                foreach ($data as $purchase) 
                 {   
                     $format = 'pdf';
                     $pdfUrl = '/tmp/Receipt_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$purchase['show_name']).'_'.$purchase['id'].'.pdf';
-                    $customer_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
-                    $pdf = PDF::load($customer_receipt->render(), 'A4', 'portrait')->output();
-                    $fp  = fopen($pdfUrl, "w"); fwrite($fp, $pdf); fclose($fp); PDF::reinit();
+                    $customer_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));  
+                    PDF::loadHTML($customer_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrl);
                     $receipts[] = $pdfUrl;
-                } */          
+                }     
                 //send email           
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $to ,$part_name_report.' Sales Report to '.$name);
                 //$email->cc(env('MAIL_REPORT_CC'));

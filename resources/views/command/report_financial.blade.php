@@ -23,7 +23,7 @@
 
         @if ($filter==0)	
 
-        <table align="center" style="margin-top:80px;border: 2; height: 800px; page-break-inside:avoid;page-break-after:always;">       
+        <table align="center" style="margin-top:80px;border:2;height:800px;page-break-after:always;">       
             <tr>
                 <td colspan="19" style="text-align:center;font-size: 20px;background-color: black; color:white">
                     <div class="purchase-reciept"><b>TICKETBAT FINANCIAL REPORT<br/>ADMIN</b></div>
@@ -56,7 +56,7 @@
 
             @foreach($gross_revenue as $type=>$gross)
                 @if($type !='total_total')
-            <tr>
+            <tr height="15px">
                 <td style="width:400px;text-align: left;font-weight: bold">                                    
                     @if($type =='week_this') Current Week 
                     @elseif($type =='week_last') Previous Week 
@@ -82,24 +82,25 @@
                     @endif
                 @endforeach
                 <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_revenue @endphp @if($type == 'week_perc') % @endif</td>
-                <td style="text-align: center;font-weight: bold"> @php echo $t_qty @endphp @if($type == 'week_perc') % @endif</td>
+                <td style="text-align: center;font-weight: bold"> @php echo $t_qty @endphp @if($type == 'week_perc') % @endif</td> 
                 @if($type=='week_this')
-                <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray" rowspan="5">$ {{number_format($gross_revenue['total_total']['gross_revenue'],2)}}</td>
-                <td style="text-align: center;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray" rowspan="5">{{number_format($gross_revenue['total_total']['qty'])}}</td>
+                <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray">$ {{number_format($gross_revenue['total_total']['gross_revenue'],2)}}</td>
+                <td style="text-align: center;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray">{{number_format($gross_revenue['total_total']['qty'])}}</td>
+                @else
+                <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue  ;font-size: 18px;background-color: gray"></td>
+                <td style="text-align: center;font-weight: bold; color:Blue  ;font-size: 18px;background-color: gray"></td>
                 @endif
-        </tr> 
-            @endif
-        @endforeach
+            </tr> 
+                @endif
+            @endforeach
         <tr>
             <td colspan="19" style="background-color: gray"></td>
         </tr>
 
         <!--      COUPONS      -->
         <tr>
-
-            <td colspan="19" style="width:400px;text-align: left;font-weight: bold;background-color: lightgray">COUPONS</td>
-
-        </tr> 
+            <td colspan="19" height="15px" style="background-color: gray; color:white">COUPONS</td>
+        </tr>
         @foreach($coupons as $code=>$coupon)
             @if($code != 'total')
         <tr>
@@ -265,7 +266,7 @@
 
         @foreach($venues as $venue_id=>$venue)
             @if(($filter == 0 || ($filter != 0 && $venue_id == $filter)) && (($venue['total_total']['qty'] != 0 && $filter==0) || $filter!=0))
-        <table align="center" style="margin-top:80px; border: 2px; page-break-inside:avoid;page-break-after:always;">       
+        <table align="center" style="margin-top:80px;border:2px;page-break-after:always;">       
         <tr>
             <td colspan="19" style="text-align:center;font-size: 20px;background-color: black; color:white">
                     <div class="purchase-reciept"><b>TICKETBAT FINANCIAL REPORT FOR VENUES <br/>- {{strtoupper($venue['name'])}} -</b></div>
@@ -378,5 +379,5 @@
         </table>    
             @endif
         @endforeach 
-    </body> 
-</html>    
+    {{--</body>
+</html>--}}

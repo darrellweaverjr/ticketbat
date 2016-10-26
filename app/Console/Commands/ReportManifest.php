@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Mail\EmailSG;
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Models\Manifest;
 
 class ReportManifest extends Command
@@ -128,31 +129,29 @@ class ReportManifest extends Command
                     if($manifest->save() && $data['s_manifest_emails'] == 1 && $data['emails'])
                     {
                         //create pdf  
-                        /*$format = 'pdf'; 
-                        $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
-                        $pdf =  PDF::load($manifest_pdf->render(), 'A4', 'landscape')->output();
+                        $format = 'pdf';
                         $pdf_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.pdf';
-                        $fp_pdf = fopen($pdf_path, "w"); fwrite($fp_pdf, $pdf); fclose($fp_pdf); PDF::reinit();*/
+                        $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
+                        PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
                         
                         //create csv
                         $format = 'csv';
                         $manifest_csv = View::make('command.report_manifest', compact('data','format'));
                         $csv_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.csv';
                         $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
-          
+         
                         //sending email
                         $email = new EmailSG(env('MAIL_REPORT_FROM'),$data['emails'],$emailSubject.$data['name']);
                         $email->body('manifest',$data);
                         $email->category('Manifests');
-                        $email->attachment($csv_path/*,$pdf_path*/);
+                        $email->attachment([$csv_path,$pdf_path]);
                         $email->template('89890051-c3ba-4d94-a2ff-ac237f8295ba');
-                        $sent= $email->send();
 
                         //if the email was sent successfully delete files
-                        if($sent)
+                        if($email->send())
                         {
                             unlink($csv_path);
-                            //unlink($pdf_path);
+                            unlink($pdf_path);
                         }                    
                     }                     
                 }
