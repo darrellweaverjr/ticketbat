@@ -1,6 +1,15 @@
 @php $page_title='Ticket Sales' @endphp
 @extends('layouts.admin')
 @section('title', 'Ticket Sales' )
+
+@section('styles') 
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/themes/admin/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+<!-- END PAGE LEVEL PLUGINS -->
+@endsection
+
 @section('content') 
 
     <!-- BEGIN PAGE HEADER-->   
@@ -39,9 +48,9 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        <span data-counter="counterup" data-value="1349">0</span>
+                        <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
-                    <div class="desc"> New Feedbacks </div>
+                    <div class="desc"> Tickets Sold </div>
                 </div>
             </a>
         </div>
@@ -52,8 +61,8 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        <span data-counter="counterup" data-value="12,5">0</span>M$ </div>
-                    <div class="desc"> Total Profit </div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['savings'],2)}}"></span></div>
+                    <div class="desc"> Discounts Applied </div>
                 </div>
             </a>
         </div>
@@ -64,9 +73,9 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        <span data-counter="counterup" data-value="549">0</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['total'],2)}}"></span>
                     </div>
-                    <div class="desc"> New Orders </div>
+                    <div class="desc"> Total collected </div>
                 </div>
             </a>
         </div>
@@ -77,13 +86,98 @@
                 </div>
                 <div class="details">
                     <div class="number"> +
-                        <span data-counter="counterup" data-value="89"></span>% </div>
-                    <div class="desc"> Brand Popularity </div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['show_earned'],2)}}"></span></div>
+                    <div class="desc"> To Show </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="#">
+                <div class="visual">
+                    <i class="fa fa-globe"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> +
+                        $ <span data-counter="counterup" data-value="{{number_format($total['commission_earned'],2)}}"></span></div>
+                    <div class="desc"> Commision Earned </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="#">
+                <div class="visual">
+                    <i class="fa fa-globe"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> +
+                        $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span></div>
+                    <div class="desc"> Fee Revenue Earned </div>
                 </div>
             </a>
         </div>
     </div>
     <div class="clearfix"></div>
     <!-- END DASHBOARD STATS 1-->
+    
+    
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet box green">
+        <div class="portlet-title">
+            <div class="caption">
+                <i></i>{{strtoupper($page_title)}}</div>
+            <div class="tools"> </div>
+        </div>
+        <div class="portlet-body">
+            <table class="table table-striped table-bordered table-hover" id="sample_2">
+                <thead>
+                    <tr>
+                        <th> Show Name </th>
+                        <th> Show <br> Date </th>
+                        <th> Sold <br> Date </th>
+                        <th> Customer Name </th>
+                        <th> Order # </th>
+                        <th> Price <br> Code </th>
+                        <th> Ticket <br> Type </th>
+                        <th> Tickets <br> (Qty) </th>
+                        <th> Tickets($) </th>  
+                        <th> Savings($) </th>
+                        <th> Fees($) </th>
+                        <th> Commissions($) </th>
+                        <th> To Show($) </th>
+                        <th> TOTAL($) </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($data as $d)
+                    <tr>
+                        <td> {{$d->show_name}} </td>
+                        <td> {{date('m/d/Y g:ia',strtotime($d->show_time))}} </td>
+                        <td> {{date('m/d/Y g:ia',strtotime($d->created))}} </td>
+                        <td> {{$d->name}} </td>
+                        <td> {{$d->id}} </td>
+                        <td> {{$d->code}} </td>
+                        <td> {{$d->ticket_type}} </td>
+                        <td> {{number_format($d->tickets)}} </td>
+                        <td> $ {{number_format($d->tickets_price,2)}} </td>
+                        <td> $ {{number_format($d->savings,2)}} </td>
+                        <td> $ {{number_format($d->fees,2)}} </td>
+                        <td> $ {{number_format($d->commission_earned,2)}} </td>
+                        <td> $ {{number_format($d->show_earned,2)}} </td>
+                        <td><b> $ {{number_format($d->total,2)}} </b></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- END EXAMPLE TABLE PORTLET-->
                     
+@endsection
+
+@section('scripts') 
+<script src="/themes/admin/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/pages/scripts/table-datatables-buttons.min.js" type="text/javascript"></script>
 @endsection

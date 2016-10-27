@@ -21,6 +21,9 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin'], function () {
     
     Route::get('home', 'DashboardController@index')->name('home');
+    Route::get('dashboard/ticket_sales', 'DashboardController@ticket_sales');
+    Route::get('dashboard/chargeback', 'DashboardController@chargeback');
+    Route::get('dashboard/future_liabilities', 'DashboardController@future_liabilities');
     
 });
 

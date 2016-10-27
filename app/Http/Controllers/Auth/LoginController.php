@@ -55,8 +55,8 @@ class LoginController extends Controller
         $credentials = $this->credentials($request);
         $credentials['password'] = md5($credentials['password']);
         if ($this->guard()->attempt($credentials, $request->has('remember'))) {
-            //check conditions
-            if(Auth::user()->is_active > 0){
+            //check if the user is active and it has permission to enter to the site
+            if(Auth::user()->is_active > 0 && in_array(Auth::user()->user_type->id,explode(',',env('ADMIN_LOGIN_USER_TYPE')))){
                 return $this->sendLoginResponse($request);
             } else
                 Auth::logout();            

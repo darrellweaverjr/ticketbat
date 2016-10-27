@@ -134,7 +134,7 @@
                                 </div>
                             </li>
                             <li class="nav-item start active open">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                                <a href="/admin/home" class="nav-link nav-toggle">
                                     <i class="icon-home"></i>
                                     <span class="title">Dashboard</span>
                                     <span class="selected"></span>
@@ -142,20 +142,20 @@
                                 </a>
                                 <ul class="sub-menu">
                                     <li class="nav-item start active open">
-                                        <a href="/admin/home" class="nav-link ">
+                                        <a href="/admin/dashboard/ticket_sales" class="nav-link ">
                                             <i class="icon-bar-chart"></i>
                                             <span class="title">Ticket Sales</span>
                                             <span class="selected"></span>
                                         </a>
                                     </li>
                                     <li class="nav-item start ">
-                                        <a href="dashboard_2.html" class="nav-link ">
+                                        <a href="/admin/dashboard/chargeback" class="nav-link ">
                                             <i class="icon-briefcase"></i>
                                             <span class="title">Chargeback</span>
                                         </a>
                                     </li>
                                     <li class="nav-item start ">
-                                        <a href="dashboard_3.html" class="nav-link ">
+                                        <a href="/admin/dashboard/future_liabilities" class="nav-link ">
                                             <i class="icon-graph"></i>
                                             <span class="title">Future Liabilities</span>
                                         </a>
@@ -323,13 +323,13 @@
         <script src="/themes/admin/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
+        {{--<script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>--}}
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="/themes/admin/assets/global/scripts/app.min.js" type="text/javascript"></script>
@@ -340,8 +340,6 @@
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="/themes/admin/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/layouts/global/scripts/quick-nav.min.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
         @yield('scripts')
     </body>
