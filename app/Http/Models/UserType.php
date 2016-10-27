@@ -38,7 +38,7 @@ class UserType extends Model
     {
         $acls = array();
         $acl_codes = array();
-        foreach ($this->permissions()->orderBy('permission_id')->get() as $p)
+        foreach ($this->user_type_permissions()->orderBy('permission_id')->get() as $p)
         {
             if(isset($acls[$p->pivot->permission_id]))
             {

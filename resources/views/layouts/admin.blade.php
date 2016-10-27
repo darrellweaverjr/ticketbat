@@ -132,7 +132,7 @@
                                 <div class="sidebar-toggler">
                                     <span></span>
                                 </div>
-                            </li>
+                            </li>                            
                             <li class="nav-item start active open">
                                 <a href="/admin/home" class="nav-link nav-toggle">
                                     <i class="icon-home"></i>
@@ -174,90 +174,126 @@
                                     </li>
                                 </ul>
                             </li>
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('USERS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-user"></i>
                                     <span class="title">Users</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('BANDS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-music-tone"></i>
                                     <span class="title">Bands</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('VENUES', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-pointer"></i>
                                     <span class="title">Venues</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('SHOWS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-microphone"></i>
                                     <span class="title">Shows</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('TYPES', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-layers"></i>
                                     <span class="title">Ticket Types</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('COUPONS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="?p=" class="nav-link nav-toggle">
                                     <i class="icon-wallet"></i>
                                     <span class="title">Coupons</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('PACKAGES', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-support"></i>
                                     <span class="title">Packages</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('ACLS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-settings"></i>
                                     <span class="title">ACLs</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-envelope"></i>
                                     <span class="title">Manifest Emails</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('CONTACTS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-feed"></i>
                                     <span class="title">Contact Log</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('PURCHASES', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-basket"></i>
                                     <span class="title">Purchases</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('SLIDERS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-camera"></i>
                                     <span class="title">Hero Slider</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('TICKETS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-tag"></i>
                                     <span class="title">Consignment Tickets</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('APPS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
                                 <a href="javascript:;" class="nav-link nav-toggle">
                                     <i class="icon-calendar"></i>
                                     <span class="title">Mobile App</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('CONTRACTS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            <li class="nav-item  ">
+                                <a href="javascript:;" class="nav-link nav-toggle">
+                                    <i class="icon-docs"></i>
+                                    <span class="title">Contracts</span>
+                                </a>
+                            </li>
+                            @endif
                         </ul>
                         <!-- END SIDEBAR MENU -->
                     </div>
