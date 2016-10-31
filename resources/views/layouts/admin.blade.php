@@ -149,9 +149,9 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start ">
-                                        <a href="/admin/dashboard/chargeback" class="nav-link ">
+                                        <a href="/admin/dashboard/chargebacks" class="nav-link ">
                                             <i class="icon-briefcase"></i>
-                                            <span class="title">Chargeback</span>
+                                            <span class="title">Chargebacks</span>
                                         </a>
                                     </li>
                                     <li class="nav-item start ">
@@ -161,13 +161,13 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start ">
-                                        <a href="dashboard_3.html" class="nav-link ">
+                                        <a href="/admin/dashboard/trend_pace" class="nav-link ">
                                             <i class="icon-bulb"></i>
                                             <span class="title">Trend & Pace</span>
                                         </a>
                                     </li>
                                     <li class="nav-item start ">
-                                        <a href="dashboard_3.html" class="nav-link ">
+                                        <a href="/admin/dashboard/referrals" class="nav-link ">
                                             <i class="icon-note"></i>
                                             <span class="title">Referrals</span>
                                         </a>

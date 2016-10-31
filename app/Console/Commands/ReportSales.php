@@ -52,7 +52,7 @@ class ReportSales extends Command
                         DATE_FORMAT(st.show_time,'%m/%d/%Y %h:%s %p') AS shows_time, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, sum(p.retail_price) AS retail_price, 
                         SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, SUM(p.price_paid) AS gross_revenue, ROUND(AVG(p.commission_percent),2) AS commission_percent, 
                         SUM(p.price_paid) AS total_paid, ROUND(SUM(p.retail_price)-SUM(p.commission),2) AS due_to_show, ROUND(SUM(p.commission),2) AS commission, 
-                        SUBSTRING_INDEX(SUBSTRING_INDEX(p.referrer_url, '://', -1),'/', 1) AS referrer_url,
+                        SUBSTRING_INDEX(SUBSTRING_INDEX(p.referrer_url, '://', -1),'/', 1) AS referral_url,
                         SUBSTRING_INDEX(p.referrer_url, '://', -1) AS url, SUM(p.price_paid)-SUM(p.commission)-SUM(p.processing_fee) AS net ";
 
             $sqlFrom =" FROM (SELECT *, ROUND((retail_price - savings) * commission_percent/100,2) AS commission
@@ -122,7 +122,7 @@ class ReportSales extends Command
                     //SALES REFERRER PDF
                     $format = 'referrer';
                     $pdf_referrer_ = '/tmp/ReportSales_Referrer_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                    $purchases = DB::select($sqlMain.$sqlFrom." GROUP BY referrer_url,p.show_time_id, p.ticket_type;");
+                    $purchases = DB::select($sqlMain.$sqlFrom." GROUP BY referral_url,p.show_time_id, p.ticket_type;");
                     $manifest_email = View::make('command.report_sales', compact('purchases', 'date_report','format'));
                     PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_referrer_);
 

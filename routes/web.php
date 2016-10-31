@@ -22,8 +22,10 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     
     Route::get('home', 'DashboardController@index')->name('home');
     Route::get('dashboard/ticket_sales', 'DashboardController@ticket_sales');
-    Route::get('dashboard/chargeback', 'DashboardController@chargeback');
+    Route::get('dashboard/chargebacks', 'DashboardController@chargebacks');
     Route::get('dashboard/future_liabilities', 'DashboardController@future_liabilities');
+    Route::get('dashboard/trend_pace', 'DashboardController@trend_pace');
+    Route::get('dashboard/referrals', 'DashboardController@referrals');
     
 });
 
@@ -34,7 +36,7 @@ Route::group(['prefix' => 'command'], function () {
         Artisan::call('Report:manifest');
     });
     Route::get('ReportSales', function () {
-        Artisan::call('Report:sales',['days'=>1]);
+        Artisan::call('Report:sales',['days'=>100]);
     });
     Route::get('ReportSalesReceipt', function () {
         Artisan::call('Report:sales_receipt',['days'=>1]);

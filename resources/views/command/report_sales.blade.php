@@ -118,11 +118,11 @@
                 <tbody>
                 @foreach($purchases as $p)
                     <tr>
-                        <td>{$p->referrer_url}</td>
-                        <td>{$p->s_name}</td>
-                        <td>{$p->ticket_type}</td>
-                        <td>{$p->qty}</td>
-                        <td>{$p->purchase_count}</td>
+                        <td>{{$p->referral_url}}</td>
+                        <td>{{$p->s_name}}</td>
+                        <td>{{$p->ticket_type}}</td>
+                        <td>{{$p->qty}}</td>
+                        <td>{{$p->purchase_count}}</td>
                     </tr>
                 @endforeach
                 </tbody>
