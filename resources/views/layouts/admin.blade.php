@@ -176,7 +176,7 @@
                             </li>
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('USERS', Auth::user()->user_type->getACLs()['acl_codes']))
                             <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                                <a href="/admin/users" class="nav-link nav-toggle">
                                     <i class="icon-user"></i>
                                     <span class="title">Users</span>
                                 </a>
