@@ -125,7 +125,7 @@
                         <th> Retail Price($) </th>
                         <th> Show Earned($) </th>
                         <th> Commission Earned($) </th>
-                        <th> Processing($) </th>
+                        <th> Fees($) </th>
                         <th> Revenue($) </th>
                     </tr>
                 </thead>
