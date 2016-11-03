@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\User;
 use App\Http\Models\UserType;
+use App\Http\Models\Discount;
+use App\Http\Models\Venue;
+use App\Http\Models\Country;
 
 /**
  * Manage Users
@@ -28,8 +31,11 @@ class UserController extends Controller{
             //get all records        
             $users = User::all();
             $user_types = UserType::all();
+            $discounts = Discount::all();
+            $venues = Venue::all();
+            $countries = Country::all();
             //return view
-            return view('admin.users.index',compact('users','user_types'));
+            return view('admin.users.index',compact('users','user_types','discounts','venues','countries'));
         } catch (Exception $ex) {
             throw new Exception('Error Users Index: '.$ex->getMessage());
         }
