@@ -104,7 +104,6 @@
             </a>
         </div>
     </div>
-    <div class="clearfix"></div>
     <!-- END DASHBOARD STATS 1-->
     
     @php print_r($graph) @endphp
@@ -179,47 +178,49 @@
             <!-- END PORTLET-->
         </div>
     </div>
-    
-    
-    
+        
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
-    <div class="portlet box green">
-        <div class="portlet-title">
-            <div class="caption">
-                <i></i>{{strtoupper($page_title)}}</div>
-            <div class="tools"> </div>
-        </div>
-        <div class="portlet-body">
-            <table class="table table-striped table-bordered table-hover" id="sample_2">
-                <thead>
-                    <tr>
-                        <th> Show Name </th>
-                        <th> Sales 2 Days Ago </th>
-                        <th> Sales Yesterday </th>
-                        <th> Tickets Sold </th>
-                        <th> Qty Purchases </th>
-                        <th> Retail Price($) </th>
-                        <th> Fees($) </th>
-                        <th> Commissions($) </th>
-                        <th> Revenue($) </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($data as $d)
-                    <tr>
-                        <td> {{$d->show_name}} </td>
-                        <td> {{$d->qty_tickets_two}} </td>
-                        <td> {{$d->qty_tickets_one}} </td>
-                        <td> {{$d->qty_tickets}} </td>
-                        <td> {{$d->qty_purchases}} </td>
-                        <td> $ {{number_format($d->retail_price,2)}} </td>
-                        <td> $ {{number_format($d->fees,2)}} </td>
-                        <td> $ {{number_format($d->commission,2)}} </td>
-                        <td> $ {{number_format($d->revenue,2)}} </b></td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i></i>{{strtoupper($page_title)}}</div>
+                    <div class="tools"> </div>
+                </div>
+                <div class="portlet-body">
+                    <table class="table table-striped table-bordered table-hover" id="sample_2">
+                        <thead>
+                            <tr>
+                                <th> Show Name </th>
+                                <th> Sales 2 Days Ago </th>
+                                <th> Sales Yesterday </th>
+                                <th> Tickets Sold </th>
+                                <th> Qty Purchases </th>
+                                <th> Retail Price($) </th>
+                                <th> Fees($) </th>
+                                <th> Commissions($) </th>
+                                <th> Revenue($) </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($data as $d)
+                            <tr>
+                                <td> {{$d->show_name}} </td>
+                                <td> {{$d->qty_tickets_two}} </td>
+                                <td> {{$d->qty_tickets_one}} </td>
+                                <td> {{$d->qty_tickets}} </td>
+                                <td> {{$d->qty_purchases}} </td>
+                                <td> $ {{number_format($d->retail_price,2)}} </td>
+                                <td> $ {{number_format($d->fees,2)}} </td>
+                                <td> $ {{number_format($d->commission,2)}} </td>
+                                <td> $ {{number_format($d->revenue,2)}} </b></td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->

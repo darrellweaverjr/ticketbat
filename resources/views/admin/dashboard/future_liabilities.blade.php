@@ -104,48 +104,50 @@
             </a>
         </div>
     </div>
-    <div class="clearfix"></div>
     <!-- END DASHBOARD STATS 1-->
-    
-    
+        
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
-    <div class="portlet box green">
-        <div class="portlet-title">
-            <div class="caption">
-                <i></i>{{strtoupper($page_title)}}</div>
-            <div class="tools"> </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i></i>{{strtoupper($page_title)}}</div>
+                    <div class="tools"> </div>
+                </div>
+                <div class="portlet-body">
+                    <table class="table table-striped table-bordered table-hover" id="sample_2">
+                        <thead>
+                            <tr>
+                                <th> Show Name </th>
+                                <th> Tickets <br> Sold(Qty) </th>
+                                <th> Purchases <br> (Qty) </th>
+                                <th> Retail Price($) </th>
+                                <th> Show Earned($) </th>
+                                <th> Commission Earned($) </th>
+                                <th> Fees($) </th>
+                                <th> Revenue($) </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($data as $d)
+                            <tr>
+                                <td> {{$d->name}} </td>
+                                <td> {{number_format($d->num_tickets)}} </td>
+                                <td> {{number_format($d->num_purchases)}} </td>
+                                <td> $ {{number_format($d->retail_price,2)}} </td>
+                                <td> $ {{number_format($d->show_earned,2)}} </td>
+                                <td> $ {{number_format($d->commission_earned,2)}} </td>
+                                <td> $ {{number_format($d->processing_fee,2)}} </td>
+                                <td> $ {{number_format($d->total,2)}} </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="portlet-body">
-            <table class="table table-striped table-bordered table-hover" id="sample_2">
-                <thead>
-                    <tr>
-                        <th> Show Name </th>
-                        <th> Tickets <br> Sold(Qty) </th>
-                        <th> Purchases <br> (Qty) </th>
-                        <th> Retail Price($) </th>
-                        <th> Show Earned($) </th>
-                        <th> Commission Earned($) </th>
-                        <th> Fees($) </th>
-                        <th> Revenue($) </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($data as $d)
-                    <tr>
-                        <td> {{$d->name}} </td>
-                        <td> {{number_format($d->num_tickets)}} </td>
-                        <td> {{number_format($d->num_purchases)}} </td>
-                        <td> $ {{number_format($d->retail_price,2)}} </td>
-                        <td> $ {{number_format($d->show_earned,2)}} </td>
-                        <td> $ {{number_format($d->commission_earned,2)}} </td>
-                        <td> $ {{number_format($d->processing_fee,2)}} </td>
-                        <td> $ {{number_format($d->total,2)}} </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
+    </div>        
     <!-- END EXAMPLE TABLE PORTLET-->
                     
 @endsection
