@@ -27,6 +27,12 @@ class User extends Authenticatable
      */
     public $timestamps = false;
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = ['password'];
+    /**
      * Encrypt the password before check md5/bcrypt.
      *
      * @return password

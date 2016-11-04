@@ -92,10 +92,16 @@ var TableDatatablesManaged = function () {
             }
         } 
         $('#btn_users_add').on('click', function(ev) {
+            $("#form_users").trigger('reset');
             $('#modal_users_update_title').html('Add User');
             $('#modal_users_update').modal('show');
         });
         $('#btn_users_edit').on('click', function(ev) {
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].value;
+            
+            alert(id);
+            
             $('#modal_users_update_title').html('Edit User');
             $('#modal_users_update').modal('show');
         });
@@ -142,26 +148,32 @@ var FormValidation = function () {
                 rules: {
                     first_name: {
                         minlength: 2,
+                        maxlength: 50,
                         required: true
                     },
                     last_name: {
                         minlength: 2,
+                        maxlength: 50,
                         required: true
                     },
                     email: {
                         required: true,
+                        maxlength: 100,
                         email: true
                     },  
                     password: {
                         minlength: 5,
+                        maxlength: 100,
                         required: true
                     },
                     address: {
                         minlength: 5,
+                        maxlength: 200,
                         required: true
                     },
                     city: {
                         minlength: 2,
+                        maxlength: 100,
                         required: true
                     },
                     state: {
@@ -172,49 +184,30 @@ var FormValidation = function () {
                     zip: {
                         minlength: 5,
                         maxlength: 5,
+                        digits: true,
+                        range: [10000, 99999],
                         required: true
                     },
                     phone: {
-                        minlength: 10,
-                        maxlength: 10,
-                        required: true
-                    }
-                },
-
-                messages: { // custom messages for radio buttons and checkboxes
-                    membership: {
-                        required: "Please select a Membership type"
+                        phoneUS: true,
+                        required: false
                     },
-                    service: {
-                        required: "Please select  at least 2 types of Service",
-                        minlength: jQuery.validator.format("Please select  at least {0} types of Service")
+                    fixed_processing_fee: {
+                        required: true,
+                        number: true,
+                        range: [0.00, 100.00]
+                    },
+                    percentage_processing_fee: {
+                        required: true,
+                        number: true,
+                        range: [0.00, 100.00]
+                    },
+                    commission_percent: {
+                        required: true,
+                        number: true,
+                        range: [0.00, 100.00]
                     }
                 },
-
-                errorPlacement: function (error, element) { // render error placement for each input type
-                    if (element.parents('.mt-radio-list') || element.parents('.mt-checkbox-list')) {
-                        if (element.parents('.mt-radio-list')[0]) {
-                            error.appendTo(element.parents('.mt-radio-list')[0]);
-                        }
-                        if (element.parents('.mt-checkbox-list')[0]) {
-                            error.appendTo(element.parents('.mt-checkbox-list')[0]);
-                        }
-                    } else if (element.parents('.mt-radio-inline') || element.parents('.mt-checkbox-inline')) {
-                        if (element.parents('.mt-radio-inline')[0]) {
-                            error.appendTo(element.parents('.mt-radio-inline')[0]);
-                        }
-                        if (element.parents('.mt-checkbox-inline')[0]) {
-                            error.appendTo(element.parents('.mt-checkbox-inline')[0]);
-                        }
-                    } else if (element.parent(".input-group").size() > 0) {
-                        error.insertAfter(element.parent(".input-group"));
-                    } else if (element.attr("data-error-container")) { 
-                        error.appendTo(element.attr("data-error-container"));
-                    } else {
-                        error.insertAfter(element); // for other inputs, just perform default behavior
-                    }
-                },
-
                 invalidHandler: function (event, validator) { //display error alert on form submit   
                     success3.hide();
                     error3.show();
@@ -223,17 +216,17 @@ var FormValidation = function () {
 
                 highlight: function (element) { // hightlight error inputs
                    $(element)
-                        .closest('.form-group').addClass('has-error'); // set error class to the control group
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
                 },
 
                 unhighlight: function (element) { // revert the change done by hightlight
                     $(element)
-                        .closest('.form-group').removeClass('has-error'); // set error class to the control group
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
                 },
 
                 success: function (label) {
                     label
-                        .closest('.form-group').removeClass('has-error'); // set success class to the control group
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
                 },
 
                 submitHandler: function (form) {
@@ -242,11 +235,6 @@ var FormValidation = function () {
                     form[0].submit(); // submit the form
                 }
 
-            });
-
-             //apply validation on select2 dropdown value change, this only needed for chosen dropdown integration.
-            $('.select2me', form).change(function () {
-                form.validate().element($(this)); //revalidate the chosen dropdown value and show error or success message for the input
             });
     }
     return {

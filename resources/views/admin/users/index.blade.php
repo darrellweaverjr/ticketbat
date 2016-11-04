@@ -63,7 +63,7 @@
                                 @if(!$u->is_active) class="danger" @endif>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" value="{{$u->id}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$u->id}}" value="{{$u->toJson()}}" />
                                         <span></span>
                                     </label>
                                 </td>
@@ -94,9 +94,8 @@
     <div id="modal_users_update" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:50% !important;">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title"><center id="modal_users_update_title"></center></h4>
+                <div class="modal-header portlet green">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_users_update_title"></center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
@@ -111,19 +110,19 @@
                                 <label class="control-label col-md-2">First Name
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-4">
-                                    <input type="text" name="first_name" data-required="1" class="form-control" placeholder="John" /> </div>
+                                <div class="col-md-4 show-error">
+                                    <input type="text" name="first_name" class="form-control" placeholder="John" /> </div>
                                 <label class="control-label col-md-2">Last Name
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-4">
-                                    <input type="text" name="last_name" data-required="1" class="form-control" placeholder="Doe"/> </div>    
+                                <div class="col-md-4 show-error">
+                                    <input type="text" name="last_name" class="form-control" placeholder="Doe"/> </div>    
                             </div>
                             <div class="form-group">
                                 <label class="col-md-2 control-label">Email
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-4">
+                                <div class="col-md-4 show-error">
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-envelope"></i>
@@ -131,8 +130,10 @@
                                         <input type="email" name="email" class="form-control" placeholder="user@server.com"> </div>
                                 </div>
                                 <label class="control-label col-md-2">Password</label>
-                                <div class="col-md-2">
-                                    <input name="password" type="password" class="form-control" /> </div>
+                                <div class="col-md-2 show-error">
+                                    <div class="input-group">
+                                        <input name="password" type="password" class="form-control" /> </div>
+                                </div>        
                                 <div class="col-md-2">
                                     <label >
                                         <input type="checkbox" value="1" name="force_password_reset" /> Reset?
@@ -144,52 +145,54 @@
                                 <label class="control-label col-md-2">Address
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-5">
+                                <div class="col-md-5 show-error">
                                     <input name="address" type="text" class="form-control" placeholder="000 Main St. Apt 1" /> </div>
                                 <label class="control-label col-md-1">City
                                         <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-2">
+                                <div class="col-md-2 show-error">
                                     <input name="city" type="text" class="form-control" placeholder="Las Vegas"/> </div>
                                 <label class="control-label col-md-1">State
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-1">
+                                <div class="col-md-1 show-error">
                                     <input name="state" type="text" class="form-control" placeholder="NV"/> </div>    
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-2">Zip
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-2">
-                                    <input name="zip" type="number" class="form-control" placeholder="#####" /> </div>
+                                <div class="col-md-2 show-error">
+                                    <input name="zip" type="number" class="form-control" placeholder="#####" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 0 " /> </div>
                                 <label class="control-label col-md-2">Country
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-3">
+                                <div class="col-md-3 show-error">
                                     <select class="form-control" name="country">
                                         @foreach($countries as $index=>$c)
-                                        <option value="{{$c->code}}">{{$c->name}}</option>
+                                        <option @if($c->code=='US') selected @endif value="{{$c->code}}">{{$c->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>  
                                 <label class="control-label col-md-1">Phone</label>
-                                <div class="col-md-2">
-                                    <input name="phone" type="number" class="form-control" placeholder="### ### ####" /> </div>
+                                <div class="col-md-2 show-error">
+                                    <input name="phone" class="form-control" placeholder="### ### ####" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 45 || event.charCode == 40 || event.charCode == 41 || event.charCode == 32 || event.charCode == 0 " /> </div>
                             </div>
                             <hr>
                             <div class="form-group">
                                 <label class="control-label col-md-2">Rol
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-3">
+                                <div class="col-md-3 show-error">
                                     <select class="form-control" name="options2">
                                         @foreach($user_types as $index=>$t)
                                         <option value="{{$t->id}}">{{$t->user_type}}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 show-error">
                                     <label >
                                         <input type="checkbox" value="1" name="force_password_reset" /> Active?
                                     </label>
@@ -198,14 +201,17 @@
                             <hr>
                             <div class="form-group">
                                 <label class="control-label col-md-2">Processing Fee($)</label>
-                                <div class="col-md-2">
-                                    <input name="fixed_processing_fee" type="number" class="form-control" value="0.00" /> </div>
+                                <div class="col-md-2 show-error">
+                                    <input name="fixed_processing_fee" type="number" class="form-control" pattern="^\d+(?:\.\d{1,2})?$" step=0.01 value="0.00" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 46 || event.charCode == 0 " /> </div>
                                 <label class="control-label col-md-2">Processing Fee(%)</label>
-                                <div class="col-md-2">
-                                    <input name="percentage_processing_fee" type="number" class="form-control" value="0.00"/> </div>
+                                <div class="col-md-2 show-error">
+                                    <input name="percentage_processing_fee" type="number" class="form-control" pattern="^\d+(?:\.\d{1,2})?$" step=0.01 value="0.00" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 46 || event.charCode == 0 " /> </div>
                                 <label class="control-label col-md-2">Commission(%)</label>
-                                <div class="col-md-2">
-                                    <input name="commission_percent" type="number" class="form-control" value="0.00"/> </div>
+                                <div class="col-md-2 show-error">
+                                    <input name="commission_percent" type="number" class="form-control" pattern="^\d+(?:\.\d{1,2})?$" step=0.01 value="0.00" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 46 || event.charCode == 0 " /> </div>
                             </div>
                             <hr>
                             <div class="form-group">
@@ -244,10 +250,6 @@
                     </form>
                     <!-- END FORM-->
                 </div>
-<!--                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
-                    <button type="button" data-dismiss="modal" class="btn green">Continue Task</button>
-                </div>-->
             </div>
         </div>
     </div>

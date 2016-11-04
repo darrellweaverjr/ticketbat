@@ -314,7 +314,7 @@
             <!-- BEGIN FOOTER -->
             <div class="page-footer">
                 <div class="page-footer-inner"> {{date('Y')}} &copy; {{ config('app.name', 'TicketBat Admin') }} By
-                    <a target="_blank" href="http://redmercuryent.com">Red Mercury Enterteinment</a> 
+                    <a target="_blank" href="https://ticketbat.com">TicketBat.com</a> 
                 </div>
                 <div class="scroll-to-top">
                     <i class="icon-arrow-up"></i>

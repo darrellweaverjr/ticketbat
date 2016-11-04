@@ -10,6 +10,7 @@ use App\Http\Models\UserType;
 use App\Http\Models\Discount;
 use App\Http\Models\Venue;
 use App\Http\Models\Country;
+use App\Http\Models\Location;
 
 /**
  * Manage Users
@@ -34,6 +35,7 @@ class UserController extends Controller{
             $discounts = Discount::all();
             $venues = Venue::all();
             $countries = Country::all();
+            //$locations = Location::all();
             //return view
             return view('admin.users.index',compact('users','user_types','discounts','venues','countries'));
         } catch (Exception $ex) {
