@@ -59,11 +59,10 @@
                         </thead>
                         <tbody>
                             @foreach($users as $index=>$u)
-                            <tr @if($u->user_type_id == '1') class="success" @endif
-                                @if(!$u->is_active) class="danger" @endif>
+                            <tr @if(!$u->is_active) class="danger" @endif>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$u->id}}" value="{{$u->toJson()}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$u->id}}" value="{{$u->email}} * {{$u->first_name}} {{$u->last_name}}" />
                                         <span></span>
                                     </label>
                                 </td>
@@ -71,13 +70,19 @@
                                 <td width="100"> {{$u->first_name}} </td>
                                 <td width="100"> {{$u->last_name}} </td>
                                 <td width="20%"> {{$u->phone}} </td>
-                                <td width="15%"> 
-                                    @if($u->user_type_id == 1) <span class="label label-sm label-success"> Admin </span> 
-                                    @else {{$user_types->find($u->user_type_id)->user_type}} 
+                                <td width="15%"> <span class="label label-sm
+                                    @if($u->user_type_id == 1) label-success 
+                                    @elseif($u->user_type_id == 1) label-success 
+                                    @elseif($u->user_type_id == 2) label-danger 
+                                    @elseif($u->user_type_id == 3) label-warning 
+                                    @elseif($u->user_type_id == 4) label-info 
+                                    @elseif($u->user_type_id == 5) label-primary
+                                    @else label-default
                                     @endif
-                                </td>                                     
+                                    "> {{$user_types->find($u->user_type_id)->user_type}} </span> 
+                                </td> 
                                 <td width="10%"> 
-                                    @if($u->is_active) Active 
+                                    @if($u->is_active) <span class="label label-sm label-success"> Active </span> 
                                     @else <span class="label label-sm label-danger"> Inactive </span>
                                     @endif
                                 </td>
@@ -93,13 +98,16 @@
     <!-- BEGIN UPDATE MODAL--> 
     <div id="modal_users_update" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:50% !important;">
-            <div class="modal-content">
-                <div class="modal-header portlet green">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_users_update_title"></center></h4>
                 </div>
+<!--                <div class="green">
+                    <h4 class="bold uppercase green" style="color:green;"><center id="modal_users_update_title"></center></h4>
+                </div>-->
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form action="#" id="form_users" class="form-horizontal">
+                    <form method="post" action="{{ route('login') }}" id="form_users_update" class="form-horizontal">{{ csrf_field() }}
                         <input name="id" type="hidden" value=""/>
                         <div class="form-body">
                             <div class="alert alert-danger display-hide">
@@ -186,7 +194,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-3 show-error">
-                                    <select class="form-control" name="options2">
+                                    <select class="form-control" name="user_type_id">
                                         @foreach($user_types as $index=>$t)
                                         <option value="{{$t->id}}">{{$t->user_type}}</option>
                                         @endforeach
@@ -218,7 +226,7 @@
                                 <label class="control-label col-md-2">User Discounts:
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control" name="options2" multiple="" size="8">
+                                    <select class="form-control" name="discount_id" multiple="" size="8">
                                         @foreach($discounts as $index=>$d)
                                         <option value="{{$d->id}}">{{$d->code}} - {{$d->description}}</option>
                                         @endforeach
@@ -261,7 +269,6 @@
 <script src="/themes/admin/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 
-<script src="/themes/admin/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>

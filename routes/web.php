@@ -28,7 +28,11 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('dashboard/trend_pace', 'DashboardController@trend_pace');
     Route::get('dashboard/referrals', 'DashboardController@referrals');
     
-    Route::get('users', 'UserController@index');
+    
+    Route::match(['get','post'], 'users', 'UserController@index');
+    Route::post('users/save', 'UserController@save');
+    Route::post('users/remove', 'UserController@remove');  
+    
     
 });
 
