@@ -98,16 +98,101 @@ var TableDatatablesManaged = function () {
         });
         $('#btn_users_edit').on('click', function(ev) {
             var set = $('.group-checkable').attr("data-set");
-            var id = $(set+"[type=checkbox]:checked")[0].value;
-            
-            alert(id);
-            
+            var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#modal_users_update_title').html('Edit User');
-            $('#modal_users_update').modal('show');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/users', 
+                data: {id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_users_update input[name="password"]').val('');
+                        for(var key in data.user)
+                        {
+                            $('#form_users_update input[name="'+key+'"]').val(data.user[key]);
+                            $('select.foo option:selected').val();
+                            $('#form_users_update input[name="'+key+'"]:checkbox:checked').val(data.user[key]);
+                        }
+                            
+                        $('#modal_users_update').modal('show');
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the user's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the user's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });
         });
         $('#btn_users_remove').on('click', function(ev) {
-            $('#modal_users_update').modal('show');
-        });
+            var html = '<ol>';
+            var ids = [];
+            var set = $('.group-checkable').attr("data-set");
+            var checked = $(set+"[type=checkbox]:checked");
+            jQuery(checked).each(function (key, item) {
+                html += '<li>'+item.value+'</li>';
+                ids.push(item.id);
+            });             
+            swal({
+                title: "The following user(s) will be removed, please confirm action: ",
+                text: "<span style='text-align:left;color:red;'>"+html+"</span>",
+                html: true,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true
+              },
+              function(isConfirm) {
+                if (isConfirm) {
+                    var form_delete = $('#form_users_delete');
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/admin/users/remove', 
+                        data: {id:ids}, 
+                        success: function(data) {
+                            if(data.success) 
+                                swal({
+                                    title: "<span style='color:green;'>Deleted!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    timer: 1500,
+                                    type: "success",
+                                    showConfirmButton: false
+                                });
+                            else swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                });
+                        },
+                        error: function(){
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "There was an error deleting the user(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
+                                html: true,
+                                type: "error"
+                            });
+                        }
+                    });
+                } 
+            });            
+        });       
         //init functions
         check_users();
         
@@ -130,8 +215,8 @@ var FormValidation = function () {
         // http://docs.jquery.com/Plugins/Validation
 
             var form = $('#'+form_id);
-            var error3 = $('.alert-danger', form);
-            var success3 = $('.alert-success', form);
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
 
             //IMPORTANT: update CKEDITOR textarea with actual content before submit
             form.on('submit', function() {
@@ -209,9 +294,9 @@ var FormValidation = function () {
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
-                    success3.hide();
-                    error3.show();
-                    App.scrollTo(error3, -200);
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
                 },
 
                 highlight: function (element) { // hightlight error inputs
@@ -230,8 +315,8 @@ var FormValidation = function () {
                 },
 
                 submitHandler: function (form) {
-                    success3.show();
-                    error3.hide();
+                    success.show();
+                    error.hide();
                     form[0].submit(); // submit the form
                 }
 
@@ -244,7 +329,7 @@ var FormValidation = function () {
         }
     };
 }();
-//***********************************************************************
+//*****************************************************************************************
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
     FormValidation.init();

@@ -41,7 +41,7 @@
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
@@ -54,7 +54,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
@@ -67,7 +67,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 red" href="#">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
@@ -79,7 +79,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 red" href="#">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
@@ -91,7 +91,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 red" href="#">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
