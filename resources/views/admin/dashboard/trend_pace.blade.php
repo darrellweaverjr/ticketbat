@@ -41,7 +41,7 @@
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
@@ -54,7 +54,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
@@ -67,7 +67,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 red" href="#">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
@@ -79,7 +79,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 red" href="#">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
@@ -91,7 +91,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 red" href="#">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
@@ -106,9 +106,9 @@
     </div>
     <!-- END DASHBOARD STATS 1-->
     
-    @php print_r($graph) @endphp
-    <div class="row">
-        <div class="col-lg-6 col-xs-12 col-sm-12">
+<!--     @php print_r($graph) @endphp
+ -->    <div class="row">
+        <div class="col-sm-12">
             <!-- BEGIN PORTLET-->
             <div class="portlet light bordered">
                 <div class="portlet-title">
@@ -155,19 +155,19 @@
                     </div><!--
                     <div style="margin: 20px 0 10px 30px">
                         <div class="row">
-                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+                            <div class="col-md-2 col-sm-3 col-xs-6 text-stat">
                                 <span class="label label-sm label-success"> Tickets Sold: </span>
                                 <h3>$13,234</h3>
                             </div>
-                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+                            <div class="col-md-2 col-sm-3 col-xs-6 text-stat">
                                 <span class="label label-sm label-info"> Tax: </span>
                                 <h3>$134,900</h3>
                             </div>
-                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+                            <div class="col-md-2 col-sm-3 col-xs-6 text-stat">
                                 <span class="label label-sm label-danger"> Purchases: </span>
                                 <h3>$1,134</h3>
                             </div>
-                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+                            <div class="col-md-2 col-sm-3 col-xs-6 text-stat">
                                 <span class="label label-sm label-warning"> Amount: </span>
                                 <h3>235090</h3>
                             </div>
