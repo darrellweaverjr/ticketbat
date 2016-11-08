@@ -113,9 +113,8 @@ var TableDatatablesManaged = function () {
                         {
                             $('#form_users_update input[name="'+key+'"]').val(data.user[key]);
                             $('#form_users_update select[name="'+key+'"]').val(data.user[key]);
-                            //$('#form_users_update input[name="'+key+'"]:checkbox:checked').val(data.user[key]);
+                            $('#form_users_update input[name="'+key+'"]:checkbox').prop('checked',data.user[key]);
                         }
-                            
                         $('#modal_users_update').modal('show');
                     }
                     else swal({

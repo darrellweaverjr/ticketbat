@@ -68,7 +68,8 @@ class UserController extends Controller{
     {
         try {
             //init
-            //$input = Input::all();
+            $input = Input::all();
+            dd($input);
             //get all records        
             $users = User::all();
             $user_types = UserType::all();

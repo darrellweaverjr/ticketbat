@@ -30,7 +30,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     
     
     Route::match(['get','post'], 'users', 'UserController@index');
-    Route::post('users/save', 'UserController@save');
+    Route::post('users/save', 'UserController@save')->name('user_save');
     Route::post('users/remove', 'UserController@remove');  
     
     

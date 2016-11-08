@@ -27,13 +27,13 @@
                     </div>
                     <div class="actions">                        
                         <div class="btn-group">
-                            <button id="btn_users_add" class="btn sbold blue"> Add 
+                            <button id="btn_users_add" class="btn sbold bg-green"> Add 
                                 <i class="fa fa-plus"></i>
                             </button>
-                            <button id="btn_users_edit" class="btn sbold yellow" disabled="true"> Edit 
+                            <button id="btn_users_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <button id="btn_users_remove" class="btn sbold red" disabled="true"> Remove 
+                            <button id="btn_users_remove" class="btn sbold bg-red" disabled="true"> Remove 
                                 <i class="fa fa-remove"></i>
                             </button>
                         </div>
@@ -107,8 +107,9 @@
                 </div>-->
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" action="{{ route('login') }}" id="form_users_update" class="form-horizontal">{{ csrf_field() }}
+                    <form method="post" action="{{ route('user_save') }}" id="form_users_update" class="form-horizontal">{{ csrf_field() }}
                         <input name="id" type="hidden" value=""/>
+                        <input name="location_id" type="hidden" value=""/>
                         <div class="form-body">
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
@@ -137,14 +138,14 @@
                                         </span>
                                         <input type="email" name="email" class="form-control" placeholder="user@server.com"> </div>
                                 </div>
-                                <label class="control-label col-md-2">Password</label>
+                                <label class="control-label col-md-2">Set Password</label>
                                 <div class="col-md-2 show-error">
                                     <div class="input-group">
                                         <input name="password" type="password" class="form-control" /> </div>
                                 </div>        
                                 <div class="col-md-2">
                                     <label >
-                                        <input type="checkbox" value="1" name="force_password_reset" /> Reset?
+                                        <input type="checkbox" name="force_password_reset" value="1" /> Reset?
                                     </label>
                                 </div>    
                             </div>
@@ -190,19 +191,19 @@
                             </div>
                             <hr>
                             <div class="form-group">
-                                <label class="control-label col-md-2">Rol
+                                <label class="control-label col-md-2">Role
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-3 show-error">
+                                <div class="col-md-6 show-error">
                                     <select class="form-control" name="user_type_id">
                                         @foreach($user_types as $index=>$t)
-                                        <option value="{{$t->id}}">{{$t->user_type}}</option>
+                                        <option value="{{$t->id}}"> {{$t->user_type}} -- {{$t->description}} </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-2 show-error">
                                     <label >
-                                        <input type="checkbox" value="1" name="force_password_reset" /> Active?
+                                        <input type="checkbox" name="is_active" value="1" /> Active?
                                     </label>
                                 </div> 
                             </div>
@@ -246,8 +247,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
-                                    <button type="submit"  class="btn green">Save</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="submit"  class="btn sbold bg-green">Save</button>
                                 </div>
 <!--                                <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn green">Submit</button>
