@@ -226,7 +226,7 @@
                                 <label class="control-label col-md-2">User Discounts:
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control" name="discount_id" multiple="" size="8">
+                                    <select class="form-control" name="discounts" multiple="" size="8">
                                         @foreach($discounts as $index=>$d)
                                         <option value="{{$d->id}}">{{$d->code}} - {{$d->description}}</option>
                                         @endforeach

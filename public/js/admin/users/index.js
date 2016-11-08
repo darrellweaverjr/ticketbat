@@ -112,8 +112,8 @@ var TableDatatablesManaged = function () {
                         for(var key in data.user)
                         {
                             $('#form_users_update input[name="'+key+'"]').val(data.user[key]);
-                            $('select.foo option:selected').val();
-                            $('#form_users_update input[name="'+key+'"]:checkbox:checked').val(data.user[key]);
+                            $('#form_users_update select[name="'+key+'"]').val(data.user[key]);
+                            //$('#form_users_update input[name="'+key+'"]:checkbox:checked').val(data.user[key]);
                         }
                             
                         $('#modal_users_update').modal('show');

@@ -37,11 +37,11 @@ class UserController extends Controller{
                 $discounts = [];
                 foreach($user->user_discounts as $d)
                     $discounts[] = $d->pivot->discount_id;
-                $venues = explode(',',$user->venues_check_ticket);
+                $user->venues_check_ticket = explode(',',$user->venues_check_ticket);
                 //dont show these fields
                 unset($user->password);
                 unset($location->id);
-                return ['success'=>true,'user'=>array_merge($user->getAttributes(),$location->getAttributes(),['discounts'=>$discounts],['venues'=>$venues])];
+                return ['success'=>true,'user'=>array_merge($user->getAttributes(),$location->getAttributes(),['discounts'=>$discounts])];
             }
             else
             {
