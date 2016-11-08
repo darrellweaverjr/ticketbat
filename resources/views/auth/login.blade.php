@@ -32,6 +32,7 @@
         <link href="/themes/admin/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
+        <link href="/themes/admin/assets/pages/css/style.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="favicon.ico" /> </head>
     <!-- END HEAD -->
@@ -40,14 +41,14 @@
         <!-- BEGIN LOGO -->
         <div class="logo">
             <a href="index.html">
-                <img src="-/themes/admin/assets/pages/img/logo-big.png" alt="" /> </a>
+                <img src="/themes/admin/assets/pages/img/logo-big.png" alt="" /> </a>
         </div>
         <!-- END LOGO -->
         <!-- BEGIN LOGIN -->
         <div class="content">
             <!-- BEGIN LOGIN FORM -->
             <form class="login-form" action="{{ url('/login') }}" method="post">{{ csrf_field() }}
-                <h3 class="form-title font-green">{{ config('app.name', 'Laravel') }}</h3>
+                <h3 class="form-title font-green">Welcome</h3>
                 <div class="alert alert-danger display-hide">
                     <button class="close" data-close="alert"></button>
                     <span> Enter email and password. </span>
@@ -77,7 +78,7 @@
             </form>
             <!-- END LOGIN FORM -->
         </div>
-        <div class="copyright"> {{date('Y')}} © TicketBat. </div>
+        <div class="copyright"> {{date('Y')}} © TicketBat.com </div>
         <!--[if lt IE 9]>
 <script src="../assets/global/plugins/respond.min.js"></script>
 <script src="../assets/global/plugins/excanvas.min.js"></script> 

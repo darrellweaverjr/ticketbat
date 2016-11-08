@@ -36,7 +36,10 @@
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="/themes/admin/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
         <link href="/themes/admin/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
-        <link href="/themes/admin/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />        
+        <link href="/themes/admin/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
+
+        <link href="/themes/admin/assets/pages/css/style.css" rel="stylesheet" type="text/css" />
+
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="favicon.ico" /> 
         @yield('styles')
@@ -70,7 +73,6 @@
                             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
                             <li class="dropdown dropdown-user">
                                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                    <img alt="" class="img-circle" src="/themes/admin/assets/layouts/layout/img/avatar3_small.jpg" />
                                     <span class="username username-hide-on-mobile"> Hello, {{Auth::user()->first_name}} </span>
                                     <i class="fa fa-angle-down"></i>
                                 </a>
