@@ -11,7 +11,6 @@
 @endsection
 
 @section('content') 
-
     <!-- BEGIN PAGE HEADER-->   
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}

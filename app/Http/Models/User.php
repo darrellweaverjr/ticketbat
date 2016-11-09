@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -95,5 +96,22 @@ class User extends Authenticatable
     public function user_images()
     {
         return $this->belongsToMany('App\Http\Models\Image','user_images','user_id','image_id');
+    }
+    //PERSONALIZED
+    /**
+     * Set a random passoword for current user.
+     */
+    public function set_password()
+    {
+        $length = 10;
+        $new_password = substr(bcrypt(bin2hex(uniqid())),-1*$length);
+        $this->password = md5($new_password);
+    }
+    /**
+     * Set the slug for the current user.
+     */
+    public function set_slug()
+    {
+        $this->slug = preg_replace('/[^a-z0-9\-]/', '', strtolower(str_replace(' ','-',$this->first_name.'-'.$this->last_name)));
     }
 }

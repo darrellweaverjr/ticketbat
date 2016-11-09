@@ -33,6 +33,8 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('users/save', 'UserController@save')->name('user_save');
     Route::post('users/remove', 'UserController@remove');  
     
+    //Route::get('users/ajax/{i?}', 'UserController@ajax');  
+    
     
 });
 

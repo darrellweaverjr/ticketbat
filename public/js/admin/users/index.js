@@ -24,6 +24,7 @@ var TableDatatablesManaged = function () {
                     "first": "First"
                 }
             },
+            //"ajax": '/admin/users/ajax',
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
                 [10, 15, 20, -1],
@@ -42,8 +43,7 @@ var TableDatatablesManaged = function () {
                     "targets": [0]
                 },
                 {
-                    "className": "dt-right", 
-                    //"targets": [2]
+                    "className": "dt-right"
                 }
             ],
             "order": [
@@ -71,7 +71,9 @@ var TableDatatablesManaged = function () {
             $(this).parents('tr').toggleClass("active");
         });
         
-        //personalized functions
+        //PERSONALIZED FUNCTIONS
+                
+        //check/uncheck all
         var check_users = function(){
             var set = $('.group-checkable').attr("data-set");
             var checked = $(set+"[type=checkbox]:checked").length;
@@ -90,13 +92,27 @@ var TableDatatablesManaged = function () {
                 $('#btn_users_edit').prop("disabled",true);
                 $('#btn_users_remove').prop("disabled",true);
             }
+            $('#btn_users_add').prop("disabled",false);
         } 
+        //function full reset form
+        var fullReset = function(){
+            $("#form_users_update input[name='id']:hidden").val('').trigger('change');
+            $("#form_users_update input[name='location_id']:hidden").val('').trigger('change');
+            $("#form_users_update").trigger('reset');
+        };
+        //function add
         $('#btn_users_add').on('click', function(ev) {
-            $("#form_users").trigger('reset');
+            fullReset();
+            if($('#modal_users_update_header').hasClass('bg-yellow'))
+                $('#modal_users_update_header,#btn_users_save').removeClass('bg-yellow').addClass('bg-green');
             $('#modal_users_update_title').html('Add User');
             $('#modal_users_update').modal('show');
         });
+        //function edit
         $('#btn_users_edit').on('click', function(ev) {
+            fullReset();
+            if($('#modal_users_update_header').hasClass('bg-green'))
+                $('#modal_users_update_header,#btn_users_save').removeClass('bg-green').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#modal_users_update_title').html('Edit User');
@@ -108,18 +124,23 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#form_users_update input[name="password"]').val('');
                         for(var key in data.user)
                         {
-                            $('#form_users_update input[name="'+key+'"]').val(data.user[key]);
-                            $('#form_users_update select[name="'+key+'"]').val(data.user[key]);
-                            $('#form_users_update input[name="'+key+'"]:checkbox').prop('checked',data.user[key]);
+                            var e = $('#form_users_update [name="'+key+'"]');
+                            if(key == 'password') data.user[key] = '';
+                            else
+                            {
+                                if(e.is('input:checkbox'))
+                                    e.prop('checked',data.user[key]);
+                                else
+                                    e.val(data.user[key]);
+                            }
                         }
                         $('#modal_users_update').modal('show');
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the user's information!<br>The request could not be sent to the server.",
+                            text: data.msg,
                             html: true,
                             type: "error"
                         });
@@ -134,6 +155,57 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
+        //function save
+        $('#btn_users_save').on('click', function(ev) {
+            $('#modal_users_update').modal('hide');
+            swal({
+                title: "Saving user's information",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/users/save', 
+                data: $('#form_users_update').serializeArray(), 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Saved!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                        location.reload(); 
+                    }
+                    else{
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_users_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to save the user's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_users_update').modal('show');
+                    });
+                }
+            });            
+        });
+        //function remove
         $('#btn_users_remove').on('click', function(ev) {
             var html = '<ol>';
             var ids = [];
@@ -164,7 +236,8 @@ var TableDatatablesManaged = function () {
                         url: '/admin/users/remove', 
                         data: {id:ids}, 
                         success: function(data) {
-                            if(data.success) 
+                            if(data.success)
+                            {
                                 swal({
                                     title: "<span style='color:green;'>Deleted!</span>",
                                     text: data.msg,
@@ -173,6 +246,8 @@ var TableDatatablesManaged = function () {
                                     type: "success",
                                     showConfirmButton: false
                                 });
+                                location.reload(); 
+                            }
                             else swal({
                                     title: "<span style='color:red;'>Error!</span>",
                                     text: data.msg,
@@ -193,8 +268,7 @@ var TableDatatablesManaged = function () {
             });            
         });       
         //init functions
-        check_users();
-        
+        check_users();        
     }
     return {
         //main function to initiate the module

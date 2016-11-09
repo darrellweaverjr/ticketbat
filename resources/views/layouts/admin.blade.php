@@ -130,8 +130,8 @@
                                 <div class="sidebar-toggler">
                                     <span></span>
                                 </div>
-                            </li>                            
-                            <li class="nav-item start active open">
+                            </li>
+                            <li class="nav-item start open @if(!(strpos(url()->current(),'/admin/home')===false) || !(strpos(url()->current(),'/admin/dashboard')===false)) active @endif">
                                 <a href="/admin/home" class="nav-link nav-toggle">
                                     <i class="icon-home"></i>
                                     <span class="title">Dashboard</span>
@@ -139,33 +139,33 @@
                                     <span class="arrow open"></span>
                                 </a>
                                 <ul class="sub-menu">
-                                    <li class="nav-item start active open">
-                                        <a href="/admin/dashboard/ticket_sales" class="nav-link ">
+                                    <li class="nav-item active">
+                                        <a href="/admin/dashboard/ticket_sales" class="nav-link">
                                             <i class="icon-bar-chart"></i>
                                             <span class="title">Ticket Sales</span>
-                                            <span class="selected"></span>
+                                            
                                         </a>
                                     </li>
-                                    <li class="nav-item start ">
-                                        <a href="/admin/dashboard/chargebacks" class="nav-link ">
+                                    <li class="nav-item start open">
+                                        <a href="/admin/dashboard/chargebacks" class="nav-link">
                                             <i class="icon-briefcase"></i>
                                             <span class="title">Chargebacks</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item start ">
-                                        <a href="/admin/dashboard/future_liabilities" class="nav-link ">
+                                    <li class="nav-item start open">
+                                        <a href="/admin/dashboard/future_liabilities" class="nav-link">
                                             <i class="icon-graph"></i>
                                             <span class="title">Future Liabilities</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item start ">
-                                        <a href="/admin/dashboard/trend_pace" class="nav-link ">
+                                    <li class="nav-item start open">
+                                        <a href="/admin/dashboard/trend_pace" class="nav-link">
                                             <i class="icon-bulb"></i>
                                             <span class="title">Trend & Pace</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item start ">
-                                        <a href="/admin/dashboard/referrals" class="nav-link ">
+                                    <li class="nav-item start open">
+                                        <a href="/admin/dashboard/referrals" class="nav-link">
                                             <i class="icon-note"></i>
                                             <span class="title">Referrals</span>
                                         </a>
@@ -173,120 +173,121 @@
                                 </ul>
                             </li>
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('USERS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/users')===false)) active @endif">
                                 <a href="/admin/users" class="nav-link nav-toggle">
                                     <i class="icon-user"></i>
                                     <span class="title">Users</span>
+                                    <span class="selected"></span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('BANDS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/bands')===false)) active @endif">
+                                <a href="/admin/bands" class="nav-link nav-toggle">
                                     <i class="icon-music-tone"></i>
                                     <span class="title">Bands</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('VENUES', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/venues')===false)) active @endif">
+                                <a href="/admin/venues" class="nav-link nav-toggle">
                                     <i class="icon-pointer"></i>
                                     <span class="title">Venues</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('SHOWS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/shows')===false)) active @endif">
+                                <a href="/admin/shows" class="nav-link nav-toggle">
                                     <i class="icon-microphone"></i>
                                     <span class="title">Shows</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('TYPES', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/ticket_types')===false)) active @endif">
+                                <a href="/admin/ticket_types" class="nav-link nav-toggle">
                                     <i class="icon-layers"></i>
                                     <span class="title">Ticket Types</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('COUPONS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="?p=" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/coupons')===false)) active @endif">
+                                <a href="/admin/coupons" class="nav-link nav-toggle">
                                     <i class="icon-wallet"></i>
                                     <span class="title">Coupons</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('PACKAGES', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/packages')===false)) active @endif">
+                                <a href="/admin/packages" class="nav-link nav-toggle">
                                     <i class="icon-support"></i>
                                     <span class="title">Packages</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('ACLS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/acls')===false)) active @endif">
+                                <a href="/admin/acls" class="nav-link nav-toggle">
                                     <i class="icon-settings"></i>
                                     <span class="title">ACLs</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/manifest_emails')===false)) active @endif">
+                                <a href="/admin/manifest_emails" class="nav-link nav-toggle">
                                     <i class="icon-envelope"></i>
                                     <span class="title">Manifest Emails</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('CONTACTS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/contact_logs')===false)) active @endif">
+                                <a href="/admin/contact_logs" class="nav-link nav-toggle">
                                     <i class="icon-feed"></i>
                                     <span class="title">Contact Log</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('PURCHASES', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/purchases')===false)) active @endif">
+                                <a href="/admin/purchases" class="nav-link nav-toggle">
                                     <i class="icon-basket"></i>
                                     <span class="title">Purchases</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('SLIDERS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/home_sliders')===false)) active @endif">
+                                <a href="/admin/home_sliders" class="nav-link nav-toggle">
                                     <i class="icon-camera"></i>
-                                    <span class="title">Hero Slider</span>
+                                    <span class="title">Home Sliders</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('TICKETS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/tickets')===false)) active @endif">
+                                <a href="/admin/tickets" class="nav-link nav-toggle">
                                     <i class="icon-tag"></i>
                                     <span class="title">Consignment Tickets</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('APPS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/apps')===false)) active @endif">
+                                <a href="/admin/apps" class="nav-link nav-toggle">
                                     <i class="icon-calendar"></i>
-                                    <span class="title">Mobile App</span>
+                                    <span class="title">Mobile Apps</span>
                                 </a>
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('CONTRACTS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item  ">
-                                <a href="javascript:;" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/contracts')===false)) active @endif">
+                                <a href="/admin/contracts" class="nav-link nav-toggle">
                                     <i class="icon-docs"></i>
                                     <span class="title">Contracts</span>
                                 </a>

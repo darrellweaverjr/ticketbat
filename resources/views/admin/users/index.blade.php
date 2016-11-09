@@ -27,7 +27,7 @@
                     </div>
                     <div class="actions">                        
                         <div class="btn-group">
-                            <button id="btn_users_add" class="btn sbold bg-green"> Add 
+                            <button id="btn_users_add" class="btn sbold bg-green" disabled="true"> Add 
                                 <i class="fa fa-plus"></i>
                             </button>
                             <button id="btn_users_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
@@ -87,7 +87,7 @@
                                     @endif
                                 </td>
                             </tr>
-                            @endforeach
+                            @endforeach 
                         </tbody>
                     </table>
                 </div>
@@ -96,10 +96,10 @@
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN UPDATE MODAL--> 
-    <div id="modal_users_update" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div id="modal_users_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:50% !important;">
             <div class="modal-content portlet">
-                <div class="modal-header alert-block bg-green">
+                <div id="modal_users_update_header" class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_users_update_title"></center></h4>
                 </div>
 <!--                <div class="green">
@@ -107,7 +107,7 @@
                 </div>-->
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" action="{{ route('user_save') }}" id="form_users_update" class="form-horizontal">{{ csrf_field() }}
+                    <form method="post" id="form_users_update" class="form-horizontal">
                         <input name="id" type="hidden" value=""/>
                         <input name="location_id" type="hidden" value=""/>
                         <div class="form-body">
@@ -144,7 +144,8 @@
                                         <input name="password" type="password" class="form-control" /> </div>
                                 </div>        
                                 <div class="col-md-2">
-                                    <label >
+                                    <label>                                        
+                                        <input type="hidden"   name="force_password_reset" value="0" />
                                         <input type="checkbox" name="force_password_reset" value="1" /> Reset?
                                     </label>
                                 </div>    
@@ -202,8 +203,9 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 show-error">
-                                    <label >
-                                        <input type="checkbox" name="is_active" value="1" /> Active?
+                                    <label>
+                                        <input type="hidden"   name="is_active" value="0" />
+                                        <input type="checkbox" name="is_active" value="1" /> Active?                                    
                                     </label>
                                 </div> 
                             </div>
@@ -227,7 +229,7 @@
                                 <label class="control-label col-md-2">User Discounts:
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control" name="discounts" multiple="" size="8">
+                                    <select class="form-control" name="discounts[]" multiple="multiple" size="8">
                                         @foreach($discounts as $index=>$d)
                                         <option value="{{$d->id}}">{{$d->code}} - {{$d->description}}</option>
                                         @endforeach
@@ -236,7 +238,7 @@
                                 <label class="control-label col-md-2">Permitted to check in guests at venue(s):
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control" name="venues_check_ticket" multiple="" size="8">
+                                    <select class="form-control" name="venues_check_ticket[]" multiple="multiple" size="8">
                                         @foreach($venues as $index=>$v)
                                         <option value="{{$v->id}}">{{$v->name}}</option>
                                         @endforeach
@@ -248,12 +250,8 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                    <button type="submit"  class="btn sbold bg-green">Save</button>
+                                    <button type="button" id="btn_users_save" class="btn sbold bg-green">Save</button>
                                 </div>
-<!--                                <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn green">Submit</button>
-                                    <button type="button" class="btn default">Cancel</button>
-                                </div>-->
                             </div>
                         </div>
                     </form>
