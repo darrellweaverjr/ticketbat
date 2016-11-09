@@ -79,7 +79,7 @@ class UserController extends Controller{
                     $user->updated = $current;
                     $location = $user->location;
                     $location->updated = $current;
-                    if(isset($input['password']))
+                    if(isset($input['password']) && $input['password'])
                         $user->password = md5($input['password']);
                 }                    
                 else
@@ -90,7 +90,7 @@ class UserController extends Controller{
                     $location = new Location;
                     $location->created = $current;
                     $location->updated = $current;
-                    if(isset($input['password']))
+                    if(isset($input['password']) && $input['password'])
                         $user->set_password();
                 }
                 //save location
