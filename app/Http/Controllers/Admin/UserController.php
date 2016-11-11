@@ -47,11 +47,11 @@ class UserController extends Controller{
             else
             {
                 //get all records        
-                $users = User::all();
+                $users = User::orderBy('last_name')->get();
                 $user_types = UserType::all();
                 $discounts = Discount::all();
-                $venues = Venue::all();
-                $countries = Country::all();
+                $venues = Venue::orderBy('name')->get();
+                $countries = Country::orderBy('code')->get();
                 //return view
                 return view('admin.users.index',compact('users','user_types','discounts','venues','countries'));
             }
@@ -83,10 +83,10 @@ class UserController extends Controller{
                         $user->password = md5($input['password']);
                 }                    
                 else
-                {
-                    $user = User::firstOrNew(['email'=>$input['email']]);
-                    if(isset($user->id))
+                {                    
+                    if(User::where('email','=',$input['email'])->count())
                         return ['success'=>false,'msg'=>'There was an error saving the user.<br>That email is already in the system.','errors'=>'email'];
+                    $user = new User;
                     $location = new Location;
                     $location->created = $current;
                     $location->updated = $current;

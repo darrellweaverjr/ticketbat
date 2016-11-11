@@ -1,7 +1,7 @@
 var TableDatatablesManaged = function () {
     
-    var initTable = function (table_id) {
-        var table = $('#'+table_id);
+    var initTable = function () {
+        var table = $('#tb_model');
         // begin first table
         table.dataTable({
             // Internationalisation. For more info refer to http://datatables.net/manual/i18n
@@ -27,11 +27,11 @@ var TableDatatablesManaged = function () {
             //"ajax": '/admin/users/ajax',
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
-                [10, 15, 20, -1],
-                [10, 15, 20, "All"] // change per page values here
+                [5, 10, 15, 20, -1],
+                [5, 10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 15,            
+            "pageLength": 10,            
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
@@ -63,80 +63,77 @@ var TableDatatablesManaged = function () {
                     $(this).parents('tr').removeClass("active");
                 }
             });
-            check_users(); 
+            check_models(); 
         });        
         
         table.on('change', 'tbody tr .checkboxes', function () {
-            check_users();             
+            check_models();             
             $(this).parents('tr').toggleClass("active");
         });
         
         //PERSONALIZED FUNCTIONS
                 
         //check/uncheck all
-        var check_users = function(){
+        var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
             var checked = $(set+"[type=checkbox]:checked").length;
             if(checked == 1)
             {
-                $('#btn_users_edit').prop("disabled",false);
-                $('#btn_users_remove').prop("disabled",false);
+                $('#btn_model_edit').prop("disabled",false);
+                $('#btn_model_remove').prop("disabled",false);
             }
             else if(checked > 1)
             {
-                $('#btn_users_edit').prop("disabled",true);
-                $('#btn_users_remove').prop("disabled",false);
+                $('#btn_model_edit').prop("disabled",true);
+                $('#btn_model_remove').prop("disabled",false);
             }
             else
             {
-                $('#btn_users_edit').prop("disabled",true);
-                $('#btn_users_remove').prop("disabled",true);
+                $('#btn_model_edit').prop("disabled",true);
+                $('#btn_model_remove').prop("disabled",true);
             }
-            $('#btn_users_add').prop("disabled",false);
+            $('#btn_model_add').prop("disabled",false);
         } 
         //function full reset form
         var fullReset = function(){
-            $("#form_users_update input[name='id']:hidden").val('').trigger('change');
-            $("#form_users_update input[name='location_id']:hidden").val('').trigger('change');
-            $("#form_users_update").trigger('reset');
+            $("#form_model_update input[name='id']:hidden").val('').trigger('change');
+            $("#form_model_update").trigger('reset');
         };
         //function add
-        $('#btn_users_add').on('click', function(ev) {
+        $('#btn_model_add').on('click', function(ev) {
             fullReset();
-            if($('#modal_users_update_header').hasClass('bg-yellow'))
-                $('#modal_users_update_header,#btn_users_save').removeClass('bg-yellow').addClass('bg-green');
-            $('#modal_users_update_title').html('Add User');
-            $('#modal_users_update').modal('show');
+            if($('#modal_model_update_header').hasClass('bg-yellow'))
+                $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
+            $('#modal_model_update_title').html('Add Band');
+            $('#modal_model_update').modal('show');
         });
         //function edit
-        $('#btn_users_edit').on('click', function(ev) {
+        $('#btn_model_edit').on('click', function(ev) {
             fullReset();
-            if($('#modal_users_update_header').hasClass('bg-green'))
-                $('#modal_users_update_header,#btn_users_save').removeClass('bg-green').addClass('bg-yellow');
+            if($('#modal_model_update_header').hasClass('bg-green'))
+                $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            $('#modal_users_update_title').html('Edit User');
+            $('#modal_model_update_title').html('Edit Band');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/users', 
+                url: '/admin/bands', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        for(var key in data.user)
+                        for(var key in data.band)
                         {
-                            var e = $('#form_users_update [name="'+key+'"]');
-                            if(key == 'password') data.user[key] = '';
+                            var e = $('#form_model_update [name="'+key+'"]');
+                            if(e.is('img'))
+                                e.attr('src',data.band[key]);
+                            else if(e.is('input:checkbox'))
+                                e.prop('checked',data.band[key]);
                             else
-                            {
-                                if(e.is('input:checkbox'))
-                                    e.prop('checked',data.user[key]);
-                                else
-                                    e.val(data.user[key]);
-                            }
+                                e.val(data.band[key]);
                         }
-                        $('#modal_users_update').modal('show');
+                        $('#modal_model_update').modal('show');
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
@@ -148,7 +145,7 @@ var TableDatatablesManaged = function () {
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the user's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to get the band's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     });
@@ -156,10 +153,10 @@ var TableDatatablesManaged = function () {
             });
         });
         //function save
-        $('#btn_users_save').on('click', function(ev) {
-            $('#modal_users_update').modal('hide');
+        $('#btn_model_save').on('click', function(ev) {
+            $('#modal_model_update').modal('hide');
             swal({
-                title: "Saving user's information",
+                title: "Saving band's information",
                 text: "Please, wait.",
                 type: "info",
                 showConfirmButton: false
@@ -167,8 +164,8 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/users/save', 
-                data: $('#form_users_update').serializeArray(), 
+                url: '/admin/bands/save', 
+                data: $('#form_model_update').serializeArray(), 
                 success: function(data) {
                     if(data.success) 
                     {
@@ -189,24 +186,24 @@ var TableDatatablesManaged = function () {
                             html: true,
                             type: "error"
                         },function(){
-                            $('#modal_users_update').modal('show');
+                            $('#modal_model_update').modal('show');
                         });
                     }
                 },
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to save the user's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to save the band's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     },function(){
-                        $('#modal_users_update').modal('show');
+                        $('#modal_model_update').modal('show');
                     });
                 }
             });            
         });
         //function remove
-        $('#btn_users_remove').on('click', function(ev) {
+        $('#btn_model_remove').on('click', function(ev) {
             var html = '<ol>';
             var ids = [];
             var set = $('.group-checkable').attr("data-set");
@@ -216,7 +213,7 @@ var TableDatatablesManaged = function () {
                 ids.push(item.id);
             });             
             swal({
-                title: "The following user(s) will be removed, please confirm action: ",
+                title: "The following band(s) will be removed, please confirm action: ",
                 text: "<span style='text-align:left;color:red;'>"+html+"</span>",
                 html: true,
                 type: "warning",
@@ -229,11 +226,11 @@ var TableDatatablesManaged = function () {
               },
               function(isConfirm) {
                 if (isConfirm) {
-                    var form_delete = $('#form_users_delete');
+                    var form_delete = $('#form_model_delete');
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/admin/users/remove', 
+                        url: '/admin/bands/remove', 
                         data: {id:ids}, 
                         success: function(data) {
                             if(data.success)
@@ -258,7 +255,7 @@ var TableDatatablesManaged = function () {
                         error: function(){
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
-                                text: "There was an error deleting the user(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
+                                text: "There was an error deleting the band(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
                                 html: true,
                                 type: "error"
                             });
@@ -266,9 +263,24 @@ var TableDatatablesManaged = function () {
                     });
                 } 
             });            
-        });       
+        });     
+        //function load social media
+        $('#btn_load_social_media').on('click', function(ev) {
+            var url = $('#form_model_update [name="website"]').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/media/load', 
+                data: {url:url}, 
+                success: function(data) {
+                    if(data) 
+                        for(var key in data)
+                            ('#form_model_update [name="'+key+'"]').val(data[key]);
+                }
+            });            
+        });
         //init functions
-        check_users();        
+        check_models();        
     }
     return {
         //main function to initiate the module
@@ -276,7 +288,7 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable('tb_users');        
+            initTable();        
         }
     };
 }();
@@ -304,66 +316,55 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
-                    first_name: {
-                        minlength: 2,
+                    name: {
+                        minlength: 5,
                         maxlength: 50,
                         required: true
                     },
-                    last_name: {
-                        minlength: 2,
-                        maxlength: 50,
+                    short_description: {
+                        minlength: 5,
+                        maxlength: 500,
                         required: true
                     },
-                    email: {
-                        required: true,
-                        maxlength: 100,
-                        email: true
+                    description: {
+                        minlength: 5,
+                        maxlength: 2000,
+                        required: false
                     },  
-                    password: {
+                    youtube: {
                         minlength: 5,
                         maxlength: 100,
-                        required: true
-                    },
-                    address: {
-                        minlength: 5,
-                        maxlength: 200,
-                        required: true
-                    },
-                    city: {
-                        minlength: 2,
-                        maxlength: 100,
-                        required: true
-                    },
-                    state: {
-                        minlength: 2,
-                        maxlength: 2,
-                        required: true
-                    },
-                    zip: {
-                        minlength: 5,
-                        maxlength: 5,
-                        digits: true,
-                        range: [10000, 99999],
-                        required: true
-                    },
-                    phone: {
-                        phoneUS: true,
                         required: false
                     },
-                    fixed_processing_fee: {
-                        required: true,
-                        number: true,
-                        range: [0.00, 100.00]
+                    facebook: {
+                        minlength: 5,
+                        maxlength: 100,
+                        required: false
                     },
-                    percentage_processing_fee: {
-                        required: true,
-                        number: true,
-                        range: [0.00, 100.00]
+                    twitter: {
+                        minlength: 5,
+                        maxlength: 100,
+                        required: false
                     },
-                    commission_percent: {
-                        required: true,
-                        number: true,
-                        range: [0.00, 100.00]
+                    my_space: {
+                        minlength: 5,
+                        maxlength: 100,
+                        required: false
+                    },
+                    instagram: {
+                        minlength: 5,
+                        maxlength: 100,
+                        required: false
+                    },
+                    soundcloud: {
+                        minlength: 5,
+                        maxlength: 100,
+                        required: false
+                    },
+                    website: {
+                        minlength: 5,
+                        maxlength: 100,
+                        required: false
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -398,7 +399,7 @@ var FormValidation = function () {
     return {
         //main function to initiate the module
         init: function () {
-            handleValidation('form_users');
+            handleValidation('form_bands');
         }
     };
 }();

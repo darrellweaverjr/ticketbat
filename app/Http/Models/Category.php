@@ -23,6 +23,13 @@ class Category extends Model
      * @var bool
      */
     public $timestamps = false;
+    /**
+     * Get the children category.
+     */
+    public function children()
+    {
+        return $this->hasMany('App\Http\Models\Category','id_parent','id');
+    }
     //RELATIONSHIPS ONE-MANY
     /**
      * Get the bands for the category.

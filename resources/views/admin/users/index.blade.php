@@ -27,25 +27,25 @@
                     </div>
                     <div class="actions">                        
                         <div class="btn-group">
-                            <button id="btn_users_add" class="btn sbold bg-green" disabled="true"> Add 
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
                                 <i class="fa fa-plus"></i>
                             </button>
-                            <button id="btn_users_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <button id="btn_users_remove" class="btn sbold bg-red" disabled="true"> Remove 
+                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true"> Remove 
                                 <i class="fa fa-remove"></i>
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_users">
+                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
                                 <th width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="group-checkable" data-set="#tb_users .checkboxes" />
+                                        <input type="checkbox" class="group-checkable" data-set="#tb_model .checkboxes" />
                                         <span></span>
                                     </label>
                                 </th>
@@ -70,7 +70,7 @@
                                 <td width="100"> {{$u->first_name}} </td>
                                 <td width="100"> {{$u->last_name}} </td>
                                 <td width="20%"> {{$u->phone}} </td>
-                                <td width="15%"> <span class="label label-sm
+                                <td width="15%"> <span class="label label-sm sbold 
                                     @if($u->user_type_id == 1) label-success 
                                     @elseif($u->user_type_id == 1) label-success 
                                     @elseif($u->user_type_id == 2) label-danger 
@@ -81,10 +81,11 @@
                                     @endif
                                     "> {{$user_types->find($u->user_type_id)->user_type}} </span> 
                                 </td> 
-                                <td width="10%"> 
-                                    @if($u->is_active) <span class="label label-sm label-success"> Active </span> 
-                                    @else <span class="label label-sm label-danger"> Inactive </span>
+                                <td width="10%"> <span class="label label-sm sbold
+                                    @if($u->is_active) label-success"> Active 
+                                    @else label-danger"> Inactive 
                                     @endif
+                                    </span> 
                                 </td>
                             </tr>
                             @endforeach 
@@ -96,20 +97,16 @@
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN UPDATE MODAL--> 
-    <div id="modal_users_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+    <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:50% !important;">
             <div class="modal-content portlet">
-                <div id="modal_users_update_header" class="modal-header alert-block bg-green">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_users_update_title"></center></h4>
+                <div id="modal_model_update_header" class="modal-header alert-block bg-green">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title"></center></h4>
                 </div>
-<!--                <div class="green">
-                    <h4 class="bold uppercase green" style="color:green;"><center id="modal_users_update_title"></center></h4>
-                </div>-->
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" id="form_users_update" class="form-horizontal">
+                    <form method="post" id="form_model_update" class="form-horizontal">
                         <input name="id" type="hidden" value=""/>
-                        <input name="location_id" type="hidden" value=""/>
                         <div class="form-body">
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
@@ -250,7 +247,7 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                    <button type="button" id="btn_users_save" class="btn sbold bg-green">Save</button>
+                                    <button type="button" id="btn_model_save" class="btn sbold bg-green">Save</button>
                                 </div>
                             </div>
                         </div>

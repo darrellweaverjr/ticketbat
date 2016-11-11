@@ -19,21 +19,25 @@ Route::get('/logout', 'Auth\LoginController@logout');
 
 //ADMIN ROUTES
 Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin'], function () {
-    
+    //home
     Route::get('home', 'DashboardController@index')->name('home');
-    
+    //dashboard
     Route::get('dashboard/ticket_sales', 'DashboardController@ticket_sales');
     Route::get('dashboard/chargebacks', 'DashboardController@chargebacks');
     Route::get('dashboard/future_liabilities', 'DashboardController@future_liabilities');
     Route::get('dashboard/trend_pace', 'DashboardController@trend_pace');
     Route::get('dashboard/referrals', 'DashboardController@referrals');
-    
-    
+    //users
     Route::match(['get','post'], 'users', 'UserController@index');
-    Route::post('users/save', 'UserController@save')->name('user_save');
+    Route::post('users/save', 'UserController@save');
     Route::post('users/remove', 'UserController@remove');  
+    //bands
+    Route::match(['get','post'], 'bands', 'BandController@index');
+    Route::post('bands/save', 'BandController@save');
+    Route::post('bands/remove', 'BandController@remove');
     
-    //Route::get('users/ajax/{i?}', 'UserController@ajax');  
+    //utils
+    Route::post('media/load','BandController@load_social_media');
     
     
 });

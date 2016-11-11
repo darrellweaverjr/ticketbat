@@ -1,7 +1,7 @@
 var TableDatatablesManaged = function () {
     
-    var initTable = function (table_id) {
-        var table = $('#'+table_id);
+    var initTable = function () {
+        var table = $('#tb_model');
         // begin first table
         table.dataTable({
             // Internationalisation. For more info refer to http://datatables.net/manual/i18n
@@ -63,59 +63,58 @@ var TableDatatablesManaged = function () {
                     $(this).parents('tr').removeClass("active");
                 }
             });
-            check_users(); 
+            check_models(); 
         });        
         
         table.on('change', 'tbody tr .checkboxes', function () {
-            check_users();             
+            check_models();             
             $(this).parents('tr').toggleClass("active");
         });
         
         //PERSONALIZED FUNCTIONS
                 
         //check/uncheck all
-        var check_users = function(){
+        var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
             var checked = $(set+"[type=checkbox]:checked").length;
             if(checked == 1)
             {
-                $('#btn_users_edit').prop("disabled",false);
-                $('#btn_users_remove').prop("disabled",false);
+                $('#btn_model_edit').prop("disabled",false);
+                $('#btn_model_remove').prop("disabled",false);
             }
             else if(checked > 1)
             {
-                $('#btn_users_edit').prop("disabled",true);
-                $('#btn_users_remove').prop("disabled",false);
+                $('#btn_model_edit').prop("disabled",true);
+                $('#btn_model_remove').prop("disabled",false);
             }
             else
             {
-                $('#btn_users_edit').prop("disabled",true);
-                $('#btn_users_remove').prop("disabled",true);
+                $('#btn_model_edit').prop("disabled",true);
+                $('#btn_model_remove').prop("disabled",true);
             }
-            $('#btn_users_add').prop("disabled",false);
+            $('#btn_model_add').prop("disabled",false);
         } 
         //function full reset form
         var fullReset = function(){
-            $("#form_users_update input[name='id']:hidden").val('').trigger('change');
-            $("#form_users_update input[name='location_id']:hidden").val('').trigger('change');
-            $("#form_users_update").trigger('reset');
+            $("#form_model_update input[name='id']:hidden").val('').trigger('change');
+            $("#form_model_update").trigger('reset');
         };
         //function add
-        $('#btn_users_add').on('click', function(ev) {
+        $('#btn_model_add').on('click', function(ev) {
             fullReset();
-            if($('#modal_users_update_header').hasClass('bg-yellow'))
-                $('#modal_users_update_header,#btn_users_save').removeClass('bg-yellow').addClass('bg-green');
-            $('#modal_users_update_title').html('Add User');
-            $('#modal_users_update').modal('show');
+            if($('#modal_model_update_header').hasClass('bg-yellow'))
+                $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
+            $('#modal_model_update_title').html('Add User');
+            $('#modal_model_update').modal('show');
         });
         //function edit
-        $('#btn_users_edit').on('click', function(ev) {
+        $('#btn_model_edit').on('click', function(ev) {
             fullReset();
-            if($('#modal_users_update_header').hasClass('bg-green'))
-                $('#modal_users_update_header,#btn_users_save').removeClass('bg-green').addClass('bg-yellow');
+            if($('#modal_model_update_header').hasClass('bg-green'))
+                $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            $('#modal_users_update_title').html('Edit User');
+            $('#modal_model_update_title').html('Edit User');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -126,7 +125,7 @@ var TableDatatablesManaged = function () {
                     {
                         for(var key in data.user)
                         {
-                            var e = $('#form_users_update [name="'+key+'"]');
+                            var e = $('#form_model_update [name="'+key+'"]');
                             if(key == 'password') data.user[key] = '';
                             else
                             {
@@ -136,7 +135,7 @@ var TableDatatablesManaged = function () {
                                     e.val(data.user[key]);
                             }
                         }
-                        $('#modal_users_update').modal('show');
+                        $('#modal_model_update').modal('show');
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
@@ -156,8 +155,8 @@ var TableDatatablesManaged = function () {
             });
         });
         //function save
-        $('#btn_users_save').on('click', function(ev) {
-            $('#modal_users_update').modal('hide');
+        $('#btn_model_save').on('click', function(ev) {
+            $('#modal_model_update').modal('hide');
             swal({
                 title: "Saving user's information",
                 text: "Please, wait.",
@@ -168,7 +167,7 @@ var TableDatatablesManaged = function () {
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/users/save', 
-                data: $('#form_users_update').serializeArray(), 
+                data: $('#form_model_update').serializeArray(), 
                 success: function(data) {
                     if(data.success) 
                     {
@@ -189,7 +188,7 @@ var TableDatatablesManaged = function () {
                             html: true,
                             type: "error"
                         },function(){
-                            $('#modal_users_update').modal('show');
+                            $('#modal_model_update').modal('show');
                         });
                     }
                 },
@@ -200,13 +199,13 @@ var TableDatatablesManaged = function () {
                         html: true,
                         type: "error"
                     },function(){
-                        $('#modal_users_update').modal('show');
+                        $('#modal_model_update').modal('show');
                     });
                 }
             });            
         });
         //function remove
-        $('#btn_users_remove').on('click', function(ev) {
+        $('#btn_model_remove').on('click', function(ev) {
             var html = '<ol>';
             var ids = [];
             var set = $('.group-checkable').attr("data-set");
@@ -229,7 +228,7 @@ var TableDatatablesManaged = function () {
               },
               function(isConfirm) {
                 if (isConfirm) {
-                    var form_delete = $('#form_users_delete');
+                    var form_delete = $('#form_model_delete');
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
@@ -268,7 +267,7 @@ var TableDatatablesManaged = function () {
             });            
         });       
         //init functions
-        check_users();        
+        check_models();        
     }
     return {
         //main function to initiate the module
@@ -276,18 +275,18 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable('tb_users');        
+            initTable();        
         }
     };
 }();
 //*****************************************************************************************
 var FormValidation = function () {
     // advance validation
-    var handleValidation = function(form_id) {
+    var handleValidation = function() {
         // for more info visit the official plugin documentation: 
         // http://docs.jquery.com/Plugins/Validation
 
-            var form = $('#'+form_id);
+            var form = $('#form_model_update');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
 
@@ -398,7 +397,7 @@ var FormValidation = function () {
     return {
         //main function to initiate the module
         init: function () {
-            handleValidation('form_users');
+            handleValidation();
         }
     };
 }();
