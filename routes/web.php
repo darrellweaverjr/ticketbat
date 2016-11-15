@@ -21,6 +21,18 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin'], function () {
     //home
     Route::get('home', 'DashboardController@index')->name('home');
+    //utils
+    Route::post('media/load','BandController@load_social_media');
+    Route::post('media/upload_image','ImageController@upload_image');
+//    Route::post('media/upload_image',function(){
+//        //request()->file('image')->storeAs('/uploads/images/','mio.jpg');
+//        return UtilController::upload_image(request());
+//    });
+    
+    
+    
+    
+    
     //dashboard
     Route::get('dashboard/ticket_sales', 'DashboardController@ticket_sales');
     Route::get('dashboard/chargebacks', 'DashboardController@chargebacks');
@@ -28,16 +40,16 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('dashboard/trend_pace', 'DashboardController@trend_pace');
     Route::get('dashboard/referrals', 'DashboardController@referrals');
     //users
-    Route::match(['get','post'], 'users', 'UserController@index');
     Route::post('users/save', 'UserController@save');
-    Route::post('users/remove', 'UserController@remove');  
+    Route::post('users/remove', 'UserController@remove'); 
+    Route::match(['get','post'], 'users', 'UserController@index');
     //bands
-    Route::match(['get','post'], 'bands', 'BandController@index');
     Route::post('bands/save', 'BandController@save');
     Route::post('bands/remove', 'BandController@remove');
+    Route::match(['get','post'], 'bands', 'BandController@index');
     
-    //utils
-    Route::post('media/load','BandController@load_social_media');
+    
+    
     
     
 });

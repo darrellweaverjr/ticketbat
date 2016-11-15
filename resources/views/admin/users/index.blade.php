@@ -66,7 +66,7 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="20%"> {{$u->email}} </td>
+                                <td width="20%"> <a href="mailto:{{$u->email}}" target="_top">{{$u->email}}</a> </td>
                                 <td width="100"> {{$u->first_name}} </td>
                                 <td width="100"> {{$u->last_name}} </td>
                                 <td width="20%"> {{$u->phone}} </td>

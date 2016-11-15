@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Image;
 
 /**
  * Image class
@@ -51,5 +52,22 @@ class Image extends Model
     public function venue_images()
     {
         return $this->belongsToMany('App\Http\Models\Venue','venue_images','image_id','venue_id');
+    }
+    //PERSONALIZED METHODS
+    /**
+     * Upload images
+     */
+    public static function upload_image($file,$action=null,$width=null,$height=null,$x=null,$y=null)
+    {
+        $image = Image::make($file->getRealPath());
+        //crop
+        //$image->crop(100, 100);    
+        //resize aspect
+//        $image->resize(400, 200, function ($constraint) {
+//		    $constraint->aspectRatio();
+//		});
+        //resize regular
+        $image->resize(400, 200);        
+        $image->save('uploads/'.$file->getClientOriginalName());
     }
 }

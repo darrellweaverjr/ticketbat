@@ -28,11 +28,24 @@
         <link href="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
         <link href="/themes/admin/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
         <link href="/themes/admin/assets/global/plugins/bootstrap-sweetalert/sweetalert.css" rel="stylesheet" type="text/css" />
+        
+        <link href="/themes/admin/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+        <link href="/themes/admin/assets/global/plugins/jquery-file-upload/blueimp-gallery/blueimp-gallery.min.css" rel="stylesheet" type="text/css" />
+        <link href="/themes/admin/assets/global/plugins/jquery-file-upload/css/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+        <link href="/themes/admin/assets/global/plugins/jquery-file-upload/css/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+        
+        <link href="/themes/admin/assets/global/plugins/dropzone/dropzone.min.css" rel="stylesheet" type="text/css" />
+        <link href="/themes/admin/assets/global/plugins/dropzone/basic.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="/themes/admin/assets/global/plugins/jcrop/css/jquery.Jcrop.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="/themes/admin/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
         <link href="/themes/admin/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
+        
+        <link href="/themes/admin/assets/pages/css/image-crop.min.css" rel="stylesheet" type="text/css" />
+        
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="/themes/admin/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
         <link href="/themes/admin/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
@@ -304,6 +317,43 @@
                     <!-- BEGIN CONTENT BODY -->
                     <div class="page-content">
                     	@yield('content')
+                            <!-- BEGIN MEDIA PICTURE UPLOAD MODAL--> 
+                            <div id="modal_media_picture_load" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+                                <div class="modal-dialog" style="width:40% !important;">
+                                    <div class="modal-content portlet">
+                                        <div id="modal_model_update_header" class="modal-header">
+                                            <h4 class="modal-title bold uppercase"><center>LOAD MEDIA</center></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="" target="_blank" method="post" enctype="multipart/form-data">
+                                                <div class="portlet light ">
+                                                    <div class="portlet-body">
+                                                        <div class="row">
+                                                                <input id="crop_x" name="x" type="hidden">
+                                                                <input id="crop_y" name="y" type="hidden">
+                                                                <input id="crop_w" name="width" type="hidden">
+                                                                <input id="crop_h" name="height" type="hidden">
+
+                                                                <center><span class="btn green fileinput-button">
+                                                                    <i class="fa fa-plus"></i><span> Add file </span>
+                                                                    <input type="file" name="image" id="myfile"> 
+                                                                </span></center>
+                                                        </div>
+                                                        <div id="image_preview"></div>
+                                                    </div> 
+                                                </div>
+                                                <div class="row">
+                                                    <div class="modal-footer">
+                                                        <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                                        <button type="button" id="btn_upload_image" class="btn sbold bg-green">Edit & Save</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END MEDIA PICTURE UPLOAD MODAL--> 
                     </div>    
                     <!-- END CONTENT BODY -->
                 </div>
@@ -365,6 +415,32 @@
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>--}}
+        
+        <script src="/themes/admin/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/vendor/jquery.ui.widget.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/vendor/tmpl.min.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/vendor/load-image.min.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/vendor/canvas-to-blob.min.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/blueimp-gallery/jquery.blueimp-gallery.min.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.iframe-transport.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-process.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-image.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-audio.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-video.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-validate.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-ui.js" type="text/javascript"></script>
+        
+        <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.color.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.Jcrop.min.js" type="text/javascript"></script>
+        
+        <script src="/themes/admin/assets/global/plugins/dropzone/dropzone.min.js" type="text/javascript"></script>
+        
+        <script src="/themes/admin/assets/global/plugins/plupload/js/plupload.full.min.js" type="text/javascript"></script>
+        
+        
+        <!--<script src="/themes/admin/assets/pages/scripts/form-fileupload.min.js" type="text/javascript"></script>-->
+        
         <script src="/themes/admin/assets/global/plugins/bootstrap-sweetalert/sweetalert.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->

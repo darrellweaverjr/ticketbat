@@ -47,16 +47,19 @@ class BandController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error Bands Index: '.$ex->getMessage());
         }
-    }
+    } 
+    /**
+     * Search for social media in certain url given.
+     *
+     * @return Array with social media urls
+     */
     public function load_social_media()
     {
         try {
             $input = Input::all(); 
-            dd($input);
             return Band::load_social_media($input['url']);
         } catch (Exception $ex) {
-            throw new Exception('Error Bands load_social_media: '.$ex->getMessage());
+            throw new Exception('Error Bands Load Social Media: '.$ex->getMessage());
         }
     }
-    
 }

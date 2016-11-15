@@ -266,16 +266,31 @@ var TableDatatablesManaged = function () {
         });     
         //function load social media
         $('#btn_load_social_media').on('click', function(ev) {
-            var url = $('#form_model_update [name="website"]').val();
+            var website = $('#form_model_update [name="website"]').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/media/load', 
-                data: {url:url}, 
+                data: {url:website}, 
                 success: function(data) {
                     if(data) 
                         for(var key in data)
-                            ('#form_model_update [name="'+key+'"]').val(data[key]);
+                           $('#form_model_update [name="'+key+'"]').val(data[key]);
+                }
+            });            
+        });
+        //function load picture media
+        $('#btn_load_picture_media').on('click', function(ev) {
+            var website = $('#form_model_update [name="website"]').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/media/load', 
+                data: {url:website}, 
+                success: function(data) {
+                    if(data) 
+                        for(var key in data)
+                           $('#form_model_update [name="'+key+'"]').val(data[key]);
                 }
             });            
         });
@@ -295,11 +310,11 @@ var TableDatatablesManaged = function () {
 //*****************************************************************************************
 var FormValidation = function () {
     // advance validation
-    var handleValidation = function(form_id) {
+    var handleValidation = function() {
         // for more info visit the official plugin documentation: 
         // http://docs.jquery.com/Plugins/Validation
 
-            var form = $('#'+form_id);
+            var form = $('#form_model_update');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
 
@@ -399,12 +414,70 @@ var FormValidation = function () {
     return {
         //main function to initiate the module
         init: function () {
-            handleValidation('form_bands');
+            handleValidation();
         }
     };
 }();
 //*****************************************************************************************
+var FormFileUpload = function () {    
+    return {
+        //main function to initiate the module
+        init: function () {
+            //function when select picture
+            $('#myfile').on('change', function(ev) {        
+                $('#image_preview').empty();
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                   var img = $('<img id="demo">');
+                   img.attr('width', 300);
+                   img.attr('weight', 200);
+                   img.attr('src', e.target.result);
+                   img.appendTo('#image_preview'); 
+
+                   $('#demo').Jcrop({
+                        onSelect:    updateCoords,
+                        onChange:    updateCoords,
+                        bgColor:     'black',
+                        bgOpacity:   .4,
+                        setSelect:   [ 100, 100, 50, 50 ],
+                        //aspectRatio: 16 / 9
+                        minSize : [300,200],
+                        maxSize : [300,200]
+                    });
+                    function updateCoords(c)
+                    {
+                        $('#crop_x').val(c.x);
+                        $('#crop_y').val(c.y);
+                        $('#crop_w').val(c.w);
+                        $('#crop_h').val(c.h);
+                    };
+                }
+            }); 
+            //function on submit media
+            $('#btn_upload_image').on('click', function(ev) {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/media/upload_image', 
+                    data: new FormData(this), 
+                    cache: false, 
+                    processData:false, 
+                    success: function(data) {
+                        alert('llego');
+                    }
+                });            
+            });
+        }
+    };
+}();
+//*****************************************************************************************
+//*****************************************************************************************
+//*****************************************************************************************
+//*****************************************************************************************
+
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
     FormValidation.init();
+    FormFileUpload.init();
 });

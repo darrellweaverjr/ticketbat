@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Input;
 
 /**
  * Band class
@@ -39,9 +40,11 @@ class Band extends Model
     {
         return $this->belongsToMany('App\Http\Models\Show','show_bands','band_id','show_id')->withPivot('n_order');
     }
-    //PERSONALIZED FUNCTIONS
+    //PERSONALIZED METHODS
     /**
-     * To load all social media given url of the band/show.
+     * Search for social media in certain url given.
+     *
+     * @return Array with social media urls
      */
     public static function load_social_media($url)
     {
@@ -49,10 +52,10 @@ class Band extends Model
             $media = ['twitter'=>'','facebook'=>'','googleplus'=>'','yelpbadge'=>'','youtube'=>'','instagram'=>''];
             $url = urldecode ($url);
             $html = file_get_contents($url);
-            libxml_use_internal_errors( true);
-            $doc = new DOMDocument;
+            libxml_use_internal_errors( true);            
+            $doc = new \DOMDocument;
             $doc->loadHTML( $html);
-            $xpath = new DOMXpath( $doc);
+            $xpath = new \DOMXpath( $doc);
             $elements = $xpath->query("//a/@href");
 
             if (!is_null($elements)) 
@@ -94,7 +97,7 @@ class Band extends Model
             }
             return $media;
         } catch (Exception $ex) {
-            throw new Exception('Error Band load_social_media: '.$ex->getMessage());
+            throw new Exception('Error Bands load_social_media: '.$ex->getMessage());
         }
     }
 }

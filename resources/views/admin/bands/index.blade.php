@@ -63,17 +63,91 @@
                                     </label>
                                 </td>
                                 <td class="search-item clearfix" width="88%"> 
-                                    <div class="search-content col-md-1">
-                                        <img alt="- No image -" height="100px" width="100px" src="https://www.ticketbat.com{{$b->image_url}}"/>
+                                    <div class="search-content col-md-1">                                        
+                                        <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="https://www.ticketbat.com{{$b->image_url}}"/></a></b></i></center>
                                     </div>
-                                    <div class="search-content col-md-11">
-                                        <h3 class="search-title"><a>{{$b->name}}</a> @if($b->website)<small><i>(<a href="{{$b->website}}" target="_blank">{{$b->website}}</a>)</i></small>@endif</h3>
-                                        
-                                        <p class="search-desc"> @if($b->short_description) {{$b->short_description}} @else <i>- No short description -</i> @endif </p>
+                                    <div class="search-content col-md-11" style="padding-left:35px">
+                                        <h3 class="search-title"><a data-toggle="modal" href="#modal_details_{{$b->id}}">{{$b->name}}</a></h3>
+                                        <p><small><i>
+                                            @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a>@endif
+                                            @if($b->youtube)YouTube: <a href="{{$b->youtube}}" target="_blank">{{$b->youtube}} </a>@endif 
+                                            @if($b->facebook)Facebook: <a href="{{$b->facebook}}" target="_blank">{{$b->facebook}} </a>@endif 
+                                            @if($b->twitter)Twitter: <a href="{{$b->twitter}}" target="_blank">{{$b->twitter}} </a>@endif 
+                                            @if($b->my_space)MySpace: <a href="{{$b->my_space}}" target="_blank">{{$b->my_space}} </a>@endif 
+                                            @if($b->flickr)Flickr: <a href="{{$b->flickr}}" target="_blank">{{$b->flickr}} </a>@endif 
+                                            @if($b->instagram)Instagram: <a href="{{$b->instagram}}" target="_blank">{{$b->instagram}} </a>@endif 
+                                            @if($b->soundcloud)SoundCloud: <a href="{{$b->soundcloud}}" target="_blank">{{$b->soundcloud}} </a>@endif 
+                                        </i></small></p>
+                                        <p> @if($b->short_description) {{$b->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </p>
                                     </div>
                                 </td>
-                                <td width="10%"> {{$categories->find($b->category_id)->name}} </td>
+                                <td width="10%"><center> {{$categories->find($b->category_id)->name}} </center></td>
                             </tr>
+                            <!-- BEGIN DETAILS MODAL--> 
+                            <div id="modal_details_{{$b->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+                                <div class="modal-dialog">
+                                    <div class="modal-content portlet">
+                                        <div id="modal_model_update_header" class="modal-header">
+                                            <h4 class="modal-title bold uppercase"><center>{{$b->name}}</center></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="portlet light ">
+                                                <div class="portlet-title">
+                                                    <center style="color:red;"><i><b><img alt="- No image -" height="200px" width="220px" src="https://www.ticketbat.com{{$b->image_url}}"/></b></i></center>
+                                                </div>
+                                                <div class="portlet-body">
+                                                    <ul class="chats">
+                                                        <li class="in">
+                                                            <div class="avatar">Category</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> {{$categories->find($b->category_id)->name}} </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Social Media</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> 
+                                                                    @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a><br>@endif
+                                                                    @if($b->youtube)YouTube: <a href="{{$b->youtube}}" target="_blank">{{$b->youtube}} </a><br>@endif 
+                                                                    @if($b->facebook)Facebook: <a href="{{$b->facebook}}" target="_blank">{{$b->facebook}} </a><br>@endif 
+                                                                    @if($b->twitter)Twitter: <a href="{{$b->twitter}}" target="_blank">{{$b->twitter}} </a><br>@endif 
+                                                                    @if($b->my_space)MySpace: <a href="{{$b->my_space}}" target="_blank">{{$b->my_space}} </a><br>@endif 
+                                                                    @if($b->flickr)Flickr: <a href="{{$b->flickr}}" target="_blank">{{$b->flickr}} </a><br>@endif 
+                                                                    @if($b->instagram)Instagram: <a href="{{$b->instagram}}" target="_blank">{{$b->instagram}} </a><br>@endif 
+                                                                    @if($b->soundcloud)SoundCloud: <a href="{{$b->soundcloud}}" target="_blank">{{$b->soundcloud}} </a><br>@endif 
+                                                                    @if(!$b->website && !$b->youtube && !$b->facebook && !$b->twitter && !$b->my_space && !$b->flickr && !$b->instagram && !$b->soundcloud) <i style="color:red"><b>- No social media links -</b></i> @endif
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Short Description</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> @if($b->short_description) {{$b->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Full Description</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> @if($b->description) {{$b->description}} @else <i style="color:red"><b>- No description -</b></i> @endif </span>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div> 
+                                            </div>
+                                            <div class="row">
+                                                <div class="modal-footer">
+                                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END DETAILS MODAL--> 
                             @endforeach 
                         </tbody>
                     </table>
@@ -137,7 +211,7 @@
                                         <label class="control-label col-md-3">Image
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <a><img name="image_url" alt="Load image" src="https://www.ticketbat.com/uploads/AddieH.jpg" width="320px" height="300px" /></a> 
+                                            <a data-toggle="modal" href="#modal_media_picture_load"><img name="image_url" alt="Load image" src="" width="320px" height="300px" /></a> 
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +225,7 @@
                                         <label class="col-md-3 control-label">
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <button id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Load Media</button>
+                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Guess Media</button>
                                         </div> 
                                         <label class="col-md-3 control-label">Youtube
                                         </label>
@@ -192,20 +266,24 @@
                                 </div>
                             </div> 
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Short Description</label>
-                                        <textarea name="short_description" class="col-md-9 show-error" rows="4"></textarea>
-                                    </div>   
-                                </div>        
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Description</label>
-                                        <textarea name="description" class="col-md-9 show-error" rows="4"></textarea>
-                                    </div>   
-                                </div>     
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Short Description
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <textarea name="short_description" class="form-control" rows="2"></textarea>
+                                    </div>                                    
+                                </div>   
                             </div>
-                            <div class="row form-group">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Description</label>
+                                    <div class="col-md-9 show-error">
+                                        <textarea name="description" class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div> 
+                            </div>
+<!--                            <div class="row">
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
@@ -220,7 +298,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>  
+                            </div>  -->
                         </div>
                         <div class="form-actions">
                             <div class="row">
