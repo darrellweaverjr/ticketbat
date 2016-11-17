@@ -75,7 +75,7 @@
                     </div>
                     <!-- END LOGO -->
                     <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-                    <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+                    <a class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
                         <span></span>
                     </a>
                     <!-- END RESPONSIVE MENU TOGGLER -->
@@ -85,7 +85,7 @@
                             <!-- BEGIN USER LOGIN DROPDOWN -->
                             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
                             <li class="dropdown dropdown-user">
-                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                     <span class="username username-hide-on-mobile"> Hello, {{Auth::user()->first_name}} </span>
                                     <i class="fa fa-angle-down"></i>
                                 </a>
@@ -319,36 +319,108 @@
                     	@yield('content')
                             <!-- BEGIN MEDIA PICTURE UPLOAD MODAL--> 
                             <div id="modal_media_picture_load" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-                                <div class="modal-dialog" style="width:40% !important;">
+                                <div class="modal-dialog" style="width:1400px !important;">
                                     <div class="modal-content portlet">
-                                        <div id="modal_model_update_header" class="modal-header">
+                                        <div class="modal-header">
+                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                                             <h4 class="modal-title bold uppercase"><center>LOAD MEDIA</center></h4>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="" target="_blank" method="post" enctype="multipart/form-data">
-                                                <div class="portlet light ">
-                                                    <div class="portlet-body">
+                                            <div class="portlet light ">
+                                                <div class="portlet-body">
+                                                    <form id="form_media_picture_load" action="" method="post" enctype="multipart/form-data">
+                                                        <input name="pre_upload" type="hidden" value="1"/>
                                                         <div class="row">
-                                                                <input id="crop_x" name="x" type="hidden">
-                                                                <input id="crop_y" name="y" type="hidden">
-                                                                <input id="crop_w" name="width" type="hidden">
-                                                                <input id="crop_h" name="height" type="hidden">
-
-                                                                <center><span class="btn green fileinput-button">
-                                                                    <i class="fa fa-plus"></i><span> Add file </span>
-                                                                    <input type="file" name="image" id="myfile"> 
-                                                                </span></center>
+                                                            <div class="col-md-1">
+                                                                <center><span class="btn btn-lg green fileinput-button"><i class="fa fa-plus"></i><span> Add </span>
+                                                                    <input type="file" name="image" id="file_media_picture_upload" accept="image/*"> 
+                                                                </span></center><hr>
+                                                                <button type="button" id="btn_reset_image" class="btn btn-lg sbold dark btn-outline"> Reset </button>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="mt-widget-3">
+                                                                    <div class="mt-head bg-green-hoki">
+                                                                        <div class="mt-head-desc" id="input_media_picture_name"> 
+                                                                            - No image yet -
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mt-body-actions-icons">
+                                                                        <div class="btn-group btn-group btn-group-justified">
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="pic_size" style="border-style:none;width:50px !important" readonly="true"/>
+                                                                                </span>SIZE (kB)</a>
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="pic_width" style="border-style:none;width:50px !important" readonly="true"/>
+                                                                                </span>WIDTH (px)</a>
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="pic_height" style="border-style:none;width:50px !important" readonly="true"/>
+                                                                                </span>HEIGHT (px)</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="mt-widget-3">
+                                                                    <div class="mt-head bg-red">
+                                                                        <div class="mt-head-desc">
+                                                                            <input type="radio" name="action" value="crop"checked="true"><label for="crop"> Crop Image</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mt-body-actions-icons">
+                                                                        <div class="btn-group btn-group btn-group-justified">
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="crop_width" style="border-style:none;width:40px !important" readonly="true"/>
+                                                                                </span>WIDTH (px)</a>
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="crop_height" style="border-style:none;width:40px !important" readonly="true"/>
+                                                                                </span>HEIGHT (px)</a>
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="crop_x" style="border-style:none;width:40px !important" readonly="true"/>
+                                                                                </span>X (Coord)</a>
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="crop_y" style="border-style:none;width:40px !important" readonly="true"/>
+                                                                                </span>Y (Coord)</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="mt-widget-3">
+                                                                    <div class="mt-head bg-yellow">
+                                                                        <div class="mt-head-desc"> 
+                                                                            <input type="radio" name="action" value="resize"><label for="resize"> Resize Image</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mt-body-actions-icons">
+                                                                        <div class="btn-group btn-group btn-group-justified">
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="resize_width" style="border-style:none;width:60px !important" readonly="true"/>
+                                                                                </span>WIDTH (px)</a>
+                                                                            <a class="btn ">
+                                                                                <span class="mt-icon">
+                                                                                    <input name="resize_height" style="border-style:none;width:60px !important" readonly="true"/>
+                                                                                </span>HEIGHT (px)</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-1">
+                                                                <button type="button" id="btn_upload_image" class="btn btn-lg blue">Submit</button><hr>
+                                                                <button type="button" id="btn_close_image" class="btn btn-lg sbold dark btn-outline">Cancel</button>
+                                                            </div>
                                                         </div>
-                                                        <div id="image_preview"></div>
-                                                    </div> 
-                                                </div>
-                                                <div class="row">
-                                                    <div class="modal-footer">
-                                                        <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                                        <button type="button" id="btn_upload_image" class="btn sbold bg-green">Edit & Save</button>
-                                                    </div>
-                                                </div>
-                                            </form>
+                                                    </form>    
+                                                    <div class="fileinput-preview thumbnail" style="width:1350px; height: 800px; line-height: 372px;" id="image_preview"></div>
+                                                </div> 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -416,7 +488,7 @@
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>--}}
         
-        <script src="/themes/admin/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+<!--        <script src="/themes/admin/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/vendor/jquery.ui.widget.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/vendor/tmpl.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/vendor/load-image.min.js" type="text/javascript"></script>
@@ -429,18 +501,18 @@
         <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-audio.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-video.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-validate.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-ui.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-file-upload/js/jquery.fileupload-ui.js" type="text/javascript"></script>-->
         
         <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.color.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.Jcrop.min.js" type="text/javascript"></script>
         
-        <script src="/themes/admin/assets/global/plugins/dropzone/dropzone.min.js" type="text/javascript"></script>
+<!--        <script src="/themes/admin/assets/global/plugins/dropzone/dropzone.min.js" type="text/javascript"></script>
         
-        <script src="/themes/admin/assets/global/plugins/plupload/js/plupload.full.min.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/plupload/js/plupload.full.min.js" type="text/javascript"></script>-->
         
         
         <!--<script src="/themes/admin/assets/pages/scripts/form-fileupload.min.js" type="text/javascript"></script>-->
-        
+        <!-- SCRIPT FOR SWEET ALERT -->
         <script src="/themes/admin/assets/global/plugins/bootstrap-sweetalert/sweetalert.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
@@ -452,6 +524,8 @@
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="/themes/admin/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
+        <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
+        <script src="/js/admin/images/index.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
         @yield('scripts')
     </body>

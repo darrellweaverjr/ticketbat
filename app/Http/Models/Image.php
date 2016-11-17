@@ -3,7 +3,8 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Image;
+use Illuminate\Support\Facades\File;
+use Image as Img;
 
 /**
  * Image class
@@ -57,17 +58,31 @@ class Image extends Model
     /**
      * Upload images
      */
-    public static function upload_image($file,$action=null,$width=null,$height=null,$x=null,$y=null)
+    public static function upload_image($file,$input)
     {
-        $image = Image::make($file->getRealPath());
-        //crop
-        //$image->crop(100, 100);    
-        //resize aspect
-//        $image->resize(400, 200, function ($constraint) {
-//		    $constraint->aspectRatio();
-//		});
-        //resize regular
-        $image->resize(400, 200);        
-        $image->save('uploads/'.$file->getClientOriginalName());
+        try {  
+            $image = Img::make($file->getRealPath());
+            $originalName = $file->getClientOriginalName();
+            $originalExtension = $file->getClientOriginalExtension();
+            //crop
+            if($input['action']=='crop')
+                $image->crop($input['crop_width'],$input['crop_height'],$input['crop_x'],$input['crop_y']);  
+            //resize
+            else
+                $image->resize($input['resize_width'], $input['resize_height']);
+            //if element with image is for change
+            if($input['pre_upload'])
+                $path = 'uploads_edit/';
+            else
+                $path = 'uploads/';
+            //if file exists in the server create this like a new copy (_c)
+            while(File::exists($path.$originalName))
+                $originalName = substr($originalName,0,strrpos($originalName,'.')).'_c'.'.'.$originalExtension;  
+            //save image
+            $image->save($path.$originalName);
+            return ['success'=>true,'file'=>'/'.$path.$originalName,'msg'=>'Image uploaded successfully!'];
+        } catch (Exception $ex) {
+            return ['success'=>false,'file'=>'','msg'=>'There was an error uploading the image!'];
+        }
     }
 }

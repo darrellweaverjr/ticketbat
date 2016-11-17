@@ -27,10 +27,14 @@ class ImageController extends Controller{
     public function upload_image()
     {
         try {
-            $file = Input::file('image');
-            $input = Input::all();
-            dd($input);
-            return Image::upload_image($file);
+            if(Input::hasFile('image'))
+            {
+                $file = Input::file('image');
+                $input = Input::all();
+                return Image::upload_image($file,$input);
+            }
+            else 
+                return ['success'=>false,'file'=>'','msg'=>'No image has been recived by the server.'];
         } catch (Exception $ex) {
             throw new Exception('Error Upload Image: '.$ex->getMessage());
         }

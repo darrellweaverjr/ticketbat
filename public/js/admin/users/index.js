@@ -104,6 +104,7 @@ var TableDatatablesManaged = function () {
             fullReset();
             if($('#modal_model_update_header').hasClass('bg-yellow'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
+            else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add User');
             $('#modal_model_update').modal('show');
         });
@@ -112,6 +113,7 @@ var TableDatatablesManaged = function () {
             fullReset();
             if($('#modal_model_update_header').hasClass('bg-green'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
+            else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#modal_model_update_title').html('Edit User');

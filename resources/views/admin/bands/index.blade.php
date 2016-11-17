@@ -210,8 +210,12 @@
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Image
                                         </label>
-                                        <div class="col-md-9 show-error">
-                                            <a data-toggle="modal" href="#modal_media_picture_load"><img name="image_url" alt="Load image" src="" width="320px" height="300px" /></a> 
+                                        <div class="col-md-9 show-error" >
+                                            <center>
+                                                <input type="hidden" name="image_url"/>
+                                                <button type="button" id="btn_bands_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                                <img name="image_url" alt="- No image -" src="" width="323px" height="270px" />
+                                            </center>
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +229,7 @@
                                         <label class="col-md-3 control-label">
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Guess Media</button>
+                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Guess Media From WebSite</button>
                                         </div> 
                                         <label class="col-md-3 control-label">Youtube
                                         </label>
@@ -266,22 +270,18 @@
                                 </div>
                             </div> 
                             <div class="row">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label">Short Description
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9 show-error">
-                                        <textarea name="short_description" class="form-control" rows="2"></textarea>
-                                    </div>                                    
-                                </div>   
+                                <label class="col-md-2 control-label">Short Descript.
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-md-10 show-error">
+                                    <textarea name="short_description" class="form-control" rows="2"></textarea>
+                                </div> 
                             </div>
                             <div class="row">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label">Description</label>
-                                    <div class="col-md-9 show-error">
-                                        <textarea name="description" class="form-control" rows="2"></textarea>
-                                    </div>
-                                </div> 
+                                <label class="col-md-2 control-label">Description</label>
+                                <div class="col-md-10 show-error">
+                                    <textarea name="description" class="form-control" rows="5"></textarea>
+                                </div>
                             </div>
 <!--                            <div class="row">
                                 <table class="table table-striped table-bordered table-hover">

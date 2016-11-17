@@ -96,7 +96,9 @@ var TableDatatablesManaged = function () {
         } 
         //function full reset form
         var fullReset = function(){
+            $('#form_model_update [name="image_url"]').attr('src','');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
+            $("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
         //function add
@@ -104,6 +106,7 @@ var TableDatatablesManaged = function () {
             fullReset();
             if($('#modal_model_update_header').hasClass('bg-yellow'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
+            else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add Band');
             $('#modal_model_update').modal('show');
         });
@@ -112,6 +115,7 @@ var TableDatatablesManaged = function () {
             fullReset();
             if($('#modal_model_update_header').hasClass('bg-green'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
+            else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#modal_model_update_title').html('Edit Band');
@@ -275,25 +279,15 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data) 
                         for(var key in data)
-                           $('#form_model_update [name="'+key+'"]').val(data[key]);
+                            if(data[key] !== '')
+                                $('#form_model_update [name="'+key+'"]').val(data[key]);
                 }
             });            
-        });
-        //function load picture media
-        $('#btn_load_picture_media').on('click', function(ev) {
-            var website = $('#form_model_update [name="website"]').val();
-            jQuery.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '/admin/media/load', 
-                data: {url:website}, 
-                success: function(data) {
-                    if(data) 
-                        for(var key in data)
-                           $('#form_model_update [name="'+key+'"]').val(data[key]);
-                }
-            });            
-        });
+        });        
+        //function load form to upload image
+        $('#btn_bands_upload_image').on('click', function(ev) {
+            FormImageUpload('band1','#modal_model_update','#form_model_update [name="image_url"]');       
+        });        
         //init functions
         check_models();        
     }
@@ -419,65 +413,7 @@ var FormValidation = function () {
     };
 }();
 //*****************************************************************************************
-var FormFileUpload = function () {    
-    return {
-        //main function to initiate the module
-        init: function () {
-            //function when select picture
-            $('#myfile').on('change', function(ev) {        
-                $('#image_preview').empty();
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                   var img = $('<img id="demo">');
-                   img.attr('width', 300);
-                   img.attr('weight', 200);
-                   img.attr('src', e.target.result);
-                   img.appendTo('#image_preview'); 
-
-                   $('#demo').Jcrop({
-                        onSelect:    updateCoords,
-                        onChange:    updateCoords,
-                        bgColor:     'black',
-                        bgOpacity:   .4,
-                        setSelect:   [ 100, 100, 50, 50 ],
-                        //aspectRatio: 16 / 9
-                        minSize : [300,200],
-                        maxSize : [300,200]
-                    });
-                    function updateCoords(c)
-                    {
-                        $('#crop_x').val(c.x);
-                        $('#crop_y').val(c.y);
-                        $('#crop_w').val(c.w);
-                        $('#crop_h').val(c.h);
-                    };
-                }
-            }); 
-            //function on submit media
-            $('#btn_upload_image').on('click', function(ev) {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/media/upload_image', 
-                    data: new FormData(this), 
-                    cache: false, 
-                    processData:false, 
-                    success: function(data) {
-                        alert('llego');
-                    }
-                });            
-            });
-        }
-    };
-}();
-//*****************************************************************************************
-//*****************************************************************************************
-//*****************************************************************************************
-//*****************************************************************************************
-
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
     FormValidation.init();
-    FormFileUpload.init();
 });
