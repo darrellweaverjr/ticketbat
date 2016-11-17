@@ -3,16 +3,28 @@
 //FORM IMAGE UPLOAD ANY FILE
 var FormImageUpload = function (image_type,modal_callback,image_callback) {
     //variables biggest dimensions of image to upload
-    var maxWidth = 1350;
-    var maxHeight = 800;
+    var maxWidth = 1920;
+    var maxHeight = 600;
     //fix dimensions for each type of file to upload
     switch (image_type) { 
-	case 'band': 
-		var fixWidth = 600;
+	case 'logo': 
+                var fixWidth = 600;
                 var fixHeight = 600;
-		break;
+                break;  
+        case 'header': 
+                var fixWidth = 1920;
+                var fixHeight = 372;
+		break;   
+        case 'slider': 
+                var fixWidth = 1350;
+                var fixHeight = 372;
+		break;  
+        case 'gallery':
+                var fixWidth = 640;
+                var fixHeight = 480;
+		break;  
 	default:
-		var fixWidth = 500;
+                var fixWidth = 500;
                 var fixHeight = 500;
     }
     //reset form on event function
@@ -158,4 +170,9 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
             $(modal_callback).modal('show');
         $('#modal_media_picture_load').modal('hide'); 
     });
+};
+//*****************************************************************************************
+//check valid url
+var CheckValidURL = function (url) {
+    return /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url);
 };

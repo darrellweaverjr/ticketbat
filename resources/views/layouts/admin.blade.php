@@ -329,7 +329,7 @@
                                             <div class="portlet light ">
                                                 <div class="portlet-body">
                                                     <form id="form_media_picture_load" action="" method="post" enctype="multipart/form-data">
-                                                        <input name="pre_upload" type="hidden" value="1"/>
+                                                        <input name="tmp" type="hidden" value="1"/>
                                                         <div class="row">
                                                             <div class="col-md-1">
                                                                 <center><span class="btn btn-lg green fileinput-button"><i class="fa fa-plus"></i><span> Add </span>
@@ -525,7 +525,7 @@
         <script src="/themes/admin/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
-        <script src="/js/admin/images/index.js" type="text/javascript"></script>
+        <script src="/js/utils/index.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
         @yield('scripts')
     </body>

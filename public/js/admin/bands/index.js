@@ -286,7 +286,7 @@ var TableDatatablesManaged = function () {
         });        
         //function load form to upload image
         $('#btn_bands_upload_image').on('click', function(ev) {
-            FormImageUpload('band1','#modal_model_update','#form_model_update [name="image_url"]');       
+            FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
         });        
         //init functions
         check_models();        

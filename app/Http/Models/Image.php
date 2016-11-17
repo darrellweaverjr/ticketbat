@@ -68,13 +68,14 @@ class Image extends Model
             if($input['action']=='crop')
                 $image->crop($input['crop_width'],$input['crop_height'],$input['crop_x'],$input['crop_y']);  
             //resize
-            else
+            else if($input['action']=='resize')
                 $image->resize($input['resize_width'], $input['resize_height']);
+            else {}
             //if element with image is for change
-            if($input['pre_upload'])
-                $path = 'uploads_edit/';
+            if($input['tmp'])
+                $path = env('UPLOAD_FILE_TEMP','uploads_tmp').'/';
             else
-                $path = 'uploads/';
+                $path = env('UPLOAD_FILE_DEFAULT','uploads').'/';
             //if file exists in the server create this like a new copy (_c)
             while(File::exists($path.$originalName))
                 $originalName = substr($originalName,0,strrpos($originalName,'.')).'_c'.'.'.$originalExtension;  
