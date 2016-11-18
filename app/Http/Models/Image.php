@@ -97,14 +97,16 @@ class Image extends Model
             {
                 if(!(stripos($image_url,env('UPLOAD_FILE_TEMP','uploads_tmp').'/')===false))
                 {
-                    $new_path = $realPath.'/'.env('UPLOAD_FILE_DEFAULT','uploads');
+                    $new_path = $realPath.'/'.env('UPLOAD_FILE_DEFAULT','uploads').'/';
+                    $new_name = File::name($image_url).'.'.File::extension($image_url);
                     //if file exists in the server create this like a new copy (_c)
-                    while(File::exists($new_path.$image_url))
-                        $image_url = File::name($new_path.$image_url).'_c'.'.'.File::extension($image_url); 
+                    while(File::exists($new_path.$new_name))
+                        $new_name = File::name($new_path.$new_name).'_c'.'.'.File::extension($image_url); 
                     //move file to final location
-                    if(File::move($realPath.$image_url,$new_path.$name))
-                        return '/'.env('UPLOAD_FILE_DEFAULT','uploads').$name;
-                    return '';
+                    if(File::move($realPath.$image_url,$new_path.$new_name))
+                        return '/'.env('UPLOAD_FILE_DEFAULT','uploads').'/'.$new_name;
+                    else 
+                        return '';
                 }
                 return $image_url;
             }
