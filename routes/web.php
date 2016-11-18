@@ -16,23 +16,13 @@ Auth::routes();
 Route::get('/', function () { return redirect()->route('home'); });
 Route::get('/home', function () { return redirect()->route('home'); });
 Route::get('/logout', 'Auth\LoginController@logout');
-
 //ADMIN ROUTES
 Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin'], function () {
     //home
     Route::get('home', 'DashboardController@index')->name('home');
     //utils
     Route::post('media/load','BandController@load_social_media');
-    Route::post('media/upload_image','ImageController@upload_image');
-//    Route::post('media/upload_image',function(){
-//        //request()->file('image')->storeAs('/uploads/images/','mio.jpg');
-//        return UtilController::upload_image(request());
-//    });
-    
-    
-    
-    
-    
+    Route::post('media/upload_image','ImageController@upload_image');    
     //dashboard
     Route::get('dashboard/ticket_sales', 'DashboardController@ticket_sales');
     Route::get('dashboard/chargebacks', 'DashboardController@chargebacks');
@@ -47,13 +37,62 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('bands/save', 'BandController@save');
     Route::post('bands/remove', 'BandController@remove');
     Route::match(['get','post'], 'bands', 'BandController@index');
-    
-    
-    
-    
-    
+    //venues
+    Route::post('venues/save', 'VenueController@save');
+    Route::post('venues/remove', 'VenueController@remove');
+    Route::match(['get','post'], 'venues', 'VenueController@index');
+    //shows
+    Route::post('shows/save', 'ShowController@save');
+    Route::post('shows/remove', 'ShowController@remove');
+    Route::match(['get','post'], 'shows', 'ShowController@index');
+    //ticket_types
+    Route::post('ticket_types/save', 'TicketController@save');
+    Route::post('ticket_types/remove', 'TicketController@remove');
+    Route::match(['get','post'], 'ticket_types', 'TicketController@index');
+    //coupons
+    Route::post('coupons/save', 'DiscountController@save');
+    Route::post('coupons/remove', 'DiscountController@remove');
+    Route::match(['get','post'], 'coupons', 'DiscountController@index');
+    //packages
+    Route::post('packages/save', 'PackageController@save');
+    Route::post('packages/remove', 'PackageController@remove');
+    Route::match(['get','post'], 'packages', 'PackageController@index');
+    //acls
+    Route::post('acls/save', 'AclController@save');
+    Route::post('acls/remove', 'AclController@remove');
+    Route::match(['get','post'], 'acls', 'AclController@index');
+    //manifests emails
+    Route::post('manifests/save', 'ManifestController@save');
+    Route::post('manifests/remove', 'ManifestController@remove');
+    Route::match(['get','post'], 'manifests', 'ManifestController@index');
+    //contact logs
+    Route::post('contacts/save', 'ContactController@save');
+    Route::post('contacts/remove', 'ContactController@remove');
+    Route::match(['get','post'], 'contacts', 'ContactController@index');
+    //purchases
+    Route::post('purchases/save', 'PurchaseController@save');
+    Route::post('purchases/remove', 'PurchaseController@remove');
+    Route::match(['get','post'], 'purchases', 'PurchaseController@index');
+    //home sliders
+    Route::post('sliders/save', 'SliderController@save');
+    Route::post('sliders/remove', 'SliderController@remove');
+    Route::match(['get','post'], 'sliders', 'SliderController@index');
+    //consignment tickets
+    Route::post('tickets/save', 'TicketController@save');
+    Route::post('tickets/remove', 'TicketController@remove');
+    Route::match(['get','post'], 'tickets', 'TicketController@index');
+    //contracts
+    Route::post('contracts/save', 'xxxController@save');
+    Route::post('contracts/remove', 'xxxController@remove');
+    Route::match(['get','post'], 'contracts', 'xxxController@index');
 });
-
+//ADMIN ROUTES FOR APP
+Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'App'], function () {
+    //apps config
+    //Route::post('contracts/save', 'xxxController@save');
+    //Route::post('contracts/remove', 'xxxController@remove');
+    //Route::match(['get','post'], 'contracts', 'xxxController@index');
+});
 //COMMAND ROUTES
 Route::group(['prefix' => 'command'], function () {
     //reports
