@@ -151,7 +151,10 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                         if(modal_callback)
                             $(modal_callback).modal('show');
                         if(image_callback)
+                        {
                             $(image_callback).attr('src',data.file);
+                            $(image_callback).val(data.file);
+                        } 
                         $('#modal_media_picture_load').modal('hide'); 
                     }
                 }

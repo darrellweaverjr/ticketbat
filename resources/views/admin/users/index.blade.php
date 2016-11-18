@@ -143,7 +143,7 @@
                                 <div class="col-md-2">
                                     <label>                                        
                                         <input type="hidden"   name="force_password_reset" value="0" />
-                                        <input type="checkbox" name="force_password_reset" value="1" /> Reset?
+                                        <input type="checkbox" name="force_password_reset" value="1" checked="true" /> Reset?
                                     </label>
                                 </div>    
                             </div>
@@ -195,52 +195,39 @@
                                 <div class="col-md-6 show-error">
                                     <select class="form-control" name="user_type_id">
                                         @foreach($user_types as $index=>$t)
-                                        <option value="{{$t->id}}"> {{$t->user_type}} -- {{$t->description}} </option>
+                                        <option value="{{$t->id}}"> {{$t->user_type}} : {{$t->description}} </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-2 show-error">
                                     <label>
                                         <input type="hidden"   name="is_active" value="0" />
-                                        <input type="checkbox" name="is_active" value="1" /> Active?                                    
+                                        <input type="checkbox" name="is_active" value="1" checked="true"/> Active?                                    
                                     </label>
                                 </div> 
                             </div>
-                            <hr>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Processing Fee($)</label>
-                                <div class="col-md-2 show-error">
-                                    <input name="fixed_processing_fee" type="number" class="form-control" pattern="^\d+(?:\.\d{1,2})?$" step=0.01 value="0.00" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 46 || event.charCode == 0 " /> </div>
-                                <label class="control-label col-md-2">Processing Fee(%)</label>
-                                <div class="col-md-2 show-error">
-                                    <input name="percentage_processing_fee" type="number" class="form-control" pattern="^\d+(?:\.\d{1,2})?$" step=0.01 value="0.00" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 46 || event.charCode == 0 " /> </div>
-                                <label class="control-label col-md-2">Commission(%)</label>
-                                <div class="col-md-2 show-error">
-                                    <input name="commission_percent" type="number" class="form-control" pattern="^\d+(?:\.\d{1,2})?$" step=0.01 value="0.00" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 46 || event.charCode == 0 " /> </div>
-                            </div>
-                            <hr>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">User Discounts:
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control" name="discounts[]" multiple="multiple" size="8">
-                                        @foreach($discounts as $index=>$d)
-                                        <option value="{{$d->id}}">{{$d->code}} - {{$d->description}}</option>
-                                        @endforeach
-                                    </select>
-                                </div> 
-                                <label class="control-label col-md-2">Permitted to check in guests at venue(s):
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control" name="venues_check_ticket[]" multiple="multiple" size="8">
-                                        @foreach($venues as $index=>$v)
-                                        <option value="{{$v->id}}">{{$v->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div> 
+                            <div id="div_model_update_advanced">
+                                <hr>
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">User Discounts:
+                                    </label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" name="discounts[]" multiple="multiple" size="8">
+                                            @foreach($discounts as $index=>$d)
+                                            <option value="{{$d->id}}">{{$d->code}} - {{$d->description}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div> 
+                                    <label class="control-label col-md-2">Permitted to check in guests at venue(s):
+                                    </label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" name="venues_check_ticket[]" multiple="multiple" size="8">
+                                            @foreach($venues as $index=>$v)
+                                            <option value="{{$v->id}}">{{$v->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">

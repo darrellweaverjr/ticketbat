@@ -99,6 +99,17 @@ var TableDatatablesManaged = function () {
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
+        //function on role select
+        var toggle_venues_check = function()
+        {
+            if($('#form_model_update [name="user_type_id"] option:selected').val()==3)
+                $('#div_model_update_advanced').css('display','none');
+            else
+                $('#div_model_update_advanced').css('display','block');
+        }
+        $('#form_model_update [name="user_type_id"]').on('change', function(ev) {
+            toggle_venues_check();
+        });
         //function add
         $('#btn_model_add').on('click', function(ev) {
             fullReset();
@@ -106,6 +117,7 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add User');
+            toggle_venues_check();
             $('#modal_model_update').modal('show');
         });
         //function edit
@@ -137,6 +149,7 @@ var TableDatatablesManaged = function () {
                                     e.val(data.user[key]);
                             }
                         }
+                        toggle_venues_check();
                         $('#modal_model_update').modal('show');
                     }
                     else swal({
@@ -159,52 +172,66 @@ var TableDatatablesManaged = function () {
         //function save
         $('#btn_model_save').on('click', function(ev) {
             $('#modal_model_update').modal('hide');
-            swal({
-                title: "Saving user's information",
-                text: "Please, wait.",
-                type: "info",
-                showConfirmButton: false
-            });
-            jQuery.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '/admin/users/save', 
-                data: $('#form_model_update').serializeArray(), 
-                success: function(data) {
-                    if(data.success) 
-                    {
-                        swal({
-                            title: "<span style='color:green;'>Saved!</span>",
-                            text: data.msg,
-                            html: true,
-                            timer: 1500,
-                            type: "success",
-                            showConfirmButton: false
-                        });
-                        location.reload(); 
-                    }
-                    else{
+            if($('#form_model_update').valid())
+            {
+                swal({
+                    title: "Saving user's information",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/users/save', 
+                    data: $('#form_model_update').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                            location.reload(); 
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: data.msg,
+                            text: "The form is not valid!<br>Please check the information again.",
                             html: true,
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
                         });
                     }
-                },
-                error: function(){
-                    swal({
-                        title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to save the user's information!<br>The request could not be sent to the server.",
-                        html: true,
-                        type: "error"
-                    },function(){
-                        $('#modal_model_update').modal('show');
-                    });
-                }
-            });            
+                }); 
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "The form is not valid!<br>Please check the information again.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }       
         });
         //function remove
         $('#btn_model_remove').on('click', function(ev) {
@@ -350,21 +377,6 @@ var FormValidation = function () {
                     phone: {
                         phoneUS: true,
                         required: false
-                    },
-                    fixed_processing_fee: {
-                        required: true,
-                        number: true,
-                        range: [0.00, 100.00]
-                    },
-                    percentage_processing_fee: {
-                        required: true,
-                        number: true,
-                        range: [0.00, 100.00]
-                    },
-                    commission_percent: {
-                        required: true,
-                        number: true,
-                        range: [0.00, 100.00]
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   

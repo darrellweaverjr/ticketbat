@@ -159,52 +159,66 @@ var TableDatatablesManaged = function () {
         //function save
         $('#btn_model_save').on('click', function(ev) {
             $('#modal_model_update').modal('hide');
-            swal({
-                title: "Saving band's information",
-                text: "Please, wait.",
-                type: "info",
-                showConfirmButton: false
-            });
-            jQuery.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '/admin/bands/save', 
-                data: $('#form_model_update').serializeArray(), 
-                success: function(data) {
-                    if(data.success) 
-                    {
-                        swal({
-                            title: "<span style='color:green;'>Saved!</span>",
-                            text: data.msg,
-                            html: true,
-                            timer: 1500,
-                            type: "success",
-                            showConfirmButton: false
-                        });
-                        location.reload(); 
-                    }
-                    else{
+            if($('#form_model_update').valid())
+            {
+                swal({
+                    title: "Saving band's information",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/bands/save', 
+                    data: $('#form_model_update').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                            location.reload(); 
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: data.msg,
+                            text: "There was an error trying to save the band's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
                         });
                     }
-                },
-                error: function(){
-                    swal({
-                        title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to save the band's information!<br>The request could not be sent to the server.",
-                        html: true,
-                        type: "error"
-                    },function(){
-                        $('#modal_model_update').modal('show');
-                    });
-                }
-            });            
+                }); 
+            } 
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "The form is not valid!<br>Please check the information again.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }        
         });
         //function remove
         $('#btn_model_remove').on('click', function(ev) {
@@ -307,18 +321,15 @@ var FormValidation = function () {
     var handleValidation = function() {
         // for more info visit the official plugin documentation: 
         // http://docs.jquery.com/Plugins/Validation
-
             var form = $('#form_model_update');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
-
             //IMPORTANT: update CKEDITOR textarea with actual content before submit
             form.on('submit', function() {
                 for(var instanceName in CKEDITOR.instances) {
                     CKEDITOR.instances[instanceName].updateElement();
                 }
             })
-
             form.validate({
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
@@ -402,7 +413,6 @@ var FormValidation = function () {
                     error.hide();
                     form[0].submit(); // submit the form
                 }
-
             });
     }
     return {

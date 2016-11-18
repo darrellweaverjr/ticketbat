@@ -3,7 +3,8 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Band class
@@ -41,6 +42,35 @@ class Band extends Model
         return $this->belongsToMany('App\Http\Models\Show','show_bands','band_id','show_id')->withPivot('n_order');
     }
     //PERSONALIZED METHODS
+    /**
+     * Set the image_url for the current bans.
+     */
+    public function set_image_url($image_url)
+    {
+        Image::stablish_image($image_url);
+        
+        
+        dd(realpath(base_path()).'/public');
+        
+        //if(File::exists('/public'.$image_url))
+        //{
+            if(!(stripos($image_url,env('UPLOAD_FILE_TEMP','uploads_tmp').'/')===false))
+            {
+                $name = substr($image_url,strrpos($image_url,'/')); 
+                $ext = substr($image_url,strrpos($image_url,'.')); 
+                $new_path = '/'.env('UPLOAD_FILE_DEFAULT','uploads');
+                //if file exists in the server create this like a new copy (_c)
+                while(File::exists($new_path.$name))
+                    $name = substr($name,0,strrpos($name,'.')).'_c'.'.'.$ext; 
+
+                Storage::move('/public'.$image_url,'/public'.$new_path.$name);
+                $image_url = $new_path.$name;
+            }
+            $this->image_url = $image_url;
+        //}
+        //else
+            //$this->image_url = '';
+    }
     /**
      * Search for social media in certain url given.
      *

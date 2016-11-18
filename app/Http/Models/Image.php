@@ -86,4 +86,32 @@ class Image extends Model
             return ['success'=>false,'file'=>'','msg'=>'There was an error uploading the image!'];
         }
     }
+    /**
+     * Change to real location images images
+     */
+    public static function stablish_image($image_url)
+    {
+        try { 
+            $realPath = realpath(base_path()).'/public';
+            if(File::exists($realPath.$image_url))
+            {
+                if(!(stripos($image_url,env('UPLOAD_FILE_TEMP','uploads_tmp').'/')===false))
+                {
+                    $new_path = $realPath.'/'.env('UPLOAD_FILE_DEFAULT','uploads');
+                    //if file exists in the server create this like a new copy (_c)
+                    while(File::exists($new_path.$image_url))
+                        $image_url = File::name($new_path.$image_url).'_c'.'.'.File::extension($image_url); 
+                    //move file to final location
+                    if(File::move($realPath.$image_url,$new_path.$name))
+                        return '/'.env('UPLOAD_FILE_DEFAULT','uploads').$name;
+                    return '';
+                }
+                return $image_url;
+            }
+            else
+                return '';
+        } catch (Exception $ex) {
+            return '';
+        }
+    }
 }

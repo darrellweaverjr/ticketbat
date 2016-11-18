@@ -153,16 +153,4 @@ class UserController extends Controller{
             throw new Exception('Error Users Remove: '.$ex->getMessage());
         }
     }
-//    public function ajax($i=null)
-//    {
-//        $users = User::all();
-//        $data = [];
-//        foreach ($users as $u)
-//        {
-//            $data[] = [$u->id,$u->email,$u->first_name,$u->last_name,$u->phone,'Admin','Active'];
-//        }
-//        $x = ['data'=>$data];
-//        
-//        return $x;
-//    }
 }
