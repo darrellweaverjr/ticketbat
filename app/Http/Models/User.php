@@ -2,7 +2,6 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**

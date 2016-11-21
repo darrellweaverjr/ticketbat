@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Models\User;
 use App\Http\Models\UserType;
 use App\Http\Models\Discount;
@@ -90,6 +91,7 @@ class UserController extends Controller{
                     $location = new Location;
                     $location->created = $current;
                     $location->updated = $current;
+                    $user->audit_user_id = Auth::user()->id;
                     if(isset($input['password']) && $input['password'])
                         $user->set_password();
                 }
@@ -117,11 +119,6 @@ class UserController extends Controller{
                     $user->venues_check_ticket = implode(',',$input['venues_check_ticket']);
                 $user->set_slug();
                 $user->save();
-                if(!isset($input['id']))
-                {
-                    $user->audit_user_id = $user->id;
-                    $user->save();
-                }
                 //update intermediate table with discounts
                 if(isset($input['discounts']) && $input['discounts'] && count($input['discounts']))
                     $user->user_discounts()->sync($input['discounts']);

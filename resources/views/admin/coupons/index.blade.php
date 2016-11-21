@@ -1,6 +1,6 @@
-@php $page_title='Users' @endphp
+@php $page_title='Coupons' @endphp
 @extends('layouts.admin')
-@section('title', 'Users' )
+@section('title', 'Coupons' )
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -14,7 +14,7 @@
     <!-- BEGIN PAGE HEADER-->   
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}} 
-        <small> - List, add, edit and remove users (Only for admin purposes)</small>
+        <small> - List, add, edit and remove coupons.</small>
     </h1>
     <!-- END PAGE TITLE-->    
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
@@ -49,44 +49,49 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="20%"> Email </th>
-                                <th width="100"> First Name </th>
-                                <th width="100"> Last Name </th>
-                                <th width="20%"> Phone </th>
-                                <th width="15%"> Role </th>
-                                <th width="10%"> Status </th>
+                                <th width="12%"> Code </th>
+                                <th width="12%"> Discount Type </th>
+                                <th width="12%"> Discount Scope </th>
+                                <th width="12%"> Coupon Type </th>
+                                <th width="50%"> Description </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($users as $index=>$u)
-                            <tr @if(!$u->is_active) class="danger" @endif>
+                            @foreach($discounts as $index=>$d)
+                            <tr>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$u->id}}" value="{{$u->email}} * {{$u->first_name}} {{$u->last_name}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$d->id}}" value="{{$d->code}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="20%"> <a href="mailto:{{$u->email}}" target="_top">{{$u->email}}</a> </td>
-                                <td width="100"> {{$u->first_name}} </td>
-                                <td width="100"> {{$u->last_name}} </td>
-                                <td width="20%"> {{$u->phone}} </td>
-                                <td width="15%"> <span class="label label-sm sbold 
-                                    @if($u->user_type_id == 1) label-success 
-                                    @elseif($u->user_type_id == 1) label-success 
-                                    @elseif($u->user_type_id == 2) label-danger 
-                                    @elseif($u->user_type_id == 3) label-warning 
-                                    @elseif($u->user_type_id == 4) label-info 
-                                    @elseif($u->user_type_id == 5) label-primary
+                                <td width="12%"> {{$d->code}} </td>
+                                <td width="12%"> <span class="label label-sm sbold 
+                                    @if($d->discount_type == 'Dollar') label-success 
+                                    @elseif($d->discount_type == 'N for N') label-danger 
+                                    @elseif($d->discount_type == 'Percent') label-warning
                                     @else label-default
                                     @endif
-                                    "> {{$user_types->find($u->user_type_id)->user_type}} </span> 
+                                    "> {{$d->discount_type}} </span> 
                                 </td> 
-                                <td width="10%"> <span class="label label-sm sbold
-                                    @if($u->is_active) label-success"> Active 
-                                    @else label-danger"> Inactive 
+                                <td width="12%"> <span class="label label-sm sbold 
+                                    @if($d->discount_scope == 'Ticket') label-success 
+                                    @elseif($d->discount_scope == 'Total') label-danger 
+                                    @elseif($d->discount_scope == 'Merchandise') label-warning
+                                    @else label-default
                                     @endif
-                                    </span> 
-                                </td>
+                                    "> {{$d->discount_scope}} </span> 
+                                </td> 
+                                <td width="12%"> <span class="label label-sm sbold 
+                                    @if($d->coupon_type == 'Normal') label-success 
+                                    @elseif($d->coupon_type == 'Broker') label-danger 
+                                    @elseif($d->coupon_type == 'Affiliate') label-warning 
+                                    @elseif($d->coupon_type == 'Admin') label-info 
+                                    @else label-default
+                                    @endif
+                                    "> {{$d->coupon_type}} </span> 
+                                </td> 
+                                <td width="50%"> {{$d->description}} </td> 
                             </tr>
                             @endforeach 
                         </tbody>
@@ -113,121 +118,98 @@
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <div class="form-group">
-                                <label class="control-label col-md-2">First Name
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4 show-error">
-                                    <input type="text" name="first_name" class="form-control" placeholder="John" /> </div>
-                                <label class="control-label col-md-2">Last Name
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4 show-error">
-                                    <input type="text" name="last_name" class="form-control" placeholder="Doe"/> </div>    
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label">Email
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4 show-error">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-envelope"></i>
-                                        </span>
-                                        <input type="email" name="email" class="form-control" placeholder="user@server.com"> </div>
-                                </div>
-                                <label class="control-label col-md-2">Set Password</label>
-                                <div class="col-md-2 show-error">
-                                    <div class="input-group">
-                                        <input name="password" type="password" class="form-control" /> </div>
-                                </div>        
-                                <div class="col-md-2">
-                                    <label>                                        
-                                        <input type="hidden"   name="force_password_reset" value="0" />
-                                        <input type="checkbox" name="force_password_reset" value="1" checked="true" /> Reset?
-                                    </label>
-                                </div>    
-                            </div>
-                            <hr>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Address
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-5 show-error">
-                                    <input name="address" type="text" class="form-control" placeholder="000 Main St. Apt 1" /> </div>
-                                <label class="control-label col-md-1">City
-                                        <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <input name="city" type="text" class="form-control" placeholder="Las Vegas"/> </div>
-                                <label class="control-label col-md-1">State
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-1 show-error">
-                                    <input name="state" type="text" class="form-control" placeholder="NV"/> </div>    
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Zip
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <input name="zip" type="number" class="form-control" placeholder="#####" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 0 " /> </div>
-                                <label class="control-label col-md-2">Country
+                                <label class="control-label col-md-2">Code
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-3 show-error">
-                                    <select class="form-control" name="country">
-                                        @foreach($countries as $index=>$c)
-                                        <option @if($c->code=='US') selected @endif value="{{$c->code}}">{{$c->name}}</option>
+                                    <input type="text" name="code" class="form-control" placeholder="0000" /> </div>
+                                <label class="control-label col-md-2">Percent Off
+                                </label>
+                                <div class="col-md-1 show-error">
+                                    <input type="text" name="start_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 0 "/> </div>    
+                                <label class="control-label col-md-3"># of Codes (0 for infinite)
+                                </label>
+                                <div class="col-md-1 show-error">
+                                    <input type="text" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 0 "/> </div>  
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Discount Type
+                                </label>
+                                <div class="col-md-2 show-error">
+                                    <select class="form-control" name="discount_type">
+                                        @foreach($discount_types as $index=>$t)
+                                        <option value="{{$index}}"> {{$t}} </option>
                                         @endforeach
                                     </select>
-                                </div>  
-                                <label class="control-label col-md-1">Phone</label>
+                                </div>
+                                <label class="control-label col-md-2">Discount Scope
+                                </label>
                                 <div class="col-md-2 show-error">
-                                    <input name="phone" class="form-control" placeholder="### ### ####" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 45 || event.charCode == 40 || event.charCode == 41 || event.charCode == 32 || event.charCode == 0 " /> </div>
+                                    <select class="form-control" name="discount_scope">
+                                        @foreach($discount_scopes as $index=>$t)
+                                        <option value="{{$index}}"> {{$t}} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <label class="control-label col-md-2">Coupon Type
+                                </label>
+                                <div class="col-md-2 show-error">
+                                    <select class="form-control" name="coupon_type">
+                                        @foreach($coupon_types as $index=>$t)
+                                        <option value="{{$index}}"> {{$t}} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group"> 
+                                <div class="col-md-6 show-error">
+                                    <input type="hidden"   name="start_date" value="" />
+                                    <input type="hidden"   name="end_date" value="" />
+                                    <label class="control-label">Dates Action:
+                                    </label><br>
+                                    <div id="start_end_date" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom">
+                                        <i class="icon-calendar"></i>&nbsp;
+                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
+                                        <i class="fa fa-angle-down"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 show-error">
+                                    <input type="hidden"   name="effective_start_date" value="" />
+                                    <input type="hidden"   name="effective_end_date" value="" />
+                                    <label>                                        
+                                        <input type="hidden"   name="effective_dates" value="0" />
+                                        <input type="checkbox" name="effective_dates" value="1" /> Use Effective Dates?
+                                    </label><br>
+                                    <div id="effective_start_end_date" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom">
+                                        <i class="icon-calendar"></i>&nbsp;
+                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
+                                        <i class="fa fa-angle-down"></i>
+                                    </div>
+                                </div>  
                             </div>
                             <hr>
                             <div class="form-group">
-                                <label class="control-label col-md-2">Role
+                                <label class="control-label col-md-2">Description:
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-6 show-error">
-                                    <select class="form-control" name="user_type_id">
-                                        @foreach($user_types as $index=>$t)
-                                        <option value="{{$t->id}}"> {{$t->user_type}} : {{$t->description}} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-2 show-error">
-                                    <label>
-                                        <input type="hidden"   name="is_active" value="0" />
-                                        <input type="checkbox" name="is_active" value="1" checked="true"/> Active?                                    
-                                    </label>
+                                <div class="col-md-10 show-error">
+                                    <textarea name="description" class="form-control" rows="4"></textarea>
                                 </div> 
                             </div>
-                            <div id="div_model_update_advanced">
-                                <hr>
-                                <div class="form-group">
-                                    <label class="control-label col-md-2">User Discounts:
-                                    </label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" name="discounts[]" multiple="multiple" size="8">
-                                            @foreach($discounts as $index=>$d)
-                                            <option value="{{$d->id}}">{{$d->code}} - {{$d->description}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> 
-                                    <label class="control-label col-md-2">Permitted to check in guests at venue(s):
-                                    </label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" name="venues_check_ticket[]" multiple="multiple" size="8">
-                                            @foreach($venues as $index=>$v)
-                                            <option value="{{$v->id}}">{{$v->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> 
-                                </div>
+                            <hr>
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Coupon Scope [Shows]:
+                                </label>
+                                <div class="col-md-10 show-error">
+                                    <select class="form-control" name="shows[]" multiple="multiple" size="8">
+                                        @foreach($shows as $index=>$s)
+                                        <option value="{{$s->id}}">{{$s->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div> 
                             </div>
                         </div>
                         <div class="form-actions">
@@ -258,5 +240,5 @@
 <script src="/themes/admin/assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
 
-<script src="/js/admin/users/index.js" type="text/javascript"></script>
+<script src="/js/admin/coupons/index.js" type="text/javascript"></script>
 @endsection

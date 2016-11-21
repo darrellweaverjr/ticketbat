@@ -72,7 +72,84 @@ var TableDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS
-                
+        //start_end_date
+        $('#start_end_date').daterangepicker({
+            "ranges": {
+                'Today': [moment(), moment()],
+                'Tomorrow': [moment().add(1,'days'), moment().add(1,'days')],
+                'Next 7 Days': [moment(), moment().add(6,'days')],
+                'Next 30 Days': [moment(), moment().add(29,'days')],
+                'This Month': [moment(), moment().endOf('month')],
+                'Next Month': [moment().subtract(1,'month').endOf('month'), moment().add(1,'month').startOf('month')]
+            },
+            "locale": {
+                "format": "MM/DD/YYYY",
+                "separator": " - ",
+                "applyLabel": "Apply",
+                "cancelLabel": "Cancel",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Custom",
+                "daysOfWeek": [
+                    "Su",
+                    "Mo",
+                    "Tu",
+                    "We",
+                    "Th",
+                    "Fr",
+                    "Sa"
+                ]
+            },
+//            "startDate": moment().format('MMMM D, YYYY'),
+//            "endDate": moment().add('days', 29).format('MMMM D, YYYY'),
+            opens: (App.isRTL() ? 'right' : 'left'),
+        }, function(start, end, label) {
+            if ($('#start_end_date').attr('data-display-range') != '0') {
+                $('#form_model_update [name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_update [name="end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+        });
+        $('#start_end_date').show();        
+        //effective_start_end_date
+        $('#effective_start_end_date').daterangepicker({
+            "ranges": {
+                'Today': [moment(), moment()],
+                'Tomorrow': [moment().add(1,'days'), moment().add(1,'days')],
+                'Next 7 Days': [moment(), moment().add(6,'days')],
+                'Next 30 Days': [moment(), moment().add(29,'days')],
+                'This Month': [moment(), moment().endOf('month')],
+                'Next Month': [moment().subtract(1,'month').endOf('month'), moment().add(1,'month').startOf('month')]
+            },
+            "locale": {
+                "format": "MM/DD/YYYY",
+                "separator": " - ",
+                "applyLabel": "Apply",
+                "cancelLabel": "Cancel",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Custom",
+                "daysOfWeek": [
+                    "Su",
+                    "Mo",
+                    "Tu",
+                    "We",
+                    "Th",
+                    "Fr",
+                    "Sa"
+                ]
+            },
+//            "startDate": moment().format('MMMM D, YYYY'),
+//            "endDate": moment().add('days', 29).format('MMMM D, YYYY'),
+            opens: (App.isRTL() ? 'right' : 'left'),
+        }, function(start, end, label) {
+            if ($('#effective_start_end_date').attr('data-display-range') != '0') {
+                $('#form_model_update [name="effective_start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_update [name="effective_end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#effective_start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+        });
+        $('#effective_start_end_date').show();        
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -99,25 +176,25 @@ var TableDatatablesManaged = function () {
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
-        //function on role select
-        var toggle_venues_check = function()
-        {
-            if($('#form_model_update [name="user_type_id"] option:selected').val()==3)
-                $('#div_model_update_advanced').css('display','none');
-            else
-                $('#div_model_update_advanced').css('display','block');
-        }
-        $('#form_model_update [name="user_type_id"]').on('change', function(ev) {
-            toggle_venues_check();
-        });
         //function add
         $('#btn_model_add').on('click', function(ev) {
             fullReset();
             if($('#modal_model_update_header').hasClass('bg-yellow'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
-            $('#modal_model_update_title').html('Add User');
-            toggle_venues_check();
+            $('#modal_model_update_title').html('Add Coupon');
+            //change default dates
+            var start = moment();
+            var end = moment().add(29,'days');
+            var start_html = start.format('MMMM D, YYYY');
+            var end_html = end.format('MMMM D, YYYY');
+            $('#form_model_update [name="start_date"]').val(start.format('YYYY-MM-DD'));
+            $('#form_model_update [name="end_date"]').val(end.format('YYYY-MM-DD'));
+            $('#form_model_update [name="effective_start_date"]').val(start.format('YYYY-MM-DD'));
+            $('#form_model_update [name="effective_end_date"]').val(end.format('YYYY-MM-DD'));
+            $('#start_end_date span').html(start_html + ' - ' + end_html);
+            $('#effective_start_end_date span').html(start_html + ' - ' + end_html); 
+            //show modal
             $('#modal_model_update').modal('show');
         });
         //function edit
@@ -128,28 +205,51 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            $('#modal_model_update_title').html('Edit User');
+            $('#modal_model_update_title').html('Edit Coupon');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/users', 
+                url: '/admin/coupons', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        for(var key in data.user)
+                        for(var key in data.discount)
                         {
                             var e = $('#form_model_update [name="'+key+'"]');
-                            if(key == 'password') data.user[key] = '';
+                            if(e.is('input:checkbox'))
+                                e.prop('checked',data.discount[key]);
                             else
-                            {
-                                if(e.is('input:checkbox'))
-                                    e.prop('checked',data.user[key]);
-                                else
-                                    e.val(data.user[key]);
-                            }
+                                e.val(data.discount[key]);
                         }
-                        toggle_venues_check();
+                        //change default dates
+                        var start = moment($('#form_model_update [name="start_date"]').val());
+                        var end = moment($('#form_model_update [name="end_date"]').val());
+                        if(start.isValid()) var start_html = start.format('MMMM D, YYYY');
+                        else {
+                            var start_html = 'NO START DATE';
+                            $('#form_model_update [name="start_date"]').val('');
+                        }
+                        if(end.isValid()) var end_html = end.format('MMMM D, YYYY');
+                        else {
+                            var end_html = 'NO END DATE';
+                            $('#form_model_update [name="end_date"]').val('');
+                        }
+                        $('#start_end_date span').html(start_html + ' - ' + end_html);
+                        var start = moment($('#form_model_update [name="effective_start_date"]').val());
+                        var end = moment($('#form_model_update [name="effective_end_date"]').val());
+                        if(start.isValid()) var start_html = start.format('MMMM D, YYYY');
+                        else {
+                            var start_html = 'NO START DATE';
+                            $('#form_model_update [name="effective_start_date"]').val('');
+                        }
+                        if(end.isValid()) var end_html = end.format('MMMM D, YYYY');
+                        else {
+                            var end_html = 'NO END DATE';
+                            $('#form_model_update [name="effective_end_date"]').val('');
+                        }
+                        $('#effective_start_end_date span').html(start_html + ' - ' + end_html); 
+                        //show modal
                         $('#modal_model_update').modal('show');
                     }
                     else swal({
@@ -162,7 +262,7 @@ var TableDatatablesManaged = function () {
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the user's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to get the coupon's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     });
@@ -175,7 +275,7 @@ var TableDatatablesManaged = function () {
             if($('#form_model_update').valid())
             {
                 swal({
-                    title: "Saving user's information",
+                    title: "Saving coupon's information",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
@@ -183,7 +283,7 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/users/save', 
+                    url: '/admin/coupons/save', 
                     data: $('#form_model_update').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
@@ -244,7 +344,7 @@ var TableDatatablesManaged = function () {
                 ids.push(item.id);
             });             
             swal({
-                title: "The following user(s) will be removed, please confirm action: ",
+                title: "The following coupon(s) will be removed, please confirm action: ",
                 text: "<span style='text-align:left;color:red;'>"+html+"</span>",
                 html: true,
                 type: "warning",
@@ -261,7 +361,7 @@ var TableDatatablesManaged = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/admin/users/remove', 
+                        url: '/admin/coupons/remove', 
                         data: {id:ids}, 
                         success: function(data) {
                             if(data.success)
@@ -286,7 +386,7 @@ var TableDatatablesManaged = function () {
                         error: function(){
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
-                                text: "There was an error deleting the user(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
+                                text: "There was an error deleting the coupon(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
                                 html: true,
                                 type: "error"
                             });
@@ -332,51 +432,36 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
-                    first_name: {
-                        minlength: 2,
-                        maxlength: 50,
+                    code: {
+                        minlength: 4,
+                        maxlength: 20,
                         required: true
                     },
-                    last_name: {
-                        minlength: 2,
-                        maxlength: 50,
+                    description: {
+                        minlength: 5,
+                        maxlength: 1000,
                         required: true
                     },
-                    email: {
-                        required: true,
-                        maxlength: 100,
-                        email: true
+                    discount_type: {
+                        required: true
                     },  
-                    password: {
-                        minlength: 5,
-                        maxlength: 100,
+                    discount_scope: {
                         required: true
                     },
-                    address: {
-                        minlength: 5,
-                        maxlength: 200,
+                    coupon_type: {
                         required: true
                     },
-                    city: {
-                        minlength: 2,
-                        maxlength: 100,
+                    start_num: {
+                        number: true,
                         required: true
                     },
-                    state: {
-                        minlength: 2,
-                        maxlength: 2,
-                        required: true
-                    },
-                    zip: {
-                        minlength: 5,
-                        maxlength: 5,
-                        digits: true,
-                        range: [10000, 99999],
-                        required: true
-                    },
-                    phone: {
-                        phoneUS: true,
+                    end_num: {
+                        number: true,
                         required: false
+                    },
+                    quantity: {
+                        digits: true,
+                        required: true
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
