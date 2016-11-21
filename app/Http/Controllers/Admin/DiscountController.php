@@ -14,8 +14,7 @@ use App\Http\Models\Util;
  *
  * @author ivan
  */
-class DiscountController extends Controller{
-    
+class DiscountController extends Controller{    
     /**
      * List all coupons and return default view.
      *
