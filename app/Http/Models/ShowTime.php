@@ -45,6 +45,13 @@ class ShowTime extends Model
     {
         return $this->hasMany('App\Http\Models\Transaction','show_time_id');
     }
+    /**
+     * Get the show for the showtime.
+     */
+    public function show()
+    {
+        return $this->belongsTo('App\Http\Models\Show','show_id');
+    }
     //RELATIONSHIPS MANY-MANY
     /**
      * The soldout tickets that belong to the showtime.

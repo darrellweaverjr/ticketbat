@@ -244,8 +244,8 @@
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/manifest_emails')===false)) active @endif">
-                                <a href="/admin/manifest_emails" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/manifests')===false)) active @endif">
+                                <a href="/admin/manifests" class="nav-link nav-toggle">
                                     <i class="icon-envelope"></i>
                                     <span class="title">Manifest Emails</span>
                                 </a>
