@@ -61,6 +61,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('acls/save', 'AclController@save');
     Route::post('acls/remove', 'AclController@remove');
     Route::match(['get','post'], 'acls', 'AclController@index');
+    Route::match(['get','post'], 'user_types', 'AclController@user_types');
     //manifests emails
     Route::post('manifests/save', 'ManifestController@save');
     Route::post('manifests/remove', 'ManifestController@remove');

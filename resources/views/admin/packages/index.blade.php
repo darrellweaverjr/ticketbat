@@ -4,9 +4,6 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="/themes/admin/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-<link href="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-<link href="/themes/admin/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -63,7 +60,7 @@
                                     </label>
                                 </td>
                                 <td width="23%"> {{$p->title}} </td>
-                                <td width="50%"> {{$p->description}} </td> 
+                                <td width="75%"> {{$p->description}} </td> 
                             </tr>
                             @endforeach 
                         </tbody>
@@ -124,15 +121,5 @@
 @endsection
 
 @section('scripts') 
-<script src="/themes/admin/assets/global/scripts/datatable.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
-
-<script src="/themes/admin/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
-
 <script src="/js/admin/packages/index.js" type="text/javascript"></script>
 @endsection

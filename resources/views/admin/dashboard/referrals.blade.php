@@ -4,9 +4,6 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="/themes/admin/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-<link href="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-<link href="/themes/admin/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -221,13 +218,8 @@
 @endsection
 
 @section('scripts') 
-<script src="/themes/admin/assets/global/scripts/datatable.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/pages/scripts/table-datatables-buttons.min.js" type="text/javascript"></script>
-
-
 
 <script src="/themes/admin/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/amcharts/amcharts/serial.js" type="text/javascript"></script>
@@ -241,6 +233,5 @@
 <script src="/themes/admin/assets/global/plugins/amcharts/amstockcharts/amstock.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/pages/scripts/charts-amcharts.min.js" type="text/javascript"></script>
 
-
-
+<script src="/js/admin/dashboard/referrals.js" type="text/javascript"></script>
 @endsection
