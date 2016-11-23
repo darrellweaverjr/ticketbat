@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Manifest;
-use App\Http\Models\ShowTime;
+use App\Http\Models\Util;
+use Barryvdh\DomPDF\Facade as PDF;
 
 /**
  * Manage ACLs
@@ -23,44 +24,70 @@ class ManifestController extends Controller{
     public function index()
     {
         try {
-            //init
-            $input = Input::all(); 
-            if(isset($input) && isset($input['id']))
-            {
-                //get selected record
-//                $band = Band::find($input['id']);  
-//                if(!$band)
-//                    return ['success'=>false,'msg'=>'There was an error getting the band.<br>Maybe it is not longer in the system.'];
-//                $shows = [];
-//                foreach($band->show_bands as $s)
-//                    $shows[] = [$s->name,$s->pivot->n_order];
-//                $band->image_url = 'https://www.ticketbat.com'.$band->image_url; //$band->image_url = asset($band->image_url);
-//                return ['success'=>true,'band'=>array_merge($band->getAttributes(),['shows[]'=>$shows])];
-            }
-            else
-            {
-                //get all records        
-                $manifests = Manifest::all()->groupBy('show_time_id');
-//                $manifests = DB::table('manifest_emails')
-//                                    ->join('show_times', 'show_times.id', '=', 'manifest_emails.show_time_id')
-//                                    ->join('shows', 'shows.id', '=', 'show_times.show_id')
-//                                    ->orderBy('show_times.show_time', 'desc')
-//                                    ->groupBy('manifest_emails.show_time_id')
-//                                    ->select('manifest_emails.*', 'shows.name', 'show_times.show_time')
-//                                    ->get();
-                
-                $show_times = [];
-                $info = DB::table('show_times')
-                    ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                    ->select('show_times.id', 'shows.name', 'show_times.show_time')
-                    ->get()->toArray();
-                foreach ($info as $s)
-                    $show_times[$s->id] = $s;
-                //return view
-                return view('admin.manifests.index',compact('manifests','show_times'));
-            }
+            //get all records        
+            $manifests = Manifest::all()->groupBy('show_time_id');
+            $show_times = [];
+            $info = DB::table('show_times')
+                ->join('shows', 'shows.id', '=', 'show_times.show_id')
+                ->select('show_times.id', 'shows.name', 'show_times.show_time')
+                ->get()->toArray();
+            foreach ($info as $s)
+                $show_times[$s->id] = $s;
+            //return view
+            return view('admin.manifests.index',compact('manifests','show_times'));
         } catch (Exception $ex) {
             throw new Exception('Error Manifests Index: '.$ex->getMessage());
+        }
+    } 
+    /**
+     * View manifest in csv or in pdf.
+     *
+     * @return csv or pdf
+     */
+    public function view($format,$id)
+    {
+        try {
+            $manifest = Manifest::find($id);
+            //check email data sent
+            if($manifest && isset($manifest->email))
+            {
+                //check format
+                if($format==='csv')
+                {
+                    if(Util::isJSON($manifest->email))
+                    {
+                        $data = json_decode($manifest->email, true);
+                        $manifest_csv = View::make('command.report_manifest', compact('data','format'));
+                        return Util::downloadCSV($manifest_csv,'TicketBat Admin - manifests - '.$id);
+                    }
+                    else 
+                    {
+                        $format='plain';
+                        $data = 'The system could not load the information from the DB: it has not a valid format.';
+                        return View::make('command.report_manifest', compact('data','format'))->render();
+                    }
+                }
+                else if($format==='pdf')
+                {
+                    if(Util::isJSON($manifest->email))
+                        $data = json_decode($manifest->email, true);
+                    else 
+                    {
+                        $format='plain';
+                        $data = $manifest->email;
+                    }
+                    $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
+                    return PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - manifests - '.$id.'.pdf');
+                }
+                else
+                {
+                    $format='plain';
+                    $data = 'The format is not valid.';
+                    return View::make('command.report_manifest', compact('data','format'))->render();
+                }
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Manifests View: '.$ex->getMessage());
         }
     } 
     

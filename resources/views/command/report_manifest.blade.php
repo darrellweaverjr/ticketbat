@@ -3,7 +3,7 @@
 @foreach ($data['purchases'] as $n => $p)
 "{{$n+1}}","{{$p['event_name']}}","{{date('m/d/Y g:ia',strtotime($p['show_time']))}}","{{date('m/d/Y g:ia',strtotime($p['created']))}}","{{$p['customer_name']}}","{{$p['address']}}","{{$p['phone']}}","{{$p['email']}}","{{$p['quantity']}}","{{$p['code']}}","{{$p['description']}}","{{$p['amount']}}","{{$p['gifts']}}"
 @endforeach
-@else
+@elseif($format == 'pdf')
 <!DOCTYPE html>
 <html>
     <head>
@@ -133,4 +133,6 @@
         <p>Generated on: {{date('m/d/Y g:ia',strtotime($data['date_now']))}}</p>
     </body>
 </html>
+@else
+@php echo $data @endphp
 @endif

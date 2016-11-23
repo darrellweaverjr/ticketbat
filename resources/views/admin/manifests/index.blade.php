@@ -46,8 +46,8 @@
                                     <div class="search-content col-md-5" style="padding-left:35px;text-align:left">
                                         <div><h5 class="search-title">
                                             <a class="col-md-7 @if($index2==0) bg-green @else green @endif  btn green-sharp sbold uppercase">{{$m->manifest_type}}</a>
-                                            <a class="col-md-2 btn blue-sharp btn-outline sbold uppercase">CSV</a>
-                                            <a class="col-md-2 btn green-sharp btn-outline sbold uppercase">PDF</a>
+                                            <a href="/admin/manifests/view/csv/{{$m->id}}" target="_blank" class="col-md-2 btn blue-sharp btn-outline sbold uppercase">CSV</a>
+                                            <a href="/admin/manifests/view/pdf/{{$m->id}}" target="_blank" class="col-md-2 btn green-sharp btn-outline sbold uppercase">PDF</a>
                                         </h5></div><hr>
                                         <div><small><i>
                                         Purchases: <b>{{$m->num_purchases}}</b>, Tickets Sold: <b>{{$m->num_people}}</b>, Sent at: <b>{{date('l, m/d/Y g:ia',strtotime($m->created))}}</b><br>
@@ -57,7 +57,7 @@
                                     </div>
                                     @endforeach 
                                 </td>
-                                <td width="10%"><center> {{date('l, m/d/Y g:ia',strtotime($show_times[$me[0]->show_time_id]->show_time))}} </center></td>
+                                <td width="10%"><center> {{date('Y-m-d g:ia',strtotime($show_times[$me[0]->show_time_id]->show_time))}} </center></td>
                             </tr>
                             @endforeach 
                         </tbody>

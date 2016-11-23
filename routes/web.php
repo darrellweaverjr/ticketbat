@@ -63,7 +63,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'acls', 'AclController@index');
     Route::match(['get','post'], 'user_types', 'AclController@user_types');
     //manifests emails
-    Route::get('manifests/view/{type}/{id}', 'ManifestController@view');
+    Route::get('manifests/view/{format}/{id}', 'ManifestController@view');
     Route::match(['get','post'], 'manifests', 'ManifestController@index');
     //contact logs
     Route::post('contacts/save', 'ContactController@save');
