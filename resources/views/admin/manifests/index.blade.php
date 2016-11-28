@@ -31,7 +31,7 @@
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="88%"> Manifest </th>
+                                <th width="88%"> Manifests </th>
                                 <th width="10%"> Date </th>
                             </tr>
                         </thead>

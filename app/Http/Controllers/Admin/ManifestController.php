@@ -63,7 +63,7 @@ class ManifestController extends Controller{
                     else 
                     {
                         $format='plain';
-                        $data = 'The system could not load the information from the DB: it has not a valid format.';
+                        $data = '<script>alert("The system could not load the information from the DB. It has not a valid format.");window.close();</script>';
                         return View::make('command.report_manifest', compact('data','format'))->render();
                     }
                 }
@@ -82,9 +82,15 @@ class ManifestController extends Controller{
                 else
                 {
                     $format='plain';
-                    $data = 'The format is not valid.';
+                    $data = '<script>alert("The system could not load the information from the DB. It has not a valid format.");window.close();</script>';
                     return View::make('command.report_manifest', compact('data','format'))->render();
                 }
+            }
+            else
+            {
+                $format='plain';
+                $data = '<script>alert("The system could not load the information from the DB. There is not that manifest.");window.close();</script>';
+                return View::make('command.report_manifest', compact('data','format'))->render();
             }
         } catch (Exception $ex) {
             throw new Exception('Error Manifests View: '.$ex->getMessage());
