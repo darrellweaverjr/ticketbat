@@ -4,6 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Utilities class
@@ -20,15 +21,29 @@ class Util extends Model
     public static function getEnumValues($table,$column)
     {
         try {
-                $type = DB::select(DB::raw("SHOW COLUMNS FROM $table WHERE Field = '{$column}'"))[0]->Type ;
-                preg_match('/^enum\((.*)\)$/', $type, $matches);
-                $enum = array();
-                foreach( explode(',', $matches[1]) as $value )
-                {
-                  $v = trim( $value, "'" );
-                  $enum = array_add($enum, $v, $v);
-                }
-                return $enum;
+            $type = DB::select(DB::raw("SHOW COLUMNS FROM $table WHERE Field = '{$column}'"))[0]->Type ;
+            preg_match('/^enum\((.*)\)$/', $type, $matches);
+            $enum = array();
+            foreach( explode(',', $matches[1]) as $value )
+            {
+              $v = trim( $value, "'" );
+              $enum = array_add($enum, $v, $v);
+            }
+            return $enum;
+        } catch (Exception $ex) {
+            throw new Exception('Error Util getEnumValues: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Set enum values in the DB.
+     *
+     * @return Boolean
+     */
+    public static function setEnumValues($table,$column,$values)
+    {
+        try {
+            (count($values))? $default = 'NULL DEFAULT "'.array_values($values)[0].'" COMMENT ""' : $default = '';
+            return DB::statement('ALTER TABLE '.$table.' CHANGE COLUMN '.$column.' '.$column.' ENUM("'.implode('","',$values).'") '.$default);
         } catch (Exception $ex) {
             throw new Exception('Error Util getEnumValues: '.$ex->getMessage());
         }

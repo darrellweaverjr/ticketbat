@@ -11,7 +11,7 @@
     <!-- BEGIN PAGE HEADER-->   
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}} 
-        <small> - List and view manifests.</small>
+        <small> - List and view contact logs.</small>
     </h1>
     <!-- END PAGE TITLE-->    
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
