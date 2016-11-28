@@ -66,8 +66,6 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('manifests/view/{format}/{id}', 'ManifestController@view');
     Route::match(['get','post'], 'manifests', 'ManifestController@index');
     //contact logs
-    Route::post('contacts/save', 'ContactController@save');
-    Route::post('contacts/remove', 'ContactController@remove');
     Route::match(['get','post'], 'contacts', 'ContactController@index');
     //purchases
     Route::post('purchases/save', 'PurchaseController@save');

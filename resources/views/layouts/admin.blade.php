@@ -252,10 +252,10 @@
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('CONTACTS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/contact_logs')===false)) active @endif">
-                                <a href="/admin/contact_logs" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/contacts')===false)) active @endif">
+                                <a href="/admin/contacts" class="nav-link nav-toggle">
                                     <i class="icon-feed"></i>
-                                    <span class="title">Contact Log</span>
+                                    <span class="title">Contact Logs</span>
                                 </a>
                             </li>
                             @endif
