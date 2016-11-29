@@ -11,7 +11,7 @@
     <!-- BEGIN PAGE HEADER-->   
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}} 
-        <small> - List, add, edit and remove Ticket Types.</small>
+        <small> - List, add, edit and remove ticket types.</small>
     </h1>
     <!-- END PAGE TITLE-->    
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
@@ -34,7 +34,7 @@
                                 <i class="fa fa-remove"></i>
                             </button>-->
                             <button id="btn_model_user_type" class="btn sbold bg-purple" disabled="true"> Styles 
-                                <i class="fa fa-users"></i>
+                                <i class="fa fa-deviantart"></i>
                             </button>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                             <tr>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$index}}" value="{{$index}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$index}}" value="{{$index}}" {{$t['disabled']}} />
                                         <span></span>
                                     </label>
                                 </td>
