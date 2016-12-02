@@ -69,7 +69,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'contacts', 'ContactController@index');
     //purchases
     Route::post('purchases/email', 'PurchaseController@email');
-    Route::post('purchases/ticket', 'PurchaseController@ticket');
+    Route::get('purchases/tickets/{type}/{ids}', 'PurchaseController@tickets');
     Route::post('purchases/save', 'PurchaseController@save');
     Route::match(['get','post'], 'purchases', 'PurchaseController@index');
     //home sliders

@@ -100,7 +100,7 @@ class ReportSalesReceipt extends Command
                 foreach ($data as $purchase) 
                 {   
                     $format = 'pdf';
-                    $pdfUrl = '/tmp/Receipt_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$purchase['show_name']).'_'.$purchase['id'].'.pdf';
+                    $pdfUrl = '/tmp/Receipt_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$purchase['ticket_type']).'_'.date("m_d_Y_h_i_a",strtotime($purchase['show_time'])).'.pdf';
                     $customer_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));  
                     PDF::loadHTML($customer_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrl);
                     $receipts[] = $pdfUrl;
