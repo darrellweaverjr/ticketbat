@@ -23,6 +23,14 @@ class Discount extends Model
      * @var bool
      */
     public $timestamps = false;
+    //RELATIONSHIPS ONE-MANY
+    /**
+     * Get the purchases for the user.
+     */
+    public function purchases()
+    {
+        return $this->hasMany('App\Http\Models\Purchase','discount_id');
+    }
     //RELATIONSHIPS MANY-MANY
     /**
      * The discount_shows that belong to the discount.

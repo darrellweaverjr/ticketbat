@@ -50,7 +50,8 @@
                                 <th width="12%"> Discount Type </th>
                                 <th width="12%"> Discount Scope </th>
                                 <th width="12%"> Coupon Type </th>
-                                <th width="50%"> Description </th>
+                                <th width="5%"> Purchases </th>
+                                <th width="45%"> Description </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,7 +89,12 @@
                                     @endif
                                     "> {{$d->coupon_type}} </span> 
                                 </td> 
-                                <td width="50%"> {{$d->description}} </td> 
+                                <td width="5%"><center><span class="label label-sm sbold 
+                                    @if($d->purchases) label-success 
+                                    @else label-danger 
+                                    @endif
+                                    "> {{$d->purchases}} </span></center></td> 
+                                <td width="45%"> {{$d->description}} </td>
                             </tr>
                             @endforeach 
                         </tbody>
@@ -180,7 +186,7 @@
                                         <input type="hidden"   name="effective_dates" value="0" />
                                         <input type="checkbox" name="effective_dates" value="1" /> Use Effective Dates?
                                     </label><br>
-                                    <div id="effective_start_end_date" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom">
+                                    <div id="effective_start_end_date" class="pull-right tooltips btn btn-sm show-error" data-container="body" data-placement="bottom">
                                         <i class="icon-calendar"></i>&nbsp;
                                         <span class="thin uppercase hidden-xs"> - </span>&nbsp;
                                         <i class="fa fa-angle-down"></i>
