@@ -47,7 +47,9 @@
                             <tr>
                                 <th width="2%"> </th>
                                 <th width="1%"> </th>
-                                <th width="71%"> Purchase Info </th>
+                                <th width="41%"> Purchase Info </th>
+                                <th width="20%"> Show/Venue </th>
+                                <th width="10%"> Show Time </th>
                                 <th width="10%"> Purchase Time </th>
                                 <th width="5%"> Amount </th>
                                 <th width="11%"> Status </th>
@@ -64,21 +66,23 @@
                                     </label>
                                 </td>
                                 <td width="1%" style="background-color:#{{substr(dechex(crc32($p->session_id)),0,6)}}"></td>
-                                
-                                <td class="search-item clearfix" width="71%"> 
+                                <td class="search-item clearfix" width="41%"> 
                                     <div class="search-content" >
                                         <b class="search-title"><a>@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
                                         <p><small><i>Customer email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> Referrer Url: <a href="{{$p->referrer_url}}" target="_blank">{{$p->referrer_url}}</a><br>
-                                        Purchase: <a>{{$p->id}}</a> Tickets: <a>( {{$p->quantity}} ) {{$p->ticket_type}}</a> Venue: <a>{{$p->venue}}</a> Date/Time: <a>{{date('Y-m-d g:ia',strtotime($p->show_time))}}</a> Coupon: <a>{{$p->code}}</a><br>
-                                        Transaction: <a>{{$p->transaction_id}}</a> AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a> Payment: <a>{{$p->payment_type}}</a> Card: <a>...{{$p->last_4}}</a> Retail Price: <a>$ {{number_format($p->retail_price,2)}}</a> Fees: <a>$ {{number_format($p->processing_fee,2)}}</a> Commission: <a>{{number_format($p->commission_percent,2)}}%</a> Savings: <a>$ {{number_format($p->savings,2)}}</a>
+                                        Purchase: <a>{{$p->id}}</a> Tickets: <a>{{$p->quantity}}</a> Ticket Type: <a>{{$p->ticket_type_type}}</a> Package: <a>{{$p->title}}</a> Coupon: <a>{{$p->code}}</a><br>
+                                        Transaction: <a>{{$p->transaction_id}}</a> AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a> Payment: <a>{{$p->payment_type}}</a> Card: <a>...{{$p->last_4}}</a><br> 
+                                        Retail Price: <a>$ {{number_format($p->retail_price,2)}}</a> Fees: <a>$ {{number_format($p->processing_fee,2)}}</a> Commission: <a>{{number_format($p->commission_percent,2)}}%</a> Savings: <a>$ {{number_format($p->savings,2)}}</a>
                                         <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small></p>
                                     </div>
                                 </td>
+                                <td width="20%"><center> {{$p->show_name}}<br>at<br>{{$p->venue_name}} </center></td>
+                                <td width="10%"><center> {{date('m/d/Y g:i a',strtotime($p->show_time))}} </center></td>
                                 <td width="10%"><center> {{date('m/d/Y g:i a',strtotime($p->created))}} </center></td>
                                 <td width="5%" style="text-align:right"> 
                                     @if($previous_session_id != $p->session_id)
-                                    @if($p->transaction_id) $ {{number_format($p->price_paid,2)}}
-                                        @else (Comp) @endif
+                                    @if($p->transaction_id && is_numeric($p->transaction_id)) $ {{number_format($p->price_paid,2)}}
+                                    @else @php echo '(Comp)' @endphp @endif
                                     @endif
                                 </td>
                                 <td width="11%"> 

@@ -47,9 +47,11 @@ class PurchaseController extends Controller{
                                 ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                                 ->join('shows', 'shows.id', '=', 'show_times.show_id')
                                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                                ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
+                                ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                                ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 
-                                        'venues.name AS venue', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name')
+                                ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
+                                        'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
                                 ->whereBetween('purchases.created', [$start_date,$end_date])
                                 ->orderBy('purchases.created','purchases.session_id')
                                 ->get();
