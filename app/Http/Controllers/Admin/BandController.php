@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\Category;
 use App\Http\Models\Band;
 
@@ -39,7 +40,11 @@ class BandController extends Controller{
             else
             {
                 //get all records        
-                $bands = Band::orderBy('name')->get();
+                $bands = DB::table('bands')
+                                ->join('categories', 'categories.id', '=' ,'bands.category_id')
+                                ->select('bands.*', 'categories.name AS category')
+                                ->orderBy('categories.name')
+                                ->get();
                 $categories = Category::all();
                 //return view
                 return view('admin.bands.index',compact('bands','categories'));

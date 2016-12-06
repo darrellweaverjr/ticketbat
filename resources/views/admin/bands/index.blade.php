@@ -78,7 +78,7 @@
                                         <p> @if($b->short_description) {{$b->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </p>
                                     </div>
                                 </td>
-                                <td width="10%"><center> {{$categories->find($b->category_id)->name}} </center></td>
+                                <td width="10%"><center> {{$b->category}} </center></td>
                             </tr>
                             <!-- BEGIN DETAILS MODAL--> 
                             <div id="modal_details_{{$b->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
