@@ -76,7 +76,7 @@
                                     @elseif($u->user_type_id == 5) label-primary
                                     @else label-default
                                     @endif
-                                    "> {{$user_types->find($u->user_type_id)->user_type}} </span> 
+                                    "> {{$u->user_type}} </span> 
                                 </td> 
                                 <td width="10%"> <span class="label label-sm sbold
                                     @if($u->is_active) label-success"> Active 
