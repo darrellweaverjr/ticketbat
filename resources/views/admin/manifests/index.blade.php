@@ -83,7 +83,7 @@
                                         </i></small>
                                     </div>
                                 </td>
-                                <td width="10%"><center> {{date('m/d/Y g:ia',strtotime($m->created))}} </center></td>
+                                <td width="10%"><center> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}} </center></td>
                             </tr>
                             @php $previous_show_time_id = $m->show_time_id @endphp
                             @endforeach 

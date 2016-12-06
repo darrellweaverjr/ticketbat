@@ -68,7 +68,7 @@
                                 <td width="1%" style="background-color:#{{substr(dechex(crc32($p->session_id)),0,6)}}"></td>
                                 <td class="search-item clearfix" width="41%"> 
                                     <div class="search-content" >
-                                        <b class="search-title"><a>@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
+                                        <b class="search-title"><a href="mailto:{{$p->email}}" target="_top">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
                                         <p><small><i>Customer email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> Referrer Url: <a href="{{$p->referrer_url}}" target="_blank">{{$p->referrer_url}}</a><br>
                                         Purchase: <a>{{$p->id}}</a> Tickets: <a>{{$p->quantity}}</a> Ticket Type: <a>{{$p->ticket_type_type}}</a> Package: <a>{{$p->title}}</a> Coupon: <a>{{$p->code}}</a><br>
                                         Transaction: <a>{{$p->transaction_id}}</a> AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a> Payment: <a>{{$p->payment_type}}</a> Card: <a>...{{$p->last_4}}</a><br> 
@@ -77,8 +77,8 @@
                                     </div>
                                 </td>
                                 <td width="20%"><center> {{$p->show_name}}<br>at<br>{{$p->venue_name}} </center></td>
-                                <td width="10%"><center> {{date('m/d/Y g:i a',strtotime($p->show_time))}} </center></td>
-                                <td width="10%"><center> {{date('m/d/Y g:i a',strtotime($p->created))}} </center></td>
+                                <td width="10%"><center> {{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}} </center></td>
+                                <td width="10%"><center> {{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}} </center></td>
                                 <td width="5%" style="text-align:right"> 
                                     @if($previous_session_id != $p->session_id)
                                     @if($p->transaction_id && is_numeric($p->transaction_id)) $ {{number_format($p->price_paid,2)}}
