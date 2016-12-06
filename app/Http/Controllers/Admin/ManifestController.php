@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Manifest;
 use App\Http\Models\Util;
@@ -24,17 +25,32 @@ class ManifestController extends Controller{
     public function index()
     {
         try {
+            //init
+            $input = Input::all(); 
+            if(isset($input) && isset($input['start_date']) && isset($input['end_date']))
+            {
+                //input dates 
+                $start_date = date('Y-m-d H:i:s',strtotime($input['start_date']));
+                $end_date = date('Y-m-d H:i:s',strtotime($input['end_date']));
+            }
+            else
+            {
+                //default dates 
+                $start_date = date('Y-m-d H:i:s',getlastmod());
+                $end_date = date('Y-m-d H:i:s');
+            }
             //get all records        
-            $manifests = Manifest::all()->groupBy('show_time_id');
-            $show_times = [];
-            $info = DB::table('show_times')
-                ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                ->select('show_times.id', 'shows.name', 'show_times.show_time')
-                ->get()->toArray();
-            foreach ($info as $s)
-                $show_times[$s->id] = $s;
+            $manifests = DB::table('manifest_emails')
+                                ->join('show_times', 'show_times.id', '=' ,'manifest_emails.show_time_id')
+                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                ->select('manifest_emails.*', 'shows.name', 'show_times.show_time')
+                                ->whereBetween('manifest_emails.created', [$start_date,$end_date])
+                                ->groupBy('show_times.id','manifest_emails.created')
+                                ->orderBy(DB::raw('DATE_FORMAT(manifest_emails.created,"%Y-%m-%d")'),'desc')
+                                ->orderBy('manifest_emails.show_time_id','desc')
+                                ->get();
             //return view
-            return view('admin.manifests.index',compact('manifests','show_times'));
+            return view('admin.manifests.index',compact('manifests','start_date','end_date'));
         } catch (Exception $ex) {
             throw new Exception('Error Manifests Index: '.$ex->getMessage());
         }
