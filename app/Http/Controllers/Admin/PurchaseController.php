@@ -152,8 +152,8 @@ class PurchaseController extends Controller{
                 return View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'))->render();
             }
             
-        } catch (Exception $ex) {
+        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
             throw new Exception('Error Purchases tickets: '.$ex->getMessage());
         }
     }
-}
+}                    

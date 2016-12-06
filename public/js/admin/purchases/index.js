@@ -246,8 +246,8 @@ var TableDatatablesManaged = function () {
                 type: "info",
                 showCancelButton: true,
                 confirmButtonClass: "btn-danger",
-                confirmButtonText: "For printing",
-                cancelButtonText: "Regular page",
+                confirmButtonText: "BOCA Ticket Printer",
+                cancelButtonText: "Standard Printer",
                 closeOnConfirm: true,
                 closeOnCancel: true
             },

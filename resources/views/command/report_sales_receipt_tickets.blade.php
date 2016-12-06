@@ -28,7 +28,7 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
                 </div>
                 <div style='text-align:center;width:90%;position:absolute;top:0;left:-20;'>
                         <div style='padding-top:2px;'><span style='font-size:22px'>{{$ticket['show_name']}}</span></div>
-                        <div style='padding-top:2px;'><span style='font-size:12px'>at<br/></span>{{$ticket['venue_name']}}</div>
+                        <div style='padding-top:2px;'><span style='font-size:12px'>@if($ticket['package'] != 'None') ({{$ticket['package']}}) @endif at<br/></span>{{$ticket['venue_name']}}</div>
                         <div style='padding-top:3px;'><span style='font-size:12px'>on&nbsp;</span> {{date('l, m/d/Y',strtotime($ticket['show_time']))}} <span style='font-size:12px'>@if($ticket['time_alternative']) - @else at @endif</span>@if($ticket['time_alternative']) - @else {{date('h:i a',strtotime($ticket['show_time']))}} @endif</div>                     
                 </div>
                 <div class="rotate" style='font-size:12px;position:absolute;top:85;left:317;'>
@@ -59,7 +59,7 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
               @endif
                     <div style='float:left;width:80%;'>
                             <div style='padding-top:2px;'><span style='font-size:12px'></span>{{$ticket['show_name']}} ({{$ticket['ticket_type']}})</div>
-                            <div style='padding-top:2px;'><span style='font-size:12px'>at<br/></span>{{$ticket['venue_name']}}</div>
+                            <div style='padding-top:2px;'><span style='font-size:12px'>@if($ticket['package'] != 'None') ({{$ticket['package']}}) @endif  at<br/></span>{{$ticket['venue_name']}}</div>
                             <div style='padding-top:3px;'><span style='font-size:12px'>on </span> {{date('l, m/d/Y',strtotime($ticket['show_time']))}} </div>
                             <div style='padding-top:3px;'><span style='font-size:12px'>@if($ticket['time_alternative']) - @else at @endif</span>@if($ticket['time_alternative']) - @else {{date('h:i a',strtotime($ticket['show_time']))}} @endif</div>
                             <div style='padding-top:-5px;'><hr><span>{{$ticket['customer_name']}}</span></div><hr>

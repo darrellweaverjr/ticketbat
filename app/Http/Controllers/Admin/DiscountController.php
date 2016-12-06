@@ -60,7 +60,7 @@ class DiscountController extends Controller{
     {
         try {
             //init
-            $input = Input::all();
+            $input = Input::all();  //dd($input);
             //save all record      
             if($input)
             {
