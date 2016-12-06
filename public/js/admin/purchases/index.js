@@ -176,10 +176,88 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
+        //function note
+        $('#btn_model_note').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            swal({
+                title: "Add note",
+                text: "Write purchase's note:",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                inputPlaceholder: "Write something"
+            }, function (inputNote) {
+                if (inputNote === false) return false;
+                else if (inputNote.trim() === "") {
+                  swal.showInputError("You need to write something!");
+                  return false;
+                }
+                else
+                {
+                    swal({
+                        title: "Adding new note",
+                        text: "Please, wait.",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/admin/purchases/save', 
+                        data: {id:id,note:inputNote}, 
+                        success: function(data) {
+                            if(data.success) 
+                            {
+                                $('#note_'+id).html(data.note);
+                                swal({
+                                    title: "<span style='color:green;'>Note Added Successfully!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    timer: 1500,
+                                    type: "success",
+                                    showConfirmButton: false
+                                });
+                            }
+                            else swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                });
+                        },
+                        error: function(){
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "There was an error trying to add the note!<br>The request could not be sent to the server.",
+                                html: true,
+                                type: "error"
+                            });
+                        }
+                    });
+                }
+            });
+        });
         //function tickets
         $('#btn_model_tickets').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
-            window.open('/admin/purchases/tickets/S/'+id);
+            swal({
+                title: "View tickets",
+                text: "Select the way you want to view the tickets",
+                type: "info",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "For printing",
+                cancelButtonText: "Regular page",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+              function(isConfirm) {
+                if (isConfirm) {
+                    window.open('/admin/purchases/tickets/S/'+id);
+                } else {
+                    window.open('/admin/purchases/tickets/C/'+id);
+                }
+            });
         });  
         //init functions
         $('input:radio[name=radios]:first').attr('checked', true);

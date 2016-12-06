@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -82,10 +83,11 @@ class PurchaseController extends Controller{
                 }                    
                 else if(isset($input['note']))
                 {                    
-                    $purchase->note = $input['note'];
+                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.$current.'): </b>'.$input['note'].'&nbsp;';
+                    $purchase->note = $purchase->note.$note;
                     $purchase->updated = $current;
                     $purchase->save();
-                    return ['success'=>true,'msg'=>'Purchase saved successfully!'];
+                    return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
                 }               
                 else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>Invalid data.'];
             }
