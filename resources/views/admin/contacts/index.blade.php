@@ -49,7 +49,6 @@
                                     <p><small><i>
                                         @if($c->email)Email: <a href="mailto:{{$c->email}}" target="_top">{{$c->email}}</a> <br>@endif
                                         @if($c->phone)Phone: <a> {{$c->phone}} </a><br>@endif 
-                                        Recived: <a> {{date('F jS, Y \a\t h:i A',strtotime($c->created))}} </a>
                                     </i></small></p>
                                 <td width="75%"> 
                                     <p><small><i>

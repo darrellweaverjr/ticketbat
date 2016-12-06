@@ -93,7 +93,7 @@
                                     </select>
                                 </td> 
                             </tr>
-                                @php $previous_session_id = $p->session_id @endphp
+                            @php $previous_session_id = $p->session_id @endphp
                             @endforeach 
                         </tbody>
                     </table>

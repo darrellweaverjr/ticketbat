@@ -50,7 +50,8 @@
                                     </label>
                                 </th>
                                 <th width="50%"> Ticket Type </th>
-                                <th width="48%"> Ticket Class </th>
+                                <th width="38%"> Ticket Class </th>
+                                <th width="10%">  </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,7 +64,8 @@
                                     </label>
                                 </td>
                                 <td width="50%"> {{$t['ticket_type']}} </td>
-                                <td width="48%"> {{$t['ticket_type_class']}} </td>
+                                <td width="38%"> {{$t['ticket_type_class']}} </td>
+                                <td width="10%"> <input type="checkbox" class="make-switch" checked data-size="mini" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger"> </td>
                             </tr>
                             @endforeach 
                         </tbody>

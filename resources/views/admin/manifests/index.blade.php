@@ -77,7 +77,7 @@
                                 <td width="60%">
                                     <div class="search-content" style="text-align:left">
                                         <small><i>
-                                        Purchases: <b>{{$m->num_purchases}}</b>, Tickets Sold: <b>{{$m->num_people}}</b>, Sent at: <b>{{date('l, m/d/Y g:ia',strtotime($m->created))}}</b><br>
+                                        Purchases: <b>{{$m->num_purchases}}</b>, Tickets Sold: <b>{{$m->num_people}}</b><br>
                                         @php $emails = explode(',',$m->recipients) @endphp
                                         Receipts: (@foreach($emails as $e) <a href="mailto:{{$e}}" target="_top">{{$e}}</a> . @endforeach) 
                                         </i></small>
