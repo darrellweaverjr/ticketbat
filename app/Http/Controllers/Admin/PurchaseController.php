@@ -85,7 +85,7 @@ class PurchaseController extends Controller{
                 }                    
                 else if(isset($input['note']))
                 {                    
-                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.$current.'): </b>'.$input['note'].'&nbsp;';
+                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b>'.$input['note'].'&nbsp;';
                     $purchase->note = $purchase->note.$note;
                     $purchase->updated = $current;
                     $purchase->save();
