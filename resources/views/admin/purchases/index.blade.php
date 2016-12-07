@@ -104,7 +104,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN UPDATE MODAL--> 
     <div style="display: none;">
-        <form method="post" action="/admin/purchases" id="form_model_update">
+        <form method="post" action="/admin/purchases" id="form_model_search">
             <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
             <input name="start_date" type="hidden" value="{{$start_date}}"/>
             <input name="end_date" type="hidden" value="{{$end_date}}"/>

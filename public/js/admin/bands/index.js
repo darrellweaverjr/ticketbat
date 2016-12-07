@@ -72,7 +72,10 @@ var TableDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS
-                
+        //checkbox toggle only shows with errors
+        $('#form_model_search input[name="onlyerrors"]:checkbox').change(function () {
+             $( "#form_model_search" ).submit();
+        });   
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");

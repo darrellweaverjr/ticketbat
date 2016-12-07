@@ -39,15 +39,31 @@ class BandController extends Controller{
             }
             else
             {
-                //get all records        
-                $bands = DB::table('bands')
-                                ->join('categories', 'categories.id', '=' ,'bands.category_id')
-                                ->select('bands.*', 'categories.name AS category')
-                                ->orderBy('categories.name')
-                                ->get();
+                if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
+                {
+                    $onlyerrors = 'checked';
+                    //get all records with errors    
+                    $bands = DB::table('bands')
+                                    ->join('categories', 'categories.id', '=' ,'bands.category_id')
+                                    ->select('bands.*', 'categories.name AS category')
+                                    ->whereNull('bands.image_url')
+                                    ->orWhereNull('bands.short_description')
+                                    ->orderBy('categories.name')
+                                    ->get();
+                }
+                else
+                {
+                    $onlyerrors = '';
+                    //get all records        
+                    $bands = DB::table('bands')
+                                    ->join('categories', 'categories.id', '=' ,'bands.category_id')
+                                    ->select('bands.*', 'categories.name AS category')
+                                    ->orderBy('categories.name')
+                                    ->get();
+                }
                 $categories = Category::all();
                 //return view
-                return view('admin.bands.index',compact('bands','categories'));
+                return view('admin.bands.index',compact('bands','categories','onlyerrors'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Bands Index: '.$ex->getMessage());

@@ -22,7 +22,15 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
-                    <div class="actions">                        
+                    <div class="actions">
+                        <form method="post" action="/admin/bands" id="form_model_search" class="pull-left btn mt-checkbox-list" style="width:150px">
+                            <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                            <input type="hidden" name="onlyerrors"  value="0"/>
+                            <label class="mt-checkbox mt-checkbox-single">
+                                <input type="checkbox" name="onlyerrors"  value="1" {{$onlyerrors}} />
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Only with errors</span>
+                            </label>
+                        </form>  
                         <div class="btn-group">
                             <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
                                 <i class="fa fa-plus"></i>
@@ -226,7 +234,7 @@
                                         <label class="col-md-3 control-label">
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Guess Media From WebSite</button>
+                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
                                         </div> 
                                         <label class="col-md-3 control-label">Youtube
                                         </label>

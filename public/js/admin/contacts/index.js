@@ -83,12 +83,12 @@ var TableDatatablesManaged = function () {
             endDate: moment(),
             opens: (App.isRTL() ? 'right' : 'left')
         }, function(start, end, label) {
-                $('#form_model_update [name="start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_update [name="end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search [name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search [name="end_date"]').val(end.format('YYYY-MM-DD'));
                 $('#start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                $( "#form_model_update" ).submit();
+                $( "#form_model_search" ).submit();
         });
-        $('#start_end_date span').html(moment($('#form_model_update [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_update [name="end_date"]').val()).format('MMMM D, YYYY'));
+        $('#start_end_date span').html(moment($('#form_model_search [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_search [name="end_date"]').val()).format('MMMM D, YYYY'));
         $('#start_end_date').show(); 
     }
     return {
