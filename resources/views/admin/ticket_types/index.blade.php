@@ -59,13 +59,13 @@
                             <tr>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$index}}" value="{{$index}}" {{$t['disabled']}} />
+                                        <input type="checkbox" class="checkboxes" id="{{$index}}" value="{{$index}}" />
                                         <span></span>
                                     </label>
                                 </td>
                                 <td width="50%"> {{$t['ticket_type']}} </td>
                                 <td width="38%"> {{$t['ticket_type_class']}} </td>
-                                <td width="10%"> <input type="checkbox" class="make-switch" checked data-size="mini" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger"> </td>
+                                <td width="10%"> <input type="checkbox" class="make-switch" name="active" value="{{$index}}" {{$t['active']}} data-size="mini" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger"> </td>
                             </tr>
                             @endforeach 
                         </tbody>
