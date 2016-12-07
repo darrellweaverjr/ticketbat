@@ -99,11 +99,17 @@ var TableDatatablesManaged = function () {
         $('#btn_model_pdf').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
             window.open('/admin/manifests/view/pdf/'+id);
-        });  
+        }); 
+        //enable function buttons on check radio 
+        $('input:radio[name=radios]').change(function () {
+            if($('input:radio[name=radios]:checked').length > 0)
+            {
+                $('#btn_model_csv').prop('disabled',false);
+                $('#btn_model_pdf').prop('disabled',false);
+            }
+        });
         //init functions
         $('input:radio[name=radios]:first').attr('checked', true);
-        $('#btn_model_csv').prop('disabled',false);
-        $('#btn_model_pdf').prop('disabled',false);
     }
     return {
         //main function to initiate the module

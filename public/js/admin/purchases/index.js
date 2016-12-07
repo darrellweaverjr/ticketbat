@@ -259,11 +259,17 @@ var TableDatatablesManaged = function () {
                 }
             });
         });  
+        //enable function buttons on check radio 
+        $('input:radio[name=radios]').change(function () {
+            if($('input:radio[name=radios]:checked').length > 0)
+            {
+                $('#btn_model_email').prop('disabled',false);
+                $('#btn_model_tickets').prop('disabled',false);
+                $('#btn_model_note').prop('disabled',false);
+            }
+        });
         //init functions
         $('input:radio[name=radios]:first').attr('checked', true);
-        $('#btn_model_email').prop('disabled',false);
-        $('#btn_model_tickets').prop('disabled',false);
-        $('#btn_model_note').prop('disabled',false);
     }
     return {
         //main function to initiate the module

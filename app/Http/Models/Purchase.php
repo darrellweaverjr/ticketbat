@@ -197,7 +197,7 @@ class Purchase extends Model
                     }
                 }
                 //send email           
-                $email = new EmailSG(env('MAIL_REPORT_FROM'), $receipt['customer']->email , $subject);
+                $email = new EmailSG(null, $receipt['customer']->email , $subject);
                 //$email->cc(env('MAIL_REPORT_CC'));
                 $email->category('Receipts');
                 $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
