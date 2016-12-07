@@ -27,6 +27,7 @@ class TicketController extends Controller{
             $input = Input::all(); 
             //get all records        
             $ticket_types = Util::getEnumValues('tickets','ticket_type');
+            $inactives = explode(',',DB::table('ticket_types_inactive')->get()->implode('ticket_type',','));
             if(isset($input) && isset($input['id']))
             {
                 //get selected record
@@ -35,7 +36,7 @@ class TicketController extends Controller{
                 else
                 {
                     $t = Ticket::where('ticket_type',$input['id'])->first();
-                    $ticket = ['ticket_type'=>$input['id'],'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : 'btn-primary','active'=>(DB::table('ticket_types_inactive')->where('ticket_type','=',$input['id'])->count())? '' : 'checked'];
+                    $ticket = ['ticket_type'=>$input['id'],'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : 'btn-primary','active'=>(in_array($input['id'],$inactives))? '' : 'checked'];
                     return ['success'=>true,'ticket_type'=>array_merge($ticket)];
                 }
             }
@@ -45,7 +46,7 @@ class TicketController extends Controller{
                 foreach ($ticket_types as $tt)
                 {
                     $t = Ticket::where('ticket_type',$tt)->first();
-                    $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(DB::table('ticket_types_inactive')->where('ticket_type','=',$tt)->count())? '' : 'checked'];
+                    $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(in_array($tt,$inactives))? '' : 'checked'];
                 }
                 $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
                 //dd($tickets);
