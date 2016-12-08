@@ -53,7 +53,7 @@ class PurchaseController extends Controller{
                                 ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
                                         'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
                                 ->whereBetween('purchases.created', [$start_date,$end_date])
-                                ->orderBy('purchases.created','purchases.session_id')
+                                ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                 ->get();
             $status = Util::getEnumValues('purchases','status');
             return view('admin.purchases.index',compact('purchases','status','start_date','end_date'));

@@ -56,8 +56,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $previous_session_id = '0' @endphp
+                            @php $previous_color = '0' @endphp
                             @foreach($purchases as $index=>$p)
+                                @if($p->transaction_id && is_numeric($p->transaction_id)) 
+                                    @php $color = substr(dechex(crc32($p->transaction_id)),0,6) @endphp
+                                    @php $transaction = true @endphp
+                                @else 
+                                    @php $color = substr(dechex(crc32($p->user_id.floor($p->price_paid*100))),0,6) @endphp
+                                    @php $transaction = false @endphp
+                                @endif
                             <tr>
                                 <td width="2%">
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
@@ -65,7 +72,7 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" style="background-color:#{{substr(dechex(crc32($p->session_id)),0,6)}}"></td>
+                                <td width="1%" style="background-color:#{{$color}}"></td>  
                                 <td class="search-item clearfix" width="41%"> 
                                     <div class="search-content" >
                                         <b class="search-title"><a href="mailto:{{$p->email}}" target="_top">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
@@ -80,10 +87,7 @@
                                 <td width="10%"><center> {{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}} </center></td>
                                 <td width="10%"><center> {{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}} </center></td>
                                 <td width="5%" style="text-align:right"> 
-                                    @if($previous_session_id != $p->session_id)
-                                    @if($p->transaction_id && is_numeric($p->transaction_id)) $ {{number_format($p->price_paid,2)}}
-                                    @else @php echo '(Comp)' @endphp @endif
-                                    @endif
+                                    @if($previous_color != $color) @if($transaction) $ {{number_format($p->price_paid,2)}} @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
                                 <td width="11%"> 
                                     <select ref="{{$p->id}}" class="form-control" name="status">
@@ -93,7 +97,7 @@
                                     </select>
                                 </td> 
                             </tr>
-                            @php $previous_session_id = $p->session_id @endphp
+                            @php $previous_color = $color @endphp
                             @endforeach 
                         </tbody>
                     </table>
