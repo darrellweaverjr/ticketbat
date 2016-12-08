@@ -74,4 +74,12 @@ class Purchase extends Model
     {
         return $this->belongsToMany('App\Http\Models\Customer','ticket_number','purchases_id','customers_id')->withPivot('id','tickets','checked','comment');
     }
+    //PERSONALIZED FUNCTIONS
+    /**
+     * Get the purchase receipt info.
+     */
+    public function get_receipt()
+    {
+        
+    }
 }

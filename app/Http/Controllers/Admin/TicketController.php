@@ -44,7 +44,7 @@ class TicketController extends Controller{
                 foreach ($ticket_types as $tt)
                 {
                     $t = Ticket::where('ticket_type',$tt)->first();
-                    $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : 'btn-primary'];
+                    $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','disabled'=>($t && $t->ticket_type_class)? '' : 'disabled'];
                 }
                 $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
                 //return view

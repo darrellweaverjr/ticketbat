@@ -68,8 +68,9 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     //contact logs
     Route::match(['get','post'], 'contacts', 'ContactController@index');
     //purchases
+    Route::post('purchases/email', 'PurchaseController@email');
+    Route::post('purchases/ticket', 'PurchaseController@ticket');
     Route::post('purchases/save', 'PurchaseController@save');
-    Route::post('purchases/remove', 'PurchaseController@remove');
     Route::match(['get','post'], 'purchases', 'PurchaseController@index');
     //home sliders
     Route::post('sliders/save', 'SliderController@save');
