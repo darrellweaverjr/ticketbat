@@ -3,8 +3,6 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Band class
@@ -47,7 +45,7 @@ class Band extends Model
      */
     public function set_image_url($image_url)
     {
-        $this->image_url = Image::stablish_image($image_url);
+        $this->image_url = Image::stablish_image('bands',$image_url);
     }
     /**
      * Search for social media in certain url given.

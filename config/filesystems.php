@@ -58,7 +58,7 @@ return [
             'driver' => 's3',
             'key' => 'AKIAJ2J7CZWC7M22DWNA',
             'secret' => 'R9ocid2DEAKqZpqxOSV0KvmbLLsss7hdjroI7S',
-            'region' => 'us-west-1',
+            'region' => 'us-west-2',
             'bucket' => 'ticketbat',
         ],
 

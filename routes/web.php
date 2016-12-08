@@ -22,7 +22,8 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('home', 'DashboardController@index')->name('home');
     //utils
     Route::post('media/load','BandController@load_social_media');
-    Route::post('media/upload_image','ImageController@upload_image');    
+    Route::post('media/upload_image','ImageController@upload_image'); 
+    Route::get('media/preview/{filename}', function ($filename) {return Image::make(storage_path().'/app/tmp/'.$filename)->response();});
     //dashboard
     Route::get('dashboard/ticket_sales', 'DashboardController@ticket_sales');
     Route::get('dashboard/chargebacks', 'DashboardController@chargebacks');

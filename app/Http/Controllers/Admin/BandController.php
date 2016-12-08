@@ -23,6 +23,10 @@ class BandController extends Controller{
     public function index()
     {
         try {
+            /*
+            $band = new Band;
+            dd($band->set_image_url('media/preview/xxxxxxxxxxxxxxxxxxxxxxx.jpg'));
+            */
             //init
             $input = Input::all(); 
             if(isset($input) && isset($input['id']))
