@@ -32,7 +32,7 @@ class ContactController extends Controller{
             else
             {
                 //default dates 
-                $start_date = date('Y-m-d H:i:s',getlastmod());
+                $start_date = date('Y-m-d H:i:s', strtotime('-30 DAY'));
                 $end_date = date('Y-m-d H:i:s');
             }
             //get all records        
