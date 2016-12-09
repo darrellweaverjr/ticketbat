@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Category;
 use App\Http\Models\Band;
-
+use Illuminate\Support\Facades\Storage;
 /**
  * Manage Bands
  *
@@ -23,10 +23,6 @@ class BandController extends Controller{
     public function index()
     {
         try {
-            /*
-            $band = new Band;
-            dd($band->set_image_url('media/preview/xxxxxxxxxxxxxxxxxxxxxxx.jpg'));
-            */
             //init
             $input = Input::all(); 
             if(isset($input) && isset($input['id']))
@@ -38,7 +34,8 @@ class BandController extends Controller{
                 $shows = [];
                 foreach($band->show_bands as $s)
                     $shows[] = [$s->name,$s->pivot->n_order];
-                $band->image_url = 'https://www.ticketbat.com'.$band->image_url; //$band->image_url = asset($band->image_url);
+                if(preg_match('/\/uploads\//',$band->image_url)) 
+                    $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$band->image_url;
                 return ['success'=>true,'band'=>array_merge($band->getAttributes(),['shows[]'=>$shows])];
             }
             else
@@ -89,6 +86,7 @@ class BandController extends Controller{
                 if(isset($input['id']) && $input['id'])
                 {
                     $band = Band::find($input['id']);
+                    $band->delete_image_file();
                 }                    
                 else
                 {                    
@@ -128,9 +126,13 @@ class BandController extends Controller{
             //init
             $input = Input::all();
             //delete all records   
-            if(Band::destroy($input['id']))
-                return ['success'=>true,'msg'=>'All records deleted successfully!'];
-            return ['success'=>false,'msg'=>'There was an error deleting the band(s)!<br>They might have some dependences.'];
+            foreach ($input['id'] as $id)
+            {
+                Band::find($id)->delete_image_file();
+                if(!Band::destroy($id))
+                    return ['success'=>false,'msg'=>'There was an error deleting the band(s)!<br>They might have some dependences.'];
+            }
+            return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Bands Remove: '.$ex->getMessage());
         }

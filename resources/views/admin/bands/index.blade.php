@@ -68,8 +68,9 @@
                                     </label>
                                 </td>
                                 <td class="search-item clearfix" width="88%"> 
-                                    <div class="search-content col-md-1">                                        
-                                        <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="https://www.ticketbat.com{{$b->image_url}}"/></a></b></i></center>
+                                    <div class="search-content col-md-1"> 
+                                        @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
+                                        <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
                                     </div>
                                     <div class="search-content col-md-11" style="padding-left:35px">
                                         <h3 class="search-title"><a data-toggle="modal" href="#modal_details_{{$b->id}}">{{$b->name}}</a></h3>
@@ -98,7 +99,7 @@
                                         <div class="modal-body">
                                             <div class="portlet light ">
                                                 <div class="portlet-title">
-                                                    <center style="color:red;"><i><b><img alt="- No image -" height="200px" width="220px" src="https://www.ticketbat.com{{$b->image_url}}"/></b></i></center>
+                                                    <center style="color:red;"><i><b><img alt="- No image -" height="200px" width="220px" src="{{$b->image_url}}"/></b></i></center>
                                                 </div>
                                                 <div class="portlet-body">
                                                     <ul class="chats">

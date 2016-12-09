@@ -41,11 +41,23 @@ class Band extends Model
     }
     //PERSONALIZED METHODS
     /**
-     * Set the image_url for the current bans.
+     * Set the image_url for the current band.
      */
     public function set_image_url($image_url)
     {
         $this->image_url = Image::stablish_image('bands',$image_url);
+    }
+    /**
+     * Remove the image file for the current band.
+     */
+    public function delete_image_file()
+    {
+        if(Image::remove_image($this->image_url))
+        {
+            $this->image_url = '';
+            return true;
+        }
+        return true;   
     }
     /**
      * Search for social media in certain url given.
