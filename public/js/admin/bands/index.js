@@ -47,7 +47,7 @@ var TableDatatablesManaged = function () {
                 }
             ],
             "order": [
-                [0, "asc"]
+                [1, "asc"]
             ] // set first column as a default sort by asc
         });
         

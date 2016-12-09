@@ -70,6 +70,7 @@
                                 <td class="search-item clearfix" width="88%"> 
                                     <div class="search-content col-md-1"> 
                                         @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
+                                        @if(preg_match('/\/s3\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$b->image_url) @endphp @endif
                                         <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
                                     </div>
                                     <div class="search-content col-md-11" style="padding-left:35px">

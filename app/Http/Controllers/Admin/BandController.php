@@ -34,8 +34,12 @@ class BandController extends Controller{
                 $shows = [];
                 foreach($band->show_bands as $s)
                     $shows[] = [$s->name,$s->pivot->n_order];
+                // change relative url uploads for real one
                 if(preg_match('/\/uploads\//',$band->image_url)) 
-                    $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$band->image_url;
+                    $band->image_url = env('IMAGE_URL_OLDTB_SERVER').$band->image_url;
+                // change relative url s3 for real one
+                if(preg_match('/\/s3\//',$band->image_url)) 
+                    $band->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$band->image_url);
                 return ['success'=>true,'band'=>array_merge($band->getAttributes(),['shows[]'=>$shows])];
             }
             else

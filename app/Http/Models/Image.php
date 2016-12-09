@@ -117,7 +117,7 @@ class Image extends Model
                     Storage::disk('local')->delete($oldUrl);
                     //return url if file exists
                     if(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
-                        return env('IMAGE_URL_AMAZON_SERVER').$subfolder.$originalName.'.'.$originalExt;
+                        return '/s3/'.$subfolder.$originalName.'.'.$originalExt;
                     return '';
                 }
                 else
@@ -139,12 +139,14 @@ class Image extends Model
             //init
             $originalName = pathinfo($image_url, PATHINFO_FILENAME);
             $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
-            //check parent folder of image
+            //check if is in uploads (the old server)
             if(preg_match('/\/uploads\//',$image_url)) 
             {
+                //it cannot delete it
                 return true;
             }
-            else
+            //check if is in s3 server (the new server)
+            else if(preg_match('/\/s3\//',$image_url) || strpos($image_url,env('IMAGE_URL_AMAZON_SERVER')) !== false) 
             {
                 $file_url = substr(strrchr(dirname($image_url,1), '/'), 1).'/'.$originalName.'.'.$originalExt;
                 if(Storage::disk('s3')->exists($file_url))
@@ -154,6 +156,8 @@ class Image extends Model
                 }
                 return true;
             }
+            //other url in another place
+            else return true;
         } catch (Exception $ex) {
             return false;
         }
