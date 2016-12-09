@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Category;
 use App\Http\Models\Band;
-use Illuminate\Support\Facades\Storage;
 /**
  * Manage Bands
  *
