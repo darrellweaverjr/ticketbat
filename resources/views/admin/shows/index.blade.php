@@ -4,6 +4,8 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -226,118 +228,494 @@
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
-                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Name
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="name" class="form-control" placeholder="My Band" /> </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Category
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <select class="form-control" name="category_id">
-                                                @foreach($categories as $index=>$c)
-                                                    @if($c->id_parent == 0)
-                                                        <option value="{{$c->id}}">{{$c->name}}</option>
-                                                        @foreach ($c->children()->get() as $children)
-                                                            <option value="{{$children->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
-                                                            @foreach ($children->children()->get() as $niece)
-                                                                <option value="{{$niece->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
+                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>                             
+                            <div class="tabbable-line">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="false"> General </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="true"> Accouting/Reports </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_passwords" data-toggle="tab" aria-expanded="false"> Passwords </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="false"> Showtimes </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="false"> Tickets </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="false"> Bands </a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Multimedia
+                                            <i class="fa fa-angle-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li class="">
+                                                <a href="#tab_model_update_images" data-toggle="tab"> Images </a>
+                                            </li>
+                                            <li class="">
+                                                <a href="#tab_model_update_banners" data-toggle="tab"> Banners </a>
+                                            </li>
+                                            <li class="">
+                                                <a href="#tab_model_update_videos" data-toggle="tab"> Videos </a>
+                                            </li>
+                                            <li class="">
+                                                <a href="#tab_model_update_reviews" data-toggle="tab"> Reviews </a>
+                                            </li>
+                                            <li class="">
+                                                <a href="#tab_model_update_awards" data-toggle="tab"> Awards </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_model_update_general">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Name
+                                                        <span class="required"> * </span>
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="name" class="form-control" placeholder="My Show" /> 
+                                                    </div>
+                                                    <label class="control-label col-md-3">Category
+                                                    <span class="required"> * </span>
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <select class="form-control" name="category_id">
+                                                            @foreach($categories as $index=>$c)
+                                                                @if($c->id_parent == 0)
+                                                                    <option value="{{$c->id}}">{{$c->name}}</option>
+                                                                    @foreach ($c->children()->get() as $children)
+                                                                        <option value="{{$children->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
+                                                                        @foreach ($children->children()->get() as $niece)
+                                                                            <option value="{{$niece->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
+                                                                        @endforeach
+                                                                    @endforeach
+                                                                @endif
                                                             @endforeach
-                                                        @endforeach
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>    
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Image
-                                        </label>
-                                        <div class="col-md-9 show-error" >
-                                            <center>
-                                                <input type="hidden" name="image_url"/>
-                                                <button type="button" id="btn_bands_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
-                                                <img name="image_url" alt="- No image -" src="" width="323px" height="270px" />
-                                            </center>
+                                                        </select>
+                                                    </div>
+                                                    <label class="control-label col-md-3">Venue
+                                                        <span class="required"> * </span>
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <select class="form-control" name="venue_id">
+                                                            @foreach($venues as $index=>$v)
+                                                                <option value="{{$v->id}}">{{$v->name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div> 
+                                                    <label class="control-label col-md-3">Stage
+                                                        <span class="required"> * </span>
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <select class="form-control" name="stage_id">
+                                                            @foreach($stages as $index=>$t)
+                                                                @if(isset($venues[0]) && $venues[0]->id == $t->venue_id)
+                                                                <option value="{{$t->id}}">{{$t->name}}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                                                    </div> 
+                                                    <label class="control-label col-md-3">Restriction
+                                                        <span class="required"> * </span>
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <select class="form-control bs-select" data-show-subtext="true" name="restrictions">
+                                                            @foreach($restrictions as $index=>$r)
+                                                                @if(isset($venues[0]) && $venues[0]->restrictions == $r)
+                                                                <option selected="" value="{{$r}}">{{$r}}</option>
+                                                                @else
+                                                                <option value="{{$r}}" data-content="{{$r}} <span class='label lable-sm label-warning'> WARNING: Different than venue </span>">{{$r}}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <label class="control-label col-md-3">On sale</label>
+                                                    <div class="col-md-6">
+                                                        <div id="start_end_date" class="input-group date form_datetime ">
+                                                            <input size="16" readonly="" class="form-control" type="text" name="on_sale">
+                                                            <span class="input-group-btn">
+                                                                <button class="btn default date-set" type="button">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3"><button type="button" id="clear_start_end_date" class="btn btn-block sbold dark btn-outline">Clear</button></div>
+                                                    <label class="control-label col-md-3">Cutoff Hours</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" value="" name="cutoff_hours"> 
+                                                    </div>
+                                                    <label class="control-label col-md-3">Featured?</label>
+                                                    <div class="col-md-9">
+                                                        <input type="hidden" name="is_featured" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="is_featured" value="100" data-on-text="Is featured" data-off-text="Not featured" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                    <label class="control-label col-md-3">Status</label>
+                                                    <div class="col-md-9">
+                                                        <input type="hidden" name="is_active" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="is_active" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">Web Site
+                                                    </label>
+                                                    <div class="col-md-6 show-error">
+                                                        <input type="text" name="website" class="form-control" placeholder="https://www.myshow.com" /> 
+                                                    </div> 
+                                                    <div class="col-md-3">
+                                                        <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Media</button>
+                                                    </div> 
+                                                    <label class="col-md-3 control-label">Youtube
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myshow" /> 
+                                                    </div>
+                                                    <label class="col-md-3 control-label">Facebook
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myshow" /> 
+                                                    </div>
+                                                    <label class="col-md-3 control-label">Twitter
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myshow" /> 
+                                                    </div>
+                                                    <label class="col-md-3 control-label">My Space
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="my_space" class="form-control" placeholder="https://myspace.com/myshow" /> 
+                                                    </div>
+                                                    <label class="col-md-3 control-label">Flickr
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="flickr" class="form-control" placeholder="https://flickr.com/myshow" /> 
+                                                    </div>
+                                                    <label class="col-md-3 control-label">Instagram
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" /> 
+                                                    </div>
+                                                    <label class="col-md-3 control-label">SoundCloud
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="soundcloud" class="form-control" placeholder="https://soundcloud.com/myshow" /> 
+                                                    </div>
+                                                    <label class="control-label col-md-3"></label>
+                                                    <div class="col-md-9">
+                                                        <input type="hidden" name="printed_tickets" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="printed_tickets" value="1" data-on-text="Able print tickets" data-off-text="Disable print tickets" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-2 control-label">Short Descript.
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-10 show-error">
+                                                <textarea name="short_description" class="form-control" rows="2"></textarea>
+                                            </div> 
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-2 control-label">Description</label>
+                                            <div class="col-md-10 show-error">
+                                                <textarea name="description" class="form-control" rows="5"></textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Web Site
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="website" class="form-control" placeholder="https://www.myband.com" /> 
-                                        </div> 
-                                        <label class="col-md-3 control-label">
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
-                                        </div> 
-                                        <label class="col-md-3 control-label">Youtube
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myband" /> 
+                                    <div class="tab-pane" id="tab_model_update_reports">
+                                        
+                                        
+                                        
+                                        
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_passwords">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Total Orders </th>
+                                                        <th> Total Amount </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <label class="col-md-3 control-label">Facebook
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myband" /> 
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_showtimes">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <label class="col-md-3 control-label">Twitter
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myband" /> 
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_tickets">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <label class="col-md-3 control-label">My Space
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="my_space" class="form-control" placeholder="https://myspace.com/myband" /> 
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_bands">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <label class="col-md-3 control-label">Flickr
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="flickr" class="form-control" placeholder="https://flickr.com/myband" /> 
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_images">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <label class="col-md-3 control-label">Instagram
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myband" /> 
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_banners">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <label class="col-md-3 control-label">SoundCloud
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="soundcloud" class="form-control" placeholder="https://soundcloud.com/myband" /> 
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_videos">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_reviews">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_awards">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Customer Name </th>
+                                                        <th> Date </th>
+                                                        <th> Amount </th>
+                                                        <th> Status </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:;"> David Wilson </a>
+                                                        </td>
+                                                        <td> 3 Jan, 2013 </td>
+                                                        <td> $625.50 </td>
+                                                        <td>
+                                                            <span class="label label-sm label-warning"> Pending </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:;" class="btn btn-sm btn-default">
+                                                                <i class="fa fa-search"></i> View </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
                             </div> 
-                            <div class="row">
-                                <label class="col-md-2 control-label">Short Descript.
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-10 show-error">
-                                    <textarea name="short_description" class="form-control" rows="2"></textarea>
-                                </div> 
-                            </div>
-                            <div class="row">
-                                <label class="col-md-2 control-label">Description</label>
-                                <div class="col-md-10 show-error">
-                                    <textarea name="description" class="form-control" rows="5"></textarea>
-                                </div>
-                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -404,7 +782,12 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
-                                    <button type="submit" class="btn sbold grey-salsa">Search</button>
+                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
+                                                                                                    title: 'Searching information',
+                                                                                                    text: 'Please, wait.',
+                                                                                                    type: 'info',
+                                                                                                    showConfirmButton: false
+                                                                                                });" >Search</button>
                                 </div>
                             </div>
                         </div>
@@ -418,5 +801,8 @@
 @endsection
 
 @section('scripts') 
+<script src="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
 <script src="/js/admin/shows/index.js" type="text/javascript"></script>
 @endsection

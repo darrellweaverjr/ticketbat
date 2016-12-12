@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Models\Category;
 use App\Http\Models\Venue;
 use App\Http\Models\Show;
-
+use App\Http\Models\Stage;
+use App\Http\Models\Util;
 use App\Http\Models\Band;
 
 /**
@@ -101,9 +102,11 @@ class ShowController extends Controller{
                                 ->distinct()->get();
                 $categories = Category::all();
                 $venues = Venue::all();
+                $stages = Stage::all();
+                $restrictions = Util::getEnumValues('shows','restrictions');
                 //dd($shows);
                 //return view
-                return view('admin.shows.index',compact('shows','categories','venues','venue','showtime','status','onlyerrors'));
+                return view('admin.shows.index',compact('shows','categories','venues','stages','restrictions','venue','showtime','status','onlyerrors'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Shows Index: '.$ex->getMessage());
