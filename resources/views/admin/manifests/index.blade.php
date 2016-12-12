@@ -43,10 +43,11 @@
                         <thead>
                             <tr>
                                 <th width="2%"> </th>
+                                <th width="1%"> </th>
                                 <th width="20%"> Show Time </th>
-                                <th width="8%"> Type </th>
-                                <th width="60%"> Info </th>
-                                <th width="10%"> Sent At </th>
+                                <th width="6%"> Type </th>
+                                <th width="62%"> Info </th>
+                                <th width="9%"> Sent At </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,22 +60,25 @@
                                         <span></span>
                                     </label>
                                 </td>
+                                <td width="1%" style="background-color:#{{substr(dechex(crc32($m->show_time_id.date('mdYgi',strtotime($m->show_time)))),0,6)}}"></td>  
                                 <td width="20%">
                                     @if($previous_show_time_id != $m->show_time_id)
                                     <center> 
-                                        <h4><a>{{$m->name}}</a></h4><small>{{date('m/d/Y g:ia',strtotime($m->show_time))}}</small> 
+                                        <b><a>{{$m->name}}</a></b><br><small>{{date('m/d/Y g:ia',strtotime($m->show_time))}}</small>
                                     </center>
                                     @endif
                                 </td>
-                                <td width="8%">
-                                    <span class="label label-sm sbold 
+                                <td width="6%">
+                                    <center>
+                                        <span class="label label-sm sbold 
                                         @if($m->manifest_type=='Preliminary') label-success 
                                         @elseif($m->manifest_type=='Primary') label-info 
                                         @else label-warning 
                                         @endif
                                     "> {{$m->manifest_type}} </span>
+                                    </center>
                                 </td>
-                                <td width="60%">
+                                <td width="62%">
                                     <div class="search-content" style="text-align:left">
                                         <small><i>
                                         Purchases: <b>{{$m->num_purchases}}</b>, Tickets Sold: <b>{{$m->num_people}}</b><br>
@@ -83,7 +87,7 @@
                                         </i></small>
                                     </div>
                                 </td>
-                                <td width="10%"><center> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}} </center></td>
+                                <td width="9%"><center> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}} </center></td>
                             </tr>
                             @php $previous_show_time_id = $m->show_time_id @endphp
                             @endforeach 
