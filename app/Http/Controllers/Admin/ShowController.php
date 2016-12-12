@@ -49,7 +49,7 @@ class ShowController extends Controller{
             {           
                 $current = date('Y-m-d H:i:s');
                 //conditions to search
-                $where = [];
+                $where = [['images.image_type','=','Header']];
                 //search venue
                 if(isset($input) && isset($input['venue']))
                 {
@@ -92,7 +92,10 @@ class ShowController extends Controller{
                                 ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                                 ->join('show_times', 'show_times.show_id', '=' ,'shows.id')
                                 ->join('categories', 'categories.id', '=' ,'shows.category_id')
-                                ->select('shows.*','categories.name AS category')
+                                ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
+                                ->join('images', 'show_images.image_id', '=' ,'images.id')
+                                ->join('stages', 'stages.id', '=' ,'shows.stage_id')
+                                ->select('shows.*','categories.name AS category','images.url AS image_url','venues.name AS venue_name','stages.name AS stage_name')
                                 ->where($where)
                                 ->orderBy('shows.name')
                                 ->distinct()->get();

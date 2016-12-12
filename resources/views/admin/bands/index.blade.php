@@ -108,7 +108,7 @@
                                                             <div class="avatar">Category</div>
                                                             <div class="message">
                                                                 <span class="arrow"> </span>
-                                                                <span class="body"> {{$categories->find($b->category_id)->name}} </span>
+                                                                <span class="body"> {{$b->category}} </span>
                                                             </div>
                                                         </li>
                                                         <li class="in">

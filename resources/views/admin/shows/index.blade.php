@@ -23,38 +23,10 @@
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
                     <div class="actions">
-                        <form method="post" action="/admin/shows" id="form_model_search" class=" pull-left">
-                            <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                            <div style="width:1000px !important">
-                                <label for="venue"> <span>Venue:</span> </label>
-                                <select class="table-group-action-input form-control input-inline input-small input-sm" name="venue" style="width:200px !important">
-                                    <option selected value="">All</option>
-                                    @foreach($venues as $index=>$v)
-                                    <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
-                                    @endforeach
-                                </select>
-                                <label for="showtime"> <span>Show Time:</span> </label>
-                                <select class="table-group-action-input form-control input-inline input-small input-sm" name="showtime" style="width:100px !important">
-                                    <option @if($showtime=='A') selected @endif value="A">All</option>
-                                    <option @if($showtime=='P') selected @endif value="P">Passed</option>
-                                    <option @if($showtime=='U') selected @endif value="U">Upcoming</option>
-                                </select>
-                                <label for="status"> <span>Status:</span> </label>
-                                <select class="table-group-action-input form-control input-inline input-small input-sm" name="status" style="width:90px !important">
-                                    <option @if($status==1) selected @endif value="1">Active</option>
-                                    <option @if($status==0) selected @endif value="0">Inactive</option>
-                                </select>
-                                <label for="onlyerrors"> <span>Only With Error:</span> </label>
-                                <select class="table-group-action-input form-control input-inline input-small input-sm" name="onlyerrors" style="width:65px !important">
-                                    <option @if($onlyerrors==0) selected @endif value="0">No</option>
-                                    <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
-                                </select>
-                                <button class="btn sbold bg-gray btn-small form-control input-inline  input-sm " > Search 
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </form>  
                         <div class="btn-group">
+                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search 
+                                <i class="fa fa-search"></i>
+                            </button>
                             <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
                                 <i class="fa fa-plus"></i>
                             </button>
@@ -77,8 +49,10 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="88%"> Name </th>
-                                <th width="10%"> Category </th>
+                                <th width="82%"> Name </th>
+                                <th width="8%"> Category </th>
+                                <th width="3%"> Featured </th>
+                                <th width="5%"> Status </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,11 +64,145 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td class="search-item clearfix" width="88%"> 
-                                    {{$s->name}}
+                                <td class="search-item clearfix" width="82%"> 
+                                    <div class="search-content col-md-2"> 
+                                        @if(preg_match('/\/uploads\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_OLDTB_SERVER').$s->image_url @endphp @endif
+                                        @if(preg_match('/\/s3\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$s->image_url) @endphp @endif
+                                        <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$s->id}}"><img alt="- No image -" height="100px" width="200px" src="{{$s->image_url}}"/></a></b></i></center>
+                                    </div>
+                                    <div class="search-content col-md-10" style="padding-left:20px">
+                                        <h4 class="search-title"><b><a data-toggle="modal" href="#modal_details_{{$s->id}}">{{$s->name}}</a></b> [<a href="https://www.ticketbat.com/event/{{$s->slug}}" target="_blank">{{$s->slug}}</a>]</h4>
+                                        <small><i>
+                                            @if($s->url)Web Site: <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
+                                            @if($s->googleplus)Google+: <a href="{{$s->googleplus}}" target="_blank">{{$s->googleplus}} </a>@endif
+                                            @if($s->youtube)YouTube: <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
+                                            @if($s->facebook)Facebook: <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
+                                            @if($s->twitter)Twitter: <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
+                                            @if($s->yelpbadge)MySpace: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
+                                            @if($s->instagram)Instagram: <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
+                                        </i></small><br>
+                                        @if($s->short_description) {{$s->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif 
+                                    </div>
                                 </td>
-                                <td width="10%"><center> {{$s->category}} </center></td>
+                                <td width="8%"><center> {{$s->category}} </center></td>
+                                <td width="3%"><center> <span class="label label-sm sbold
+                                    @if($s->is_featured) label-success"> Yes 
+                                    @else label-danger"> No 
+                                    @endif
+                                    </center></span> 
+                                </td>
+                                <td width="5%"><center> <span class="label label-sm sbold
+                                    @if($s->is_active) label-success"> Active 
+                                    @else label-danger"> Inactive 
+                                    @endif
+                                    </center></span> 
+                                </td>
                             </tr>
+                            <!-- BEGIN DETAILS MODAL--> 
+                            <div id="modal_details_{{$s->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+                                <div class="modal-dialog">
+                                    <div class="modal-content portlet">
+                                        <div id="modal_model_update_header" class="modal-header">
+                                            <h4 class="modal-title bold uppercase"><center>{{$s->name}}</center></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="portlet light ">
+                                                <div class="portlet-title">
+                                                    <center style="color:red;"><i><b><img alt="- No image -" height="200px" width="500px" src="{{$s->image_url}}"/></b></i></center>
+                                                </div>
+                                                <div class="portlet-body">
+                                                    <ul class="chats">
+                                                        <li class="in">
+                                                            <div class="avatar">Slug</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> <a href="https://www.ticketbat.com/event/{{$s->slug}}" target="_blank">{{$s->slug}}</a> </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Location</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> 
+                                                                    Venue: <b>{{$s->venue_name}}</b><br>
+                                                                    Stage: <b>{{$s->stage_name}}</b><br>
+                                                                    Restrictions: <b>{{$s->restrictions}}</b>
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Category</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> {{$s->category}} </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Social Media</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> 
+                                                                    @if($s->url)Web Site: <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
+                                                                    @if($s->googleplus)Google+: <a href="{{$s->googleplus}}" target="_blank">{{$s->googleplus}} </a>@endif
+                                                                    @if($s->youtube)YouTube: <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
+                                                                    @if($s->facebook)Facebook: <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
+                                                                    @if($s->twitter)Twitter: <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
+                                                                    @if($s->yelpbadge)MySpace: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
+                                                                    @if($s->instagram)Instagram: <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
+                                                                    @if(!$s->url && !$s->googleplus && !$s->youtube && !$s->facebook && !$s->twitter && !$s->yelpbadge && !$s->instagram) <i style="color:red"><b>- No social media links -</b></i> @endif
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Sponsorship</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> 
+                                                                    @if($s->sponsor)Sponsor: <b>{{$s->sponsor}}</b> <br>@endif
+                                                                    @if($s->presented_by)Presented By: <b>{{$s->presented_by}}</b>@endif
+                                                                    @if(!$s->sponsor && !$s->presented_by && !$s->sponsor_logo_id) <i style="color:red"><b>- No sponsorship -</b></i> @endif
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Feature</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> 
+                                                                    Featured?: <b>@if($s->is_featured) Yes @else No @endif</b><br>
+                                                                    Active?: <b>@if($s->is_active) Yes @else No @endif</b><br>
+                                                                    Enable print tickets?: <b>@if($s->printed_tickets) Yes @else No @endif</b><br>
+                                                                    On Sale: <b>@if($s->on_sale && $s->on_sale!='0000-00-00 00:00:00') {{date('m/d/Y g:ia',strtotime($s->on_sale))}} @else - @endif</b><br>
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Short Description</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> @if($s->short_description) {{$s->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Full Description</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body"> @if($s->description) {{$s->description}} @else <i style="color:red"><b>- No description -</b></i> @endif </span>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div> 
+                                            </div>
+                                            <div class="row">
+                                                <div class="modal-footer">
+                                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END DETAILS MODAL--> 
                             @endforeach 
                         </tbody>
                     </table>
@@ -230,22 +338,6 @@
                                     <textarea name="description" class="form-control" rows="5"></textarea>
                                 </div>
                             </div>
-<!--                            <div class="row">
-                                <table class="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th width="80%"> Show </th>
-                                            <th width="20%"> Order </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td width="80%"> sdfdfdfdf </td>
-                                            <td width="20%"> 1 </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>  -->
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -262,6 +354,67 @@
         </div>
     </div>
     <!-- END UPDATE MODAL--> 
+    <!-- BEGIN SEARCH MODAL--> 
+    <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:400px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="/admin/shows" id="form_model_search">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="venue" class="col-md-5"> <span>Venue:</span> </label>
+                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="venue" style="width:200px !important">
+                                        <option selected value="">All</option>
+                                        @foreach($venues as $index=>$v)
+                                        <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>    
+                                <div class="form-group">
+                                    <label for="showtime" class="col-md-5"> <span>Show Time:</span> </label>
+                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="showtime" style="width:100px !important">
+                                        <option @if($showtime=='A') selected @endif value="A">All</option>
+                                        <option @if($showtime=='P') selected @endif value="P">Passed</option>
+                                        <option @if($showtime=='U') selected @endif value="U">Upcoming</option>
+                                    </select>
+                                </div>    
+                                <div class="form-group">
+                                    <label for="status" class="col-md-5"> <span>Status:</span> </label>
+                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="status" style="width:90px !important">
+                                        <option @if($status==1) selected @endif value="1">Active</option>
+                                        <option @if($status==0) selected @endif value="0">Inactive</option>
+                                    </select>
+                                </div>    
+                                <div class="form-group">
+                                    <label for="onlyerrors" class="col-md-5"> <span>Only With Error:</span> </label>
+                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="onlyerrors" style="width:65px !important">
+                                        <option @if($onlyerrors==0) selected @endif value="0">No</option>
+                                        <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
+                                    </select>
+                                </div>   
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SEARCH MODAL--> 
 @endsection
 
 @section('scripts') 
