@@ -215,7 +215,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN UPDATE MODAL--> 
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:50% !important;">
+        <div class="modal-dialog" style="width:60% !important;">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title"></center></h4>
@@ -235,7 +235,10 @@
                                         <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="false"> General </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="true"> Accouting/Reports </a>
+                                        <a href="#tab_model_update_sponsor" data-toggle="tab" aria-expanded="true"> Sponsorship </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="true"> Reports & Checking </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_passwords" data-toggle="tab" aria-expanded="false"> Passwords </a>
@@ -250,7 +253,7 @@
                                         <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="false"> Bands </a>
                                     </li>
                                     <li class="dropdown">
-                                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Multimedia
+                                        <a href="#tab_model_update_multimedia" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Multimedia
                                             <i class="fa fa-angle-down"></i>
                                         </a>
                                         <ul class="dropdown-menu pull-right">
@@ -276,6 +279,9 @@
                                     <div class="tab-pane active" id="tab_model_update_general">
                                         <div class="row">
                                             <div class="col-md-6">
+                                                <label class="control-label">
+                                                    <span class="required"> General </span>
+                                                </label><hr>
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Name
                                                         <span class="required"> * </span>
@@ -338,25 +344,32 @@
                                                         </select>
                                                     </div>
                                                     <label class="control-label col-md-3">On sale</label>
-                                                    <div class="col-md-6">
-                                                        <div id="start_end_date" class="input-group date form_datetime ">
+                                                    <div class="col-md-9">
+                                                        <div id="on_sale_date" class="input-group date form_datetime dtpicker">
                                                             <input size="16" readonly="" class="form-control" type="text" name="on_sale">
                                                             <span class="input-group-btn">
                                                                 <button class="btn default date-set" type="button">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </button>
+                                                                <button class="btn default" type="button" id="clear_onsale_date">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </button>
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3"><button type="button" id="clear_start_end_date" class="btn btn-block sbold dark btn-outline">Clear</button></div>
                                                     <label class="control-label col-md-3">Cutoff Hours</label>
                                                     <div class="col-md-9">
-                                                        <input type="text" value="" name="cutoff_hours"> 
+                                                        <input type="text" value="" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                                     </div>
-                                                    <label class="control-label col-md-3">Featured?</label>
-                                                    <div class="col-md-9">
+                                                    <label class="control-label col-md-3">Featured</label>
+                                                    <div class="col-md-3">
                                                         <input type="hidden" name="is_featured" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_featured" value="100" data-on-text="Is featured" data-off-text="Not featured" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                    <label class="control-label col-md-3">Able Print Ticket</label>
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" name="printed_tickets" value="0"/>
+                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                     <label class="control-label col-md-3">Status</label>
                                                     <div class="col-md-9">
@@ -366,14 +379,19 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
+                                                <label class="control-label">
+                                                    <span class="required"> Social Media </span>
+                                                </label><hr>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label">Web Site
                                                     </label>
-                                                    <div class="col-md-6 show-error">
-                                                        <input type="text" name="website" class="form-control" placeholder="https://www.myshow.com" /> 
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="url" class="form-control" placeholder="https://www.myshow.com" /> 
                                                     </div> 
-                                                    <div class="col-md-3">
-                                                        <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Media</button>
+                                                    <label class="col-md-3 control-label">
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
                                                     </div> 
                                                     <label class="col-md-3 control-label">Youtube
                                                     </label>
@@ -390,34 +408,27 @@
                                                     <div class="col-md-9 show-error">
                                                         <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">My Space
+                                                    <label class="col-md-3 control-label">Google+
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="my_space" class="form-control" placeholder="https://myspace.com/myshow" /> 
+                                                        <input type="text" name="googleplus" class="form-control" placeholder="https://googleplus.com/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Flickr
+                                                    <label class="col-md-3 control-label">YelpBadge
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="flickr" class="form-control" placeholder="https://flickr.com/myshow" /> 
+                                                        <input type="text" name="yelpbadge" class="form-control" placeholder="https://yelpbadge.com/myshow" /> 
                                                     </div>
                                                     <label class="col-md-3 control-label">Instagram
                                                     </label>
                                                     <div class="col-md-9 show-error">
                                                         <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">SoundCloud
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
-                                                        <input type="text" name="soundcloud" class="form-control" placeholder="https://soundcloud.com/myshow" /> 
-                                                    </div>
-                                                    <label class="control-label col-md-3"></label>
-                                                    <div class="col-md-9">
-                                                        <input type="hidden" name="printed_tickets" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="printed_tickets" value="1" data-on-text="Able print tickets" data-off-text="Disable print tickets" data-on-color="primary" data-off-color="danger">
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <label class="control-label">
+                                            <span class="required"> Descriptions </span>
+                                        </label><hr>
                                         <div class="row">
                                             <label class="col-md-2 control-label">Short Descript.
                                                 <span class="required"> * </span>
@@ -433,286 +444,150 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="tab-pane" id="tab_model_update_sponsor">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Image
+                                                    </label>
+                                                    <div class="col-md-9 show-error" >
+                                                        <center>
+                                                            <input type="hidden" name="sponsor_logo_id"/>
+                                                            <button type="button" id="btn_sponsor_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                                            <img name="sponsor_logo_id" alt="- No image -" src="" width="323px" height="270px" />
+                                                        </center>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">Sponsor
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="sponsor" class="form-control"/> 
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">Presented by
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="presented_by" class="form-control"  /> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="tab-pane" id="tab_model_update_reports">
-                                        
-                                        
-                                        
-                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="control-label">
+                                                    <span class="required"> Reports </span>
+                                                </label><hr>
+                                                <div class="form-group">
+                                                    <label class="control-label" style="padding-left:30px">Email for Individual Sales and Manifests Reports:
+                                                    </label>
+                                                    <div class="show-error" style="padding-left:30px">
+                                                        <input type="text" name="emails" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" /> 
+                                                    </div>
+                                                    <label class="control-label" style="padding-left:30px">Email for Daily Accounting: 
+                                                    </label>
+                                                    <div class="show-error" style="padding-left:30px">
+                                                        <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" /> 
+                                                    </div><hr>
+                                                    <label class="control-label col-md-9">Send individual order emails</label>
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" name="individual_emails" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="individual_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                    <label class="control-label col-md-9">Send manifest emails</label>
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" name="manifest_emails" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="manifest_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                    <label class="control-label col-md-9">Send daily sales emails</label>
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" name="daily_sales_emails" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="daily_sales_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                    <label class="control-label col-md-9">Send financial report emails</label>
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" name="financial_report_emails" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="financial_report_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="control-label">
+                                                    <span class="required"> Check For Amex Card </span>
+                                                </label><hr>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Date range:
+                                                    </label>
+                                                    <div class="input-group col-md-9" id="amex_only_date">
+                                                        <input type="text" class="form-control" name="amex_only_start_date" readonly="true">
+                                                        <span class="input-group-addon"> to </span>
+                                                        <input type="text" class="form-control" name="amex_only_end_date" readonly="true">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default date-range-toggle" type="button">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </button>
+                                                            <button class="btn default" type="button" id="clear_amex_only_date">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                    <label class="col-md-3 control-label">Ticket types
+                                                    </label>
+                                                    <div class="col-md-9 ticket_types_lists">
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_passwords">
-                                        <div class="table-responsive">
+                                        <div class="row" style="padding-right:20px">
+                                            <input type="button" id="btn_model_add_show_passwords" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right"/> 
+                                        </div>
+                                        <div class="row table-responsive" style="padding-left:20px">
                                             <table class="table table-striped table-hover table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Total Orders </th>
-                                                        <th> Total Amount </th>
+                                                        <th> Passwords </th>
+                                                        <th> Date Range </th>
+                                                        <th> Ticket Types </th>
+                                                        <th> </th>
                                                         <th> </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
+                                                    
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_showtimes">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_tickets">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_bands">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_images">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_banners">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_videos">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reviews">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_awards">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Customer Name </th>
-                                                        <th> Date </th>
-                                                        <th> Amount </th>
-                                                        <th> Status </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="javascript:;"> David Wilson </a>
-                                                        </td>
-                                                        <td> 3 Jan, 2013 </td>
-                                                        <td> $625.50 </td>
-                                                        <td>
-                                                            <span class="label label-sm label-warning"> Pending </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:;" class="btn btn-sm btn-default">
-                                                                <i class="fa fa-search"></i> View </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div> 
@@ -798,6 +673,64 @@
         </div>
     </div>
     <!-- END SEARCH MODAL--> 
+    <!-- BEGIN ADD/EDIT PASSWORD MODAL--> 
+    <div id="modal_model_show_passwords" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Password</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="/admin/shows/save/show_passwords" id="form_model_show_passwords">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="show_id" value="" />
+                        <input type="hidden" name="id" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Password
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input type="text" name="password" class="form-control" /> 
+                                    </div>
+                                    <label class="control-label col-md-3">Date range:
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="input-group col-md-9" id="show_passwords_date">
+                                        <input type="text" class="form-control" name="start_date" readonly="true">
+                                        <span class="input-group-addon"> to </span>
+                                        <input type="text" class="form-control" name="end_date" readonly="true">
+                                        <span class="input-group-btn">
+                                            <button class="btn default date-range-toggle" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <label class="col-md-3 control-label">Ticket types
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 ticket_types_lists">
+                                    </div> 
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_passwords').trigger('reset')">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/EDIT PASSWORD MODAL--> 
 @endsection
 
 @section('scripts') 

@@ -112,5 +112,50 @@ class ShowController extends Controller{
             throw new Exception('Error Shows Index: '.$ex->getMessage());
         }
     } 
+    /**
+     * Save new or updated show or subtable related with show.
+     *
+     * @void
+     */
+    public function save($subtable=null)
+    {
+        try {
+            //init
+            $input = Input::all(); 
+            //save all record      
+            if($input)
+            {
+                if(isset($input['id']) && $input['id'])
+                {
+                    $band = Band::find($input['id']);
+                    $band->delete_image_file();
+                }                    
+                else
+                {                    
+                    $band = new Band;
+                }
+                //save band
+                $band->category()->associate(Category::find($input['category_id']));
+                $band->name = $input['name'];
+                $band->short_description = $input['short_description'];
+                $band->description = $input['description'];
+                $band->youtube = $input['youtube'];
+                $band->facebook = $input['facebook'];
+                $band->twitter = $input['twitter'];
+                $band->my_space = $input['my_space'];
+                $band->flickr = $input['flickr'];
+                $band->instagram = $input['instagram'];
+                $band->soundcloud = $input['soundcloud'];
+                $band->website = $input['website'];
+                $band->set_image_url($input['image_url']);
+                $band->save();
+                //return
+                return ['success'=>true,'msg'=>'Band saved successfully!'];
+            }
+            return ['success'=>false,'msg'=>'There was an error saving the band.<br>The server could not retrieve the data.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Bands Save: '.$ex->getMessage());
+        }
+    }
     
 }

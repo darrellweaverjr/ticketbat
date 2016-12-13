@@ -73,7 +73,7 @@ var TableDatatablesManaged = function () {
         
         //PERSONALIZED FUNCTIONS
         //start_end_date
-        $('#start_end_date').datetimepicker({
+        $('#on_sale_date').datetimepicker({
             autoclose: true,
             isRTL: App.isRTL(),
             format: "yyyy-mm-dd hh:ii",
@@ -81,10 +81,42 @@ var TableDatatablesManaged = function () {
             todayBtn: true,
             minuteStep: 15
         });
-        //clear start_end_date
-        $('#clear_start_end_date').on('click', function(ev) {
+        $('#amex_only_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD HH:mm',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
+            },
+            function (start, end) {
+                $('#amex_only_date input[name="amex_only_start_date"]').val(start.format('YYYY-MM-DD HH:mm'));
+                $('#amex_only_date input[name="amex_only_end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
+            }
+        );  
+        $('#show_passwords_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD HH:mm',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
+            },
+            function (start, end) {
+                $('#form_model_show_passwords input[name="start_date"]').val(start.format('YYYY-MM-DD HH:mm'));
+                $('#form_model_show_passwords input[name="end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
+            }
+        );  
+        //clear onsale_date
+        $('#clear_onsale_date').on('click', function(ev) {
             $('#form_model_update [name="on_sale"]').val('');
-            $('#start_end_date').datetimepicker('update');
+            $('#on_sale_date').datetimepicker('update');
+        });
+        //clear amex_only_date
+        $('#clear_amex_only_date').on('click', function(ev) {
+            $('#form_model_update [name="amex_only_start_date"]').val('');
+            $('#form_model_update [name="amex_only_end_date"]').val('');
+            $('#on_sale_date').datetimepicker('update');
         });
         //cutoff hours spin
         $('#form_model_update [name="cutoff_hours"]').TouchSpin();
@@ -118,11 +150,17 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_add').prop("disabled",false);
         } 
+        //add show_passwords
+        $('#btn_model_add_show_passwords').on('click', function(ev) {
+            $("#form_model_show_passwords input[name='id']:hidden").val('').trigger('change');
+            $("#form_model_show_passwords").trigger('reset');
+            $('#modal_model_show_passwords').modal('show');
+        });
         //function full reset form
         var fullReset = function(){
-            $('#form_model_update [name="image_url"]').attr('src','');
+            //$('#form_model_update [name="image_url"]').attr('src','');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
-            $("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
+            //$("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
         //function add
@@ -131,9 +169,19 @@ var TableDatatablesManaged = function () {
             if($('#modal_model_update_header').hasClass('bg-yellow'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
-            $('#modal_model_update_title').html('Add Band');
+            $('#modal_model_update_title').html('Add Show');
+            $('a[href="#tab_model_update_passwords"]').parent().css('display','none');
+            $('a[href="#tab_model_update_showtimes"]').parent().css('display','none');
+            $('a[href="#tab_model_update_tickets"]').parent().css('display','none');
+            $('a[href="#tab_model_update_bands"]').parent().css('display','none');
+            $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
             $('#modal_model_update').modal('show');
         });
+        
+        
+        
+        
+        
         //function edit
         $('#btn_model_edit').on('click', function(ev) {
             fullReset();
@@ -142,7 +190,12 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            $('#modal_model_update_title').html('Edit Band');
+            $('a[href="#tab_model_update_passwords"]').parent().css('display','block');
+            $('a[href="#tab_model_update_showtimes"]').parent().css('display','block');
+            $('a[href="#tab_model_update_tickets"]').parent().css('display','block');
+            $('a[href="#tab_model_update_bands"]').parent().css('display','block');
+            $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
+            $('#modal_model_update_title').html('Edit Show');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -390,7 +443,7 @@ var FormValidation = function () {
                         maxlength: 100,
                         required: false
                     },
-                    my_space: {
+                    googleplus: {
                         minlength: 5,
                         maxlength: 100,
                         required: false
@@ -400,12 +453,12 @@ var FormValidation = function () {
                         maxlength: 100,
                         required: false
                     },
-                    soundcloud: {
+                    yelpbadge: {
                         minlength: 5,
                         maxlength: 100,
                         required: false
                     },
-                    website: {
+                    url: {
                         minlength: 5,
                         maxlength: 100,
                         required: false
