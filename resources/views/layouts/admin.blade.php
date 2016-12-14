@@ -277,8 +277,8 @@
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('TICKETS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/tickets')===false)) active @endif">
-                                <a href="/admin/tickets" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/ticket_codes')===false)) active @endif">
+                                <a href="/admin/ticket_codes" class="nav-link nav-toggle">
                                     <i class="icon-tag"></i>
                                     <span class="title">Consignment Tickets</span>
                                 </a>

@@ -48,9 +48,8 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('shows/remove', 'ShowController@remove');
     Route::match(['get','post'], 'shows', 'ShowController@index');
     //ticket_types
-    Route::post('ticket_types/save', 'TicketController@save');
-    Route::post('ticket_types/remove', 'TicketController@remove');
-    Route::match(['get','post'], 'ticket_types', 'TicketController@index');
+    Route::post('ticket_types/save', 'TicketTypeController@save');
+    Route::match(['get','post'], 'ticket_types', 'TicketTypeController@index');
     //coupons
     Route::post('coupons/save', 'DiscountController@save');
     Route::post('coupons/remove', 'DiscountController@remove');
@@ -79,9 +78,9 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('sliders/remove', 'SliderController@remove');
     Route::match(['get','post'], 'sliders', 'SliderController@index');
     //consignment tickets
-    Route::post('tickets/save', 'TicketController@save');
-    Route::post('tickets/remove', 'TicketController@remove');
-    Route::match(['get','post'], 'tickets', 'TicketController@index');
+    Route::post('ticket_codes/save', 'TicketCodeController@save');
+    //Route::post('ticket_codes/remove', 'TicketCodeController@remove');
+    Route::match(['get','post'], 'ticket_codes', 'TicketCodeController@index');
     //contracts
     Route::post('contracts/save', 'xxxController@save');
     Route::post('contracts/remove', 'xxxController@remove');

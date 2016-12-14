@@ -78,6 +78,20 @@ class Util extends Model
         }
     }
     /**
+     * Generate QR code.
+     *
+     * @return csv
+     */
+    public static function getQRcode($purchase_id,$user_id,$ticket_number)
+    {
+        try {
+            $code = 'TB'.str_pad((string)$purchase_id,6,'0',STR_PAD_LEFT).str_pad((string)$user_id,5,'0',STR_PAD_LEFT).$ticket_number;
+            return 'https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl='.htmlentities($code).'&choe=UTF-8';
+        } catch (Exception $ex) {
+            throw new Exception('Error Util getQRcode: '.$ex->getMessage());
+        }
+    }
+    /**
      * Create slug by name and venue slug if it is a show.
      */
     public static function generate_slug($name,$venue_id=null)

@@ -119,7 +119,7 @@ class Purchase extends Model
             foreach($ticket_numbers as $tn)
                 if(in_array($i,explode(',',$tn->tickets)))
                 {
-                    $main_info = ['number'=>$i,'customer_name'=>$tn->first_name.' '.$tn->last_name,'customer_email'=>$tn->email,'checked'=>(in_array($i,explode(',',$tn->checked)))? $checked_= 1 : $checked_= 0,'comment'=>$tn->comment,'QRcode'=>Ticket::getQRcode($this->id,$this->user_id,$i)];
+                    $main_info = ['number'=>$i,'customer_name'=>$tn->first_name.' '.$tn->last_name,'customer_email'=>$tn->email,'checked'=>(in_array($i,explode(',',$tn->checked)))? $checked_= 1 : $checked_= 0,'comment'=>$tn->comment,'QRcode'=>Util::getQRcode($this->id,$this->user_id,$i)];
                     $extra_info = ['show_name'=>$purchase->show_name,'show_time'=>$purchase->show_time,'price_each'=>round($this->price_paid/$this->quantity,2),'id'=>$this->id,'venue_name'=>$purchase->venue_name,'restrictions'=>$purchase->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$purchase->ticket_type_type,'time_alternative'=>$purchase->time_alternative,'package'=>$purchase->title];
                     $tickets[] = array_merge($main_info,$extra_info);
                 }       
