@@ -104,7 +104,6 @@ class ShowController extends Controller{
                 $venues = Venue::all();
                 $stages = Stage::all();
                 $restrictions = Util::getEnumValues('shows','restrictions');
-                //dd($shows);
                 //return view
                 return view('admin.shows.index',compact('shows','categories','venues','stages','restrictions','venue','showtime','status','onlyerrors'));
             }
@@ -155,6 +154,24 @@ class ShowController extends Controller{
             return ['success'=>false,'msg'=>'There was an error saving the band.<br>The server could not retrieve the data.'];
         } catch (Exception $ex) {
             throw new Exception('Error Bands Save: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Get slug for show.
+     *
+     * @void
+     */
+    public function slug()
+    {
+        try {
+            //init
+            $input = Input::all(); 
+            //get all record      
+            if($input && isset($input['name']) && isset($input['venue_id']))
+                return Util::generate_slug($input['name'], $input['venue_id']);
+            return '';
+        } catch (Exception $ex) {
+            return '';
         }
     }
     

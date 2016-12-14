@@ -101,6 +101,7 @@
                                 </td>
                             </tr>
                             <!-- BEGIN DETAILS MODAL--> 
+                            <!--{{-- 
                             <div id="modal_details_{{$s->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
                                 <div class="modal-dialog">
                                     <div class="modal-content portlet">
@@ -203,7 +204,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}-->
                             <!-- END DETAILS MODAL--> 
                             @endforeach 
                         </tbody>
@@ -289,6 +290,12 @@
                                                     <div class="col-md-9 show-error">
                                                         <input type="text" name="name" class="form-control" placeholder="My Show" /> 
                                                     </div>
+                                                    <label class="control-label col-md-3">Slug
+                                                        <span class="required"> * </span>
+                                                    </label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="slug" class="form-control" placeholder="my-show" readonly="true" /> 
+                                                    </div>
                                                     <label class="control-label col-md-3">Category
                                                     <span class="required"> * </span>
                                                     </label>
@@ -346,7 +353,7 @@
                                                     <label class="control-label col-md-3">On sale</label>
                                                     <div class="col-md-9">
                                                         <div id="on_sale_date" class="input-group date form_datetime dtpicker">
-                                                            <input size="16" readonly="" class="form-control" type="text" name="on_sale">
+                                                            <input size="16" readonly="" class="form-control" type="text" name="on_sale" value="{{date('Y-m-d H:i')}}">
                                                             <span class="input-group-btn">
                                                                 <button class="btn default date-set" type="button">
                                                                     <i class="fa fa-calendar"></i>
@@ -359,18 +366,10 @@
                                                     </div>
                                                     <label class="control-label col-md-3">Cutoff Hours</label>
                                                     <div class="col-md-9">
-                                                        <input type="text" value="" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                        <input type="text" value="1" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                                     </div>
-                                                    <label class="control-label col-md-3">Featured</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="is_featured" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                    <label class="control-label col-md-3">Able Print Ticket</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="printed_tickets" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                    </div>
+                                                </div>
+                                                <div class="form-group">
                                                     <label class="control-label col-md-3">Status</label>
                                                     <div class="col-md-9">
                                                         <input type="hidden" name="is_active" value="0"/>
@@ -380,7 +379,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">
-                                                    <span class="required"> Social Media </span>
+                                                    <span class="required"> Social Media & Others </span>
                                                 </label><hr>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label">Web Site
@@ -422,6 +421,18 @@
                                                     </label>
                                                     <div class="col-md-9 show-error">
                                                         <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" /> 
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Featured</label>
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" name="is_featured" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                    <label class="control-label col-md-3">Able Print Ticket</label>
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" name="printed_tickets" value="0"/>
+                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>

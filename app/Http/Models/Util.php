@@ -77,4 +77,53 @@ class Util extends Model
             throw new Exception('Error Util downloadCSV: '.$ex->getMessage());
         }
     }
+    /**
+     * Create slug by name and venue slug if it is a show.
+     */
+    public static function generate_slug($name,$venue_id=null)
+    {
+        try {
+            //lower and trim
+            $name = strtolower(trim($name));
+            //replace white spaces
+            $name = preg_replace('/\s+/','-',$name);
+            //remove all not needed characters
+            $slug = preg_replace('/[^a-z0-9-]/','',$name);
+            //if show
+            if($venue_id)
+                $slugs = Show::pluck('slug')->toArray();
+            else
+                $slugs = Venue::pluck('slug')->toArray();
+            //check if the slug exists
+            while (in_array($slug,$slugs))
+            {
+                $skip = false;
+                if($venue_id)
+                {
+                    if(Venue::find($venue_id) && isset(Venue::find($venue_id)->slug))
+                    {
+                        $venue_slug = Venue::find($venue_id)->slug;
+                        if (strpos($slug,$venue_slug) === false) 
+                        {
+                            $slug.='-'.$venue_slug;
+                            $skip = true;
+                        }
+                    }
+                }
+                //concat with numbers
+                if(!$skip)
+                {
+                    $subslugs = explode('-', $slug);
+                    $last = end($subslugs);
+                    if(is_numeric($last))
+                        $subslugs[count($subslugs)-1] = (int)$last + 1;
+                    else $subslugs[] = 1;
+                    $slug = implode('-',$subslugs);
+                }
+            }
+            return $slug;
+        } catch (Exception $ex) {
+            return '';
+        }
+    }
 }

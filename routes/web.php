@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('venues/remove', 'VenueController@remove');
     Route::match(['get','post'], 'venues', 'VenueController@index');
     //shows
+    Route::post('shows/slug', 'ShowController@slug');
     Route::post('shows/save', 'ShowController@save');
     Route::post('shows/remove', 'ShowController@remove');
     Route::match(['get','post'], 'shows', 'ShowController@index');

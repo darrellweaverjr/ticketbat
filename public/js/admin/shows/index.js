@@ -79,7 +79,8 @@ var TableDatatablesManaged = function () {
             format: "yyyy-mm-dd hh:ii",
             pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
             todayBtn: true,
-            minuteStep: 15
+            minuteStep: 15,
+            defaultDate:'now'
         });
         $('#amex_only_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
@@ -117,18 +118,35 @@ var TableDatatablesManaged = function () {
             $('#form_model_update [name="amex_only_start_date"]').val('');
             $('#form_model_update [name="amex_only_end_date"]').val('');
             $('#on_sale_date').datetimepicker('update');
-        });
-        //cutoff hours spin
-        $('#form_model_update [name="cutoff_hours"]').TouchSpin();
+        });        
         //style for selects with html
         $('.bs-select').selectpicker({
             iconBase: 'fa',
             tickIcon: 'fa-check'
         });
-        //checkbox toggle only shows with errors
-        $('#form_model_search input[name="onlyerrors"]:checkbox').change(function () {
-             $( "#form_model_search" ).submit();
-        });   
+        //get slug on name change
+        $('#form_model_update [name="name"]').bind('change',function() {
+            if($('#form_model_update [name="name"]').val().length >= 5)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/slug', 
+                    data: {
+                        name:$('#form_model_update [name="name"]').val(),
+                        venue_id:$('#form_model_update [name="venue_id"]').val()
+                    }, 
+                    success: function(data) {
+                        if(data) $('#form_model_update [name="slug"]').val(data);
+                        else $('#form_model_update [name="slug"]').val('');
+                    },
+                    error: function(){
+                        $('#form_model_update [name="slug"]').val('');
+                    }
+                });
+            }
+            else $('#form_model_update [name="slug"]').val('');
+        });
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -380,7 +398,8 @@ var TableDatatablesManaged = function () {
             FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
         });        
         //init functions
-        check_models();        
+        check_models(); 
+        $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval: 1 });
     }
     return {
         //main function to initiate the module
