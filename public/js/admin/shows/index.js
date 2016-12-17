@@ -72,7 +72,7 @@ var TableDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS
-        //start_end_date
+        //on_sale_date
         $('#on_sale_date').datetimepicker({
             autoclose: true,
             isRTL: App.isRTL(),
