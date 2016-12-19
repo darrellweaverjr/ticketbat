@@ -96,7 +96,12 @@
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            
+                            <div class="alert alert-warning">
+                                <center>
+                                    <input type="hidden" name="purchase" value="0" />
+                                    <input type="checkbox" class="make-switch" name="purchase" value="1"  data-size="large" data-on-text="Create Purchase/Tickets (For Our Shows)" data-off-text="Don't Create Purchase/Tickets (For others shows)" data-on-color="primary" data-off-color="danger">
+                                </center>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <label class="control-label">
@@ -149,17 +154,17 @@
                                         <label class="control-label col-md-3">S.Price
                                         </label>
                                         <div class="col-md-2 show-error">
-                                            <input type="text" name="retail_price" disabled="true" class="form-control" style="width:70px"/>
+                                            <input type="text" name="retail_price" class="form-control" style="width:75px" />
                                         </div> 
                                         <label class="control-label col-md-1">P.Fee
                                         </label>
                                         <div class="col-md-2 show-error">
-                                            <input type="text" name="processing_fee" disabled="true" class="form-control" style="width:70px"/>
+                                            <input type="text" name="processing_fee" class="form-control" style="width:75px" />
                                         </div> 
                                         <label class="control-label col-md-1">Net
                                         </label>
                                         <div class="col-md-2 show-error">
-                                            <input type="text" name="percent_commission" disabled="true" class="form-control" style="width:70px"/>
+                                            <input type="text" name="percent_commission" class="form-control" style="width:75px" />
                                         </div>
                                     </div>  
                                     <label class="control-label">
@@ -170,7 +175,7 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <select class="form-control" name="user_id">
+                                            <select class="form-control" name="seller_id">
                                                 @foreach($sellers as $index=>$s)
                                                 <option value="{{$s->id}}"> {{$s->email}} </option>
                                                 @endforeach
@@ -183,7 +188,7 @@
                                         </label>
                                         <div class="col-md-9 show-error">
                                             <div id="due_date" class="input-group date date-picker">
-                                                <input readonly="" class="form-control" type="text" name="due_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d">
+                                                <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}">
                                                 <span class="input-group-btn">
                                                     <button class="btn default" type="button">
                                                         <i class="fa fa-calendar"></i>
@@ -195,13 +200,10 @@
                                     <div class="form-group">  
                                         <label class="control-label col-md-3">Agreement
                                         </label>
-                                        <div class="col-md-2 show-error">
-                                            <span class="btn green fileinput-button"><i class="fa fa-plus"></i><span>Add</span>
-                                                <input type="file" name="agreement_file"> 
+                                        <div class="col-md-9 show-error">
+                                            <span class="btn green">
+                                                <input type="file" name="agreement"> 
                                             </span>
-                                        </div> 
-                                        <div class="col-md-7 show-error">
-                                            <input type="text" class="form-control" value="" name="agreement_file" readonly="true" /> 
                                         </div> 
                                     </div>
                                 </div>
@@ -309,7 +311,7 @@
                                     <button type="button" id="btn_model_add_seat" class="btn sbold bg-green col-md-1">Add</button>
                                 </div> 
                             </div>    
-                            <div class="row">
+                            <div class="row" style="max-height:500px; overflow: auto;">
                                 <table class="table table-striped table-bordered table-hover table-checkable">
                                     <thead>
                                         <tr>

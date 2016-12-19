@@ -128,6 +128,7 @@ var TableDatatablesManaged = function () {
                         {
                             $('#modal_model_update [name="show_time_id"]').empty().append('<option disabled selected value=""></option>');
                             $.each(data.show_times,function(key, value) {
+                                value.show_time = moment(value.show_time, 'YYYY-MM-DD HH:mm').format('MM/DD/YYYY - hh:mm a');
                                 $('#modal_model_update [name="show_time_id"]').append('<option value="'+value.id+'">'+value.show_time+'</option>');
                             });
                             $('#modal_model_update [name="ticket_id"]').empty().append('<option disabled selected value=""></option>');
@@ -308,7 +309,7 @@ var TableDatatablesManaged = function () {
             }
         });  
         //on consignments add seats
-        $('#btn_model_add_seat_to').on('click', function(ev) {
+        $('#btn_model_add_seat_to').on('click', function(ev) {  
             if($("#form_model_update").valid())
             {   
                 var seats = $('#form_model_update [name="seat_id"]').val() || [];
@@ -316,7 +317,7 @@ var TableDatatablesManaged = function () {
                     $.each(seats,function(key, value) {
                         if($('#tb_seats_consignment :input[value="'+value+'"]').length < 1)
                         {
-                            $('#tb_seats_consignment').append('<tr><td>'+$('#modal_model_update [name="ticket_id"] option:selected').text()+'</td><td><input type="hidden" name="seat[]" value="'+value+'"/>'+$('#form_model_update [name="seat_id"] [value="'+value+'"]').text()+'</td><td><input type="button" value="Delete" class="bg-red"><td></tr>');
+                            $('#tb_seats_consignment').append('<tr><td>'+$('#modal_model_update [name="ticket_id"] option:selected').text()+'</td><td><input type="hidden" name="seat[]" value="'+value+'"/>'+$('#form_model_update [name="seat_id"] [value="'+value+'"]').text()+'</td><td><input type="button" value="Delete" class="btn sbold bg-red"><td></tr>');
                         }
                     });
             }
@@ -518,7 +519,7 @@ var TableDatatablesManaged = function () {
             if($('#form_model_update').valid())
             {
                 swal({
-                    title: "Saving ticket codes' information",
+                    title: "Saving consignment's information",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
@@ -526,10 +527,13 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/ticket_codes/save', 
-                    data: $('#form_model_update').serializeArray(), 
+                    url: '/admin/consignments/save', 
+                    data: new FormData($('#form_model_update')[0]), 
+                    cache: false, 
+                    contentType: false,
+                    processData:false, 
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             swal({
                                 title: "<span style='color:green;'>Saved!</span>",
@@ -551,16 +555,6 @@ var TableDatatablesManaged = function () {
                                 $('#modal_model_update').modal('show');
                             });
                         }
-                    },
-                    error: function(){
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "The form is not valid!<br>Please check the information again.",
-                            html: true,
-                            type: "error"
-                        },function(){
-                            $('#modal_model_update').modal('show');
-                        });
                     }
                 }); 
             }
@@ -613,34 +607,34 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
+                    venue_id: {
+                        required: true
+                    },
+                    show_id: {
+                        required: true
+                    },
                     ticket_id: {
                         required: true
                     },
-                    user_id: {
+                    seller_id: {
                         required: true
                     },
                     show_time_id: {
                         required: true
                     },
-                    start_seat: {
-                        required: true
-                    },
-                    end_seat: {
-                        required: true
-                    },
                     retail_price: {
                         required: true,
-                        money: true,
+                        number: true,
                         range: [0.01, 99999.99]
                     },
                     processing_fee: {
                         required: true,
-                        money: true,
+                        number: true,
                         range: [0.01, 99999.99]
                     },
                     percent_commission: {
                         required: true,
-                        money: true,
+                        number: true,
                         range: [0, 100]
                     },
                     due_date: {

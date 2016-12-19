@@ -140,4 +140,54 @@ class Util extends Model
             return '';
         }
     }
+    /**
+     * Upload files
+     */
+    public static function upload_file($file,$folder)
+    {
+        try {  
+            //init
+            $originalName = $file->getClientOriginalName();  
+            $originalExt = $file->getClientOriginalExtension();
+            $folder.='/';
+            //get file
+                //if file exists in the server create this like a new copy (_c)
+                while(Storage::disk('s3')->exists($folder.$originalName.'.'.$originalExt))
+                    $originalName .= '_c';  
+                //move file to amazon s3
+                Storage::disk('s3')->put($folder.$$originalName.'.'.$originalExt, $file, 'public');
+                //return url if file exists
+                if(Storage::disk('s3')->exists($folder.$originalName.'.'.$originalExt))
+                    return '/s3/'.$folder.$originalName.'.'.$originalExt;
+                return '';
+        } catch (Exception $ex) {
+            return '';
+        }
+    }
+    /**
+     * Remove files
+     */
+    public static function remove_file($file_url)
+    {
+        try { 
+            //init
+            $originalName = pathinfo($image_url, PATHINFO_FILENAME);
+            $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
+            //check if is in s3 server (the new server)
+            if(preg_match('/\/s3\//',$file_url) || strpos($file_url,env('IMAGE_URL_AMAZON_SERVER')) !== false) 
+            {
+                $file_url = substr(strrchr(dirname($file_url,1), '/'), 1).'/'.$originalName.'.'.$originalExt;
+                if(Storage::disk('s3')->exists($file_url))
+                {
+                    Storage::disk('s3')->delete($file_url);
+                    return true;
+                }
+                return true;
+            }
+            //other url in another place
+            else return true;
+        } catch (Exception $ex) {
+            return '';
+        }
+    }
 }

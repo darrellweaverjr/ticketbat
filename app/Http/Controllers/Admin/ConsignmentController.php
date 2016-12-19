@@ -5,14 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Models\TicketCode;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
+use App\Http\Models\Util;
 use App\Http\Models\Show;
 use App\Http\Models\Venue;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Seat;
 use App\Http\Models\Ticket;
 use App\Http\Models\Stage;
+use App\Http\Models\Consignment;
+use App\Http\Models\Purchase;
+use App\Http\Models\Customer;
+use App\Http\Models\User;
+
 
 /**
  * Manage Consignments
@@ -58,7 +64,7 @@ class ConsignmentController extends Controller{
             else if(isset($input) && isset($input['show_id']))
             {
                 $show_times = ShowTime::where('is_active','=',1)->where('show_id','=',$input['show_id'])->where('show_time','>',$current)
-                                ->select('id', 'show_time')->orderBy('show_time','DESC')->distinct()->get();
+                                ->select('id', 'show_time')->orderBy('show_time','ASC')->distinct()->get();
                 $tickets = Ticket::where('is_active','=',1)->where('show_id','=',$input['show_id'])
                                 ->select('id', 'ticket_type')->orderBy('ticket_type')->distinct()->get();
                 return ['success'=>true,'show_times'=>$show_times,'tickets'=>$tickets];
@@ -69,7 +75,7 @@ class ConsignmentController extends Controller{
                                 ->first(['retail_price','processing_fee','percent_commission']);
                 if(isset($input['available']) && $input['available'] = 1)
                     $seats = DB::table('seats')
-                                ->leftJoin('purchase_consignment_seats', 'purchase_consignment_seats.seat_id', '=' ,'seats.id','outer')
+                                ->leftJoin('purchase_seats', 'purchase_seats.seat_id', '=' ,'seats.id','outer')
                                 ->select('seats.*')
                                 ->where('ticket_id','=',$input['ticket_id'])
                                 ->orderBy('seats.seat')
@@ -138,10 +144,13 @@ class ConsignmentController extends Controller{
         try {   
             //init
             $input = Input::all();
+            $file = null;
+            if(Input::hasFile('agreement'))
+                $file = Input::file('agreement');
+            $current = date('Y-m-d H:i:s');
             //save all record      
             if($input)
             {
-                $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
                     /*$user = User::find($input['id']);
@@ -153,21 +162,67 @@ class ConsignmentController extends Controller{
                 }                    
                 else
                 {                    
-                    if(TicketCode::where('show_time_id','=',$input['show_time_id'])->where('ticket_id','=',$input['ticket_id'])->whereBetween('seat',[$input['start_seat'],$input['end_seat']])->count())
-                        return ['success'=>false,'msg'=>'There was an error saving the tickets.<br>Some of them are already in the system.','errors'=>'seat'];
-                    $ticket_code = ['ticket_id'=>$input['ticket_id'], 'user_id'=>$input['user_id'], 'show_time_id'=>$input['show_time_id'], 'audit_user_id'=>Auth::user()->id, 'created'=>$current];
-                    $ticket_codes = [];
-                    for ($i=$input['start_seat']; $i<=$input['end_seat']; $i++)
+                    //create consignment
+                    $consignment = new Consignment;
+                    $consignment->show_time_id = $input['show_time_id'];
+                    $consignment->seller_id = $input['seller_id'];
+                    $consignment->due_date = $input['due_date'];
+                    $consignment->created = $current;
+                    $consignment->updated = $current;
+                    $consignment->agreement = ($file)? Util::upload_file($file,'consignments') : '';
+                    $consignment->save();
+                    //create purchase
+                    if($input['purchase'])
                     {
-                        $ticket_code['seat'] = $i;
-                        $ticket_codes[] = $ticket_code;
+                        $user = User::find($input['seller_id']); 
+                        $customer = Customer::where('email','=',$user->email)->first(); 
+                        if(!$customer)
+                        {
+                            $customer = new Customer;
+                            $customer->location_id = $user->location_id;
+                            $customer->email = $user->email;
+                            $customer->first_name = $user->first_name;
+                            $customer->last_name = $user->last_name;
+                            $customer->phone = $user->phone;
+                            $customer->created = $current;
+                            $customer->updated = $current;
+                            $customer->save();
+                        }
+                        $purchase = new Purchase;
+                        $purchase->quantity = count($input['seat']);
+                        $purchase->user_id = $input['seller_id'];
+                        $purchase->show_time_id = $input['show_time_id'];
+                        $purchase->ticket_id = $input['ticket_id'];
+                        $purchase->customer_id = $customer->id;
+                        $purchase->session_id = Session::getId();  
+                        $purchase->referrer_url = Config::get('app.url');
+                        $purchase->ticket_type = 'Consignment';
+                        $purchase->retail_price = $input['retail_price'] * $purchase->quantity;
+                        $purchase->processing_fee = $input['processing_fee'] * $purchase->quantity;
+                        $purchase->savings = 0;
+                        $purchase->commission_percent = round($input['percent_commission']/$input['retail_price']*100,2);
+                        $purchase->price_paid = $purchase->retail_price + $purchase->processing_fee;
+                        $purchase->payment_type = 'None';
+                        $purchase->merchandise = 0;
+                        $purchase->updated = $current;
+                        $purchase->created = $current;
+                        $purchase->save();
                     }
-                    TicketCode::insert($ticket_codes);
+                    //create consignments seats
+                    foreach ($input['seat'] as $s)
+                    {
+                        $seat = new Seat;
+                        $seat->consignment_id = $consignment->id;
+                        if($input['purchase'])
+                            $seat->purchase_id = $purchase->id;
+                        $seat->seat_id = $s;
+                        $seat->updated = $current;
+                    }
                     //return
-                    return ['success'=>true,'msg'=>'Tickets saved successfully!'];
+                    return ['success'=>true,'msg'=>'Consignments Tickets saved successfully!'];
                 }
             }
-            return ['success'=>false,'msg'=>'There was an error saving the user.<br>The server could not retrieve the data.'];
+            return ['success'=>false,'msg'=>'There was an error saving the consignment.<br>The server could not retrieve the data.'];
         } catch (Exception $ex) {
             throw new Exception('Error Consignment Save: '.$ex->getMessage());
         }
