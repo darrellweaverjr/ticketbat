@@ -40,11 +40,11 @@ class Consignment extends Model
     }
     //RELATIONSHIPS MANY-MANY
     /**
-     * The consignment_purchases that belong to the Consignment.
+     * The purchase_seats that belong to the Consignment.
      */
-    public function consignment_purchases()
+    public function purchase_seats()
     {
-        return $this->belongsToMany('App\Http\Models\Purchase','purchase_seats','consignment_id','purchase_id')->withPivot('seat_id','status','updated');
+        return $this->belongsToMany('App\Http\Models\Seat','purchase_seats','consignment_id','seat_id')->withPivot('purchase_id','status','updated');
     }  
     
 }

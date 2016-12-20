@@ -5,6 +5,7 @@
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/jquery-multi-select/css/multi-select.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -50,11 +51,13 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="20%"> Show </th>
-                                <th width="20%"> Created </th>
+                                <th width="25%"> Show </th>
+                                <th width="15%"> Created </th>
                                 <th width="20%"> Seller </th>
-                                <th width="20%"> Due Date </th>
-                                <th width="18%"> Status </th>
+                                <th width="13%"> Due Date </th>
+                                <th width="7%"> Qty </th>
+                                <th width="10%"> Total </th>
+                                <th width="10%"> Status </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,11 +69,20 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="20%"> {{$c->show_name}} </td>
-                                <td width="20%"> {{date('m/d/Y g:ia',strtotime($c->created))}} </td>
+                                <td width="25%"> {{$c->show_name}} </td>
+                                <td width="15%"> {{date('m/d/Y g:ia',strtotime($c->created))}} </td>
                                 <td width="20%"> {{$c->first_name}} {{$c->last_name}} </td>
-                                <td width="20%"> {{date('m/d/Y',strtotime($c->due_date))}} </td>
-                                <td width="18%"> {{$c->status}} </td>
+                                <td width="13%"> {{date('m/d/Y',strtotime($c->due_date))}} </td>
+                                <td width="7%"> {{$c->qty}} </td>
+                                <td width="10%"> $ {{$c->total}} </td>
+                                <td width="10%"> <span class="label label-sm sbold 
+                                    @if($c->status == 'Paid') label-success 
+                                    @elseif($c->status == 'Voided') label-info 
+                                    @elseif($c->status == 'Un-paid') label-danger 
+                                    @else label-default
+                                    @endif
+                                    "> {{$c->status}} </span> 
+                                </td> 
                             </tr>
                             @endforeach 
                         </tbody>
@@ -80,17 +92,16 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- BEGIN ADD MODAL--> 
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:55% !important;">
             <div class="modal-content portlet">
-                <div id="modal_model_update_header" class="modal-header alert-block bg-green">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title"></center></h4>
+                <div class="modal-header alert-block bg-green">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Add Consignment</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_update" class="form-horizontal">
-                        <input name="id" type="hidden" value=""/>
                         <div class="form-body">
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
@@ -108,10 +119,10 @@
                                         <span class="required"> Event </span>
                                     </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-3">Venue
+                                        <label class="control-label col-md-4">Venue
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-8 show-error">
                                             <select class="form-control" name="venue_id">
                                                 <option selected disabled value=""></option>
                                                 @foreach($venues as $index=>$v)
@@ -119,74 +130,43 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="form-group">  
-                                        <label class="control-label col-md-3">Show
+                                        <label class="control-label col-md-4">Show
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-8 show-error">
                                             <select class="form-control" name="show_id">
 
                                             </select>
                                         </div>  
-                                    </div>
-                                    <div class="form-group">    
-                                        <label class="control-label col-md-3">Time
+                                        <label class="control-label col-md-4">Time
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-8 show-error">
                                             <select class="form-control" name="show_time_id">
 
                                             </select>
                                         </div>  
                                     </div>
-                                    <div class="form-group">    
-                                        <label class="control-label col-md-3">Section/Row
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <select class="form-control" name="ticket_id">
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">S.Price
-                                        </label>
-                                        <div class="col-md-2 show-error">
-                                            <input type="text" name="retail_price" class="form-control" style="width:75px" />
-                                        </div> 
-                                        <label class="control-label col-md-1">P.Fee
-                                        </label>
-                                        <div class="col-md-2 show-error">
-                                            <input type="text" name="processing_fee" class="form-control" style="width:75px" />
-                                        </div> 
-                                        <label class="control-label col-md-1">Net
-                                        </label>
-                                        <div class="col-md-2 show-error">
-                                            <input type="text" name="percent_commission" class="form-control" style="width:75px" />
-                                        </div>
-                                    </div>  
+                                </div>
+                                <div class="col-md-6">
                                     <label class="control-label">
                                         <span class="required"> Seller </span>
                                     </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-3">Seller
+                                        <label class="control-label col-md-4">Seller
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-8 show-error">
                                             <select class="form-control" name="seller_id">
                                                 @foreach($sellers as $index=>$s)
                                                 <option value="{{$s->id}}"> {{$s->email}} </option>
                                                 @endforeach
                                             </select>
-                                        </div> 
-                                    </div>
-                                    <div class="form-group">  
-                                        <label class="control-label col-md-3">Due Date
+                                        </div>
+                                        <label class="control-label col-md-4">Due Date
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-8 show-error">
                                             <div id="due_date" class="input-group date date-picker">
                                                 <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}">
                                                 <span class="input-group-btn">
@@ -196,50 +176,63 @@
                                                 </span>
                                             </div>
                                         </div> 
-                                    </div>
-                                    <div class="form-group">  
-                                        <label class="control-label col-md-3">Agreement
+                                        <label class="control-label col-md-4">Agreement
                                         </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-8 show-error">
                                             <span class="btn green">
                                                 <input type="file" name="agreement"> 
                                             </span>
                                         </div> 
                                     </div>
                                 </div>
+                            </div>   
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="control-label">
+                                        <span class="required"> Section </span>
+                                    </label><hr>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-5">Section/Row
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <select class="form-control" name="ticket_id">
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-5">Sale Price
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="text" name="retail_price" class="form-control" readonly="true" />
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-5">Processing Fee
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="text" name="processing_fee" class="form-control" readonly="true"/>
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-5">Net to Show
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="text" name="percent_commission" class="form-control" readonly="true"/>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <label class="control-label">
                                         <span class="required"> Seats </span>
                                     </label><hr>
-                                    <div class="col-md-3">
-                                        <div class="form-group">   
-                                            <div class="show-error">
-                                                <label class="control-label col-md-3">Availables
-                                                </label>
-                                                <select class="form-control" multiple="" size="20" name="seat_id">
-
-                                                </select>
-                                                <button type="button" id="btn_model_add_seat_to" class="btn sbold bg-green btn-large"> Add Seat to
-                                                    <i class="fa fa-angle-right"></i>
-                                                </button>
-                                            </div>
-                                        </div> 
-                                    </div>
-                                    <div class="col-md-9" style="height:450px; overflow: auto;">
-                                        <table class="table table-striped table-bordered table-hover table-checkable">
-                                            <thead>
-                                                <tr>
-                                                    <th width="60%"> Section / Row </th>
-                                                    <th width="20%"> Seat </th>
-                                                    <th width="20%"> Delete </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tb_seats_consignment">
-                                            </tbody>
-                                        </table>
+                                    <div class="form-group">
+                                        <select multiple="multiple" size="24" class="multi-select" id="seats_to_add" name="seats[]">
+                                        </select>
                                     </div>
                                 </div>
-                            </div>    
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -255,7 +248,132 @@
             </div>
         </div>
     </div>
-    <!-- END UPDATE MODAL--> 
+    <!-- END ADD MODAL--> 
+    <!-- BEGIN EDIT MODAL--> 
+    <div id="modal_model_update2" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:65% !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-yellow">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Consignment</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_update2" class="form-horizontal">
+                        <input name="id" type="hidden" value=""/>
+                        <div class="form-body">
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                            <div class="alert alert-success display-hide">
+                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <label class="control-label">
+                                        <span class="required"> Consignment Info </span>
+                                    </label><hr>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-4">Seller
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-8 show-error">
+                                            <select class="form-control" name="seller_id" disabled="true">
+                                                @foreach($sellers as $index=>$s)
+                                                <option value="{{$s->id}}"> {{$s->email}} </option>
+                                                @endforeach
+                                            </select>
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">  
+                                        <label class="control-label col-md-4">Agreement
+                                        </label>
+                                        <div class="col-md-8 show-error">
+                                            <span class="btn green">
+                                                <input type="file" name="agreement"> 
+                                            </span>
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">  
+                                        <label class="control-label col-md-4">Due Date
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-8 show-error">
+                                            <div id="due_date2" class="input-group date date-picker">
+                                                <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}">
+                                                <span class="input-group-btn">
+                                                    <button class="btn default" type="button">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-4">Status
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-8 show-error">
+                                            <select class="form-control" name="status">
+                                                @foreach($status_consignment as $index=>$s)
+                                                <option value="{{$index}}"> {{$s}} </option>
+                                                @endforeach
+                                            </select>
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">  
+                                        <label class="control-label col-md-4">Qty
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-8 show-error">
+                                            <input readonly class="form-control" type="text" name="qty">
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">  
+                                        <label class="control-label col-md-4">Total ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-8 show-error">
+                                            <input readonly class="form-control" type="text" name="total">
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <label class="control-label">
+                                        <span class="required"> Seats </span>
+                                    </label><hr>
+                                    <table class="table table-striped table-bordered table-hover table-checkable" style="height:300px; overflow: auto;">
+                                        <thead>
+                                            <tr>
+                                                <th width="2%">
+                                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                        <input type="checkbox" class="group-checkable" data-set="#form_model_update .checkboxes" />
+                                                        <span></span>
+                                                    </label>
+                                                </th>
+                                                <th width="58%"> Section / Row </th>
+                                                <th width="20%"> Seat </th>
+                                                <th width="20%"> Status </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tb_seats_consignment_edit">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="btn_model_save2" class="btn sbold bg-yellow">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END EDIT MODAL--> 
     <!-- BEGIN UPDATE MODAL--> 
     <div id="modal_model_seats" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:35% !important;">
@@ -346,5 +464,10 @@
 <script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
+
+<script src="/themes/admin/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+        
 <script src="/js/admin/consignments/index.js" type="text/javascript"></script>
 @endsection

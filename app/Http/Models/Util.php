@@ -190,4 +190,18 @@ class Util extends Model
             return '';
         }
     }
+    /**
+     * View files
+     */
+    public static function view_file($file_url)
+    {
+        try { 
+            //init
+            if(preg_match('/\/s3\//',$file_url)) 
+                return env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$file_url);
+            return '';
+        } catch (Exception $ex) {
+            return '';
+        }
+    }
 }

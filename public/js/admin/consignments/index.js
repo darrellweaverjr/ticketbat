@@ -165,6 +165,9 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update [name="retail_price"]').val('');
                 $('#modal_model_update [name="processing_fee"]').val('');
                 $('#modal_model_update [name="percent_commission"]').val('');
+                
+                //$('#seats_to_add').html('');
+                //$('#seats_to_add').multiSelect({ selectableOptgroup: true });
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -176,9 +179,9 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_update [name="retail_price"]').val(data.ticket.retail_price);
                             $('#modal_model_update [name="processing_fee"]').val(data.ticket.processing_fee);
                             $('#modal_model_update [name="percent_commission"]').val((data.ticket.retail_price*data.ticket.percent_commission/100).toFixed(2));
-                            $('#modal_model_update [name="seat_id"]').empty();
-                            $.each(data.seats,function(key, value) {
-                                $('#modal_model_update [name="seat_id"]').append('<option value="'+value.id+'">'+value.seat+'</option>');
+                            $('#seats_to_add').append('<optgroup label="'+$('#modal_model_update [name="ticket_id"] option:selected').text()+'"></optgroup>');
+                            $.each(data.seats,function(key, value) {                                
+                                $('#seats_to_add').multiSelect('addOption', { value: value.id, text: value.seat, index: 0, nested: $('#modal_model_update [name="ticket_id"] option:selected').text() });
                             });
                         }
                     },
@@ -308,38 +311,8 @@ var TableDatatablesManaged = function () {
                 });
             }
         });  
-        //on consignments add seats
-        $('#btn_model_add_seat_to').on('click', function(ev) {  
-            if($("#form_model_update").valid())
-            {   
-                var seats = $('#form_model_update [name="seat_id"]').val() || [];
-                if(seats.length)
-                    $.each(seats,function(key, value) {
-                        if($('#tb_seats_consignment :input[value="'+value+'"]').length < 1)
-                        {
-                            $('#tb_seats_consignment').append('<tr><td>'+$('#modal_model_update [name="ticket_id"] option:selected').text()+'</td><td><input type="hidden" name="seat[]" value="'+value+'"/>'+$('#form_model_update [name="seat_id"] [value="'+value+'"]').text()+'</td><td><input type="button" value="Delete" class="btn sbold bg-red"><td></tr>');
-                        }
-                    });
-            }
-            else
-            {
-                $('#modal_model_update').modal('hide');
-                swal({
-                    title: "<span style='color:red;'>Error!</span>",
-                    text: "You must fill correctly all fields to add a seat.",
-                    html: true,
-                    type: "error"
-                },function(){
-                    $('#modal_model_update').modal('show');
-                });
-            }
-        });  
         //on delete seat rows
         $('#tb_seats').on('click', 'input[type="button"]', function(e){
-            $(this).closest('tr').remove();
-        });
-        //on delete consignment rows
-        $('#tb_seats_consignment').on('click', 'input[type="button"]', function(e){
             $(this).closest('tr').remove();
         });
         //spinners for start seat and end seat
@@ -444,13 +417,6 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_add').prop("disabled",false);
         } 
-        //function full reset form
-        var fullReset = function(){
-            $("#form_model_update input[name='id']:hidden").val('').trigger('change');
-            $('#form_model_update [name="seat_id"]').empty();
-            $('#tb_seats_consignment').empty();
-            $("#form_model_update").trigger('reset');
-        };
         //function seats
         $('#btn_model_seats').on('click', function(ev) {
             $('#tb_seats').empty();
@@ -460,41 +426,44 @@ var TableDatatablesManaged = function () {
         });  
         //function add
         $('#btn_model_add').on('click', function(ev) {
-            fullReset();
-            if($('#modal_model_update_header').hasClass('bg-yellow'))
-                $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
-            else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
-            $('#modal_model_update_title').html('Add Consignment Ticket');
+            $('#seats_to_add').multiSelect('refresh');
+            $("#form_model_update").trigger('reset');
             //show modal
             $('#modal_model_update').modal('show');
         });  
         //function edit
         $('#btn_model_edit').on('click', function(ev) {
-            fullReset();
-            if($('#modal_model_update_header').hasClass('bg-green'))
-                $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
-            else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
+            $("#form_model_update2 input[name='id']:hidden").val('').trigger('change');
+            $('#tb_seats_consignment_edit').empty();
+            $("#form_model_update2").trigger('reset');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            //$('#div_model_update_advanced').css('display','block');
-            $('#modal_model_update_title').html('Edit Type');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/ticket_types', 
+                url: '/admin/consignments', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        for(var key in data.ticket_type)
+                        for(var key in data.consignment)
                         {
-                            var e = $('#form_model_update [name="'+key+'"]');
-                            e.val(data.ticket_type[key]);
-                            if(key === 'ticket_type')
-                                $('#form_model_update [name="id"]').val(data.ticket_type[key]);
+                            var e = $('#form_model_update2 [name="'+key+'"]');
+                            e.val(data.consignment[key]);
                         }
-                        $('#form_model_update [name="ticket_type"]').prop('disabled',true);
-                        $('#modal_model_update').modal('show');
+                        for(var key in data.seats)
+                        {
+                            var e = data.seats[key];
+                            var style = 'label-info';
+                            if(e.status == 'Created')style='label-primary'; else if(e.status == 'Sold')style='label-warning'; else if(e.status=='Voided')style='label-danger'; else if(e.status=='Checked')style='label-success'; 
+                            if(e.status == 'Created' || e.status == 'Sold')  var checkable = ''; else var checkable = 'disabled';
+                            var first_col = '<td><label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" name="seat[]" class="checkboxes" '+checkable+' value="'+e.id+'" /><span></span></label></td>';
+                            var second_col = '<td>'+e.ticket_type+'</td><td>'+e.seat+'</td>';
+                            var third_col = '<td> <span class="label label-sm sbold '+style+'"> '+e.status+' </span>  </td> ';
+                            $('#tb_seats_consignment_edit').append('<tr>'+first_col+second_col+third_col+'</tr>');
+                        } 
+                        //$('#form_model_update [name="ticket_type"]').prop('disabled',true);
+                        $('#modal_model_update2').modal('show');
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
@@ -506,7 +475,7 @@ var TableDatatablesManaged = function () {
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the type's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to get the consignment's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     });
@@ -555,7 +524,15 @@ var TableDatatablesManaged = function () {
                                 $('#modal_model_update').modal('show');
                             });
                         }
-                    }
+                    },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to save the consignment's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
                 }); 
             }
             else
@@ -571,7 +548,8 @@ var TableDatatablesManaged = function () {
             }       
         });
         //init functions
-        check_models();        
+        check_models();  
+        $('#seats_to_add').multiSelect({ selectableOptgroup: true });
     }
     return {
         //main function to initiate the module
