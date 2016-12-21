@@ -396,6 +396,44 @@ var TableDatatablesManaged = function () {
                 });
             }       
         });
+        //function on consignment status select
+        $('#tb_model select[name="status"]').on('change', function(ev) {
+            var id = $(this).attr('ref');
+            var status = $(this).val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/consignments/save', 
+                data: {consignment_id:id,status:status}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Updated!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to set the status!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });
+        });
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -453,16 +491,39 @@ var TableDatatablesManaged = function () {
                         }
                         for(var key in data.seats)
                         {
-                            var e = data.seats[key];
-                            var style = 'label-info';
-                            if(e.status == 'Created')style='label-primary'; else if(e.status == 'Sold')style='label-warning'; else if(e.status=='Voided')style='label-danger'; else if(e.status=='Checked')style='label-success'; 
-                            if(e.status == 'Created' || e.status == 'Sold')  var checkable = ''; else var checkable = 'disabled';
+                            var e = data.seats[key]; 
+                            switch(e.status)
+                            {
+                                case 'Created':
+                                    var checkable = ''; 
+                                    var style = 'label-primary';
+                                    break;
+                                case 'Voided':
+                                    var checkable = ''; 
+                                    var style = 'label-danger';
+                                    break;
+                                case 'Sold':
+                                    var checkable = ''; 
+                                    var style = 'label-warning';
+                                    break;
+                                case 'Checked':
+                                    var checkable = 'disabled'; 
+                                    var style = 'label-success';
+                                    break;
+                                default:
+                                    var checkable = 'disabled'; 
+                                    var style = 'label-info';
+                            }
                             var first_col = '<td><label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" name="seat[]" class="checkboxes" '+checkable+' value="'+e.id+'" /><span></span></label></td>';
                             var second_col = '<td>'+e.ticket_type+'</td><td>'+e.seat+'</td>';
-                            var third_col = '<td> <span class="label label-sm sbold '+style+'"> '+e.status+' </span>  </td> ';
+                            var third_col = '<td><span class="label label-sm sbold '+style+'" '+checkable+'>'+e.status+'</span></td>';
                             $('#tb_seats_consignment_edit').append('<tr>'+first_col+second_col+third_col+'</tr>');
-                        } 
-                        //$('#form_model_update [name="ticket_type"]').prop('disabled',true);
+                        }
+                        $('#form_model_update2 [name="moveto"]').empty().append('<option disabled selected value=""></option>');
+                        $.each(data.moveto,function(key, value) {
+                            value.show_time = moment(value.show_time, 'YYYY-MM-DD HH:mm').format('MM/DD/YYYY hh:mm a');
+                            $('#form_model_update2 [name="moveto"]').append('<option value="'+value.id+'">'+value.email+' ('+value.show_name+' - '+value.show_time+') ['+value.status+']</option>');
+                        });
                         $('#modal_model_update2').modal('show');
                     }
                     else swal({
@@ -482,10 +543,10 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
-        //function save
-        $('#btn_model_save').on('click', function(ev) {
-            $('#modal_model_update').modal('hide');
-            if($('#form_model_update').valid())
+        //function save 
+        function save_consignment(modal,form) {
+            $('#'+modal).modal('hide');
+            if($('#'+form).valid())
             {
                 swal({
                     title: "Saving consignment's information",
@@ -497,7 +558,7 @@ var TableDatatablesManaged = function () {
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/admin/consignments/save', 
-                    data: new FormData($('#form_model_update')[0]), 
+                    data: new FormData($('#'+form)[0]), 
                     cache: false, 
                     contentType: false,
                     processData:false, 
@@ -521,18 +582,18 @@ var TableDatatablesManaged = function () {
                                 html: true,
                                 type: "error"
                             },function(){
-                                $('#modal_model_update').modal('show');
+                                $('#'+modal).modal('show');
                             });
                         }
                     },
-                error: function(){
-                    swal({
-                        title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to save the consignment's information!<br>The request could not be sent to the server.",
-                        html: true,
-                        type: "error"
-                    });
-                }
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the consignment's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        });
+                    }
                 }); 
             }
             else
@@ -543,9 +604,17 @@ var TableDatatablesManaged = function () {
                     html: true,
                     type: "error"
                 },function(){
-                    $('#modal_model_update').modal('show');
+                    $('#'+modal).modal('show');
                 });
             }       
+        };
+        //function save on add
+        $('#btn_model_save').on('click', function(ev) {
+            save_consignment('modal_model_update','form_model_update');      
+        });
+        //function save on edit
+        $('#btn_model_save2').on('click', function(ev) {
+            save_consignment('modal_model_update2','form_model_update2');     
         });
         //init functions
         check_models();  

@@ -45,6 +45,13 @@ class Consignment extends Model
     public function purchase_seats()
     {
         return $this->belongsToMany('App\Http\Models\Seat','purchase_seats','consignment_id','seat_id')->withPivot('purchase_id','status','updated');
-    }  
+    } 
+    //PERSONALIZED FUNCTIONS
+    public function set_agreement($file)
+    {
+        if($this->agreement != '')
+            Util::remove_file ($this->agreement);
+        $this->agreement = Util::upload_file ($file,'consignment');
+    }
     
 }

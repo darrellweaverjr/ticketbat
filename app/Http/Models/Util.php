@@ -4,7 +4,8 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 
 /**
  * Utilities class
@@ -149,16 +150,16 @@ class Util extends Model
             //init
             $originalName = $file->getClientOriginalName();  
             $originalExt = $file->getClientOriginalExtension();
-            $folder.='/';
             //get file
                 //if file exists in the server create this like a new copy (_c)
-                while(Storage::disk('s3')->exists($folder.$originalName.'.'.$originalExt))
+                while(Storage::disk('s3')->exists($folder.'/'.$originalName.'.'.$originalExt))
                     $originalName .= '_c';  
                 //move file to amazon s3
-                Storage::disk('s3')->put($folder.$$originalName.'.'.$originalExt, $file, 'public');
+                //Storage::disk('s3')->put($folder.$$originalName.'.'.$originalExt, new File($file->getRealPath()), 'public');
+                Storage::disk('s3')->putFileAs($folder, new File($file->getRealPath()),$originalName.'.'.$originalExt);
                 //return url if file exists
-                if(Storage::disk('s3')->exists($folder.$originalName.'.'.$originalExt))
-                    return '/s3/'.$folder.$originalName.'.'.$originalExt;
+                if(Storage::disk('s3')->exists($folder.'/'.$originalName.'.'.$originalExt))
+                    return '/s3/'.$folder.'/'.$originalName.'.'.$originalExt;
                 return '';
         } catch (Exception $ex) {
             return '';
@@ -171,8 +172,8 @@ class Util extends Model
     {
         try { 
             //init
-            $originalName = pathinfo($image_url, PATHINFO_FILENAME);
-            $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
+            $originalName = pathinfo($file_url, PATHINFO_FILENAME);
+            $originalExt = pathinfo($file_url, PATHINFO_EXTENSION);
             //check if is in s3 server (the new server)
             if(preg_match('/\/s3\//',$file_url) || strpos($file_url,env('IMAGE_URL_AMAZON_SERVER')) !== false) 
             {
@@ -187,7 +188,7 @@ class Util extends Model
             //other url in another place
             else return true;
         } catch (Exception $ex) {
-            return '';
+            return true;
         }
     }
     /**

@@ -51,13 +51,14 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="25%"> Show </th>
+                                <th width="20%"> Show </th>
+                                <th width="15%"> Show Time </th>
                                 <th width="15%"> Created </th>
-                                <th width="20%"> Seller </th>
-                                <th width="13%"> Due Date </th>
-                                <th width="7%"> Qty </th>
-                                <th width="10%"> Total </th>
-                                <th width="10%"> Status </th>
+                                <th width="15%"> Seller </th>
+                                <th width="10%"> Due Date </th>
+                                <th width="6%"> Qty </th>
+                                <th width="8%"> Total </th>
+                                <th width="11%"> Status </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,19 +70,19 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="25%"> {{$c->show_name}} </td>
-                                <td width="15%"> {{date('m/d/Y g:ia',strtotime($c->created))}} </td>
-                                <td width="20%"> {{$c->first_name}} {{$c->last_name}} </td>
-                                <td width="13%"> {{date('m/d/Y',strtotime($c->due_date))}} </td>
-                                <td width="7%"> {{$c->qty}} </td>
-                                <td width="10%"> $ {{$c->total}} </td>
-                                <td width="10%"> <span class="label label-sm sbold 
-                                    @if($c->status == 'Paid') label-success 
-                                    @elseif($c->status == 'Voided') label-info 
-                                    @elseif($c->status == 'Un-paid') label-danger 
-                                    @else label-default
-                                    @endif
-                                    "> {{$c->status}} </span> 
+                                <td width="20%"> {{$c->show_name}} </td>
+                                <td width="15%"><center> {{date('m/d/Y g:ia',strtotime($c->show_time))}} </center></td>
+                                <td width="15%"><center> {{date('m/d/Y g:ia',strtotime($c->created))}} </center></td>
+                                <td width="15%"> {{$c->first_name}} {{$c->last_name}} </td>
+                                <td width="10%"><center> {{date('m/d/Y',strtotime($c->due_date))}} </center></td>
+                                <td width="6%"><center> {{$c->qty}} </center></td>
+                                <td width="8%" style="text-align:right"> $ {{$c->total}} </td>
+                                <td width="11%"> 
+                                    <select ref="{{$c->id}}" class="form-control" name="status">
+                                        @foreach($status as $indexS=>$s)
+                                        <option @if($indexS == $c->status) selected @endif value="{{$indexS}}">{{$s}}</option>
+                                        @endforeach
+                                    </select>
                                 </td> 
                             </tr>
                             @endforeach 
@@ -94,7 +95,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN ADD MODAL--> 
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:55% !important;">
+        <div class="modal-dialog" style="width:60% !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Add Consignment</center></h4>
@@ -110,7 +111,8 @@
                             <div class="alert alert-warning">
                                 <center>
                                     <input type="hidden" name="purchase" value="0" />
-                                    <input type="checkbox" class="make-switch" name="purchase" value="1"  data-size="large" data-on-text="Create Purchase/Tickets (For Our Shows)" data-off-text="Don't Create Purchase/Tickets (For others shows)" data-on-color="primary" data-off-color="danger">
+                                    <input type="checkbox" class="make-switch" name="purchase" checked="true" value="1"  data-size="mini" data-on-text="Make Purchase" data-off-text="Don't Purchase" data-on-color="primary" data-off-color="danger">
+                                    <span style="color:red">You must make a purchase only if this show is one of ours. Otherwise you won't be able to print tickets.</span>
                                 </center>
                             </div>
                             <div class="row">
@@ -174,14 +176,15 @@
                                                         <i class="fa fa-calendar"></i>
                                                     </button>
                                                 </span>
-                                            </div>
+                                            </div>                          
                                         </div> 
-                                        <label class="control-label col-md-4">Agreement
-                                        </label>
-                                        <div class="col-md-8 show-error">
-                                            <span class="btn green">
-                                                <input type="file" name="agreement"> 
+                                        <div class="col-md-4 show-error">
+                                            <span class="btn btn-block green fileinput-button">Agreement <i class="fa fa-plus"></i>
+                                                <input type="file" name="agreement_file" accept="application/pdf"  onchange="$('#form_model_update [name=agreement]').val(this.value);"> 
                                             </span>
+                                        </div> 
+                                        <div class="col-md-8 show-error">
+                                            <input type="text" name="agreement" class="form-control" readonly="true"/>
                                         </div> 
                                     </div>
                                 </div>
@@ -228,8 +231,13 @@
                                         <span class="required"> Seats </span>
                                     </label><hr>
                                     <div class="form-group">
-                                        <select multiple="multiple" size="24" class="multi-select" id="seats_to_add" name="seats[]">
-                                        </select>
+                                        <label class="control-label col-md-2">Select Seats
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-10 show-error">
+                                            <select multiple="multiple" size="24" class="multi-select" id="seats_to_add" name="seats[]">
+                                            </select>
+                                        </div> 
                                     </div>
                                 </div>
                             </div>
@@ -283,11 +291,16 @@
                                         </div> 
                                     </div>
                                     <div class="form-group">  
-                                        <label class="control-label col-md-4">Agreement
+                                        <label class="control-label col-md-4"> Agreement
                                         </label>
                                         <div class="col-md-8 show-error">
-                                            <span class="btn green">
-                                                <input type="file" name="agreement"> 
+                                            <input type="text" name="agreement" class="form-control" readonly="true"/>
+                                        </div>
+                                        <label class="control-label col-md-4"> 
+                                        </label>
+                                        <div class="col-md-8 show-error">
+                                            <span class="btn btn-block green fileinput-button">Add/Change Agreement file <i class="fa fa-edit"></i>
+                                                <input type="file" name="agreement_file" accept="application/pdf" onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
                                             </span>
                                         </div> 
                                     </div>
@@ -306,56 +319,74 @@
                                             </div>
                                         </div> 
                                     </div>
-                                    <div class="form-group">    
-                                        <label class="control-label col-md-4">Status
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-8 show-error">
-                                            <select class="form-control" name="status">
-                                                @foreach($status_consignment as $index=>$s)
-                                                <option value="{{$index}}"> {{$s}} </option>
-                                                @endforeach
-                                            </select>
-                                        </div> 
-                                    </div>
                                     <div class="form-group">  
                                         <label class="control-label col-md-4">Qty
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-8 show-error">
+                                        <div class="col-md-2 show-error">
                                             <input readonly class="form-control" type="text" name="qty">
                                         </div> 
-                                    </div>
-                                    <div class="form-group">  
-                                        <label class="control-label col-md-4">Total ($)
+                                        <label class="control-label col-md-3">Total ($)
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-8 show-error">
+                                        <div class="col-md-3 show-error">
                                             <input readonly class="form-control" type="text" name="total">
                                         </div> 
+                                    </div>
+                                    <label class="control-label">
+                                        <span class="required"> Actions with selected seats </span>
+                                    </label><hr>
+                                    <div class="form-group col-md-6"> 
+                                        <div class="mt-radio-list">
+                                            <label class="mt-radio"> No action
+                                                <input value="no" name="action" type="radio" checked="true">
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio"> Change Status
+                                                <input value="status" name="action" type="radio">
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio"> Move to
+                                                <input value="moveto" name="action" type="radio">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">  
+                                        <br>
+                                        <div class="form-group">  
+                                            <select class="form-control" name="status">
+                                                <option selected disabled value=""></option>
+                                                @foreach($status_seat as $indexS=>$s)
+                                                <option value="{{$indexS}}">{{$s}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">  
+                                            <select class="form-control" name="moveto">
+                                                
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-7">
                                     <label class="control-label">
                                         <span class="required"> Seats </span>
                                     </label><hr>
-                                    <table class="table table-striped table-bordered table-hover table-checkable" style="height:300px; overflow: auto;">
-                                        <thead>
-                                            <tr>
-                                                <th width="2%">
-                                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                        <input type="checkbox" class="group-checkable" data-set="#form_model_update .checkboxes" />
-                                                        <span></span>
-                                                    </label>
-                                                </th>
-                                                <th width="58%"> Section / Row </th>
-                                                <th width="20%"> Seat </th>
-                                                <th width="20%"> Status </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tb_seats_consignment_edit">
-                                        </tbody>
-                                    </table>
+                                    <div class="show-error" style="height:450px; overflow: auto;">
+                                        <table class="table table-striped table-bordered table-hover table-checkable">
+                                            <thead>
+                                                <tr>
+                                                    <th width="2%"> </th>
+                                                    <th width="48%"> Section / Row </th>
+                                                    <th width="25%"> Seat </th>
+                                                    <th width="25%"> Status </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tb_seats_consignment_edit">
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>  
                         </div>

@@ -56,14 +56,23 @@ class ConsignmentController extends Controller{
                                 ->first();
                 if(!$consignment)
                     return ['success'=>false,'msg'=>'There was an error getting the consignment.<br>Maybe it is not longer in the system.'];
-                $seats = DB::table('seats')
-                                ->join('purchase_seats', 'purchase_seats.seat_id', '=' ,'seats.id')
+                $seats = DB::table('purchase_seats')
+                                ->join('seats', 'purchase_seats.seat_id', '=' ,'seats.id')
                                 ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select('seats.*','purchase_seats.purchase_id','purchase_seats.status','tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_commission')
+                                ->select('purchase_seats.*','seats.seat','tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_commission')
                                 ->where('purchase_seats.consignment_id','=',$input['id'])
-                                ->orderBy('seats.seat')
+                                ->orderBy('tickets.ticket_type','seats.seat')
                                 ->distinct()->get();
-                return ['success'=>true,'consignment'=>$consignment, 'seats'=>$seats];
+                $moveto = DB::table('consignments')
+                                ->join('users', 'users.id', '=' ,'consignments.seller_id')
+                                ->join('show_times', 'show_times.id', '=' ,'consignments.show_time_id')
+                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email'))
+                                ->where('consignments.show_time_id','=',$consignment->show_time_id)
+                                ->where('consignments.id','<>',$consignment->id)
+                                ->groupBy('consignments.id')    
+                                ->get();
+                return ['success'=>true,'consignment'=>$consignment, 'seats'=>$seats, 'moveto'=>$moveto];
             }
             else if(isset($input) && isset($input['venue_id']))
             {
@@ -83,13 +92,10 @@ class ConsignmentController extends Controller{
             {
                 $ticket = Ticket::where('id','=',$input['ticket_id'])
                                 ->first(['retail_price','processing_fee','percent_commission']);
-                if(isset($input['available']) && $input['available'] = 1)
-                    $seats = DB::table('seats')
-                                ->leftJoin('purchase_seats', 'purchase_seats.seat_id', '=' ,'seats.id','outer')
-                                ->select('seats.*')
-                                ->where('ticket_id','=',$input['ticket_id'])
-                                ->orderBy('seats.seat')
-                                ->distinct()->get();
+                if(isset($input['available']) && $input['available'])
+                    $seats = DB::select(' SELECT DISTINCT s.* FROM seats s WHERE s.id NOT IN ' 
+                                            .'(SELECT ps.seat_id FROM purchase_seats ps INNER JOIN seats ss ON ss.id = ps.seat_id WHERE ss.ticket_id = ?) '
+                                            .'AND s.ticket_id = ? ORDER BY s.seat',array($input['ticket_id'],$input['ticket_id']));
                 else
                     $seats = Seat::where('ticket_id','=',$input['ticket_id'])
                                 ->select('seats.*')->orderBy('seats.seat')->get();
@@ -129,7 +135,7 @@ class ConsignmentController extends Controller{
                                 ->join('purchase_seats', 'purchase_seats.consignment_id', '=' ,'consignments.id')
                                 ->join('seats', 'seats.id', '=' ,'purchase_seats.seat_id')
                                 ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time, 
+                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
                                         COUNT(purchase_seats.id) AS qty, 
                                         (ROUND(SUM(tickets.retail_price+tickets.processing_fee-tickets.retail_price*tickets.percent_commission/100),2)) AS total'))
                                 ->where('purchase_seats.status','<>','Voided')
@@ -144,10 +150,10 @@ class ConsignmentController extends Controller{
                                 ->get();
                 $venues = Venue::orderBy('name')->get();
                 $stages = Stage::orderBy('name')->get();
-                $status_consignment = Util::getEnumValues('consignments','status');
+                $status = Util::getEnumValues('consignments','status');
                 $status_seat = Util::getEnumValues('purchase_seats','status');
                 //return view
-                return view('admin.consignments.index',compact('consignments','sellers','venues','stages','status_consignment','status_seat'));
+                return view('admin.consignments.index',compact('consignments','sellers','venues','stages','status','status_seat'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Consignment Index: '.$ex->getMessage());
@@ -164,21 +170,133 @@ class ConsignmentController extends Controller{
             //init
             $input = Input::all();
             $file = null;
-            if(Input::hasFile('agreement'))
-                $file = Input::file('agreement');
+            if(Input::hasFile('agreement_file'))
+                $file = Input::file('agreement_file');
             $current = date('Y-m-d H:i:s');
             //save all record      
             if($input)
             {
                 if(isset($input['id']) && $input['id'])
                 {
-                    /*$user = User::find($input['id']);
-                    $user->updated = $current;
-                    $location = $user->location;
-                    $location->updated = $current;
-                    if(isset($input['password']) && $input['password'])
-                        $user->password = md5($input['password']);*/
-                }                    
+                    $consignment = Consignment::find($input['id']);
+                    $consignment->due_date = $input['due_date'];
+                    if($file)
+                        $consignment->set_agreement($file);
+                    $consignment->save();
+                    if(isset($input['action']) && isset($input['seat']) && count($input['seat']))
+                    {
+                        $seats = array_unique($input['seat']);
+                        if($input['action'] == 'status' && isset($input['status']))
+                        {
+                           foreach ($seats as $s)
+                           {
+                                $purchase_seat = DB::table('purchase_seats')
+                                            ->join('tickets', 'tickets.id', '=' ,'purchase_seats.ticket_id')
+                                            ->select('purchase_seats.*','tickets.retail_price','tickets.processing_fee')
+                                            ->where('purchase_seats_id',$s)->first();
+                                $oldStatus = $purchase_seat->status;
+                                $purchase_seat->status = $input['status'];
+                                $purchase_seat->save();
+                                //if it has purchase change values
+                                if($purchase_seat->purchase_id)
+                                {
+                                    if($oldStatus == 'Voided' && $purchase_seat->status != $oldStatus)
+                                    {
+                                        $purchase = Purchase::find($purchase_seat->purchase_id);
+                                        $purchase->increment('quantity',1);
+                                        $purchase->increment('retail_price',$purchase_seat->retail_price);
+                                        $purchase->increment('processing_fee',$purchase_seat->processing_fee);
+                                    }
+                                    if($oldStatus != 'Voided' && $purchase_seat->status == 'Voided')
+                                    {
+                                        $purchase = Purchase::find($purchase_seat->purchase_id);
+                                        $purchase->decrement('quantity',1);
+                                        $purchase->decrement('retail_price',$purchase_seat->retail_price);
+                                        $purchase->decrement('processing_fee',$purchase_seat->processing_fee);
+                                    }
+                                }
+                           }
+                        }
+                        else if($input['action'] == 'moveto' && isset($input['moveto']))
+                        {
+                            foreach ($seats as $s)
+                           {
+                                $purchase_seat = DB::table('purchase_seats')->select('purchase_seats.*')->where('purchase_seats_id',$s)->first();
+                                $purchase_seat->consignment_id = $input['moveto'];
+                                $purchase_seat->save();
+                           }
+                        }
+                    }
+                    //return
+                    return ['success'=>true,'msg'=>'Consignments Tickets saved successfully!'];
+                } 
+                else if(isset($input['consignment_id']) && isset($input['status']))
+                {
+                    $consignment = Consignment::find($input['consignment_id']);
+                    $oldStatus = $consignment->status;
+                    $consignment->status = $input['status'];
+                    $consignment->updated = $current;
+                    $consignment->save();
+                    if($oldStatus == 'Voided' && $consignment->status != $oldStatus)
+                    {
+                        $purchase = DB::table('purchases')
+                                ->join('purchase_seats', 'purchase_seats.purchase_id', '=' ,'purchases.id')
+                                ->select('purchases.id','purchases.status')
+                                ->where('purchase_seats.consignment_id','=',$consignment->id)->where('purchases.created','=',$consignment->created)
+                                ->orderBy('purchases.id')
+                                ->groupBy('purchases.id')
+                                ->first();
+                        $purchase->update(['status'=>'Active']);
+                    }
+                    if($oldStatus != 'Voided' && $consignment->status == 'Voided')
+                    {
+                        $purchase = DB::table('purchases')
+                                ->join('purchase_seats', 'purchase_seats.purchase_id', '=' ,'purchases.id')
+                                ->select('purchases.id','purchases.status')
+                                ->where('purchase_seats.consignment_id','=',$consignment->id)->where('purchases.created','=',$consignment->created)
+                                ->orderBy('purchases.id')
+                                ->groupBy('purchases.id')
+                                ->first();
+                        $purchase->update(['status'=>'Void']);
+                    }
+                    return ['success'=>true,'msg'=>'Consignment saved successfully!'];
+                }     
+                else if(isset($input['purchase_seats_id']) && isset($input['status']))
+                {
+                    $purchase_seat = DB::table('purchase_seats')
+                                ->join('tickets', 'tickets.id', '=' ,'purchase_seats.ticket_id')
+                                ->select('purchase_seats.*','tickets.retail_price','tickets.processing_fee')
+                                ->where('purchase_seats_id',$input['purchase_seats_id'])->first();
+                    $oldStatus = $purchase_seat->status;
+                    $purchase_seat->update(['status'=>$input['status']]);
+                    if($oldStatus == 'Voided' && $purchase_seat->status != $oldStatus)
+                    {
+                        $purchase = DB::table('purchases')
+                                ->join('purchase_seats', 'purchase_seats.purchase_id', '=' ,'purchases.id')
+                                ->select('purchases.id','purchases.status')
+                                ->where('purchase_seats.consignment_id','=',$consignment->id)->where('purchases.created','=',$consignment->created)
+                                ->orderBy('purchases.id')
+                                ->groupBy('purchases.id')
+                                ->first();
+                        $purchase->increment('quantity',1);
+                        $purchase->increment('retail_price',$purchase_seat->retail_price);
+                        $purchase->increment('processing_fee',$purchase_seat->processing_fee);
+                    }
+                    if($oldStatus != 'Voided' && $purchase_seat->status == 'Voided')
+                    {
+                        $purchase = DB::table('purchases')
+                                ->join('purchase_seats', 'purchase_seats.purchase_id', '=' ,'purchases.id')
+                                ->select('purchases.id','purchases.status')
+                                ->where('purchase_seats.consignment_id','=',$consignment->id)->where('purchases.created','=',$consignment->created)
+                                ->orderBy('purchases.id')
+                                ->groupBy('purchases.id')
+                                ->first();
+                        $purchase->decrement('quantity',1);
+                        $purchase->decrement('retail_price',$purchase_seat->retail_price);
+                        $purchase->decrement('processing_fee',$purchase_seat->processing_fee);
+                    }
+                    return ['success'=>true,'msg'=>'Seat saved successfully!'];
+                }     
                 else
                 {                    
                     //create consignment
@@ -189,6 +307,9 @@ class ConsignmentController extends Controller{
                     $consignment->created = $current;
                     $consignment->updated = $current;
                     $consignment->agreement = ($file)? Util::upload_file($file,'consignments') : '';
+                    $consignment->save();
+                    if($file)
+                        $consignment->set_agreement($file);
                     $consignment->save();
                     //create purchase
                     if($input['purchase'])
@@ -229,7 +350,8 @@ class ConsignmentController extends Controller{
                     }
                     //create consignments seats
                     $purchase_seat = [];
-                    foreach ($input['seats'] as $s)
+                    $seats = array_unique($input['seats']);
+                    foreach ($seats as $s)
                         $consignment->purchase_seats()->save(Seat::find($s), ['purchase_id' => ($input['purchase'])? $purchase->id : null, 'status' => 'Created', 'updated' => $current ]);
                     //return
                     return ['success'=>true,'msg'=>'Consignments Tickets saved successfully!'];
