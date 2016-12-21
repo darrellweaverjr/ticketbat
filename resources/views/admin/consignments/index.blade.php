@@ -32,7 +32,7 @@
                             <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true"> View Tickets 
+                            <button id="btn_model_tickets" class="btn sbold bg-red" disabled="true"> View Tickets 
                                 <i class="fa fa-ticket"></i>
                             </button>
                             <button id="btn_model_seats" class="btn sbold bg-purple"> Seats at Stages
@@ -45,12 +45,7 @@
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="2%">
-                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="group-checkable" data-set="#tb_model .checkboxes" />
-                                        <span></span>
-                                    </label>
-                                </th>
+                                <th width="2%"> </th>
                                 <th width="1%"> </th>
                                 <th width="20%"> Show </th>
                                 <th width="15%"> Show Time </th>
@@ -66,8 +61,8 @@
                             @foreach($consignments as $index=>$c)
                             <tr>
                                 <td width="2%">
-                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$c->id}}" value="{{$c->id}}" />
+                                    <label class="mt-radio mt-radio-single mt-radio-outline">
+                                        <input type="radio" name="radios" id="{{$c->id}}" value="{{$c->id}}" />
                                         <span></span>
                                     </label>
                                 </td>

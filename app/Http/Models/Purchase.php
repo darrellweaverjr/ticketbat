@@ -115,14 +115,40 @@ class Purchase extends Model
                             ->where('ticket_number.purchases_id', '=', $this->id)
                             ->orderBy('ticket_number.id')
                             ->get();
-        for ($i=1; $i<=$this->quantity; $i++)
+        //if it has ticket number is the old way, without a seat by ticket
+        if($ticket_numbers->count())
+        {
+            for ($i=1; $i<=$this->quantity; $i++)
             foreach($ticket_numbers as $tn)
                 if(in_array($i,explode(',',$tn->tickets)))
                 {
                     $main_info = ['number'=>$i,'customer_name'=>$tn->first_name.' '.$tn->last_name,'customer_email'=>$tn->email,'checked'=>(in_array($i,explode(',',$tn->checked)))? $checked_= 1 : $checked_= 0,'comment'=>$tn->comment,'QRcode'=>Util::getQRcode($this->id,$this->user_id,$i)];
-                    $extra_info = ['show_name'=>$purchase->show_name,'show_time'=>$purchase->show_time,'price_each'=>round($this->price_paid/$this->quantity,2),'id'=>$this->id,'venue_name'=>$purchase->venue_name,'restrictions'=>$purchase->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$purchase->ticket_type_type,'time_alternative'=>$purchase->time_alternative,'package'=>$purchase->title];
+                    $extra_info = ['show_name'=>$purchase->show_name,'show_time'=>$purchase->show_time,'price_each'=>number_format($this->price_paid/$this->quantity,2),'id'=>$this->id,'venue_name'=>$purchase->venue_name,'restrictions'=>$purchase->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$purchase->ticket_type_type,'time_alternative'=>$purchase->time_alternative,'package'=>$purchase->title];
                     $tickets[] = array_merge($main_info,$extra_info);
-                }       
+                }    
+        }
+        //if it sells section/row/seat
+        else
+        {
+            $seats = DB::table('purchase_seats')
+                                ->join('seats', 'purchase_seats.seat_id', '=' ,'seats.id')
+                                ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
+                                ->join('purchases', 'purchases.id', '=' ,'purchase_seats.purchase_id')
+                                ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                                ->select('purchase_seats.*','seats.seat','tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_commission',
+                                        'shows.name AS show_name','show_times.show_time','venues.name AS venue_name','shows.restrictions','show_times.time_alternative')
+                                ->where('purchase_seats.purchase_id',$this->id)
+                                ->orderBy('tickets.ticket_type','seats.seat')
+                                ->distinct()->get();
+            foreach ($seats as $s)
+            {
+                $main_info = ['number'=>$s->id,'customer_name'=>'','customer_email'=>'','checked'=>($s->status == 'Checked')? $checked_= 1 : $checked_= 0,'comment'=>'','QRcode'=>Util::getQRcode($this->id,$this->user_id,$s->id)];
+                $extra_info = ['show_name'=>$s->show_name,'show_time'=>$s->show_time,'price_each'=>number_format($s->retail_price+$s->processing_fee-($s->retail_price*$s->percent_commission/100),2),'id'=>$this->id,'venue_name'=>$s->venue_name,'restrictions'=>$s->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$this->ticket_type,'time_alternative'=>$s->time_alternative,'package'=>$s->ticket_type.' Seat: '.$s->seat];
+                $tickets[] = array_merge($main_info,$extra_info);
+            }
+        }
         //get banners from shows, if not then banners from venues
         $banners = DB::table('banners')
                             ->join('show_times', 'show_times.show_id', '=' ,'banners.parent_id')

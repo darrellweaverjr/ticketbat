@@ -78,6 +78,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('sliders/remove', 'SliderController@remove');
     Route::match(['get','post'], 'sliders', 'SliderController@index');
     //consignment tickets
+    Route::get('consignments/tickets/{type}/{ids}', 'ConsignmentController@tickets');
     Route::post('consignments/save_seats', 'ConsignmentController@save_seats');
     Route::post('consignments/save', 'ConsignmentController@save');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index');

@@ -49,25 +49,9 @@ var TableDatatablesManaged = function () {
             "order": [
                 [0, "asc"]
             ] // set first column as a default sort by asc
-        });
-        
-        table.find('.group-checkable').change(function () {
-            var set = jQuery(this).attr("data-set");
-            var checked = jQuery(this).is(":checked");
-            jQuery(set).each(function () {
-                if (checked) {
-                    $(this).prop("checked", true);
-                    $(this).parents('tr').addClass("active");
-                } else {
-                    $(this).prop("checked", false);
-                    $(this).parents('tr').removeClass("active");
-                }
-            });
-            check_models(); 
-        });        
+        }); 
         
         table.on('change', 'tbody tr .checkboxes', function () {
-            check_models();             
             $(this).parents('tr').toggleClass("active");
         });
         
@@ -434,27 +418,6 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
-        //check/uncheck all
-        var check_models = function(){
-            var set = $('.group-checkable').attr("data-set");
-            var checked = $(set+"[type=checkbox]:checked").length;
-            if(checked == 1)
-            {
-                $('#btn_model_edit').prop("disabled",false);
-                $('#btn_model_remove').prop("disabled",false);
-            }
-            else if(checked > 1)
-            {
-                $('#btn_model_edit').prop("disabled",true);
-                $('#btn_model_remove').prop("disabled",false);
-            }
-            else
-            {
-                $('#btn_model_edit').prop("disabled",true);
-                $('#btn_model_remove').prop("disabled",true);
-            }
-            $('#btn_model_add').prop("disabled",false);
-        } 
         //function seats
         $('#btn_model_seats').on('click', function(ev) {
             $('#tb_seats').empty();
@@ -608,6 +571,28 @@ var TableDatatablesManaged = function () {
                 });
             }       
         };
+        //function tickets
+        $('#btn_model_tickets').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            swal({
+                title: "View tickets",
+                text: "Select the way you want to view the tickets",
+                type: "info",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "BOCA Ticket Printer",
+                cancelButtonText: "Standard Printer",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+              function(isConfirm) {
+                if (isConfirm) {
+                    window.open('/admin/consignments/tickets/S/'+id);
+                } else {
+                    window.open('/admin/consignments/tickets/C/'+id);
+                }
+            });
+        });  
         //function save on add
         $('#btn_model_save').on('click', function(ev) {
             //if shows not ours you must add tickets, if our shows, you can add and purchase later
@@ -630,7 +615,14 @@ var TableDatatablesManaged = function () {
             save_consignment('modal_model_update2','form_model_update2');     
         });
         //init functions
-        check_models();  
+        //enable function buttons on check radio 
+        $('input:radio[name=radios]').change(function () {
+            if($('input:radio[name=radios]:checked').length > 0)
+            {
+                $('#btn_model_tickets').prop('disabled',false);
+                $('#btn_model_edit').prop('disabled',false);
+            }
+        });
         $('#seats_to_add').multiSelect({ selectableOptgroup: true });
     }
     return {

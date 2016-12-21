@@ -18,6 +18,8 @@ use App\Http\Models\Consignment;
 use App\Http\Models\Purchase;
 use App\Http\Models\Customer;
 use App\Http\Models\User;
+use Illuminate\Support\Facades\View;
+use Barryvdh\DomPDF\Facade as PDF;
 
 
 /**
@@ -199,7 +201,8 @@ class ConsignmentController extends Controller{
                            foreach ($seats as $s)
                            {
                                 $purchase_seat = DB::table('purchase_seats')
-                                            ->join('tickets', 'tickets.id', '=' ,'purchase_seats.ticket_id')
+                                            ->join('seats', 'purchase_seats.seat_id', '=' ,'seats.id')
+                                            ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                             ->select('purchase_seats.*','tickets.retail_price','tickets.processing_fee')
                                             ->where('purchase_seats_id',$s)->first();
                                 if($purchase_seat)
@@ -316,9 +319,10 @@ class ConsignmentController extends Controller{
                                     $updates['purchase_id'] = $purchaseTo->id;
                                     //get values
                                     $purchase_seat = DB::table('purchase_seats')
-                                            ->join('tickets', 'tickets.id', '=' ,'purchase_seats.ticket_id')
+                                            ->join('seats', 'seats.id', '=' ,'purchase_seats.seat_id')
+                                            ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                             ->select('purchase_seats.*','tickets.retail_price','tickets.processing_fee')
-                                            ->where('purchase_seats_id',$s)->first();
+                                            ->where('purchase_seats.id',$s)->first();
                                     //decrement old
                                     $purchaseFrom->decrement('quantity',1);
                                     $purchaseFrom->decrement('retail_price',$purchase_seat->retail_price);
@@ -474,5 +478,61 @@ class ConsignmentController extends Controller{
             throw new Exception('Error Consignment Save Seats: '.$ex->getMessage());
         }
     }
-    
+    /**
+     * View tickets of consignment.
+     *
+     * @void
+     */
+    public function tickets($type,$ids)
+    {
+        try {
+            //check input values    
+            if(in_array($type,['C','S']))
+            {
+                $tickets = $purchases_id = [];
+                $consignments_ids = explode('-',$ids);
+                //loop all consignments to get all purchases id
+                foreach ($consignments_ids as $id)
+                {
+                    $purchase = DB::table('purchases')
+                                ->join('purchase_seats', 'purchase_seats.purchase_id', '=' ,'purchases.id')
+                                ->join('consignments', 'consignments.id', '=' ,'purchase_seats.consignment_id')
+                                ->select('purchases.id')
+                                ->where('purchase_seats.consignment_id','=',$id)->where('purchases.created','=',Consignment::find($id)->created)
+                                ->first();
+                    if($purchase)
+                        $purchases_id[] = $purchase->id;
+                }
+                
+                //if it has no purchase throw error
+                if(!count($purchases_id))
+                {
+                    $format='plain'; $type='X';
+                    $tickets = '<script>alert("The system could not load the information from the DB. This consignment has not a purchase.");window.close();</script>';
+                    return View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'))->render();
+                }
+                //loop all purchases
+                foreach ($purchases_id as $id)
+                {
+                    $t = Purchase::find($id)->get_receipt()['tickets'];
+                    $tickets = array_merge($tickets,$t);
+                }
+                //create pdf tickets
+                $format = 'pdf';
+                $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format')); 
+                if($type == 'S')
+                    return PDF::loadHTML($pdf_receipt->render())->setPaper([0,0,396,144],'portrait')->setWarnings(false)->download('TicketBat Admin - tickets - '.$ids.'.pdf');
+                return PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - tickets - '.$ids.'.pdf');
+            }
+            else
+            {
+                $format='plain';
+                $tickets = '<script>alert("The system could not load the information from the DB. These are not valid purchases.");window.close();</script>';
+                return View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'))->render();
+            }
+            
+        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            throw new Exception('Error Purchases tickets: '.$ex->getMessage());
+        }
+    }
 }
