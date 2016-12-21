@@ -610,7 +610,20 @@ var TableDatatablesManaged = function () {
         };
         //function save on add
         $('#btn_model_save').on('click', function(ev) {
-            save_consignment('modal_model_update','form_model_update');      
+            //if shows not ours you must add tickets, if our shows, you can add and purchase later
+            if(!$('#form_model_update [name="purchase"]:checkbox').is(':checked') && !$('#form_model_update select[name="seats[]"] option:selected').length)
+            {
+                $('#modal_model_update').modal('hide');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must add tickets for this show!<br>Please check the information again.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            } 
+            else save_consignment('modal_model_update','form_model_update');      
         });
         //function save on edit
         $('#btn_model_save2').on('click', function(ev) {

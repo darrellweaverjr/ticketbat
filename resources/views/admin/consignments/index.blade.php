@@ -51,13 +51,14 @@
                                         <span></span>
                                     </label>
                                 </th>
+                                <th width="1%"> </th>
                                 <th width="20%"> Show </th>
                                 <th width="15%"> Show Time </th>
                                 <th width="15%"> Created </th>
                                 <th width="15%"> Seller </th>
                                 <th width="10%"> Due Date </th>
                                 <th width="6%"> Qty </th>
-                                <th width="8%"> Total </th>
+                                <th width="7%"> Total </th>
                                 <th width="11%"> Status </th>
                             </tr>
                         </thead>
@@ -70,13 +71,14 @@
                                         <span></span>
                                     </label>
                                 </td>
+                                <td width="1%" class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>  
                                 <td width="20%"> {{$c->show_name}} </td>
                                 <td width="15%"><center> {{date('m/d/Y g:ia',strtotime($c->show_time))}} </center></td>
                                 <td width="15%"><center> {{date('m/d/Y g:ia',strtotime($c->created))}} </center></td>
                                 <td width="15%"> {{$c->first_name}} {{$c->last_name}} </td>
                                 <td width="10%"><center> {{date('m/d/Y',strtotime($c->due_date))}} </center></td>
                                 <td width="6%"><center> {{$c->qty}} </center></td>
-                                <td width="8%" style="text-align:right"> $ {{$c->total}} </td>
+                                <td width="7%" style="text-align:right"> $ {{$c->total}} </td>
                                 <td width="11%"> 
                                     <select ref="{{$c->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
