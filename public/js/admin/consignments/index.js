@@ -437,8 +437,7 @@ var TableDatatablesManaged = function () {
             $("#form_model_update2 input[name='id']:hidden").val('').trigger('change');
             $('#tb_seats_consignment_edit').empty();
             $("#form_model_update2").trigger('reset');
-            var set = $('.group-checkable').attr("data-set");
-            var id = $(set+"[type=checkbox]:checked")[0].id;
+            var id = $('#tb_model input[name="radios"]:checked').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
