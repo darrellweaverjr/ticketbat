@@ -204,7 +204,7 @@ class ConsignmentController extends Controller{
                                             ->join('seats', 'purchase_seats.seat_id', '=' ,'seats.id')
                                             ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                             ->select('purchase_seats.*','tickets.retail_price','tickets.processing_fee')
-                                            ->where('purchase_seats_id',$s)->first();
+                                            ->where('purchase_seats.id',$s)->first();
                                 if($purchase_seat)
                                 {
                                     $oldStatus = $purchase_seat->status;
