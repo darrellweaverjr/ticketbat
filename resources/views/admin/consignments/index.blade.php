@@ -26,7 +26,7 @@
                     </div>
                     <div class="actions">                        
                         <div class="btn-group">
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
+                            <button id="btn_model_add" class="btn sbold bg-green"> Add 
                                 <i class="fa fa-plus"></i>
                             </button>
                             <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
