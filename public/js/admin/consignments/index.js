@@ -149,9 +149,6 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update [name="retail_price"]').val('');
                 $('#modal_model_update [name="processing_fee"]').val('');
                 $('#modal_model_update [name="percent_commission"]').val('');
-                
-                //$('#seats_to_add').html('');
-                //$('#seats_to_add').multiSelect({ selectableOptgroup: true });
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -469,7 +466,7 @@ var TableDatatablesManaged = function () {
                                     var style = 'label-warning';
                                     break;
                                 case 'Checked':
-                                    var checkable = 'disabled'; 
+                                    var checkable = ''; 
                                     var style = 'label-success';
                                     break;
                                 default:
