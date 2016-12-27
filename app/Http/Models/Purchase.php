@@ -145,7 +145,8 @@ class Purchase extends Model
             foreach ($seats as $s)
             {
                 $main_info = ['number'=>$s->id,'customer_name'=>'','customer_email'=>'','checked'=>($s->status == 'Checked')? $checked_= 1 : $checked_= 0,'comment'=>'','QRcode'=>Util::getQRcode($this->id,$this->user_id,$s->id)];
-                $extra_info = ['show_name'=>$s->show_name,'show_time'=>$s->show_time,'price_each'=>number_format($s->retail_price+$s->processing_fee-($s->retail_price*$s->percent_commission/100),2),'id'=>$this->id,'venue_name'=>$s->venue_name,'restrictions'=>$s->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$s->seat_id,'time_alternative'=>$s->time_alternative,'package'=>$s->ticket_type.' Seat: '.$s->seat];
+                $extra_info = ['show_name'=>$s->show_name,'show_time'=>$s->show_time,'price_each'=>number_format($s->retail_price+$s->processing_fee,2),'id'=>$this->id,'venue_name'=>$s->venue_name,'restrictions'=>$s->restrictions,
+                               'user_id'=>$this->user_id,'ticket_type'=>$s->seat_id,'time_alternative'=>$s->time_alternative,'package'=>$s->ticket_type.' Seat: '.$s->seat];
                 $tickets[] = array_merge($main_info,$extra_info);
             }
         }
