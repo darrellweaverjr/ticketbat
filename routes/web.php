@@ -39,17 +39,17 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('bands/remove', 'BandController@remove');
     Route::match(['get','post'], 'bands', 'BandController@index');
     //venues
-    Route::post('venues/save', 'VenueController@save');
+    Route::post('venues/save/{subtable?}', 'VenueController@save');
     Route::post('venues/remove', 'VenueController@remove');
     Route::match(['get','post'], 'venues', 'VenueController@index');
     //shows
+    Route::post('shows/slug', 'ShowController@slug');
     Route::post('shows/save', 'ShowController@save');
     Route::post('shows/remove', 'ShowController@remove');
     Route::match(['get','post'], 'shows', 'ShowController@index');
     //ticket_types
-    Route::post('ticket_types/save', 'TicketController@save');
-    Route::post('ticket_types/remove', 'TicketController@remove');
-    Route::match(['get','post'], 'ticket_types', 'TicketController@index');
+    Route::post('ticket_types/save', 'TicketTypeController@save');
+    Route::match(['get','post'], 'ticket_types', 'TicketTypeController@index');
     //coupons
     Route::post('coupons/save', 'DiscountController@save');
     Route::post('coupons/remove', 'DiscountController@remove');
@@ -78,9 +78,10 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('sliders/remove', 'SliderController@remove');
     Route::match(['get','post'], 'sliders', 'SliderController@index');
     //consignment tickets
-    Route::post('tickets/save', 'TicketController@save');
-    Route::post('tickets/remove', 'TicketController@remove');
-    Route::match(['get','post'], 'tickets', 'TicketController@index');
+    Route::get('consignments/tickets/{type}/{ids}', 'ConsignmentController@tickets');
+    Route::post('consignments/save_seats', 'ConsignmentController@save_seats');
+    Route::post('consignments/save', 'ConsignmentController@save');
+    Route::match(['get','post'], 'consignments', 'ConsignmentController@index');
     //contracts
     Route::post('contracts/save', 'xxxController@save');
     Route::post('contracts/remove', 'xxxController@remove');

@@ -27,11 +27,11 @@ var TableDatatablesManaged = function () {
             //"ajax": '/admin/users/ajax',
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
-                [5, 10, 15, 20, -1],
-                [5, 10, 15, 20, "All"] // change per page values here
+                [10, 15, 20, -1],
+                [10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 10,            
+            "pageLength": 15,            
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
@@ -47,7 +47,7 @@ var TableDatatablesManaged = function () {
                 }
             ],
             "order": [
-                [1, "asc"]
+                [0, "asc"]
             ] // set first column as a default sort by asc
         });
         
@@ -71,11 +71,214 @@ var TableDatatablesManaged = function () {
             $(this).parents('tr').toggleClass("active");
         });
         
-        //PERSONALIZED FUNCTIONS
-        //checkbox toggle only shows with errors
-        $('#form_model_search input[name="onlyerrors"]:checkbox').change(function () {
-             $( "#form_model_search" ).submit();
-        });   
+        //PERSONALIZED FUNCTIONS  
+        //on venue select
+        $('#modal_model_update [name="venue_id"]').on('change', function () {
+            var venue_id = $('#modal_model_update [name="venue_id"] option:selected').val();
+            if(venue_id)
+            {
+                $('#modal_model_update [name="show_id"]').empty();
+                $('#modal_model_update [name="show_time_id"]').empty();
+                $('#modal_model_update [name="ticket_id"]').empty();
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/ticket_codes', 
+                    data: {venue_id:venue_id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#modal_model_update [name="show_id"]').append('<option value=""></option>');
+                            $.each(data.shows,function(key, value) {
+                                $('#modal_model_update [name="show_id"]').append('<option value="'+value.id+'">'+value.name+'</option>');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Info</span>",
+                    text: "You must select a valid Venue",
+                    html: true,
+                    type: "info"
+                });
+            }
+        });
+        //on show select
+        $('#modal_model_update [name="show_id"]').on('change', function () {
+            var show_id = $('#modal_model_update [name="show_id"] option:selected').val();
+            if(show_id)
+            {
+                $('#modal_model_update [name="show_time_id"]').empty();
+                $('#modal_model_update [name="ticket_id"]').empty();
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/ticket_codes', 
+                    data: {show_id:show_id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#modal_model_update [name="show_time_id"]').append('<option value=""></option>');
+                            $.each(data.show_times,function(key, value) {
+                                $('#modal_model_update [name="show_time_id"]').append('<option value="'+value.id+'">'+value.show_time+'</option>');
+                            });
+                            $('#modal_model_update [name="ticket_id"]').append('<option value=""></option>');
+                            $.each(data.tickets,function(key, value) {
+                                $('#modal_model_update [name="ticket_id"]').append('<option value="'+value.id+'">'+value.ticket_type+'</option>');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Info</span>",
+                    text: "You must select a valid Venue",
+                    html: true,
+                    type: "info"
+                });
+            }
+        });
+        //on ticket select
+        $('#modal_model_update [name="ticket_id"]').on('change', function () {
+            var ticket_id = $('#modal_model_update [name="ticket_id"] option:selected').val();
+            if(ticket_id)
+            {
+                $('#modal_model_update [name="retail_price"]').val('');
+                $('#modal_model_update [name="processing_fee"]').val('');
+                $('#modal_model_update [name="percent_commission"]').val('');
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/ticket_codes', 
+                    data: {ticket_id:ticket_id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#modal_model_update [name="retail_price"]').val(data.ticket.retail_price);
+                            $('#modal_model_update [name="processing_fee"]').val(data.ticket.processing_fee);
+                            $('#modal_model_update [name="percent_commission"]').val((data.ticket.retail_price*data.ticket.percent_commission/100).toFixed(2));
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Info</span>",
+                    text: "You must select a valid Venue",
+                    html: true,
+                    type: "info"
+                });
+            }
+        });
+        //spinners for start seat and end seat
+        $('#form_model_update [name="start_seat"]').TouchSpin({ initval:1,min:1,max:500 });
+        $('#form_model_update [name="end_seat"]').TouchSpin({ initval:1,min:1,max:500 });
+        $('#form_model_update [name="start_seat"]').on('change', function () {
+            if($('#form_model_update [name="start_seat"]').val() >= $('#form_model_update [name="end_seat"]').val() && $('#form_model_update [name="start_seat"]').val()<=500)
+                $('#form_model_update [name="end_seat"]').val($('#form_model_update [name="start_seat"]').val());
+        });
+        $('#form_model_update [name="end_seat"]').on('change', function () {
+            if($('#form_model_update [name="start_seat"]').val() >= $('#form_model_update [name="end_seat"]').val() && $('#form_model_update [name="end_seat"]').val()<=500)
+                $('#form_model_update [name="start_seat"]').val($('#form_model_update [name="end_seat"]').val());
+        });
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //active/desactive ticket types
+        $('#tb_model .make-switch[type=checkbox]').on('switchChange.bootstrapSwitch', function (e, state) {
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/ticket_types/save', 
+                data: {ticket_type:e.target.value,active:e.target.checked}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Updated!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                    }
+                    else{
+                        $('#tb_model .make-switch:checkbox[value="'+e.target.value+'"]').bootstrapSwitch('state', !state, true);
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                    }  
+                },
+                error: function(){
+                    $('#tb_model .make-switch:checkbox[value="'+e.target.value+'"]').bootstrapSwitch('state', !state, true);
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to set the type's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });
+        });
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -99,9 +302,7 @@ var TableDatatablesManaged = function () {
         } 
         //function full reset form
         var fullReset = function(){
-            $('#form_model_update [name="image_url"]').attr('src','');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
-            $("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
         //function add
@@ -110,9 +311,12 @@ var TableDatatablesManaged = function () {
             if($('#modal_model_update_header').hasClass('bg-yellow'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
-            $('#modal_model_update_title').html('Add Band');
+            $('#modal_model_update_title').html('Add Consignment Ticket');
+            $('#form_model_update [name="ticket_type"]').prop('disabled',false);
+            $('#div_model_update_advanced').css('display','none');
+            //show modal
             $('#modal_model_update').modal('show');
-        });
+        });  
         //function edit
         $('#btn_model_edit').on('click', function(ev) {
             fullReset();
@@ -121,25 +325,24 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            $('#modal_model_update_title').html('Edit Band');
+            $('#div_model_update_advanced').css('display','block');
+            $('#modal_model_update_title').html('Edit Type');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/bands', 
+                url: '/admin/ticket_types', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        for(var key in data.band)
+                        for(var key in data.ticket_type)
                         {
                             var e = $('#form_model_update [name="'+key+'"]');
-                            if(e.is('img'))
-                                e.attr('src',data.band[key]);
-                            else if(e.is('input:checkbox'))
-                                e.prop('checked',data.band[key]);
-                            else
-                                e.val(data.band[key]);
+                            e.val(data.ticket_type[key]);
+                            if(key === 'ticket_type')
+                                $('#form_model_update [name="id"]').val(data.ticket_type[key]);
                         }
+                        $('#form_model_update [name="ticket_type"]').prop('disabled',true);
                         $('#modal_model_update').modal('show');
                     }
                     else swal({
@@ -152,7 +355,7 @@ var TableDatatablesManaged = function () {
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the band's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to get the type's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     });
@@ -165,7 +368,7 @@ var TableDatatablesManaged = function () {
             if($('#form_model_update').valid())
             {
                 swal({
-                    title: "Saving band's information",
+                    title: "Saving ticket types' information",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
@@ -173,7 +376,7 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/bands/save', 
+                    url: '/admin/ticket_types/save', 
                     data: $('#form_model_update').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
@@ -202,7 +405,7 @@ var TableDatatablesManaged = function () {
                     error: function(){
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the band's information!<br>The request could not be sent to the server.",
+                            text: "The form is not valid!<br>Please check the information again.",
                             html: true,
                             type: "error"
                         },function(){
@@ -210,7 +413,7 @@ var TableDatatablesManaged = function () {
                         });
                     }
                 }); 
-            } 
+            }
             else
             {
                 swal({
@@ -221,90 +424,8 @@ var TableDatatablesManaged = function () {
                 },function(){
                     $('#modal_model_update').modal('show');
                 });
-            }        
+            }       
         });
-        //function remove
-        $('#btn_model_remove').on('click', function(ev) {
-            var html = '<ol>';
-            var ids = [];
-            var set = $('.group-checkable').attr("data-set");
-            var checked = $(set+"[type=checkbox]:checked");
-            jQuery(checked).each(function (key, item) {
-                html += '<li>'+item.value+'</li>';
-                ids.push(item.id);
-            });             
-            swal({
-                title: "The following band(s) will be removed, please confirm action: ",
-                text: "<span style='text-align:left;color:red;'>"+html+"</span>",
-                html: true,
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Confirm",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: false,
-                closeOnCancel: true
-              },
-              function(isConfirm) {
-                if (isConfirm) {
-                    var form_delete = $('#form_model_delete');
-                    jQuery.ajax({
-                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                        type: 'POST',
-                        url: '/admin/bands/remove', 
-                        data: {id:ids}, 
-                        success: function(data) {
-                            if(data.success)
-                            {
-                                swal({
-                                    title: "<span style='color:green;'>Deleted!</span>",
-                                    text: data.msg,
-                                    html: true,
-                                    timer: 1500,
-                                    type: "success",
-                                    showConfirmButton: false
-                                });
-                                location.reload(); 
-                            }
-                            else swal({
-                                    title: "<span style='color:red;'>Error!</span>",
-                                    text: data.msg,
-                                    html: true,
-                                    type: "error"
-                                });
-                        },
-                        error: function(){
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: "There was an error deleting the band(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
-                                html: true,
-                                type: "error"
-                            });
-                        }
-                    });
-                } 
-            });            
-        });     
-        //function load social media
-        $('#btn_load_social_media').on('click', function(ev) {
-            var website = $('#form_model_update [name="website"]').val();
-            jQuery.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '/admin/media/load', 
-                data: {url:website}, 
-                success: function(data) {
-                    if(data) 
-                        for(var key in data)
-                            if(data[key] !== '')
-                                $('#form_model_update [name="'+key+'"]').val(data[key]);
-                }
-            });            
-        });        
-        //function load form to upload image
-        $('#btn_bands_upload_image').on('click', function(ev) {
-            FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
-        });        
         //init functions
         check_models();        
     }
@@ -324,70 +445,28 @@ var FormValidation = function () {
     var handleValidation = function() {
         // for more info visit the official plugin documentation: 
         // http://docs.jquery.com/Plugins/Validation
+
             var form = $('#form_model_update');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
+
             //IMPORTANT: update CKEDITOR textarea with actual content before submit
             form.on('submit', function() {
                 for(var instanceName in CKEDITOR.instances) {
                     CKEDITOR.instances[instanceName].updateElement();
                 }
             })
+
             form.validate({
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
-                    name: {
-                        minlength: 5,
-                        maxlength: 50,
+                    ticket_type: {
+                        minlength: 2,
+                        maxlength: 20,
                         required: true
-                    },
-                    short_description: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: true
-                    },
-                    description: {
-                        minlength: 5,
-                        maxlength: 2000,
-                        required: false
-                    },  
-                    youtube: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    facebook: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    twitter: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    my_space: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    instagram: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    soundcloud: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    website: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -416,6 +495,7 @@ var FormValidation = function () {
                     error.hide();
                     form[0].submit(); // submit the form
                 }
+
             });
     }
     return {

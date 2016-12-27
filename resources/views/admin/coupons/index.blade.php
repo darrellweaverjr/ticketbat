@@ -50,7 +50,7 @@
                                 <th width="12%"> Discount Type </th>
                                 <th width="12%"> Discount Scope </th>
                                 <th width="12%"> Coupon Type </th>
-                                <th width="5%"> Purchases </th>
+                                <th width="5%"> Redemptions </th>
                                 <th width="45%"> Description </th>
                             </tr>
                         </thead>

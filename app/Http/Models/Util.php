@@ -4,7 +4,8 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 
 /**
  * Utilities class
@@ -75,6 +76,133 @@ class Util extends Model
             fwrite($f, $view->render());
         } catch (Exception $ex) {
             throw new Exception('Error Util downloadCSV: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Generate QR code.
+     *
+     * @return csv
+     */
+    public static function getQRcode($purchase_id,$user_id,$ticket_number)
+    {
+        try {
+            $code = 'TB'.str_pad((string)$purchase_id,6,'0',STR_PAD_LEFT).str_pad((string)$user_id,5,'0',STR_PAD_LEFT).$ticket_number;
+            return 'https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl='.htmlentities($code).'&choe=UTF-8';
+        } catch (Exception $ex) {
+            throw new Exception('Error Util getQRcode: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Create slug by name and venue slug if it is a show.
+     */
+    public static function generate_slug($name,$venue_id=null)
+    {
+        try {
+            //lower and trim
+            $name = strtolower(trim($name));
+            //replace white spaces
+            $name = preg_replace('/\s+/','-',$name);
+            //remove all not needed characters
+            $slug = preg_replace('/[^a-z0-9-]/','',$name);
+            //if show
+            if($venue_id)
+                $slugs = Show::pluck('slug')->toArray();
+            else
+                $slugs = Venue::pluck('slug')->toArray();
+            //check if the slug exists
+            while (in_array($slug,$slugs))
+            {
+                $skip = false;
+                if($venue_id)
+                {
+                    if(Venue::find($venue_id) && isset(Venue::find($venue_id)->slug))
+                    {
+                        $venue_slug = Venue::find($venue_id)->slug;
+                        if (strpos($slug,$venue_slug) === false) 
+                        {
+                            $slug.='-'.$venue_slug;
+                            $skip = true;
+                        }
+                    }
+                }
+                //concat with numbers
+                if(!$skip)
+                {
+                    $subslugs = explode('-', $slug);
+                    $last = end($subslugs);
+                    if(is_numeric($last))
+                        $subslugs[count($subslugs)-1] = (int)$last + 1;
+                    else $subslugs[] = 1;
+                    $slug = implode('-',$subslugs);
+                }
+            }
+            return $slug;
+        } catch (Exception $ex) {
+            return '';
+        }
+    }
+    /**
+     * Upload files
+     */
+    public static function upload_file($file,$folder)
+    {
+        try {  
+            //init
+            $originalName = $file->getClientOriginalName();  
+            $originalExt = $file->getClientOriginalExtension();
+            //get file
+                //if file exists in the server create this like a new copy (_c)
+                while(Storage::disk('s3')->exists($folder.'/'.$originalName.'.'.$originalExt))
+                    $originalName .= '_c';  
+                //move file to amazon s3
+                //Storage::disk('s3')->put($folder.$$originalName.'.'.$originalExt, new File($file->getRealPath()), 'public');
+                Storage::disk('s3')->putFileAs($folder, new File($file->getRealPath()),$originalName.'.'.$originalExt);
+                //return url if file exists
+                if(Storage::disk('s3')->exists($folder.'/'.$originalName.'.'.$originalExt))
+                    return '/s3/'.$folder.'/'.$originalName.'.'.$originalExt;
+                return '';
+        } catch (Exception $ex) {
+            return '';
+        }
+    }
+    /**
+     * Remove files
+     */
+    public static function remove_file($file_url)
+    {
+        try { 
+            //init
+            $originalName = pathinfo($file_url, PATHINFO_FILENAME);
+            $originalExt = pathinfo($file_url, PATHINFO_EXTENSION);
+            //check if is in s3 server (the new server)
+            if(preg_match('/\/s3\//',$file_url) || strpos($file_url,env('IMAGE_URL_AMAZON_SERVER')) !== false) 
+            {
+                $file_url = substr(strrchr(dirname($file_url,1), '/'), 1).'/'.$originalName.'.'.$originalExt;
+                if(Storage::disk('s3')->exists($file_url))
+                {
+                    Storage::disk('s3')->delete($file_url);
+                    return true;
+                }
+                return true;
+            }
+            //other url in another place
+            else return true;
+        } catch (Exception $ex) {
+            return true;
+        }
+    }
+    /**
+     * View files
+     */
+    public static function view_file($file_url)
+    {
+        try { 
+            //init
+            if(preg_match('/\/s3\//',$file_url)) 
+                return env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$file_url);
+            return '';
+        } catch (Exception $ex) {
+            return '';
         }
     }
 }

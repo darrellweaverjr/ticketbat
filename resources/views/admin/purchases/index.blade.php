@@ -74,13 +74,11 @@
                                 </td>
                                 <td width="1%" style="background-color:#{{$color}}"></td>  
                                 <td class="search-item clearfix" width="41%"> 
-                                    <div class="search-content" >
-                                        <b class="search-title"><a href="mailto:{{$p->email}}" target="_top">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
-                                        <p><small><i>Customer email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> Referrer Url: <a href="{{$p->referrer_url}}" target="_blank">{{$p->referrer_url}}</a><br>
-                                        Purchase: <a>{{$p->id}}</a> Tickets: <a>{{$p->quantity}}</a> Ticket Type: <a>{{$p->ticket_type_type}}</a> Package: <a>{{$p->title}}</a> Coupon: <a>{{$p->code}}</a><br>
-                                        Transaction: <a>{{$p->transaction_id}}</a> AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a> Payment: <a>{{$p->payment_type}}</a> Card: <a>...{{$p->last_4}}</a><br> 
-                                        Retail Price: <a>$ {{number_format($p->retail_price,2)}}</a> Fees: <a>$ {{number_format($p->processing_fee,2)}}</a> Commission: <a>{{number_format($p->commission_percent,2)}}%</a> Savings: <a>$ {{number_format($p->savings,2)}}</a>
-                                        <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small></p>
+                                    <div class="search-content" >       
+                                        <b class="search-title"><a data-toggle="modal" href="#modal_details_{{$p->id}}">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
+                                        <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <a>{{$p->id}}</a> Tickets: <a>{{$p->quantity}}</a> Ticket Type: <a>{{$p->ticket_type_type}}</a> Package: <a>{{$p->title}}</a> 
+                                        @if($previous_color != $color) <br> Retail Price: <a>$ {{number_format($p->retail_price,2)}}</a> Fees: <a>$ {{number_format($p->processing_fee,2)}}</a> Commission: <a>{{number_format($p->commission_percent,2)}}%</a> Savings: <a>$ {{number_format($p->savings,2)}}</a> @endif
+                                        <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small>
                                     </div>
                                 </td>
                                 <td width="20%"><center> {{$p->show_name}}<br>at<br>{{$p->venue_name}} </center></td>
@@ -97,6 +95,91 @@
                                     </select>
                                 </td> 
                             </tr>
+                            <!-- BEGIN DETAILS MODAL--> 
+                            <div id="modal_details_{{$p->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+                                <div class="modal-dialog">
+                                    <div class="modal-content portlet">
+                                        <div id="modal_model_update_header" class="modal-header">
+                                            <h4 class="modal-title bold uppercase"><center>Purchase Details</center></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="portlet light ">
+                                                <div class="portlet-body">
+                                                    <ul class="chats">
+                                                        <li class="in">
+                                                            <div class="avatar">Client Info</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body" style="margin-left:15px"> 
+                                                                    Name: <b>@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</b> 
+                                                                    <br> Email: <b><a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></b>
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Event Info</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body" style="margin-left:15px"> Show: <b>{{$p->show_name}}</b><br> Time: <b>{{date('m/d/Y g:ia',strtotime($p->show_time))}}</b><br> Venue: <b>{{$p->venue_name}}</b>  </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Purchase Info</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body" style="height:50px"> 
+                                                                    <div class="col-md-6"> ID: <b>{{$p->id}}</b><br> Qty: <b>{{$p->quantity}}</b><br> Ticket Type: <b>{{$p->ticket_type_type}}</b></div>
+                                                                    <div class="col-md-6"> Status: <b>{{$p->status}}</b><br> Package: <b>{{$p->title}}</b><br> Coupon: <b>{{$p->code}}</b></div> 
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Transaction Info</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body" style="height:50px"> 
+                                                                    <div class="col-md-6"> ID:<b>{{$p->transaction_id}}</b><br> AuthCode: <b>{{$p->authcode}}</b><br> RefNum: <b>{{$p->refnum}}</b></div>
+                                                                    <div class="col-md-6"> Payment: <b>{{$p->payment_type}}</b><br> Card: <b>...{{$p->last_4}}</b></div> 
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Accounting Info</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body" style="height:50px"> 
+                                                                    <div class="col-md-6"> Retail Price: <b>${{number_format($p->retail_price,2)}}</b><br> Fees: <b>${{number_format($p->processing_fee,2)}}</b><br> Commission: <b>{{number_format($p->commission_percent,2)}}%</b></div>
+                                                                    <div class="col-md-6"> Savings: <b>${{number_format($p->savings,2)}}</b><br> Amount: <b>${{number_format($p->price_paid,2)}}</b></div>
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Referrer Url</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body" style="margin-left:15px"> <a href="{{$p->referrer_url}}" target="_blank">{{$p->referrer_url}}</a> </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="in">
+                                                            <div class="avatar">Notes</div>
+                                                            <div class="message">
+                                                                <span class="arrow"> </span>
+                                                                <span class="body" style="margin-left:15px"> @php echo $p->note @endphp </span>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div> 
+                                            </div>
+                                            <div class="row">
+                                                <div class="modal-footer">
+                                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END DETAILS MODAL--> 
                             @php $previous_color = $color @endphp
                             @endforeach 
                         </tbody>

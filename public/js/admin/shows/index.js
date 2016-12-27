@@ -72,10 +72,81 @@ var TableDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS
-        //checkbox toggle only shows with errors
-        $('#form_model_search input[name="onlyerrors"]:checkbox').change(function () {
-             $( "#form_model_search" ).submit();
-        });   
+        //on_sale_date
+        $('#on_sale_date').datetimepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "yyyy-mm-dd hh:ii",
+            pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
+            todayBtn: true,
+            minuteStep: 15,
+            defaultDate:'now'
+        });
+        $('#amex_only_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD HH:mm',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
+            },
+            function (start, end) {
+                $('#amex_only_date input[name="amex_only_start_date"]').val(start.format('YYYY-MM-DD HH:mm'));
+                $('#amex_only_date input[name="amex_only_end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
+            }
+        );  
+        $('#show_passwords_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD HH:mm',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
+            },
+            function (start, end) {
+                $('#form_model_show_passwords input[name="start_date"]').val(start.format('YYYY-MM-DD HH:mm'));
+                $('#form_model_show_passwords input[name="end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
+            }
+        );  
+        //clear onsale_date
+        $('#clear_onsale_date').on('click', function(ev) {
+            $('#form_model_update [name="on_sale"]').val('');
+            $('#on_sale_date').datetimepicker('update');
+        });
+        //clear amex_only_date
+        $('#clear_amex_only_date').on('click', function(ev) {
+            $('#form_model_update [name="amex_only_start_date"]').val('');
+            $('#form_model_update [name="amex_only_end_date"]').val('');
+            $('#on_sale_date').datetimepicker('update');
+        });        
+        //style for selects with html
+        $('.bs-select').selectpicker({
+            iconBase: 'fa',
+            tickIcon: 'fa-check'
+        });
+        //get slug on name change
+        $('#form_model_update [name="name"]').bind('change',function() {
+            if($('#form_model_update [name="name"]').val().length >= 5)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/slug', 
+                    data: {
+                        name:$('#form_model_update [name="name"]').val(),
+                        venue_id:$('#form_model_update [name="venue_id"]').val()
+                    }, 
+                    success: function(data) {
+                        if(data) $('#form_model_update [name="slug"]').val(data);
+                        else $('#form_model_update [name="slug"]').val('');
+                    },
+                    error: function(){
+                        $('#form_model_update [name="slug"]').val('');
+                    }
+                });
+            }
+            else $('#form_model_update [name="slug"]').val('');
+        });
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -97,11 +168,17 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_add').prop("disabled",false);
         } 
+        //add show_passwords
+        $('#btn_model_add_show_passwords').on('click', function(ev) {
+            $("#form_model_show_passwords input[name='id']:hidden").val('').trigger('change');
+            $("#form_model_show_passwords").trigger('reset');
+            $('#modal_model_show_passwords').modal('show');
+        });
         //function full reset form
         var fullReset = function(){
-            $('#form_model_update [name="image_url"]').attr('src','');
+            //$('#form_model_update [name="image_url"]').attr('src','');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
-            $("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
+            //$("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
         //function add
@@ -110,9 +187,19 @@ var TableDatatablesManaged = function () {
             if($('#modal_model_update_header').hasClass('bg-yellow'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
-            $('#modal_model_update_title').html('Add Band');
+            $('#modal_model_update_title').html('Add Show');
+            $('a[href="#tab_model_update_passwords"]').parent().css('display','none');
+            $('a[href="#tab_model_update_showtimes"]').parent().css('display','none');
+            $('a[href="#tab_model_update_tickets"]').parent().css('display','none');
+            $('a[href="#tab_model_update_bands"]').parent().css('display','none');
+            $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
             $('#modal_model_update').modal('show');
         });
+        
+        
+        
+        
+        
         //function edit
         $('#btn_model_edit').on('click', function(ev) {
             fullReset();
@@ -121,7 +208,12 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            $('#modal_model_update_title').html('Edit Band');
+            $('a[href="#tab_model_update_passwords"]').parent().css('display','block');
+            $('a[href="#tab_model_update_showtimes"]').parent().css('display','block');
+            $('a[href="#tab_model_update_tickets"]').parent().css('display','block');
+            $('a[href="#tab_model_update_bands"]').parent().css('display','block');
+            $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
+            $('#modal_model_update_title').html('Edit Show');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -306,7 +398,8 @@ var TableDatatablesManaged = function () {
             FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
         });        
         //init functions
-        check_models();        
+        check_models(); 
+        $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval: 1 });
     }
     return {
         //main function to initiate the module
@@ -369,7 +462,7 @@ var FormValidation = function () {
                         maxlength: 100,
                         required: false
                     },
-                    my_space: {
+                    googleplus: {
                         minlength: 5,
                         maxlength: 100,
                         required: false
@@ -379,12 +472,12 @@ var FormValidation = function () {
                         maxlength: 100,
                         required: false
                     },
-                    soundcloud: {
+                    yelpbadge: {
                         minlength: 5,
                         maxlength: 100,
                         required: false
                     },
-                    website: {
+                    url: {
                         minlength: 5,
                         maxlength: 100,
                         required: false

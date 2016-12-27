@@ -95,32 +95,37 @@ class Image extends Model
     public static function stablish_image($subfolder='',$image_url)
     {
         try { 
-            //init
-            $originalName = pathinfo($image_url, PATHINFO_FILENAME);
-            $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
-            $oldUrl = 'tmp/'.$originalName.'.'.$originalExt;
-            if($subfolder!='')$subfolder .= '/';
-            //$subfolder = 'ticketbat/'.$subfolder;
-            //check if file exists in local folder
-            echo $subfolder.$originalName.'.'.$originalExt;
-            if(Storage::disk('local')->exists($oldUrl))
+            //format to upload to the server :  media/preview/x.jpg
+            if(preg_match('/media\/preview\//',$image_url)) 
             {
-                //get file
-                $file = Storage::disk('local')->get($oldUrl);
-                //if file exists in the server create this like a new copy (_c)
-                while(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
-                    $originalName .= '_c';  
-                //move file to amazon s3
-                Storage::disk('s3')->put($subfolder.$originalName.'.'.$originalExt, $file, 'public');
-                //remove old file
-                Storage::disk('local')->delete($oldUrl);
-                //return url if file exists
-                if(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
-                    return Storage::disk('s3')->url($subfolder.$originalName.'.'.$originalExt);
-                return '';
+                //init
+                $originalName = pathinfo($image_url, PATHINFO_FILENAME);
+                $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
+                $oldUrl = 'tmp/'.$originalName.'.'.$originalExt;
+                if($subfolder!='')$subfolder .= '/';
+                //check if file exists in local folder
+                if(Storage::disk('local')->exists($oldUrl))
+                {
+                    //get file
+                    $file = Storage::disk('local')->get($oldUrl);
+                    //if file exists in the server create this like a new copy (_c)
+                    while(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
+                        $originalName .= '_c';  
+                    //move file to amazon s3
+                    Storage::disk('s3')->put($subfolder.$originalName.'.'.$originalExt, $file, 'public');
+                    //remove old file
+                    Storage::disk('local')->delete($oldUrl);
+                    //return url if file exists
+                    if(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
+                        return '/s3/'.$subfolder.$originalName.'.'.$originalExt;
+                    return '';
+                }
+                else
+                    return '';
             }
-            else
-                return '';
+            else 
+                return $image_url;
+            
         } catch (Exception $ex) {
             return '';
         }
@@ -134,50 +139,25 @@ class Image extends Model
             //init
             $originalName = pathinfo($image_url, PATHINFO_FILENAME);
             $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
-            //check parent folder of image
-            if(dirname($image_url, 1)=='/uploads')
+            //check if is in uploads (the old server)
+            if(preg_match('/\/uploads\//',$image_url)) 
             {
+                //it cannot delete it
                 return true;
             }
-            else
+            //check if is in s3 server (the new server)
+            else if(preg_match('/\/s3\//',$image_url) || strpos($image_url,env('IMAGE_URL_AMAZON_SERVER')) !== false) 
             {
-                if(dirname($image_url, 2)=='/ticketbat')
+                $file_url = substr(strrchr(dirname($image_url,1), '/'), 1).'/'.$originalName.'.'.$originalExt;
+                if(Storage::disk('s3')->exists($file_url))
                 {
-                    $parentfolder = dirname($image_url, 2).dirname($image_url, 1).'/';
-                    if(Storage::disk('s3')->exists($parentfolder.$originalName.'.'.$originalExt))
-                    {
-                        Storage::disk('s3')->delete($parentfolder.$originalName.'.'.$originalExt);
-                    }
+                    Storage::disk('s3')->delete($file_url);
                     return true;
                 }
                 return true;
             }
-            
-            
-            
-            
-            $oldUrl = 'tmp/'.$originalName.'.'.$originalExt;
-            if($subfolder!='')$subfolder.='/';
-            $subfolder = 'ticketbat/'.$subfolder;
-            //check if file exists in local folder
-            if(Storage::disk('local')->exists($oldUrl))
-            {
-                //get file
-                $file = Storage::disk('local')->get($oldUrl);
-                //if file exists in the server create this like a new copy (_c)
-                while(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
-                    $originalName .= '_c';  
-                //move file to amazon s3
-                Storage::disk('s3')->put($subfolder.$originalName.'.'.$originalExt, $file, 'public');
-                //remove old file
-                Storage::disk('local')->delete($oldUrl);
-                //return url if file exists
-                if(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
-                    return Storage::disk('s3')->url($subfolder.$originalName.'.'.$originalExt);
-                return '';
-            }
-            else
-                return '';
+            //other url in another place
+            else return true;
         } catch (Exception $ex) {
             return false;
         }
