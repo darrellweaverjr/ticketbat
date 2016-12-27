@@ -31,7 +31,7 @@ var TableDatatablesManaged = function () {
                 [5, 10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 10,            
+            "pageLength": 15,            
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
@@ -47,8 +47,66 @@ var TableDatatablesManaged = function () {
                 }
             ],
             "order": [
-                [1, "desc"]
+                [0, "desc"]
             ] // set first column as a default sort by asc
+        });
+        //PERSONALIZED FUNCTIONS
+        //start_end_date
+        $('#start_end_date').daterangepicker({
+            "ranges": {
+                'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            },
+            "locale": {
+                "format": "MM/DD/YYYY",
+                "separator": " - ",
+                "applyLabel": "Apply",
+                "cancelLabel": "Cancel",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Custom",
+                "daysOfWeek": [
+                    "Su",
+                    "Mo",
+                    "Tu",
+                    "We",
+                    "Th",
+                    "Fr",
+                    "Sa"
+                ]
+            },
+            startDate: moment().subtract('days', 29),
+            endDate: moment(),
+            opens: (App.isRTL() ? 'right' : 'left')
+        }, function(start, end, label) {
+                $('#form_model_search [name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search [name="end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                $( "#form_model_search" ).submit();
+        });
+        $('#start_end_date span').html(moment($('#form_model_search [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_search [name="end_date"]').val()).format('MMMM D, YYYY'));
+        $('#start_end_date').show(); 
+        //function tickets
+        $('#btn_model_csv').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            window.open('/admin/manifests/view/csv/'+id);
+        });  
+        //function tickets
+        $('#btn_model_pdf').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            window.open('/admin/manifests/view/pdf/'+id);
+        }); 
+        //enable function buttons on check radio 
+        $('input:radio[name=radios]').change(function () {
+            if($('input:radio[name=radios]:checked').length > 0)
+            {
+                $('#btn_model_csv').prop('disabled',false);
+                $('#btn_model_pdf').prop('disabled',false);
+            }
         });
     }
     return {

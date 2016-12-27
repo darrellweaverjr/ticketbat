@@ -22,7 +22,12 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} </span>
                     </div>
-                    <div class="actions">                        
+                    <div class="actions">  
+                        <div id="start_end_date" class="pull-left tooltips btn btn-sm" data-container="body" data-placement="bottom">
+                            <i class="icon-calendar"></i>&nbsp;
+                            <span class="thin uppercase hidden-xs"> - </span>&nbsp;
+                            <i class="fa fa-angle-down"></i>
+                        </div>
                         <div class="btn-group">
                         </div>
                     </div>
@@ -39,12 +44,11 @@
                         <tbody>
                             @foreach($contacts as $index=>$c)
                             <tr>
-                                <td width="8%"> {{date('Y-m-d',strtotime($c->created))}} <br> {{date('g:ia',strtotime($c->created))}} </td>
+                                <td width="8%"> {{date('m/d/Y',strtotime($c->created))}} <br> {{date('g:ia',strtotime($c->created))}} </td>
                                 <td width="17%"> <b class="uppercase"><a href="mailto:{{$c->email}}" target="_top">{{$c->name}}</a></b>
                                     <p><small><i>
                                         @if($c->email)Email: <a href="mailto:{{$c->email}}" target="_top">{{$c->email}}</a> <br>@endif
                                         @if($c->phone)Phone: <a> {{$c->phone}} </a><br>@endif 
-                                        Recived: <a> {{date('F jS, Y \a\t h:i A',strtotime($c->created))}} </a>
                                     </i></small></p>
                                 <td width="75%"> 
                                     <p><small><i>
@@ -61,6 +65,15 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET--> 
+    <!-- BEGIN UPDATE MODAL--> 
+    <div style="display: none;">
+        <form method="post" action="/admin/contacts" id="form_model_search">
+            <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+            <input name="start_date" type="hidden" value="{{$start_date}}"/>
+            <input name="end_date" type="hidden" value="{{$end_date}}"/>
+        </form>   
+    </div>  
+    <!-- END UPDATE MODAL--> 
 @endsection
 
 @section('scripts') 

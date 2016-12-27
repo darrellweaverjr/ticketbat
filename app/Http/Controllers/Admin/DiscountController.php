@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\Discount;
 use App\Http\Models\Show;
 use App\Http\Models\Util;
@@ -40,6 +41,12 @@ class DiscountController extends Controller{
             {
                 //get all records        
                 $discounts = Discount::orderBy('code')->get();
+                $discounts = DB::table('discounts')
+                                ->leftJoin('purchases', 'purchases.discount_id', '=', 'discounts.id')
+                                ->select(DB::raw('discounts.*, COUNT(purchases.id) AS purchases'))
+                                ->groupBy('discounts.id')
+                                ->orderBy('discounts.code')
+                                ->get();
                 $discount_types = Util::getEnumValues('discounts','discount_type');
                 $discount_scopes = Util::getEnumValues('discounts','discount_scope');
                 $coupon_types = Util::getEnumValues('discounts','coupon_type');
@@ -60,7 +67,7 @@ class DiscountController extends Controller{
     {
         try {
             //init
-            $input = Input::all();
+            $input = Input::all();  //dd($input);
             //save all record      
             if($input)
             {
@@ -88,8 +95,16 @@ class DiscountController extends Controller{
                 $discount->start_num = $input['start_num'];
                 $discount->quantity = $input['quantity'];
                 $discount->effective_dates = $input['effective_dates'];
-                $discount->effective_start_date = $input['effective_start_date'];
-                $discount->effective_end_date = $input['effective_end_date'];
+                if($discount->effective_dates)
+                {
+                    $discount->effective_start_date = $input['effective_start_date'];
+                    $discount->effective_end_date = $input['effective_end_date'];
+                }
+                else
+                {
+                    $discount->effective_start_date = null;
+                    $discount->effective_end_date = null;
+                }
                 $discount->coupon_type = $input['coupon_type'];
                 $discount->save();
                 //update intermediate table with shows

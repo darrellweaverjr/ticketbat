@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\Ticket;
 use App\Http\Models\Util;
 
@@ -26,6 +27,7 @@ class TicketController extends Controller{
             $input = Input::all(); 
             //get all records        
             $ticket_types = Util::getEnumValues('tickets','ticket_type');
+            $inactives = explode(',',DB::table('ticket_types_inactive')->get()->implode('ticket_type',','));
             if(isset($input) && isset($input['id']))
             {
                 //get selected record
@@ -34,7 +36,7 @@ class TicketController extends Controller{
                 else
                 {
                     $t = Ticket::where('ticket_type',$input['id'])->first();
-                    $ticket = ['ticket_type'=>$input['id'],'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : 'btn-primary'];
+                    $ticket = ['ticket_type'=>$input['id'],'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : 'btn-primary','active'=>(in_array($input['id'],$inactives))? '' : 'checked'];
                     return ['success'=>true,'ticket_type'=>array_merge($ticket)];
                 }
             }
@@ -44,9 +46,10 @@ class TicketController extends Controller{
                 foreach ($ticket_types as $tt)
                 {
                     $t = Ticket::where('ticket_type',$tt)->first();
-                    $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','disabled'=>($t && $t->ticket_type_class)? '' : 'disabled'];
+                    $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(in_array($tt,$inactives))? '' : 'checked'];
                 }
                 $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
+                //dd($tickets);
                 //return view
                 return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles'));
             }
@@ -61,11 +64,30 @@ class TicketController extends Controller{
      */
     public function save()
     {
-        try {
+        try {   
             //init
-            $input = Input::all();  
+            $input = Input::all(); 
+            //active/inactive      
+            if($input && (isset($input['ticket_type']) && isset($input['active'])))
+            {
+                if($input['active'] == 'true')
+                {
+                    $success = true;
+                    if(DB::table('ticket_types_inactive')->where('ticket_type','=',$input['ticket_type'])->count())
+                        $success = DB::table('ticket_types_inactive')->where('ticket_type','=',$input['ticket_type'])->delete();
+                }
+                else
+                {
+                    $success = true;
+                    if(DB::table('ticket_types_inactive')->where('ticket_type','=',$input['ticket_type'])->count() == 0)
+                        $success = DB::table('ticket_types_inactive')->insert(['ticket_type' => $input['ticket_type']]);
+                } 
+                if($success)
+                    return ['success'=>true,'msg'=>'Ticket Type updated successfully!'];
+                return ['success'=>false,'msg'=>'There was an error updating the ticket_type.'];
+            }
             //save all record      
-            if($input && (isset($input['ticket_type']) || isset($input['id'])))
+            else if($input && (isset($input['ticket_type']) || isset($input['id'])))
             {
                 if(isset($input['id']) && $input['id'])
                 {
@@ -89,7 +111,7 @@ class TicketController extends Controller{
                     }
                 }
             }
-            return ['success'=>false,'msg'=>'There was an error saving the Ticket Type.<br>The server could not retrieve the data.'];
+            else return ['success'=>false,'msg'=>'There was an error saving the Ticket Type.<br>The server could not retrieve the data.'];
         } catch (Exception $ex) {
             throw new Exception('Error Ticket Type Save: '.$ex->getMessage());
         }

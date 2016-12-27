@@ -22,7 +22,15 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
-                    <div class="actions">                        
+                    <div class="actions">
+                        <form method="post" action="/admin/bands" id="form_model_search" class="pull-left btn mt-checkbox-list" style="width:150px">
+                            <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                            <input type="hidden" name="onlyerrors"  value="0"/>
+                            <label class="mt-checkbox mt-checkbox-single">
+                                <input type="checkbox" name="onlyerrors"  value="1" {{$onlyerrors}} />
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Only with errors</span>
+                            </label>
+                        </form>  
                         <div class="btn-group">
                             <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
                                 <i class="fa fa-plus"></i>
@@ -78,7 +86,7 @@
                                         <p> @if($b->short_description) {{$b->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </p>
                                     </div>
                                 </td>
-                                <td width="10%"><center> {{$categories->find($b->category_id)->name}} </center></td>
+                                <td width="10%"><center> {{$b->category}} </center></td>
                             </tr>
                             <!-- BEGIN DETAILS MODAL--> 
                             <div id="modal_details_{{$b->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
@@ -226,7 +234,7 @@
                                         <label class="col-md-3 control-label">
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Guess Media From WebSite</button>
+                                            <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
                                         </div> 
                                         <label class="col-md-3 control-label">Youtube
                                         </label>

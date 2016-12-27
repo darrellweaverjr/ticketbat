@@ -3,7 +3,8 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\File;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 use Image as Img;
 
 /**
@@ -61,9 +62,11 @@ class Image extends Model
     public static function upload_image($file,$input)
     {
         try {  
+            //get file attributes
+            $originalName = preg_replace('/\..+$/', '', $file->getClientOriginalName());  
+            $originalExt = $file->getClientOriginalExtension();
+            //open image to edit
             $image = Img::make($file->getRealPath());
-            $originalName = $file->getClientOriginalName();
-            $originalExtension = $file->getClientOriginalExtension();
             //crop
             if($input['action']=='crop')
                 $image->crop($input['crop_width'],$input['crop_height'],$input['crop_x'],$input['crop_y']);  
@@ -71,49 +74,112 @@ class Image extends Model
             else if($input['action']=='resize')
                 $image->resize($input['resize_width'], $input['resize_height']);
             else {}
-            //if element with image is for change
-            if($input['tmp'])
-                $path = env('UPLOAD_FILE_TEMP','uploads_tmp').'/';
-            else
-                $path = env('UPLOAD_FILE_DEFAULT','uploads').'/';
+            //save changes
+            $image->save($file->getRealPath());
             //if file exists in the server create this like a new copy (_c)
-            while(File::exists($path.$originalName))
-                $originalName = substr($originalName,0,strrpos($originalName,'.')).'_c'.'.'.$originalExtension;  
-            //save image
-            $image->save($path.$originalName);
-            return ['success'=>true,'file'=>'/'.$path.$originalName,'msg'=>'Image uploaded successfully!'];
+            while(Storage::disk('local')->exists($originalName.'.'.$originalExt))
+                $originalName .= '_c';  
+            //save edited file into local disk
+            Storage::disk('local')->putFileAs('tmp', new File($file->getRealPath()),$originalName.'.'.$originalExt);
+            //return 
+            if(Storage::disk('local')->exists('tmp/'.$originalName.'.'.$originalExt))
+                return ['success'=>true,'file'=>'media/preview/'.$originalName.'.'.$originalExt];
+            return ['success'=>false,'file'=>'','msg'=>'There was an error uploading the image!'];
         } catch (Exception $ex) {
             return ['success'=>false,'file'=>'','msg'=>'There was an error uploading the image!'];
         }
     }
     /**
-     * Change to real location images images
+     * Change to real location images s3
      */
-    public static function stablish_image($image_url)
+    public static function stablish_image($subfolder='',$image_url)
     {
         try { 
-            $realPath = realpath(base_path()).'/public';
-            if(File::exists($realPath.$image_url))
+            //init
+            $originalName = pathinfo($image_url, PATHINFO_FILENAME);
+            $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
+            $oldUrl = 'tmp/'.$originalName.'.'.$originalExt;
+            if($subfolder!='')$subfolder .= '/';
+            //$subfolder = 'ticketbat/'.$subfolder;
+            //check if file exists in local folder
+            echo $subfolder.$originalName.'.'.$originalExt;
+            if(Storage::disk('local')->exists($oldUrl))
             {
-                if(!(stripos($image_url,env('UPLOAD_FILE_TEMP','uploads_tmp').'/')===false))
-                {
-                    $new_path = $realPath.'/'.env('UPLOAD_FILE_DEFAULT','uploads').'/';
-                    $new_name = File::name($image_url).'.'.File::extension($image_url);
-                    //if file exists in the server create this like a new copy (_c)
-                    while(File::exists($new_path.$new_name))
-                        $new_name = File::name($new_path.$new_name).'_c'.'.'.File::extension($image_url); 
-                    //move file to final location
-                    if(File::move($realPath.$image_url,$new_path.$new_name))
-                        return '/'.env('UPLOAD_FILE_DEFAULT','uploads').'/'.$new_name;
-                    else 
-                        return '';
-                }
-                return $image_url;
+                //get file
+                $file = Storage::disk('local')->get($oldUrl);
+                //if file exists in the server create this like a new copy (_c)
+                while(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
+                    $originalName .= '_c';  
+                //move file to amazon s3
+                Storage::disk('s3')->put($subfolder.$originalName.'.'.$originalExt, $file, 'public');
+                //remove old file
+                Storage::disk('local')->delete($oldUrl);
+                //return url if file exists
+                if(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
+                    return Storage::disk('s3')->url($subfolder.$originalName.'.'.$originalExt);
+                return '';
             }
             else
                 return '';
         } catch (Exception $ex) {
             return '';
+        }
+    }
+    /**
+     * Upload images
+     */
+    public static function remove_image($image_url)
+    {
+        try {  
+            //init
+            $originalName = pathinfo($image_url, PATHINFO_FILENAME);
+            $originalExt = pathinfo($image_url, PATHINFO_EXTENSION);
+            //check parent folder of image
+            if(dirname($image_url, 1)=='/uploads')
+            {
+                return true;
+            }
+            else
+            {
+                if(dirname($image_url, 2)=='/ticketbat')
+                {
+                    $parentfolder = dirname($image_url, 2).dirname($image_url, 1).'/';
+                    if(Storage::disk('s3')->exists($parentfolder.$originalName.'.'.$originalExt))
+                    {
+                        Storage::disk('s3')->delete($parentfolder.$originalName.'.'.$originalExt);
+                    }
+                    return true;
+                }
+                return true;
+            }
+            
+            
+            
+            
+            $oldUrl = 'tmp/'.$originalName.'.'.$originalExt;
+            if($subfolder!='')$subfolder.='/';
+            $subfolder = 'ticketbat/'.$subfolder;
+            //check if file exists in local folder
+            if(Storage::disk('local')->exists($oldUrl))
+            {
+                //get file
+                $file = Storage::disk('local')->get($oldUrl);
+                //if file exists in the server create this like a new copy (_c)
+                while(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
+                    $originalName .= '_c';  
+                //move file to amazon s3
+                Storage::disk('s3')->put($subfolder.$originalName.'.'.$originalExt, $file, 'public');
+                //remove old file
+                Storage::disk('local')->delete($oldUrl);
+                //return url if file exists
+                if(Storage::disk('s3')->exists($subfolder.$originalName.'.'.$originalExt))
+                    return Storage::disk('s3')->url($subfolder.$originalName.'.'.$originalExt);
+                return '';
+            }
+            else
+                return '';
+        } catch (Exception $ex) {
+            return false;
         }
     }
 }

@@ -72,21 +72,46 @@ var TableDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS  
-        //active/desactive permissions
-        $('#tb_acls .checkboxes').change(function() {   
-            $('#tb_acls .checkboxes').each(function() {
-                alert($(this).id);
-                if($(this).is(':checked'))
-                {
-                    $('#tb_acls .checkboxes_'+$(this).value).prop('disabled',false);
-                }
-                else
-                {
-                    $('#tb_acls .checkboxes_'+$(this).value).prop('checked',false);
-                    $('#tb_acls .checkboxes_'+$(this).value).prop('disabled',true);
+        //active/desactive ticket types
+        $('#tb_model .make-switch[type=checkbox]').on('switchChange.bootstrapSwitch', function (e, state) {
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/ticket_types/save', 
+                data: {ticket_type:e.target.value,active:e.target.checked}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Updated!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                    }
+                    else{
+                        $('#tb_model .make-switch:checkbox[value="'+e.target.value+'"]').bootstrapSwitch('state', !state, true);
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                    }  
+                },
+                error: function(){
+                    $('#tb_model .make-switch:checkbox[value="'+e.target.value+'"]').bootstrapSwitch('state', !state, true);
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to set the type's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
                 }
             });
-        });  
+        });
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");

@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 /bootstrap/compiled.php
+=======
+/node_modules
+/public/storage
+/storage/logs
+>>>>>>> 1b8f14402dbd12342a229737875f2db63464ad63
 /vendor
 /storage
 

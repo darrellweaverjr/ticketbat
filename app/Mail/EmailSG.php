@@ -231,6 +231,14 @@ class EmailSG {
         try {
             $body = array();
             switch ($type) {
+                case 'receipt': {
+                        if (isset($data) && isset($data['rows']) && isset($data['totals']) && isset($data['banners'])) {
+                            $body[] = array('variable'=>':rows', 'value' => $data['rows']);
+                            $body[] = array('variable'=>':totals', 'value' => $data['totals']);
+                            $body[] = array('variable'=>':banners', 'value' => $data['banners']);
+                        }
+                        break;
+                    }
                 case 'manifest': {
                         if (isset($data)) {
                             $body[] = array('variable' => ':type', 'value' => $data['type']);
@@ -257,7 +265,7 @@ class EmailSG {
                             }
                         }
                         if (isset($data['customer'])) {
-                            $body[] = array('variable' => ':name', 'value' => $data['customer']['first_name'] . ' ' . $data['customer']['last_name']);
+                            $body[] = array('variable' => ':name', 'value' => $data['customer']->first_name.' '.$data['customer']->last_name);
                         }
                         break;
                     }

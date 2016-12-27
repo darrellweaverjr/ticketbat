@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\Category;
 use App\Http\Models\Band;
 
@@ -22,6 +23,10 @@ class BandController extends Controller{
     public function index()
     {
         try {
+            /*
+            $band = new Band;
+            dd($band->set_image_url('media/preview/xxxxxxxxxxxxxxxxxxxxxxx.jpg'));
+            */
             //init
             $input = Input::all(); 
             if(isset($input) && isset($input['id']))
@@ -38,11 +43,31 @@ class BandController extends Controller{
             }
             else
             {
-                //get all records        
-                $bands = Band::orderBy('name')->get();
+                if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
+                {
+                    $onlyerrors = 'checked';
+                    //get all records with errors    
+                    $bands = DB::table('bands')
+                                    ->join('categories', 'categories.id', '=' ,'bands.category_id')
+                                    ->select('bands.*', 'categories.name AS category')
+                                    ->whereNull('bands.image_url')
+                                    ->orWhereNull('bands.short_description')
+                                    ->orderBy('categories.name')
+                                    ->get();
+                }
+                else
+                {
+                    $onlyerrors = '';
+                    //get all records        
+                    $bands = DB::table('bands')
+                                    ->join('categories', 'categories.id', '=' ,'bands.category_id')
+                                    ->select('bands.*', 'categories.name AS category')
+                                    ->orderBy('categories.name')
+                                    ->get();
+                }
                 $categories = Category::all();
                 //return view
-                return view('admin.bands.index',compact('bands','categories'));
+                return view('admin.bands.index',compact('bands','categories','onlyerrors'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Bands Index: '.$ex->getMessage());

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\User;
 use App\Http\Models\UserType;
 use App\Http\Models\Discount;
@@ -48,7 +49,11 @@ class UserController extends Controller{
             else
             {
                 //get all records        
-                $users = User::orderBy('last_name')->get();
+                $users = DB::table('users')
+                                ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
+                                ->select('users.*', 'user_types.user_type')
+                                ->orderBy('users.last_name')
+                                ->get();
                 $user_types = UserType::all();
                 $discounts = Discount::all();
                 $venues = Venue::orderBy('name')->get();
@@ -111,9 +116,9 @@ class UserController extends Controller{
                 $user->last_name = $input['last_name'];
                 $user->phone = $input['phone'];
                 $user->is_active = $input['is_active'];
-                $user->commission_percent = $input['commission_percent'];
-                $user->percentage_processing_fee = $input['percentage_processing_fee'];
-                $user->fixed_processing_fee = $input['fixed_processing_fee'];
+                //$user->commission_percent = $input['commission_percent'];
+                //$user->percentage_processing_fee = $input['percentage_processing_fee'];
+                //$user->fixed_processing_fee = $input['fixed_processing_fee'];
                 $user->force_password_reset = $input['force_password_reset'];
                 if(isset($input['venues_check_ticket']) && $input['venues_check_ticket'] && count($input['venues_check_ticket']))
                     $user->venues_check_ticket = implode(',',$input['venues_check_ticket']);

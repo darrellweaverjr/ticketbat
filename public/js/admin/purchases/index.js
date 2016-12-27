@@ -31,7 +31,7 @@ var TableDatatablesManaged = function () {
                 [10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 15,            
+            "pageLength": 10,            
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
@@ -47,7 +47,7 @@ var TableDatatablesManaged = function () {
                 }
             ],
             "order": [
-                [4, "desc"]
+                [5, "desc"]
             ] // set first column as a default sort by asc
         });
         
@@ -88,12 +88,12 @@ var TableDatatablesManaged = function () {
             endDate: moment(),
             opens: (App.isRTL() ? 'right' : 'left')
         }, function(start, end, label) {
-                $('#form_model_update [name="start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_update [name="end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search [name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search [name="end_date"]').val(end.format('YYYY-MM-DD'));
                 $('#start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                $( "#form_model_update" ).submit();
+                $( "#form_model_search" ).submit();
         });
-        $('#start_end_date span').html(moment($('#form_model_update [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_update [name="end_date"]').val()).format('MMMM D, YYYY'));
+        $('#start_end_date span').html(moment($('#form_model_search [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_search [name="end_date"]').val()).format('MMMM D, YYYY'));
         $('#start_end_date').show(); 
         //function on status select
         $('#tb_model select[name="status"]').on('change', function(ev) {
@@ -133,42 +133,141 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
-        //function add
-        $('#btn_model_add').on('click', function(ev) {
-            if($('#modal_model_update_header').hasClass('bg-yellow'))
-                $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
-            else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
-            $('#modal_model_update_title').html('Add User');
-            $('#modal_model_update').modal('show');
-        });
-        //function edit
-        $('#btn_model_edit').on('click', function(ev) {
-            if($('#modal_model_update_header').hasClass('bg-green'))
-                $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
-            else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
-            var set = $('.group-checkable').attr("data-set");
-            var id = $(set+"[type=checkbox]:checked")[0].id;
-            $('#modal_model_update_title').html('Edit User');
+        //function email
+        $('#btn_model_email').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            swal({
+                title: "Sending email",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/users', 
+                url: '/admin/purchases/email', 
                 data: {id:id}, 
-                success: function(data) {},
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Email Sent Successfully!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                },
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the purchases' information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     });
                 }
             });
+        });
+        //function note
+        $('#btn_model_note').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            swal({
+                title: "Add note",
+                text: "Write purchase's note:",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                inputPlaceholder: "Write something"
+            }, function (inputNote) {
+                if (inputNote === false) return false;
+                else if (inputNote.trim() === "") {
+                  swal.showInputError("You need to write something!");
+                  return false;
+                }
+                else
+                {
+                    swal({
+                        title: "Adding new note",
+                        text: "Please, wait.",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/admin/purchases/save', 
+                        data: {id:id,note:inputNote}, 
+                        success: function(data) {
+                            if(data.success) 
+                            {
+                                $('#note_'+id).html(data.note);
+                                swal({
+                                    title: "<span style='color:green;'>Note Added Successfully!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    timer: 1500,
+                                    type: "success",
+                                    showConfirmButton: false
+                                });
+                            }
+                            else swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                });
+                        },
+                        error: function(){
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "There was an error trying to add the note!<br>The request could not be sent to the server.",
+                                html: true,
+                                type: "error"
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        //function tickets
+        $('#btn_model_tickets').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            swal({
+                title: "View tickets",
+                text: "Select the way you want to view the tickets",
+                type: "info",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "BOCA Ticket Printer",
+                cancelButtonText: "Standard Printer",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+              function(isConfirm) {
+                if (isConfirm) {
+                    window.open('/admin/purchases/tickets/S/'+id);
+                } else {
+                    window.open('/admin/purchases/tickets/C/'+id);
+                }
+            });
         });  
-        //init functions
-        $('input:radio[name=radios]:first').attr('checked', true);
-        $('#btn_model_email').prop('disabled',false);
-        $('#btn_model_tickets').prop('disabled',false);
+        //enable function buttons on check radio 
+        $('input:radio[name=radios]').change(function () {
+            if($('input:radio[name=radios]:checked').length > 0)
+            {
+                $('#btn_model_email').prop('disabled',false);
+                $('#btn_model_tickets').prop('disabled',false);
+                $('#btn_model_note').prop('disabled',false);
+            }
+        });
     }
     return {
         //main function to initiate the module

@@ -272,7 +272,11 @@ var TableDatatablesManaged = function () {
         //function save
         $('#btn_model_save').on('click', function(ev) {
             $('#modal_model_update').modal('hide');
-            if($('#form_model_update').valid())
+            var valid_effective_dates = true;
+            if($('#form_model_update [name="effective_dates"]:checkbox').is(':checked')) 
+                if($('#form_model_update [name="effective_start_date"]').val()==='' || $('#form_model_update [name="effective_end_date"]').val()==='')
+                    valid_effective_dates = false;
+            if($('#form_model_update').valid() && valid_effective_dates)
             {
                 swal({
                     title: "Saving coupon's information",
