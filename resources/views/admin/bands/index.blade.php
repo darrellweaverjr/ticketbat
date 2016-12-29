@@ -23,15 +23,10 @@
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
                     <div class="actions">
-                        <form method="post" action="/admin/bands" id="form_model_search" class="pull-left btn mt-checkbox-list" style="width:150px">
-                            <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                            <input type="hidden" name="onlyerrors"  value="0"/>
-                            <label class="mt-checkbox mt-checkbox-single">
-                                <input type="checkbox" name="onlyerrors"  value="1" {{$onlyerrors}} />
-                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Only with errors</span>
-                            </label>
-                        </form>  
                         <div class="btn-group">
+                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search 
+                                <i class="fa fa-search"></i>
+                            </button>
                             <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
                                 <i class="fa fa-plus"></i>
                             </button>
@@ -68,12 +63,12 @@
                                     </label>
                                 </td>
                                 <td class="search-item clearfix" width="88%"> 
-                                    <div class="search-content col-md-1"> 
+                                    <div class="search-content col-md-2"> 
                                         @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
                                         @if(preg_match('/\/s3\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$b->image_url) @endphp @endif
                                         <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
                                     </div>
-                                    <div class="search-content col-md-11" style="padding-left:35px">
+                                    <div class="search-content col-md-10" style="padding-left:35px">
                                         <h3 class="search-title"><a data-toggle="modal" href="#modal_details_{{$b->id}}">{{$b->name}}</a></h3>
                                         <p><small><i>
                                             @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a>@endif
@@ -322,6 +317,48 @@
         </div>
     </div>
     <!-- END UPDATE MODAL--> 
+    <!-- BEGIN SEARCH MODAL--> 
+    <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:400px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="/admin/bands" id="form_model_search">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="form-body">
+                            <div class="row">  
+                                <div class="form-group">
+                                    <label for="onlyerrors" class="col-md-5"> <span>Only With Error:</span> </label>
+                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="onlyerrors" style="width:65px !important">
+                                        <option @if($onlyerrors==0) selected @endif value="0">No</option>
+                                        <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
+                                    </select>
+                                </div>   
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
+                                                                                                    title: 'Searching information',
+                                                                                                    text: 'Please, wait.',
+                                                                                                    type: 'info',
+                                                                                                    showConfirmButton: false
+                                                                                                });" >Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SEARCH MODAL--> 
 @endsection
 
 @section('scripts') 

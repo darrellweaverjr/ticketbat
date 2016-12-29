@@ -67,12 +67,12 @@
                                     </label>
                                 </td>
                                 <td class="search-item clearfix" width="82%"> 
-                                    <div class="search-content col-md-2"> 
+                                    <div class="search-content col-md-3"> 
                                         @if(preg_match('/\/uploads\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_OLDTB_SERVER').$s->image_url @endphp @endif
                                         @if(preg_match('/\/s3\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$s->image_url) @endphp @endif
                                         <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$s->id}}"><img alt="- No image -" height="100px" width="200px" src="{{$s->image_url}}"/></a></b></i></center>
                                     </div>
-                                    <div class="search-content col-md-10" style="padding-left:20px">
+                                    <div class="search-content col-md-9">
                                         <h4 class="search-title"><b><a data-toggle="modal" href="#modal_details_{{$s->id}}">{{$s->name}}</a></b> [<a href="https://www.ticketbat.com/event/{{$s->slug}}" target="_blank">{{$s->slug}}</a>]</h4>
                                         <small><i>
                                             @if($s->url)Web Site: <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
@@ -216,7 +216,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN UPDATE MODAL--> 
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:60% !important;">
+        <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title"></center></h4>
