@@ -29,6 +29,20 @@ class Seat extends Model
      */
     public function ticket()
     {
-        return $this->hasMany('App\Http\Models\Ticket','ticket_id');
+        return $this->belongsTo('App\Http\Models\Ticket','ticket_id');
+    }
+    /**
+     * Get the Consignment for the seat.
+     */
+    public function consignment()
+    {
+        return $this->belongsTo('App\Http\Models\Consignment','consignment_id');
+    }
+    /**
+     * Get the purchase for the seat.
+     */
+    public function purchase()
+    {
+        return $this->belongsTo('App\Http\Models\Purchase','purchase_id');
     }
 }
