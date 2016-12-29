@@ -38,14 +38,13 @@ class Consignment extends Model
     {
         return $this->belongsTo('App\Http\Models\User','seller_id');
     }
-    //RELATIONSHIPS MANY-MANY
     /**
-     * The purchase_seats that belong to the Consignment.
+     * Get the seats for the Consignment.
      */
-    public function purchase_seats()
+    public function seats()
     {
-        return $this->belongsToMany('App\Http\Models\Seat','purchase_seats','consignment_id','seat_id')->withPivot('purchase_id','status','updated');
-    } 
+        return $this->hasMany('App\Http\Models\Seat','consignment_id');
+    }
     //PERSONALIZED FUNCTIONS
     public function set_agreement($file)
     {

@@ -130,23 +130,22 @@ class Purchase extends Model
         //if it sells section/row/seat
         else
         {
-            $seats = DB::table('purchase_seats')
-                                ->join('seats', 'purchase_seats.seat_id', '=' ,'seats.id')
+            $seats = DB::table('seats')
                                 ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->join('purchases', 'purchases.id', '=' ,'purchase_seats.purchase_id')
+                                ->join('purchases', 'purchases.id', '=' ,'seats.purchase_id')
                                 ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                                 ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                                 ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                                ->select('purchase_seats.*','seats.seat','tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_commission',
+                                ->select('seats.*','tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_commission',
                                         'shows.name AS show_name','show_times.show_time','venues.name AS venue_name','shows.restrictions','show_times.time_alternative')
-                                ->where('purchase_seats.purchase_id',$this->id)
+                                ->where('seats.purchase_id',$this->id)
                                 ->orderBy('tickets.ticket_type','seats.seat')
                                 ->distinct()->get();
             foreach ($seats as $s)
             {
                 $main_info = ['number'=>$s->id,'customer_name'=>'','customer_email'=>'','checked'=>($s->status == 'Checked')? $checked_= 1 : $checked_= 0,'comment'=>'','QRcode'=>Util::getQRcode($this->id,$this->user_id,$s->id)];
                 $extra_info = ['show_name'=>$s->show_name,'show_time'=>$s->show_time,'price_each'=>number_format($s->retail_price+$s->processing_fee,2),'id'=>$this->id,'venue_name'=>$s->venue_name,'restrictions'=>$s->restrictions,
-                               'user_id'=>$this->user_id,'ticket_type'=>$s->seat_id,'time_alternative'=>$s->time_alternative,'package'=>$s->ticket_type.' Seat: '.$s->seat];
+                               'user_id'=>$this->user_id,'ticket_type'=>$s->ticket_id,'time_alternative'=>$s->time_alternative,'package'=>$s->ticket_type.' Seat: '.$s->seat];
                 $tickets[] = array_merge($main_info,$extra_info);
             }
         }
@@ -238,7 +237,7 @@ class Purchase extends Model
                 {
                     //table on email to show all totals
                     $totals['total'] = $totals['retail_price'] + $totals['processing_fee'] - $totals['discount'];
-                    $totals_html = '<tr> <td align="right" width="85%">Subtotal:</td> <td width="15%" align="right">$ '.number_format($totals['retail_price'],2).'</td> </tr>
+                    $totals_html = '<tr> <td align="right" width="80%">Subtotal:</td> <td width="20%" align="right">$ '.number_format($totals['retail_price'],2).'</td> </tr>
                                     <tr> <td align="right">Processing Fee:</td> <td align="right">$ '.number_format($totals['processing_fee'],2).'</td> </tr>';
                     if($totals['discount'] > 0)
                         $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';

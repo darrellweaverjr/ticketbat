@@ -5,7 +5,6 @@
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
-<link href="/themes/admin/assets/global/plugins/jquery-multi-select/css/multi-select.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -35,9 +34,6 @@
                             <button id="btn_model_tickets" class="btn sbold bg-red" disabled="true"> View Tickets 
                                 <i class="fa fa-ticket"></i>
                             </button>
-                            <button id="btn_model_seats" class="btn sbold bg-purple"> Seats at Stages
-                                <i class="fa fa-cubes"></i>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -48,13 +44,13 @@
                                 <th width="2%"> </th>
                                 <th width="1%"> </th>
                                 <th width="20%"> Show </th>
-                                <th width="15%"> Show Time </th>
-                                <th width="15%"> Created </th>
+                                <th width="13%"> Show Time </th>
+                                <th width="13%"> Created </th>
                                 <th width="15%"> Seller </th>
                                 <th width="10%"> Due Date </th>
                                 <th width="6%"> Qty </th>
                                 <th width="7%"> Total </th>
-                                <th width="11%"> Status </th>
+                                <th width="15%"> Status </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,13 +64,13 @@
                                 </td>
                                 <td width="1%" class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>  
                                 <td width="20%"> {{$c->show_name}} </td>
-                                <td width="15%"><center> {{date('m/d/Y g:ia',strtotime($c->show_time))}} </center></td>
-                                <td width="15%"><center> {{date('m/d/Y g:ia',strtotime($c->created))}} </center></td>
+                                <td width="13%"><center> {{date('m/d/Y g:ia',strtotime($c->show_time))}} </center></td>
+                                <td width="13%"><center> {{date('m/d/Y g:ia',strtotime($c->created))}} </center></td>
                                 <td width="15%"> {{$c->first_name}} {{$c->last_name}} </td>
                                 <td width="10%"><center> {{date('m/d/Y',strtotime($c->due_date))}} </center></td>
                                 <td width="6%"><center> {{$c->qty}} </center></td>
                                 <td width="7%" style="text-align:right"> $ {{$c->total}} </td>
-                                <td width="11%"> 
+                                <td width="15%"> 
                                     <select ref="{{$c->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
                                         <option @if($indexS == $c->status) selected @endif value="{{$indexS}}">{{$s}}</option>
@@ -92,7 +88,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN ADD MODAL--> 
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:60% !important;">
+        <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Add Consignment</center></h4>
@@ -113,7 +109,7 @@
                                 </center>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <label class="control-label">
                                         <span class="required"> Event </span>
                                     </label><hr>
@@ -146,8 +142,6 @@
                                             </select>
                                         </div>  
                                     </div>
-                                </div>
-                                <div class="col-md-6">
                                     <label class="control-label">
                                         <span class="required"> Seller </span>
                                     </label><hr>
@@ -184,60 +178,87 @@
                                             <input type="text" name="agreement" class="form-control" readonly="true"/>
                                         </div> 
                                     </div>
-                                </div>
-                            </div>   
-                            <div class="row">
-                                <div class="col-md-6">
+                                    
                                     <label class="control-label">
                                         <span class="required"> Section </span>
                                     </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-5">Section/Row
+                                        <label class="control-label col-md-4">Section/Row
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-7 show-error">
-                                            <select class="form-control" name="ticket_id">
-
+                                        <div class="col-md-8 show-error"> 
+                                            <select class="form-control" name="section">
+                                                @foreach($sections as $index=>$s)
+                                                <option value="{{md5($index)}}"> {{$s}} </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="form-group">    
-                                        <label class="control-label col-md-5">Sale Price
+                                    <div class="form-group">        
+                                        <label class="control-label col-md-4">Seat
+                                            <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-7 show-error">
-                                            <input type="text" name="retail_price" class="form-control" readonly="true" />
+                                        <div class="col-md-4">
+                                            <input type="text" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
                                         </div> 
-                                    </div>
-                                    <div class="form-group">    
-                                        <label class="control-label col-md-5">Processing Fee
-                                        </label>
-                                        <div class="col-md-7 show-error">
-                                            <input type="text" name="processing_fee" class="form-control" readonly="true"/>
+                                        <div class="col-md-4">
+                                            <input type="text" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
                                         </div> 
-                                    </div>
-                                    <div class="form-group">    
-                                        <label class="control-label col-md-5">Net to Show
-                                        </label>
-                                        <div class="col-md-7 show-error">
-                                            <input type="text" name="percent_commission" class="form-control" readonly="true"/>
+                                    </div> 
+                                    <div class="col-md-10">
+                                        <div class="form-group">    
+                                            <label class="control-label col-md-6">Sale Price ($)
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-6 show-error">
+                                                <input type="number" name="retail_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
+                                            </div> 
+                                        </div>
+                                        <div class="form-group">    
+                                            <label class="control-label col-md-6">Procesing Fee ($)
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-6 show-error">
+                                                <input type="number" name="processing_fee" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                            </div> 
+                                        </div>
+                                        <div class="form-group">    
+                                            <label class="control-label col-md-6">Net to Show (%)
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-6 show-error">
+                                                <input type="number" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-2">
+                                        <button type="button" style="height:130px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
+                                            <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <label class="control-label">
                                         <span class="required"> Seats </span>
                                     </label><hr>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-2">Select Seats
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-10 show-error">
-                                            <select multiple="multiple" size="24" class="multi-select" id="seats_to_add" name="seats[]">
-                                            </select>
-                                        </div> 
-                                    </div>
+                                    <div style="max-height:500px; overflow: auto;">
+                                        <table class="table table-striped table-bordered table-hover table-checkable">
+                                            <thead>
+                                                <tr>
+                                                    <th width="35%"> Section / Row </th>
+                                                    <th width="10%"> Seat </th>
+                                                    <th width="15%"> Price </th>
+                                                    <th width="15%"> Fee </th>
+                                                    <th width="15%"> Comm. </th>
+                                                    <th width="10%">  </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tb_seats">
+                                            </tbody>
+                                        </table>
+                                    </div>  
                                 </div>
-                            </div>
+                            </div> 
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -256,7 +277,7 @@
     <!-- END ADD MODAL--> 
     <!-- BEGIN EDIT MODAL--> 
     <div id="modal_model_update2" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:65% !important;">
+        <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-yellow">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Consignment</center></h4>
@@ -402,100 +423,11 @@
         </div>
     </div>
     <!-- END EDIT MODAL--> 
-    <!-- BEGIN UPDATE MODAL--> 
-    <div id="modal_model_seats" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:35% !important;">
-            <div class="modal-content portlet">
-                <div id="modal_model_update_header" class="modal-header alert-block bg-purple">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Manage Seats at Stages</center></h4>
-                </div>
-                <div class="modal-body">
-                    <!-- BEGIN FORM-->
-                    <form method="post" id="form_model_seats" class="form-horizontal">
-                        <div class="form-body">
-                            <div class="alert alert-danger display-hide">
-                                <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
-                            <div class="alert alert-success display-hide">
-                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            <div class="row">
-                                <div class="form-group">    
-                                    <label class="control-label col-md-3">Stage
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-8 show-error">
-                                        <select class="form-control" name="stage_id" required="true">
-                                            <option selected disabled value=""></option>
-                                            @foreach($stages as $index=>$s)
-                                            <option value="{{$s->id}}">{{$s->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">        
-                                    <label class="control-label col-md-3">Section/Row
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-8 show-error">
-                                        <select class="form-control" name="ticket_id" required="true">
-
-                                        </select>
-                                    </div>
-                                </div> 
-                                <div class="form-group">        
-                                    <label class="control-label col-md-3">Seat
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-3">
-                                        <input type="text" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
-                                    </div> 
-                                    <label class="control-label col-md-1">to
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-3">
-                                        <input type="text" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
-                                    </div> 
-                                    <button type="button" id="btn_model_add_seat" class="btn sbold bg-green col-md-1">Add</button>
-                                </div> 
-                            </div>    
-                            <div class="row" style="max-height:500px; overflow: auto;">
-                                <table class="table table-striped table-bordered table-hover table-checkable">
-                                    <thead>
-                                        <tr>
-                                            <th width="60%"> Section / Row </th>
-                                            <th width="20%"> Seat </th>
-                                            <th width="20%"> Delete </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tb_seats">
-                                    </tbody>
-                                </table>
-                            </div>  
-                        </div>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                    <button type="button" id="btn_model_save_seat" class="btn sbold bg-purple">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <!-- END FORM-->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END UPDATE MODAL--> 
 @endsection
 
 @section('scripts') 
 <script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
-
-<script src="/themes/admin/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-        
 <script src="/js/admin/consignments/index.js" type="text/javascript"></script>
 @endsection
