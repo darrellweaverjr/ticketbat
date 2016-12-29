@@ -77,7 +77,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->   
     <!-- BEGIN UPDATE MODAL--> 
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:30% !important;">
+        <div class="modal-dialog" style="width:350px !important;">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title"></center></h4>
@@ -92,17 +92,17 @@
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4">Type
+                                <label class="control-label col-md-3">Type
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-8 show-error">
+                                <div class="col-md-9 show-error">
                                     <input type="text" name="ticket_type" class="form-control" placeholder="My type" /> </div>
                             </div>
                             <div id="div_model_update_advanced">
                                 <div class="form-group">
-                                    <label class="control-label col-md-4">Style
+                                    <label class="control-label col-md-3">Style
                                     </label>
-                                    <div class="col-md-8 show-error">
+                                    <div class="col-md-9 show-error">
                                         <select class="form-control" name="ticket_type_class">
                                             @foreach($ticket_styles as $index=>$s)
                                             <option value="{{$index}}"> {{$s}} </option>

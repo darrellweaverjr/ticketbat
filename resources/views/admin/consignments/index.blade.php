@@ -193,8 +193,6 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="form-group">        
                                         <label class="control-label col-md-4">Seat
                                             <span class="required"> * </span>
                                         </label>
@@ -204,35 +202,29 @@
                                         <div class="col-md-4">
                                             <input type="text" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
                                         </div> 
-                                    </div> 
-                                    <div class="col-md-10">
-                                        <div class="form-group">    
-                                            <label class="control-label col-md-6">Sale Price ($)
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-6 show-error">
-                                                <input type="number" name="retail_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
-                                            </div> 
-                                        </div>
-                                        <div class="form-group">    
-                                            <label class="control-label col-md-6">Procesing Fee ($)
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-6 show-error">
-                                                <input type="number" name="processing_fee" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
-                                            </div> 
-                                        </div>
-                                        <div class="form-group">    
-                                            <label class="control-label col-md-6">Net to Show (%)
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-6 show-error">
-                                                <input type="number" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
-                                            </div>
+                                    </div>
+                                    <div class="col-md-9 form-group">  
+                                        <label class="control-label col-md-6">S.Price ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-6 show-error">
+                                            <input type="number" name="retail_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
+                                        </div>    
+                                        <label class="control-label col-md-6">Proc.Fee ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-6 show-error">
+                                            <input type="number" name="processing_fee" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                        </div>   
+                                        <label class="control-label col-md-6">Commiss.(%)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-6 show-error">
+                                            <input type="number" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <button type="button" style="height:130px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
+                                    <div class="col-md-3">
+                                        <button type="button" style="height:100px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
                                             <i class="fa fa-arrow-right"></i>
                                         </button>
                                     </div>
@@ -241,7 +233,7 @@
                                     <label class="control-label">
                                         <span class="required"> Seats </span>
                                     </label><hr>
-                                    <div style="max-height:500px; overflow: auto;">
+                                    <div style="max-height:600px; overflow: auto;">
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>
