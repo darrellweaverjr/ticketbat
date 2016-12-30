@@ -195,7 +195,10 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
             $('#modal_model_update').modal('show');
         });
-        
+        //function load form to upload image
+        $('#btn_sponsor_upload_image').on('click', function(ev) {
+            FormImageUpload('logo','#modal_model_update','#form_model_update [name="sponsor_logo_id"]');       
+        }); 
         
         
         
