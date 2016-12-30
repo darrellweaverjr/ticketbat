@@ -373,7 +373,7 @@
                                                     <label class="control-label col-md-3">Status</label>
                                                     <div class="col-md-9">
                                                         <input type="hidden" name="is_active" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_active" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>
@@ -425,14 +425,14 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Featured</label>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-2">
                                                         <input type="hidden" name="is_featured" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="is_featured" data-size="small" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
-                                                    <label class="control-label col-md-3">Able Print Ticket</label>
+                                                    <label class="control-label col-md-4">Able Print Ticket</label>
                                                     <div class="col-md-3">
                                                         <input type="hidden" name="printed_tickets" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>
@@ -490,7 +490,7 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reports">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-5">
                                                 <label class="control-label">
                                                     <span class="required"> Reports </span>
                                                 </label><hr>
@@ -508,26 +508,26 @@
                                                     <label class="control-label col-md-9">Send individual order emails</label>
                                                     <div class="col-md-3">
                                                         <input type="hidden" name="individual_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="individual_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="individual_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                     <label class="control-label col-md-9">Send manifest emails</label>
                                                     <div class="col-md-3">
                                                         <input type="hidden" name="manifest_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="manifest_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="manifest_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                     <label class="control-label col-md-9">Send daily sales emails</label>
                                                     <div class="col-md-3">
                                                         <input type="hidden" name="daily_sales_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="daily_sales_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="daily_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                     <label class="control-label col-md-9">Send financial report emails</label>
                                                     <div class="col-md-3">
                                                         <input type="hidden" name="financial_report_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="financial_report_emails" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-7">
                                                 <label class="control-label">
                                                     <span class="required"> Check For Amex Card </span>
                                                 </label><hr>
@@ -547,7 +547,7 @@
                                                             </button>
                                                         </span>
                                                     </div>
-                                                    <label class="col-md-3 control-label">Ticket types
+                                                    <label class="col-md-3 control-label">Ticket types:
                                                     </label>
                                                     <div class="col-md-9 ticket_types_lists">
                                                     </div> 
