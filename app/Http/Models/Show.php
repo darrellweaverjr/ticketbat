@@ -88,4 +88,24 @@ class Show extends Model
     {
         return $this->belongsToMany('App\Http\Models\Discount','discount_shows','show_id','discount_id');
     }
+    //PERSONALIZED METHODS
+    /**
+     * Set the image_url for the current band.
+     */
+    public function set_sponsor_logo_id($sponsor_logo_id)
+    {
+        $this->sponsor_logo_id = Image::stablish_image('shows',$sponsor_logo_id);
+    }
+    /**
+     * Remove the image file for the current band.
+     */
+    public function delete_image_file()
+    {
+        if(Image::remove_image($this->sponsor_logo_id))
+        {
+            $this->sponsor_logo_id = '';
+            return true;
+        }
+        return true;   
+    }
 }
