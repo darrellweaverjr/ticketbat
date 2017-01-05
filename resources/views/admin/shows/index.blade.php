@@ -239,7 +239,10 @@
                                         <a href="#tab_model_update_sponsor" data-toggle="tab" aria-expanded="true"> Sponsorship </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="true"> Reports & Checking </a>
+                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="true"> Reports </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_checking" data-toggle="tab" aria-expanded="false"> Checking </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_passwords" data-toggle="tab" aria-expanded="false"> Passwords </a>
@@ -294,7 +297,7 @@
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="slug" class="form-control" placeholder="my-show" readonly="true" /> 
+                                                        <input type="text" name="slug" class="form-control" readonly="true" /> 
                                                     </div>
                                                     <label class="control-label col-md-3">Category
                                                     <span class="required"> * </span>
@@ -320,7 +323,7 @@
                                                     <div class="col-md-9 show-error">
                                                         <select class="form-control" name="venue_id">
                                                             @foreach($venues as $index=>$v)
-                                                                <option value="{{$v->id}}">{{$v->name}}</option>
+                                                            <option class="{{$v->restrictions}}" value="{{$v->id}}">{{$v->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div> 
@@ -330,9 +333,7 @@
                                                     <div class="col-md-9 show-error">
                                                         <select class="form-control" name="stage_id">
                                                             @foreach($stages as $index=>$t)
-                                                                @if(isset($venues[0]) && $venues[0]->id == $t->venue_id)
-                                                                <option value="{{$t->id}}">{{$t->name}}</option>
-                                                                @endif
+                                                                <option style = "display:@if(isset($venues[0]) && $venues[0]->id == $t->venue_id) block @else none @endif ;"                         class="venue_{{$t->venue_id}}" value="{{$t->id}}">{{$t->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div> 
@@ -340,13 +341,13 @@
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <select class="form-control bs-select" data-show-subtext="true" name="restrictions">
+                                                        <select class="form-control" name="restrictions">
                                                             @foreach($restrictions as $index=>$r)
-                                                                @if(isset($venues[0]) && $venues[0]->restrictions == $r)
-                                                                <option selected="" value="{{$r}}">{{$r}}</option>
-                                                                @else
-                                                                <option value="{{$r}}" data-content="{{$r}} <span class='label lable-sm label-warning'> WARNING: Different than venue </span>">{{$r}}</option>
-                                                                @endif
+                                                            @if(isset($venues[0]) && $venues[0]->restrictions == $r)
+                                                                <option selected value="{{$r}}">{{$r}} - Venue default</option>
+                                                            @else
+                                                                <option value="{{$r}}">{{$r}} - WARNING: Not venue default</option>
+                                                            @endif
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -491,9 +492,6 @@
                                     <div class="tab-pane" id="tab_model_update_reports">
                                         <div class="row">
                                             <div class="col-md-5">
-                                                <label class="control-label">
-                                                    <span class="required"> Reports </span>
-                                                </label><hr>
                                                 <div class="form-group">
                                                     <label class="control-label" style="padding-left:30px">Email for Individual Sales and Manifests Reports:
                                                     </label>
@@ -504,33 +502,39 @@
                                                     </label>
                                                     <div class="show-error" style="padding-left:30px">
                                                         <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" /> 
-                                                    </div><hr>
-                                                    <label class="control-label col-md-9">Send individual order emails</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="individual_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="individual_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                    <label class="control-label col-md-9">Send manifest emails</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="manifest_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="manifest_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                    <label class="control-label col-md-9">Send daily sales emails</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="daily_sales_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="daily_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                    <label class="control-label col-md-9">Send financial report emails</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="financial_report_emails" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-7">
-                                                <label class="control-label">
-                                                    <span class="required"> Check For Amex Card </span>
-                                                </label><hr>
+                                                <label class="control-label col-md-9">Send individual order emails</label>
+                                                <div class="col-md-3">
+                                                    <input type="hidden" name="individual_emails" value="0"/>
+                                                    <input type="checkbox" class="make-switch" name="individual_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                                <label class="control-label col-md-9">Send manifest emails</label>
+                                                <div class="col-md-3">
+                                                    <input type="hidden" name="manifest_emails" value="0"/>
+                                                    <input type="checkbox" class="make-switch" name="manifest_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                                <label class="control-label col-md-9">Send daily sales emails</label>
+                                                <div class="col-md-3">
+                                                    <input type="hidden" name="daily_sales_emails" value="0"/>
+                                                    <input type="checkbox" class="make-switch" name="daily_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                                <label class="control-label col-md-9">Send financial report emails</label>
+                                                <div class="col-md-3">
+                                                    <input type="hidden" name="financial_report_emails" value="0"/>
+                                                    <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_checking">
+                                        <label class="control-label">
+                                            <span class="required"> American Express Card Checking </span>
+                                        </label><hr>
+                                        <div class="row">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Date range:
                                                     </label>
@@ -547,30 +551,33 @@
                                                             </button>
                                                         </span>
                                                     </div>
-                                                    <label class="col-md-3 control-label">Ticket types:
-                                                    </label>
-                                                    <div class="col-md-9 ticket_types_lists">
-                                                    </div> 
                                                 </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="col-md-3 control-label">Ticket types:
+                                                </label>
+                                                <div class="col-md-9 mt-checkbox-inline ticket_types_lists">
+                                                </div> 
                                             </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_passwords">
                                         <div class="row" style="padding-right:20px">
-                                            <input type="button" id="btn_model_add_show_passwords" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right"/> 
+                                            <input type="button" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right" id="btn_model_password_add" /> 
                                         </div>
                                         <div class="row table-responsive" style="padding-left:20px">
-                                            <table class="table table-striped table-hover table-bordered">
+                                            <table class="table table-striped table-hover table-bordered" >
                                                 <thead>
                                                     <tr>
                                                         <th> Passwords </th>
-                                                        <th> Date Range </th>
+                                                        <th> Date Start </th>
+                                                        <th> Date End </th>
                                                         <th> Ticket Types </th>
                                                         <th> </th>
                                                         <th> </th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody id="tb_show_passwords">
                                                     
                                                 </tbody>
                                             </table>
@@ -693,7 +700,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" action="/admin/shows/save/show_passwords" id="form_model_show_passwords">
+                    <form method="post" action="/admin/shows/show_passwords" id="form_model_show_passwords">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="id" value="" />
@@ -704,15 +711,15 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-9 show-error">
-                                        <input type="text" name="password" class="form-control" /> 
+                                        <input type="text" name="password" class="form-control" required="true" /> 
                                     </div>
                                     <label class="control-label col-md-3">Date range:
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="input-group col-md-9" id="show_passwords_date">
-                                        <input type="text" class="form-control" name="start_date" readonly="true">
+                                        <input type="text" class="form-control" name="start_date" readonly="true" required="true">
                                         <span class="input-group-addon"> to </span>
-                                        <input type="text" class="form-control" name="end_date" readonly="true">
+                                        <input type="text" class="form-control" name="end_date" readonly="true" required="true">
                                         <span class="input-group-btn">
                                             <button class="btn default date-range-toggle" type="button">
                                                 <i class="fa fa-calendar"></i>
@@ -731,7 +738,7 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_passwords').trigger('reset')">Cancel</button>
-                                    <button type="submit" class="btn sbold grey-salsa">Search</button>
+                                    <button type="button" id="submit_model_show_passwords" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
                         </div>
