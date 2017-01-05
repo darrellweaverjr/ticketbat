@@ -89,7 +89,8 @@ class BandController extends Controller{
                 if(isset($input['id']) && $input['id'])
                 {
                     $band = Band::find($input['id']);
-                    $band->delete_image_file();
+                    if(preg_match('/media\/preview/',$input['image_url'])) 
+                        $band->delete_image_file();
                 }                    
                 else
                 {                    
@@ -108,7 +109,8 @@ class BandController extends Controller{
                 $band->instagram = $input['instagram'];
                 $band->soundcloud = $input['soundcloud'];
                 $band->website = $input['website'];
-                $band->set_image_url($input['image_url']);
+                if(preg_match('/media\/preview/',$input['image_url'])) 
+                    $band->set_image_url($input['image_url']);
                 $band->save();
                 //return
                 return ['success'=>true,'msg'=>'Band saved successfully!'];
