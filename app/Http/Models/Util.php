@@ -95,7 +95,7 @@ class Util extends Model
     /**
      * Create slug by name and venue slug if it is a show.
      */
-    public static function generate_slug($name,$venue_id=null)
+    public static function generate_slug($name,$venue_id=null,$show_id=null)
     {
         try {
             //lower and trim
@@ -109,6 +109,13 @@ class Util extends Model
                 $slugs = Show::pluck('slug')->toArray();
             else
                 $slugs = Venue::pluck('slug')->toArray();
+            //if it is existing show and the slug it's the same like slug, no change
+            if($show_id && $show_id!='')
+            {
+                $show = Show::find($show_id);
+                if($show && $show->slug == $slug)
+                    return $slug;
+            }
             //check if the slug exists
             while (in_array($slug,$slugs))
             {

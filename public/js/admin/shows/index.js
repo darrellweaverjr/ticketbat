@@ -131,7 +131,8 @@ var TableDatatablesManaged = function () {
                     url: '/admin/shows/slug', 
                     data: {
                         name:$('#form_model_update [name="name"]').val(),
-                        venue_id:$('#form_model_update [name="venue_id"]').val()
+                        venue_id:$('#form_model_update [name="venue_id"]').val(),
+                        show_id:$('#form_model_update [name="id"]').val()
                     }, 
                     success: function(data) {
                         if(data) $('#form_model_update [name="slug"]').val(data);
@@ -361,22 +362,28 @@ var TableDatatablesManaged = function () {
                                 e.val(data.show[key]);
                         }
                         //fill out checking ticket 
-                        var amex_tt = data.show['amex_only_ticket_types'].split(',');
-                        var tt_inactive = data.ticket_types_inactive.split(',');
-                        $.each(data.tickets,function(k, v) {
-                            if(v.is_active == 1 && tt_inactive.indexOf(v.ticket_type)<0)
-                            {
-                                if(amex_tt.indexOf(v.ticket_type)>=0) 
-                                    var checked = 'checked';
-                                else var checked = '';
-                                $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label>');
-                                $('#modal_model_show_passwords .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
-                            }
-                        });
+                        if(data.show.amex_only_ticket_types && data.show.amex_only_ticket_types!='')
+                        {
+                            var amex_tt = data.show.amex_only_ticket_types.split(',');
+                            var tt_inactive = data.ticket_types_inactive.split(',');
+                            $.each(data.tickets,function(k, v) {
+                                if(v.is_active == 1 && tt_inactive.indexOf(v.ticket_type)<0)
+                                {
+                                    if(amex_tt.indexOf(v.ticket_type)>=0) 
+                                        var checked = 'checked';
+                                    else var checked = '';
+                                    $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label>');
+                                    $('#modal_model_show_passwords .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                                }
+                            });
+                        }
                         //fill out passwords
-                        $.each(data.passwords,function(k, v) {
-                            $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
-                        });
+                        if(data.passwords && data.passwords.length)
+                        {
+                            $.each(data.passwords,function(k, v) {
+                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            });
+                        }
                         //show modal
                         $('#modal_model_update').modal('show');
                     }
@@ -403,7 +410,7 @@ var TableDatatablesManaged = function () {
             if($('#form_model_update').valid())
             {
                 swal({
-                    title: "Saving band's information",
+                    title: "Saving show's information",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
@@ -411,7 +418,7 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/bands/save', 
+                    url: '/admin/shows/save', 
                     data: $('#form_model_update').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
@@ -440,7 +447,7 @@ var TableDatatablesManaged = function () {
                     error: function(){
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the band's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to save the show's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
@@ -525,7 +532,7 @@ var TableDatatablesManaged = function () {
         });     
         //function load social media
         $('#btn_load_social_media').on('click', function(ev) {
-            var website = $('#form_model_update [name="website"]').val();
+            var website = $('#form_model_update [name="url"]').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
