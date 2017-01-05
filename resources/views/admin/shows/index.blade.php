@@ -569,7 +569,7 @@
                                             <table class="table table-striped table-hover table-bordered" >
                                                 <thead>
                                                     <tr>
-                                                        <th> Passwords </th>
+                                                        <th> Password </th>
                                                         <th> Date Start </th>
                                                         <th> Date End </th>
                                                         <th> Ticket Types </th>
