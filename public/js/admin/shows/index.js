@@ -151,7 +151,7 @@ var TableDatatablesManaged = function () {
             $('#modal_model_show_passwords').modal('show');
         });
         $('#tb_show_passwords').on('click', 'input[type="button"]', function(e){
-            var id = $(this).closest('tr').prop('class');
+            var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
             {
@@ -159,11 +159,12 @@ var TableDatatablesManaged = function () {
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/admin/shows/passwords', 
-                    data: {action:0,id:id}, 
+                    data: {action:0,id:row.prop('class')}, 
                     success: function(data) {
                         if(data.success) 
                         {
                             $('#form_model_show_passwords').trigger('reset');
+                            $('#form_model_show_passwords input[name="id"]:hidden').val(data.password.id).trigger('change');
                             $('#form_model_show_passwords input[name="password"]').val(data.password.password);
                             $('#form_model_show_passwords input[name="start_date"]').val(data.password.start_date);
                             $('#form_model_show_passwords input[name="end_date"]').val(data.password.end_date);
@@ -172,27 +173,37 @@ var TableDatatablesManaged = function () {
                             });
                             $('#modal_model_show_passwords').modal('show');
                         }
-                        else swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            });
+                        else {
+                            alert(data.msg);
+                        }
                     },
                     error: function(){
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the password's information!<br>The request could not be sent to the server.",
-                            html: true,
-                            type: "error"
-                        });
+                        alert("There was an error trying to get the password's information!<br>The request could not be sent to the server.");
                     }
                 });
             }
             //delete
             else if($(this).hasClass('delete')) 
             {
-                
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/passwords', 
+                    data: {action:-1,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            //remove row
+                            row.remove();                        
+                        }
+                        else{
+                            alert(data.msg);
+                        }
+                    },
+                    error: function(){
+                        alert("There was an error trying to delete the password!<br>The request could not be sent to the server.");
+                    }
+                });
             }
             else alert('Invalid Option');
         });
@@ -201,12 +212,6 @@ var TableDatatablesManaged = function () {
             if($('#form_model_show_passwords').valid() && $('#form_model_show_passwords [name="ticket_types[]"]:checked').length)
             {
                 $('#modal_model_show_passwords').modal('hide');
-                swal({
-                    title: "Saving password's information",
-                    text: "Please, wait.",
-                    type: "info",
-                    showConfirmButton: false
-                });
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -224,25 +229,13 @@ var TableDatatablesManaged = function () {
                                 $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
                         }
                         else{
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            },function(){
-                                $('#modal_model_show_passwords').modal('show');
-                            });
+                            alert(data.msg);
+                            $('#modal_model_show_passwords').modal('show');
                         }
                     },
                     error: function(){
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
-                            html: true,
-                            type: "error"
-                        },function(){
-                            $('#modal_model_show_passwords').modal('show');
-                        });
+                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_show_passwords').modal('show');
                     }
                 }); 
             }
