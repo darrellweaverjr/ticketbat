@@ -1,3 +1,5 @@
+/* global venue_id */
+
 var TableDatatablesManaged = function () {
     
     var initTable = function () {
@@ -118,12 +120,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_update [name="amex_only_start_date"]').val('');
             $('#form_model_update [name="amex_only_end_date"]').val('');
             $('#on_sale_date').datetimepicker('update');
-        });        
-        //style for selects with html
-        $('.bs-select').selectpicker({
-            iconBase: 'fa',
-            tickIcon: 'fa-check'
-        });
+        });    
         //get slug on name change
         $('#form_model_update [name="name"]').bind('change',function() {
             if($('#form_model_update [name="name"]').val().length >= 5)
@@ -147,6 +144,110 @@ var TableDatatablesManaged = function () {
             }
             else $('#form_model_update [name="slug"]').val('');
         });
+        //function with show_passwords
+        $('#btn_model_password_add').on('click', function(ev) {
+            $('#form_model_show_passwords input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_passwords').trigger('reset');
+            $('#modal_model_show_passwords').modal('show');
+        });
+        $('#tb_show_passwords').on('click', 'input[type="button"]', function(e){
+            var id = $(this).closest('tr').prop('class');
+            //edit
+            if($(this).hasClass('edit')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/passwords', 
+                    data: {action:0,id:id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#form_model_show_passwords').trigger('reset');
+                            $('#form_model_show_passwords input[name="password"]').val(data.password.password);
+                            $('#form_model_show_passwords input[name="start_date"]').val(data.password.start_date);
+                            $('#form_model_show_passwords input[name="end_date"]').val(data.password.end_date);
+                            $.each(data.password.ticket_types,function(k, t) {
+                                $('#form_model_show_passwords :checkbox[value="'+t+'"]').prop('checked',true);   
+                            });
+                            $('#modal_model_show_passwords').modal('show');
+                        }
+                        else swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            });
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                });
+            }
+            //delete
+            else if($(this).hasClass('delete')) 
+            {
+                
+            }
+            else alert('Invalid Option');
+        });
+        //function submit show_passwords
+        $('#submit_model_show_passwords').on('click', function(ev) {
+            if($('#form_model_show_passwords').valid() && $('#form_model_show_passwords [name="ticket_types[]"]:checked').length)
+            {
+                $('#modal_model_show_passwords').modal('hide');
+                swal({
+                    title: "Saving password's information",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/passwords', 
+                    data: $('#form_model_show_passwords').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            var v = data.password;
+                            //update row
+                            if($('#tb_show_passwords').find('tr[class="'+v.id+'"]').length)
+                                $('#tb_show_passwords').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
+                            //add row
+                            else
+                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_show_passwords').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_show_passwords').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else alert('You must fill out correctly the form');
+        });
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -168,12 +269,6 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_add').prop("disabled",false);
         } 
-        //add show_passwords
-        $('#btn_model_add_show_passwords').on('click', function(ev) {
-            $("#form_model_show_passwords input[name='id']:hidden").val('').trigger('change');
-            $("#form_model_show_passwords").trigger('reset');
-            $('#modal_model_show_passwords').modal('show');
-        });
         //function full reset form
         var fullReset = function(){
             //$('#form_model_update [name="image_url"]').attr('src','');
@@ -188,20 +283,43 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add Show');
+            $('a[href="#tab_model_update_checking"]').parent().css('display','none');
+            $('#form_model_update .ticket_types_lists').empty();
             $('a[href="#tab_model_update_passwords"]').parent().css('display','none');
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','none');
             $('a[href="#tab_model_update_tickets"]').parent().css('display','none');
             $('a[href="#tab_model_update_bands"]').parent().css('display','none');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
+            $("#form_model_update").trigger('reset');
             $('#modal_model_update').modal('show');
         });
         //function load form to upload image
         $('#btn_sponsor_upload_image').on('click', function(ev) {
             FormImageUpload('logo','#modal_model_update','#form_model_update [name="sponsor_logo_id"]');       
         }); 
-        
-        
-        
+        //on select venue
+        $('#form_model_update [name="venue_id"]').on('change', function(ev) {
+            //show stages
+            var venue_id = $('#form_model_update [name="venue_id"] option:selected').val(); 
+            $('#form_model_update [name="stage_id"]').children('option').css('display','none'); 
+            $('#form_model_update [name="stage_id"]').children('option[class="venue_'+venue_id+'"]').css('display','block'); 
+            $('#form_model_update [name="stage_id"]').val($('#form_model_update [name="stage_id"] option[class="venue_'+venue_id+'"]:first').val());
+            //show restrictions
+            var venue_rest = $('#form_model_update [name="venue_id"] option:selected').attr('class');
+            $('#form_model_update [name="restrictions"] option').each(function()
+            {
+                if($(this).val() == venue_rest)
+                {
+                    $(this).prop('selected',true);
+                    $(this).text($(this).val()+' - Venue default');                   
+                }
+                else
+                {
+                    $(this).prop('selected',false);
+                    $(this).text($(this).val()+' - WARNING: Not venue default');                   
+                }
+            });
+        });
         
         //function edit
         $('#btn_model_edit').on('click', function(ev) {
@@ -211,7 +329,11 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
+            $('a[href="#tab_model_update_checking"]').parent().css('display','block');
+            $('#form_model_update .ticket_types_lists').empty();
             $('a[href="#tab_model_update_passwords"]').parent().css('display','block');
+            $('#form_model_show_passwords .ticket_types_lists').empty();
+            $('#tb_show_passwords').empty();
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','block');
             $('a[href="#tab_model_update_tickets"]').parent().css('display','block');
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
@@ -220,21 +342,49 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/bands', 
+                url: '/admin/shows', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        for(var key in data.band)
+                        //fill out defaults
+                        $('#form_model_update [name="venue_id"]').val(data.show['venue_id']).change();
+                        $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show['id']).trigger('change');
+                        //fill out shows
+                        for(var key in data.show)
                         {
+                            //checking
+                            if(key=='on_sale' || key=='amex_only_start_date' || key=='amex_only_end_date')
+                                if(data.show[key]=='0000-00-00 00:00:00')
+                                    data.show[key] = '';
+                            //fill out
                             var e = $('#form_model_update [name="'+key+'"]');
                             if(e.is('img'))
-                                e.attr('src',data.band[key]);
+                                e.attr('src',data.show[key]);
                             else if(e.is('input:checkbox'))
-                                e.prop('checked',data.band[key]);
+                                //e.prop('checked',(data.show[key])? true : false);
+                                $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
                             else
-                                e.val(data.band[key]);
+                                e.val(data.show[key]);
                         }
+                        //fill out checking ticket 
+                        var amex_tt = data.show['amex_only_ticket_types'].split(',');
+                        var tt_inactive = data.ticket_types_inactive.split(',');
+                        $.each(data.tickets,function(k, v) {
+                            if(v.is_active == 1 && tt_inactive.indexOf(v.ticket_type)<0)
+                            {
+                                if(amex_tt.indexOf(v.ticket_type)>=0) 
+                                    var checked = 'checked';
+                                else var checked = '';
+                                $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label>');
+                                $('#modal_model_show_passwords .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                            }
+                        });
+                        //fill out passwords
+                        $.each(data.passwords,function(k, v) {
+                            $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                        });
+                        //show modal
                         $('#modal_model_update').modal('show');
                     }
                     else swal({
@@ -399,7 +549,7 @@ var TableDatatablesManaged = function () {
         //function load form to upload image
         $('#btn_bands_upload_image').on('click', function(ev) {
             FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
-        });        
+        }); 
         //init functions
         check_models(); 
         $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval: 1 });
