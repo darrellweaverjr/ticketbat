@@ -587,7 +587,27 @@
                                         
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_tickets">
-                                        
+                                        <div class="row" style="padding-right:20px">
+                                            <input type="button" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right" id="btn_model_ticket_add" /> 
+                                        </div>
+                                        <div class="row table-responsive" style="padding-left:20px">
+                                            <table class="table table-striped table-hover table-bordered" >
+                                                <thead>
+                                                    <tr>
+                                                        <th> Ticket Type </th>
+                                                        <th> Package </th>
+                                                        <th> Retail Price </th>
+                                                        <th> Default? </th>
+                                                        <th> Max Tickets </th>
+                                                        <th> Active? </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_show_tickets">
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_bands">
                                         
@@ -700,7 +720,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" action="/admin/shows/show_passwords" id="form_model_show_passwords">
+                    <form method="post" id="form_model_show_passwords">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="id" value="" />
@@ -716,15 +736,17 @@
                                     <label class="control-label col-md-3">Date range:
                                         <span class="required"> * </span>
                                     </label>
-                                    <div class="input-group col-md-9" id="show_passwords_date">
-                                        <input type="text" class="form-control" name="start_date" readonly="true" required="true">
-                                        <span class="input-group-addon"> to </span>
-                                        <input type="text" class="form-control" name="end_date" readonly="true" required="true">
-                                        <span class="input-group-btn">
-                                            <button class="btn default date-range-toggle" type="button">
-                                                <i class="fa fa-calendar"></i>
-                                            </button>
-                                        </span>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group" id="show_passwords_date">
+                                            <input type="text" class="form-control" name="start_date" readonly="true" required="true">
+                                            <span class="input-group-addon"> to </span>
+                                            <input type="text" class="form-control" name="end_date" readonly="true" required="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-range-toggle" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
                                     <label class="col-md-3 control-label">Ticket types
                                         <span class="required"> * </span>
@@ -749,6 +771,94 @@
         </div>
     </div>
     <!-- END ADD/EDIT PASSWORD MODAL--> 
+    <!-- BEGIN ADD/EDIT TICKET MODAL--> 
+    <div id="modal_model_show_tickets" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:1000px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Ticket</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_show_tickets">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="show_id" value="" />
+                        <input type="hidden" name="id" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">Ticket Type
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-4 show-error">
+                                        <select class="form-control" name="ticket_type">
+                                            @foreach($ticket_types as $index=>$tt)
+                                                <option value="{{$index}}">{{$tt}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <label class="control-label col-md-2">Package
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-4 show-error">
+                                        <select class="form-control" name="package_id">
+                                            @foreach($packages as $index=>$p)
+                                                <option value="{{$p->id}}">{{$p->title}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div> <hr>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Retail Price
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-4 show-error">
+                                        <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                    </div> 
+                                    <label class="col-md-3 control-label">Amount (0 unlimited)
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-3 show-error">
+                                        <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                    </div> 
+                                </div> <hr>
+                                <div class="form-group">
+                                    <label class="col-md-1 control-label">P.Fee
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-3 show-error">
+                                        <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                    </div> 
+                                    <label class="col-md-1 control-label">Fee %
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-3 show-error">
+                                        <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                    </div> 
+                                    <label class="col-md-1 control-label">Com.%
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-2 show-error">
+                                        <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                    </div> 
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_tickets').trigger('reset')">Cancel</button>
+                                    <button type="button" id="submit_model_show_tickets" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/EDIT TICKET MODAL--> 
 @endsection
 
 @section('scripts') 
