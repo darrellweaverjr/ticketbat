@@ -145,103 +145,6 @@ var TableDatatablesManaged = function () {
             }
             else $('#form_model_update [name="slug"]').val('');
         });
-        //function with show_passwords
-        $('#btn_model_password_add').on('click', function(ev) {
-            $('#form_model_show_passwords input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_show_passwords').trigger('reset');
-            $('#modal_model_show_passwords').modal('show');
-        });
-        $('#tb_show_passwords').on('click', 'input[type="button"]', function(e){
-            var row = $(this).closest('tr');
-            //edit
-            if($(this).hasClass('edit')) 
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/passwords', 
-                    data: {action:0,id:row.prop('class')}, 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            $('#form_model_show_passwords').trigger('reset');
-                            $('#form_model_show_passwords input[name="id"]:hidden').val(data.password.id).trigger('change');
-                            $('#form_model_show_passwords input[name="password"]').val(data.password.password);
-                            $('#form_model_show_passwords input[name="start_date"]').val(data.password.start_date);
-                            $('#form_model_show_passwords input[name="end_date"]').val(data.password.end_date);
-                            $.each(data.password.ticket_types,function(k, t) {
-                                $('#form_model_show_passwords :checkbox[value="'+t+'"]').prop('checked',true);   
-                            });
-                            $('#modal_model_show_passwords').modal('show');
-                        }
-                        else {
-                            alert(data.msg);
-                        }
-                    },
-                    error: function(){
-                        alert("There was an error trying to get the password's information!<br>The request could not be sent to the server.");
-                    }
-                });
-            }
-            //delete
-            else if($(this).hasClass('delete')) 
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/passwords', 
-                    data: {action:-1,id:row.prop('class')}, 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            //remove row
-                            row.remove();                        
-                        }
-                        else{
-                            alert(data.msg);
-                        }
-                    },
-                    error: function(){
-                        alert("There was an error trying to delete the password!<br>The request could not be sent to the server.");
-                    }
-                });
-            }
-            else alert('Invalid Option');
-        });
-        //function submit show_passwords
-        $('#submit_model_show_passwords').on('click', function(ev) {
-            if($('#form_model_show_passwords').valid() && $('#form_model_show_passwords [name="ticket_types[]"]:checked').length)
-            {
-                $('#modal_model_show_passwords').modal('hide');
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/passwords', 
-                    data: $('#form_model_show_passwords').serializeArray(), 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            var v = data.password;
-                            //update row
-                            if($('#tb_show_passwords').find('tr[class="'+v.id+'"]').length)
-                                $('#tb_show_passwords').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
-                            //add row
-                            else
-                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
-                        }
-                        else{
-                            alert(data.msg);
-                            $('#modal_model_show_passwords').modal('show');
-                        }
-                    },
-                    error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
-                        $('#modal_model_show_passwords').modal('show');
-                    }
-                }); 
-            }
-            else alert('You must fill out correctly the form');
-        });
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -549,10 +452,201 @@ var TableDatatablesManaged = function () {
         //function load form to upload image
         $('#btn_bands_upload_image').on('click', function(ev) {
             FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
-        }); 
+        });
+        //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD BEGIN
+        $('#btn_model_password_add').on('click', function(ev) {
+            $('#form_model_show_passwords input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_passwords').trigger('reset');
+            $('#modal_model_show_passwords').modal('show');
+        });
+        $('#tb_show_passwords').on('click', 'input[type="button"]', function(e){
+            var row = $(this).closest('tr');
+            //edit
+            if($(this).hasClass('edit')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/passwords', 
+                    data: {action:0,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#form_model_show_passwords').trigger('reset');
+                            $('#form_model_show_passwords input[name="id"]:hidden').val(data.password.id).trigger('change');
+                            $('#form_model_show_passwords input[name="password"]').val(data.password.password);
+                            $('#form_model_show_passwords input[name="start_date"]').val(data.password.start_date);
+                            $('#form_model_show_passwords input[name="end_date"]').val(data.password.end_date);
+                            $.each(data.password.ticket_types,function(k, t) {
+                                $('#form_model_show_passwords :checkbox[value="'+t+'"]').prop('checked',true);   
+                            });
+                            $('#modal_model_show_passwords').modal('show');
+                        }
+                        else alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to get the password's information!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+            //delete
+            else if($(this).hasClass('delete')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/passwords', 
+                    data: {action:-1,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                            row.remove();  
+                        else
+                            alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to delete the password!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+            else alert('Invalid Option');
+        });
+        //function submit show_passwords
+        $('#submit_model_show_passwords').on('click', function(ev) {
+            if($('#form_model_show_passwords').valid() && $('#form_model_show_passwords [name="ticket_types[]"]:checked').length)
+            {
+                $('#modal_model_show_passwords').modal('hide');
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/passwords', 
+                    data: $('#form_model_show_passwords').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            var v = data.password;
+                            //update row
+                            if($('#tb_show_passwords').find('tr[class="'+v.id+'"]').length)
+                                $('#tb_show_passwords').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
+                            //add row
+                            else
+                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                        }
+                        else{
+                            alert(data.msg);
+                            $('#modal_model_show_passwords').modal('show');
+                        }
+                    },
+                    error: function(){
+                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_show_passwords').modal('show');
+                    }
+                }); 
+            }
+            else alert('You must fill out correctly the form');
+        });
+        //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD END
+        //function with show_tickets  *******************************************************************************************************   SHOW TICKETS BEGIN
+        $('#btn_model_ticket_add').on('click', function(ev) {
+            $('#form_model_show_tickets input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_tickets').trigger('reset');
+            $('#modal_model_show_tickets').modal('show');
+        });
+        $('#tb_show_tickets').on('click', 'input[type="button"]', function(e){
+            var row = $(this).closest('tr');
+            //edit
+            if($(this).hasClass('edit')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/tickets', 
+                    data: {action:0,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#form_model_show_tickets').trigger('reset');
+                            $('#form_model_show_tickets input[name="id"]:hidden').val(data.password.id).trigger('change');
+                            $('#form_model_show_tickets input[name="password"]').val(data.password.password);
+                            $('#form_model_show_tickets input[name="start_date"]').val(data.password.start_date);
+                            $('#form_model_show_tickets input[name="end_date"]').val(data.password.end_date);
+                            $.each(data.password.ticket_types,function(k, t) {
+                                $('#form_model_show_tickets :checkbox[value="'+t+'"]').prop('checked',true);   
+                            });
+                            $('#modal_model_show_tickets').modal('show');
+                        }
+                        else alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to get the ticket's information!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+            //delete
+            else if($(this).hasClass('delete')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/tickets', 
+                    data: {action:-1,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                            row.remove();      
+                        else
+                            alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to delete the ticket!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+            else alert('Invalid Option');
+        });
+        //function submit show_tickets
+        $('#submit_model_show_tickets').on('click', function(ev) {
+            if($('#form_model_show_tickets').valid())
+            {
+                $('#modal_model_show_tickets').modal('hide');
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/tickets', 
+                    data: $('#form_model_show_tickets').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            var v = data.password;
+                            //update row
+                            if($('#tb_show_tickets').find('tr[class="'+v.id+'"]').length)
+                                $('#tb_show_tickets').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
+                            //add row
+                            else
+                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                        }
+                        else{
+                            alert(data.msg);
+                            $('#modal_model_show_tickets').modal('show');
+                        }
+                    },
+                    error: function(){
+                        alert("There was an error trying to save the ticket's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_show_tickets').modal('show');
+                    }
+                }); 
+            }
+            else alert('You must fill out correctly the form');
+        });
+        //function with show_tickets  *******************************************************************************************************   SHOW TICKETS END
         //init functions
         check_models(); 
-        $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval: 1 });
+        $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0 });
+        $('#form_model_show_tickets [name="max_tickets"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000 });
+        $('#form_model_show_tickets [name="retail_price"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
+        $('#form_model_show_tickets [name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
+        $('#form_model_show_tickets [name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,postfix:'%' });
+        $('#form_model_show_tickets [name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,postfix:'%' });
+        
+        //$('#modal_model_show_tickets').modal('show');
     }
     return {
         //main function to initiate the module
