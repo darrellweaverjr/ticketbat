@@ -78,6 +78,21 @@ class TicketTypeController extends Controller{
                 }
                 else
                 {
+                    $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')
+                                ->join('shows', 'tickets.show_id', '=' ,'shows.id')
+                                ->select('shows.name')
+                                ->where('tickets.ticket_type','=',$input['ticket_type'])
+                                ->where('tickets.is_active','=',1)
+                                ->where('shows.is_active','=',1)
+                                ->groupBy('shows.name')->orderBy('shows.name')->distinct()->get();
+                    if($tickets)
+                    {
+                        $msg = 'The following shows have active tickets that depend of that ticket type:<br><br><ol style="max-height:200px;overflow:auto;text-align:left;">';
+                        foreach ($tickets as $t)
+                            $msg .= '<li style="color:red;">'.$t->name.'</li>';
+                        $msg .= '</ol><br> Please, inactive them first.';
+                        return ['success'=>false,'msg'=>$msg];
+                    }
                     $success = true;
                     if(DB::table('ticket_types_inactive')->where('ticket_type','=',$input['ticket_type'])->count() == 0)
                         $success = DB::table('ticket_types_inactive')->insert(['ticket_type' => $input['ticket_type']]);
