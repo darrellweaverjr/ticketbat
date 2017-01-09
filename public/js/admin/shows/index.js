@@ -233,6 +233,7 @@ var TableDatatablesManaged = function () {
             $('#tb_show_passwords').empty();
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','block');
             $('a[href="#tab_model_update_tickets"]').parent().css('display','block');
+            $('#tb_show_tickets').empty();
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Show');
@@ -245,8 +246,9 @@ var TableDatatablesManaged = function () {
                     if(data.success) 
                     {
                         //fill out defaults
-                        $('#form_model_update [name="venue_id"]').val(data.show['venue_id']).change();
-                        $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show['id']).trigger('change');
+                        $('#form_model_update [name="venue_id"]').val(data.show.venue_id).change();
+                        $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -284,7 +286,24 @@ var TableDatatablesManaged = function () {
                         if(data.passwords && data.passwords.length)
                         {
                             $.each(data.passwords,function(k, v) {
-                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td>'+v.password+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td>'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            });
+                        }
+                        //fill out tickets
+                        if(data.tickets && data.tickets.length)
+                        {
+                            $.each(data.tickets,function(k, v) {
+                                //default style
+                                if(v.is_default==1)
+                                    v.is_default = '<span class="label label-sm sbold label-success"> Yes </span>';
+                                else
+                                    v.is_default = '<span class="label label-sm sbold label-danger"> No </span>';
+                                //active style
+                                if(v.is_active==1)
+                                    v.is_active = '<span class="label label-sm sbold label-success"> Active </span>';
+                                else
+                                    v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
+                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td> $'+v.retail_price+'</td><td> $'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>'+v.percent_commission+'%</td><td>'+v.is_default+'</td><td>'+v.max_tickets+'</td><td>'+v.is_active+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
                             });
                         }
                         //show modal
@@ -474,9 +493,12 @@ var TableDatatablesManaged = function () {
                         {
                             $('#form_model_show_passwords').trigger('reset');
                             $('#form_model_show_passwords input[name="id"]:hidden').val(data.password.id).trigger('change');
-                            $('#form_model_show_passwords input[name="password"]').val(data.password.password);
-                            $('#form_model_show_passwords input[name="start_date"]').val(data.password.start_date);
-                            $('#form_model_show_passwords input[name="end_date"]').val(data.password.end_date);
+                            //fill out passwords
+                            for(var key in data.password)
+                            {
+                                //fill out
+                                $('#form_model_show_passwords [name="'+key+'"]').val(data.password[key]);
+                            }
                             $.each(data.password.ticket_types,function(k, t) {
                                 $('#form_model_show_passwords :checkbox[value="'+t+'"]').prop('checked',true);   
                             });
@@ -565,38 +587,23 @@ var TableDatatablesManaged = function () {
                         if(data.success) 
                         {
                             $('#form_model_show_tickets').trigger('reset');
-                            $('#form_model_show_tickets input[name="id"]:hidden').val(data.password.id).trigger('change');
-                            $('#form_model_show_tickets input[name="password"]').val(data.password.password);
-                            $('#form_model_show_tickets input[name="start_date"]').val(data.password.start_date);
-                            $('#form_model_show_tickets input[name="end_date"]').val(data.password.end_date);
-                            $.each(data.password.ticket_types,function(k, t) {
-                                $('#form_model_show_tickets :checkbox[value="'+t+'"]').prop('checked',true);   
-                            });
+                            $('#form_model_show_tickets input[name="id"]:hidden').val(data.ticket.id).trigger('change');
+                            //fill out tickets
+                            for(var key in data.ticket)
+                            {
+                                //fill out
+                                var e = $('#form_model_show_tickets [name="'+key+'"]');
+                                if(e.is('input:checkbox'))
+                                    $('#form_model_show_tickets .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.ticket[key])? true : false, true);
+                                else
+                                    e.val(data.ticket[key]);
+                            }
                             $('#modal_model_show_tickets').modal('show');
                         }
                         else alert(data.msg);
                     },
                     error: function(){
                         alert("There was an error trying to get the ticket's information!<br>The request could not be sent to the server.");
-                    }
-                });
-            }
-            //delete
-            else if($(this).hasClass('delete')) 
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/tickets', 
-                    data: {action:-1,id:row.prop('class')}, 
-                    success: function(data) {
-                        if(data.success) 
-                            row.remove();      
-                        else
-                            alert(data.msg);
-                    },
-                    error: function(){
-                        alert("There was an error trying to delete the ticket!<br>The request could not be sent to the server.");
                     }
                 });
             }
@@ -615,13 +622,20 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            var v = data.password;
-                            //update row
-                            if($('#tb_show_tickets').find('tr[class="'+v.id+'"]').length)
-                                $('#tb_show_tickets').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
-                            //add row
-                            else
-                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            $('#tb_show_tickets').empty();
+                            $.each(data.tickets,function(k, v) {
+                                //default style
+                                if(v.is_default==1)
+                                    v.is_default = '<span class="label label-sm sbold label-success"> Yes </span>';
+                                else
+                                    v.is_default = '<span class="label label-sm sbold label-danger"> No </span>';
+                                //active style
+                                if(v.is_active==1)
+                                    v.is_active = '<span class="label label-sm sbold label-success"> Active </span>';
+                                else
+                                    v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
+                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td> $'+v.retail_price+'</td><td> $'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>'+v.percent_commission+'%</td><td>'+v.is_default+'</td><td>'+v.max_tickets+'</td><td>'+v.is_active+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
+                            });               
                         }
                         else{
                             alert(data.msg);
@@ -643,10 +657,8 @@ var TableDatatablesManaged = function () {
         $('#form_model_show_tickets [name="max_tickets"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000 });
         $('#form_model_show_tickets [name="retail_price"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_show_tickets [name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
-        $('#form_model_show_tickets [name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,postfix:'%' });
-        $('#form_model_show_tickets [name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,postfix:'%' });
-        
-        //$('#modal_model_show_tickets').modal('show');
+        $('#form_model_show_tickets [name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
+        $('#form_model_show_tickets [name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
     }
     return {
         //main function to initiate the module

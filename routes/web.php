@@ -44,6 +44,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'venues', 'VenueController@index');
     //shows
     Route::match(['get','post'], 'shows/passwords', 'ShowController@passwords');
+    Route::match(['get','post'], 'shows/tickets', 'ShowController@tickets');
     Route::post('shows/slug', 'ShowController@slug');
     Route::post('shows/save', 'ShowController@save');
     Route::post('shows/remove', 'ShowController@remove');
