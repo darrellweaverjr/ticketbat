@@ -267,10 +267,10 @@ var TableDatatablesManaged = function () {
                                 e.val(data.show[key]);
                         }
                         //fill out checking ticket 
-                        if(data.show.amex_only_ticket_types && data.show.amex_only_ticket_types!='')
+                        if(data.tickets)
                         {
-                            var amex_tt = data.show.amex_only_ticket_types.split(',');
-                            var tt_inactive = data.ticket_types_inactive.split(',');
+                            if(data.show.amex_only_ticket_types && data.show.amex_only_ticket_types!='') var amex_tt = data.show.amex_only_ticket_types.split(','); else var amex_tt = [];
+                            if(data.ticket_types_inactive && data.ticket_types_inactive!='') var tt_inactive = data.ticket_types_inactive.split(','); else var tt_inactive = [];  
                             $.each(data.tickets,function(k, v) {
                                 if(v.is_active == 1 && tt_inactive.indexOf(v.ticket_type)<0)
                                 {
@@ -651,6 +651,101 @@ var TableDatatablesManaged = function () {
             else alert('You must fill out correctly the form');
         });
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS END
+        //function with show_bands  *****************************************************************************************************   SHOW BANDS BEGIN
+        $('#btn_model_band_add').on('click', function(ev) {
+            $('#form_model_show_bands input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_bands').trigger('reset');
+            $('#modal_model_show_bands').modal('show');
+        });
+        $('#tb_show_bands').on('click', 'input[type="button"]', function(e){
+            var row = $(this).closest('tr');
+            //edit
+            if($(this).hasClass('edit')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/bands', 
+                    data: {action:0,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#form_model_show_bands').trigger('reset');
+                            $('#form_model_show_bands input[name="id"]:hidden').val(data.band.id).trigger('change');
+                            //fill out band
+                            for(var key in data.band)
+                            {
+                                //fill out
+                                $('#form_model_show_bands [name="'+key+'"]').val(data.band[key]);
+                            }
+                            $.each(data.band.ticket_types,function(k, t) {
+                                $('#form_model_show_bands :checkbox[value="'+t+'"]').prop('checked',true);   
+                            });
+                            $('#modal_model_show_bands').modal('show');
+                        }
+                        else alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to get the band's information!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+            //delete
+            else if($(this).hasClass('delete')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/bands', 
+                    data: {action:-1,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                            row.remove();  
+                        else
+                            alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+            else alert('Invalid Option');
+        });
+        //function submit show_bands
+        $('#submit_model_show_bands').on('click', function(ev) {
+            if($('#form_model_show_bands').valid() && $('#form_model_show_bands [name="ticket_types[]"]:checked').length)
+            {
+                $('#modal_model_show_bands').modal('hide');
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/bands', 
+                    data: $('#form_model_show_bands').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            var v = data.band;
+                            //update row
+                            if($('#tb_show_bands').find('tr[class="'+v.id+'"]').length)
+                                $('#tb_show_bands').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
+                            //add row
+                            else
+                                $('#tb_show_bands').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                        }
+                        else{
+                            alert(data.msg);
+                            $('#modal_model_show_bands').modal('show');
+                        }
+                    },
+                    error: function(){
+                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_show_bands').modal('show');
+                    }
+                }); 
+            }
+            else alert('You must fill out correctly the form');
+        });
+        //function with show_bands  *****************************************************************************************************   SHOW BANDS END
         //init functions
         check_models(); 
         $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0 });
