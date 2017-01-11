@@ -47,10 +47,10 @@
                             <tr>
                                 <th width="2%"> </th>
                                 <th width="1%"> </th>
-                                <th width="41%"> Purchase Info </th>
-                                <th width="20%"> Show/Venue </th>
-                                <th width="10%"> Show Time </th>
-                                <th width="10%"> Purchase Time </th>
+                                <th width="47%"> Purchase Info </th>
+                                <th width="18%"> Show/Venue </th>
+                                <th width="8%"> Show Time </th>
+                                <th width="8%"> Purchase Time </th>
                                 <th width="5%"> Amount </th>
                                 <th width="11%"> Status </th>
                             </tr>
@@ -73,19 +73,19 @@
                                     </label>
                                 </td>
                                 <td width="1%" style="background-color:#{{$color}}"></td>  
-                                <td class="search-item clearfix" width="41%"> 
+                                <td class="search-item clearfix" width="47%"> 
                                     <div class="search-content" >       
                                         <b class="search-title"><a data-toggle="modal" href="#modal_details_{{$p->id}}">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
                                         <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <a>{{$p->id}}</a> Tickets: <a>{{$p->quantity}}</a> Ticket Type: <a>{{$p->ticket_type_type}}</a> Package: <a>{{$p->title}}</a> 
-                                        @if($previous_color != $color) <br> Retail Price: <a>$ {{number_format($p->retail_price,2)}}</a> Fees: <a>$ {{number_format($p->processing_fee,2)}}</a> Commission: <a>{{number_format($p->commission_percent,2)}}%</a> Savings: <a>$ {{number_format($p->savings,2)}}</a> @endif
+                                        @if($previous_color != $color) <br> Retail Price: <a>${{number_format($p->retail_price,2)}}</a> Fees: <a>${{number_format($p->processing_fee,2)}}</a> Commission: <a>{{number_format($p->commission_percent,2)}}%</a> Savings: <a>${{number_format($p->savings,2)}}</a> Method: <a>{{$p->payment_type}}</a> @endif
                                         <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small>
                                     </div>
                                 </td>
-                                <td width="20%"><center> {{$p->show_name}}<br>at<br>{{$p->venue_name}} </center></td>
-                                <td width="10%"><center> {{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}} </center></td>
-                                <td width="10%"><center> {{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}} </center></td>
+                                <td width="18%"><center> {{$p->show_name}}<br>at<br>{{$p->venue_name}} </center></td>
+                                <td width="8%"><center> {{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}} </center></td>
+                                <td width="8%"><center> {{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}} </center></td>
                                 <td width="5%" style="text-align:right"> 
-                                    @if($previous_color != $color) @if($transaction) $ {{number_format($p->price_paid,2)}} @else @php echo '(Comp)' @endphp @endif @endif
+                                    @if($previous_color != $color) @if($p->price_paid > 0) $ {{number_format($p->price_paid,2)}} @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
                                 <td width="11%"> 
                                     <select ref="{{$p->id}}" class="form-control" name="status">
