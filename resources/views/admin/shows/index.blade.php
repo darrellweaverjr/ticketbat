@@ -611,7 +611,23 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_bands">
-                                        
+                                        <div class="row" style="padding-right:20px">
+                                            <input type="button" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right" id="btn_model_band_add" /> 
+                                        </div>
+                                        <div class="row table-responsive" style="padding-left:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Order </th>
+                                                        <th> Band </th>
+                                                        <th> </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_show_bands">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_images">
                                         
@@ -870,6 +886,60 @@
         </div>
     </div>
     <!-- END ADD/EDIT TICKET MODAL--> 
+    <!-- BEGIN ADD/EDIT BAND MODAL--> 
+    <div id="modal_model_show_bands" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Band</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_show_bands">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="show_id" value="" />
+                        <input type="hidden" name="id" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-5">Ticket Type
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-7 show-error">
+                                        <select class="form-control" name="band_id">
+                                            @foreach($ticket_types as $index=>$tt)
+                                                <option value="{{$index}}">{{$tt}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <label class="control-label col-md-5">Package
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-7 show-error">
+                                        <select class="form-control" name="n_order">
+                                            @foreach($packages as $index=>$p)
+                                                <option value="{{$p->id}}">{{$p->title}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_tickets').trigger('reset')">Cancel</button>
+                                    <button type="button" id="submit_model_show_tickets" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/EDIT BAND MODAL--> 
 @endsection
 
 @section('scripts') 
