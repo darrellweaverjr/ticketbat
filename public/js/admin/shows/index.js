@@ -73,6 +73,8 @@ var TableDatatablesManaged = function () {
             $(this).parents('tr').toggleClass("active");
         });
         
+        var tableBands = $('#tb_sub_bands').DataTable({ rowReorder: true});
+        
         //PERSONALIZED FUNCTIONS
         //on_sale_date
         $('#on_sale_date').datetimepicker({
@@ -303,7 +305,18 @@ var TableDatatablesManaged = function () {
                                     v.is_active = '<span class="label label-sm sbold label-success"> Active </span>';
                                 else
                                     v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
+                                //unlimited tickets
+                                if(v.max_tickets == 0) v.max_tickets = 'Unlimited';
                                 $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td> $'+v.retail_price+'</td><td> $'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>'+v.percent_commission+'%</td><td>'+v.is_default+'</td><td>'+v.max_tickets+'</td><td>'+v.is_active+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
+                            });
+                        }
+                        //fill out bands
+                        tableBands.clear().draw();
+                        if(data.bands && data.bands.length)
+                        {
+                            $.each(data.bands,function(k, v) {
+                                tableBands.row.add( [ v.n_order,v.name,v.show_id, '<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();
+                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
                             });
                         }
                         //show modal
@@ -634,6 +647,8 @@ var TableDatatablesManaged = function () {
                                     v.is_active = '<span class="label label-sm sbold label-success"> Active </span>';
                                 else
                                     v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
+                                //unlimited tickets
+                                if(v.max_tickets == 0) v.max_tickets = 'Unlimited';
                                 $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td> $'+v.retail_price+'</td><td> $'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>'+v.percent_commission+'%</td><td>'+v.is_default+'</td><td>'+v.max_tickets+'</td><td>'+v.is_active+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
                             });               
                         }
@@ -657,42 +672,18 @@ var TableDatatablesManaged = function () {
             $('#form_model_show_bands').trigger('reset');
             $('#modal_model_show_bands').modal('show');
         });
-        $('#tb_show_bands').on('click', 'input[type="button"]', function(e){
-            var row = $(this).closest('tr');
-            //edit
-            if($(this).hasClass('edit')) 
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/bands', 
-                    data: {action:0,id:row.prop('class')}, 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            $('#form_model_show_bands').trigger('reset');
-                            $('#form_model_show_bands input[name="id"]:hidden').val(data.band.id).trigger('change');
-                            //fill out band
-                            for(var key in data.band)
-                            {
-                                //fill out
-                                $('#form_model_show_bands [name="'+key+'"]').val(data.band[key]);
-                            }
-                            $.each(data.band.ticket_types,function(k, t) {
-                                $('#form_model_show_bands :checkbox[value="'+t+'"]').prop('checked',true);   
-                            });
-                            $('#modal_model_show_bands').modal('show');
-                        }
-                        else alert(data.msg);
-                    },
-                    error: function(){
-                        alert("There was an error trying to get the band's information!<br>The request could not be sent to the server.");
-                    }
-                });
+        //edit
+        tableBands.on( 'row-reordered', function ( e, diff, edit ) {
+            for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
+                $(diff[i].node).addClass("reordered");
             }
-            //delete
-            else if($(this).hasClass('delete')) 
+        } );
+        //delete
+        $('#tb_sub_bands tbody').on('click', 'input[type="button"]', function(e){
+            var row = $(this).closest('tr');
+            if($(this).hasClass('delete')) 
             {
+                tableBands.row(row).remove().draw();
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -724,13 +715,12 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            var v = data.band;
-                            //update row
-                            if($('#tb_show_bands').find('tr[class="'+v.id+'"]').length)
-                                $('#tb_show_bands').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
-                            //add row
-                            else
-                                $('#tb_show_bands').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            //$('#tb_show_bands').empty();
+                            tableBands.clear().draw();
+                            $.each(data.bands,function(k, v) {
+                                tableBands.row.add( [ v.n_order,v.name,v.show_id, '<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();
+                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            });
                         }
                         else{
                             alert(data.msg);

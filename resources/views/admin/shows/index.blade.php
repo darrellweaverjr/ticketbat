@@ -610,21 +610,21 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="tab-pane" id="tab_model_update_bands">
-                                        <div class="row" style="padding-right:20px">
+                                    <div class="tab-pane" style="padding:20px" id="tab_model_update_bands" >
+                                        <div class="row">
                                             <input type="button" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right" id="btn_model_band_add" /> 
                                         </div>
-                                        <div class="row table-responsive" style="padding-left:20px;max-height:400px;overflow-y: auto;">
-                                            <table class="table table-striped table-hover table-bordered">
+                                        <div class="row table-responsive" style="max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered" id="tb_sub_bands">
                                                 <thead>
                                                     <tr>
                                                         <th> Order </th>
                                                         <th> Band </th>
-                                                        <th> </th>
+                                                        <th style="display:none;"> </th>
                                                         <th> </th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="tb_show_bands">
+                                                <tbody>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -898,7 +898,6 @@
                     <form method="post" id="form_model_show_bands">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
-                        <input type="hidden" name="id" value="" />
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">
@@ -907,19 +906,16 @@
                                     </label>
                                     <div class="col-md-7 show-error">
                                         <select class="form-control" name="band_id">
-                                            @foreach($ticket_types as $index=>$tt)
-                                                <option value="{{$index}}">{{$tt}}</option>
+                                            @foreach($bands as $index=>$b)
+                                                <option value="{{$b->id}}">{{$b->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <label class="control-label col-md-5">Package
+                                    <label class="control-label col-md-5">Order
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
                                         <select class="form-control" name="n_order">
-                                            @foreach($packages as $index=>$p)
-                                                <option value="{{$p->id}}">{{$p->title}}</option>
-                                            @endforeach
                                         </select>
                                     </div>
                                 </div>  
