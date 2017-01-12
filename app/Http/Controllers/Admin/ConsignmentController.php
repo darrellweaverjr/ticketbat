@@ -52,7 +52,7 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
                                         COUNT(seats.id) AS qty, 
-                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))-COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))*COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0))/100),2) AS total'))
+                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
@@ -115,7 +115,7 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
-                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))-COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))*COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0))/100),2) AS total'))
+                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
@@ -531,7 +531,21 @@ class ConsignmentController extends Controller{
             }
             
         } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-            throw new Exception('Error Purchases tickets: '.$ex->getMessage());
+            throw new Exception('Error Consignment tickets: '.$ex->getMessage());
+        }
+    }
+    /**
+     * View consignment agreement.
+     *
+     * @void
+     */
+    public function view()
+    {
+        try {
+            
+            
+        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            throw new Exception('Error Consignment tickets: '.$ex->getMessage());
         }
     }
 }

@@ -316,11 +316,15 @@
                                         </div>
                                         <label class="control-label col-md-4"> 
                                         </label>
-                                        <div class="col-md-8 show-error">
-                                            <span class="btn btn-block green fileinput-button">Add/Change Agreement file <i class="fa fa-edit"></i>
+                                        <div class="col-md-4 show-error">
+                                            <span class="btn btn-block green fileinput-button"><i class="fa fa-edit"></i>
                                                 <input type="file" name="agreement_file" accept="application/pdf" onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
                                             </span>
-                                        </div> 
+                                        </div>
+                                        <div class="col-md-4 show-error">
+                                            <span class="btn btn-block green" onclick="view_agreement_file();"><i class="fa fa-search"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                     <div class="form-group">  
                                         <label class="control-label col-md-4">Due Date
