@@ -136,16 +136,22 @@ class Purchase extends Model
                                 ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                                 ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                                 ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                                ->select('seats.*','tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_commission',
-                                        'shows.name AS show_name','show_times.show_time','venues.name AS venue_name','shows.restrictions','show_times.time_alternative')
+                                ->select(DB::raw('seats.id,seats.purchase_id,seats.consignment_id,seats.ticket_id,seats.seat,seats.show_seat,seats.status,seats.updated, tickets.ticket_type, 
+                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                  COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
+                                                  COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission,
+                                                  shows.name AS show_name,show_times.show_time,venues.name AS venue_name,shows.restrictions,show_times.time_alternative'))
                                 ->where('seats.purchase_id',$this->id)
                                 ->orderBy('tickets.ticket_type','seats.seat')
                                 ->distinct()->get();
             foreach ($seats as $s)
             {
+                $location = $s->ticket_type;
+                if($s->show_seat)
+                    $location .= ' Seat: '.$s->seat;
                 $main_info = ['number'=>$s->id,'customer_name'=>'','customer_email'=>'','checked'=>($s->status == 'Checked')? $checked_= 1 : $checked_= 0,'comment'=>'','QRcode'=>Util::getQRcode($this->id,$this->user_id,$s->id)];
                 $extra_info = ['show_name'=>$s->show_name,'show_time'=>$s->show_time,'price_each'=>number_format($s->retail_price+$s->processing_fee,2),'id'=>$this->id,'venue_name'=>$s->venue_name,'restrictions'=>$s->restrictions,
-                               'user_id'=>$this->user_id,'ticket_type'=>$s->ticket_id,'time_alternative'=>$s->time_alternative,'package'=>$s->ticket_type.' Seat: '.$s->seat];
+                               'user_id'=>$this->user_id,'ticket_type'=>$s->ticket_id,'time_alternative'=>$s->time_alternative,'package'=>$location];
                 $tickets[] = array_merge($main_info,$extra_info);
             }
         }
