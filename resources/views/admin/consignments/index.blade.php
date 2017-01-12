@@ -241,16 +241,17 @@
                                     <label class="control-label">
                                         <span class="required"> Seats </span>
                                     </label><hr>
-                                    <div style="max-height:600px; overflow: auto;">
+                                    <div style="max-height:610px; overflow: auto;">
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>
                                                     <th width="35%"> Ticket Type </th>
                                                     <th width="10%"> Seat </th>
-                                                    <th width="15%"> Price </th>
-                                                    <th width="15%"> Fee </th>
-                                                    <th width="15%"> Comm. </th>
-                                                    <th width="10%">  </th>
+                                                    <th width="13%"> Price </th>
+                                                    <th width="13%"> Fee </th>
+                                                    <th width="13%"> Comm. </th>
+                                                    <th width="8%"> Show </th>
+                                                    <th width="8%"> </th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tb_seats">
@@ -395,17 +396,18 @@
                                     <label class="control-label">
                                         <span class="required"> Seats </span>
                                     </label><hr>
-                                    <div class="show-error" style="height:450px; overflow: auto;">
+                                    <div class="show-error" style="height:460px; overflow: auto;">
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>
                                                     <th width="2%"> </th>
-                                                    <th width="30%"> Ticket Type </th>
+                                                    <th width="29%"> Ticket Type </th>
                                                     <th width="10%"> Seat </th>
-                                                    <th width="17%"> Price </th>
-                                                    <th width="15%"> Fee </th>
+                                                    <th width="13%"> Price </th>
+                                                    <th width="13%"> Fee </th>
                                                     <th width="13%"> Comm. </th>
-                                                    <th width="13%"> Status </th>
+                                                    <th width="8%"> Show </th>
+                                                    <th width="12%"> Status </th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tb_seats_consignment_edit">

@@ -227,7 +227,16 @@ var TableDatatablesManaged = function () {
                 var retail_price = $('#modal_model_update [name="retail_price"]').val();
                 var processing_fee = $('#modal_model_update [name="processing_fee"]').val();
                 var percent_commission = $('#modal_model_update [name="percent_commission"]').val();
-                var show_seat = $('#modal_model_update [name="show_seat"]').val();
+                if($('#modal_model_update [name="show_seat"]:checkbox:checked').length)
+                {
+                    var show_seat = 1;
+                    var row_show_seat = '<span class="label label-sm sbold label-success">S</span>';
+                }
+                else
+                {
+                    var show_seat = 0;
+                    var row_show_seat = '<span class="label label-sm sbold label-danger">H</span>';
+                }
                 //fill out rows
                 for (var i = start_seat; i <= end_seat; i++) 
                 {
@@ -235,9 +244,10 @@ var TableDatatablesManaged = function () {
                     var value = section.text().trim()+'|'+i+'|'+retail_price+'|'+processing_fee+'|'+percent_commission+'|'+show_seat;
                     var row = '<td>'+section.text()+'</td>'
                                              +'<td><input type="hidden" name="seats[]" value="'+value+'"/><center>'+i+'</center></td>'
-                                             +'<td>$ '+retail_price+'</td>'
-                                             +'<td>$ '+processing_fee+'</td>'
-                                             +'<td>'+percent_commission+' %</td>'
+                                             +'<td>$'+retail_price+'</td>'
+                                             +'<td>$'+processing_fee+'</td>'
+                                             +'<td>'+percent_commission+'%</td>'
+                                             +'<td><center>'+row_show_seat+'</center></td>'
                                              +'<td><center><input type="button" value="X" class="btn sbold bg-red"></center><td>';
                     if($('#'+id).length < 1)
                         $('#tb_seats').append('<tr id="'+id+'">'+row+'</tr>');
@@ -367,8 +377,12 @@ var TableDatatablesManaged = function () {
                             var retail_price_col = '<td>$'+e.retail_price+'</td>';
                             var processing_fee_col = '<td>$'+e.processing_fee+'</td>';
                             var percent_commission_col = '<td>'+e.percent_commission+'%</td>';
+                            if(e.show_seat)
+                                var show_seat_col = '<td><span class="label label-sm sbold label-success">S</span></td>';
+                            else
+                                var show_seat_col = '<td><span class="label label-sm sbold label-danger">H</span></td>';
                             var status_col = '<td><span class="label label-sm sbold '+style+'" '+checkable+'>'+e.status+'</span></td>';
-                            $('#tb_seats_consignment_edit').append('<tr>'+check_col+ticket_type_col+seat_col+retail_price_col+processing_fee_col+percent_commission_col+status_col+'</tr>');
+                            $('#tb_seats_consignment_edit').append('<tr>'+check_col+ticket_type_col+seat_col+retail_price_col+processing_fee_col+percent_commission_col+show_seat_col+status_col+'</tr>');
                         }
                         $('#form_model_update2 [name="moveto"]').empty().append('<option disabled selected value=""></option>');
                         $.each(data.moveto,function(key, value) {
