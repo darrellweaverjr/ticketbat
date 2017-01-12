@@ -75,25 +75,36 @@ var TableDatatablesManaged = function () {
                             $.each(data.shows,function(key, value) {
                                 $('#modal_model_update [name="show_id"]').append('<option value="'+value.id+'">'+value.name+'</option>');
                             });
+                            $('#form_model_update [name="section"]').val('');
+                            $('#modal_model_update [name="retail_price"]').val(0);
+                            $('#modal_model_update [name="processing_fee"]').val(0);
+                            $('#modal_model_update [name="percent_commission"]').val(0);
+                            $('#tb_seats').empty();
                         }
                     },
                     error: function(){
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to get the information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
                         });
                     }
                 });
             }
             else
             {
+                $('#modal_model_update').modal('hide');
                 swal({
-                    title: "<span style='color:red;'>Info</span>",
-                    text: "You must select a valid Venue",
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select a valid Venue.",
                     html: true,
-                    type: "info"
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
                 });
             }
         });
@@ -119,25 +130,89 @@ var TableDatatablesManaged = function () {
                             $.each(data.tickets,function(key, value) {
                                 $('#modal_model_update [name="ticket_id"]').append('<option value="'+value.id+'">'+value.ticket_type+'</option>');
                             });
+                            $('#form_model_update [name="section"]').val('');
+                            $('#modal_model_update [name="retail_price"]').val(0);
+                            $('#modal_model_update [name="processing_fee"]').val(0);
+                            $('#modal_model_update [name="percent_commission"]').val(0);
+                            $('#tb_seats').empty();
                         }
                     },
                     error: function(){
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to get the information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
                         });
                     }
                 });
             }
             else
             {
+                $('#modal_model_update').modal('hide');
                 swal({
-                    title: "<span style='color:red;'>Info</span>",
-                    text: "You must select a valid Venue",
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select a valid Show.",
                     html: true,
-                    type: "info"
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
+        });
+        //on show time select
+        $('#modal_model_update [name="show_time_id"]').on('change', function () {
+            $('#form_model_update [name="section"]').val('');
+            $('#modal_model_update [name="retail_price"]').val(0);
+            $('#modal_model_update [name="processing_fee"]').val(0);
+            $('#modal_model_update [name="percent_commission"]').val(0);
+            $('#tb_seats').empty();
+        });
+        //on ticket type select
+        $('#modal_model_update [name="section"]').on('change', function () {
+            var show_id = $('#modal_model_update [name="show_id"] option:selected').val();
+            var ticket_type = $('#modal_model_update [name="section"] option:selected').val();
+            if(show_id && ticket_type)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/consignments', 
+                    data: {ticket_type:ticket_type,show_id:show_id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#modal_model_update [name="retail_price"]').val(data.retail_price);
+                            $('#modal_model_update [name="processing_fee"]').val(data.processing_fee);
+                            $('#modal_model_update [name="percent_commission"]').val(data.percent_commission);
+                        }
+                    },
+                    error: function(){
+                        $('#modal_model_update').modal('hide');
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                $('#modal_model_update').modal('hide');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select a valid Show and Ticket Type.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
                 });
             }
         });
@@ -152,13 +227,12 @@ var TableDatatablesManaged = function () {
                 var retail_price = $('#modal_model_update [name="retail_price"]').val();
                 var processing_fee = $('#modal_model_update [name="processing_fee"]').val();
                 var percent_commission = $('#modal_model_update [name="percent_commission"]').val();
+                var show_seat = $('#modal_model_update [name="show_seat"]').val();
                 //fill out rows
                 for (var i = start_seat; i <= end_seat; i++) 
                 {
                     var id = section.val()+'_'+i;
-                    //var value = JSON.stringify({a:section.text().trim(),b:i,c:retail_price,d:processing_fee,e:percent_commission});
-                    var value = section.text().trim()+'|'+i+'|'+retail_price+'|'+processing_fee+'|'+percent_commission;
-                    //var value = "{'section': '"+section.text()+"', 'seat': '"+i+"', 'retail_price': "+retail_price+", 'processing_fee': "+processing_fee+", 'percent_commission': "+percent_commission+"}";
+                    var value = section.text().trim()+'|'+i+'|'+retail_price+'|'+processing_fee+'|'+percent_commission+'|'+show_seat;
                     var row = '<td>'+section.text()+'</td>'
                                              +'<td><input type="hidden" name="seats[]" value="'+value+'"/><center>'+i+'</center></td>'
                                              +'<td>$ '+retail_price+'</td>'
@@ -191,14 +265,14 @@ var TableDatatablesManaged = function () {
         //spinners for start seat and end seat
         $('#form_model_update [name="start_seat"]').TouchSpin({ initval:1,min:1,max:500 });
         $('#form_model_update [name="end_seat"]').TouchSpin({ initval:1,min:1,max:500 });
-        $('#form_model_update [name="start_seat"]').on('change', function () {
+        /*$('#form_model_update [name="start_seat"]').on('change', function () {
             if($('#form_model_update [name="start_seat"]').val() >= $('#form_model_update [name="end_seat"]').val() && $('#form_model_update [name="start_seat"]').val()<=500)
                 $('#form_model_update [name="end_seat"]').val($('#form_model_update [name="start_seat"]').val());
-        });
-        $('#form_model_update [name="end_seat"]').on('change', function () {
+        });*/
+        /*$('#form_model_update [name="end_seat"]').on('change', function () {
             if($('#form_model_update [name="start_seat"]').val() >= $('#form_model_update [name="end_seat"]').val() && $('#form_model_update [name="end_seat"]').val()<=500)
                 $('#form_model_update [name="start_seat"]').val($('#form_model_update [name="end_seat"]').val());
-        });
+        });*/
         //due_date
         $('#due_date').datepicker({
             autoclose: true,
@@ -295,10 +369,14 @@ var TableDatatablesManaged = function () {
                                     var checkable = 'disabled'; 
                                     var style = 'label-info';
                             }
-                            var first_col = '<td><label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" name="seat[]" class="checkboxes" '+checkable+' value="'+e.id+'" /><span></span></label></td>';
-                            var second_col = '<td>'+e.ticket_type+'</td><td>'+e.seat+'</td>';
-                            var third_col = '<td><span class="label label-sm sbold '+style+'" '+checkable+'>'+e.status+'</span></td>';
-                            $('#tb_seats_consignment_edit').append('<tr>'+first_col+second_col+third_col+'</tr>');
+                            var check_col = '<td><label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" name="seat[]" class="checkboxes" '+checkable+' value="'+e.id+'" /><span></span></label></td>';
+                            var ticket_type_col = '<td>'+e.ticket_type+'</td>';
+                            var seat_col = '<td>'+e.seat+'</td>';
+                            var retail_price_col = '<td>$'+e.retail_price+'</td>';
+                            var processing_fee_col = '<td>$'+e.processing_fee+'</td>';
+                            var percent_commission_col = '<td>'+e.percent_commission+'%</td>';
+                            var status_col = '<td><span class="label label-sm sbold '+style+'" '+checkable+'>'+e.status+'</span></td>';
+                            $('#tb_seats_consignment_edit').append('<tr>'+check_col+ticket_type_col+seat_col+retail_price_col+processing_fee_col+percent_commission_col+status_col+'</tr>');
                         }
                         $('#form_model_update2 [name="moveto"]').empty().append('<option disabled selected value=""></option>');
                         $.each(data.moveto,function(key, value) {
@@ -489,6 +567,12 @@ var FormValidation = function () {
                         required: true
                     },
                     show_time_id: {
+                        required: true
+                    },
+                    due_date: {
+                        required: true
+                    },
+                    section: {
                         required: true
                     },
                     retail_price: {

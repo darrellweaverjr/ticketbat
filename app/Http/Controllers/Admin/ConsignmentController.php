@@ -52,7 +52,7 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
                                         COUNT(seats.id) AS qty, 
-                                        ROUND(SUM(COALESCE(tickets.retail_price,0)+COALESCE(tickets.processing_fee,0)-COALESCE(tickets.retail_price,0)*COALESCE(tickets.percent_commission,0)/100),2) AS total'))
+                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))-COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))*COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0))/100),2) AS total'))
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
@@ -64,7 +64,10 @@ class ConsignmentController extends Controller{
                     return ['success'=>false,'msg'=>'There was an error getting the consignment.<br>Maybe it is not longer in the system.'];
                 $seats = DB::table('seats')
                                 ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select('seats.*','tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_commission')
+                                ->select(DB::raw('seats.*, tickets.ticket_type, 
+                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                  COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
+                                                  COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
                                 ->where('seats.consignment_id','=',$input['id'])
                                 ->orderBy('tickets.ticket_type','seats.seat')
                                 ->distinct()->get();
@@ -85,11 +88,18 @@ class ConsignmentController extends Controller{
                                 ->select('id', 'name')->distinct()->get();
                 return ['success'=>true,'shows'=>$shows];
             }
+            else if(isset($input) && isset($input['ticket_type']) && isset($input['show_id']))
+            {
+                $ticket = Ticket::whereRaw('md5(ticket_type) = "'.$input['ticket_type'].'"')->where('show_id','=',$input['show_id'])->first();
+                if($ticket)
+                    return ['success'=>true,'retail_price'=>$ticket->retail_price,'processing_fee'=>$ticket->processing_fee,'percent_commission'=>$ticket->percent_commission];
+                return ['success'=>true,'retail_price'=>0,'processing_fee'=>0,'percent_commission'=>0];
+            }
             else if(isset($input) && isset($input['show_id']))
             {
                 $show_times = ShowTime::where('is_active','=',1)->where('show_id','=',$input['show_id'])->where('show_time','>',$current)
                                 ->select('id', 'show_time')->orderBy('show_time','ASC')->distinct()->get();
-                $tickets = Ticket::where('is_active','=',1)->where('show_id','=',$input['show_id'])
+                $tickets = Ticket::where('show_id','=',$input['show_id'])
                                 ->select('id', 'ticket_type')->orderBy('ticket_type')->distinct()->get();
                 return ['success'=>true,'show_times'=>$show_times,'tickets'=>$tickets];
             }
@@ -105,7 +115,7 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
-                                        ROUND(SUM(COALESCE(tickets.retail_price,0)+COALESCE(tickets.processing_fee,0)-COALESCE(tickets.retail_price,0)*COALESCE(tickets.percent_commission,0)/100),2) AS total'))
+                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))-COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))*COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0))/100),2) AS total'))
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
@@ -171,7 +181,13 @@ class ConsignmentController extends Controller{
                                     //if it has purchase change values
                                     if($purchase_seat->purchase_id)
                                     {
-                                        $t = Ticket::find($purchase_seat->ticket_id);
+                                        $t = DB::table('tickets')
+                                                ->join('seats', 'tickets.id', '=' ,'seats.ticket_id')
+                                                ->select(DB::raw('tickets.id,
+                                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                                  COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
+                                                                  COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
+                                                ->where('tickets.id','=',$purchase_seat->ticket_id)->first();
                                         if($oldStatus == 'Voided' && $purchase_seat->status != $oldStatus)
                                         {
                                             $purchase = Purchase::find($purchase_seat->purchase_id);
@@ -282,8 +298,11 @@ class ConsignmentController extends Controller{
                                     //get values
                                     $purchase_seat = DB::table('seats')
                                             ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                            ->select('seats.*','tickets.retail_price','tickets.processing_fee')
-                                            ->where('seats.id',$s)->first();
+                                            ->select(DB::raw('seats.id,
+                                                              COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                              COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
+                                                              COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
+                                            ->where('seats.id','=',$s)->first();
                                     //decrement old
                                     $purchaseFrom->decrement('quantity',1);
                                     $purchaseFrom->decrement('retail_price',$purchase_seat->retail_price);
@@ -419,15 +438,22 @@ class ConsignmentController extends Controller{
                                 $new_seat->ticket_id = $ticket->id;
                                 $new_seat->consignment_id = $consignment->id;
                                 $new_seat->seat = $seat[1];
+                                if($seat[2] != $ticket->retail_price)
+                                    $new_seat->retail_price = $seat[2];
+                                if($seat[3] != $ticket->processing_fee)
+                                    $new_seat->processing_fee = $seat[3];
+                                if($seat[4] != $ticket->percent_commission)
+                                    $new_seat->percent_commission = $seat[4];
+                                $new_seat->show_seat = $seat[5];
                                 $new_seat->status = 'Created';
                                 $new_seat->updated = $current;
                                 if($input['purchase'] && $purchase)
                                 {
                                     $new_seat->purchase_id = $purchase->id;
-                                    $purchase->retail_price += $ticket->retail_price;
-                                    $purchase->processing_fee += $ticket->processing_fee;
-                                    $purchase->commission_percent += $ticket->percent_commission;
-                                    $purchase->price_paid += $ticket->retail_price + $ticket->processing_fee;
+                                    $purchase->retail_price += ($new_seat->retail_price)? $new_seat->retail_price : $ticket->retail_price;
+                                    $purchase->processing_fee += ($new_seat->processing_fee)? $new_seat->processing_fee : $ticket->processing_fee;
+                                    $purchase->commission_percent += ($new_seat->percent_commission)? $new_seat->percent_commission :$ticket->percent_commission;
+                                    $purchase->price_paid += $purchase->retail_price + $purchase->processing_fee;
                                     $purchase->ticket_id = $ticket->id;
                                     $purchase->save();
                                 }  

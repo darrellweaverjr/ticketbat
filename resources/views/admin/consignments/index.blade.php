@@ -64,12 +64,12 @@
                                 </td>
                                 <td width="1%" class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>  
                                 <td width="20%"> {{$c->show_name}} </td>
-                                <td width="13%"><center> {{date('m/d/Y g:ia',strtotime($c->show_time))}} </center></td>
-                                <td width="13%"><center> {{date('m/d/Y g:ia',strtotime($c->created))}} </center></td>
+                                <td width="12%"><center> {{date('m/d/Y g:ia',strtotime($c->show_time))}} </center></td>
+                                <td width="12%"><center> {{date('m/d/Y g:ia',strtotime($c->created))}} </center></td>
                                 <td width="15%"> {{$c->first_name}} {{$c->last_name}} </td>
-                                <td width="10%"><center> {{date('m/d/Y',strtotime($c->due_date))}} </center></td>
-                                <td width="6%"><center> {{$c->qty}} </center></td>
-                                <td width="7%" style="text-align:right"> $ {{$c->total}} </td>
+                                <td width="9%"><center> {{date('m/d/Y',strtotime($c->due_date))}} </center></td>
+                                <td width="6%"><center> {{number_format($c->qty,0)}} </center></td>
+                                <td width="10%" style="text-align:right"> $ {{number_format($c->total,2)}} </td>
                                 <td width="15%"> 
                                     <select ref="{{$c->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
@@ -183,11 +183,12 @@
                                         <span class="required"> Section </span>
                                     </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-4">Section/Row
+                                        <label class="control-label col-md-4">Ticket Type
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-8 show-error"> 
                                             <select class="form-control" name="section">
+                                                <option selected disabled value=""></option>
                                                 @foreach($sections as $index=>$s)
                                                 <option value="{{md5($index)}}"> {{$s}} </option>
                                                 @endforeach
@@ -202,7 +203,14 @@
                                         <div class="col-md-4">
                                             <input type="text" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
                                         </div> 
-                                    </div>
+                                        <label class="control-label col-md-4">Seat Number
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-8 show-error"> 
+                                            <input type="hidden" name="show_seat" value="0" />
+                                            <input type="checkbox" class="make-switch" name="show_seat" checked="true" value="1"  data-size="medium" data-on-text="Show on ticket" data-off-text="Hide on ticket" data-on-color="primary" data-off-color="danger">
+                                        </div>
+                                    </div>    
                                     <div class="col-md-9 form-group">  
                                         <label class="control-label col-md-6">S.Price ($)
                                             <span class="required"> * </span>
@@ -224,7 +232,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="button" style="height:100px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
+                                        <button type="button" style="height:102px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
                                             <i class="fa fa-arrow-right"></i>
                                         </button>
                                     </div>
@@ -237,7 +245,7 @@
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>
-                                                    <th width="35%"> Section / Row </th>
+                                                    <th width="35%"> Ticket Type </th>
                                                     <th width="10%"> Seat </th>
                                                     <th width="15%"> Price </th>
                                                     <th width="15%"> Fee </th>
@@ -388,9 +396,12 @@
                                             <thead>
                                                 <tr>
                                                     <th width="2%"> </th>
-                                                    <th width="48%"> Section / Row </th>
-                                                    <th width="25%"> Seat </th>
-                                                    <th width="25%"> Status </th>
+                                                    <th width="30%"> Ticket Type </th>
+                                                    <th width="10%"> Seat </th>
+                                                    <th width="17%"> Price </th>
+                                                    <th width="15%"> Fee </th>
+                                                    <th width="13%"> Comm. </th>
+                                                    <th width="13%"> Status </th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tb_seats_consignment_edit">
