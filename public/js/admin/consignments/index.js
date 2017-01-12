@@ -265,14 +265,6 @@ var TableDatatablesManaged = function () {
         //spinners for start seat and end seat
         $('#form_model_update [name="start_seat"]').TouchSpin({ initval:1,min:1,max:500 });
         $('#form_model_update [name="end_seat"]').TouchSpin({ initval:1,min:1,max:500 });
-        /*$('#form_model_update [name="start_seat"]').on('change', function () {
-            if($('#form_model_update [name="start_seat"]').val() >= $('#form_model_update [name="end_seat"]').val() && $('#form_model_update [name="start_seat"]').val()<=500)
-                $('#form_model_update [name="end_seat"]').val($('#form_model_update [name="start_seat"]').val());
-        });*/
-        /*$('#form_model_update [name="end_seat"]').on('change', function () {
-            if($('#form_model_update [name="start_seat"]').val() >= $('#form_model_update [name="end_seat"]').val() && $('#form_model_update [name="end_seat"]').val()<=500)
-                $('#form_model_update [name="start_seat"]').val($('#form_model_update [name="end_seat"]').val());
-        });*/
         //due_date
         $('#due_date').datepicker({
             autoclose: true,
@@ -467,6 +459,10 @@ var TableDatatablesManaged = function () {
                 });
             }       
         };
+        function agreement_file()
+        {
+            var id = $("#form_model_update2 input[name='id']:hidden").val();
+        }
         //function tickets
         $('#btn_model_tickets').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
