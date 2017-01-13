@@ -620,7 +620,6 @@
                                                     <tr>
                                                         <th> Order </th>
                                                         <th> Band </th>
-                                                        <th style="display:none;"> </th>
                                                         <th> </th>
                                                     </tr>
                                                 </thead>
@@ -901,7 +900,7 @@
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="control-label col-md-5">Ticket Type
+                                    <label class="control-label col-md-5">Band
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
@@ -911,13 +910,6 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <label class="control-label col-md-5">Order
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-7 show-error">
-                                        <select class="form-control" name="n_order">
-                                        </select>
-                                    </div>
                                 </div>  
                             </div>
                         </div>
@@ -925,7 +917,7 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_tickets').trigger('reset')">Cancel</button>
-                                    <button type="button" id="submit_model_show_tickets" class="btn sbold grey-salsa">Save</button>
+                                    <button type="button" id="submit_model_show_bands" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
                         </div>
