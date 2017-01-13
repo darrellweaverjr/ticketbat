@@ -170,9 +170,7 @@ var TableDatatablesManaged = function () {
         } 
         //function full reset form
         var fullReset = function(){
-            //$('#form_model_update [name="image_url"]').attr('src','');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
-            //$("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
         //function add
@@ -263,7 +261,6 @@ var TableDatatablesManaged = function () {
                             if(e.is('img'))
                                 e.attr('src',data.show[key]);
                             else if(e.is('input:checkbox'))
-                                //e.prop('checked',(data.show[key])? true : false);
                                 $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
                             else
                                 e.val(data.show[key]);
@@ -315,8 +312,7 @@ var TableDatatablesManaged = function () {
                         if(data.bands && data.bands.length)
                         {
                             $.each(data.bands,function(k, v) {
-                                tableBands.row.add( [ v.n_order,v.name,v.show_id, '<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();
-                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
                             });
                         }
                         //show modal
@@ -674,24 +670,51 @@ var TableDatatablesManaged = function () {
         });
         //edit
         tableBands.on( 'row-reordered', function ( e, diff, edit ) {
+            var show_id = $('#form_model_update input[name="id"]:hidden').val();
+            var order = [];
             for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
-                $(diff[i].node).addClass("reordered");
+                order.push(diff[i].oldData);
             }
-        } );
-        //delete
-        $('#tb_sub_bands tbody').on('click', 'input[type="button"]', function(e){
-            var row = $(this).closest('tr');
-            if($(this).hasClass('delete')) 
+            if(order.length > 1)
             {
-                tableBands.row(row).remove().draw();
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/admin/shows/bands', 
-                    data: {action:-1,id:row.prop('class')}, 
+                    data: {action:0,show_id:show_id,order:order}, 
+                    success: function(data) {
+                        if(!data.success) 
+                            alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+        } );
+        //delete
+        $('#tb_sub_bands tbody').on('click', 'input[type="button"]', function(e){
+            var show_id = $('#form_model_update input[name="id"]:hidden').val();
+            var row = $(this).closest('tr');
+            var order = tableBands.row(row).data()[0];
+            if($(this).hasClass('delete')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/bands', 
+                    data: {action:-1,show_id:show_id,order:order}, 
                     success: function(data) {
                         if(data.success) 
-                            row.remove();  
+                        {
+                            tableBands.clear().draw();
+                            if(data.bands && data.bands.length)
+                            {
+                                $.each(data.bands,function(k, v) {
+                                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                });
+                            }
+                        }    
                         else
                             alert(data.msg);
                     },
@@ -704,32 +727,26 @@ var TableDatatablesManaged = function () {
         });
         //function submit show_bands
         $('#submit_model_show_bands').on('click', function(ev) {
-            if($('#form_model_show_bands').valid() && $('#form_model_show_bands [name="ticket_types[]"]:checked').length)
+            if($('#form_model_show_bands').valid())
             {
-                $('#modal_model_show_bands').modal('hide');
+                var show_id = $('#form_model_update input[name="id"]:hidden').val();
+                var band_id = $('#form_model_show_bands select[name="band_id"]').val();
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/admin/shows/bands', 
-                    data: $('#form_model_show_bands').serializeArray(), 
+                    data: {action:1,show_id:show_id,band_id:band_id}, 
                     success: function(data) {
                         if(data.success) 
                         {
-                            //$('#tb_show_bands').empty();
-                            tableBands.clear().draw();
-                            $.each(data.bands,function(k, v) {
-                                tableBands.row.add( [ v.n_order,v.name,v.show_id, '<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();
-                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
-                            });
+                            tableBands.row.add( [ data.band.n_order,data.band.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw(); 
                         }
                         else{
                             alert(data.msg);
-                            $('#modal_model_show_bands').modal('show');
                         }
                     },
                     error: function(){
                         alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
-                        $('#modal_model_show_bands').modal('show');
                     }
                 }); 
             }
