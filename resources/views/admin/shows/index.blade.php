@@ -5,7 +5,7 @@
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
-<link href="/themes/admin/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -562,10 +562,12 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_passwords">
-                                        <div class="row" style="padding-right:20px">
-                                            <input type="button" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right" id="btn_model_password_add" /> 
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add 
+                                                <i class="fa fa-plus"></i>
+                                            </button>
                                         </div>
-                                        <div class="row table-responsive" style="padding-left:20px;max-height:400px;overflow-y: auto;">
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
                                             <table class="table table-striped table-hover table-bordered" >
                                                 <thead>
                                                     <tr>
@@ -583,13 +585,55 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_showtimes">
-                                        
+                                        <div class="portlet light portlet-fit bordered calendar">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <div class="btn-group">
+                                                        <button type="button" id="btn_model_show_time_add" class="btn sbold bg-green"> Add 
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                        <button type="button" id="btn_model_show_time_edit" class="btn sbold bg-yellow"> Edit 
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red"> Remove 
+                                                            <i class="fa fa-remove"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <div class="row">
+                                                    <!--
+                                                    <div class="col-md-3 col-sm-12">
+                                                        <h3 class="event-form-title margin-bottom-20">Draggable Events</h3>
+                                                        <div id="external-events">
+                                                            <form class="inline-form">
+                                                                <input type="text" value="" class="form-control" placeholder="Event Title..." id="event_title" />
+                                                                <br/>
+                                                                <a href="javascript:;" id="event_add" class="btn green"> Add Event </a>
+                                                            </form>
+                                                            <hr/>
+                                                            <div id="event_box" class="margin-bottom-10"></div>
+                                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline" for="drop-remove"> remove after drop
+                                                                <input type="checkbox" class="group-checkable" id="drop-remove" />
+                                                                <span></span>
+                                                            </label>
+                                                            <hr class="visible-xs" /> </div>
+                                                    </div>-->
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <div id="calendar" class="has-toolbar"> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_tickets">
-                                        <div class="row" style="padding-right:20px">
-                                            <input type="button" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right" id="btn_model_ticket_add" /> 
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_ticket_add" class="btn sbold bg-green"> Add 
+                                                <i class="fa fa-plus"></i>
+                                            </button>
                                         </div>
-                                        <div class="row table-responsive" style="padding-left:20px;max-height:400px;overflow-y: auto;">
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
                                             <table class="table table-striped table-hover table-bordered">
                                                 <thead>
                                                     <tr>
@@ -610,11 +654,13 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="tab-pane" style="padding:20px" id="tab_model_update_bands" >
-                                        <div class="row">
-                                            <input type="button" value=" + " style="font-size:18px"  class="btn sbold bg-green pull-right" id="btn_model_band_add" /> 
+                                    <div class="tab-pane" id="tab_model_update_bands" >
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_band_add" class="btn sbold bg-green"> Add 
+                                                <i class="fa fa-plus"></i>
+                                            </button>
                                         </div>
-                                        <div class="row table-responsive" style="max-height:400px;overflow-y: auto;">
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
                                             <table class="table table-striped table-hover table-bordered" id="tb_sub_bands">
                                                 <thead>
                                                     <tr>
@@ -933,6 +979,6 @@
 @section('scripts') 
 <script src="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
 <script src="/js/admin/shows/index.js" type="text/javascript"></script>
 @endsection
