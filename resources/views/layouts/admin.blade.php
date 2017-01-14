@@ -31,12 +31,12 @@
         <link href="/themes/admin/assets/global/plugins/jquery-file-upload/css/jquery.fileupload.css" rel="stylesheet" type="text/css">
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="/themes/admin/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="/themes/admin/assets/global/css/components.min.css" rel="stylesheet"type="text/css" />
         <link href="/themes/admin/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="/themes/admin/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
+        <link href="/themes/admin/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css"/>
         <link href="/themes/admin/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
 
         <link href="/themes/admin/assets/pages/css/style.css" rel="stylesheet" type="text/css" />
@@ -460,6 +460,7 @@
         <script src="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.color.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.Jcrop.min.js" type="text/javascript"></script>
+        <script src="/themes/admin/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
         <!-- SCRIPT FOR SWEET ALERT -->
         <script src="/themes/admin/assets/global/plugins/bootstrap-sweetalert/sweetalert.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
