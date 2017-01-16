@@ -473,10 +473,10 @@ var TableDatatablesManaged = function () {
                 });
             }       
         };
-        function agreement_file()
-        {
+        $('#btn_model_file').on('click', function(ev) {
             var id = $("#form_model_update2 input[name='id']:hidden").val();
-        }
+            window.open('/admin/consignments/view/file/'+id);
+        });  
         //function tickets
         $('#btn_model_tickets').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();

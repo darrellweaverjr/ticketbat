@@ -82,7 +82,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'sliders', 'SliderController@index');
     //consignment tickets
     Route::get('consignments/tickets/{type}/{ids}', 'ConsignmentController@tickets');
-    Route::post('consignments/view/{id}', 'ConsignmentController@view');
+    Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view');
     Route::post('consignments/save', 'ConsignmentController@save');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index');
     //contracts

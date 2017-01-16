@@ -323,7 +323,7 @@
                                             </span>
                                         </div>
                                         <div class="col-md-4 show-error">
-                                            <span class="btn btn-block green" onclick="view_agreement_file();"><i class="fa fa-search"></i>
+                                            <span class="btn btn-block green" id="btn_model_file" ><i class="fa fa-search"></i>
                                             </span>
                                         </div>
                                     </div>
