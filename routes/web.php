@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'shows/passwords', 'ShowController@passwords');
     Route::match(['get','post'], 'shows/tickets', 'ShowController@tickets');
     Route::match(['get','post'], 'shows/bands', 'ShowController@bands');
+    Route::match(['get','post'], 'shows/showtimes', 'ShowController@showtimes');
     Route::post('shows/slug', 'ShowController@slug');
     Route::post('shows/save', 'ShowController@save');
     Route::post('shows/remove', 'ShowController@remove');
@@ -82,7 +83,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'sliders', 'SliderController@index');
     //consignment tickets
     Route::get('consignments/tickets/{type}/{ids}', 'ConsignmentController@tickets');
-    Route::post('consignments/view/{id}', 'ConsignmentController@view');
+    Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view');
     Route::post('consignments/save', 'ConsignmentController@save');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index');
     //contracts

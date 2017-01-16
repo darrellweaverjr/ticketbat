@@ -585,46 +585,19 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_showtimes">
-                                        <div class="portlet light portlet-fit bordered calendar">
-                                            <div class="portlet-title">
-                                                <div class="caption">
-                                                    <div class="btn-group">
-                                                        <button type="button" id="btn_model_show_time_add" class="btn sbold bg-green"> Add 
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
-                                                        <button type="button" id="btn_model_show_time_edit" class="btn sbold bg-yellow"> Edit 
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red"> Remove 
-                                                            <i class="fa fa-remove"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="portlet-body">
-                                                <div class="row">
-                                                    <!--
-                                                    <div class="col-md-3 col-sm-12">
-                                                        <h3 class="event-form-title margin-bottom-20">Draggable Events</h3>
-                                                        <div id="external-events">
-                                                            <form class="inline-form">
-                                                                <input type="text" value="" class="form-control" placeholder="Event Title..." id="event_title" />
-                                                                <br/>
-                                                                <a href="javascript:;" id="event_add" class="btn green"> Add Event </a>
-                                                            </form>
-                                                            <hr/>
-                                                            <div id="event_box" class="margin-bottom-10"></div>
-                                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline" for="drop-remove"> remove after drop
-                                                                <input type="checkbox" class="group-checkable" id="drop-remove" />
-                                                                <span></span>
-                                                            </label>
-                                                            <hr class="visible-xs" /> </div>
-                                                    </div>-->
-                                                    <div class="col-md-12 col-sm-12">
-                                                        <div id="calendar" class="has-toolbar"> </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_show_time_add" class="btn sbold bg-green"> Add 
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button type="button" id="btn_model_show_time_edit" class="btn sbold bg-yellow"> Toggle 
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red"> Remove 
+                                                <i class="fa fa-remove"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row portlet light portlet-fit calendar" style="padding:20px;">
+                                            <div id="show_show_times" class="has-toolbar"> </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_tickets">
@@ -974,6 +947,52 @@
         </div>
     </div>
     <!-- END ADD/EDIT BAND MODAL--> 
+    <!-- BEGIN TOGGLE SHOWTIMES MODAL--> 
+    <div id="modal_model_show_times_toggle" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Toggle Show Time</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_show_times_toggle">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="show_id" value="" />
+                        <input type="hidden" name="id" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Status
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input type="hidden" name="is_active" value="0"/>
+                                        <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Tickets to inactive for this event
+                                    </label>
+                                    <div class="col-md-9 ticket_types_lists">
+                                    </div> 
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_toggle').trigger('reset')">Cancel</button>
+                                    <button type="button" id="submit_model_show_times_toggle" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END TOGGLE SHOWTIMES MODAL--> 
 @endsection
 
 @section('scripts') 

@@ -20,7 +20,9 @@ use App\Http\Models\Purchase;
 use App\Http\Models\Customer;
 use App\Http\Models\User;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Response;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Storage;
 
 
 /**
@@ -539,13 +541,45 @@ class ConsignmentController extends Controller{
      *
      * @void
      */
-    public function view()
+    public function view($format,$id)
     {
         try {
-            
-            
-        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-            throw new Exception('Error Consignment tickets: '.$ex->getMessage());
+            $consignment = Consignment::find($id);
+            //check agreement data sent
+            if($consignment && isset($consignment->agreement))
+            {
+                //check format
+                if($format==='file')
+                {
+                    $file = str_replace('/s3/','',$consignment->agreement);
+                    $exists = Storage::disk('s3')->exists($file);
+                    if($exists)
+                    {
+                        $file = Storage::disk('s3')->get($file); 
+                        return Response::make($file, 200, [
+                            'Content-Type' => 'application/pdf',
+                            'Content-Disposition' => 'inline; filename="Consignment_Agreement_'.$id.'" filename*="Consignment_Agreement_'.$id.'"'
+                        ]);
+                    }
+                    else 
+                    {
+                        $data = '<script>alert("The system could not load the information from the DB. It does not exists.");window.close();</script>';
+                        return $data;
+                    }
+                }
+                else
+                {
+                    $data = '<script>alert("The system could not load the information from the DB. It has not a valid format.");window.close();</script>';
+                    return $data;
+                }
+            }
+            else
+            {
+                $data = '<script>alert("The system could not load the information from the DB. There is not that file.");window.close();</script>';
+                return $data;
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Consignments View: '.$ex->getMessage());
         }
-    }
+    } 
 }

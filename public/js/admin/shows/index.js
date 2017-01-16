@@ -72,10 +72,43 @@ var TableDatatablesManaged = function () {
             check_models();             
             $(this).parents('tr').toggleClass("active");
         });
-        
-        var tableBands = $('#tb_sub_bands').DataTable({ rowReorder: true});
-        
         //PERSONALIZED FUNCTIONS
+        //init datatables
+        var tableBands = $('#tb_sub_bands').DataTable({ rowReorder: true});
+        //init calendar
+        var calendarShowTimes = $('#show_show_times').fullCalendar({ 
+            header: { left: 'title', center: '', right: 'prev,next, agendaDay, agendaWeek, month, today' },
+            defaultView: 'month', // change default view with available options from http://arshaw.com/fullcalendar/docs/views/Available_Views/ 
+            slotMinutes: 15,
+            editable: false,
+            droppable: false,
+            eventClick:  function(event, jsEvent, view) {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/showtimes', 
+                    data: {id:event.id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#form_model_show_times_toggle').trigger('reset');
+                            $('#form_model_show_times_toggle input[name="id"]:hidden').val(event.id).trigger('change');
+                            $('#form_model_show_times_toggle .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.showtime.is_active)? true : false, true);
+                            $.each(data.tickets,function(k, t) {
+                                $('#form_model_show_times_toggle :checkbox[value="'+t+'"]').prop('checked',true);   
+                            });
+                            $('#modal_model_show_times_toggle').modal('show');
+                        }
+                        else{
+                            alert(data.msg);
+                        }
+                    },
+                    error: function(){
+                        alert("There was an error trying to get the showtime's information!<br>The request could not be sent to the server.");
+                    }
+                }); 
+            }
+        });
         //on_sale_date
         $('#on_sale_date').datetimepicker({
             autoclose: true,
@@ -232,6 +265,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_show_passwords .ticket_types_lists').empty();
             $('#tb_show_passwords').empty();
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','block');
+            $('#form_model_show_times_toggle .ticket_types_lists').empty();
             $('a[href="#tab_model_update_tickets"]').parent().css('display','block');
             $('#tb_show_tickets').empty();
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
@@ -249,6 +283,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_update [name="venue_id"]').val(data.show.venue_id).change();
                         $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_times_toggle input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -276,8 +311,9 @@ var TableDatatablesManaged = function () {
                                     if(amex_tt.indexOf(v.ticket_type)>=0) 
                                         var checked = 'checked';
                                     else var checked = '';
-                                    $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label>');
-                                    $('#modal_model_show_passwords .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                                    $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label><br>');
+                                    $('#modal_model_show_passwords .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                                    $('#form_model_show_times_toggle .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
                                 }
                             });
                         }
@@ -313,6 +349,47 @@ var TableDatatablesManaged = function () {
                         {
                             $.each(data.bands,function(k, v) {
                                 tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            });
+                        }
+                        //fill out showtimes
+                        //calendarShowTimes.fullCalendar('destroy');
+                        if(data.show_times && data.show_times.length)
+                        {
+                            var maintitle = ' ';
+                            var color = 'gray';
+                            $.each(data.show_times,function(k, v) {
+                                //init config items
+                                var date = new Date(v.show_time);
+                                var allday = false;
+                                if(v.is_active == 0) 
+                                {
+                                    var title = maintitle+'(Inactive)'; 
+                                    color = App.getBrandColor('red');
+                                }
+                                else
+                                {
+                                    var title = maintitle+'(Active)'; 
+                                    if(date.getHours() >= 6 && date.getHours() < 12)
+                                        color = App.getBrandColor('orange');
+                                    else if(date.getHours() >= 12 && date.getHours() <= 18)
+                                        color = App.getBrandColor('blue');
+                                    else
+                                        color = App.getBrandColor('purple');
+                                }
+                                if(v.time_alternative)
+                                {
+                                    title += ': '+v.time_alternative; 
+                                    allday =true;
+                                }
+                                //fill out the items in calendar
+                                calendarShowTimes.fullCalendar('renderEvent', {
+                                    id:v.id,
+                                    title: title,
+                                    start: date,
+                                    end: date,
+                                    backgroundColor: color,
+                                    allDay: allday
+                                }, true);                              
                             });
                         }
                         //show modal
@@ -753,6 +830,156 @@ var TableDatatablesManaged = function () {
             else alert('You must fill out correctly the form');
         });
         //function with show_bands  *****************************************************************************************************   SHOW BANDS END
+        //function with show_times  *****************************************************************************************************   SHOW TIMES BEGIN
+        //function submit show_times toggle
+        $('#submit_model_show_times_toggle').on('click', function(ev) {
+            var show_id = $('#form_model_show_times_toggle input[name="show_id"]:hidden').val();
+            var show_time_id = $('#form_model_show_times_toggle input[name="id"]:hidden').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/showtimes', 
+                data: {show_id:show_id,show_time_id:show_time_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        calendarShowTimes.fullCalendar('removeEvents', show_time_id);
+                        var date = new Date(data.showtime.show_time);
+                        var allday = false;
+                        if(data.showtime.is_active == 0) 
+                        {
+                            var title = '(Inactive)'; 
+                            var color = App.getBrandColor('red');
+                        }
+                        else
+                        {
+                            var title = '(Active)'; 
+                            if(date.getHours() >= 6 && date.getHours() < 12)
+                                var color = App.getBrandColor('orange');
+                            else if(date.getHours() >= 12 && date.getHours() <= 18)
+                                var color = App.getBrandColor('blue');
+                            else
+                                var color = App.getBrandColor('purple');
+                        }
+                        if(data.showtime.time_alternative)
+                        {
+                            title += ': '+data.showtime.time_alternative; 
+                            allday =true;
+                        }
+                        calendarShowTimes.fullCalendar('renderEvent', {
+                            id:show_time_id,
+                            title: title,
+                            start: date,
+                            end: date,
+                            backgroundColor: color,
+                            allDay: allday
+                        }, true);   
+                    }
+                    else{
+                        alert(data.msg);
+                    }
+                },
+                error: function(){
+                    alert("There was an error trying to save the event's information!<br>The request could not be sent to the server.");
+                }
+            }); 
+        });
+        
+        
+        
+        
+        
+        $('#btn_model_band_add').on('click', function(ev) {
+            $('#form_model_show_bands input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_bands').trigger('reset');
+            $('#modal_model_show_bands').modal('show');
+        });
+        //edit
+        tableBands.on( 'row-reordered', function ( e, diff, edit ) {
+            var show_id = $('#form_model_update input[name="id"]:hidden').val();
+            var order = [];
+            for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
+                order.push(diff[i].oldData);
+            }
+            if(order.length > 1)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/bands', 
+                    data: {action:0,show_id:show_id,order:order}, 
+                    success: function(data) {
+                        if(!data.success) 
+                            alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+        } );
+        //delete
+        $('#tb_sub_bands tbody').on('click', 'input[type="button"]', function(e){
+            var show_id = $('#form_model_update input[name="id"]:hidden').val();
+            var row = $(this).closest('tr');
+            var order = tableBands.row(row).data()[0];
+            if($(this).hasClass('delete')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/bands', 
+                    data: {action:-1,show_id:show_id,order:order}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            tableBands.clear().draw();
+                            if(data.bands && data.bands.length)
+                            {
+                                $.each(data.bands,function(k, v) {
+                                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                });
+                            }
+                        }    
+                        else
+                            alert(data.msg);
+                    },
+                    error: function(){
+                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+                    }
+                });
+            }
+            else alert('Invalid Option');
+        });
+        //function submit show_times
+        $('#submit_model_show_bands').on('click', function(ev) {
+            if($('#form_model_show_bands').valid())
+            {
+                var show_id = $('#form_model_update input[name="id"]:hidden').val();
+                var band_id = $('#form_model_show_bands select[name="band_id"]').val();
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/bands', 
+                    data: {action:1,show_id:show_id,band_id:band_id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            tableBands.row.add( [ data.band.n_order,data.band.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw(); 
+                        }
+                        else{
+                            alert(data.msg);
+                        }
+                    },
+                    error: function(){
+                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+                    }
+                }); 
+            }
+            else alert('You must fill out correctly the form');
+        });
+        //function with show_times  *****************************************************************************************************   SHOW TIMES END
+       
         //init functions
         check_models(); 
         $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0 });
@@ -880,183 +1107,7 @@ var FormValidation = function () {
     };
 }();
 //*****************************************************************************************
-var AppCalendar = function() {
-
-    return {
-        //main function to initiate the module
-        init: function() {
-            this.initCalendar();
-        },
-
-        initCalendar: function() {
-
-            if (!jQuery().fullCalendar) {
-                return;
-            }
-
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
-
-            var h = {};
-
-            if (App.isRTL()) {
-                if ($('#calendar').parents(".portlet").width() <= 720) {
-                    $('#calendar').addClass("mobile");
-                    h = {
-                        right: 'title, prev, next',
-                        center: '',
-                        left: 'agendaDay, agendaWeek, month, today'
-                    };
-                } else {
-                    $('#calendar').removeClass("mobile");
-                    h = {
-                        right: 'title',
-                        center: '',
-                        left: 'agendaDay, agendaWeek, month, today, prev,next'
-                    };
-                }
-            } else {    
-                if ($('#calendar').parents(".portlet").width() <= 720) {
-                    $('#calendar').addClass("mobile");
-                    h = {
-                        left: 'title',
-                        center: '',
-                        right: 'prev,next,today,month,agendaWeek,agendaDay'
-                    };
-                } else {
-                    $('#calendar').removeClass("mobile");
-                    h = {
-                        left: 'title',
-                        center: '',
-                        right: 'prev,next,today,month,agendaWeek,agendaDay'
-                    };
-                }
-            }
-
-            var initDrag = function(el) {
-                // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-                // it doesn't need to have a start or end
-                var eventObject = {
-                    title: $.trim(el.text()) // use the element's text as the event title
-                };
-                // store the Event Object in the DOM element so we can get to it later
-                el.data('eventObject', eventObject);
-                // make the event draggable using jQuery UI
-                /*el.draggable({
-                    zIndex: 999,
-                    revert: true, // will cause the event to go back to its
-                    revertDuration: 0 //  original position after the drag
-                });*/
-            };
-
-            var addEvent = function(title) {
-                title = title.length === 0 ? "Untitled Event" : title;
-                var html = $('<div class="external-event label label-default">' + title + '</div>');
-                jQuery('#event_box').append(html);
-                initDrag(html);
-            };
-
-            $('#external-events div.external-event').each(function() {
-                initDrag($(this));
-            });
-
-            $('#event_add').unbind('click').click(function() {
-                var title = $('#event_title').val();
-                addEvent(title);
-            });
-
-            //predefined events
-            $('#event_box').html("");
-            addEvent("My Event 1");
-            addEvent("My Event 2");
-            addEvent("My Event 3");
-            addEvent("My Event 4");
-            addEvent("My Event 5");
-            addEvent("My Event 6");
-
-            $('#calendar').fullCalendar('destroy'); // destroy the calendar
-            $('#calendar').fullCalendar({ //re-initialize the calendar
-                header: h,
-                defaultView: 'month', // change default view with available options from http://arshaw.com/fullcalendar/docs/views/Available_Views/ 
-                slotMinutes: 15,
-                editable: true,
-                droppable: true, // this allows things to be dropped onto the calendar !!!
-                drop: function(date, allDay) { // this function is called when something is dropped
-
-                    // retrieve the dropped element's stored Event Object
-                    var originalEventObject = $(this).data('eventObject');
-                    // we need to copy it, so that multiple events don't have a reference to the same object
-                    var copiedEventObject = $.extend({}, originalEventObject);
-
-                    // assign it the date that was reported
-                    copiedEventObject.start = date;
-                    copiedEventObject.allDay = allDay;
-                    copiedEventObject.className = $(this).attr("data-class");
-
-                    // render the event on the calendar
-                    // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-                    $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-                    // is the "remove after drop" checkbox checked?
-                    if ($('#drop-remove').is(':checked')) {
-                        // if so, remove the element from the "Draggable Events" list
-                        $(this).remove();
-                    }
-                },
-                events: [{
-                    title: 'All Day Event',
-                    start: new Date(y, m, 1),
-                    backgroundColor: App.getBrandColor('yellow')
-                }, {
-                    title: 'Long Event',
-                    start: new Date(y, m, d - 5),
-                    end: new Date(y, m, d - 2),
-                    backgroundColor: App.getBrandColor('green')
-                }, {
-                    title: 'Repeating Event',
-                    start: new Date(y, m, d - 3, 16, 0),
-                    allDay: false,
-                    backgroundColor: App.getBrandColor('red')
-                }, {
-                    title: 'Repeating Event',
-                    start: new Date(y, m, d + 4, 16, 0),
-                    allDay: false,
-                    backgroundColor: App.getBrandColor('green')
-                }, {
-                    title: 'Meeting',
-                    start: new Date(y, m, d, 10, 30),
-                    allDay: false,
-                }, {
-                    title: 'Lunch',
-                    start: new Date(y, m, d, 12, 0),
-                    end: new Date(y, m, d, 14, 0),
-                    backgroundColor: App.getBrandColor('grey'),
-                    allDay: false,
-                }, {
-                    title: 'Birthday Party',
-                    start: new Date(y, m, d + 1, 19, 0),
-                    end: new Date(y, m, d + 1, 22, 30),
-                    backgroundColor: App.getBrandColor('purple'),
-                    allDay: false,
-                }, {
-                    title: 'Click for Google',
-                    start: new Date(y, m, 28),
-                    end: new Date(y, m, 29),
-                    backgroundColor: App.getBrandColor('yellow'),
-                    url: 'http://google.com/',
-                }]
-            });
-
-        }
-
-    };
-
-}();
-//*****************************************************************************************
 jQuery(document).ready(function() {
-    AppCalendar.init();
     TableDatatablesManaged.init();
     FormValidation.init();
 });
