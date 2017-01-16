@@ -558,7 +558,7 @@ class ConsignmentController extends Controller{
                         $file = Storage::disk('s3')->get($file); 
                         return Response::make($file, 200, [
                             'Content-Type' => 'application/pdf',
-                            'Content-Disposition' => 'inline; filename="Consignment Agreement '.$id.'"'
+                            'Content-Disposition' => 'inline; filename="Consignment_Agreement_'.$id.'" filename*="Consignment_Agreement_'.$id.'"'
                         ]);
                     }
                     else 
