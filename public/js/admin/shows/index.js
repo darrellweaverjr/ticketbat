@@ -283,7 +283,6 @@ var TableDatatablesManaged = function () {
                         $('#form_model_update [name="venue_id"]').val(data.show.venue_id).change();
                         $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
-                        $('#form_model_show_times_toggle input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -833,17 +832,15 @@ var TableDatatablesManaged = function () {
         //function with show_times  *****************************************************************************************************   SHOW TIMES BEGIN
         //function submit show_times toggle
         $('#submit_model_show_times_toggle').on('click', function(ev) {
-            var show_id = $('#form_model_show_times_toggle input[name="show_id"]:hidden').val();
-            var show_time_id = $('#form_model_show_times_toggle input[name="id"]:hidden').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/shows/showtimes', 
-                data: {show_id:show_id,show_time_id:show_time_id}, 
+                data: $('#form_model_show_times_toggle').serializeArray(), 
                 success: function(data) {
                     if(data.success) 
                     {
-                        calendarShowTimes.fullCalendar('removeEvents', show_time_id);
+                        calendarShowTimes.fullCalendar('removeEvents', data.showtime.id);
                         var date = new Date(data.showtime.show_time);
                         var allday = false;
                         if(data.showtime.is_active == 0) 
@@ -867,13 +864,14 @@ var TableDatatablesManaged = function () {
                             allday =true;
                         }
                         calendarShowTimes.fullCalendar('renderEvent', {
-                            id:show_time_id,
+                            id:data.showtime.id,
                             title: title,
                             start: date,
                             end: date,
                             backgroundColor: color,
                             allDay: allday
-                        }, true);   
+                        }, true);  
+                        $('#modal_model_show_times_toggle').modal('hide');
                     }
                     else{
                         alert(data.msg);

@@ -958,7 +958,6 @@
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_times_toggle">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                        <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="id" value="" />
                         <div class="form-body">
                             <div class="row">
