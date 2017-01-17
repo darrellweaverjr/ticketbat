@@ -132,19 +132,19 @@ var TableDatatablesManaged = function () {
                 $('#amex_only_date input[name="amex_only_end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
             }
         );  
-        $('#show_passwords_date').daterangepicker({
+        $('#show_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'YYYY-MM-DD HH:mm',
+                format: 'YYYY-MM-DD',
                 separator: ' to ',
                 startDate: moment(),
                 endDate: moment().add('days', 29),
                 minDate: moment()
             },
             function (start, end) {
-                $('#form_model_show_passwords input[name="start_date"]').val(start.format('YYYY-MM-DD HH:mm'));
-                $('#form_model_show_passwords input[name="end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
+                $('#form_model_show_times_update input[name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_show_times_update input[name="end_date"]').val(end.format('YYYY-MM-DD'));
             }
-        );  
+        ); 
         //clear onsale_date
         $('#clear_onsale_date').on('click', function(ev) {
             $('#form_model_update [name="on_sale"]').val('');
@@ -155,7 +155,25 @@ var TableDatatablesManaged = function () {
             $('#form_model_update [name="amex_only_start_date"]').val('');
             $('#form_model_update [name="amex_only_end_date"]').val('');
             $('#on_sale_date').datetimepicker('update');
-        });    
+        });  
+        //clear show_times_date
+        $('#clear_show_times_date').on('click', function(ev) {
+            $('#form_model_show_times_update [name="start_date"]').val('');
+            $('#form_model_show_times_update [name="end_date"]').val('');
+            $('#show_times_date').datetimepicker('update');
+        });
+        //show_times_time
+        $('#show_times_time').clockface({
+            format: 'HH:mm',
+            trigger: 'manual'
+        });
+        $('#show_times_time_toggle').click(function (e) {
+            e.stopPropagation();
+            $('#show_times_time').clockface('toggle');
+        });
+        $('#clear_show_times_time').on('click', function(ev) {
+            $('#show_times_time').val('');
+        });
         //get slug on name change
         $('#form_model_update [name="name"]').bind('change',function() {
             if($('#form_model_update [name="name"]').val().length >= 5)
@@ -283,6 +301,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_update [name="venue_id"]').val(data.show.venue_id).change();
                         $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_times_update input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -882,9 +901,21 @@ var TableDatatablesManaged = function () {
                 }
             }); 
         });
+        $('#btn_model_show_time_add').on('click', function(ev) {
+            $('#form_model_show_times_update').trigger('reset');
+            $('#form_model_show_times_update input[name="action"]:hidden').val('1').trigger('change');
+            $('#modal_model_show_times_update').modal('show');
+        });
+        $('#available_show_times').on('click', function(ev) {
+            var action = $('#form_model_show_times_update input[name="action"]:hidden').val();
+        });
+        $('#btn_model_show_time_delete').on('click', function(ev) {
+            $('#form_model_show_times_update').trigger('reset');
+            $('#form_model_show_times_update input[name="action"]:hidden').val('-1').trigger('change');
+            $('#modal_model_show_times_update').modal('show');
+        });
         
-        
-        
+        //*********
         
         
         $('#btn_model_band_add').on('click', function(ev) {
@@ -986,6 +1017,7 @@ var TableDatatablesManaged = function () {
         $('#form_model_show_tickets [name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_show_tickets [name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
         $('#form_model_show_tickets [name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
+        
     }
     return {
         //main function to initiate the module
