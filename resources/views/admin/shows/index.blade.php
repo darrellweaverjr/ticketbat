@@ -1060,16 +1060,16 @@
                                     <div class="col-md-5 show-error">
                                         <input type="text" name="time_alternative" value="" class="form-control" placeholder="Time Alternative" />
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                </div><hr>
                                 <button class="btn btn-block" type="button" id="available_show_times"> Check Availables Dates
                                     <i class="fa fa-check-circle"></i>
                                 </button>
+                            </div>
+                            <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
                                 <table class="table table-striped table-hover table-bordered" >
                                     <thead>
                                         <tr>
-                                            <th> Week </th>
+                                            <th> Week Day </th>
                                             <th> Date </th>
                                             <th> Time </th>
                                             <th> Available </th>

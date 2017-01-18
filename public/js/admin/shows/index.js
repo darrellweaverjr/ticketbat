@@ -849,6 +849,9 @@ var TableDatatablesManaged = function () {
         });
         //function with show_bands  *****************************************************************************************************   SHOW BANDS END
         //function with show_times  *****************************************************************************************************   SHOW TIMES BEGIN
+        $('#tb_show_times').on('click', 'input[type="button"]', function(e){
+            $(this).closest('tr').remove();
+        });
         //function submit show_times toggle
         $('#submit_model_show_times_toggle').on('click', function(ev) {
             jQuery.ajax({
@@ -903,98 +906,130 @@ var TableDatatablesManaged = function () {
         });
         $('#btn_model_show_time_add').on('click', function(ev) {
             $('#form_model_show_times_update').trigger('reset');
+            $('#tb_show_times').empty();
             $('#form_model_show_times_update input[name="action"]:hidden').val('1').trigger('change');
             $('#modal_model_show_times_update').modal('show');
         });
         $('#available_show_times').on('click', function(ev) {
             var action = $('#form_model_show_times_update input[name="action"]:hidden').val();
+            var show_id = $('#form_model_show_times_update input[name="show_id"]:hidden').val();
+            var start_date = $('#form_model_show_times_update input[name="start_date"]').val();
+            var end_date = $('#form_model_show_times_update input[name="end_date"]').val();
+            var time = $('#form_model_show_times_update input[name="time"]').val();
+            var time_alternative = $('#form_model_show_times_update input[name="time_alternative"]').val();
+            var weekdays = [];
+            $('#form_model_show_times_update input[name="days[]"]:checked').each(function(){
+                weekdays.push($(this).val()) ;
+             });
+            if(weekdays.length) 
+            {
+                if(start_date != '' && end_date != '')
+                {
+                    if(time != '')
+                    {
+                        if(action>0) action = 'add';
+                        else action = 'delete';
+                        jQuery.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '/admin/shows/showtimes', 
+                            data: {action:action,show_id:show_id,weekdays:weekdays,start_date:start_date,end_date:end_date,time:time,time_alternative:time_alternative}, 
+                            success: function(data) {
+                                if(data.success) 
+                                {
+                                    $('#tb_show_times').empty();
+                                    $.each(data.dates,function(k, v) {
+                                        //default style
+                                        if(v.available)
+                                        {
+                                            var available = '<span class="label label-sm sbold label-success"> Yes </span>';
+                                            var input = '<input type="hidden" name="showtime[]" value="'+v.showtime+'">';
+                                        }    
+                                        else
+                                        {
+                                            var available = '<span class="label label-sm sbold label-danger"> No </span>';
+                                            var input = '';
+                                        }    
+                                        var st = moment(v.showtime);
+                                        $('#tb_show_times').append('<tr><td>'+st.format('dddd')+'</td><td>'+st.format('MMMM Do YYYY')+'</td><td>'+st.format('h:mm a')+'</td><td><center>'+available+input+'</center></td><td><input type="button" value="X" class="btn sbold bg-red red"></td></tr>');
+                                    });  
+                                }   
+                                else
+                                    alert(data.msg);
+                            },
+                            error: function(){
+                                alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+                            }
+                        });
+                    }
+                    else alert('You must select a valid time for the event(s)');
+                }
+                else alert('You must select a valid date range for the event(s)');
+            }
+            else alert('You must select at least a week day for the event(s)');
         });
         $('#btn_model_show_time_delete').on('click', function(ev) {
             $('#form_model_show_times_update').trigger('reset');
+            $('#tb_show_times').empty();
             $('#form_model_show_times_update input[name="action"]:hidden').val('-1').trigger('change');
             $('#modal_model_show_times_update').modal('show');
         });
-        
-        //*********
-        
-        
-        $('#btn_model_band_add').on('click', function(ev) {
-            $('#form_model_show_bands input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_show_bands').trigger('reset');
-            $('#modal_model_show_bands').modal('show');
-        });
-        //edit
-        tableBands.on( 'row-reordered', function ( e, diff, edit ) {
-            var show_id = $('#form_model_update input[name="id"]:hidden').val();
-            var order = [];
-            for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
-                order.push(diff[i].oldData);
-            }
-            if(order.length > 1)
+        //function submit show_times
+        $('#submit_model_show_times_update').on('click', function(ev) {
+            if($('#tb_show_times input[name="showtime[]"]:hidden').length)
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/shows/bands', 
-                    data: {action:0,show_id:show_id,order:order}, 
-                    success: function(data) {
-                        if(!data.success) 
-                            alert(data.msg);
-                    },
-                    error: function(){
-                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
-                    }
-                });
-            }
-        } );
-        //delete
-        $('#tb_sub_bands tbody').on('click', 'input[type="button"]', function(e){
-            var show_id = $('#form_model_update input[name="id"]:hidden').val();
-            var row = $(this).closest('tr');
-            var order = tableBands.row(row).data()[0];
-            if($(this).hasClass('delete')) 
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/bands', 
-                    data: {action:-1,show_id:show_id,order:order}, 
+                    url: '/admin/shows/showtimes', 
+                    data: $('#form_model_show_times_update').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
                         {
-                            tableBands.clear().draw();
-                            if(data.bands && data.bands.length)
+                            //if delete remove from calendar
+                            //if add added to calendar
+                            if(data.action == 1 && data.showtimes && data.showtimes.length)
                             {
-                                $.each(data.bands,function(k, v) {
-                                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                $.each(data.showtimes,function(k, v) {
+                                    var date = new Date(v.show_time);
+                                    var allday = false;
+                                    if(v.is_active == 0) 
+                                    {
+                                        var title = '(Inactive)'; 
+                                        var color = App.getBrandColor('red');
+                                    }
+                                    else
+                                    {
+                                        var title = '(Active)'; 
+                                        if(date.getHours() >= 6 && date.getHours() < 12)
+                                            var color = App.getBrandColor('orange');
+                                        else if(date.getHours() >= 12 && date.getHours() <= 18)
+                                            var color = App.getBrandColor('blue');
+                                        else
+                                            var color = App.getBrandColor('purple');
+                                    }
+                                    if(v.time_alternative)
+                                    {
+                                        title += ': '+v.time_alternative; 
+                                        allday =true;
+                                    }
+                                    calendarShowTimes.fullCalendar('renderEvent', {
+                                        id:v.id,
+                                        title: title,
+                                        start: date,
+                                        end: date,
+                                        backgroundColor: color,
+                                        allDay: allday
+                                    }, true);                               
                                 });
                             }
-                        }    
-                        else
-                            alert(data.msg);
-                    },
-                    error: function(){
-                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
-                    }
-                });
-            }
-            else alert('Invalid Option');
-        });
-        //function submit show_times
-        $('#submit_model_show_bands').on('click', function(ev) {
-            if($('#form_model_show_bands').valid())
-            {
-                var show_id = $('#form_model_update input[name="id"]:hidden').val();
-                var band_id = $('#form_model_show_bands select[name="band_id"]').val();
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/bands', 
-                    data: {action:1,show_id:show_id,band_id:band_id}, 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            tableBands.row.add( [ data.band.n_order,data.band.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw(); 
+                            else if(data.action == 1 && data.showtimes && data.showtimes.length)
+                            {
+                                 $.each(data.showtimes,function(k, v) {
+                                     calendarShowTimes.fullCalendar('removeEvents',v.id);
+                                 });
+                            }
+                            $('#modal_model_show_times_update').modal('hide');
                         }
                         else{
                             alert(data.msg);
@@ -1005,7 +1040,7 @@ var TableDatatablesManaged = function () {
                     }
                 }); 
             }
-            else alert('You must fill out correctly the form');
+            else alert('You have not showtimes to save');
         });
         //function with show_times  *****************************************************************************************************   SHOW TIMES END
        
