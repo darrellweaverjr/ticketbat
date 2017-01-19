@@ -97,6 +97,9 @@ var TableDatatablesManaged = function () {
                             $.each(data.tickets,function(k, t) {
                                 $('#form_model_show_times_toggle :checkbox[value="'+t+'"]').prop('checked',true);   
                             });
+                            var st = moment(event.showtime);
+                            var link = 'http://www.ticketbat.com/buy/'+$('#form_model_update input[name="slug"]').val()+'/'+event.id;
+                            $('.link_model_show_times_toggle').html(st.format('dddd, MMMM Do, YYYY @ hh:mm A')+'<br><a href="'+link+'" target="_blank">'+link+'</a>');
                             $('#modal_model_show_times_toggle').modal('show');
                         }
                         else{
@@ -173,6 +176,19 @@ var TableDatatablesManaged = function () {
         });
         $('#clear_show_times_time').on('click', function(ev) {
             $('#show_times_time').val('');
+        });
+        //render calendar when showtimes tab is clicked
+        $('a[href="#tab_model_update_showtimes"]').on('click', function(ev) {
+            window.setTimeout(function(){
+                 calendarShowTimes.fullCalendar('render'); 
+             },300);
+        });
+        //render calendar when showtimes tab is clicked
+        $('#go_to_slug').on('click', function(ev) {
+            var id = $('#form_model_update [name="id"]').val()
+            var slug = $('#form_model_update [name="slug"]').val();
+            if(id && slug)
+                window.open('http://www.ticketbat.com/event/'+slug);
         });
         //get slug on name change
         $('#form_model_update [name="name"]').bind('change',function() {
@@ -284,6 +300,7 @@ var TableDatatablesManaged = function () {
             $('#tb_show_passwords').empty();
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','block');
             $('#form_model_show_times_toggle .ticket_types_lists').empty();
+            $('#form_model_show_times_update .ticket_types_lists').empty();
             $('a[href="#tab_model_update_tickets"]').parent().css('display','block');
             $('#tb_show_tickets').empty();
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
@@ -332,6 +349,7 @@ var TableDatatablesManaged = function () {
                                     $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label><br>');
                                     $('#modal_model_show_passwords .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
                                     $('#form_model_show_times_toggle .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                                    $('#form_model_show_times_update .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
                                 }
                             });
                         }
@@ -370,7 +388,9 @@ var TableDatatablesManaged = function () {
                             });
                         }
                         //fill out showtimes
-                        //calendarShowTimes.fullCalendar('destroy');
+                        calendarShowTimes.fullCalendar('removeEvents');
+                        calendarShowTimes.fullCalendar('removeEventSources');
+                        //calendarShowTimes.fullCalendar('refetchEvents');
                         if(data.show_times && data.show_times.length)
                         {
                             var maintitle = ' ';
@@ -388,7 +408,7 @@ var TableDatatablesManaged = function () {
                                 {
                                     var title = maintitle+'(Active)'; 
                                     if(date.getHours() >= 6 && date.getHours() < 12)
-                                        color = App.getBrandColor('orange');
+                                        color = App.getBrandColor('green');
                                     else if(date.getHours() >= 12 && date.getHours() <= 18)
                                         color = App.getBrandColor('blue');
                                     else
@@ -398,10 +418,12 @@ var TableDatatablesManaged = function () {
                                 {
                                     title += ': '+v.time_alternative; 
                                     allday =true;
+                                    var color = App.getBrandColor('yellow');
                                 }
                                 //fill out the items in calendar
                                 calendarShowTimes.fullCalendar('renderEvent', {
                                     id:v.id,
+                                    showtime:v.show_time,
                                     title: title,
                                     start: date,
                                     end: date,
@@ -423,7 +445,7 @@ var TableDatatablesManaged = function () {
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the band's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to get the event's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     });
@@ -873,8 +895,9 @@ var TableDatatablesManaged = function () {
                         else
                         {
                             var title = '(Active)'; 
+                            alert(date.getHours());
                             if(date.getHours() >= 6 && date.getHours() < 12)
-                                var color = App.getBrandColor('orange');
+                                var color = App.getBrandColor('green');
                             else if(date.getHours() >= 12 && date.getHours() <= 18)
                                 var color = App.getBrandColor('blue');
                             else
@@ -884,9 +907,11 @@ var TableDatatablesManaged = function () {
                         {
                             title += ': '+data.showtime.time_alternative; 
                             allday =true;
+                            var color = App.getBrandColor('yellow');
                         }
                         calendarShowTimes.fullCalendar('renderEvent', {
                             id:data.showtime.id,
+                            showtime:data.showtime.show_time,
                             title: title,
                             start: date,
                             end: date,
@@ -908,9 +933,12 @@ var TableDatatablesManaged = function () {
             $('#form_model_show_times_update').trigger('reset');
             $('#tb_show_times').empty();
             $('#form_model_show_times_update input[name="action"]:hidden').val('1').trigger('change');
+            $('#subform_show_times_update').css('display','none');
             $('#modal_model_show_times_update').modal('show');
         });
         $('#available_show_times').on('click', function(ev) {
+            $('#tb_show_times').empty();
+            $('#tb_show_times').append('<tr><td colspan="5"><center><h3>Checking. Please Wait...</h3></center></td></tr>');
             var action = $('#form_model_show_times_update input[name="action"]:hidden').val();
             var show_id = $('#form_model_show_times_update input[name="show_id"]:hidden').val();
             var start_date = $('#form_model_show_times_update input[name="start_date"]').val();
@@ -927,8 +955,9 @@ var TableDatatablesManaged = function () {
                 {
                     if(time != '')
                     {
-                        if(action>0) action = 'add';
-                        else action = 'delete';
+                        if(action>0) var action = 'add';
+                        else if(action==0) var action = 'update';
+                        else var action = 'delete';
                         jQuery.ajax({
                             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             type: 'POST',
@@ -941,24 +970,18 @@ var TableDatatablesManaged = function () {
                                     $.each(data.dates,function(k, v) {
                                         //default style
                                         if(v.available)
-                                        {
-                                            var available = '<span class="label label-sm sbold label-success"> Yes </span>';
-                                            var input = '<input type="hidden" name="showtime[]" value="'+v.showtime+'">';
-                                        }    
+                                            var available = '<input type="hidden" name="showtime[]" value="'+v.showtime+'"><span class="label label-sm sbold label-success">Yes</span>';
                                         else
-                                        {
-                                            var available = '<span class="label label-sm sbold label-danger"> No </span>';
-                                            var input = '';
-                                        }    
+                                            var available = '<span class="label label-sm sbold label-danger">No</span>';
                                         var st = moment(v.showtime);
-                                        $('#tb_show_times').append('<tr><td>'+st.format('dddd')+'</td><td>'+st.format('MMMM Do YYYY')+'</td><td>'+st.format('h:mm a')+'</td><td><center>'+available+input+'</center></td><td><input type="button" value="X" class="btn sbold bg-red red"></td></tr>');
+                                        $('#tb_show_times').append('<tr><td>'+st.format('dddd')+'</td><td>'+st.format('MM/DD/YYYY')+'</td><td>'+st.format('h:mma')+'</td><td><center>'+available+'</center></td><td><input type="button" value="X" class="btn sbold bg-red red"></td></tr>');
                                     });  
                                 }   
                                 else
                                     alert(data.msg);
                             },
                             error: function(){
-                                alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+                                alert("There was an error trying to search availables showtimes for the action!<br>The request could not be sent to the server.");
                             }
                         });
                     }
@@ -968,10 +991,18 @@ var TableDatatablesManaged = function () {
             }
             else alert('You must select at least a week day for the event(s)');
         });
+        $('#btn_model_show_time_edit').on('click', function(ev) {
+            $('#form_model_show_times_update').trigger('reset');
+            $('#tb_show_times').empty();
+            $('#form_model_show_times_update input[name="action"]:hidden').val('0').trigger('change');
+            $('#subform_show_times_update').css('display','block');
+            $('#modal_model_show_times_update').modal('show');
+        });
         $('#btn_model_show_time_delete').on('click', function(ev) {
             $('#form_model_show_times_update').trigger('reset');
             $('#tb_show_times').empty();
             $('#form_model_show_times_update input[name="action"]:hidden').val('-1').trigger('change');
+            $('#subform_show_times_update').css('display','none');
             $('#modal_model_show_times_update').modal('show');
         });
         //function submit show_times
@@ -986,48 +1017,57 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            //if delete remove from calendar
-                            //if add added to calendar
-                            if(data.action == 1 && data.showtimes && data.showtimes.length)
+                            if(data.showtimes && data.showtimes.length)
                             {
+                                //loop all 
                                 $.each(data.showtimes,function(k, v) {
-                                    var date = new Date(v.show_time);
-                                    var allday = false;
-                                    if(v.is_active == 0) 
+                                    //delete
+                                    if(data.action ==-1)
                                     {
-                                        var title = '(Inactive)'; 
-                                        var color = App.getBrandColor('red');
+                                         calendarShowTimes.fullCalendar('removeEvents',v);
                                     }
-                                    else
+                                    //update
+                                    else if(data.action ==0)
                                     {
-                                        var title = '(Active)'; 
-                                        if(date.getHours() >= 6 && date.getHours() < 12)
-                                            var color = App.getBrandColor('orange');
-                                        else if(date.getHours() >= 12 && date.getHours() <= 18)
-                                            var color = App.getBrandColor('blue');
+                                         calendarShowTimes.fullCalendar('removeEvents',v.id);
+                                    }
+                                    //add or update
+                                    if(data.action >= 0)
+                                    {
+                                        var date = new Date(v.show_time);
+                                        var allday = false;
+                                        if(v.is_active == 0) 
+                                        {
+                                            var title = '(Inactive)'; 
+                                            var color = App.getBrandColor('red');
+                                        }
                                         else
-                                            var color = App.getBrandColor('purple');
+                                        {
+                                            var title = '(Active)'; 
+                                            if(date.getHours() >= 6 && date.getHours() < 12)
+                                                var color = App.getBrandColor('green');
+                                            else if(date.getHours() >= 12 && date.getHours() <= 18)
+                                                var color = App.getBrandColor('blue');
+                                            else
+                                                var color = App.getBrandColor('purple');
+                                        }
+                                        if(v.time_alternative)
+                                        {
+                                            title += ': '+v.time_alternative; 
+                                            allday =true;
+                                            var color = App.getBrandColor('yellow');
+                                        }
+                                        calendarShowTimes.fullCalendar('renderEvent', {
+                                            id:v.id,
+                                            showtime:v.show_time,
+                                            title: title,
+                                            start: date,
+                                            end: date,
+                                            backgroundColor: color,
+                                            allDay: allday
+                                        }, true);  
                                     }
-                                    if(v.time_alternative)
-                                    {
-                                        title += ': '+v.time_alternative; 
-                                        allday =true;
-                                    }
-                                    calendarShowTimes.fullCalendar('renderEvent', {
-                                        id:v.id,
-                                        title: title,
-                                        start: date,
-                                        end: date,
-                                        backgroundColor: color,
-                                        allDay: allday
-                                    }, true);                               
                                 });
-                            }
-                            else if(data.action == 1 && data.showtimes && data.showtimes.length)
-                            {
-                                 $.each(data.showtimes,function(k, v) {
-                                     calendarShowTimes.fullCalendar('removeEvents',v.id);
-                                 });
                             }
                             $('#modal_model_show_times_update').modal('hide');
                         }
@@ -1040,7 +1080,7 @@ var TableDatatablesManaged = function () {
                     }
                 }); 
             }
-            else alert('You have not showtimes to save');
+            else alert('You have not showtimes availables to save');
         });
         //function with show_times  *****************************************************************************************************   SHOW TIMES END
        
