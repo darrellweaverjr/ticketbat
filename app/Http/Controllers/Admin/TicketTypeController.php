@@ -49,7 +49,6 @@ class TicketTypeController extends Controller{
                     $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(in_array($tt,$inactives))? '' : 'checked'];
                 }
                 $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
-                //dd($tickets);
                 //return view
                 return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles'));
             }

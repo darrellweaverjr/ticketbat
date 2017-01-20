@@ -527,7 +527,7 @@ var TableDatatablesManaged = function () {
                 ids.push(item.id);
             });             
             swal({
-                title: "The following band(s) will be removed, please confirm action: ",
+                title: "The following show(s) will be removed, please confirm action: ",
                 text: "<span style='text-align:left;color:red;'>"+html+"</span>",
                 html: true,
                 type: "warning",
@@ -544,7 +544,7 @@ var TableDatatablesManaged = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/admin/bands/remove', 
+                        url: '/admin/shows/remove', 
                         data: {id:ids}, 
                         success: function(data) {
                             if(data.success)
@@ -569,7 +569,7 @@ var TableDatatablesManaged = function () {
                         error: function(){
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
-                                text: "There was an error deleting the band(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
+                                text: "There was an error deleting the show(s)!<br>They might have some dependences<br>or<br>the request could not be sent to the server.",
                                 html: true,
                                 type: "error"
                             });
@@ -895,7 +895,6 @@ var TableDatatablesManaged = function () {
                         else
                         {
                             var title = '(Active)'; 
-                            alert(date.getHours());
                             if(date.getHours() >= 6 && date.getHours() < 12)
                                 var color = App.getBrandColor('green');
                             else if(date.getHours() >= 12 && date.getHours() <= 18)
