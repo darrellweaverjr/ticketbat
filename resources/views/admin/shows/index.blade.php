@@ -7,6 +7,7 @@
 <link href="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
 <link href="/themes/admin/assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/cubeportfolio/css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -654,7 +655,9 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_images">
-                                        
+                                        <div class="row" style="max-height:500px !important;overflow-y: auto;">
+                                            <div id="js-grid-juicy-projects" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                        </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_banners">
                                         
@@ -1138,5 +1141,6 @@
 <script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/clockface/js/clockface.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/cubeportfolio/js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="/js/admin/shows/index.js" type="text/javascript"></script>
 @endsection

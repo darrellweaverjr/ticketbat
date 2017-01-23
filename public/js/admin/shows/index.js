@@ -112,6 +112,103 @@ var TableDatatablesManaged = function () {
                 }); 
             }
         });
+        //fn fill out showtimes
+        var fn_show_times = function(event)
+        {
+            var maintitle = ' ';
+            var color = 'gray';
+            var date = new Date(event.show_time);
+            var allday = false;
+            if(event.is_active == 0) 
+            {
+                var title = maintitle+'(Inactive)'; 
+                color = App.getBrandColor('red');
+            }
+            else
+            {
+                var title = maintitle+'(Active)'; 
+                if(date.getHours() >= 6 && date.getHours() < 12)
+                    color = App.getBrandColor('green');
+                else if(date.getHours() >= 12 && date.getHours() <= 18)
+                    color = App.getBrandColor('blue');
+                else
+                    color = App.getBrandColor('purple');
+            }
+            if(event.time_alternative)
+            {
+                title += ': '+event.time_alternative; 
+                allday =true;
+                var color = App.getBrandColor('yellow');
+            }
+            //fill out the items in calendar
+            calendarShowTimes.fullCalendar('renderEvent', {
+                id:event.id,
+                showtime:event.show_time,
+                title: title,
+                start: date,
+                end: date,
+                backgroundColor: color,
+                allDay: allday
+            }, true);     
+        };
+        // init images
+        $('#js-grid-juicy-projects').cubeportfolio({
+            layoutMode: 'grid',
+            defaultFilter: '*',
+            animationType: 'quicksand',
+            //gapHorizontal: 0,
+            //gapVertical: 35,
+            gridAdjustment: 'responsive',
+            mediaQueries: [{
+                width: 1500,
+                cols: 5
+            }, {
+                width: 1100,
+                cols: 4
+            }, {
+                width: 800,
+                cols: 3
+            }, {
+                width: 480,
+                cols: 2
+            }, {
+                width: 320,
+                cols: 1
+            }],
+            caption: 'overlayBottomReveal',
+            displayType: 'default',
+            displayTypeSpeed: 10,
+
+            // lightbox
+            lightboxDelegate: '.cbp-lightbox',
+            lightboxGallery: true,
+            lightboxTitleSrc: 'data-title',
+            lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
+
+            // singlePage popup
+            singlePageDelegate: '.cbp-singlePage',
+            singlePageDeeplinking: true,
+            singlePageStickyNavigation: true,
+            singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>',
+        });
+        $('div .cbp-popup-lightbox').click(function() {
+            $('#modal_model_update').modal('show');
+        });
+        //fn_init_images();
+        //fn fill out images
+        var fn_show_images = function(image)
+        {
+            if(!image.caption) image.caption = '';
+            return  '<div  class="cbp-item '+image.image_type+'" style="padding:10px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.url+'" alt=""></div>'+
+                    '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
+                    '<a href="'+image.url+'" class="cbp-l-caption-buttonLeft btn yellow uppercase" target="_blank">Edit</a>'+
+                    '<a href="'+image.url+'" class="cbp-l-caption-buttonLeft btn red uppercase" rel="nofollow">Delete</a>'+
+                    '<a href="'+image.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn blue uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.image_type+'<br>'+image.caption+'">View</a>'+
+                    '</div></div></div></div>'+
+                    '<div class="cbp-l-grid-projects-title uppercase text-center uppercase text-center">'+image.image_type+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc uppercase text-center uppercase text-center">'+image.caption+'</div>'+
+                    '</div>';
+        };
         //on_sale_date
         $('#on_sale_date').datetimepicker({
             autoclose: true,
@@ -305,6 +402,7 @@ var TableDatatablesManaged = function () {
             $('#tb_show_tickets').empty();
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
+            $('#tb_show_images').empty();
             $('#modal_model_update_title').html('Edit Show');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -384,53 +482,29 @@ var TableDatatablesManaged = function () {
                         if(data.bands && data.bands.length)
                         {
                             $.each(data.bands,function(k, v) {
-                                tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                
                             });
                         }
                         //fill out showtimes
                         calendarShowTimes.fullCalendar('removeEvents');
                         calendarShowTimes.fullCalendar('removeEventSources');
-                        //calendarShowTimes.fullCalendar('refetchEvents');
                         if(data.show_times && data.show_times.length)
                         {
-                            var maintitle = ' ';
-                            var color = 'gray';
                             $.each(data.show_times,function(k, v) {
-                                //init config items
-                                var date = new Date(v.show_time);
-                                var allday = false;
-                                if(v.is_active == 0) 
-                                {
-                                    var title = maintitle+'(Inactive)'; 
-                                    color = App.getBrandColor('red');
-                                }
-                                else
-                                {
-                                    var title = maintitle+'(Active)'; 
-                                    if(date.getHours() >= 6 && date.getHours() < 12)
-                                        color = App.getBrandColor('green');
-                                    else if(date.getHours() >= 12 && date.getHours() <= 18)
-                                        color = App.getBrandColor('blue');
-                                    else
-                                        color = App.getBrandColor('purple');
-                                }
-                                if(v.time_alternative)
-                                {
-                                    title += ': '+v.time_alternative; 
-                                    allday =true;
-                                    var color = App.getBrandColor('yellow');
-                                }
-                                //fill out the items in calendar
-                                calendarShowTimes.fullCalendar('renderEvent', {
-                                    id:v.id,
-                                    showtime:v.show_time,
-                                    title: title,
-                                    start: date,
-                                    end: date,
-                                    backgroundColor: color,
-                                    allDay: allday
-                                }, true);                              
+                                fn_show_times(v) ;                          
                             });
+                        }
+                        //fill out images
+                        $('#js-grid-juicy-projects .cbp-item').remove();
+                        $('#js-grid-juicy-projects').trigger('resize.cbp');
+                        if(data.images && data.images.length)
+                        {
+                            var html = '';
+                            $.each(data.images,function(k, v) {
+                                html = html + fn_show_images(v); 
+                            });
+                            $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
+                            $('#js-grid-juicy-projects').trigger('resize.cbp');
                         }
                         //show modal
                         $('#modal_model_update').modal('show');
@@ -885,38 +959,7 @@ var TableDatatablesManaged = function () {
                     if(data.success) 
                     {
                         calendarShowTimes.fullCalendar('removeEvents', data.showtime.id);
-                        var date = new Date(data.showtime.show_time);
-                        var allday = false;
-                        if(data.showtime.is_active == 0) 
-                        {
-                            var title = '(Inactive)'; 
-                            var color = App.getBrandColor('red');
-                        }
-                        else
-                        {
-                            var title = '(Active)'; 
-                            if(date.getHours() >= 6 && date.getHours() < 12)
-                                var color = App.getBrandColor('green');
-                            else if(date.getHours() >= 12 && date.getHours() <= 18)
-                                var color = App.getBrandColor('blue');
-                            else
-                                var color = App.getBrandColor('purple');
-                        }
-                        if(data.showtime.time_alternative)
-                        {
-                            title += ': '+data.showtime.time_alternative; 
-                            allday =true;
-                            var color = App.getBrandColor('yellow');
-                        }
-                        calendarShowTimes.fullCalendar('renderEvent', {
-                            id:data.showtime.id,
-                            showtime:data.showtime.show_time,
-                            title: title,
-                            start: date,
-                            end: date,
-                            backgroundColor: color,
-                            allDay: allday
-                        }, true);  
+                        fn_show_times(data.showtime); 
                         $('#modal_model_show_times_toggle').modal('hide');
                     }
                     else{
@@ -1033,38 +1076,7 @@ var TableDatatablesManaged = function () {
                                     //add or update
                                     if(data.action >= 0)
                                     {
-                                        var date = new Date(v.show_time);
-                                        var allday = false;
-                                        if(v.is_active == 0) 
-                                        {
-                                            var title = '(Inactive)'; 
-                                            var color = App.getBrandColor('red');
-                                        }
-                                        else
-                                        {
-                                            var title = '(Active)'; 
-                                            if(date.getHours() >= 6 && date.getHours() < 12)
-                                                var color = App.getBrandColor('green');
-                                            else if(date.getHours() >= 12 && date.getHours() <= 18)
-                                                var color = App.getBrandColor('blue');
-                                            else
-                                                var color = App.getBrandColor('purple');
-                                        }
-                                        if(v.time_alternative)
-                                        {
-                                            title += ': '+v.time_alternative; 
-                                            allday =true;
-                                            var color = App.getBrandColor('yellow');
-                                        }
-                                        calendarShowTimes.fullCalendar('renderEvent', {
-                                            id:v.id,
-                                            showtime:v.show_time,
-                                            title: title,
-                                            start: date,
-                                            end: date,
-                                            backgroundColor: color,
-                                            allDay: allday
-                                        }, true);  
+                                        fn_show_times(v); 
                                     }
                                 });
                             }
