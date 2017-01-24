@@ -55,6 +55,25 @@ class Image extends Model
     {
         return $this->belongsToMany('App\Http\Models\Venue','venue_images','image_id','venue_id');
     }
+    /**
+     * Set the url for the current image.
+     */
+    public function set_url($url)
+    {
+        $this->url = Image::stablish_image('images',$url);
+    }
+    /**
+     * Remove the image file for the current image.
+     */
+    public function delete_image_file()
+    {
+        if(Image::remove_image($this->url))
+        {
+            $this->url = '';
+            return true;
+        }
+        return true;   
+    }
     //PERSONALIZED METHODS
     /**
      * Upload images
@@ -160,6 +179,24 @@ class Image extends Model
             else return true;
         } catch (Exception $ex) {
             return false;
+        }
+    }
+    /**
+     * View images
+     */
+    public static function view_image($image_url)
+    {
+        try {  
+            // change relative url uploads for real one
+            if(preg_match('/\/uploads\//',$image_url)) 
+                return env('IMAGE_URL_OLDTB_SERVER').$image_url;
+            // change relative url s3 for real one
+            if(preg_match('/\/s3\//',$image_url)) 
+                return env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$image_url);
+            //return the same
+            return $image_url;
+        } catch (Exception $ex) {
+            return $image_url;
         }
     }
 }
