@@ -1140,124 +1140,60 @@
     </div>
     <!-- END ADD/REMOVE SHOWTIMES MODAL--> 
     <!-- BEGIN ADD/REMOVE SHOWIMAGES MODAL--> 
-    <div id="modal_model_show_times_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:1000px !important;">
+    <div id="modal_model_show_images" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Show Time</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Image</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" id="form_model_show_times_update">
+                    <form method="post" id="form_model_show_images">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="id" value="" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="action" value="" />
                         <div class="form-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label class="control-label">
-                                        <span class="required"> Search Showtimes </span>
-                                    </label><hr>
-                                    <div class="form-group">    
-                                        <label class="control-label col-md-3">Week Days
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="1" />Mon<span></span></label>
-                                            <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="2" />Tue<span></span></label>
-                                            <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="3" />Wed<span></span></label>
-                                            <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="4" />Thu<span></span></label>
-                                            <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="5" />Fri<span></span></label>
-                                            <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="6" />Sat<span></span></label>
-                                            <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="0" />Sun<span></span></label>
-                                        </div> 
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Date range
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <div class="input-group" id="show_times_date">
-                                                <input type="text" class="form-control" name="start_date" value="{{date('m/d/Y')}}" readonly="true">
-                                                <span class="input-group-addon"> to </span>
-                                                <input type="text" class="form-control" name="end_date" value="{{date('m/d/Y')}}" readonly="true">
-                                                <span class="input-group-btn">
-                                                    <button class="btn default date-range-toggle" type="button">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </button>
-                                                    <button class="btn default" type="button" id="clear_show_times_date">
-                                                        <i class="fa fa-remove"></i>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Time</label>
-                                        <div class="col-md-5 show-error">
-                                            <div class="input-group">
-                                                <input type="text" id="show_times_time" name="time" value="00:00" class="form-control" readonly="true" />
-                                                <span class="input-group-btn">
-                                                    <button class="btn default" type="button" id="show_times_time_toggle">
-                                                        <i class="fa fa-clock-o"></i>
-                                                    </button>
-                                                    <button class="btn default" type="button" id="clear_show_times_time">
-                                                    <i class="fa fa-remove"></i>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 show-error">
-                                            <input type="text" name="time_alternative" value="" class="form-control" placeholder="Alternative" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-block" type="button" id="available_show_times"> Search
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </div>
-                                    <div id="subform_show_times_update"><br>
-                                        <label class="control-label">
-                                            <span class="required"> Update Available Showtimes </span>
-                                        </label><hr>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3">Status
-                                            </label>
-                                            <div class="col-md-9 show-error">
-                                                <input type="hidden" name="is_active" value="0"/>
-                                                <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
-                                            </div>
-                                        </div> 
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label">Tickets to inactive for this event
-                                            </label>
-                                            <div class="col-md-9 ticket_types_lists">
-                                            </div> 
-                                        </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Type
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <select class="form-control" name="image_type">
+                                            @foreach($image_types as $index=>$it)
+                                                <option value="{{$index}}">{{$it}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6 table-responsive" style="padding:20px;max-height:600px;overflow-y: auto;">
-                                    <table class="table table-striped table-hover table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th> Week Day </th>
-                                                <th> Date </th>
-                                                <th> Time </th>
-                                                <th> Avail. </th>
-                                                <th> </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tb_show_times">
-                                        </tbody>
-                                    </table>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Caption
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input type="text" class="form-control" name="caption" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="subform_show_images">
+                                    <label class="control-label col-md-3">Image
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error" >
+                                        <center>
+                                            <input type="hidden" name="url"/>
+                                            <button type="button" id="btn_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <img name="url" alt="- No image -" src="" width="323px" height="270px" />
+                                        </center>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_update').trigger('reset')">Cancel</button>
-                                    <button type="button" id="submit_model_show_times_update" class="btn sbold grey-salsa">Save</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="submit_model_show_images" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
                         </div>

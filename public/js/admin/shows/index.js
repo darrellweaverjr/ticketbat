@@ -281,6 +281,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_images input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -1047,22 +1048,7 @@ var TableDatatablesManaged = function () {
             gapHorizontal: 0,
             gapVertical: 0,
             gridAdjustment: 'responsive',
-            mediaQueries: [{
-                width: 1500,
-                cols: 5
-            }, {
-                width: 1100,
-                cols: 4
-            }, {
-                width: 800,
-                cols: 3
-            }, {
-                width: 480,
-                cols: 2
-            }, {
-                width: 320,
-                cols: 1
-            }],
+            mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
             caption: 'overlayBottomReveal',
             displayType: 'default',
             displayTypeSpeed: 1,
@@ -1075,23 +1061,127 @@ var TableDatatablesManaged = function () {
             singlePageStickyNavigation: true,
             singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>'
         });
-        $('div .cbp-popup-lightbox').click(function() {
+        //onclose preview show modal
+        $(document).on('click', 'div.cbp-popup-close', function(){
             $('#modal_model_update').modal('show');
         });
         //fn fill out images
         var fn_show_images = function(image)
         {
             if(!image.caption) image.caption = '';
-            return  '<div id="image_'+image.id+'" class="cbp-item '+image.image_type+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.url+'" alt=""></div>'+
+            return  '<div class="cbp-item '+image.image_type+' image_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.url+'" alt=""></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
-                    '<a href="'+image.url+'" class="cbp-l-caption-buttonLeft btn yellow uppercase" target="_blank"><i class="fa fa-edit"></i></a>'+
-                    '<a href="'+image.url+'" class="cbp-l-caption-buttonLeft btn red uppercase" rel="nofollow"><i class="fa fa-remove"></i></a>'+
+                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
+                    '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+image.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.image_type+'<br>'+image.caption+'"><i class="fa fa-search"></i></a>'+
                     '</div></div></div></div>'+
                     '<div class="cbp-l-grid-projects-title uppercase text-center uppercase text-center">'+image.image_type+'</div>'+
                     '<div class="cbp-l-grid-projects-desc uppercase text-center uppercase text-center">'+image.caption+'</div>'+
                     '</div>';
         };
+        //add
+        $('#btn_model_image_add').on('click', function(ev) {
+            $('#form_model_show_images').trigger('reset');
+            $('#form_model_show_images input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_images input[name="action"]:hidden').val('1').trigger('change');
+            $('#subform_show_images').css('display','block');
+            $('#modal_model_show_images').modal('show');
+        });
+        //edit
+        $(document).on('click', '#js-grid-juicy-projects a.edit', function(){
+            var id = $(this).attr('rel');
+            $('#form_model_show_images').trigger('reset');
+            $('#form_model_show_images input[name="id"]:hidden').val(id).trigger('change');
+            $('#form_model_show_images input[name="action"]:hidden').val('0').trigger('change');
+            $('#subform_show_images').css('display','none');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/images', 
+                data: {id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_model_show_images [name="caption"]').val(data.image.caption);
+                        $('#form_model_show_images [name="image_type"]').val(data.image.image_type);
+                        $('#modal_model_show_images').modal('show');
+                    }
+                    else{
+                        alert(data.msg);
+                    }
+                },
+                error: function(){
+                    alert("There was an error trying to get the image's information!<br>The request could not be sent to the server.");
+                }
+            }); 
+            $('#modal_model_show_images').modal('show');
+        });
+        //remove
+        $(document).on('click', '#js-grid-juicy-projects a.delete', function(){
+            var id = $(this).attr('rel');
+            var show_id = $('#form_model_show_images [name="show_id"]:hidden').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/images', 
+                data: {action:-1,id:id,show_id:show_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#js-grid-juicy-projects .image_'+id).remove();
+                    }
+                    else{
+                        alert(data.msg);
+                    }
+                },
+                error: function(){
+                    alert("There was an error trying to delete the image's information!<br>The request could not be sent to the server.");
+                }
+            });
+        });
+        //function submit images
+        $('#submit_model_show_images').on('click', function(ev) {
+            if(true)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/images', 
+                    data: $('#form_model_show_images').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            //delete or update
+                            if(data.action <= 0)
+                            {
+                                var id = $('#form_model_show_images [name="id"]:hidden').val();
+                                $('#js-grid-juicy-projects .cbp-item .image_'+id).remove();
+                            }
+                            //add or update
+                            if(data.action >= 0)
+                            {
+                                var html = fn_show_images(data.image); 
+                                $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
+                                $('#js-grid-juicy-projects').trigger('resize.cbp');
+                            }
+                            $('#modal_model_show_times').modal('hide');
+                        }
+                        else{
+                            alert(data.msg);
+                        }
+                    },
+                    error: function(){
+                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+                    }
+                }); 
+            }
+            else alert('You have not showtimes availables to save');
+        });
+        //function load form to upload image
+        $('#btn_upload_image').on('click', function(ev) {
+            var type = $('#form_model_show_images [name="image_type"]').val().toLowerCase();
+            FormImageUpload(type,'#modal_model_show_images','#form_model_show_images [name="url"]');       
+        }); 
         //function with show_images  *****************************************************************************************************   SHOW IMAGES END
        
         //init functions
