@@ -55,7 +55,7 @@
   .cbp > * {
     visibility: hidden; }
   .cbp .cbp-item {
-    position: absolute;
+    /*position: absolute;*/
     top: 0;
     left: 0;
     list-style-type: none;
@@ -2482,7 +2482,7 @@
   height: 40px;
   width: 40px;
   right: 20px;
-  top: 20px; }
+  top: 60px; }
 
 .cbp-popup-lightbox .cbp-popup-close:hover {
   background-position: -92px -46px; }
