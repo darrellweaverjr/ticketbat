@@ -1182,7 +1182,7 @@
                                     <div class="col-md-9 show-error" >
                                         <center>
                                             <input type="hidden" name="url"/>
-                                            <button type="button" id="btn_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <button type="button" id="btn_upload_image_url" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
                                             <img name="url" alt="- No image -" src="" width="323px" height="270px" />
                                         </center>
                                     </div>

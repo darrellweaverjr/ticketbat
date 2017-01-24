@@ -1155,7 +1155,7 @@ var TableDatatablesManaged = function () {
                             if(data.action <= 0)
                             {
                                 var id = $('#form_model_show_images [name="id"]:hidden').val();
-                                $('#js-grid-juicy-projects .cbp-item .image_'+id).remove();
+                                $('#js-grid-juicy-projects .image_'+id).remove();
                             }
                             //add or update
                             if(data.action >= 0)
@@ -1164,7 +1164,7 @@ var TableDatatablesManaged = function () {
                                 $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
                                 $('#js-grid-juicy-projects').trigger('resize.cbp');
                             }
-                            $('#modal_model_show_times').modal('hide');
+                            $('#modal_model_show_images').modal('hide');
                         }
                         else{
                             alert(data.msg);
@@ -1178,7 +1178,7 @@ var TableDatatablesManaged = function () {
             else alert('You have not showtimes availables to save');
         });
         //function load form to upload image
-        $('#btn_upload_image').on('click', function(ev) {
+        $('#btn_upload_image_url').on('click', function(ev) {
             var type = $('#form_model_show_images [name="image_type"]').val().toLowerCase();
             FormImageUpload(type,'#modal_model_show_images','#form_model_show_images [name="url"]');       
         }); 
