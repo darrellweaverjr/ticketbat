@@ -569,10 +569,28 @@ var TableDatatablesManaged = function () {
                             });
                             $('#modal_model_show_passwords').modal('show');
                         }
-                        else alert(data.msg);
+                        else{
+                            $('#modal_model_update').modal('hide');
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to get the password's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_update').modal('hide');
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
@@ -587,21 +605,49 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                             row.remove();  
-                        else
-                            alert(data.msg);
+                        else{
+                            $('#modal_model_update').modal('hide');
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to delete the password!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to delete the password!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
-            else alert('Invalid Option');
+            else
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Invalid Option",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
         });
         //function submit show_passwords
         $('#submit_model_show_passwords').on('click', function(ev) {
+            $('#modal_model_show_passwords').modal('hide');
             if($('#form_model_show_passwords').valid() && $('#form_model_show_passwords [name="ticket_types[]"]:checked').length)
             {
-                $('#modal_model_show_passwords').modal('hide');
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -619,17 +665,45 @@ var TableDatatablesManaged = function () {
                                 $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
                         }
                         else{
-                            alert(data.msg);
-                            $('#modal_model_show_passwords').modal('show');
+                            $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_passwords').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
-                        $('#modal_model_show_passwords').modal('show');
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_passwords').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You must fill out correctly the form');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_passwords').modal('show');
+                });
+            }   
         });
         //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD END
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS BEGIN
@@ -665,20 +739,49 @@ var TableDatatablesManaged = function () {
                             }
                             $('#modal_model_show_tickets').modal('show');
                         }
-                        else alert(data.msg);
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to get the ticket's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
-            else alert('Invalid Option');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Invalid Option",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
         });
         //function submit show_tickets
         $('#submit_model_show_tickets').on('click', function(ev) {
+            $('#modal_model_show_tickets').modal('hide');
             if($('#form_model_show_tickets').valid())
             {
-                $('#modal_model_show_tickets').modal('hide');
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -705,17 +808,45 @@ var TableDatatablesManaged = function () {
                             });               
                         }
                         else{
-                            alert(data.msg);
-                            $('#modal_model_show_tickets').modal('show');
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_tickets').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the ticket's information!<br>The request could not be sent to the server.");
-                        $('#modal_model_show_tickets').modal('show');
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the ticket's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_tickets').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You must fill out correctly the form');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form'",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_tickets').modal('show');
+                });
+            }    
         });
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS END
         //function with show_bands  *****************************************************************************************************   SHOW BANDS BEGIN
@@ -743,10 +874,28 @@ var TableDatatablesManaged = function () {
                     data: {action:0,show_id:show_id,order:order}, 
                     success: function(data) {
                         if(!data.success) 
-                            alert(data.msg);
+                        {
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to re-order the band from this show!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
@@ -775,17 +924,47 @@ var TableDatatablesManaged = function () {
                             }
                         }    
                         else
-                            alert(data.msg);
+                        {
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to delete the band from this show!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
-            else alert('Invalid Option');
+            else
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Invalid Option",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
         });
         //function submit show_bands
         $('#submit_model_show_bands').on('click', function(ev) {
+            $('#modal_model_show_bands').modal('hide');
             if($('#form_model_show_bands').valid())
             {
                 var show_id = $('#form_model_update input[name="id"]:hidden').val();
@@ -797,19 +976,47 @@ var TableDatatablesManaged = function () {
                     data: {action:1,show_id:show_id,band_id:band_id}, 
                     success: function(data) {
                         if(data.success) 
-                        {
                             tableBands.row.add( [ data.band.n_order,data.band.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw(); 
-                        }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_bands').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_bands').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You must fill out correctly the form');
+            else
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_bands').modal('show');
+                });
+            }    
         });
         //function with show_bands  *****************************************************************************************************   SHOW BANDS END
         //function with show_times  *****************************************************************************************************   SHOW TIMES BEGIN
@@ -841,11 +1048,27 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_show_times_toggle').modal('show');
                         }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to get the showtime's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the showtime's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 }); 
             }
@@ -895,6 +1118,7 @@ var TableDatatablesManaged = function () {
         });
         //function submit show_times toggle
         $('#submit_model_show_times_toggle').on('click', function(ev) {
+            $('#modal_model_show_times_toggle').modal('hide');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -905,14 +1129,32 @@ var TableDatatablesManaged = function () {
                     {
                         calendarShowTimes.fullCalendar('removeEvents', data.showtime.id);
                         fn_show_times(data.showtime); 
-                        $('#modal_model_show_times_toggle').modal('hide');
                     }
-                    else{
-                        alert(data.msg);
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_times_toggle').modal('show');
+                        });
                     }
                 },
                 error: function(){
-                    alert("There was an error trying to save the event's information!<br>The request could not be sent to the server.");
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to save the event's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                        $('#modal_model_show_times_toggle').modal('show');
+                    });
                 }
             }); 
         });
@@ -965,18 +1207,79 @@ var TableDatatablesManaged = function () {
                                     });  
                                 }   
                                 else
-                                    alert(data.msg);
+                                {
+                                    $('#modal_model_show_times').modal('hide');
+                                    $('#modal_model_update').modal('hide');						
+                                    swal({
+                                        title: "<span style='color:red;'>Error!</span>",
+                                        text: data.msg,
+                                        html: true,
+                                        type: "error"
+                                    },function(){
+                                        $('#modal_model_update').modal('show');
+                                        $('#modal_model_show_times').modal('show');
+                                    });
+                                }
                             },
                             error: function(){
-                                alert("There was an error trying to search availables showtimes for the action!<br>The request could not be sent to the server.");
+                                $('#modal_model_show_times').modal('hide');
+                                $('#modal_model_update').modal('hide');	   	
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: "There was an error trying to search availables showtimes for the action!<br>The request could not be sent to the server.",
+                                    html: true,
+                                    type: "error"
+                                },function(){
+                                    $('#modal_model_update').modal('show');
+                                    $('#modal_model_show_times').modal('show');
+                                });
                             }
                         });
                     }
-                    else alert('You must select a valid time for the event(s)');
+                    else
+                    {
+                        $('#modal_model_show_times').modal('hide');
+                        $('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "You must select a valid time for the event(s)",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_times').modal('show');
+                        });
+                    }  
                 }
-                else alert('You must select a valid date range for the event(s)');
+                else
+                {
+                    $('#modal_model_show_times').modal('hide');
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "You must select a valid date range for the event(s)",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                        $('#modal_model_show_times').modal('show');
+                    });
+                }  
             }
-            else alert('You must select at least a week day for the event(s)');
+            else
+            {
+                $('#modal_model_show_times').modal('hide');
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select at least a week day for the event(s)",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_times').modal('show');
+                });
+            }  
         });
         $('#btn_model_show_time_edit').on('click', function(ev) {
             $('#form_model_show_times').trigger('reset');
@@ -1028,15 +1331,48 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_show_times').modal('hide');
                         }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_show_times').modal('hide');
+                            $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_times').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_show_times').modal('hide');
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_times').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You have not showtimes availables to save');
+            else
+            {
+                $('#modal_model_show_times').modal('hide');
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You have not showtimes availables to save",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_times').modal('show');
+                });
+            }    
         });
         //function with show_times  *****************************************************************************************************   SHOW TIMES END
         //function with show_images  *****************************************************************************************************   SHOW IMAGES BEGIN
@@ -1106,15 +1442,31 @@ var TableDatatablesManaged = function () {
                         $('#form_model_show_images [name="image_type"]').val(data.image.image_type);
                         $('#modal_model_show_images').modal('show');
                     }
-                    else{
-                        alert(data.msg);
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 },
                 error: function(){
-                    alert("There was an error trying to get the image's information!<br>The request could not be sent to the server.");
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the image's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
                 }
             }); 
-            $('#modal_model_show_images').modal('show');
         });
         //remove
         $(document).on('click', '#js-grid-juicy-projects a.delete', function(){
@@ -1130,18 +1482,36 @@ var TableDatatablesManaged = function () {
                     {
                         $('#js-grid-juicy-projects .image_'+id).remove();
                     }
-                    else{
-                        alert(data.msg);
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 },
                 error: function(){
-                    alert("There was an error trying to delete the image's information!<br>The request could not be sent to the server.");
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to delete the image's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
                 }
             });
         });
         //function submit images
         $('#submit_model_show_images').on('click', function(ev) {
-            if(true)
+            $('#modal_model_show_images').modal('hide');
+            if($('#form_model_show_images [name="action"]').val()=='0' || ($('#form_model_show_images [name="action"]').val()=='1' && $('#form_model_show_images [name="url"]').attr('src')!=''))
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1164,18 +1534,47 @@ var TableDatatablesManaged = function () {
                                 $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
                                 $('#js-grid-juicy-projects').trigger('resize.cbp');
                             }
-                            $('#modal_model_show_images').modal('hide');
                         }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_images').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the image's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_images').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You have not showtimes availables to save');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_images').modal('show');
+                });
+            }
         });
         //function load form to upload image
         $('#btn_upload_image_url').on('click', function(ev) {
