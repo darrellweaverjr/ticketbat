@@ -282,6 +282,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_images input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_banners input[name="parent_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -360,16 +361,28 @@ var TableDatatablesManaged = function () {
                             });
                         }
                         //fill out images
-                        $('#js-grid-juicy-projects .cbp-item').remove();
-                        $('#js-grid-juicy-projects').trigger('resize.cbp');
+                        $('#grid_show_images .cbp-item').remove();
+                        $('#grid_show_images').trigger('resize.cbp');
                         if(data.images && data.images.length)
                         {
                             var html = '';
                             $.each(data.images,function(k, v) {
                                 html = html + fn_show_images(v); 
                             });
-                            $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
-                            $('#js-grid-juicy-projects').trigger('resize.cbp');
+                            $('#grid_show_images').cubeportfolio('appendItems', html);
+                            $('#grid_show_images').trigger('resize.cbp');
+                        }
+                        //fill out banners
+                        $('#grid_show_banners .cbp-item').remove();
+                        $('#grid_show_banners').trigger('resize.cbp');
+                        if(data.banners && data.banners.length)
+                        {
+                            var html = '';
+                            $.each(data.banners,function(k, v) {
+                                html = html + fn_show_banners(v); 
+                            });
+                            $('#grid_show_banners').cubeportfolio('appendItems', html);
+                            $('#grid_show_banners').trigger('resize.cbp');
                         }
                         //show modal
                         $('#modal_model_update').modal('show');
@@ -1377,7 +1390,7 @@ var TableDatatablesManaged = function () {
         //function with show_times  *****************************************************************************************************   SHOW TIMES END
         //function with show_images  *****************************************************************************************************   SHOW IMAGES BEGIN
         // init images
-        $('#js-grid-juicy-projects').cubeportfolio({
+        $('#grid_show_images').cubeportfolio({
             layoutMode: 'grid',
             defaultFilter: '*',
             animationType: 'quicksand',
@@ -1411,8 +1424,8 @@ var TableDatatablesManaged = function () {
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+image.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.image_type+'<br>'+image.caption+'"><i class="fa fa-search"></i></a>'+
                     '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-title uppercase text-center uppercase text-center">'+image.image_type+'</div>'+
-                    '<div class="cbp-l-grid-projects-desc uppercase text-center uppercase text-center">'+image.caption+'</div>'+
+                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.image_type+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+image.caption+'</div>'+
                     '</div>';
         };
         //add
@@ -1420,15 +1433,19 @@ var TableDatatablesManaged = function () {
             $('#form_model_show_images').trigger('reset');
             $('#form_model_show_images input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_show_images input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_show_images input[name="url"]:hidden').val('').trigger('change');
+            $('#form_model_show_images img[name="url"]').attr('src','');
             $('#subform_show_images').css('display','block');
             $('#modal_model_show_images').modal('show');
         });
         //edit
-        $(document).on('click', '#js-grid-juicy-projects a.edit', function(){
+        $(document).on('click', '#grid_show_images a.edit', function(){
             var id = $(this).attr('rel');
             $('#form_model_show_images').trigger('reset');
             $('#form_model_show_images input[name="id"]:hidden').val(id).trigger('change');
             $('#form_model_show_images input[name="action"]:hidden').val('0').trigger('change');
+            $('#form_model_show_images input[name="url"]:hidden').val('').trigger('change');
+            $('#form_model_show_images img[name="url"]').attr('src','');
             $('#subform_show_images').css('display','none');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1469,7 +1486,7 @@ var TableDatatablesManaged = function () {
             }); 
         });
         //remove
-        $(document).on('click', '#js-grid-juicy-projects a.delete', function(){
+        $(document).on('click', '#grid_show_images a.delete', function(){
             var id = $(this).attr('rel');
             var show_id = $('#form_model_show_images [name="show_id"]:hidden').val();
             jQuery.ajax({
@@ -1480,7 +1497,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#js-grid-juicy-projects .image_'+id).remove();
+                        $('#grid_show_images .image_'+id).remove();
                     }
                     else
                     {
@@ -1525,14 +1542,14 @@ var TableDatatablesManaged = function () {
                             if(data.action <= 0)
                             {
                                 var id = $('#form_model_show_images [name="id"]:hidden').val();
-                                $('#js-grid-juicy-projects .image_'+id).remove();
+                                $('#grid_show_images .image_'+id).remove();
                             }
                             //add or update
                             if(data.action >= 0)
                             {
                                 var html = fn_show_images(data.image); 
-                                $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
-                                $('#js-grid-juicy-projects').trigger('resize.cbp');
+                                $('#grid_show_images').cubeportfolio('appendItems', html);
+                                $('#grid_show_images').trigger('resize.cbp');
                             }
                         }
                         else{
@@ -1582,6 +1599,226 @@ var TableDatatablesManaged = function () {
             FormImageUpload(type,'#modal_model_show_images','#form_model_show_images [name="url"]');       
         }); 
         //function with show_images  *****************************************************************************************************   SHOW IMAGES END
+        //function with show_banners  ****************************************************************************************************   SHOW BANNERS BEGIN
+        // init banners
+        $('#grid_show_banners').cubeportfolio({
+            layoutMode: 'grid',
+            defaultFilter: '*',
+            animationType: 'quicksand',
+            gapHorizontal: 0,
+            gapVertical: 0,
+            gridAdjustment: 'responsive',
+            mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
+            caption: 'overlayBottomReveal',
+            displayType: 'default',
+            displayTypeSpeed: 1,
+            lightboxDelegate: '.cbp-lightbox',
+            lightboxGallery: true,
+            lightboxTitleSrc: 'data-title',
+            lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
+            singlePageDelegate: '.cbp-singlePage',
+            singlePageDeeplinking: true,
+            singlePageStickyNavigation: true,
+            singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>'
+        });
+        //fn fill out banners
+        var fn_show_banners = function(image)
+        {
+            if(!image.type) image.type = '';
+            if(!image.url) 
+            {
+                image.url = ''; 
+                var link = '';
+            }
+            else
+                var link = '<a href="'+image.url+'" target="_blank">'+image.url+'</a>'; 
+            return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt=""></div>'+
+                    '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
+                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
+                    '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
+                    '<a href="'+image.file+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.type+'<br>'+image.url+'"><i class="fa fa-search"></i></a>'+
+                    '</div></div></div></div>'+
+                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.type+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+link+'</div>'+
+                    '</div>';
+        };
+        //add
+        $('#btn_model_banner_add').on('click', function(ev) {
+            $('#form_model_show_banners').trigger('reset');
+            $('#form_model_show_banners input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_banners input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_show_banners input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_show_banners img[name="file"]').attr('src','');
+            $('#subform_show_banners').css('display','block');
+            $('#modal_model_show_banners').modal('show');
+        });
+        //edit
+        $(document).on('click', '#grid_show_banners a.edit', function(){
+            var id = $(this).attr('rel');
+            $('#form_model_show_banners').trigger('reset');
+            $('#form_model_show_banners input[name="id"]:hidden').val(id).trigger('change');
+            $('#form_model_show_banners input[name="action"]:hidden').val('0').trigger('change');
+            $('#form_model_show_banners input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_show_banners img[name="file"]').attr('src','');
+            $('#subform_show_banners').css('display','none');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/banners', 
+                data: {id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_model_show_banners [name="url"]').val(data.banner.url);
+                        if(data.banner.type && data.banner.type!='')
+                        {
+                            data.banner.type = data.banner.type.split(',');
+                            $.each(data.banner.type,function(k, t) {
+                                $('#form_model_show_banners :checkbox[value="'+t+'"]').prop('checked',true);   
+                            });
+                        }
+                        $('#modal_model_show_banners').modal('show');
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the banner's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            }); 
+        });
+        //remove
+        $(document).on('click', '#grid_show_banners a.delete', function(){
+            var id = $(this).attr('rel');
+            var show_id = $('#form_model_show_banners [name="parent_id"]:hidden').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/banners', 
+                data: {action:-1,id:id,parent_id:show_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#grid_show_banners .banner_'+id).remove();
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to delete the banner's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            });
+        });
+        //function submit banners
+        $('#submit_model_show_banners').on('click', function(ev) {
+            $('#modal_model_show_banners').modal('hide');
+            if($('#form_model_show_banners [name="action"]').val()=='0' || ($('#form_model_show_banners [name="action"]').val()=='1' && $('#form_model_show_banners [name="file"]').attr('src')!=''))
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/banners', 
+                    data: $('#form_model_show_banners').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            //delete or update
+                            if(data.action <= 0)
+                            {
+                                var id = $('#form_model_show_banners [name="id"]:hidden').val();
+                                $('#grid_show_banners .banner_'+id).remove();
+                            }
+                            //add or update
+                            if(data.action >= 0)
+                            {
+                                var html = fn_show_banners(data.banner); 
+                                $('#grid_show_banners').cubeportfolio('appendItems', html);
+                                $('#grid_show_banners').trigger('resize.cbp');
+                            }
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_banners').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the banner's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_banners').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_banners').modal('show');
+                });
+            }
+        });
+        //function load form to upload banners
+        $('#btn_upload_image_banner').on('click', function(ev) {
+            //var type = $('#form_model_show_banners [name="image_type"]').val().toLowerCase();
+            FormImageUpload('banner','#modal_model_show_banners','#form_model_show_banners [name="file"]');       
+        }); 
+        //function with show_banners  ****************************************************************************************************   SHOW IMAGES END
        
         //init functions
         check_models(); 

@@ -23,4 +23,23 @@ class Banner extends Model
      * @var bool
      */
     public $timestamps = false;
+    /**
+     * Set the url for the current banner.
+     */
+    public function set_file($file)
+    {
+        $this->file = Image::stablish_image('banners',$file);
+    }
+    /**
+     * Remove the image file for the current banner.
+     */
+    public function delete_image_file()
+    {
+        if(Image::remove_image($this->file))
+        {
+            $this->file = '';
+            return true;
+        }
+        return true;   
+    }
 }
