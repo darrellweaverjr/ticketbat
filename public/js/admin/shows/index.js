@@ -283,6 +283,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_images input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_banners input[name="parent_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_videos input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -383,6 +384,18 @@ var TableDatatablesManaged = function () {
                             });
                             $('#grid_show_banners').cubeportfolio('appendItems', html);
                             $('#grid_show_banners').trigger('resize.cbp');
+                        }
+                        //fill out videos
+                        $('#grid_show_videos .cbp-item').remove();
+                        $('#grid_show_videos').trigger('resize.cbp');
+                        if(data.videos && data.videos.length)
+                        {
+                            var html = '';
+                            $.each(data.videos,function(k, v) {
+                                html = html + fn_show_videos(v); 
+                            });
+                            $('#grid_show_videos').cubeportfolio('appendItems', html);
+                            $('#grid_show_videos').trigger('resize.cbp');
                         }
                         //show modal
                         $('#modal_model_update').modal('show');
@@ -1638,7 +1651,7 @@ var TableDatatablesManaged = function () {
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+image.file+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.type+'<br>'+image.url+'"><i class="fa fa-search"></i></a>'+
                     '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.type+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc uppercase text-center"><b>'+(image.type.substr(0,38)+'...')+'</b></div>'+
                     '<div class="cbp-l-grid-projects-desc text-center">'+link+'</div>'+
                     '</div>';
         };
@@ -1819,6 +1832,207 @@ var TableDatatablesManaged = function () {
             FormImageUpload('banner','#modal_model_show_banners','#form_model_show_banners [name="file"]');       
         }); 
         //function with show_banners  ****************************************************************************************************   SHOW IMAGES END
+        //function with show_videos  *****************************************************************************************************   SHOW VIDEOS BEGIN
+        // init videos
+        $('#grid_show_videos').cubeportfolio({
+            layoutMode: 'grid',
+            defaultFilter: '*',
+            animationType: 'quicksand',
+            gapHorizontal: 0,
+            gapVertical: 0,
+            gridAdjustment: 'responsive',
+            mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
+            caption: 'overlayBottomReveal',
+            displayType: 'default',
+            displayTypeSpeed: 1,
+            lightboxDelegate: '.cbp-lightbox',
+            lightboxGallery: true,
+            lightboxTitleSrc: 'data-title',
+            lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
+            singlePageDelegate: '.cbp-singlePage',
+            singlePageDeeplinking: true,
+            singlePageStickyNavigation: true,
+            singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>'
+        });
+        //fn fill out videos
+        var fn_show_videos = function(video)
+        {
+            if(!video.description) video.description = '';
+            var vid = $($.parseHTML(video.embed_code)); vid.width(310); vid.height(200); 
+            return  '<div class="cbp-item video_'+video.id+'" style="padding:5px;width:290px;"><div class="cbp-caption"><div class="cbp-caption-defaultWrap">'+vid.prop('outerHTML')+'</div>'+
+                    '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
+                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+video.id+'"><i class="fa fa-edit"></i></a>'+
+                    '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+video.id+'"><i class="fa fa-remove"></i></a>'+
+                    '</div></div></div></div>'+
+                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+video.video_type+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+video.description+'</div>'+
+                    '</div>';
+        };
+        //add
+        $('#btn_model_video_add').on('click', function(ev) {
+            $('#form_model_show_videos').trigger('reset');
+            $('#form_model_show_videos input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_videos input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_show_videos input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_show_videos img[name="file"]').attr('src','');
+            $('#subform_show_videos').css('display','block');
+            $('#modal_model_show_videos').modal('show');
+        });
+        //edit
+        $(document).on('click', '#grid_show_videos a.edit', function(){
+            var id = $(this).attr('rel');
+            $('#form_model_show_videos').trigger('reset');
+            $('#form_model_show_videos input[name="id"]:hidden').val(id).trigger('change');
+            $('#form_model_show_videos input[name="action"]:hidden').val('0').trigger('change');
+            $('#subform_show_videos').css('display','none');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/videos', 
+                data: {id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_model_show_videos [name="video_type"]').val(data.video.video_type);
+                        $('#form_model_show_videos [name="embed_code"]').val(data.video.embed_code);
+                        $('#form_model_show_videos [name="description"]').val(data.video.description);
+                        $('#modal_model_show_videos').modal('show');
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the video's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            }); 
+        });
+        //remove
+        $(document).on('click', '#grid_show_videos a.delete', function(){
+            var id = $(this).attr('rel');
+            var show_id = $('#form_model_show_videos [name="show_id"]:hidden').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/videos', 
+                data: {action:-1,id:id,show_id:show_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#grid_show_videos .video_'+id).remove();
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to delete the video's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            });
+        });
+        //function submit videos
+        $('#submit_model_show_videos').on('click', function(ev) {
+            $('#modal_model_show_videos').modal('hide');
+            if($('#form_model_show_videos [name="action"]').val()=='0' || ($('#form_model_show_videos [name="action"]').val()=='1' && $('#form_model_show_videos [name="file"]').attr('src')!=''))
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/videos', 
+                    data: $('#form_model_show_videos').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            //delete or update
+                            if(data.action <= 0)
+                            {
+                                var id = $('#form_model_show_videos [name="id"]:hidden').val();
+                                $('#grid_show_videos .video_'+id).remove();
+                            }
+                            //add or update
+                            if(data.action >= 0)
+                            {
+                                var html = fn_show_videos(data.video); 
+                                $('#grid_show_videos').cubeportfolio('appendItems', html);
+                                //$('#grid_show_videos').trigger('resize.cbp');
+                            }
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_videos').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the video's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_videos').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_videos').modal('show');
+                });
+            }
+        });
+        //function with show_videos  *****************************************************************************************************   SHOW VIDEOS END
        
         //init functions
         check_models(); 

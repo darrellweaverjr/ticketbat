@@ -675,13 +675,20 @@
                                         </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_videos">
-                                        
+                                        <div class="btn-group" style="padding-bottom:20px;">
+                                            <button type="button" id="btn_model_video_add" class="btn sbold bg-green"> Add 
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row" style="max-height:600px !important;overflow-y: auto;">
+                                            <div id="grid_show_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                        </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reviews">
-                                        
+                                        <h1>Not Implemented!</h1>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_awards">
-                                        
+                                        <h1>Not Implemented!</h1>
                                     </div>
                                 </div>
                             </div> 
@@ -1264,6 +1271,65 @@
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_banners" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/REMOVE SHOWBANNERS MODAL--> 
+    <!-- BEGIN ADD/REMOVE SHOWVIDEOS MODAL--> 
+    <div id="modal_model_show_videos" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Video</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_show_videos">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="id" value="" />
+                        <input type="hidden" name="show_id" value="" />
+                        <input type="hidden" name="action" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Type
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <select class="form-control" name="video_type">
+                                            @foreach($video_types as $index=>$vt)
+                                                <option value="{{$index}}">{{$vt}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Embed
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <textarea name="embed_code" class="form-control" rows="4"></textarea>
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Description</label>
+                                    <div class="col-md-9 show-error">
+                                        <textarea name="description" class="form-control" rows="5"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="submit_model_show_videos" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
                         </div>
