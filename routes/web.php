@@ -39,7 +39,11 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('bands/remove', 'BandController@remove');
     Route::match(['get','post'], 'bands', 'BandController@index');
     //venues
-    Route::post('venues/save/{subtable?}', 'VenueController@save');
+    Route::match(['get','post'], 'venues/images', 'VenueController@images');
+    Route::match(['get','post'], 'venues/banners', 'VenueController@banners');
+    Route::match(['get','post'], 'venues/videos', 'VenueController@videos');
+    Route::match(['get','post'], 'venues/stages', 'VenueController@stages');
+    Route::post('venues/save', 'VenueController@save');
     Route::post('venues/remove', 'VenueController@remove');
     Route::match(['get','post'], 'venues', 'VenueController@index');
     //shows
