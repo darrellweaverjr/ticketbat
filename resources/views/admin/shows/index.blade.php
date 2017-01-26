@@ -82,7 +82,7 @@
                                             @if($s->youtube)YouTube: <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
                                             @if($s->facebook)Facebook: <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
                                             @if($s->twitter)Twitter: <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
-                                            @if($s->yelpbadge)MySpace: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
+                                            @if($s->yelpbadge)YelpBadge: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
                                             @if($s->instagram)Instagram: <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
                                         </i></small><br>
                                         @if($s->short_description) {{$s->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif 
@@ -152,7 +152,7 @@
                                                                     @if($s->youtube)YouTube: <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
                                                                     @if($s->facebook)Facebook: <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
                                                                     @if($s->twitter)Twitter: <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
-                                                                    @if($s->yelpbadge)MySpace: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
+                                                                    @if($s->yelpbadge)YelpBadge: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
                                                                     @if($s->instagram)Instagram: <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
                                                                     @if(!$s->url && !$s->googleplus && !$s->youtube && !$s->facebook && !$s->twitter && !$s->yelpbadge && !$s->instagram) <i style="color:red"><b>- No social media links -</b></i> @endif
                                                                 </span>
