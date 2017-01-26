@@ -46,6 +46,10 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
+        //change input name from username to email
+        $email = $request->input('username');
+        $request->request->add(['email' => $email]);
+        //$request->request->remove('username');
         $this->validateLogin($request);
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);

@@ -23,12 +23,17 @@ class Util extends Model
     {
         try {
             $type = DB::select(DB::raw("SHOW COLUMNS FROM $table WHERE Field = '{$column}'"))[0]->Type ;
-            preg_match('/^enum\((.*)\)$/', $type, $matches);
             $enum = array();
-            foreach( explode(',', $matches[1]) as $value )
+            $is_enum = preg_match('/^enum\((.*)\)$/', $type, $matches);
+            if(!$is_enum)
+                $is_set = preg_match('/^set\((.*)\)$/', $type, $matches);
+            if($matches && count($matches))
             {
-              $v = trim( $value, "'" );
-              $enum = array_add($enum, $v, $v);
+                foreach( explode(',', $matches[1]) as $value )
+                {
+                  $v = trim( $value, "'" );
+                  $enum = array_add($enum, $v, $v);
+                }
             }
             return $enum;
         } catch (Exception $ex) {

@@ -661,11 +661,18 @@
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                                            <div id="js-grid-juicy-projects" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                            <div id="grid_show_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_banners">
-                                        
+                                        <div class="btn-group" style="padding-bottom:20px;">
+                                            <button type="button" id="btn_model_banner_add" class="btn sbold bg-green"> Add 
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row" style="max-height:600px !important;overflow-y: auto;">
+                                            <div id="grid_show_banners" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                        </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_videos">
                                         
@@ -1204,6 +1211,69 @@
         </div>
     </div>
     <!-- END ADD/REMOVE SHOWTIMES MODAL--> 
+    <!-- BEGIN ADD/REMOVE SHOWBANNERS MODAL--> 
+    <div id="modal_model_show_banners" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Banner</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_show_banners">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="id" value="" />
+                        <input type="hidden" name="parent_id" value="" />
+                        <input type="hidden" name="action" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Showed on
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                    @foreach($banner_types as $index=>$bt)
+                                        <label class="mt-checkbox"><input type="checkbox" name="type[]" value="{{$index}}"/>{{$bt}}<span></span></label><br>
+                                    @endforeach
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Link to
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input type="text" class="form-control" name="url" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="subform_show_banners">
+                                    <label class="control-label col-md-3">Image
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error" >
+                                        <center>
+                                            <input type="hidden" name="file"/>
+                                            <button type="button" id="btn_upload_image_banner" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <img name="file" alt="- No image -" src="" width="323px" height="270px" />
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="submit_model_show_banners" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/REMOVE SHOWBANNERS MODAL--> 
 @endsection
 
 @section('scripts') 

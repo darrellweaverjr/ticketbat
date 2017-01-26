@@ -282,6 +282,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_images input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_banners input[name="parent_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -360,16 +361,28 @@ var TableDatatablesManaged = function () {
                             });
                         }
                         //fill out images
-                        $('#js-grid-juicy-projects .cbp-item').remove();
-                        $('#js-grid-juicy-projects').trigger('resize.cbp');
+                        $('#grid_show_images .cbp-item').remove();
+                        $('#grid_show_images').trigger('resize.cbp');
                         if(data.images && data.images.length)
                         {
                             var html = '';
                             $.each(data.images,function(k, v) {
                                 html = html + fn_show_images(v); 
                             });
-                            $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
-                            $('#js-grid-juicy-projects').trigger('resize.cbp');
+                            $('#grid_show_images').cubeportfolio('appendItems', html);
+                            $('#grid_show_images').trigger('resize.cbp');
+                        }
+                        //fill out banners
+                        $('#grid_show_banners .cbp-item').remove();
+                        $('#grid_show_banners').trigger('resize.cbp');
+                        if(data.banners && data.banners.length)
+                        {
+                            var html = '';
+                            $.each(data.banners,function(k, v) {
+                                html = html + fn_show_banners(v); 
+                            });
+                            $('#grid_show_banners').cubeportfolio('appendItems', html);
+                            $('#grid_show_banners').trigger('resize.cbp');
                         }
                         //show modal
                         $('#modal_model_update').modal('show');
@@ -569,10 +582,28 @@ var TableDatatablesManaged = function () {
                             });
                             $('#modal_model_show_passwords').modal('show');
                         }
-                        else alert(data.msg);
+                        else{
+                            $('#modal_model_update').modal('hide');
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to get the password's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_update').modal('hide');
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
@@ -587,21 +618,49 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                             row.remove();  
-                        else
-                            alert(data.msg);
+                        else{
+                            $('#modal_model_update').modal('hide');
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to delete the password!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to delete the password!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
-            else alert('Invalid Option');
+            else
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Invalid Option",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
         });
         //function submit show_passwords
         $('#submit_model_show_passwords').on('click', function(ev) {
+            $('#modal_model_show_passwords').modal('hide');
             if($('#form_model_show_passwords').valid() && $('#form_model_show_passwords [name="ticket_types[]"]:checked').length)
             {
-                $('#modal_model_show_passwords').modal('hide');
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -619,17 +678,45 @@ var TableDatatablesManaged = function () {
                                 $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
                         }
                         else{
-                            alert(data.msg);
-                            $('#modal_model_show_passwords').modal('show');
+                            $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_passwords').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
-                        $('#modal_model_show_passwords').modal('show');
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_passwords').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You must fill out correctly the form');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_passwords').modal('show');
+                });
+            }   
         });
         //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD END
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS BEGIN
@@ -665,20 +752,49 @@ var TableDatatablesManaged = function () {
                             }
                             $('#modal_model_show_tickets').modal('show');
                         }
-                        else alert(data.msg);
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to get the ticket's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
-            else alert('Invalid Option');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Invalid Option",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
         });
         //function submit show_tickets
         $('#submit_model_show_tickets').on('click', function(ev) {
+            $('#modal_model_show_tickets').modal('hide');
             if($('#form_model_show_tickets').valid())
             {
-                $('#modal_model_show_tickets').modal('hide');
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -705,17 +821,45 @@ var TableDatatablesManaged = function () {
                             });               
                         }
                         else{
-                            alert(data.msg);
-                            $('#modal_model_show_tickets').modal('show');
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_tickets').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the ticket's information!<br>The request could not be sent to the server.");
-                        $('#modal_model_show_tickets').modal('show');
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the ticket's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_tickets').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You must fill out correctly the form');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form'",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_tickets').modal('show');
+                });
+            }    
         });
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS END
         //function with show_bands  *****************************************************************************************************   SHOW BANDS BEGIN
@@ -743,10 +887,28 @@ var TableDatatablesManaged = function () {
                     data: {action:0,show_id:show_id,order:order}, 
                     success: function(data) {
                         if(!data.success) 
-                            alert(data.msg);
+                        {
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to re-order the band from this show!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
@@ -775,17 +937,47 @@ var TableDatatablesManaged = function () {
                             }
                         }    
                         else
-                            alert(data.msg);
+                        {
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
                     },
                     error: function(){
-                        alert("There was an error trying to delete the band from this show!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to delete the band from this show!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 });
             }
-            else alert('Invalid Option');
+            else
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Invalid Option",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
         });
         //function submit show_bands
         $('#submit_model_show_bands').on('click', function(ev) {
+            $('#modal_model_show_bands').modal('hide');
             if($('#form_model_show_bands').valid())
             {
                 var show_id = $('#form_model_update input[name="id"]:hidden').val();
@@ -797,19 +989,47 @@ var TableDatatablesManaged = function () {
                     data: {action:1,show_id:show_id,band_id:band_id}, 
                     success: function(data) {
                         if(data.success) 
-                        {
                             tableBands.row.add( [ data.band.n_order,data.band.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw(); 
-                        }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_bands').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_bands').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You must fill out correctly the form');
+            else
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_bands').modal('show');
+                });
+            }    
         });
         //function with show_bands  *****************************************************************************************************   SHOW BANDS END
         //function with show_times  *****************************************************************************************************   SHOW TIMES BEGIN
@@ -841,11 +1061,27 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_show_times_toggle').modal('show');
                         }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to get the showtime's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the showtime's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 }); 
             }
@@ -895,6 +1131,7 @@ var TableDatatablesManaged = function () {
         });
         //function submit show_times toggle
         $('#submit_model_show_times_toggle').on('click', function(ev) {
+            $('#modal_model_show_times_toggle').modal('hide');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -905,14 +1142,32 @@ var TableDatatablesManaged = function () {
                     {
                         calendarShowTimes.fullCalendar('removeEvents', data.showtime.id);
                         fn_show_times(data.showtime); 
-                        $('#modal_model_show_times_toggle').modal('hide');
                     }
-                    else{
-                        alert(data.msg);
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_times_toggle').modal('show');
+                        });
                     }
                 },
                 error: function(){
-                    alert("There was an error trying to save the event's information!<br>The request could not be sent to the server.");
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to save the event's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                        $('#modal_model_show_times_toggle').modal('show');
+                    });
                 }
             }); 
         });
@@ -965,18 +1220,79 @@ var TableDatatablesManaged = function () {
                                     });  
                                 }   
                                 else
-                                    alert(data.msg);
+                                {
+                                    $('#modal_model_show_times').modal('hide');
+                                    $('#modal_model_update').modal('hide');						
+                                    swal({
+                                        title: "<span style='color:red;'>Error!</span>",
+                                        text: data.msg,
+                                        html: true,
+                                        type: "error"
+                                    },function(){
+                                        $('#modal_model_update').modal('show');
+                                        $('#modal_model_show_times').modal('show');
+                                    });
+                                }
                             },
                             error: function(){
-                                alert("There was an error trying to search availables showtimes for the action!<br>The request could not be sent to the server.");
+                                $('#modal_model_show_times').modal('hide');
+                                $('#modal_model_update').modal('hide');	   	
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: "There was an error trying to search availables showtimes for the action!<br>The request could not be sent to the server.",
+                                    html: true,
+                                    type: "error"
+                                },function(){
+                                    $('#modal_model_update').modal('show');
+                                    $('#modal_model_show_times').modal('show');
+                                });
                             }
                         });
                     }
-                    else alert('You must select a valid time for the event(s)');
+                    else
+                    {
+                        $('#modal_model_show_times').modal('hide');
+                        $('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "You must select a valid time for the event(s)",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_times').modal('show');
+                        });
+                    }  
                 }
-                else alert('You must select a valid date range for the event(s)');
+                else
+                {
+                    $('#modal_model_show_times').modal('hide');
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "You must select a valid date range for the event(s)",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                        $('#modal_model_show_times').modal('show');
+                    });
+                }  
             }
-            else alert('You must select at least a week day for the event(s)');
+            else
+            {
+                $('#modal_model_show_times').modal('hide');
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select at least a week day for the event(s)",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_times').modal('show');
+                });
+            }  
         });
         $('#btn_model_show_time_edit').on('click', function(ev) {
             $('#form_model_show_times').trigger('reset');
@@ -1028,20 +1344,53 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_show_times').modal('hide');
                         }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_show_times').modal('hide');
+                            $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_times').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+                        $('#modal_model_show_times').modal('hide');
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_times').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You have not showtimes availables to save');
+            else
+            {
+                $('#modal_model_show_times').modal('hide');
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You have not showtimes availables to save",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_times').modal('show');
+                });
+            }    
         });
         //function with show_times  *****************************************************************************************************   SHOW TIMES END
         //function with show_images  *****************************************************************************************************   SHOW IMAGES BEGIN
         // init images
-        $('#js-grid-juicy-projects').cubeportfolio({
+        $('#grid_show_images').cubeportfolio({
             layoutMode: 'grid',
             defaultFilter: '*',
             animationType: 'quicksand',
@@ -1075,8 +1424,8 @@ var TableDatatablesManaged = function () {
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+image.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.image_type+'<br>'+image.caption+'"><i class="fa fa-search"></i></a>'+
                     '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-title uppercase text-center uppercase text-center">'+image.image_type+'</div>'+
-                    '<div class="cbp-l-grid-projects-desc uppercase text-center uppercase text-center">'+image.caption+'</div>'+
+                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.image_type+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+image.caption+'</div>'+
                     '</div>';
         };
         //add
@@ -1084,15 +1433,19 @@ var TableDatatablesManaged = function () {
             $('#form_model_show_images').trigger('reset');
             $('#form_model_show_images input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_show_images input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_show_images input[name="url"]:hidden').val('').trigger('change');
+            $('#form_model_show_images img[name="url"]').attr('src','');
             $('#subform_show_images').css('display','block');
             $('#modal_model_show_images').modal('show');
         });
         //edit
-        $(document).on('click', '#js-grid-juicy-projects a.edit', function(){
+        $(document).on('click', '#grid_show_images a.edit', function(){
             var id = $(this).attr('rel');
             $('#form_model_show_images').trigger('reset');
             $('#form_model_show_images input[name="id"]:hidden').val(id).trigger('change');
             $('#form_model_show_images input[name="action"]:hidden').val('0').trigger('change');
+            $('#form_model_show_images input[name="url"]:hidden').val('').trigger('change');
+            $('#form_model_show_images img[name="url"]').attr('src','');
             $('#subform_show_images').css('display','none');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1106,18 +1459,34 @@ var TableDatatablesManaged = function () {
                         $('#form_model_show_images [name="image_type"]').val(data.image.image_type);
                         $('#modal_model_show_images').modal('show');
                     }
-                    else{
-                        alert(data.msg);
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 },
                 error: function(){
-                    alert("There was an error trying to get the image's information!<br>The request could not be sent to the server.");
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the image's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
                 }
             }); 
-            $('#modal_model_show_images').modal('show');
         });
         //remove
-        $(document).on('click', '#js-grid-juicy-projects a.delete', function(){
+        $(document).on('click', '#grid_show_images a.delete', function(){
             var id = $(this).attr('rel');
             var show_id = $('#form_model_show_images [name="show_id"]:hidden').val();
             jQuery.ajax({
@@ -1128,20 +1497,38 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#js-grid-juicy-projects .image_'+id).remove();
+                        $('#grid_show_images .image_'+id).remove();
                     }
-                    else{
-                        alert(data.msg);
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
                     }
                 },
                 error: function(){
-                    alert("There was an error trying to delete the image's information!<br>The request could not be sent to the server.");
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to delete the image's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
                 }
             });
         });
         //function submit images
         $('#submit_model_show_images').on('click', function(ev) {
-            if(true)
+            $('#modal_model_show_images').modal('hide');
+            if($('#form_model_show_images [name="action"]').val()=='0' || ($('#form_model_show_images [name="action"]').val()=='1' && $('#form_model_show_images [name="url"]').attr('src')!=''))
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1155,27 +1542,56 @@ var TableDatatablesManaged = function () {
                             if(data.action <= 0)
                             {
                                 var id = $('#form_model_show_images [name="id"]:hidden').val();
-                                $('#js-grid-juicy-projects .image_'+id).remove();
+                                $('#grid_show_images .image_'+id).remove();
                             }
                             //add or update
                             if(data.action >= 0)
                             {
                                 var html = fn_show_images(data.image); 
-                                $('#js-grid-juicy-projects').cubeportfolio('appendItems', html);
-                                $('#js-grid-juicy-projects').trigger('resize.cbp');
+                                $('#grid_show_images').cubeportfolio('appendItems', html);
+                                $('#grid_show_images').trigger('resize.cbp');
                             }
-                            $('#modal_model_show_images').modal('hide');
                         }
                         else{
-                            alert(data.msg);
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_images').modal('show');
+                            });
                         }
                     },
                     error: function(){
-                        alert("There was an error trying to save the password's information!<br>The request could not be sent to the server.");
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the image's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_images').modal('show');
+                        });
                     }
                 }); 
             }
-            else alert('You have not showtimes availables to save');
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_images').modal('show');
+                });
+            }
         });
         //function load form to upload image
         $('#btn_upload_image_url').on('click', function(ev) {
@@ -1183,6 +1599,226 @@ var TableDatatablesManaged = function () {
             FormImageUpload(type,'#modal_model_show_images','#form_model_show_images [name="url"]');       
         }); 
         //function with show_images  *****************************************************************************************************   SHOW IMAGES END
+        //function with show_banners  ****************************************************************************************************   SHOW BANNERS BEGIN
+        // init banners
+        $('#grid_show_banners').cubeportfolio({
+            layoutMode: 'grid',
+            defaultFilter: '*',
+            animationType: 'quicksand',
+            gapHorizontal: 0,
+            gapVertical: 0,
+            gridAdjustment: 'responsive',
+            mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
+            caption: 'overlayBottomReveal',
+            displayType: 'default',
+            displayTypeSpeed: 1,
+            lightboxDelegate: '.cbp-lightbox',
+            lightboxGallery: true,
+            lightboxTitleSrc: 'data-title',
+            lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
+            singlePageDelegate: '.cbp-singlePage',
+            singlePageDeeplinking: true,
+            singlePageStickyNavigation: true,
+            singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>'
+        });
+        //fn fill out banners
+        var fn_show_banners = function(image)
+        {
+            if(!image.type) image.type = '';
+            if(!image.url) 
+            {
+                image.url = ''; 
+                var link = '';
+            }
+            else
+                var link = '<a href="'+image.url+'" target="_blank">'+image.url+'</a>'; 
+            return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt=""></div>'+
+                    '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
+                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
+                    '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
+                    '<a href="'+image.file+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.type+'<br>'+image.url+'"><i class="fa fa-search"></i></a>'+
+                    '</div></div></div></div>'+
+                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.type+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+link+'</div>'+
+                    '</div>';
+        };
+        //add
+        $('#btn_model_banner_add').on('click', function(ev) {
+            $('#form_model_show_banners').trigger('reset');
+            $('#form_model_show_banners input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_banners input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_show_banners input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_show_banners img[name="file"]').attr('src','');
+            $('#subform_show_banners').css('display','block');
+            $('#modal_model_show_banners').modal('show');
+        });
+        //edit
+        $(document).on('click', '#grid_show_banners a.edit', function(){
+            var id = $(this).attr('rel');
+            $('#form_model_show_banners').trigger('reset');
+            $('#form_model_show_banners input[name="id"]:hidden').val(id).trigger('change');
+            $('#form_model_show_banners input[name="action"]:hidden').val('0').trigger('change');
+            $('#form_model_show_banners input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_show_banners img[name="file"]').attr('src','');
+            $('#subform_show_banners').css('display','none');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/banners', 
+                data: {id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_model_show_banners [name="url"]').val(data.banner.url);
+                        if(data.banner.type && data.banner.type!='')
+                        {
+                            data.banner.type = data.banner.type.split(',');
+                            $.each(data.banner.type,function(k, t) {
+                                $('#form_model_show_banners :checkbox[value="'+t+'"]').prop('checked',true);   
+                            });
+                        }
+                        $('#modal_model_show_banners').modal('show');
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the banner's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            }); 
+        });
+        //remove
+        $(document).on('click', '#grid_show_banners a.delete', function(){
+            var id = $(this).attr('rel');
+            var show_id = $('#form_model_show_banners [name="parent_id"]:hidden').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/banners', 
+                data: {action:-1,id:id,parent_id:show_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#grid_show_banners .banner_'+id).remove();
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to delete the banner's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            });
+        });
+        //function submit banners
+        $('#submit_model_show_banners').on('click', function(ev) {
+            $('#modal_model_show_banners').modal('hide');
+            if($('#form_model_show_banners [name="action"]').val()=='0' || ($('#form_model_show_banners [name="action"]').val()=='1' && $('#form_model_show_banners [name="file"]').attr('src')!=''))
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/banners', 
+                    data: $('#form_model_show_banners').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            //delete or update
+                            if(data.action <= 0)
+                            {
+                                var id = $('#form_model_show_banners [name="id"]:hidden').val();
+                                $('#grid_show_banners .banner_'+id).remove();
+                            }
+                            //add or update
+                            if(data.action >= 0)
+                            {
+                                var html = fn_show_banners(data.banner); 
+                                $('#grid_show_banners').cubeportfolio('appendItems', html);
+                                $('#grid_show_banners').trigger('resize.cbp');
+                            }
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_banners').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the banner's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_banners').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_banners').modal('show');
+                });
+            }
+        });
+        //function load form to upload banners
+        $('#btn_upload_image_banner').on('click', function(ev) {
+            //var type = $('#form_model_show_banners [name="image_type"]').val().toLowerCase();
+            FormImageUpload('banner','#modal_model_show_banners','#form_model_show_banners [name="file"]');       
+        }); 
+        //function with show_banners  ****************************************************************************************************   SHOW IMAGES END
        
         //init functions
         check_models(); 
