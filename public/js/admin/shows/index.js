@@ -266,7 +266,6 @@ var TableDatatablesManaged = function () {
             $('#tb_show_tickets').empty();
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
-            $('#tb_show_images').empty();
             $('#modal_model_update_title').html('Edit Show');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

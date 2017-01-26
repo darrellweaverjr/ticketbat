@@ -268,7 +268,7 @@
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="name" class="form-control" placeholder="My Show" /> 
+                                                        <input type="text" name="name" class="form-control" placeholder="My Venue" /> 
                                                     </div>
                                                     <label class="control-label col-md-3">Slug
                                                         <span class="required"> * </span>
@@ -290,10 +290,6 @@
                                                             <option selected value="{{$r}}">{{$r}}</option>
                                                             @endforeach
                                                         </select>
-                                                    </div>
-                                                    <label class="control-label col-md-3">Cutoff Hours</label>
-                                                    <div class="col-md-9">
-                                                        <input type="text" value="1" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -389,7 +385,7 @@
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="text" name="zip" class="form-control" placeholder="00000" /> 
+                                                    <input type="text" name="zip" class="form-control" placeholder="00000" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " /> 
                                                 </div>
                                             </div>
                                         </div>
@@ -431,7 +427,7 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_stages">
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_stage_add" class="btn sbold bg-green"> Add 
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
@@ -439,15 +435,14 @@
                                             <table class="table table-striped table-hover table-bordered" >
                                                 <thead>
                                                     <tr>
-                                                        <th> Password </th>
-                                                        <th> Date Start </th>
-                                                        <th> Date End </th>
-                                                        <th> Ticket Types </th>
+                                                        <th> Name </th>
+                                                        <th> Description </th>
+                                                        <th> Image </th>
                                                         <th> </th>
                                                         <th> </th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="tb_show_passwords">
+                                                <tbody id="tb_venue_stages">
                                                 </tbody>
                                             </table>
                                         </div>
@@ -459,7 +454,7 @@
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                                            <div id="grid_show_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                            <div id="grid_venue_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_banners">
@@ -469,7 +464,7 @@
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                                            <div id="grid_show_banners" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                            <div id="grid_venue_banners" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_videos">
@@ -479,7 +474,7 @@
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                                            <div id="grid_show_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                            <div id="grid_venue_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
                                     </div>
                                 </div>
