@@ -235,28 +235,28 @@
                             <div class="tabbable-line">
                                 <ul class="nav nav-tabs">
                                     <li class="active">
-                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="false"> General </a>
+                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_sponsor" data-toggle="tab" aria-expanded="true"> Sponsorship </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="true"> Reports </a>
+                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false"> Reports </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_checking" data-toggle="tab" aria-expanded="false"> Checking </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_passwords" data-toggle="tab" aria-expanded="false"> Passwords </a>
+                                        <a href="#tab_model_update_passwords" data-toggle="tab" aria-expanded="true"> Passwords </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="false"> Showtimes </a>
+                                        <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="true"> Showtimes </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="false"> Tickets </a>
+                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="true"> Tickets </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="false"> Bands </a>
+                                        <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="true"> Bands </a>
                                     </li>
                                     <li class="dropdown">
                                         <a href="#tab_model_update_multimedia" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Multimedia
@@ -271,13 +271,13 @@
                                             </li>
                                             <li class="">
                                                 <a href="#tab_model_update_videos" data-toggle="tab"> Videos </a>
-                                            </li>
+                                            </li><!--
                                             <li class="">
                                                 <a href="#tab_model_update_reviews" data-toggle="tab"> Reviews </a>
                                             </li>
                                             <li class="">
                                                 <a href="#tab_model_update_awards" data-toggle="tab"> Awards </a>
-                                            </li>
+                                            </li>-->
                                         </ul>
                                     </li>
                                 </ul>
@@ -683,13 +683,13 @@
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_show_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
-                                    </div>
+                                    </div><!--
                                     <div class="tab-pane" id="tab_model_update_reviews">
                                         <h1>Not Implemented!</h1>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_awards">
                                         <h1>Not Implemented!</h1>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div> 
                         </div>

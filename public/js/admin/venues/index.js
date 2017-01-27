@@ -138,7 +138,9 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add Venue');
             $('a[href="#tab_model_update_stages"]').parent().css('display','none');
-            $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
+            $('a[href="#tab_model_update_images"]').parent().css('display','none');
+            $('a[href="#tab_model_update_banners"]').parent().css('display','none');
+            $('a[href="#tab_model_update_videos"]').parent().css('display','none');
             $("#form_model_update").trigger('reset');
             $('#modal_model_update').modal('show');
         });
@@ -151,7 +153,9 @@ var TableDatatablesManaged = function () {
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('a[href="#tab_model_update_stages"]').parent().css('display','block');
-            $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
+            $('a[href="#tab_model_update_images"]').parent().css('display','block');
+            $('a[href="#tab_model_update_banners"]').parent().css('display','block');
+            $('a[href="#tab_model_update_videos"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Venue');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -175,7 +179,7 @@ var TableDatatablesManaged = function () {
                             if(e.is('input:checkbox'))
                                 $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.venue[key])? true : false, true);
                             else
-                                e.val(data.show[key]);
+                                e.val(data.venue[key]);
                         }
                         //fill out stages
                         if(data.stages && data.stages.length)
@@ -367,112 +371,141 @@ var TableDatatablesManaged = function () {
             });            
         });     
         //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD BEGIN
+        // init images
+        $('#grid_venue_stages').cubeportfolio({
+            layoutMode: 'grid',
+            defaultFilter: '*',
+            animationType: 'quicksand',
+            gapHorizontal: 0,
+            gapVertical: 0,
+            gridAdjustment: 'responsive',
+            mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
+            caption: 'overlayBottomReveal',
+            displayType: 'default',
+            displayTypeSpeed: 1,
+            lightboxDelegate: '.cbp-lightbox',
+            lightboxGallery: true,
+            lightboxTitleSrc: 'data-title',
+            lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
+            singlePageDelegate: '.cbp-singlePage',
+            singlePageDeeplinking: true,
+            singlePageStickyNavigation: true,
+            singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>'
+        });
+        //fn fill out images
+        var fn_venue_stages = function(stage)
+        {
+            return  '<div class="cbp-item stage_'+stage.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+stage.image_url+'" alt=""></div>'+
+                    '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
+                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+stage.id+'"><i class="fa fa-edit"></i></a>'+
+                    '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+stage.id+'"><i class="fa fa-remove"></i></a>'+
+                    '<a href="'+stage.image_url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+stage.name+'<br>'+stage.description+'"><i class="fa fa-search"></i></a>'+
+                    '</div></div></div></div>'+
+                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+(stage.name.substr(0,47)+'...')+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+(stage.description.substr(0,47)+'...')+'</div>'+
+                    '</div>';
+        };
+        //add
         $('#btn_model_stage_add').on('click', function(ev) {
-            $('#form_model_venue_stages input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_venue_stages').trigger('reset');
+            $('#form_model_venue_stages input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_venue_stages input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_venue_stages input[name="image_url"]:hidden').val('').trigger('change');
+            $('#form_model_venue_stages img[name="image_url"]').attr('src','');
+            $('#subform_venue_stages').css('display','block');
             $('#modal_model_venue_stages').modal('show');
         });
-        $('#tb_venue_stages').on('click', 'input[type="button"]', function(e){
-            var row = $(this).closest('tr');
-            //edit
-            if($(this).hasClass('edit')) 
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/venues/stages', 
-                    data: {action:0,id:row.prop('class')}, 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            $('#form_model_venue_stages').trigger('reset');
-                            $('#form_model_venue_stages input[name="id"]:hidden').val(data.stage.id).trigger('change');
-                            //fill out stage
-                            for(var key in data.stage)
-                            {
-                                //fill out
-                                $('#form_model_venue_stages [name="'+key+'"]').val(data.stage[key]);
-                            }
-                            $('#modal_model_venue_stages').modal('show');
-                        }
-                        else{
-                            $('#modal_model_update').modal('hide');
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            },function(){
-                                $('#modal_model_update').modal('show');
-                            });
-                        }
-                    },
-                    error: function(){
-                        $('#modal_model_update').modal('hide');
+        //edit
+        $(document).on('click', '#grid_venue_stages a.edit', function(){
+            var id = $(this).attr('rel');
+            $('#form_model_venue_stages').trigger('reset');
+            $('#form_model_venue_stages input[name="id"]:hidden').val(id).trigger('change');
+            $('#form_model_venue_stages input[name="action"]:hidden').val('0').trigger('change');
+            $('#form_model_venue_stages input[name="image_url"]:hidden').val('').trigger('change');
+            $('#form_model_venue_stages img[name="image_url"]').attr('src','');
+            $('#subform_venue_stages').css('display','none');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/stages', 
+                data: {id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_model_venue_stages [name="name"]').val(data.stage.name);
+                        $('#form_model_venue_stages [name="description"]').val(data.stage.description);
+                        $('#modal_model_venue_stages').modal('show');
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the stage's information!<br>The request could not be sent to the server.",
+                            text: data.msg,
                             html: true,
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
                         });
                     }
-                });
-            }
-            //delete
-            else if($(this).hasClass('delete')) 
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/venues/stages', 
-                    data: {action:-1,id:row.prop('class')}, 
-                    success: function(data) {
-                        if(data.success) 
-                            row.remove();  
-                        else{
-                            $('#modal_model_update').modal('hide');
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            },function(){
-                                $('#modal_model_update').modal('show');
-                            });
-                        }
-                    },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to delete the stage!<br>The request could not be sent to the server.",
-                            html: true,
-                            type: "error"
-                        },function(){
-                            $('#modal_model_update').modal('show');
-                        });
-                    }
-                });
-            }
-            else
-            {
-                $('#modal_model_update').modal('hide');	   	
-                swal({
-                    title: "<span style='color:red;'>Error!</span>",
-                    text: "Invalid Option",
-                    html: true,
-                    type: "error"
-                },function(){
-                    $('#modal_model_update').modal('show');
-                });
-            }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the stage's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            }); 
         });
-        //function submit venue_stages
+        //remove
+        $(document).on('click', '#grid_venue_stages a.delete', function(){
+            var id = $(this).attr('rel');
+            var venue_id = $('#form_model_venue_stages [name="venue_id"]:hidden').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/venues/stages', 
+                data: {action:-1,id:id,venue_id:venue_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#grid_venue_stages .stage_'+id).remove();
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to delete the stage's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            });
+        });
+        //function submit stages
         $('#submit_model_venue_stages').on('click', function(ev) {
             $('#modal_model_venue_stages').modal('hide');
-            if($('#form_model_venue_stages').valid())
+            if($('#form_model_venue_stages [name="action"]').val()=='0' || ($('#form_model_venue_stages [name="action"]').val()=='1' && $('#form_model_venue_stages [name="image_url"]').attr('src')!=''))
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -482,16 +515,22 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            var v = data.password;
-                            //update row
-                            if($('#tb_venue_stages').find('tr[class="'+v.id+'"]').length)
-                                $('#tb_venue_stages').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
-                            //add row
-                            else
-                                $('#tb_venue_stages').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            //delete or update
+                            if(data.action <= 0)
+                            {
+                                var id = $('#form_model_venue_stages [name="id"]:hidden').val();
+                                $('#grid_venue_stages .stage_'+id).remove();
+                            }
+                            //add or update
+                            if(data.action >= 0)
+                            {
+                                var html = fn_venue_stages(data.stage); 
+                                $('#grid_venue_stages').cubeportfolio('appendItems', html);
+                                $('#grid_venue_stages').trigger('resize.cbp');
+                            }
                         }
                         else{
-                            $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');						
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -499,7 +538,7 @@ var TableDatatablesManaged = function () {
                                 type: "error"
                             },function(){
                                 $('#modal_model_update').modal('show');
-                                $('#modal_model_show_passwords').modal('show');
+                                $('#modal_model_venue_stages').modal('show');
                             });
                         }
                     },
@@ -512,7 +551,7 @@ var TableDatatablesManaged = function () {
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
-                            $('#modal_model_show_passwords').modal('show');
+                            $('#modal_model_venue_stages').modal('show');
                         });
                     }
                 }); 
@@ -522,17 +561,22 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update').modal('hide');	   	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
-                    text: "You must fill out correctly the form",
+                    text: "You must fill out correctly the form.",
                     html: true,
                     type: "error"
                 },function(){
                     $('#modal_model_update').modal('show');
                     $('#modal_model_venue_stages').modal('show');
                 });
-            }   
+            }
         });
+        //function load form to upload image
+        $('#btn_upload_image_stage').on('click', function(ev) {
+            //var type = $('#form_model_venue_stages [name="image_type"]').val().toLowerCase();
+            FormImageUpload('stage','#modal_model_venue_stages','#form_model_venue_stages [name="image_url"]');       
+        }); 
         //function with venue_stages  *****************************************************************************************************   VENUE PASSWORD END
-        //function with venue_stages  *****************************************************************************************************   VENUE IMAGES BEGIN
+        //function with venue_images  *****************************************************************************************************   VENUE IMAGES BEGIN
         // init images
         $('#grid_venue_images').cubeportfolio({
             layoutMode: 'grid',
@@ -569,7 +613,7 @@ var TableDatatablesManaged = function () {
                     '<a href="'+image.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.image_type+'<br>'+image.caption+'"><i class="fa fa-search"></i></a>'+
                     '</div></div></div></div>'+
                     '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.image_type+'</div>'+
-                    '<div class="cbp-l-grid-projects-desc text-center">'+image.caption+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+(image.caption.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
         //add
@@ -594,7 +638,7 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/shows/images', 
+                url: '/admin/venues/images', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
@@ -632,12 +676,12 @@ var TableDatatablesManaged = function () {
         //remove
         $(document).on('click', '#grid_venue_images a.delete', function(){
             var id = $(this).attr('rel');
-            var show_id = $('#form_model_venue_images [name="show_id"]:hidden').val();
+            var venue_id = $('#form_model_venue_images [name="venue_id"]:hidden').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/venues/images', 
-                data: {action:-1,id:id,show_id:show_id}, 
+                data: {action:-1,id:id,venue_id:venue_id}, 
                 success: function(data) {
                     if(data.success) 
                     {
@@ -677,7 +721,7 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/shows/images', 
+                    url: '/admin/venues/images', 
                     data: $('#form_model_venue_images').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
@@ -742,10 +786,10 @@ var TableDatatablesManaged = function () {
             var type = $('#form_model_venue_images [name="image_type"]').val().toLowerCase();
             FormImageUpload(type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');       
         }); 
-        //function with venue_images  *****************************************************************************************************   SHOW IMAGES END
-        //function with show_banners  ****************************************************************************************************   SHOW BANNERS BEGIN
+        //function with venue_images  *****************************************************************************************************   VENUE IMAGES END
+        //function with venue_banners  ****************************************************************************************************   VENUE BANNERS BEGIN
         // init banners
-        $('#grid_show_banners').cubeportfolio({
+        $('#grid_venue_banners').cubeportfolio({
             layoutMode: 'grid',
             defaultFilter: '*',
             animationType: 'quicksand',
@@ -766,7 +810,7 @@ var TableDatatablesManaged = function () {
             singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>'
         });
         //fn fill out banners
-        var fn_show_banners = function(image)
+        var fn_venue_banners = function(image)
         {
             if(!image.type) image.type = '';
             if(!image.url) 
@@ -775,7 +819,7 @@ var TableDatatablesManaged = function () {
                 var link = '';
             }
             else
-                var link = '<a href="'+image.url+'" target="_blank">'+image.url+'</a>'; 
+                var link = '<a href="'+image.url+'" target="_blank">'+(image.url.substr(0,47)+'...')+'</a>'; 
             return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt=""></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
@@ -788,40 +832,40 @@ var TableDatatablesManaged = function () {
         };
         //add
         $('#btn_model_banner_add').on('click', function(ev) {
-            $('#form_model_show_banners').trigger('reset');
-            $('#form_model_show_banners input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_show_banners input[name="action"]:hidden').val('1').trigger('change');
-            $('#form_model_show_banners input[name="file"]:hidden').val('').trigger('change');
-            $('#form_model_show_banners img[name="file"]').attr('src','');
-            $('#subform_show_banners').css('display','block');
-            $('#modal_model_show_banners').modal('show');
+//            $('#form_model_venue_banners').trigger('reset');
+            $('#form_model_venue_banners input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_venue_banners input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_venue_banners input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_venue_banners img[name="file"]').attr('src','');
+            $('#subform_venue_banners').css('display','block');
+            $('#modal_model_venue_banners').modal('show');
         });
         //edit
-        $(document).on('click', '#grid_show_banners a.edit', function(){
+        $(document).on('click', '#grid_venue_banners a.edit', function(){
             var id = $(this).attr('rel');
-            $('#form_model_show_banners').trigger('reset');
-            $('#form_model_show_banners input[name="id"]:hidden').val(id).trigger('change');
-            $('#form_model_show_banners input[name="action"]:hidden').val('0').trigger('change');
-            $('#form_model_show_banners input[name="file"]:hidden').val('').trigger('change');
-            $('#form_model_show_banners img[name="file"]').attr('src','');
-            $('#subform_show_banners').css('display','none');
+            $('#form_model_venue_banners').trigger('reset');
+            $('#form_model_venue_banners input[name="id"]:hidden').val(id).trigger('change');
+            $('#form_model_venue_banners input[name="action"]:hidden').val('0').trigger('change');
+            $('#form_model_venue_banners input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_venue_banners img[name="file"]').attr('src','');
+            $('#subform_venue_banners').css('display','none');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/shows/banners', 
+                url: '/admin/venues/banners', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#form_model_show_banners [name="url"]').val(data.banner.url);
+                        $('#form_model_venue_banners [name="url"]').val(data.banner.url);
                         if(data.banner.type && data.banner.type!='')
                         {
                             data.banner.type = data.banner.type.split(',');
                             $.each(data.banner.type,function(k, t) {
-                                $('#form_model_show_banners :checkbox[value="'+t+'"]').prop('checked',true);   
+                                $('#form_model_venue_banners :checkbox[value="'+t+'"]').prop('checked',true);   
                             });
                         }
-                        $('#modal_model_show_banners').modal('show');
+                        $('#modal_model_venue_banners').modal('show');
                     }
                     else
                     {
@@ -850,18 +894,18 @@ var TableDatatablesManaged = function () {
             }); 
         });
         //remove
-        $(document).on('click', '#grid_show_banners a.delete', function(){
+        $(document).on('click', '#grid_venue_banners a.delete', function(){
             var id = $(this).attr('rel');
-            var show_id = $('#form_model_show_banners [name="parent_id"]:hidden').val();
+            var show_id = $('#form_model_venue_banners [name="parent_id"]:hidden').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/shows/banners', 
+                url: '/admin/venues/banners', 
                 data: {action:-1,id:id,parent_id:show_id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#grid_show_banners .banner_'+id).remove();
+                        $('#grid_venue_banners .banner_'+id).remove();
                     }
                     else
                     {
@@ -890,30 +934,30 @@ var TableDatatablesManaged = function () {
             });
         });
         //function submit banners
-        $('#submit_model_show_banners').on('click', function(ev) {
-            $('#modal_model_show_banners').modal('hide');
-            if($('#form_model_show_banners [name="action"]').val()=='0' || ($('#form_model_show_banners [name="action"]').val()=='1' && $('#form_model_show_banners [name="file"]').attr('src')!=''))
+        $('#submit_model_venue_banners').on('click', function(ev) {
+            $('#modal_model_venue_banners').modal('hide');
+            if($('#form_model_venue_banners [name="action"]').val()=='0' || ($('#form_model_venue_banners [name="action"]').val()=='1' && $('#form_model_venue_banners [name="file"]').attr('src')!=''))
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/shows/banners', 
-                    data: $('#form_model_show_banners').serializeArray(), 
+                    url: '/admin/venues/banners', 
+                    data: $('#form_model_venue_banners').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
                         {
                             //delete or update
                             if(data.action <= 0)
                             {
-                                var id = $('#form_model_show_banners [name="id"]:hidden').val();
-                                $('#grid_show_banners .banner_'+id).remove();
+                                var id = $('#form_model_venue_banners [name="id"]:hidden').val();
+                                $('#grid_venue_banners .banner_'+id).remove();
                             }
                             //add or update
                             if(data.action >= 0)
                             {
-                                var html = fn_show_banners(data.banner); 
-                                $('#grid_show_banners').cubeportfolio('appendItems', html);
-                                $('#grid_show_banners').trigger('resize.cbp');
+                                var html = fn_venue_banners(data.banner); 
+                                $('#grid_venue_banners').cubeportfolio('appendItems', html);
+                                $('#grid_venue_banners').trigger('resize.cbp');
                             }
                         }
                         else{
@@ -925,7 +969,7 @@ var TableDatatablesManaged = function () {
                                 type: "error"
                             },function(){
                                 $('#modal_model_update').modal('show');
-                                $('#modal_model_show_banners').modal('show');
+                                $('#modal_model_venue_banners').modal('show');
                             });
                         }
                     },
@@ -938,7 +982,7 @@ var TableDatatablesManaged = function () {
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
-                            $('#modal_model_show_banners').modal('show');
+                            $('#modal_model_venue_banners').modal('show');
                         });
                     }
                 }); 
@@ -953,19 +997,19 @@ var TableDatatablesManaged = function () {
                     type: "error"
                 },function(){
                     $('#modal_model_update').modal('show');
-                    $('#modal_model_show_banners').modal('show');
+                    $('#modal_model_venue_banners').modal('show');
                 });
             }
         });
         //function load form to upload banners
         $('#btn_upload_image_banner').on('click', function(ev) {
-            //var type = $('#form_model_show_banners [name="image_type"]').val().toLowerCase();
-            FormImageUpload('banner','#modal_model_show_banners','#form_model_show_banners [name="file"]');       
+            //var type = $('#form_model_venue_banners [name="image_type"]').val().toLowerCase();
+            FormImageUpload('banner','#modal_model_venue_banners','#form_model_venue_banners [name="file"]');       
         }); 
-        //function with show_banners  ****************************************************************************************************   SHOW IMAGES END
-        //function with show_videos  *****************************************************************************************************   SHOW VIDEOS BEGIN
+        //function with venue_banners  ****************************************************************************************************   VENUE IMAGES END
+        //function with venue_videos  *****************************************************************************************************   VENUE VIDEOS BEGIN
         // init videos
-        $('#grid_show_videos').cubeportfolio({
+        $('#grid_venue_videos').cubeportfolio({
             layoutMode: 'grid',
             defaultFilter: '*',
             animationType: 'quicksand',
@@ -986,7 +1030,7 @@ var TableDatatablesManaged = function () {
             singlePageCounter: '<div class="cbp-popup-singlePage-counter">{{current}} of {{total}}</div>'
         });
         //fn fill out videos
-        var fn_show_videos = function(video)
+        var fn_venue_videos = function(video)
         {
             if(!video.description) video.description = '';
             var vid = $($.parseHTML(video.embed_code)); vid.width(310); vid.height(200); 
@@ -996,38 +1040,38 @@ var TableDatatablesManaged = function () {
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+video.id+'"><i class="fa fa-remove"></i></a>'+
                     '</div></div></div></div>'+
                     '<div class="cbp-l-grid-projects-title uppercase text-center">'+video.video_type+'</div>'+
-                    '<div class="cbp-l-grid-projects-desc text-center">'+video.description+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+(video.description.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
         //add
         $('#btn_model_video_add').on('click', function(ev) {
-            $('#form_model_show_videos').trigger('reset');
-            $('#form_model_show_videos input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_show_videos input[name="action"]:hidden').val('1').trigger('change');
-            $('#form_model_show_videos input[name="file"]:hidden').val('').trigger('change');
-            $('#form_model_show_videos img[name="file"]').attr('src','');
-            $('#subform_show_videos').css('display','block');
-            $('#modal_model_show_videos').modal('show');
+            $('#form_model_venue_videos').trigger('reset');
+            $('#form_model_venue_videos input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_venue_videos input[name="action"]:hidden').val('1').trigger('change');
+            $('#form_model_venue_videos input[name="file"]:hidden').val('').trigger('change');
+            $('#form_model_venue_videos img[name="file"]').attr('src','');
+            $('#subform_venue_videos').css('display','block');
+            $('#modal_model_venue_videos').modal('show');
         });
         //edit
-        $(document).on('click', '#grid_show_videos a.edit', function(){
+        $(document).on('click', '#grid_venue_videos a.edit', function(){
             var id = $(this).attr('rel');
-            $('#form_model_show_videos').trigger('reset');
-            $('#form_model_show_videos input[name="id"]:hidden').val(id).trigger('change');
-            $('#form_model_show_videos input[name="action"]:hidden').val('0').trigger('change');
-            $('#subform_show_videos').css('display','none');
+            $('#form_model_venue_videos').trigger('reset');
+            $('#form_model_venue_videos input[name="id"]:hidden').val(id).trigger('change');
+            $('#form_model_venue_videos input[name="action"]:hidden').val('0').trigger('change');
+            $('#subform_venue_videos').css('display','none');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/shows/videos', 
+                url: '/admin/videos/videos', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#form_model_show_videos [name="video_type"]').val(data.video.video_type);
-                        $('#form_model_show_videos [name="embed_code"]').val(data.video.embed_code);
-                        $('#form_model_show_videos [name="description"]').val(data.video.description);
-                        $('#modal_model_show_videos').modal('show');
+                        $('#form_model_venue_videos [name="video_type"]').val(data.video.video_type);
+                        $('#form_model_venue_videos [name="embed_code"]').val(data.video.embed_code);
+                        $('#form_model_venue_videos [name="description"]').val(data.video.description);
+                        $('#modal_model_venue_videos').modal('show');
                     }
                     else
                     {
@@ -1056,9 +1100,9 @@ var TableDatatablesManaged = function () {
             }); 
         });
         //remove
-        $(document).on('click', '#grid_show_videos a.delete', function(){
+        $(document).on('click', '#grid_venue_videos a.delete', function(){
             var id = $(this).attr('rel');
-            var show_id = $('#form_model_show_videos [name="show_id"]:hidden').val();
+            var show_id = $('#form_model_venue_videos [name="show_id"]:hidden').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -1067,7 +1111,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#grid_show_videos .video_'+id).remove();
+                        $('#grid_venue_videos .video_'+id).remove();
                     }
                     else
                     {
@@ -1096,30 +1140,30 @@ var TableDatatablesManaged = function () {
             });
         });
         //function submit videos
-        $('#submit_model_show_videos').on('click', function(ev) {
-            $('#modal_model_show_videos').modal('hide');
-            if($('#form_model_show_videos [name="action"]').val()=='0' || ($('#form_model_show_videos [name="action"]').val()=='1' && $('#form_model_show_videos [name="file"]').attr('src')!=''))
+        $('#submit_model_venue_videos').on('click', function(ev) {
+            $('#modal_model_venue_videos').modal('hide');
+            if($('#form_model_venue_videos [name="action"]').val()=='0' || ($('#form_model_venue_videos [name="action"]').val()=='1' && $('#form_model_venue_videos [name="file"]').attr('src')!=''))
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/shows/videos', 
-                    data: $('#form_model_show_videos').serializeArray(), 
+                    url: '/admin/venues/videos', 
+                    data: $('#form_model_venue_videos').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
                         {
                             //delete or update
                             if(data.action <= 0)
                             {
-                                var id = $('#form_model_show_videos [name="id"]:hidden').val();
-                                $('#grid_show_videos .video_'+id).remove();
+                                var id = $('#form_model_venue_videos [name="id"]:hidden').val();
+                                $('#grid_venue_videos .video_'+id).remove();
                             }
                             //add or update
                             if(data.action >= 0)
                             {
-                                var html = fn_show_videos(data.video); 
-                                $('#grid_show_videos').cubeportfolio('appendItems', html);
-                                //$('#grid_show_videos').trigger('resize.cbp');
+                                var html = fn_venue_videos(data.video); 
+                                $('#grid_venue_videos').cubeportfolio('appendItems', html);
+                                //$('#grid_venue_videos').trigger('resize.cbp');
                             }
                         }
                         else{
@@ -1131,7 +1175,7 @@ var TableDatatablesManaged = function () {
                                 type: "error"
                             },function(){
                                 $('#modal_model_update').modal('show');
-                                $('#modal_model_show_videos').modal('show');
+                                $('#modal_model_venue_videos').modal('show');
                             });
                         }
                     },
@@ -1144,7 +1188,7 @@ var TableDatatablesManaged = function () {
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
-                            $('#modal_model_show_videos').modal('show');
+                            $('#modal_model_venue_videos').modal('show');
                         });
                     }
                 }); 
@@ -1159,11 +1203,11 @@ var TableDatatablesManaged = function () {
                     type: "error"
                 },function(){
                     $('#modal_model_update').modal('show');
-                    $('#modal_model_show_videos').modal('show');
+                    $('#modal_model_venue_videos').modal('show');
                 });
             }
         });
-        //function with show_videos  *****************************************************************************************************   SHOW VIDEOS END
+        //function with venue_videos  *****************************************************************************************************   SHOW VIDEOS END
        
         //init functions
         check_models(); 
