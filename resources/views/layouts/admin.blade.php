@@ -269,8 +269,8 @@
                             </li>
                             @endif
                             @if(Auth::user()->user_type->id == 1 || array_key_exists('SLIDERS', Auth::user()->user_type->getACLs()['acl_codes']))
-                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/home_sliders')===false)) active @endif">
-                                <a href="/admin/home_sliders" class="nav-link nav-toggle">
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/sliders')===false)) active @endif">
+                                <a href="/admin/sliders" class="nav-link nav-toggle">
                                     <i class="icon-camera"></i>
                                     <span class="title">Home Sliders</span>
                                 </a>
