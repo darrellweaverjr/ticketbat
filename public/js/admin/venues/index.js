@@ -181,11 +181,16 @@ var TableDatatablesManaged = function () {
                                 e.val(data.venue[key]);
                         }
                         //fill out stages
+                        $('#grid_venue_stages .cbp-item').remove();
+                        $('#grid_venue_stages').trigger('resize.cbp');
                         if(data.stages && data.stages.length)
                         {
+                            var html = '';
                             $.each(data.stages,function(k, v) {
-                                $('#tb_venue_stages').append('<tr class="'+v.id+'"><td>'+v.password+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td>'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                html = html + fn_venue_stages(v); 
                             });
+                            $('#grid_venue_stages').cubeportfolio('appendItems', html);
+                            $('#grid_venue_stages').trigger('resize.cbp');
                         }
                         //fill out images
                         $('#grid_venue_images .cbp-item').remove();
@@ -411,7 +416,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_venue_stages input[name="action"]:hidden').val('1').trigger('change');
             $('#form_model_venue_stages input[name="image_url"]:hidden').val('').trigger('change');
             $('#form_model_venue_stages img[name="image_url"]').attr('src','');
-            $('#subform_venue_stages').css('display','block');
+            //$('#subform_venue_stages').css('display','block');
             $('#modal_model_venue_stages').modal('show');
         });
         //edit
@@ -422,17 +427,19 @@ var TableDatatablesManaged = function () {
             $('#form_model_venue_stages input[name="action"]:hidden').val('0').trigger('change');
             $('#form_model_venue_stages input[name="image_url"]:hidden').val('').trigger('change');
             $('#form_model_venue_stages img[name="image_url"]').attr('src','');
-            $('#subform_venue_stages').css('display','none');
+            //$('#subform_venue_stages').css('display','none');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/shows/stages', 
+                url: '/admin/venues/stages', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
                         $('#form_model_venue_stages [name="name"]').val(data.stage.name);
                         $('#form_model_venue_stages [name="description"]').val(data.stage.description);
+                        $('#form_model_venue_stages [name="image_url"]:hidden').val(data.stage.image_url);
+                        $('#form_model_venue_stages img[name="image_url"]').attr('src',data.stage.image_url);
                         $('#modal_model_venue_stages').modal('show');
                     }
                     else
@@ -1062,7 +1069,7 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/videos/videos', 
+                url: '/admin/venues/videos', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
@@ -1101,12 +1108,12 @@ var TableDatatablesManaged = function () {
         //remove
         $(document).on('click', '#grid_venue_videos a.delete', function(){
             var id = $(this).attr('rel');
-            var show_id = $('#form_model_venue_videos [name="show_id"]:hidden').val();
+            var venue_id = $('#form_model_venue_videos [name="venue_id"]:hidden').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/shows/videos', 
-                data: {action:-1,id:id,show_id:show_id}, 
+                url: '/admin/venues/videos', 
+                data: {action:-1,id:id,venue_id:venue_id}, 
                 success: function(data) {
                     if(data.success) 
                     {
