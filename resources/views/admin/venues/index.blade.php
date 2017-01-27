@@ -593,7 +593,7 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                    <button type="button" id="submit_model_venue_images" class="btn sbold grey-salsa">Save</button>
+                                    <button type="button" id="submit_model_venue_stages" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -744,7 +744,7 @@
                     <form method="post" id="form_model_venue_videos">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
-                        <input type="hidden" name="show_id" value="" />
+                        <input type="hidden" name="venue_id" value="" />
                         <input type="hidden" name="action" value="" />
                         <div class="form-body">
                             <div class="row">

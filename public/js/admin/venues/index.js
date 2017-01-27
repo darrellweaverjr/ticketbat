@@ -1062,7 +1062,7 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/videos/videos', 
+                url: '/admin/venues/videos', 
                 data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
@@ -1101,12 +1101,12 @@ var TableDatatablesManaged = function () {
         //remove
         $(document).on('click', '#grid_venue_videos a.delete', function(){
             var id = $(this).attr('rel');
-            var show_id = $('#form_model_venue_videos [name="show_id"]:hidden').val();
+            var venue_id = $('#form_model_venue_videos [name="venue_id"]:hidden').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/shows/videos', 
-                data: {action:-1,id:id,show_id:show_id}, 
+                url: '/admin/venues/videos', 
+                data: {action:-1,id:id,venue_id:venue_id}, 
                 success: function(data) {
                     if(data.success) 
                     {
