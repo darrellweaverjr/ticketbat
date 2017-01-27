@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'venues/banners', 'VenueController@banners');
     Route::match(['get','post'], 'venues/videos', 'VenueController@videos');
     Route::match(['get','post'], 'venues/stages', 'VenueController@stages');
+    Route::post('venues/slug', 'VenueController@slug');
     Route::post('venues/save', 'VenueController@save');
     Route::post('venues/remove', 'VenueController@remove');
     Route::match(['get','post'], 'venues', 'VenueController@index');
