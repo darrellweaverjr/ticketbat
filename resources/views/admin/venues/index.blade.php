@@ -231,6 +231,9 @@
                                         <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="false"> Tickets </a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_location" data-toggle="tab" aria-expanded="false"> Location </a>
                                     </li>
                                     <li class="">
@@ -346,6 +349,28 @@
                                             <label class="col-md-2 control-label">Description</label>
                                             <div class="col-md-10 show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_tickets">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">Default Fixed Proccessing Fee</label>
+                                                <div class="col-md-3">
+                                                    <input type="text" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">Default % Proccessing Fee</label>
+                                                <div class="col-md-3">
+                                                    <input type="text" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">Default Commission %</label>
+                                                <div class="col-md-3">
+                                                    <input type="text" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
