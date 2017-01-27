@@ -1258,11 +1258,11 @@ var FormValidation = function () {
                         maxlength: 50,
                         required: true
                     },
-                    short_description: {
+                    ticket_info: {
                         minlength: 5,
-                        maxlength: 500,
+                        maxlength: 2000,
                         required: true
-                    },
+                    },  
                     description: {
                         minlength: 5,
                         maxlength: 2000,
@@ -1298,10 +1298,27 @@ var FormValidation = function () {
                         maxlength: 100,
                         required: false
                     },
-                    url: {
+                    address: {
                         minlength: 5,
+                        maxlength: 200,
+                        required: true
+                    },
+                    city: {
+                        minlength: 2,
                         maxlength: 100,
-                        required: false
+                        required: true
+                    },
+                    state: {
+                        minlength: 2,
+                        maxlength: 2,
+                        required: true
+                    },
+                    zip: {
+                        minlength: 5,
+                        maxlength: 5,
+                        digits: true,
+                        range: [10000, 99999],
+                        required: true
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
