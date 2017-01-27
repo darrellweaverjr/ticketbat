@@ -577,9 +577,8 @@ var TableDatatablesManaged = function () {
             }
         });
         //function load form to upload image
-        $('#btn_upload_image_stage').on('click', function(ev) {
-            //var type = $('#form_model_venue_stages [name="image_type"]').val().toLowerCase();
-            FormImageUpload('stage','#modal_model_venue_stages','#form_model_venue_stages [name="image_url"]');       
+        $('#btn_venue_upload_stages').on('click', function(ev) {
+            FormImageUpload('stages.image_url','#modal_model_venue_stages','#form_model_venue_stages [name="image_url"]');       
         }); 
         //function with venue_stages  *****************************************************************************************************   VENUE PASSWORD END
         //function with venue_images  *****************************************************************************************************   VENUE IMAGES BEGIN
@@ -788,9 +787,9 @@ var TableDatatablesManaged = function () {
             }
         });
         //function load form to upload image
-        $('#btn_upload_image_url').on('click', function(ev) {
+        $('#btn_venue_upload_images').on('click', function(ev) {
             var type = $('#form_model_venue_images [name="image_type"]').val().toLowerCase();
-            FormImageUpload(type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');       
+            FormImageUpload('images.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');       
         }); 
         //function with venue_images  *****************************************************************************************************   VENUE IMAGES END
         //function with venue_banners  ****************************************************************************************************   VENUE BANNERS BEGIN
@@ -1008,9 +1007,8 @@ var TableDatatablesManaged = function () {
             }
         });
         //function load form to upload banners
-        $('#btn_upload_image_banner').on('click', function(ev) {
-            //var type = $('#form_model_venue_banners [name="image_type"]').val().toLowerCase();
-            FormImageUpload('banner','#modal_model_venue_banners','#form_model_venue_banners [name="file"]');       
+        $('#btn_venue_upload_banners').on('click', function(ev) {
+            FormImageUpload('banners.file','#modal_model_venue_banners','#form_model_venue_banners [name="file"]');       
         }); 
         //function with venue_banners  ****************************************************************************************************   VENUE IMAGES END
         //function with venue_videos  *****************************************************************************************************   VENUE VIDEOS BEGIN

@@ -219,8 +219,8 @@ var TableDatatablesManaged = function () {
             $('#modal_model_update').modal('show');
         });
         //function load form to upload image
-        $('#btn_sponsor_upload_image').on('click', function(ev) {
-            FormImageUpload('logo','#modal_model_update','#form_model_update [name="sponsor_logo_id"]');       
+        $('#btn_shows_upload_sponsor_logo_id').on('click', function(ev) {
+            FormImageUpload('shows.sponsor_logo_id','#modal_model_update','#form_model_update [name="sponsor_logo_id"]');       
         }); 
         //on select venue
         $('#form_model_update [name="venue_id"]').on('change', function(ev) {
@@ -557,11 +557,7 @@ var TableDatatablesManaged = function () {
                                 $('#form_model_update [name="'+key+'"]').val(data[key]);
                 }
             });            
-        });        
-        //function load form to upload image
-        $('#btn_bands_upload_image').on('click', function(ev) {
-            FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
-        });
+        }); 
         //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD BEGIN
         $('#btn_model_password_add').on('click', function(ev) {
             $('#form_model_show_passwords input[name="id"]:hidden').val('').trigger('change');
@@ -1606,9 +1602,9 @@ var TableDatatablesManaged = function () {
             }
         });
         //function load form to upload image
-        $('#btn_upload_image_url').on('click', function(ev) {
+        $('#btn_shows_upload_images').on('click', function(ev) {
             var type = $('#form_model_show_images [name="image_type"]').val().toLowerCase();
-            FormImageUpload(type,'#modal_model_show_images','#form_model_show_images [name="url"]');       
+            FormImageUpload('images.'+type,'#modal_model_show_images','#form_model_show_images [name="url"]');       
         }); 
         //function with show_images  *****************************************************************************************************   SHOW IMAGES END
         //function with show_banners  ****************************************************************************************************   SHOW BANNERS BEGIN
@@ -1826,9 +1822,8 @@ var TableDatatablesManaged = function () {
             }
         });
         //function load form to upload banners
-        $('#btn_upload_image_banner').on('click', function(ev) {
-            //var type = $('#form_model_show_banners [name="image_type"]').val().toLowerCase();
-            FormImageUpload('banner','#modal_model_show_banners','#form_model_show_banners [name="file"]');       
+        $('#btn_shows_upload_banner').on('click', function(ev) {
+            FormImageUpload('banners.file','#modal_model_show_banners','#form_model_show_banners [name="file"]');       
         }); 
         //function with show_banners  ****************************************************************************************************   SHOW IMAGES END
         //function with show_videos  *****************************************************************************************************   SHOW VIDEOS BEGIN

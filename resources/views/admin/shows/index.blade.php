@@ -472,7 +472,7 @@
                                                     <div class="col-md-9 show-error" >
                                                         <center>
                                                             <input type="hidden" name="sponsor_logo_id"/>
-                                                            <button type="button" id="btn_sponsor_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                                            <button type="button" id="btn_shows_upload_sponsor_logo_id" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
                                                             <img name="sponsor_logo_id" alt="- No image -" src="" width="323px" height="270px" />
                                                         </center>
                                                     </div>
@@ -1196,7 +1196,7 @@
                                     <div class="col-md-9 show-error" >
                                         <center>
                                             <input type="hidden" name="url"/>
-                                            <button type="button" id="btn_upload_image_url" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <button type="button" id="btn_shows_upload_images" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
                                             <img name="url" alt="- No image -" src="" width="323px" height="270px" />
                                         </center>
                                     </div>
@@ -1259,7 +1259,7 @@
                                     <div class="col-md-9 show-error" >
                                         <center>
                                             <input type="hidden" name="file"/>
-                                            <button type="button" id="btn_upload_image_banner" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <button type="button" id="btn_shows_upload_banner" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
                                             <img name="file" alt="- No image -" src="" width="323px" height="270px" />
                                         </center>
                                     </div>

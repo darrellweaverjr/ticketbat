@@ -298,8 +298,8 @@ var TableDatatablesManaged = function () {
             });            
         });        
         //function load form to upload image
-        $('#btn_bands_upload_image').on('click', function(ev) {
-            FormImageUpload('logo','#modal_model_update','#form_model_update [name="image_url"]');       
+        $('#btn_bands_upload_image_url').on('click', function(ev) {
+            FormImageUpload('bands.image_url','#modal_model_update','#form_model_update [name="image_url"]');       
         });        
         //init functions
         check_models();        
