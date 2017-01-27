@@ -440,6 +440,11 @@
                                                     <input type="hidden" name="financial_report_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
+                                                <label class="control-label col-md-9">Send weekly promotions</label>
+                                                <div class="col-md-3">
+                                                    <input type="hidden" name="enable_weekly_promos" value="0"/>
+                                                    <input type="checkbox" class="make-switch" name="enable_weekly_promos" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
