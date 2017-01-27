@@ -7,21 +7,41 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
     var maxHeight = 600;
     //fix dimensions for each type of file to upload
     switch (image_type) { 
-	case 'logo': 
+	case 'bands.image_url': 
                 var fixWidth = 600;
                 var fixHeight = 600;
                 break;  
-        case 'header': 
-                var fixWidth = 1920;
-                var fixHeight = 372;
+        case 'shows.sponsor_logo_id': 
+                var fixWidth = 600;
+                var fixHeight = 600;
+                break;  
+        case 'images.logo': 
+                var fixWidth = 600;
+                var fixHeight = 600;
 		break;   
-        case 'slider': 
-                var fixWidth = 1350;
-                var fixHeight = 372;
+        case 'images.image': 
+                var fixWidth = 600;
+                var fixHeight = 600;
 		break;  
-        case 'gallery':
-                var fixWidth = 640;
-                var fixHeight = 480;
+        case 'images.header':
+                var fixWidth = 600;
+                var fixHeight = 600;
+		break;  
+        case 'images.header medium': 
+                var fixWidth = 600;
+                var fixHeight = 600;
+                break;  
+        case 'banners.file': 
+                var fixWidth = 600;
+                var fixHeight = 600;
+                break;  
+        case 'sliders.image_url': 
+                var fixWidth = 600;
+                var fixHeight = 600;
+		break;   
+        case 'stages_image_url': 
+                var fixWidth = 600;
+                var fixHeight = 600;
 		break;  
 	default:
                 var fixWidth = 500;
@@ -148,12 +168,16 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                 success: function(data) {
                     if(data.success)
                     {
-                        if(modal_callback)
-                            $(modal_callback).modal('show');
                         if(image_callback)
                         {
                             $(image_callback).attr('src',data.file);
                             $(image_callback).val(data.file);
+                            image_callback = null;
+                        } 
+                        if(modal_callback)
+                        {
+                            $(modal_callback).modal('show');
+                            modal_callback = null;
                         } 
                         $('#modal_media_picture_load').modal('hide'); 
                     }
@@ -170,7 +194,10 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
     //function on close form
     $('#btn_close_image').on('click', function(ev) {
         if(modal_callback)
+        {
             $(modal_callback).modal('show');
+            modal_callback = null;
+        } 
         $('#modal_media_picture_load').modal('hide'); 
     });
 };
