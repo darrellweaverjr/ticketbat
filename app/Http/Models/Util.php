@@ -110,22 +110,29 @@ class Util extends Model
             //remove all not needed characters
             $slug = preg_replace('/[^a-z0-9-]/','',$name);
             //if show
-            if($venue_id)
+            if(!empty($venue_id) && isset($show_id))
                 $slugs = Show::pluck('slug')->toArray();
             else
                 $slugs = Venue::pluck('slug')->toArray();
             //if it is existing show and the slug it's the same like slug, no change
-            if($show_id && $show_id!='')
+            if(!empty($show_id))
             {
                 $show = Show::find($show_id);
                 if($show && $show->slug == $slug)
+                    return $slug;
+            }
+            else if(!empty($venue_id))
+            {
+                $venue = Venue::find($venue_id);
+                if($venue && $venue->slug == $slug)
                     return $slug;
             }
             //check if the slug exists
             while (in_array($slug,$slugs))
             {
                 $skip = false;
-                if($venue_id)
+                //search if show slug
+                if(!empty($venue_id) && isset($show_id))
                 {
                     if(Venue::find($venue_id) && isset(Venue::find($venue_id)->slug))
                     {
@@ -137,7 +144,7 @@ class Util extends Model
                         }
                     }
                 }
-                //concat with numbers
+                //concat with numbers or if it is a venue
                 if(!$skip)
                 {
                     $subslugs = explode('-', $slug);

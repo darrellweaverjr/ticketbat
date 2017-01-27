@@ -78,7 +78,7 @@ var TableDatatablesManaged = function () {
             var id = $('#form_model_update [name="id"]').val()
             var slug = $('#form_model_update [name="slug"]').val();
             if(id && slug)
-                window.open('http://www.ticketbat.com/event/'+slug);
+                window.open('http://www.ticketbat.com/venue/'+slug);
         });
         //get slug on name change
         $('#form_model_update [name="name"]').bind('change',function() {
@@ -87,11 +87,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/shows/slug', 
+                    url: '/admin/venues/slug', 
                     data: {
                         name:$('#form_model_update [name="name"]').val(),
-                        venue_id:$('#form_model_update [name="venue_id"]').val(),
-                        show_id:$('#form_model_update [name="id"]').val()
+                        venue_id:$('#form_model_update [name="id"]').val()
                     }, 
                     success: function(data) {
                         if(data) $('#form_model_update [name="slug"]').val(data);
