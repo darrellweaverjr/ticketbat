@@ -228,32 +228,25 @@
                             <div class="tabbable-line">
                                 <ul class="nav nav-tabs">
                                     <li class="active">
-                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="false"> General </a>
+                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_location" data-toggle="tab" aria-expanded="true"> Location </a>
+                                        <a href="#tab_model_update_location" data-toggle="tab" aria-expanded="false"> Location </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="true"> Reports </a>
+                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false"> Reports </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="false"> Stages </a>
+                                        <a href="#tab_model_update_stages" data-toggle="tab" aria-expanded="true"> Stages </a>
                                     </li>
-                                    <li class="dropdown">
-                                        <a href="#tab_model_update_multimedia" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Multimedia
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                        <ul class="dropdown-menu pull-right">
-                                            <li class="">
-                                                <a href="#tab_model_update_images" data-toggle="tab"> Images </a>
-                                            </li>
-                                            <li class="">
-                                                <a href="#tab_model_update_banners" data-toggle="tab"> Banners </a>
-                                            </li>
-                                            <li class="">
-                                                <a href="#tab_model_update_videos" data-toggle="tab"> Videos </a>
-                                            </li>
-                                        </ul>
+                                    <li class="">
+                                        <a href="#tab_model_update_images" data-toggle="tab" aria-expanded="true"> Images </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_banners" data-toggle="tab" aria-expanded="true"> Banners </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_videos" data-toggle="tab" aria-expanded="true"> Videos </a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
@@ -268,7 +261,7 @@
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="name" class="form-control" placeholder="My Show" /> 
+                                                        <input type="text" name="name" class="form-control" placeholder="My Venue" /> 
                                                     </div>
                                                     <label class="control-label col-md-3">Slug
                                                         <span class="required"> * </span>
@@ -291,10 +284,6 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <label class="control-label col-md-3">Cutoff Hours</label>
-                                                    <div class="col-md-9">
-                                                        <input type="text" value="1" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
-                                                    </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Featured</label>
@@ -312,32 +301,32 @@
                                                     <label class="col-md-3 control-label">Youtube
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myshow" /> 
+                                                        <input type="text" name="youtube" class="form-control" placeholder="venue-youtube" /> 
                                                     </div>
                                                     <label class="col-md-3 control-label">Facebook
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myshow" /> 
+                                                        <input type="text" name="facebook" class="form-control" placeholder="venue-url" /> 
                                                     </div>
                                                     <label class="col-md-3 control-label">Twitter
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myshow" /> 
+                                                        <input type="text" name="twitter" class="form-control" placeholder="venue-username" /> 
                                                     </div>
                                                     <label class="col-md-3 control-label">Google+
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="googleplus" class="form-control" placeholder="https://googleplus.com/myshow" /> 
+                                                        <input type="text" name="googleplus" class="form-control" placeholder="venue-id" /> 
                                                     </div>
                                                     <label class="col-md-3 control-label">YelpBadge
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="yelpbadge" class="form-control" placeholder="https://yelpbadge.com/myshow" /> 
+                                                        <input type="text" name="yelpbadge" class="form-control" placeholder="venue-link" /> 
                                                     </div>
                                                     <label class="col-md-3 control-label">Instagram
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" /> 
+                                                        <input type="text" name="instagram" class="form-control" placeholder="venue-username" /> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -367,7 +356,7 @@
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-8 show-error">
-                                                    <input type="text" name="street" class="form-control" placeholder="000 Main St" /> 
+                                                    <input type="text" name="address" class="form-control" placeholder="000 Main St" /> 
                                                 </div>
                                             </div>
                                         </div>
@@ -389,7 +378,7 @@
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="text" name="zip" class="form-control" placeholder="00000" /> 
+                                                    <input type="text" name="zip" class="form-control" placeholder="00000" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " /> 
                                                 </div>
                                             </div>
                                         </div>
@@ -431,26 +420,13 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_stages">
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_stage_add" class="btn sbold bg-green"> Add 
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
-                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
-                                            <table class="table table-striped table-hover table-bordered" >
-                                                <thead>
-                                                    <tr>
-                                                        <th> Password </th>
-                                                        <th> Date Start </th>
-                                                        <th> Date End </th>
-                                                        <th> Ticket Types </th>
-                                                        <th> </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="tb_show_passwords">
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <div class="row" style="max-height:600px !important;overflow-y: auto;">
+                                            <div id="grid_venue_stages" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                        </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_images">
                                         <div class="btn-group" style="padding-bottom:20px;">
@@ -459,7 +435,7 @@
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                                            <div id="grid_show_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                            <div id="grid_venue_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_banners">
@@ -469,7 +445,7 @@
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                                            <div id="grid_show_banners" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                            <div id="grid_venue_banners" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_videos">
@@ -479,7 +455,7 @@
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                                            <div id="grid_show_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                            <div id="grid_venue_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>   
                                     </div>
                                 </div>
@@ -542,29 +518,57 @@
         </div>
     </div>
     <!-- END SEARCH MODAL--> 
-    <!-- BEGIN ADD/EDIT STAGES MODAL--> 
+    <!-- BEGIN ADD/REMOVE VENUESTAGESS MODAL--> 
     <div id="modal_model_venue_stages" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Stage</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Stage</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" id="form_model_venue_stage">
+                    <form method="post" id="form_model_venue_stages">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                        <input type="hidden" name="venue_id" value="" />
                         <input type="hidden" name="id" value="" />
+                        <input type="hidden" name="venue_id" value="" />
+                        <input type="hidden" name="action" value="" />
                         <div class="form-body">
                             <div class="row">
-                                
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Name
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input type="text" class="form-control" name="name" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Description
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <textarea name="description" class="form-control" rows="5"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="subform_venue_stages">
+                                    <label class="control-label col-md-3">Image
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error" >
+                                        <center>
+                                            <input type="hidden" name="image_url"/>
+                                            <button type="button" id="btn_upload_image_stage" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <img name="image_url" alt="- No image -" src="" width="323px" height="270px" />
+                                        </center>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_venue_stages').trigger('reset')">Cancel</button>
-                                    <button type="button" id="submit_model_venue_stages" class="btn sbold grey-salsa">Save</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="submit_model_venue_images" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -574,7 +578,7 @@
             </div>
         </div>
     </div>
-    <!-- END ADD/EDIT STAGES MODAL--> 
+    <!-- END ADD/REMOVE VENUESTAGES MODAL--> 
     <!-- BEGIN ADD/REMOVE VENUEIMAGES MODAL--> 
     <div id="modal_model_venue_images" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">

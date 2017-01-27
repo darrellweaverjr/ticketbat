@@ -266,7 +266,6 @@ var TableDatatablesManaged = function () {
             $('#tb_show_tickets').empty();
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
-            $('#tb_show_images').empty();
             $('#modal_model_update_title').html('Edit Show');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1438,7 +1437,7 @@ var TableDatatablesManaged = function () {
                     '<a href="'+image.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.image_type+'<br>'+image.caption+'"><i class="fa fa-search"></i></a>'+
                     '</div></div></div></div>'+
                     '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.image_type+'</div>'+
-                    '<div class="cbp-l-grid-projects-desc text-center">'+image.caption+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+(image.caption.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
         //add
@@ -1644,7 +1643,7 @@ var TableDatatablesManaged = function () {
                 var link = '';
             }
             else
-                var link = '<a href="'+image.url+'" target="_blank">'+image.url+'</a>'; 
+                var link = '<a href="'+image.url+'" target="_blank">'+(image.url.substr(0,47)+'...')+'</a>'; 
             return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt=""></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
@@ -1865,7 +1864,7 @@ var TableDatatablesManaged = function () {
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+video.id+'"><i class="fa fa-remove"></i></a>'+
                     '</div></div></div></div>'+
                     '<div class="cbp-l-grid-projects-title uppercase text-center">'+video.video_type+'</div>'+
-                    '<div class="cbp-l-grid-projects-desc text-center">'+video.description+'</div>'+
+                    '<div class="cbp-l-grid-projects-desc text-center">'+(video.description.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
         //add
