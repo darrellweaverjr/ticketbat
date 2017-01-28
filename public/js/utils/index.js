@@ -39,10 +39,14 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                 var fixWidth = 600;
                 var fixHeight = 600;
 		break;   
-        case 'stages_image_url': 
+        case 'stages.image_url': 
                 var fixWidth = 600;
                 var fixHeight = 600;
-		break;  
+		break; 
+        case 'deals.image_url': 
+                var fixWidth = 600;
+                var fixHeight = 600;
+		break; 
 	default:
                 var fixWidth = 500;
                 var fixHeight = 500;
@@ -170,7 +174,10 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                     {
                         if(image_callback)
                         {
-                            $(image_callback).attr('src',data.file);
+                            if(image_type == 'deals.image_url')
+                                $(image_callback).attr('src','../'+data.file);
+                            else 
+                                $(image_callback).attr('src',data.file);
                             $(image_callback).val(data.file);
                             image_callback = null;
                         } 
