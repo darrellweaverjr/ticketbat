@@ -36,7 +36,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="portlet-body table-responsive">
+                <div class="portlet-body">
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
@@ -57,11 +57,11 @@
                             <tr>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$s->id}}" value="{{$s->id}} {{$s->image_url}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$s->id}}" value="Slider # {{$s->n_order}} - {{$s->alt}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%"><center><h1>{{$s->n_order}}</h1></center></td>
+                                <td width="10%" style="text-align:center;font-size:30px">{{$s->n_order}}</td>
                                 <td width="38%"><center><b><img alt="- No image -" height="100px" width="400px" src="{{$s->image_url}}"/></b></center></td>
                                 <td width="25%"><a href="{{env('IMAGE_URL_OLDTB_SERVER').$s->slug}}" target="_blank">{{$s->slug}}</a></td>
                                 <td width="25%"><a>{{$s->alt}}</a></td>
@@ -90,7 +90,48 @@
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>                             
-                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Slug
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-8 show-error">
+                                        <input type="text" class="form-control" name="slug" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Alt
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-8 show-error">
+                                        <input type="text" class="form-control" name="alt" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="subform_sliders">
+                                    <label class="control-label col-md-3">Order
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-8 show-error">
+                                        <select class="form-control" name="n_order">
+                                            @for ($i = 1; $i <= count($sliders); $i++)
+                                            <option value="{{$i}}">{{$i}}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Image
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-8 show-error" >
+                                        <center>
+                                            <input type="hidden" name="image_url"/>
+                                            <button type="button" id="btn_sliders_upload_images" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <img name="image_url" alt="- No image -" src="" width="323px" height="110px" />
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -110,5 +151,5 @@
 @endsection
 
 @section('scripts') 
-<script src="/js/admin/venues/index.js" type="text/javascript"></script>
+<script src="/js/admin/sliders/index.js" type="text/javascript"></script>
 @endsection
