@@ -23,4 +23,25 @@ class Slider extends Model
      * @var bool
      */
     public $timestamps = false;
+    /**
+     * Set the url for the current stage.
+     */
+    public function set_image_url($image_url)
+    {
+        if($this->image_url && $this->image_url!='')
+            Image::remove_image($this->image_url);
+        $this->image_url = Image::stablish_image('sliders',$image_url);
+    }
+    /**
+     * Remove the image file for the current stage.
+     */
+    public function delete_image_file()
+    {
+        if(Image::remove_image($this->image_url))
+        {
+            $this->image_url = '';
+            return true;
+        }
+        return true;   
+    }
 }
