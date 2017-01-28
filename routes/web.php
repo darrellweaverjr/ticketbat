@@ -98,6 +98,9 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('contracts/save', 'xxxController@save');
     Route::post('contracts/remove', 'xxxController@remove');
     Route::match(['get','post'], 'contracts', 'xxxController@index');
+    //apps
+    Route::match(['get','post'], 'apps/deals', 'AppController@deals');
+    Route::match(['get','post'], 'apps', 'AppController@index');
 });
 //ADMIN ROUTES FOR APP
 Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'App'], function () {
