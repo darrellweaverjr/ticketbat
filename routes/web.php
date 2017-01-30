@@ -52,6 +52,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'shows/tickets', 'ShowController@tickets');
     Route::match(['get','post'], 'shows/bands', 'ShowController@bands');
     Route::match(['get','post'], 'shows/showtimes', 'ShowController@showtimes');
+    Route::match(['get','post'], 'shows/contracts/{format?}/{id?}', 'ShowController@contracts');
     Route::match(['get','post'], 'shows/images', 'ShowController@images');
     Route::match(['get','post'], 'shows/banners', 'ShowController@banners');
     Route::match(['get','post'], 'shows/videos', 'ShowController@videos');

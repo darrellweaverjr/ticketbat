@@ -109,6 +109,13 @@ var TableDatatablesManaged = function () {
                 $('#form_model_show_times input[name="end_date"]').val(end.format('YYYY-MM-DD'));
             }
         ); 
+        //due_date
+        $('#show_contracts_effective_date').datepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "yyyy-mm-dd",
+            minDate: moment()
+        });
         //clear onsale_date
         $('#clear_onsale_date').on('click', function(ev) {
             $('#form_model_update [name="on_sale"]').val('');
@@ -214,6 +221,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','none');
             $('a[href="#tab_model_update_tickets"]').parent().css('display','none');
             $('a[href="#tab_model_update_bands"]').parent().css('display','none');
+            $('a[href="#tab_model_update_contracts"]').parent().css('display','none');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
             $("#form_model_update").trigger('reset');
             $('#modal_model_update').modal('show');
@@ -265,6 +273,8 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_tickets"]').parent().css('display','block');
             $('#tb_show_tickets').empty();
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
+            $('a[href="#tab_model_update_contracts"]').parent().css('display','block');
+            $('#tb_show_contracts').empty();
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Show');
             jQuery.ajax({
@@ -283,6 +293,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_show_images input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_banners input[name="parent_id"]:hidden').val(data.show.id).trigger('change');
                         $('#form_model_show_videos input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+                        $('#form_model_show_contracts input[name="show_id"]:hidden').val(data.show.id).trigger('change');
                         //fill out shows
                         for(var key in data.show)
                         {
@@ -358,6 +369,13 @@ var TableDatatablesManaged = function () {
                         {
                             $.each(data.show_times,function(k, v) {
                                 fn_show_times(v) ;                          
+                            });
+                        }
+                        //fill out contracts
+                        if(data.contracts && data.contracts.length)
+                        {
+                            $.each(data.contracts,function(k, v) {
+                                $('#tb_show_contracts').append('<tr><td>'+v.updated+'</td><td>'+v.effective_date+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green"></td></tr>');
                             });
                         }
                         //fill out images
@@ -1396,6 +1414,77 @@ var TableDatatablesManaged = function () {
             }    
         });
         //function with show_times  *****************************************************************************************************   SHOW TIMES END
+        //function with show_contracts  *************************************************************************************************   SHOW CONTRACTS BEGIN
+        $('#btn_model_contract_add').on('click', function(ev) {
+            $('#form_model_show_contracts input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_show_contracts').trigger('reset');
+            $('#modal_model_show_contracts').modal('show');
+        });
+        //view file
+        $('#tb_show_contracts').on('click', 'input[type="button"]', function(e){
+            var id = $(this).attr('rel');
+            window.open('/admin/shows/contracts/file/'+id);
+        });
+        //function submit show_contracts
+        $('#submit_model_show_contracts').on('click', function(ev) {
+            $('#modal_model_show_contracts').modal('hide');
+            if($('#form_model_show_contracts').valid())
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/contracts', 
+                    data: new FormData($('#form_model_show_contracts')[0]), 
+                    cache: false, 
+                    contentType: false,
+                    processData:false, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#tb_show_contracts').append('<tr><td>'+data.contract.updated+'</td><td>'+data.contract.effective_date+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green"></td></tr>');
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_contracts').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the contract's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_contracts').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form'",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_contracts').modal('show');
+                });
+            }    
+        });
+        //function with show_contracts  **************************************************************************************************   SHOW CONTRACTS END
         //function with show_images  *****************************************************************************************************   SHOW IMAGES BEGIN
         // init images
         $('#grid_show_images').cubeportfolio({
