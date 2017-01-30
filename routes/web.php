@@ -94,10 +94,6 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view');
     Route::post('consignments/save', 'ConsignmentController@save');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index');
-    //contracts
-    Route::post('contracts/save', 'ContractController@save');
-    Route::post('contracts/remove', 'ContractController@remove');
-    Route::match(['get','post'], 'contracts', 'ContractController@index');
     //apps
     Route::match(['get','post'], 'apps/deals', 'AppController@deals');
     Route::match(['get','post'], 'apps', 'AppController@index');
