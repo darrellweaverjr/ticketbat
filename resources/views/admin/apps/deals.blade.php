@@ -46,8 +46,8 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="18%"> Image </th>
-                                <th width="20%"> Type </th>
+                                <th width="10%"> Image </th>
+                                <th width="28%"> Type </th>
                                 <th width="30%"> For purchases on shows </th>
                                 <th width="30%"> For purchases on venues </th>
                             </tr>
@@ -61,16 +61,17 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td class="search-item clearfix" width="18%"> 
+                                <td class="search-item clearfix" width="10%"> 
                                     <div class="search-content col-md-2">
                                         <center style="color:red;"><i><b><img alt="- No image -" height="110px" width="110px" src="{{$d->image_url}}"/></b></i></center>
                                     </div>
                                 </td>
-                                <td class="search-item clearfix" width="20%"> 
+                                <td class="search-item clearfix" width="28%"> 
                                     <div class="search-content col-md-10">
                                         <small><i>
-                                            @if($d->url) URL:<br><a href="{{env('IMAGE_URL_OLDTB_SERVER').$d->url}}" target="_blank">{{$d->url}} </a>@endif
-                                            @if($d->name && $d->coupon_code) Show/Coupon:<br><a>{{$d->name}} / {{$d->coupon_code}}</a>@endif
+                                            @if($d->url) URL: <a href="{{env('IMAGE_URL_OLDTB_SERVER').$d->url}}" target="_blank">{{$d->url}} </a>@endif
+                                            @if($d->name) Show: <a>{{$d->name}}</a><br>@endif
+                                            @if($d->code) Coupon: <a>{{$d->code}}</a>@endif
                                         </i></small>
                                     </div>
                                 </td>
@@ -118,91 +119,74 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" id="form_model_update" class="form-horizontal">
+                    <form method="post" id="form_model_update" >
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <input name="id" type="hidden" value=""/>
+                        <input type="hidden" name="action" value="" />
                         <div class="form-body">
-                            <div class="alert alert-danger display-hide">
-                                <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
-                            <div class="alert alert-success display-hide">
-                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Image
+                                        <label class="control-label">Image
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-9 show-error" >
+                                        <div class="show-error" >
                                             <center>
                                                 <input type="hidden" name="image_url"/>
                                                 <button type="button" id="btn_deals_upload_image_url" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
-                                                <img name="image_url" alt="- No image -" src="" width="200px" height="200px" />
+                                                <img name="image_url" alt="- No image -" src="" width="315px" height="315px" />
                                             </center>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Type
+                                        <label class="control-label">Type
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="show-error">
                                             <select class="form-control" name="type">
                                                 <option value="url">URL</option>
                                                 <option value="show_coupon">Show / Coupon</option>
-                                            </select>                                            
-                                        </div>    
-                                    </div>
-                                    <div class="form-group" id="subform_show_coupon">
-                                        <label class="control-label col-md-3">
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <select class="form-control" name="show_id">
-                                                @foreach($shows as $index=>$s)
-                                                <option value="{{$s->id}}">{{$s->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>  
-                                        <label class="control-label col-md-3">
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <select class="form-control" name="discount_id">
-                                                @foreach($discounts as $index=>$d)
-                                                <option value="{{$d->id}}">{{$d->code}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>  
-                                    </div>
-                                    <div class="form-group" id="subform_url">
-                                        <label class="control-label col-md-3">
-                                        </label>
-                                        <div class="col-md-9 show-error">
-                                            <input type="text" name="url" class="form-control" placeholder="/event/event"> </div>
-                                        </div>  
-                                    </div>
+                                            </select> <hr>
+                                            <div class="form-group" id="subform_show_coupon">
+                                                <select class="form-control" name="show_id">
+                                                    @foreach($shows as $index=>$s)
+                                                    <option value="{{$s->id}}">{{$s->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <select class="form-control" name="discount_id">
+                                                    @foreach($discounts as $index=>$d)
+                                                    <option value="{{$d->id}}">{{$d->code}} = {{$d->description}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group" id="subform_url">
+                                                <input type="text" name="url" class="form-control" placeholder="/event/event"> 
+                                            </div>
+                                        </div>
+                                    </div>    
                                 </div>
-                            </div> 
-                            <div class="row" style="padding-right:40px;padding-left:40px;">
-                                <label class="control-label">
-                                    <span class="required">Display to customers that have purchases on:</span>
-                                </label><hr>
-                                <div class="col-md-6" style="padding-right:30px">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6" style="padding-right:15px">
                                     <div class="form-group">
                                         <label class="control-label">Shows
                                             <span class="required"> * </span>
                                         </label>
-                                        <select class="form-control" name="shows[]" multiple="multiple" size="10">
+                                        <select class="form-control" name="displayToShows[]" multiple="multiple" size="11">
                                             @foreach($shows as $index=>$s)
                                             <option value="{{$s->id}}">{{$s->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="padding-left:30px;">
+                                <div class="col-md-6" style="padding-left:15px;">
                                     <div class="form-group">
                                         <label class="control-label">Venues
                                             <span class="required"> * </span>
                                         </label>
-                                        <select class="form-control" name="venues[]" multiple="multiple" size="10">
+                                        <select class="form-control" name="displayToVenues[]" multiple="multiple" size="11">
                                             @foreach($venues as $index=>$v)
                                             <option value="{{$v->id}}">{{$v->name}}</option>
                                             @endforeach

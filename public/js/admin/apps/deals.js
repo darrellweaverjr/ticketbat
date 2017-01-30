@@ -120,6 +120,7 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add Deal');
+            $('#form_model_update input[name="action"]:hidden').val('1').trigger('change');
             $('#modal_model_update').modal('show');
         });
         //function edit
@@ -130,6 +131,7 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
+            $('#form_model_update input[name="action"]:hidden').val('0').trigger('change');
             $('#modal_model_update_title').html('Edit Deal');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -139,16 +141,18 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        for(var key in data.band)
+                        for(var key in data.deal)
                         {
                             var e = $('#form_model_update [name="'+key+'"]');
                             if(e.is('img'))
-                                e.attr('src',data.band[key]);
-                            else if(e.is('input:checkbox'))
-                                e.prop('checked',data.band[key]);
+                                e.attr('src',data.deal[key]);
                             else
-                                e.val(data.band[key]);
+                                e.val(data.deal[key]);
                         }
+                        if(data.deal.url)
+                            $('#form_model_update [name="type"]').val('url').trigger('change');
+                        else
+                            $('#form_model_update [name="type"]').val('show_coupon').trigger('change');
                         $('#modal_model_update').modal('show');
                     }
                     else swal({
@@ -174,7 +178,7 @@ var TableDatatablesManaged = function () {
             if($('#form_model_update').valid())
             {
                 swal({
-                    title: "Saving band's information",
+                    title: "Saving deal's information",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
@@ -261,7 +265,7 @@ var TableDatatablesManaged = function () {
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '/admin/apps/deals', 
-                        data: {id:ids}, 
+                        data: {action:-1,id:ids}, 
                         success: function(data) {
                             if(data.success)
                             {
