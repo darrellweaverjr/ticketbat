@@ -258,6 +258,9 @@
                                     <li class="">
                                         <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="true"> Bands </a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_contracts" data-toggle="tab" aria-expanded="true"> Contracts </a>
+                                    </li>
                                     <li class="dropdown">
                                         <a href="#tab_model_update_multimedia" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Multimedia
                                             <i class="fa fa-angle-down"></i>
@@ -653,6 +656,26 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_contracts">
+                                        <div class="btn-group" style="padding-bottom:20px;">
+                                            <button type="button" id="btn_model_contract_add" class="btn sbold bg-green"> Add 
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered" >
+                                                <thead>
+                                                    <tr>
+                                                        <th> Date Uploaded </th>
+                                                        <th> Effective Date </th>
+                                                        <th>  </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_show_contracts">
+                                                </tbody>
+                                            </table>
+                                        </div>  
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_images">
                                         <div class="btn-group" style="padding-bottom:20px;">
@@ -1217,7 +1240,64 @@
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE SHOWTIMES MODAL--> 
+    <!-- END ADD/REMOVE SHOWIMAGES MODAL--> 
+    <!-- BEGIN ADD/EDIT CONTRACTS MODAL--> 
+    <div id="modal_model_show_contracts" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Add Contracts</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_show_contracts">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="show_id" value="" />
+                        <input type="hidden" name="id" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">Effective Date
+                                            <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-8 show-error">
+                                        <div id="show_contracts_effective_date" class="input-group date date-picker">
+                                            <input readonly class="form-control" type="text" name="effective_date" value="{{date('Y-m-d')}}">
+                                            <span class="input-group-btn">
+                                                <button class="btn default" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                            </span>
+                                        </div>                          
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">File
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-8 show-error">
+                                        <span class="btn btn-block green fileinput-button">Agreement <i class="fa fa-plus"></i>
+                                            <input type="file" name="file" accept="application/pdf"> 
+                                        </span>
+                                    </div> 
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_contracts').trigger('reset')">Cancel</button>
+                                    <button type="button" id="submit_model_show_contracts" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/EDIT CONTRACTS MODAL--> 
     <!-- BEGIN ADD/REMOVE SHOWBANNERS MODAL--> 
     <div id="modal_model_show_banners" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
@@ -1343,6 +1423,7 @@
 @endsection
 
 @section('scripts') 
+<script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>

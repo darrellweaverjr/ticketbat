@@ -52,6 +52,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'shows/tickets', 'ShowController@tickets');
     Route::match(['get','post'], 'shows/bands', 'ShowController@bands');
     Route::match(['get','post'], 'shows/showtimes', 'ShowController@showtimes');
+    Route::match(['get','post'], 'shows/contracts/{format?}/{id?}', 'ShowController@contracts');
     Route::match(['get','post'], 'shows/images', 'ShowController@images');
     Route::match(['get','post'], 'shows/banners', 'ShowController@banners');
     Route::match(['get','post'], 'shows/videos', 'ShowController@videos');
@@ -94,10 +95,6 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view');
     Route::post('consignments/save', 'ConsignmentController@save');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index');
-    //contracts
-    Route::post('contracts/save', 'ContractController@save');
-    Route::post('contracts/remove', 'ContractController@remove');
-    Route::match(['get','post'], 'contracts', 'ContractController@index');
     //apps
     Route::match(['get','post'], 'apps/deals', 'AppController@deals');
     Route::match(['get','post'], 'apps', 'AppController@index');

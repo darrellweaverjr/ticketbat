@@ -562,22 +562,13 @@ class ConsignmentController extends Controller{
                         ]);
                     }
                     else 
-                    {
-                        $data = '<script>alert("The system could not load the information from the DB. It does not exists.");window.close();</script>';
-                        return $data;
-                    }
+                        return '<script>alert("The system could not load the information from the DB. It does not exists.");window.close();</script>';
                 }
                 else
-                {
-                    $data = '<script>alert("The system could not load the information from the DB. It has not a valid format.");window.close();</script>';
-                    return $data;
-                }
+                    return '<script>alert("The system could not load the information from the DB. It has not a valid format.");window.close();</script>';
             }
             else
-            {
-                $data = '<script>alert("The system could not load the information from the DB. There is not that file.");window.close();</script>';
-                return $data;
-            }
+                return '<script>alert("The system could not load the information from the DB. There is not that file.");window.close();</script>';
         } catch (Exception $ex) {
             throw new Exception('Error Consignments View: '.$ex->getMessage());
         }
