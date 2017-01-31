@@ -132,4 +132,7 @@ Route::group(['prefix' => 'command'], function () {
     Route::get('ShoppingcartRecover', function () {
         Artisan::call('Shoppingcart:recover');
     });
+    Route::get('ContractUpdateTickets', function () {
+        Artisan::call('Contract:update_tickets');
+    });
 });
