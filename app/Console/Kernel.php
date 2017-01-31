@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\PromoAnnounced::class,
         
         Commands\ShoppingcartClean::class,
+        Commands\ContractUpdateTickets::class,
     ];
 
     /**
