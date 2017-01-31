@@ -3,8 +3,8 @@
 //FORM IMAGE UPLOAD ANY FILE
 var FormImageUpload = function (image_type,modal_callback,image_callback) {
     //variables biggest dimensions of image to upload
-    var maxWidth = 1920;
-    var maxHeight = 600;
+    var maxWidth = 1350;
+    var maxHeight = 800;
     //fix dimensions for each type of file to upload
     switch (image_type) { 
 	case 'bands.image_url': 
@@ -12,44 +12,44 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                 var fixHeight = 600;
                 break;  
         case 'shows.sponsor_logo_id': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 100;
+                var fixHeight = 50;
                 break;  
         case 'images.logo': 
                 var fixWidth = 600;
                 var fixHeight = 600;
 		break;   
         case 'images.image': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 800;
+                var fixHeight = 800;
 		break;  
         case 'images.header':
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 1350;
+                var fixHeight = 372;
 		break;  
         case 'images.header medium': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 1350;
+                var fixHeight = 372;
                 break;  
         case 'banners.file': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 768;
+                var fixHeight = 90;
                 break;  
         case 'sliders.image_url': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 1350;
+                var fixHeight = 372;
 		break;   
         case 'stages.image_url': 
                 var fixWidth = 600;
                 var fixHeight = 600;
 		break; 
         case 'deals.image_url': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 120;
+                var fixHeight = 120;
 		break; 
 	default:
-                var fixWidth = 500;
-                var fixHeight = 500;
+                var fixWidth = 600;
+                var fixHeight = 600;
     }
     //reset form on event function
     function reset_form()
