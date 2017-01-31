@@ -336,22 +336,24 @@ var TableDatatablesManaged = function () {
                             });
                         }
                         //fill out tickets
+                        $('#form_model_show_contracts select[name="ticket_id"]').append('<option disabled selected value=""></option>');
                         if(data.tickets && data.tickets.length)
                         {
                             $.each(data.tickets,function(k, v) {
                                 //default style
                                 if(v.is_default==1)
-                                    v.is_default = '<span class="label label-sm sbold label-success"> Yes </span>';
+                                    v.is_default = '<span class="label label-sm sbold label-success">Yes</span>';
                                 else
-                                    v.is_default = '<span class="label label-sm sbold label-danger"> No </span>';
+                                    v.is_default = '<span class="label label-sm sbold label-danger">No</span>';
                                 //active style
                                 if(v.is_active==1)
-                                    v.is_active = '<span class="label label-sm sbold label-success"> Active </span>';
+                                    v.is_active = '<span class="label label-sm sbold label-success">Active</span>';
                                 else
-                                    v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
+                                    v.is_active = '<span class="label label-sm sbold label-danger">Inactive</span>';
                                 //unlimited tickets
                                 if(v.max_tickets == 0) v.max_tickets = 'Unlimited';
                                 $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td> $'+v.retail_price+'</td><td> $'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>'+v.percent_commission+'%</td><td>'+v.is_default+'</td><td>'+v.max_tickets+'</td><td>'+v.is_active+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
+                                $('#form_model_show_contracts select[name="ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' ('+v.is_active+') '+v.title+'</option>');
                             });
                         }
                         //fill out bands
@@ -375,7 +377,12 @@ var TableDatatablesManaged = function () {
                         if(data.contracts && data.contracts.length)
                         {
                             $.each(data.contracts,function(k, v) {
-                                $('#tb_show_contracts').append('<tr><td>'+v.updated+'</td><td>'+v.effective_date+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green"></td></tr>');
+                                //status for cron job
+                                if(!v.data)
+                                    v.data = '<span class="label label-sm sbold label-warning">Won\'t run</span>';
+                                else
+                                    v.data = '<span class="label label-sm sbold label-danger">Pending</span>';
+                                $('#tb_show_contracts').append('<tr><td>'+v.updated+'</td><td>'+v.effective_date+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green"></td></tr>');
                             });
                         }
                         //fill out images
@@ -1415,6 +1422,108 @@ var TableDatatablesManaged = function () {
         });
         //function with show_times  *****************************************************************************************************   SHOW TIMES END
         //function with show_contracts  *************************************************************************************************   SHOW CONTRACTS BEGIN
+        //on select ticket
+        $('#form_model_show_contracts select[name="ticket_id"]').on('change', function(ev) {
+            $('#btn_show_contracts_ticket_add').prop('disabled',true); 
+            var ticket_id = $(this).val();
+            if(ticket_id)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/contracts', 
+                    data: {ticket_id:ticket_id},
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            for(var key in data.ticket)
+                            {
+                                //fill out
+                                var e = $('#form_model_show_contracts [name="'+key+'"]');
+                                if(e.is('input:checkbox'))
+                                    $('#form_model_show_contracts .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.ticket[key])? true : false, true);
+                                else
+                                    e.val(data.ticket[key]);
+                            }
+                            $('#btn_show_contracts_ticket_add').prop('disabled',false);
+                        }
+                        else{
+                            $('#modal_model_show_contracts').modal('hide');
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_show_contracts').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        $('#modal_model_show_contracts').modal('hide');
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_show_contracts').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                $('#modal_model_show_contracts').modal('hide');
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select a valid ticket!",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_contracts').modal('show');
+                });
+            }
+        });
+        //function add tickets
+        $('#btn_show_contracts_ticket_add').on('click', function(ev) {
+            var ticket_id = $('#form_model_show_contracts select[name="ticket_id"]').val();
+            if(ticket_id)
+            {
+                var array = {};
+                $.each($('#form_model_show_contracts').find(':input:not(.not_included)').serializeArray(), function(i, obj) { array[obj.name] = obj.value });
+                var ticket_tr = '<td>'+JSON.stringify(array,null,1)+'</td><td><input type="hidden" class="not_included" value=\''+JSON.stringify(array)+'\' name="tickets[]"><input type="button" value="X" class="btn sbold bg-red"></td>';
+                if($('#contracts_ticket_id_'+ticket_id).length)
+                    $('#contracts_ticket_id_'+ticket_id).html(ticket_tr);
+                else
+                    $('#tb_show_contracts_tickets').append('<tr id="contracts_ticket_id_'+ticket_id+'">'+ticket_tr+'</tr>');
+            }
+            else
+            {
+                $('#modal_model_show_contracts').modal('hide');
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You have to select a valid ticket.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_show_contracts').modal('show');
+                });
+            }    
+        });
+        //show contracts tickets remove
+        $('#tb_show_contracts_tickets').on('click', 'input[type="button"]', function(e){
+            $(this).closest('tr').remove();
+        });
+        //add
         $('#btn_model_contract_add').on('click', function(ev) {
             $('#form_model_show_contracts input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_show_contracts').trigger('reset');
@@ -1441,7 +1550,11 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#tb_show_contracts').append('<tr><td>'+data.contract.updated+'</td><td>'+data.contract.effective_date+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green"></td></tr>');
+                            if(!data.contract.data)
+                                data.contract.data = '<span class="label label-sm sbold label-warning">Won\'t run</span>';
+                            else
+                                data.contract.data = '<span class="label label-sm sbold label-danger">Pending</span>';
+                            $('#tb_show_contracts').append('<tr><td>'+data.contract.updated+'</td><td>'+data.contract.effective_date+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green"></td></tr>');
                         }
                         else{
 			    $('#modal_model_update').modal('hide');						
@@ -2119,12 +2232,12 @@ var TableDatatablesManaged = function () {
        
         //init functions
         check_models(); 
-        $('#form_model_update [name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0 });
-        $('#form_model_show_tickets [name="max_tickets"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000 });
-        $('#form_model_show_tickets [name="retail_price"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
-        $('#form_model_show_tickets [name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
-        $('#form_model_show_tickets [name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
-        $('#form_model_show_tickets [name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
+        $('input[name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0 });
+        $('input[name="max_tickets"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000 });
+        $('input[name="retail_price"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
+        $('input[name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
+        $('input[name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
+        $('input[name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
         
     }
     return {
