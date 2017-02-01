@@ -672,6 +672,7 @@
                                                         <th> Effective Date </th>
                                                         <th> Status </th>
                                                         <th>  </th>
+                                                        <th>  </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_show_contracts">
@@ -901,12 +902,6 @@
                                     <div class="col-md-7 show-error">
                                         <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                     </div> 
-                                    <label class="col-md-5 control-label">Amount (0 unlimited)
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
-                                    </div> 
                                     <label class="col-md-5 control-label">Proccessing Fee ($)
                                         <span class="required"> * </span>
                                     </label>
@@ -945,6 +940,12 @@
                                         <input type="hidden" name="is_active" value="0"/>
                                         <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
                                     </div>
+                                    <label class="col-md-5 control-label">Limit (0 unlimited)
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-7 show-error">
+                                        <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                    </div> 
                                 </div>  
                             </div>
                         </div>
@@ -1253,12 +1254,6 @@
                                         <div class="col-md-7 show-error">
                                             <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                         </div> 
-                                        <label class="col-md-5 control-label">Amount
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
-                                        </div> 
                                         <label class="col-md-5 control-label">Proc.Fee ($)
                                             <span class="required"> * </span>
                                         </label>
@@ -1297,6 +1292,12 @@
                                             <input type="hidden" name="is_active" value="0"/>
                                             <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
                                         </div>
+                                        <label class="col-md-5 control-label">Limit (0 = &#8734;)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                        </div> 
                                     </div>  
                                     <div class="form-group show-error">
                                         <button type="button" id="btn_show_contracts_ticket_add" disabled="true" class="btn btn-block sbold grey-salsa">Add cron job for this ticket <i class="fa fa-plus"></i></button> 
