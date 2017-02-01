@@ -200,9 +200,6 @@ class DashboardController extends Controller
                 $where[] = ['shows.create_user_id','=',Auth::user()->id];
             else if(Auth::user()->user_type->id != 1 && Auth::user()->user_type->id != 6)
                 $where[] = ['shows.create_user_id','=',0]; 
-            
-            
-            
             //get all records        
             $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -238,23 +235,77 @@ class DashboardController extends Controller
             //init
             $input = Input::all();
             $data = $total = array();
-            $data_conditions = '';    
-            //check field search
-            if(isset($input['venue_id']) && $input['venue_id'])
-                $data_conditions .= ' AND s.venue_id = '.$input['venue_id'];
-            if(isset($input['show_id']) && $input['show_id'])
-                $data_conditions .= ' AND s.id = '.$input['show_id'];
-            if(isset($input['start_date']) && $input['start_date'])
-                $data_conditions .= ' AND st.show_time >= "'.date_format(date_create($input['start_date']),'Y-m-d H:i:s').'"';
-            if(isset($input['end_date']) && $input['end_date'])
-                $data_conditions .= ' AND st.show_time <= "'.date_format(date_create($input['end_date']),'Y-m-d H:i:s').'"'; 
+            $current = date('Y-m-d H:i:s');
+            //conditions to search
+            $where = [['purchases.status','=','Active']];
+            $where = [['show_times.show_time','>',$current]];
+            //search venue
+            if(isset($input) && isset($input['venue']))
+            {
+                $venue = $input['venue'];
+                if($venue != '')
+                    $where[] = ['shows.venue_id','=',$venue];
+            }
+            else
+                $venue = '';
+            //search show
+            if(isset($input) && isset($input['show']))
+            {
+                $show = $input['show'];
+                if($show != '')
+                    $where[] = ['shows.id','=',$show];
+            }
+            else
+                $show = '';
+            //search showtime
+            if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
+            {
+                $showtime_start_date = $input['showtime_start_date'];
+                $showtime_end_date = $input['showtime_end_date'];
+                if($showtime_start_date != '' && $showtime_end_date != '')
+                {
+                    $where[] = ['show_times.show_time','>=',$showtime_start_date];
+                    $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                }    
+            }
+            else
+            {
+                $showtime_start_date = '';
+                $showtime_end_date = '';
+            }
+            //search soldtime
+            if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
+            {
+                $soldtime_start_date = $input['soldtime_start_date'];
+                $soldtime_end_date = $input['soldtime_end_date'];
+                if($soldtime_start_date != '' && $soldtime_end_date != '')
+                {
+                    $where[] = ['purchases.created','>=',$soldtime_start_date];
+                    $where[] = ['purchases.created','<=',$soldtime_end_date];
+                }    
+            }
+            else
+            {
+                $soldtime_start_date = '';
+                $soldtime_end_date = '';
+            }
             //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
             if(Auth::user()->user_type->id == 5)
-                $data_conditions .= ' AND s.create_user_id = '.Auth::user()->id;
+                $where[] = ['shows.create_user_id','=',Auth::user()->id];
             else if(Auth::user()->user_type->id != 1 && Auth::user()->user_type->id != 6)
-                $data_conditions .= ' AND s.create_user_id = 0';    
+                $where[] = ['shows.create_user_id','=',0]; 
             //get all records        
-            $data = DB::select('SELECT s.id, s.name, COUNT(p.id) AS num_purchases, SUM(ROUND(p.retail_price,2)) AS retail_price, SUM(ROUND(p.processing_fee,2)) AS processing_fee, 
+            $data = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS num_purchases, SUM(ROUND(purchases.retail_price,2)) AS retail_price, 
+                                    SUM(ROUND(purchases.processing_fee,2)) AS processing_fee, 
+                                    SUM(purchases.quantity) AS num_tickets, SUM(ROUND(purchases.price_paid,2)) AS total,
+                                    SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(1-(purchases.commission_percent/100)),2)) AS show_earned, 
+                                    SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(purchases.commission_percent/100),2)) AS commission_earned '))
+                        ->where($where)
+                        ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
+            /*$data = DB::select('SELECT s.id, s.name, COUNT(p.id) AS num_purchases, SUM(ROUND(p.retail_price,2)) AS retail_price, SUM(ROUND(p.processing_fee,2)) AS processing_fee, 
                                     SUM(p.quantity) AS num_tickets, SUM(ROUND(p.price_paid,2)) AS total,
                                     SUM(ROUND((p.price_paid-p.processing_fee)*(1-(p.commission_percent/100)),2)) AS show_earned, 
                                     SUM(ROUND((p.price_paid-p.processing_fee)*(p.commission_percent/100),2)) AS commission_earned
@@ -262,15 +313,18 @@ class DashboardController extends Controller
                                 INNER JOIN show_times st ON st.id = p.show_time_id 
                                 INNER JOIN shows s ON st.show_id = s.id 
                                 WHERE p.status = "Active" AND st.show_time > NOW() '.$data_conditions.'
-                                GROUP BY s.id');
+                                GROUP BY s.id');*/
             //calculate totals
             $total = array( 'num_purchases'=>array_sum(array_column($data,'num_purchases')),
                             'retail_price'=>array_sum(array_column($data,'retail_price')),
                             'processing_fee'=>array_sum(array_column($data,'processing_fee')),
+                            'show_earned'=>array_sum(array_column($data,'show_earned')),
                             'num_tickets'=>array_sum(array_column($data,'num_tickets')),
                             'total'=>array_sum(array_column($data,'total')));
+            $venues = Venue::all('id','name');
+            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.future_liabilities',compact('data','total'));
+            return view('admin.dashboard.future_liabilities',compact('data','total','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Future Liabilities: '.$ex->getMessage());
         }
