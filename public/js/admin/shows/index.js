@@ -1639,7 +1639,7 @@ var TableDatatablesManaged = function () {
                                 data.contract.data = '<span class="label label-sm sbold label-danger">Pending</span>';
                             var updated = moment(data.contract.updated);
                             var effective_date = moment(data.contract.effective_date);
-                            $('#tb_show_contracts').append('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+data.contract.data+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+data.contract.id+'" class="btn sbold bg-red delete"></td></tr>');
+                            $('#tb_show_contracts').prepend('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+data.contract.data+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+data.contract.id+'" class="btn sbold bg-red delete"></td></tr>');
                         }
                         else{
 			    $('#modal_model_update').modal('hide');						
