@@ -625,9 +625,10 @@
                                                         <th> Retail Price </th>
                                                         <th> P.Fee($) </th>
                                                         <th> P.Fee(%) </th>
-                                                        <th> Comm.(%) </th>
+                                                        <th> Com($) </th>
+                                                        <th> Com(%) </th>
                                                         <th> Default? </th>
-                                                        <th> Max Tickets </th>
+                                                        <th> Max </th>
                                                         <th> Status </th>
                                                         <th> </th>
                                                     </tr>
@@ -917,6 +918,12 @@
                                     </label>
                                     <div class="col-md-7 show-error">
                                         <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                    </div> 
+                                    <label class="col-md-5 control-label">Commission ($)
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-7 show-error">
+                                        <input type="text" value="0" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                     </div> 
                                     <label class="col-md-5 control-label">Commission (%)
                                         <span class="required"> * </span>
@@ -1264,6 +1271,12 @@
                                         <div class="col-md-7 show-error">
                                             <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                         </div> 
+                                        <label class="col-md-5 control-label">Commission ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="text" value="" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                        </div>
                                         <label class="col-md-5 control-label">Commission (%)
                                             <span class="required"> * </span>
                                         </label>
