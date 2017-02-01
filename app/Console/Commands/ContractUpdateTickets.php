@@ -63,6 +63,7 @@ class ContractUpdateTickets extends Command
                             $ticket->processing_fee = $t['processing_fee'];
                             $ticket->percent_pf = $t['percent_pf'];
                             $ticket->percent_commission = $t['percent_commission'];
+                            $ticket->fixed_commission = (!empty($t['fixed_commission']))? $t['fixed_commission'] : null;
                             $ticket->is_default = $t['is_default'];
                             $ticket->is_active = $t['is_active'];
                             $ticket->save();

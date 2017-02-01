@@ -351,8 +351,10 @@ var TableDatatablesManaged = function () {
                                 else
                                     v.is_active = '<span class="label label-sm sbold label-danger">Inactive</span>';
                                 //unlimited tickets
-                                if(v.max_tickets == 0) v.max_tickets = 'Unlimited';
-                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td> $'+v.retail_price+'</td><td> $'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>'+v.percent_commission+'%</td><td>'+v.is_default+'</td><td>'+v.max_tickets+'</td><td>'+v.is_active+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
+                                if(v.max_tickets == 0) v.max_tickets = '&#8734;';
+                                //commission$
+                                if(!v.fixed_commission) v.fixed_commission = '0.00';
+                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
                                 $('#form_model_show_contracts select[name="ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' ('+v.is_active+') '+v.title+'</option>');
                             });
                         }
@@ -850,7 +852,9 @@ var TableDatatablesManaged = function () {
                                     v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
                                 //unlimited tickets
                                 if(v.max_tickets == 0) v.max_tickets = 'Unlimited';
-                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td> $'+v.retail_price+'</td><td> $'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>'+v.percent_commission+'%</td><td>'+v.is_default+'</td><td>'+v.max_tickets+'</td><td>'+v.is_active+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
+                                //commission$
+                                if(!v.fixed_commission) v.fixed_commission = '0.00';
+                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
                             });               
                         }
                         else{
@@ -2238,6 +2242,7 @@ var TableDatatablesManaged = function () {
         $('input[name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
         $('input[name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
         $('input[name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
+        $('input[name="fixed_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,prefix:'$' });
         
     }
     return {
