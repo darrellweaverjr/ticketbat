@@ -758,7 +758,28 @@ var TableDatatablesManaged = function () {
         $('#btn_model_ticket_add').on('click', function(ev) {
             $('#form_model_show_tickets input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_show_tickets').trigger('reset');
-            $('#modal_model_show_tickets').modal('show');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/tickets', 
+                data: {venue_defaults:1,show_id:$('#form_model_update input[name="id"]:hidden').val()}, 
+                success: function(data) {
+                    if(data.success && data.default) 
+                    {
+                        $('#form_model_show_tickets [name="processing_fee"]').val(data.default.default_processing_fee);
+                        $('#form_model_show_tickets [name="percent_pf"]').val(data.default.default_percent_pfee);
+                        $('#form_model_show_tickets [name="fixed_commission"]').val(data.default.default_fixed_commission);
+                        $('#form_model_show_tickets [name="percent_commission"]').val(data.default.default_percent_commission);
+                        $('#modal_model_show_tickets').modal('show');
+                    }
+                    else{
+                        $('#modal_model_show_tickets').modal('show');
+                    }
+                },
+                error: function(){
+                    $('#modal_model_show_tickets').modal('show');
+                }
+            });
         });
         $('#tb_show_tickets').on('click', 'input[type="button"]', function(e){
             var row = $(this).closest('tr');
