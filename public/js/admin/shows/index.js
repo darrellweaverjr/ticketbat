@@ -109,6 +109,19 @@ var TableDatatablesManaged = function () {
                 $('#form_model_show_times input[name="end_date"]').val(end.format('YYYY-MM-DD'));
             }
         ); 
+        $('#show_passwords_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
+            },
+            function (start, end) {
+                $('#form_model_show_passwords input[name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_show_passwords input[name="end_date"]').val(end.format('YYYY-MM-DD'));
+            }
+        ); 
         //due_date
         $('#show_contracts_effective_date').datepicker({
             autoclose: true,
@@ -381,10 +394,12 @@ var TableDatatablesManaged = function () {
                             $.each(data.contracts,function(k, v) {
                                 //status for cron job
                                 if(!v.data)
-                                    v.data = '<span class="label label-sm sbold label-warning">Won\'t run</span>';
+                                    v.data = '<span class="label label-sm sbold label-warning">Nothing to run</span>';
                                 else
                                     v.data = '<span class="label label-sm sbold label-danger">Pending</span>';
-                                $('#tb_show_contracts').append('<tr><td>'+v.updated+'</td><td>'+v.effective_date+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green"></td></tr>');
+                                var updated = moment(v.updated);
+                                var effective_date = moment(v.effective_date);
+                                $('#tb_show_contracts').append('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+v.id+'" class="btn sbold bg-red delete"></td></tr>');
                             });
                         }
                         //fill out images
@@ -1552,12 +1567,55 @@ var TableDatatablesManaged = function () {
         $('#btn_model_contract_add').on('click', function(ev) {
             $('#form_model_show_contracts input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_show_contracts').trigger('reset');
+            $('#btn_show_contracts_ticket_add').prop('disabled',true); 
+            $('#tb_show_contracts_tickets').empty();
             $('#modal_model_show_contracts').modal('show');
         });
-        //view file
+        //view file or remove
         $('#tb_show_contracts').on('click', 'input[type="button"]', function(e){
             var id = $(this).attr('rel');
-            window.open('/admin/shows/contracts/file/'+id);
+            var row = $(this).closest('tr');
+            //remove
+            if($(this).hasClass('delete'))
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/contracts', 
+                    data: {action:-1, id:id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            row.remove();
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to delete the contract's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                }); 
+            }
+            //view pdf
+            else 
+                window.open('/admin/shows/contracts/file/'+id);
         });
         //function submit show_contracts
         $('#submit_model_show_contracts').on('click', function(ev) {
@@ -1576,10 +1634,12 @@ var TableDatatablesManaged = function () {
                         if(data.success) 
                         {
                             if(!data.contract.data)
-                                data.contract.data = '<span class="label label-sm sbold label-warning">Won\'t run</span>';
+                                data.contract.data = '<span class="label label-sm sbold label-warning">Nothing to run</span>';
                             else
                                 data.contract.data = '<span class="label label-sm sbold label-danger">Pending</span>';
-                            $('#tb_show_contracts').append('<tr><td>'+data.contract.updated+'</td><td>'+data.contract.effective_date+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green"></td></tr>');
+                            var updated = moment(data.contract.updated);
+                            var effective_date = moment(data.contract.effective_date);
+                            $('#tb_show_contracts').append('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+data.contract.data+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+data.contract.id+'" class="btn sbold bg-red delete"></td></tr>');
                         }
                         else{
 			    $('#modal_model_update').modal('hide');						
