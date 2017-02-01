@@ -25,11 +25,11 @@ var TableDatatablesButtons = function () {
                     "first": "First"
                 }
             },
-            buttons: [
+            "buttons": [
                 {
                     text: 'Search',
                     className: 'btn sbold grey-salsa',
-                    action: function ( e, dt, node, config ) {
+                    action: function () {
                         $('#modal_model_search').modal('show');
                     }
                 },
