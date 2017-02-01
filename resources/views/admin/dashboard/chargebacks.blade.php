@@ -61,21 +61,21 @@
                                 <th> Show Name </th>
                                 <th> Purchase <br> Date/Time </th>
                                 <th> Show <br> Time </th>
-                                <th> Amount($) </th>
                                 <th> Quantity </th>
+                                <th> Amount($) </th>
                                 <th> Note </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td> {{$d->card_holder}} </td>
-                                <td> {{$d->show_name}} </td>
-                                <td> {{date('m/d/Y g:ia',strtotime($d->created))}} </td>
-                                <td> {{date('m/d/Y g:ia',strtotime($d->show_time))}} </td>
-                                <td> $ {{number_format($d->amount,2)}} </td>
-                                <td> {{number_format($d->quantity)}} </td>
-                                <td> {{$d->note}} </b></td>
+                                <td>{{$d->card_holder}}</td>
+                                <td>{{$d->show_name}}</td>
+                                <td>{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
+                                <td>{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
+                                <td style="text-align:center">{{number_format($d->quantity)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->amount,2)}}</td>
+                                <td>{{$d->note}}</b></td>
                             </tr>
                             @endforeach
                         </tbody>

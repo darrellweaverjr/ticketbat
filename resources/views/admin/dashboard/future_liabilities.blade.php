@@ -120,14 +120,14 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td> {{$d->name}} </td>
-                                <td> {{number_format($d->num_tickets)}} </td>
-                                <td> {{number_format($d->num_purchases)}} </td>
-                                <td> $ {{number_format($d->retail_price,2)}} </td>
-                                <td> $ {{number_format($d->show_earned,2)}} </td>
-                                <td> $ {{number_format($d->commission_earned,2)}} </td>
-                                <td> $ {{number_format($d->processing_fee,2)}} </td>
-                                <td> $ {{number_format($d->total,2)}} </td>
+                                <td>{{$d->name}}</td>
+                                <td style="text-align:center">{{number_format($d->num_tickets)}}</td>
+                                <td style="text-align:center">{{number_format($d->num_purchases)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->retail_price,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->show_earned,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->commission_earned,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->processing_fee,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->total,2)}}</td>
                             </tr>
                             @endforeach
                         </tbody>
