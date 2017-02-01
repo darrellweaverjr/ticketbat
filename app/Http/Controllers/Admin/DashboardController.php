@@ -114,7 +114,7 @@ class DashboardController extends Controller
                                           SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(1-(purchases.commission_percent/100)),2)) AS show_earned, 
                                           SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(purchases.commission_percent/100),2)) AS commission_earned '))
                         ->where($where)
-                        ->orderBy('purchases.created')->groupBy('purchases.id')->get()->toArray();
+                        ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
             //calculate totals
             $total = array( 'tickets'=>array_sum(array_column($data,'tickets')),
                             'total'=>array_sum(array_column($data,'total')),
@@ -143,32 +143,85 @@ class DashboardController extends Controller
             //init
             $input = Input::all();
             $data = $total = array();
-            $data_conditions = '';    
-            //check field search
-            if(isset($input['venue_id']) && $input['venue_id'])
-                $data_conditions .= ' AND s.venue_id = '.$input['venue_id'];
-            if(isset($input['show_id']) && $input['show_id'])
-                $data_conditions .= ' AND s.id = '.$input['show_id'];
-            if(isset($input['start_date']) && $input['start_date'])
-                $data_conditions .= ' AND p.created >= "'.date_format(date_create($input['start_date']),'Y-m-d H:i:s').'"';
-            if(isset($input['end_date']) && $input['end_date'])
-                $data_conditions .= ' AND p.created <= "'.date_format(date_create($input['end_date']),'Y-m-d H:i:s').'"';
+            //conditions to search
+            $where = [['purchases.status','=','Chargeback']];
+            //search venue
+            if(isset($input) && isset($input['venue']))
+            {
+                $venue = $input['venue'];
+                if($venue != '')
+                    $where[] = ['shows.venue_id','=',$venue];
+            }
+            else
+                $venue = '';
+            //search show
+            if(isset($input) && isset($input['show']))
+            {
+                $show = $input['show'];
+                if($show != '')
+                    $where[] = ['shows.id','=',$show];
+            }
+            else
+                $show = '';
+            //search showtime
+            if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
+            {
+                $showtime_start_date = $input['showtime_start_date'];
+                $showtime_end_date = $input['showtime_end_date'];
+                if($showtime_start_date != '' && $showtime_end_date != '')
+                {
+                    $where[] = ['show_times.show_time','>=',$showtime_start_date];
+                    $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                }    
+            }
+            else
+            {
+                $showtime_start_date = '';
+                $showtime_end_date = '';
+            }
+            //search soldtime
+            if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
+            {
+                $soldtime_start_date = $input['soldtime_start_date'];
+                $soldtime_end_date = $input['soldtime_end_date'];
+                if($soldtime_start_date != '' && $soldtime_end_date != '')
+                {
+                    $where[] = ['purchases.created','>=',$soldtime_start_date];
+                    $where[] = ['purchases.created','<=',$soldtime_end_date];
+                }    
+            }
+            else
+            {
+                $soldtime_start_date = '';
+                $soldtime_end_date = '';
+            }
+            //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
+            if(Auth::user()->user_type->id == 5)
+                $where[] = ['shows.create_user_id','=',Auth::user()->id];
+            else if(Auth::user()->user_type->id != 1 && Auth::user()->user_type->id != 6)
+                $where[] = ['shows.create_user_id','=',0]; 
+            
+            
+            
             //get all records        
-            $data = DB::select('SELECT DISTINCTROW p.id, COALESCE(t.refnum,0) AS refnum, COALESCE(t.card_holder,CONCAT(c.first_name," ",c.last_name)) AS card_holder, 
-                                    COALESCE(t.amount,0) AS amount, COALESCE(t.authcode,0) AS authcode, s.name AS show_name, st.show_time, p.status AS status, 
-                                    p.quantity, p.transaction_id, p.ticket_type, p.created, p.note
-                                FROM purchases p 
-                                INNER JOIN show_times st ON st.id = p.show_time_id 
-                                INNER JOIN customers c ON p.customer_id = c.id 
-                                INNER JOIN shows s ON st.show_id = s.id 
-                                INNER JOIN transactions t ON t.id = p.transaction_id 
-                                WHERE p.status = "Chargeback" '.$data_conditions.'
-                                ORDER BY p.created DESC');
+            $data = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
+                        ->select(DB::raw('purchases.id, COALESCE(transactions.card_holder,CONCAT(customers.first_name," ",customers.last_name)) AS card_holder, 
+                                          COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,0) AS amount, COALESCE(transactions.authcode,0) AS authcode, 
+                                          shows.name AS show_name, show_times.show_time, purchases.status AS status,
+                                          purchases.quantity, purchases.transaction_id, purchases.ticket_type, purchases.created, purchases.note '))
+                        ->where($where)
+                        ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
             //calculate totals
             $total = array( 'amount'=>array_sum(array_column($data,'amount')),
                             'quantity'=>array_sum(array_column($data,'quantity')));
+            $venues = Venue::all('id','name');
+            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.chargebacks',compact('data','total'));
+            return view('admin.dashboard.chargebacks',compact('data','total','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Chargebacks: '.$ex->getMessage());
         }

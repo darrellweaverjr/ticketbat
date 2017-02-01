@@ -11,33 +11,13 @@
     <!-- BEGIN PAGE HEADER-->   
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
-        <small>statistics, charts, recent events and reports</small>
+        <small>statistics and reports</small>
     </h1>
-    <!-- END PAGE TITLE-->
-    <!-- BEGIN PAGE BAR -->
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <a href="/admin/home">Dashboard</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <span>{{$page_title}}</span>
-            </li>
-        </ul>
-        <div class="page-toolbar">
-            <div id="dashboard-report-range" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-                <i class="icon-calendar"></i>&nbsp;
-                <span class="thin uppercase hidden-xs"></span>&nbsp;
-                <i class="fa fa-angle-down"></i>
-            </div>
-        </div>
-    </div>
-    <!-- END PAGE BAR -->                        
+    <!-- END PAGE TITLE-->                  
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
@@ -50,8 +30,8 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="#">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
@@ -64,7 +44,6 @@
         </div>
     </div>
     <!-- END DASHBOARD STATS 1-->
-        
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -75,7 +54,7 @@
                     <div class="tools"> </div>
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover" id="sample_2">
+                    <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
                                 <th> Cardholder </th>
@@ -106,11 +85,106 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
-                    
+    <!-- BEGIN SEARCH MODAL--> 
+    <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:470px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="/admin/dashboard/chargebacks" id="form_model_search">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Venue:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="venue" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($venues as $index=>$v)
+                                                <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>   
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Show:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="show" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($shows as $index=>$s)
+                                                <option @if($s->id==$show) selected @endif @if(!empty($show) && $venue==$s->venue_id) style="display:block" @else style="display:none" @endif value="{{$s->id}}" rel="{{$s->venue_id}}">{{$s->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Show Time:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group" id="show_times_date">
+                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$showtime_start_date}}" readonly="true">
+                                            <span class="input-group-addon"> to </span>
+                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$showtime_end_date}}" readonly="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-range-toggle" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                                <button class="btn default" type="button" id="clear_show_times_date">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Sold Date:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group" id="sold_times_date">
+                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$soldtime_start_date}}" readonly="true">
+                                            <span class="input-group-addon"> to </span>
+                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$soldtime_end_date}}" readonly="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-range-toggle" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                                <button class="btn default" type="button" id="clear_sold_times_date">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
+                                                                                                    title: 'Searching information',
+                                                                                                    text: 'Please, wait.',
+                                                                                                    type: 'info',
+                                                                                                    showConfirmButton: false
+                                                                                                });" >Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SEARCH MODAL-->                   
 @endsection
 
 @section('scripts') 
 <script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/pages/scripts/table-datatables-buttons.min.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/chargebacks.js" type="text/javascript"></script>
 @endsection
