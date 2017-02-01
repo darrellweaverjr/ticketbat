@@ -1217,6 +1217,7 @@ var TableDatatablesManaged = function () {
         check_models(); 
         $('#form_model_update [name="default_processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_update [name="default_percent_pfee"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
+        $('#form_model_update [name="default_fixed_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_update [name="default_percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.5,decimals:2,max:100.00,postfix:'%' });
         
     }

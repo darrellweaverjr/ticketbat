@@ -153,6 +153,7 @@ class VenueController extends Controller{
                 $venue->enable_weekly_promos = $input['enable_weekly_promos'];
                 $venue->default_processing_fee = $input['default_processing_fee'];
                 $venue->default_percent_pfee = $input['default_percent_pfee'];
+                $venue->default_fixed_commission = $input['default_fixed_commission'];
                 $venue->default_percent_commission = $input['default_percent_commission'];
                 $venue->save();
                 //return
