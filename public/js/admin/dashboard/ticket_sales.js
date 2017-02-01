@@ -38,6 +38,9 @@ var TableDatatablesButtons = function () {
                 { extend: 'pdf', className: 'btn default' },
                 { extend: 'csv', className: 'btn default' }
             ],
+            "order": [
+                [, 'desc']
+            ],
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
                 [5, 10, 15, 20, -1],

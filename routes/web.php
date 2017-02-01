@@ -25,11 +25,11 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('media/upload_image','ImageController@upload_image'); 
     Route::get('media/preview/{filename}', function ($filename) {return Image::make(storage_path().'/app/tmp/'.$filename)->response();});
     //dashboard
-    Route::post('dashboard/ticket_sales', 'DashboardController@ticket_sales');
-    Route::get('dashboard/chargebacks', 'DashboardController@chargebacks');
-    Route::get('dashboard/future_liabilities', 'DashboardController@future_liabilities');
-    Route::get('dashboard/trend_pace', 'DashboardController@trend_pace');
-    Route::get('dashboard/referrals', 'DashboardController@referrals');
+    Route::match(['get','post'], 'dashboard/ticket_sales', 'DashboardController@ticket_sales');
+    Route::match(['get','post'], 'dashboard/chargebacks', 'DashboardController@chargebacks');
+    Route::match(['get','post'], 'dashboard/future_liabilities', 'DashboardController@future_liabilities');
+    Route::match(['get','post'], 'dashboard/trend_pace', 'DashboardController@trend_pace');
+    Route::match(['get','post'], 'dashboard/referrals', 'DashboardController@referrals');
     //users
     Route::post('users/save', 'UserController@save');
     Route::post('users/remove', 'UserController@remove'); 
