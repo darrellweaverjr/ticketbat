@@ -305,15 +305,6 @@ class DashboardController extends Controller
                                     SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(purchases.commission_percent/100),2)) AS commission_earned '))
                         ->where($where)
                         ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
-            /*$data = DB::select('SELECT s.id, s.name, COUNT(p.id) AS num_purchases, SUM(ROUND(p.retail_price,2)) AS retail_price, SUM(ROUND(p.processing_fee,2)) AS processing_fee, 
-                                    SUM(p.quantity) AS num_tickets, SUM(ROUND(p.price_paid,2)) AS total,
-                                    SUM(ROUND((p.price_paid-p.processing_fee)*(1-(p.commission_percent/100)),2)) AS show_earned, 
-                                    SUM(ROUND((p.price_paid-p.processing_fee)*(p.commission_percent/100),2)) AS commission_earned
-                                FROM purchases p 
-                                INNER JOIN show_times st ON st.id = p.show_time_id 
-                                INNER JOIN shows s ON st.show_id = s.id 
-                                WHERE p.status = "Active" AND st.show_time > NOW() '.$data_conditions.'
-                                GROUP BY s.id');*/
             //calculate totals
             $total = array( 'num_purchases'=>array_sum(array_column($data,'num_purchases')),
                             'retail_price'=>array_sum(array_column($data,'retail_price')),
@@ -341,48 +332,98 @@ class DashboardController extends Controller
             //init
             $input = Input::all();
             $data = $total = $graph = array();
-            $data_conditions = '';   
-            //check conditions
-            if(isset($input['venue_id']) && $input['venue_id'])
-                $data_conditions .= ' AND s.venue_id = '.$input['venue_id'];
-            if(isset($input['show_id']) && $input['show_id'])
-                $data_conditions .= ' AND s.id = '.$input['show_id'];
-            if(isset($input['start_date']) && $input['start_date'])
-                $data_conditions .= ' AND p.created >= "'.date_format(date_create($input['start_date']),'Y-m-d H:i:s').'"';
-            if(isset($input['end_date']) && $input['end_date'])
-                $data_conditions .= ' AND p.created <= "'.date_format(date_create($input['end_date']),'Y-m-d H:i:s').'"'; 
+            //conditions to search
+            $where = [['purchases.status','=','Active']];
+            //search venue
+            if(isset($input) && isset($input['venue']))
+            {
+                $venue = $input['venue'];
+                if($venue != '')
+                    $where[] = ['shows.venue_id','=',$venue];
+            }
+            else
+                $venue = '';
+            //search show
+            if(isset($input) && isset($input['show']))
+            {
+                $show = $input['show'];
+                if($show != '')
+                    $where[] = ['shows.id','=',$show];
+            }
+            else
+                $show = '';
+            //search showtime
+            if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
+            {
+                $showtime_start_date = $input['showtime_start_date'];
+                $showtime_end_date = $input['showtime_end_date'];
+                if($showtime_start_date != '' && $showtime_end_date != '')
+                {
+                    $where[] = ['show_times.show_time','>=',$showtime_start_date];
+                    $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                }    
+            }
+            else
+            {
+                $showtime_start_date = '';
+                $showtime_end_date = '';
+            }
+            //search soldtime
+            if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
+            {
+                $soldtime_start_date = $input['soldtime_start_date'];
+                $soldtime_end_date = $input['soldtime_end_date'];
+                if($soldtime_start_date != '' && $soldtime_end_date != '')
+                {
+                    $where[] = ['purchases.created','>=',$soldtime_start_date];
+                    $where[] = ['purchases.created','<=',$soldtime_end_date];
+                }    
+            }
+            else
+            {
+                $soldtime_start_date = '';
+                $soldtime_end_date = '';
+            }
+            //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
             if(Auth::user()->user_type->id == 1 || Auth::user()->user_type->id == 6)
             {   
                 //get all records        
-                $data = DB::select('SELECT s.name AS show_name, SUM(p.quantity) AS qty_tickets, COUNT(p.id) AS qty_purchases,
+                $data = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->select(DB::raw('shows.name AS show_name, SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
-                                                  WHERE stt.show_id = s.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS qty_tickets_one,
+                                                  WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS qty_tickets_one,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
-                                                  WHERE stt.show_id = s.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 2 DAY)),0) AS qty_tickets_two,
-                                        COUNT(p.id) AS qty_purchases, ROUND(SUM(p.retail_price),2) AS retail_price, ROUND(SUM(p.processing_fee),2) AS fees, 
-                                        ROUND(SUM(p.price_paid),2) AS revenue, SUM(ROUND((p.price_paid-p.processing_fee)*(p.commission_percent/100),2)) AS commission
-                                    FROM purchases p
-                                    LEFT JOIN show_times st ON st.id = p.show_time_id  
-                                    LEFT JOIN shows s ON s.id = st.show_id
-                                    WHERE p.status = "Active" '.$data_conditions.' 
-                                    GROUP BY s.id');
+                                                  WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 2 DAY)),0) AS qty_tickets_two,
+                                        COUNT(purchases.id) AS qty_purchases, ROUND(SUM(purchases.retail_price),2) AS retail_price, 
+                                        ROUND(SUM(purchases.processing_fee),2) AS fees, ROUND(SUM(purchases.price_paid),2) AS revenue, 
+                                        SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(purchases.commission_percent/100),2)) AS commission '))
+                        ->where($where)
+                        ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
                 //info for the graph 
-                $graph = DB::select('SELECT DATE_FORMAT(p.created,"%M/%Y") AS purchased, SUM(p.quantity) AS qty_tickets, COUNT(p.id) AS qty_purchases,
-                                        SUM(p.price_paid) AS amount
-                                    FROM purchases p
-                                    LEFT JOIN show_times st ON st.id = p.show_time_id  
-                                    LEFT JOIN shows s ON s.id = st.show_id
-                                    WHERE p.status = "Active" '.$data_conditions.' 
-                                    GROUP BY DATE_FORMAT(p.created,"%Y%m") ORDER BY DATE_FORMAT(p.created,"%Y%m") DESC LIMIT 12');
+                $start = date('Y-m-d', strtotime('-1 year'));
+                $where[] = ['purchases.created','>=',$start];
+                $graph = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased, 
+                                        SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases, SUM(purchases.price_paid) AS amount'))
+                        ->where($where)
+                        ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
+                        ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
             }
             //calculate totals
             $total = array( 'qty_tickets'=>array_sum(array_column($data,'qty_tickets')),
                             'qty_purchases'=>array_sum(array_column($data,'qty_purchases')),
                             'retail_price'=>array_sum(array_column($data,'retail_price')),
                             'fees'=>array_sum(array_column($data,'fees')),
+                            'commissions'=>array_sum(array_column($data,'commission')),
                             'revenue'=>array_sum(array_column($data,'revenue')));
+            $venues = Venue::all('id','name');
+            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.trend_pace',compact('data','total','graph'));
+            return view('admin.dashboard.trend_pace',compact('data','total','graph','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Trend and Pace: '.$ex->getMessage());
         }
