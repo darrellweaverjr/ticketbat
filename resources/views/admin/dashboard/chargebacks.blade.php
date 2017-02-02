@@ -18,20 +18,22 @@
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
+            <a class="dashboard-stat dashboard-stat-v2 dark" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
                 </div>
                 <div class="details">
                     <div class="number">
-                        <span data-counter="counterup" data-value="{{number_format($total['quantity'])}}">0</span>
+                        <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
-                    <div class="desc"> Quantity </div>
+                    <div class="desc">Tickets Sold 
+                        <br><span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span><br> Purchases Qty
+                    </div>
                 </div>
             </a>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 purple" href="#">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
@@ -57,13 +59,13 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                <th> Cardholder </th>
-                                <th> Show Name </th>
-                                <th> Purchase <br> Date/Time </th>
-                                <th> Show <br> Time </th>
-                                <th> Quantity </th>
-                                <th> Amount($) </th>
-                                <th> Note </th>
+                                <th>Cardholder</th>
+                                <th>Show Name</th>
+                                <th>Show<br>Date</th>
+                                <th>Sold<br>Date</th>
+                                <th>Tickets<br>Sold</th>
+                                <th>Amount</th>
+                                <th>Note</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,9 +73,9 @@
                             <tr>
                                 <td>{{$d->card_holder}}</td>
                                 <td>{{$d->show_name}}</td>
-                                <td>{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td>{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
-                                <td style="text-align:center">{{number_format($d->quantity)}}</td>
+                                <td>{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
+                                <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->amount,2)}}</td>
                                 <td>{{$d->note}}</b></td>
                             </tr>

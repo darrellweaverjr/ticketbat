@@ -19,7 +19,7 @@
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
+            <a class="dashboard-stat dashboard-stat-v2 dark" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-ticket"></i>
                 </div>
@@ -27,74 +27,80 @@
                     <div class="number">
                         <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
-                    <div class="desc"> Tickets Sold </div>
+                    <div class="desc">Tickets Sold 
+                        <br><span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span><br> Purchases Qty
+                    </div>
                 </div>
             </a>
         </div>
-        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" >
+            <a class="dashboard-stat dashboard-stat-v2 green-seagreen" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
-                        $ <span data-counter="counterup" data-value="{{number_format($total['savings'],2)}}"></span></div>
-                    <div class="desc"> Discounts Applied </div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees'],2)}}"></span></div>
+                    <div class="desc">Total Revenue [RP-D+F]
+                        <br>= Ret.Price: $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices'],2)}}"></span>
+                        <br>+ F - Disc.: $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}"></span>
+                    </div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 green" href="#">
+            <a class="dashboard-stat dashboard-stat-v2 red" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-money"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
-                        $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span></div>
-                    <div class="desc"> Fee Revenue Earned </div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}"></span></div>
+                    <div class="desc">To Show [(PP-F)*(1-C)]
+                        <br>Pric.Paid: $ <span data-counter="counterup" data-value="{{number_format($total['price_paids'],2)}}"></span>
+                    </div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+            <a class="dashboard-stat dashboard-stat-v2 blue" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-usd"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
-                        $ <span data-counter="counterup" data-value="{{number_format($total['commission_earned'],2)}}"></span></div>
-                    <div class="desc"> Commision Earned </div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}"></span></div>
+                    <div class="desc">Commissions [C]</div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 green" href="#">
+            <a class="dashboard-stat dashboard-stat-v2 blue-steel" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
-                        $ <span data-counter="counterup" data-value="{{number_format($total['show_earned'],2)}}"></span></div>
-                    <div class="desc"> To Show </div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span></div>
+                    <div class="desc">Fees [F]</div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 purple" href="#">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="#" style="height:130px !important">
                 <div class="visual">
                     <i class="fa fa-shopping-cart"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
-                        $ <span data-counter="counterup" data-value="{{number_format($total['total'],2)}}"></span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees'],2)}}"></span>
                     </div>
-                    <div class="desc"> Total collected </div>
+                    <div class="desc">Gross Profit [C+F]</div>
                 </div>
             </a>
         </div>
     </div>
     <!-- END DASHBOARD STATS 1-->
-        
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -108,31 +114,31 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                <th> Sale Details </th>
-                                <th> Show <br> Date </th>
-                                <th> Sold <br> Date </th>
-                                <th> Tickets <br> (Qty) </th>
-                                <th> Tickets($) </th>  
-                                <th> Savings($) </th>
-                                <th> Fees($) </th>
-                                <th> Commis.($) </th>
-                                <th> To Show($) </th>
-                                <th> TOTAL($) </th>
+                                <th style="text-align:center">Sales Details</th>
+                                <th style="text-align:center">Show<br>Date</th>
+                                <th style="text-align:center">Sold<br>Date</th>
+                                <th style="text-align:center">Tickets<br>Sold</th>
+                                <th style="text-align:center">Total<br>Revenue</th>  
+                                <th style="text-align:center">Discounts</th>
+                                <th style="text-align:center">To Show</th>
+                                <th style="text-align:center">Commiss.</th>
+                                <th style="text-align:center">Fees</th>
+                                <th style="text-align:center">Gross<br>Profit</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td>Show: <a>{{$d->show_name}}</a>, <br>Customer: <a>{{$d->name}}</a>, Order#: <a>{{$d->id}}</a>, <br>Code: <a>{{$d->code}}</a>, Ticket Type: <a>{{$d->ticket_type}}</a></td>
+                                <td>Show: <a>{{$d->show_name}}</a>,<br> Customer: <a>{{$d->name}}</a>,<br> Order#: <a>{{$d->id}}</a>, Code: <a>{{$d->code}}</a>, Ticket Type: <a>{{$d->ticket_type}}</a></td>
                                 <td style="text-align:center">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td style="text-align:center">{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->tickets_price,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->savings,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->commission_earned,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->show_earned,2)}}</td>
-                                <td style="text-align:right"><b>$ {{number_format($d->total,2)}}</b></td>
+                                <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees,2)}}</b></td>
                             </tr>
                             @endforeach
                         </tbody>

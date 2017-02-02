@@ -118,7 +118,6 @@ var TableDatatablesButtons = function () {
                      plotLines: [{ value: 0, width: 1, color: '#808080' }]
             },
             tooltip: { valuePrefix: ' ' },
-            legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle', borderWidth: 0 },
             series: [{
                     name: 'Sold Tickets',
                     data: qty_tickets
@@ -136,7 +135,6 @@ var TableDatatablesButtons = function () {
                      plotLines: [{ value: 0, width: 1, color: '#808080' }]
             },
             tooltip: { valuePrefix: '$ ' },
-            legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle', borderWidth: 0 },
             series: [{
                     name: 'Amount',
                     data: amount
