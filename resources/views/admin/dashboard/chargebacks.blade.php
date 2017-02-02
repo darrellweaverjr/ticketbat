@@ -18,22 +18,22 @@
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 dark" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 dark">
                 <div class="visual">
-                    <i class="fa fa-comments"></i>
+                    <i class="fa fa-ticket"></i>
                 </div>
                 <div class="details">
                     <div class="number">
                         <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
                     <div class="desc">Tickets Sold 
-                        <br><span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span><br> Purchases Qty
+                        <br>Purchases: <span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 purple" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 purple">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
