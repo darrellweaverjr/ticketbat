@@ -108,21 +108,23 @@ class DashboardController extends Controller
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, 
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code,
-                                          SUM(purchases.quantity) AS tickets, SUM(ROUND(purchases.price_paid,2)) AS total, 
-                                          SUM(ROUND(purchases.processing_fee,2)) AS fees, SUM(ROUND(purchases.savings,2)) AS savings, 
-                                          SUM(ROUND(purchases.retail_price-purchases.savings,2)) AS tickets_price,
-                                          SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(1-(purchases.commission_percent/100)),2)) AS show_earned, 
-                                          SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(purchases.commission_percent/100),2)) AS commission_earned '))
+                                          SUM(purchases.quantity) AS tickets, 
+                                          SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
+                                          SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
+                                          SUM(ROUND(purchases.savings,2)) AS discounts, 
+                                          SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                          SUM(ROUND( (purchases.price_paid-purchases.processing_fee)*(1-purchases.commission_percent) ,2)) AS to_show, 
+                                          SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
             //calculate totals
             $total = array( 'tickets'=>array_sum(array_column($data,'tickets')),
-                            'total'=>array_sum(array_column($data,'total')),
+                            'price_paids'=>array_sum(array_column($data,'price_paids')),
+                            'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
-                            'savings'=>array_sum(array_column($data,'savings')),
-                            'tickets_price'=>array_sum(array_column($data,'tickets_price')),
-                            'show_earned'=>array_sum(array_column($data,'show_earned')),
-                            'commission_earned'=>array_sum(array_column($data,'commission_earned')));
+                            'to_show'=>array_sum(array_column($data,'to_show')),
+                            'commissions'=>array_sum(array_column($data,'commissions')));
             $venues = Venue::all('id','name');
             $shows = Show::all('id','name','venue_id');
             //return view
@@ -209,12 +211,12 @@ class DashboardController extends Controller
                         ->select(DB::raw('purchases.id, COALESCE(transactions.card_holder,CONCAT(customers.first_name," ",customers.last_name)) AS card_holder, 
                                           COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,0) AS amount, COALESCE(transactions.authcode,0) AS authcode, 
                                           shows.name AS show_name, show_times.show_time, purchases.status AS status,
-                                          purchases.quantity, purchases.transaction_id, purchases.ticket_type, purchases.created, purchases.note '))
+                                          purchases.quantity AS tickets, purchases.transaction_id, purchases.ticket_type, purchases.created, purchases.note '))
                         ->where($where)
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
             //calculate totals
             $total = array( 'amount'=>array_sum(array_column($data,'amount')),
-                            'quantity'=>array_sum(array_column($data,'quantity')));
+                            'tickets'=>array_sum(array_column($data,'tickets')));
             $venues = Venue::all('id','name');
             $shows = Show::all('id','name','venue_id');
             //return view
@@ -298,20 +300,25 @@ class DashboardController extends Controller
             $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS num_purchases, SUM(ROUND(purchases.retail_price,2)) AS retail_price, 
-                                    SUM(ROUND(purchases.processing_fee,2)) AS processing_fee, 
-                                    SUM(purchases.quantity) AS num_tickets, SUM(ROUND(purchases.price_paid,2)) AS total,
-                                    SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(1-(purchases.commission_percent/100)),2)) AS show_earned, 
-                                    SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(purchases.commission_percent/100),2)) AS commission_earned '))
+                        ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS purchases, 
+                                    SUM(purchases.quantity) AS tickets, 
+                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
+                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
+                                    SUM(ROUND(purchases.savings,2)) AS discounts, 
+                                    SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                    SUM(ROUND( (purchases.price_paid-purchases.processing_fee)*(1-purchases.commission_percent) ,2)) AS to_show, 
+                                    SUM(ROUND(purchases.commission_percent,2)) AS commissions '))
                         ->where($where)
                         ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
             //calculate totals
-            $total = array( 'num_purchases'=>array_sum(array_column($data,'num_purchases')),
-                            'retail_price'=>array_sum(array_column($data,'retail_price')),
-                            'processing_fee'=>array_sum(array_column($data,'processing_fee')),
-                            'show_earned'=>array_sum(array_column($data,'show_earned')),
-                            'num_tickets'=>array_sum(array_column($data,'num_tickets')),
-                            'total'=>array_sum(array_column($data,'total')));
+            $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
+                            'tickets'=>array_sum(array_column($data,'tickets')),
+                            'price_paids'=>array_sum(array_column($data,'price_paids')),
+                            'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'discounts'=>array_sum(array_column($data,'discounts')),
+                            'fees'=>array_sum(array_column($data,'fees')),
+                            'to_show'=>array_sum(array_column($data,'to_show')),
+                            'commissions'=>array_sum(array_column($data,'commissions')));
             $venues = Venue::all('id','name');
             $shows = Show::all('id','name','venue_id');
             //return view
@@ -391,14 +398,18 @@ class DashboardController extends Controller
                 $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.name AS show_name, SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases,
+                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
-                                                  WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS qty_tickets_one,
+                                                  WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
-                                                  WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 2 DAY)),0) AS qty_tickets_two,
-                                        COUNT(purchases.id) AS qty_purchases, ROUND(SUM(purchases.retail_price),2) AS retail_price, 
-                                        ROUND(SUM(purchases.processing_fee),2) AS fees, ROUND(SUM(purchases.price_paid),2) AS revenue, 
-                                        SUM(ROUND((purchases.price_paid-purchases.processing_fee)*(purchases.commission_percent/100),2)) AS commission '))
+                                                  WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 2 DAY)),0) AS tickets_two,
+                                        SUM(purchases.quantity) AS tickets, 
+                                        SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
+                                        SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
+                                        SUM(ROUND(purchases.savings,2)) AS discounts, 
+                                        SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                        SUM(ROUND( (purchases.price_paid-purchases.processing_fee)*(1-purchases.commission_percent) ,2)) AS to_show, 
+                                        SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
                 //info for the graph 
@@ -414,12 +425,14 @@ class DashboardController extends Controller
                         ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
             }
             //calculate totals
-            $total = array( 'qty_tickets'=>array_sum(array_column($data,'qty_tickets')),
-                            'qty_purchases'=>array_sum(array_column($data,'qty_purchases')),
-                            'retail_price'=>array_sum(array_column($data,'retail_price')),
+            $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
+                            'tickets'=>array_sum(array_column($data,'tickets')),
+                            'price_paids'=>array_sum(array_column($data,'price_paids')),
+                            'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
-                            'commissions'=>array_sum(array_column($data,'commission')),
-                            'revenue'=>array_sum(array_column($data,'revenue')));
+                            'to_show'=>array_sum(array_column($data,'to_show')),
+                            'commissions'=>array_sum(array_column($data,'commissions')));
             $venues = Venue::all('id','name');
             $shows = Show::all('id','name','venue_id');
             //return view
@@ -440,45 +453,117 @@ class DashboardController extends Controller
             //init
             $input = Input::all();
             $data = $total = array();
-            $data_conditions = '';   
-                        
-            //test
-            $input['start_date'] = '01/01/2010';
-            $input['end_date'] = '11/01/2016';
-            
-            //check conditions
-            if(isset($input['venue_id']) && $input['venue_id'])
-                $data_conditions .= ' AND s.venue_id = '.$input['venue_id'];
-            if(isset($input['show_id']) && $input['show_id'])
-                $data_conditions .= ' AND s.id = '.$input['show_id'];
-            if(isset($input['start_date']) && $input['start_date'])
-                $data_conditions .= ' AND p.created >= "'.date_format(date_create($input['start_date']),'Y-m-d H:i:s').'"';
-            if(isset($input['end_date']) && $input['end_date'])
-                $data_conditions .= ' AND p.created <= "'.date_format(date_create($input['end_date']),'Y-m-d H:i:s').'"'; 
-            if(isset($input['order']) && $input['order']=='url')
-                $data_conditions .= ' GROUP BY referral_url,s.id';
-            else 
-                $data_conditions .= ' GROUP BY s.id,referral_url';
+            //conditions to search
+            $where = [['purchases.status','=','Active']];
+            //search venue
+            if(isset($input) && isset($input['venue']))
+            {
+                $venue = $input['venue'];
+                if($venue != '')
+                    $where[] = ['shows.venue_id','=',$venue];
+            }
+            else
+                $venue = '';
+            //search show
+            if(isset($input) && isset($input['show']))
+            {
+                $show = $input['show'];
+                if($show != '')
+                    $where[] = ['shows.id','=',$show];
+            }
+            else
+                $show = '';
+            //search showtime
+            if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
+            {
+                $showtime_start_date = $input['showtime_start_date'];
+                $showtime_end_date = $input['showtime_end_date'];
+                if($showtime_start_date != '' && $showtime_end_date != '')
+                {
+                    $where[] = ['show_times.show_time','>=',$showtime_start_date];
+                    $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                }    
+            }
+            else
+            {
+                $showtime_start_date = '';
+                $showtime_end_date = '';
+            }
+            //search soldtime
+            if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
+            {
+                $soldtime_start_date = $input['soldtime_start_date'];
+                $soldtime_end_date = $input['soldtime_end_date'];
+                if($soldtime_start_date != '' && $soldtime_end_date != '')
+                {
+                    $where[] = ['purchases.created','>=',$soldtime_start_date];
+                    $where[] = ['purchases.created','<=',$soldtime_end_date];
+                }    
+            }
+            else
+            {
+                $soldtime_start_date = '';
+                $soldtime_end_date = '';
+            }
+            //search arrange by order url or show
+            if(isset($input) && isset($input['order']) && $input['order']=='url')
+            {
+                $order = 'url';
+                $groupby = 'referral_url,show_name';
+                $orderby = 'referral_url,show_name';
+            }    
+            else
+            {
+                $order = 'show';
+                $groupby = 'show_name,referral_url';
+                $orderby = 'show_name,referral_url';
+            }
+            //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
             if(Auth::user()->user_type->id == 1 || Auth::user()->user_type->id == 6)
             {   
-                //get all records        
-                $data = DB::select('SELECT COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(p.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
-                                        s.name AS show_name, SUM(p.quantity) AS qty_tickets, COUNT(p.id) AS qty_purchases,
-                                        ROUND(SUM(p.retail_price),2) AS retail_price, ROUND(SUM(p.processing_fee),2) AS fees, ROUND(SUM(p.price_paid),2) AS revenue,
-                                        SUM(ROUND((p.price_paid-p.processing_fee)*(p.commission_percent/100),2)) AS commission
-                                    FROM purchases p
-                                    LEFT JOIN show_times st ON st.id = p.show_time_id  
-                                    LEFT JOIN shows s ON s.id = st.show_id
-                                    WHERE p.status = "Active" AND p.referrer_url IS NOT NULL '.$data_conditions);
+                
+                $data = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases,
+                                        COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
+                                        SUM(purchases.quantity) AS tickets, 
+                                        SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
+                                        SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
+                                        SUM(ROUND(purchases.savings,2)) AS discounts, 
+                                        SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                        SUM(ROUND( (purchases.price_paid-purchases.processing_fee)*(1-purchases.commission_percent) ,2)) AS to_show, 
+                                        SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
+                        ->where($where)
+                        ->whereNotNull('purchases.referrer_url')
+                        ->groupBy(DB::raw($groupby))->orderBy(DB::raw($orderby))->get()->toArray();
+                //info for the graph 
+                if($order=='url')
+                    $groupby = 'referral_url';
+                else
+                    $groupby = 'shows.id';
+                $graph = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->select(DB::raw('COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
+                                          SUM(purchases.quantity) AS qty_tickets, SUM(purchases.price_paid) AS amount, shows.name AS show_name'))
+                        ->where($where)
+                        ->whereNotNull('purchases.referrer_url')
+                        ->groupBy($groupby)->distinct()->get()->toJson();
             }
             //calculate totals
-            $total = array( 'qty_tickets'=>array_sum(array_column($data,'qty_tickets')),
-                            'qty_purchases'=>array_sum(array_column($data,'qty_purchases')),
-                            'retail_price'=>array_sum(array_column($data,'retail_price')),
+            $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
+                            'tickets'=>array_sum(array_column($data,'tickets')),
+                            'price_paids'=>array_sum(array_column($data,'price_paids')),
+                            'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
-                            'revenue'=>array_sum(array_column($data,'revenue')));
+                            'to_show'=>array_sum(array_column($data,'to_show')),
+                            'commissions'=>array_sum(array_column($data,'commissions')));
+            $venues = Venue::all('id','name');
+            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.referrals',compact('data','total'));
+            return view('admin.dashboard.referrals',compact('data','total','graph','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date','order'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Referrals: '.$ex->getMessage());
         }
