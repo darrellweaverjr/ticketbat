@@ -112,7 +112,7 @@ var TableDatatablesButtons = function () {
         // chart qty
 	$('#trend_pace_chart_qty').highcharts({
             chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: 'Qty Purchases and Sold Tickets', x: -20 },
+            title: { text: '', x: -20 },
             xAxis: { categories: purchased },
             yAxis: { title: { text: 'Quantity' },
                      plotLines: [{ value: 0, width: 1, color: '#808080' }]
@@ -129,14 +129,14 @@ var TableDatatablesButtons = function () {
         //chart money
         $('#trend_pace_chart_money').highcharts({
             chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: 'Price Paid', x: -20 },
+            title: { text: '', x: -20 },
             xAxis: { categories: purchased },
             yAxis: { title: { text: 'Dollars ($)' },
                      plotLines: [{ value: 0, width: 1, color: '#808080' }]
             },
             tooltip: { valuePrefix: '$ ' },
             series: [{
-                    name: 'Amount',
+                    name: 'Gross Profit',
                     data: amount
             }]
 	});

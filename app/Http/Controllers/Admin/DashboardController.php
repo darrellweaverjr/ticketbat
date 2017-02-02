@@ -419,7 +419,7 @@ class DashboardController extends Controller
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased, 
-                                        SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases, SUM(purchases.price_paid) AS amount'))
+                                        SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases, SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
                         ->where($where)
                         ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
                         ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
@@ -546,7 +546,7 @@ class DashboardController extends Controller
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->select(DB::raw('COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
-                                          SUM(purchases.quantity) AS qty_tickets, SUM(purchases.price_paid) AS amount, shows.name AS show_name'))
+                                          SUM(purchases.quantity) AS qty_tickets, SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
                         ->where($where)
                         ->whereNotNull('purchases.referrer_url')
                         ->groupBy($groupby)->distinct()->get()->toJson();

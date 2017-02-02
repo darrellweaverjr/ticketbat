@@ -19,7 +19,7 @@
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 dark" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 dark">
                 <div class="visual">
                     <i class="fa fa-ticket"></i>
                 </div>
@@ -28,66 +28,63 @@
                         <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
                     <div class="desc">Tickets Sold 
-                        <br><span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span><br> Purchases Qty
+                        <br>Purchases: <span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" >
-            <a class="dashboard-stat dashboard-stat-v2 green-seagreen" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 green-seagreen">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
                         $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees'],2)}}"></span></div>
-                    <div class="desc">Total Revenue [RP-D+F]
-                        <br>= Ret.Price: $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices'],2)}}"></span>
-                        <br>+ F - Disc.: $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}"></span>
+                    <div class="desc">Total Revenue 
+                        <br>Discounts: $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}"></span>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 red">
                 <div class="visual">
                     <i class="fa fa-money"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
                         $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}"></span></div>
-                    <div class="desc">To Show [(PP-F)*(1-C)]
-                        <br>Pric.Paid: $ <span data-counter="counterup" data-value="{{number_format($total['price_paids'],2)}}"></span>
-                    </div>
+                    <div class="desc">To Show</div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 blue" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 blue">
                 <div class="visual">
                     <i class="fa fa-usd"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
                         $ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}"></span></div>
-                    <div class="desc">Commissions [C]</div>
+                    <div class="desc">Commission Revenue</div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 blue-steel" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 blue-steel">
                 <div class="visual">
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
                         $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span></div>
-                    <div class="desc">Fees [F]</div>
+                    <div class="desc">Fee Revenue</div>
                 </div>
             </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 purple" href="#" style="height:130px !important">
+            <a class="dashboard-stat dashboard-stat-v2 purple">
                 <div class="visual">
                     <i class="fa fa-shopping-cart"></i>
                 </div>
@@ -95,7 +92,7 @@
                     <div class="number"> 
                         $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees'],2)}}"></span>
                     </div>
-                    <div class="desc">Gross Profit [C+F]</div>
+                    <div class="desc">Gross Profit</div>
                 </div>
             </a>
         </div>
