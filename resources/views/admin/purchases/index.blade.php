@@ -77,7 +77,7 @@
                                     <div class="search-content" >       
                                         <b class="search-title"><a data-toggle="modal" href="#modal_details_{{$p->id}}">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
                                         <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <a>{{$p->id}}</a> Tickets: <a>{{$p->quantity}}</a> Ticket Type: <a>{{$p->ticket_type_type}}</a> Package: <a>{{$p->title}}</a> 
-                                        @if($previous_color != $color) <br> Retail Price: <a>${{number_format($p->retail_price,2)}}</a> Fees: <a>${{number_format($p->processing_fee,2)}}</a> Commission: <a>{{number_format($p->commission_percent,2)}}%</a> Savings: <a>${{number_format($p->savings,2)}}</a> Method: <a>{{$p->payment_type}}</a> @endif
+                                        @if($previous_color != $color) <br> Retail Price: <a>${{number_format($p->retail_price,2)}}</a> Fees: <a>${{number_format($p->processing_fee,2)}}</a> Commission: <a>${{number_format($p->commission_percent,2)}}</a> Savings: <a>${{number_format($p->savings,2)}}</a> Method: <a>{{$p->payment_type}}</a> @endif
                                         <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small>
                                     </div>
                                 </td>
@@ -148,7 +148,7 @@
                                                             <div class="message">
                                                                 <span class="arrow"> </span>
                                                                 <span class="body" style="height:50px"> 
-                                                                    <div class="col-md-6"> Retail Price: <b>${{number_format($p->retail_price,2)}}</b><br> Fees: <b>${{number_format($p->processing_fee,2)}}</b><br> Commission: <b>{{number_format($p->commission_percent,2)}}%</b></div>
+                                                                    <div class="col-md-6"> Retail Price: <b>${{number_format($p->retail_price,2)}}</b><br> Fees: <b>${{number_format($p->processing_fee,2)}}</b><br> Commission: <b>${{number_format($p->commission_percent,2)}}</b></div>
                                                                     <div class="col-md-6"> Savings: <b>${{number_format($p->savings,2)}}</b><br> Amount: <b>${{number_format($p->price_paid,2)}}</b></div>
                                                                 </span>
                                                             </div>
