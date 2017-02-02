@@ -88,7 +88,7 @@
                 <div class="details">
                     <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['total'],2)}}"></span></div>
-                    <div class="desc"> Total Revenue </div>
+                    <div class="desc"> Revenue </div>
                 </div>
             </a>
         </div>
