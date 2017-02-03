@@ -100,7 +100,7 @@ class Handler extends ExceptionHandler
             Log::error($exception);
             $email = new EmailSG(env('MAIL_ERROR_FROM'),env('MAIL_ERROR_TO'),env('MAIL_ERROR_SUBJECT'));        
             $client = 'IP('.$_SERVER ['REMOTE_ADDR'].') - '.$_SERVER['HTTP_USER_AGENT'];
-            $html = '<b>Client: </b>'.$client.'<br><b>Code: </b>'.$exception->getCode().'<br><b>File: </b>'.$exception->getFile().'<br><b>Line: </b>'.$exception->getLine().'<br><b>Message: </b>'.$exception->getMessage().'<br><b>Trace: </b>'.$exception->getTraceAsString().'<br><br>';
+            $html = '<b>Client: </b>'.$client.'<br><b> Date: </b>'.date('Y-m-d H:i:s').' <b>Code: </b>'.$exception->getCode().'<br><b>File: </b>'.$exception->getFile().'<br><b>Line: </b>'.$exception->getLine().'<br><b>Message: </b>'.$exception->getMessage().'<br><b>Trace: </b>'.$exception->getTraceAsString().'<br><br>';
             $email->html($html);
             $email->send();
             Log::info('Email sent to '.env('MAIL_ERROR_TO').' with the error message.');
