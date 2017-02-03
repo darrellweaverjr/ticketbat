@@ -41,16 +41,16 @@
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="2%"> </th>
-                                <th width="1%"> </th>
-                                <th width="20%"> Show </th>
-                                <th width="13%"> Show Time </th>
-                                <th width="13%"> Created </th>
-                                <th width="15%"> Seller </th>
-                                <th width="10%"> Due Date </th>
-                                <th width="6%"> Qty </th>
-                                <th width="7%"> Total </th>
-                                <th width="15%"> Status </th>
+                                <th width="2%"></th>
+                                <th width="1%"></th>
+                                <th width="20%">Show</th>
+                                <th width="13%">Show Time</th>
+                                <th width="13%">Created</th>
+                                <th width="15%">Seller</th>
+                                <th width="10%">Due Date</th>
+                                <th width="6%">Qty</th>
+                                <th width="7%">Total</th>
+                                <th width="15%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,13 +63,13 @@
                                     </label>
                                 </td>
                                 <td width="1%" class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>  
-                                <td width="20%"> {{$c->show_name}} </td>
-                                <td width="12%"><center> {{date('m/d/Y g:ia',strtotime($c->show_time))}} </center></td>
-                                <td width="12%"><center> {{date('m/d/Y g:ia',strtotime($c->created))}} </center></td>
-                                <td width="15%"> {{$c->first_name}} {{$c->last_name}} </td>
-                                <td width="9%"><center> {{date('m/d/Y',strtotime($c->due_date))}} </center></td>
-                                <td width="6%"><center> {{number_format($c->qty,0)}} </center></td>
-                                <td width="10%" style="text-align:right"> $ {{number_format($c->total,2)}} </td>
+                                <td width="20%">{{$c->show_name}} </td>
+                                <td width="12%" data-order="{{strtotime($c->show_time)}}"><center>{{date('m/d/Y g:ia',strtotime($c->show_time))}}</center></td>
+                                <td width="12%" data-order="{{strtotime($c->created)}}"><center>{{date('m/d/Y g:ia',strtotime($c->created))}}</center></td>
+                                <td width="15%">{{$c->first_name}} {{$c->last_name}}</td>
+                                <td width="9%" data-order="{{strtotime($c->due_date)}}"><center>{{date('m/d/Y',strtotime($c->due_date))}}</center></td>
+                                <td width="6%"><center>{{number_format($c->qty,0)}}</center></td>
+                                <td width="10%" style="text-align:right"> $ {{number_format($c->total,2)}}</td>
                                 <td width="15%"> 
                                     <select ref="{{$c->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)

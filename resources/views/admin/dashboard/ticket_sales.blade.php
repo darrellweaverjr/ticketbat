@@ -127,8 +127,8 @@
                             @foreach($data as $d)
                             <tr>
                                 <td>Show: <a>{{$d->show_name}}</a>,<br> Customer: <a>{{$d->name}}</a>,<br> Order#: <a>{{$d->id}}</a>, Code: <a>{{$d->code}}</a>, Ticket Type: <a>{{$d->ticket_type}}</a></td>
-                                <td style="text-align:center">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
-                                <td style="text-align:center">{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
+                                <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
+                                <td style="text-align:center" data-order="{{strtotime($d->created)}}">{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>

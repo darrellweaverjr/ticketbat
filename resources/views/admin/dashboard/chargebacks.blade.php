@@ -73,8 +73,8 @@
                             <tr>
                                 <td>{{$d->card_holder}}</td>
                                 <td>{{$d->show_name}}</td>
-                                <td>{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
-                                <td>{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
+                                <td data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
+                                <td data-order="{{strtotime($d->created)}}">{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->amount,2)}}</td>
                                 <td>{{$d->note}}</b></td>
