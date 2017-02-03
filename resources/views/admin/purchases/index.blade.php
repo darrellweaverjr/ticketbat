@@ -45,14 +45,14 @@
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="2%"> </th>
-                                <th width="1%"> </th>
-                                <th width="47%"> Purchase Info </th>
-                                <th width="18%"> Show/Venue </th>
-                                <th width="8%"> Show Time </th>
-                                <th width="8%"> Purchase Time </th>
-                                <th width="5%"> Amount </th>
-                                <th width="11%"> Status </th>
+                                <th width="2%"></th>
+                                <th width="1%"></th>
+                                <th width="47%">Purchase Info</th>
+                                <th width="18%">Show/Venue</th>
+                                <th width="8%">Show Time</th>
+                                <th width="8%">Purchase Time</th>
+                                <th width="5%">Amount</th>
+                                <th width="11%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,9 +81,9 @@
                                         <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small>
                                     </div>
                                 </td>
-                                <td width="18%"><center> {{$p->show_name}}<br>at<br>{{$p->venue_name}} </center></td>
-                                <td width="8%"><center> {{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}} </center></td>
-                                <td width="8%"><center> {{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}} </center></td>
+                                <td width="18%"><center>{{$p->show_name}}<br>at<br>{{$p->venue_name}}</center></td>
+                                <td width="8%" data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}}</center></td>
+                                <td width="8%" data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}}</center></td>
                                 <td width="5%" style="text-align:right"> 
                                     @if($previous_color != $color) @if($p->price_paid > 0) $ {{number_format($p->price_paid,2)}} @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>

@@ -44,7 +44,7 @@
                         <tbody>
                             @foreach($contacts as $index=>$c)
                             <tr>
-                                <td width="8%"> {{date('m/d/Y',strtotime($c->created))}} <br> {{date('g:ia',strtotime($c->created))}} </td>
+                                <td width="8%" data-order="{{strtotime($c->created)}}"> {{date('m/d/Y',strtotime($c->created))}} <br> {{date('g:ia',strtotime($c->created))}} </td>
                                 <td width="17%"> <b class="uppercase"><a href="mailto:{{$c->email}}" target="_top">{{$c->name}}</a></b>
                                     <p><small><i>
                                         @if($c->email)Email: <a href="mailto:{{$c->email}}" target="_top">{{$c->email}}</a> <br>@endif
