@@ -113,7 +113,7 @@ class DashboardController extends Controller
                                           SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
                                           SUM(ROUND(purchases.savings,2)) AS discounts, 
                                           SUM(ROUND(purchases.processing_fee,2)) AS fees, 
-                                          SUM(ROUND((purchases.retail_price-purchases.savings+purchases.processing_fee)-purchases.commission_percent-purchases.processing_fee,2)) AS to_show, 
+                                          SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show, 
                                           SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
@@ -306,7 +306,7 @@ class DashboardController extends Controller
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
                                     SUM(ROUND(purchases.savings,2)) AS discounts, 
                                     SUM(ROUND(purchases.processing_fee,2)) AS fees, 
-                                    SUM(ROUND((purchases.retail_price-purchases.savings+purchases.processing_fee)-purchases.commission_percent-purchases.processing_fee,2)) AS to_show,
+                                    SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions '))
                         ->where($where)
                         ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
@@ -408,7 +408,7 @@ class DashboardController extends Controller
                                         SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
                                         SUM(ROUND(purchases.savings,2)) AS discounts, 
                                         SUM(ROUND(purchases.processing_fee,2)) AS fees, 
-                                        SUM(ROUND((purchases.retail_price-purchases.savings+purchases.processing_fee)-purchases.commission_percent-purchases.processing_fee,2)) AS to_show,
+                                        SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                         SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
@@ -532,7 +532,7 @@ class DashboardController extends Controller
                                         SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
                                         SUM(ROUND(purchases.savings,2)) AS discounts, 
                                         SUM(ROUND(purchases.processing_fee,2)) AS fees, 
-                                        SUM(ROUND((purchases.retail_price-purchases.savings+purchases.processing_fee)-purchases.commission_percent-purchases.processing_fee,2)) AS to_show,
+                                        SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                         SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->whereNotNull('purchases.referrer_url')

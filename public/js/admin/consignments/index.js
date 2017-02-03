@@ -79,6 +79,7 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_update [name="retail_price"]').val(0);
                             $('#modal_model_update [name="processing_fee"]').val(0);
                             $('#modal_model_update [name="percent_commission"]').val(0);
+                            $('#modal_model_update [name="fixed_commission"]').val(0);
                             $('#tb_seats').empty();
                         }
                     },
@@ -134,6 +135,7 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_update [name="retail_price"]').val(0);
                             $('#modal_model_update [name="processing_fee"]').val(0);
                             $('#modal_model_update [name="percent_commission"]').val(0);
+                            $('#modal_model_update [name="fixed_commission"]').val(0);
                             $('#tb_seats').empty();
                         }
                     },
@@ -169,6 +171,7 @@ var TableDatatablesManaged = function () {
             $('#modal_model_update [name="retail_price"]').val(0);
             $('#modal_model_update [name="processing_fee"]').val(0);
             $('#modal_model_update [name="percent_commission"]').val(0);
+            $('#modal_model_update [name="fixed_commission"]').val(0);
             $('#tb_seats').empty();
         });
         //on ticket type select
@@ -188,6 +191,7 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_update [name="retail_price"]').val(data.retail_price);
                             $('#modal_model_update [name="processing_fee"]').val(data.processing_fee);
                             $('#modal_model_update [name="percent_commission"]').val(data.percent_commission);
+                            $('#modal_model_update [name="fixed_commission"]').val(data.fixed_commission);
                         }
                     },
                     error: function(){
@@ -227,6 +231,7 @@ var TableDatatablesManaged = function () {
                 var retail_price = $('#modal_model_update [name="retail_price"]').val();
                 var processing_fee = $('#modal_model_update [name="processing_fee"]').val();
                 var percent_commission = $('#modal_model_update [name="percent_commission"]').val();
+                var fixed_commission = $('#modal_model_update [name="fixed_commission"]').val();
                 if($('#modal_model_update [name="show_seat"]:checkbox:checked').length)
                 {
                     var show_seat = 1;
@@ -241,12 +246,16 @@ var TableDatatablesManaged = function () {
                 for (var i = start_seat; i <= end_seat; i++) 
                 {
                     var id = section.val()+'_'+i;
-                    var value = section.text().trim()+'|'+i+'|'+retail_price+'|'+processing_fee+'|'+percent_commission+'|'+show_seat;
+                    var value = section.text().trim()+'|'+i+'|'+retail_price+'|'+processing_fee+'|'+percent_commission+'|'+show_seat+'|'+fixed_commission;
+                    if(fixed_commission && fixed_commission != '0' && fixed_commission != 0)
+                        var commission_row = '<td>$'+fixed_commission+'</td>';
+                    else
+                        var commission_row = '<td>'+percent_commission+'%</td>';
                     var row = '<td>'+section.text()+'</td>'
                                              +'<td><input type="hidden" name="seats[]" value="'+value+'"/><center>'+i+'</center></td>'
                                              +'<td>$'+retail_price+'</td>'
                                              +'<td>$'+processing_fee+'</td>'
-                                             +'<td>'+percent_commission+'%</td>'
+                                             +commission_row
                                              +'<td><center>'+row_show_seat+'</center></td>'
                                              +'<td><center><input type="button" value="X" class="btn sbold bg-red"></center><td>';
                     if($('#'+id).length < 1)
@@ -376,7 +385,10 @@ var TableDatatablesManaged = function () {
                             var seat_col = '<td>'+e.seat+'</td>';
                             var retail_price_col = '<td>$'+e.retail_price+'</td>';
                             var processing_fee_col = '<td>$'+e.processing_fee+'</td>';
-                            var percent_commission_col = '<td>'+e.percent_commission+'%</td>';
+                            if(e.fixed_commission && e.fixed_commission != '0' && e.fixed_commission != 0)
+                                var percent_commission_col = '<td>$'+e.fixed_commission+'</td>';
+                            else
+                                var percent_commission_col = '<td>'+e.percent_commission+'%</td>';
                             if(e.show_seat)
                                 var show_seat_col = '<td><span class="label label-sm sbold label-success">S</span></td>';
                             else
@@ -599,6 +611,10 @@ var FormValidation = function () {
                         required: true,
                         number: true,
                         range: [0, 100]
+                    },
+                    fixed_commission: {
+                        required: false,
+                        number: true
                     },
                     due_date: {
                         required: true
