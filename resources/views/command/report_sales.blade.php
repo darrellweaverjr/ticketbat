@@ -1,7 +1,7 @@
 @if($format == 'csv')
-"#","NAME","TICKET TYPE","SHOW TIME","QTY","PURCHASE COUNT","RETAIL PRICE","PROCESSING FEE","SAVINGS","TOTAL PAID","COMMISSION PERCENT", "COMMISSION", "DUE TO SHOW","REFERRER"
+"#","NAME","TICKET TYPE","SHOW TIME","QTY","PURCHASE COUNT","RETAIL PRICE","PROCESSING FEE","SAVINGS","TOTAL PAID","COMMISSION","DUE TO SHOW","REFERRER"
 @foreach ($purchases as $n => $p)
-"{{$n+1}}","{{$p->s_name}}","{{$p->ticket_type}}","{{$p->shows_time}}","{{$p->qty}}","{{$p->purchase_count}}","$ {{$p->retail_price}}","$ {{$p->processing_fee}}","$ {{$p->savings}}","$ {{$p->total_paid}}","{{$p->commission_percent}} %","$ {{$p->commission}}","$ {{$p->due_to_show}}","{{$p->url}}"
+"{{$n+1}}","{{$p->s_name}}","{{$p->ticket_type}}","{{$p->shows_time}}","{{$p->qty}}","{{$p->purchase_count}}","$ {{$p->retail_price}}","$ {{$p->processing_fee}}","$ {{$p->savings}}","$ {{$p->total_paid}}","$ {{$p->commission}}","$ {{$p->due_to_show}}","{{$p->url}}"
 @endforeach
 @else
 <!DOCTYPE html>
@@ -146,7 +146,7 @@
                       <!--<th align='center'>PURCHASE COUNT</th>-->
                       <th style='text-align:right'>GROSS REVENUE</th>
                       <th style='text-align:right'>PROCESSING FEE</th>
-                      <th style='text-align:right'>COMMISSION [PERCENT]</th>
+                      <th style='text-align:right'>COMMISSION</th>
                       <th style='text-align:right'>NET</th>
                   </tr>
                   </thead>
@@ -159,7 +159,7 @@
                           <!--<td align='center'>{{$e['purchase_count']}}</td>-->
                           <td style='text-align:right'>$ {{$e['gross_revenue']}}</td>
                           <td style='text-align:right'>$ {{$e['processing_fee']}}</td>
-                          <td style='text-align:right'>$ {{$e['commission']}} [{{$e['commission_percent']}}%]</td>
+                          <td style='text-align:right'>$ {{$e['commission']}}</td>
                           <td style='text-align:right'>$ {{$e['net']}}</td>
                       </tr>
                   @endforeach
@@ -171,7 +171,7 @@
                         <!--<th align='center'>{{$d['total']['t_purchases']}}</th>-->
                         <th style='text-align:right'>$ {{$d['total']['t_gross_revenue']}}</th>
                         <th style='text-align:right'>$ {{$d['total']['t_processing_fee']}}</th>
-                        <th style='text-align:right'>$ {{$d['total']['t_commission']}} [{{$d['total']['t_commission_percent']}}%]</th>
+                        <th style='text-align:right'>$ {{$d['total']['t_commission']}}</th>
                         <th style='text-align:right'>$ {{$d['total']['t_net']}}</th>
                       </tr>
                   </tfoot>
