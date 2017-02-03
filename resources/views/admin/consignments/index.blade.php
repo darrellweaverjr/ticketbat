@@ -230,9 +230,15 @@
                                         <div class="col-md-6 show-error">
                                             <input type="number" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
                                         </div>
+                                        <label class="control-label col-md-6">Commiss.($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-6 show-error">
+                                            <input type="number" name="fixed_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="button" style="height:102px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
+                                        <button type="button" style="height:135px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
                                             <i class="fa fa-arrow-right"></i>
                                         </button>
                                     </div>
