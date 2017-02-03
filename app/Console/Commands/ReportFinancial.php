@@ -212,7 +212,7 @@ class ReportFinancial extends Command
                                SUM(p.quantity) AS qty, SUM(p.retail_price) AS retail_price, SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, 
                                SUM(p.price_paid) AS price_paid, SUM(p.commission) AS commission, d.id
                           FROM 
-                              (SELECT *, price_paid * commission_percent/100 AS commission 
+                              (SELECT *, commission_percent AS commission 
                               FROM purchases 
                               WHERE DATE_FORMAT(created,'%Y-%m-%d') = ? AND status = 'Active') as p
                           INNER JOIN discounts d ON d.id = p.discount_id      
@@ -315,7 +315,7 @@ class ReportFinancial extends Command
                 $super_total_show = DB::selectOne("SELECT SUM(p.quantity) AS qty, SUM(p.retail_price) AS retail_price, SUM(p.processing_fee) AS processing_fee, 
                                                SUM(p.savings) AS savings, SUM(p.price_paid) AS price_paid, SUM(p.commission) AS commission, d.id
                                                FROM 
-                                                  (SELECT *, price_paid * commission_percent/100 AS commission 
+                                                  (SELECT *, commission_percent AS commission 
                                                   FROM purchases) as p
                                                INNER JOIN discounts d ON d.id = p.discount_id     
                                                INNER JOIN show_times st ON st.id = p.show_time_id
@@ -416,7 +416,7 @@ class ReportFinancial extends Command
                                                         ROUND(SUM(p.savings),2) AS savings, ROUND(SUM(p.price_paid),2) AS price_paid, ROUND(SUM(p.commission),2) AS commission,
                                                         ROUND(SUM(p.commission)+SUM(p.processing_fee),2) AS gross_profit
                                                    FROM 
-                                                      (SELECT *, price_paid * commission_percent/100 AS commission 
+                                                      (SELECT *, commission_percent AS commission 
                                                       FROM purchases WHERE status = 'Active') as p  
                                                    INNER JOIN show_times st ON st.id = p.show_time_id
                                                    INNER JOIN shows s ON s.id = st.show_id WHERE s.venue_id = ? GROUP BY s.venue_id",array($v_id,$v_id,$v_id));
@@ -432,7 +432,7 @@ class ReportFinancial extends Command
                                        ROUND(SUM(p.savings),2) AS savings, ROUND(SUM(p.price_paid),2) AS price_paid, ROUND(SUM(p.commission),2) AS commission,
                                        ROUND(SUM(p.commission)+SUM(p.processing_fee),2) AS gross_profit
                                        FROM 
-                                          (SELECT *, price_paid * commission_percent/100 AS commission 
+                                          (SELECT *, commission_percent AS commission 
                                           FROM purchases WHERE status = 'Active') as p ");
             if($super_total)
             { 

@@ -50,12 +50,12 @@ class ReportSales extends Command
             $sqlMain = "SELECT v.id as v_id, v.name as v_name, v.accounting_email as v_email, s.id as s_id, s.name as s_name, s.accounting_email as s_email, t.ticket_type,
                         v.daily_sales_emails AS v_daily_sales_emails, s.daily_sales_emails AS s_daily_sales_emails,
                         DATE_FORMAT(st.show_time,'%m/%d/%Y %h:%s %p') AS shows_time, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, sum(p.retail_price) AS retail_price, 
-                        SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, SUM(p.price_paid) AS gross_revenue, ROUND(AVG(p.commission_percent),2) AS commission_percent, 
+                        SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, SUM(p.price_paid) AS gross_revenue, 
                         SUM(p.price_paid) AS total_paid, ROUND(SUM(p.retail_price)-SUM(p.commission),2) AS due_to_show, ROUND(SUM(p.commission),2) AS commission, 
                         SUBSTRING_INDEX(SUBSTRING_INDEX(p.referrer_url, '://', -1),'/', 1) AS referral_url,
                         SUBSTRING_INDEX(p.referrer_url, '://', -1) AS url, SUM(p.price_paid)-SUM(p.commission)-SUM(p.processing_fee) AS net ";
 
-            $sqlFrom =" FROM (SELECT *, ROUND((retail_price - savings) * commission_percent/100,2) AS commission
+            $sqlFrom =" FROM (SELECT *, commission_percent AS commission
                         FROM purchases WHERE date(created) ".$bound." (CURRENT_DATE - INTERVAL ".$days." DAY) AND Status = 'Active') AS p
                         LEFT JOIN show_times st ON st.id = p.show_time_id
                         LEFT JOIN shows s ON s.id = st.show_id
@@ -65,14 +65,12 @@ class ReportSales extends Command
             //FUNCTION CALCULATE SUBTOTALS
             function calculate_total($elements)
             {
-                $total = array('t_ticket'=>0, 't_purchases'=>0, 't_gross_revenue'=>0, 't_processing_fee'=>0, 't_commission_percent'=>0, 't_net'=>0, 't_commission'=>0);
+                $total = array('t_ticket'=>0, 't_purchases'=>0, 't_gross_revenue'=>0, 't_processing_fee'=>0, 't_net'=>0, 't_commission'=>0);
                 (count($elements)>0)? $cant=count($elements):$cant=1;
                 foreach ($elements as $e)
                     $total = array('t_ticket'=>$total['t_ticket']+$e['qty'], 't_purchases'=>number_format($total['t_purchases']+$e['purchase_count'],2), 
                                    't_gross_revenue'=>number_format($total['t_gross_revenue']+$e['gross_revenue'],2), 't_processing_fee'=>number_format($total['t_processing_fee']+$e['processing_fee'],2), 
-                                   't_commission_percent'=>$total['t_commission_percent']+$e['commission_percent'], 't_net'=>number_format($total['t_net']+$e['net'],2), 
-                                   't_commission'=>number_format($total['t_commission']+$e['commission'],2));
-                $total['t_commission_percent'] = number_format($total['t_commission_percent']/$cant,2);
+                                   't_net'=>number_format($total['t_net']+$e['net'],2), 't_commission'=>number_format($total['t_commission']+$e['commission'],2));
                 return $total;
             }
 
@@ -99,7 +97,7 @@ class ReportSales extends Command
                 {
                     $elements = array();
                     foreach ($data as $d)
-                        $elements[] = array('name'=>$d['name'], 'ticket_type'=>'', 'qty'=>$d['total']['t_ticket'], 'purchase_count'=>$d['total']['t_purchases'], 'gross_revenue'=>$d['total']['t_gross_revenue'], 'processing_fee'=>$d['total']['t_processing_fee'], 'commission_percent'=>$d['total']['t_commission_percent'], 'commission'=>$d['total']['t_commission'], 'net'=>$d['total']['t_net']);
+                        $elements[] = array('name'=>$d['name'], 'ticket_type'=>'', 'qty'=>$d['total']['t_ticket'], 'purchase_count'=>$d['total']['t_purchases'], 'gross_revenue'=>$d['total']['t_gross_revenue'], 'processing_fee'=>$d['total']['t_processing_fee'], 'commission'=>$d['total']['t_commission'], 'net'=>$d['total']['t_net']);
                     $result = array('elements'=>$elements, 'total'=>calculate_total($elements), 'name'=>'Totals', 'email'=>' ', 'type'=>'venue', 'date'=>$date_report);
                     array_unshift($data,$result);
                 }
