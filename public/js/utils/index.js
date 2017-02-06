@@ -213,3 +213,177 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
 var CheckValidURL = function (url) {
     return /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url);
 };
+//*****************************************************************************************
+//function save profile
+$('#submit_model_update_profile').on('click', function(ev) {
+    $('#modal_model_update_profile').modal('hide');
+    if($('#form_model_update_profile').valid())
+    {
+        swal({
+            title: "Saving user's information",
+            text: "Please, wait.",
+            type: "info",
+            showConfirmButton: false
+        });
+        jQuery.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'POST',
+            url: '/admin/users/profile', 
+            data: $('#form_model_update_profile').serializeArray(), 
+            success: function(data) {
+                if(data.success) 
+                {
+                    swal({
+                        title: "<span style='color:green;'>Saved!</span>",
+                        text: data.msg,
+                        html: true,
+                        timer: 1500,
+                        type: "success",
+                        showConfirmButton: false
+                    });
+                }
+                else{
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: data.msg,
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update_profile').modal('show');
+                    });
+                }
+            },
+            error: function(){
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Conexion error!<br>Please check the information again.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update_profile').modal('show');
+                });
+            }
+        }); 
+    }
+    else
+    {
+        swal({
+            title: "<span style='color:red;'>Error!</span>",
+            text: "The form is not valid!<br>Please check the information again.",
+            html: true,
+            type: "error"
+        },function(){
+            $('#modal_model_update_profile').modal('show');
+        });
+    }       
+});
+//*****************************************************************************************
+//function impersonate
+var impersonate = function()
+{
+    if($('#impersonate_user_type').is(':empty') || $('#modal_model_impersonate select[name="user_id"]').has('option').length <= 1)
+    {
+        jQuery.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'POST',
+            url: '/admin/users/impersonate', 
+            data: {action:0}, 
+            success: function(data) {
+                if(data.success) 
+                {
+                    //reset values
+                    $('#impersonate_user_type').empty();
+                    $('#modal_model_impersonate select[name="user_id"]').html('<option disabled selected value=""></option>');
+                    //fill out values
+                    $.each(data.user_types,function(k, v) {
+                        $('#impersonate_user_type').append('<label class="mt-checkbox"><input type="checkbox" checked="true" name="user_type[]" value="'+v+'"/>'+v+'<span></span></label>');
+                    });
+                    $.each(data.users,function(k, v) {
+                        $('#modal_model_impersonate select[name="user_id"]').append('<option value="'+v.id+'" rel="'+v.user_type+'">'+v.name+' ('+v.user_type+')'+'</option>');
+                    });
+                    //show modal
+                    $('#modal_model_impersonate').modal('show');
+                }
+                else{
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: data.msg,
+                        html: true,
+                        type: "error"
+                    });
+                }
+            },
+            error: function(){
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Conexion error!<br>Please contact an administrator.",
+                    html: true,
+                    type: "error"
+                });
+            }
+        }); 
+    }
+    else
+        $('#modal_model_impersonate').modal('show');
+};
+
+$('#impersonate_user_type').on('click', 'input[type="checkbox"]', function(e){
+    $('#modal_model_impersonate select[name="user_id"] option').css('display','none');
+    $('[name="user_type[]"]:checked').each(function () {
+        $('#modal_model_impersonate select[name="user_id"] option[rel="'+$(this).val()+'"]').css('display','block');
+    });
+    $('#modal_model_impersonate select[name="user_id"] option[value=""]').css('display','block');
+    $('#modal_model_impersonate select[name="user_id"]').val('');
+});
+$('#submit_model_impersonate').on('click', function(ev) {
+    var user_id = $('#modal_model_impersonate select[name="user_id"]').val();   
+    if(user_id && user_id != '')
+    {
+        jQuery.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'POST',
+            url: '/admin/users/impersonate', 
+            data: {user_id:user_id}, 
+            success: function(data) {
+                if(data.success) 
+                {
+                    $('#impersonate_link').html('<a target="_blank" href="'+data.link+'">'+data.link+'</a>');
+                }
+                else{
+                    $('#modal_model_impersonate').modal('hide');
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: data.msg,
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_impersonate').modal('show');
+                    });
+                }
+            },
+            error: function(){
+                $('#modal_model_impersonate').modal('hide');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Conexion error!<br>Please check the information again.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_impersonate').modal('show');
+                });
+            }
+        }); 
+    }
+    else
+    {
+        $('#modal_model_impersonate').modal('hide');
+        swal({
+            title: "<span style='color:red;'>Error!</span>",
+            text: "The form is not valid!<br>Please select a valid user.",
+            html: true,
+            type: "error"
+        },function(){
+            $('#modal_model_impersonate').modal('show');
+        });
+    }       
+});

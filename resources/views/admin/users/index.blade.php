@@ -130,7 +130,8 @@
                                         <span class="input-group-addon">
                                             <i class="fa fa-envelope"></i>
                                         </span>
-                                        <input type="email" name="email" class="form-control" placeholder="user@server.com"> </div>
+                                        <input type="email" name="email" class="form-control" placeholder="user@server.com"> 
+                                    </div>
                                 </div>
                                 <label class="control-label col-md-2">Set Password</label>
                                 <div class="col-md-2 show-error">
@@ -245,5 +246,5 @@
 @endsection
 
 @section('scripts') 
-<script src="/js/admin/users/index.js" type="text/javascript"></script>
+
 @endsection

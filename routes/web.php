@@ -31,6 +31,8 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'dashboard/trend_pace', 'DashboardController@trend_pace');
     Route::match(['get','post'], 'dashboard/referrals', 'DashboardController@referrals');
     //users
+    Route::post('users/profile', 'UserController@profile');
+    Route::post('users/impersonate', 'UserController@impersonate');
     Route::post('users/save', 'UserController@save');
     Route::post('users/remove', 'UserController@remove'); 
     Route::match(['get','post'], 'users', 'UserController@index');
