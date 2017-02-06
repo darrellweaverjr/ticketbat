@@ -281,6 +281,7 @@ $('#submit_model_update_profile').on('click', function(ev) {
 //function impersonate
 var impersonate = function()
 {
+    $('#impersonate_link').html('');
     if($('#impersonate_user_type').is(':empty') || $('#modal_model_impersonate select[name="user_id"]').has('option').length <= 1)
     {
         jQuery.ajax({
