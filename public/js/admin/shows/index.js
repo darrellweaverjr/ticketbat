@@ -1381,6 +1381,12 @@ var TableDatatablesManaged = function () {
             $('#subform_show_times').css('display','none');
             $('#modal_model_show_times').modal('show');
         });
+        $('#btn_model_show_time_change').on('click', function(ev) {
+            //$('#form_model_show_times').trigger('reset');
+            //$('#tb_show_times').empty();
+            //$('#modal_model_show_times').modal('show');
+            alert('not implemented');
+        });
         //function submit show_times
         $('#submit_model_show_times').on('click', function(ev) {
             if($('#tb_show_times input[name="showtime[]"]:hidden').length)

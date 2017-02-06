@@ -605,6 +605,11 @@
                                             <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red"> Remove 
                                                 <i class="fa fa-remove"></i>
                                             </button>
+                                            @if (Auth::user()->user_type_id == 1)
+                                            <button type="button" id="btn_model_show_time_change" class="btn sbold bg-purple"> Change/Cancel 
+                                                <i class="fa fa-recycle"></i>
+                                            </button>
+                                            @endif
                                         </div>
                                         <div class="row portlet light portlet-fit calendar" style="padding:20px;">
                                             <div id="show_show_times" class="has-toolbar"> </div>
@@ -1095,9 +1100,9 @@
                                         </label>
                                         <div class="col-md-9 show-error">
                                             <div class="input-group" id="show_times_date">
-                                                <input type="text" class="form-control" name="start_date" value="{{date('m/d/Y')}}" readonly="true">
+                                                <input type="text" class="form-control" name="start_date" value="{{date('Y-m-d')}}" readonly="true">
                                                 <span class="input-group-addon"> to </span>
-                                                <input type="text" class="form-control" name="end_date" value="{{date('m/d/Y')}}" readonly="true">
+                                                <input type="text" class="form-control" name="end_date" value="{{date('Y-m-d')}}" readonly="true">
                                                 <span class="input-group-btn">
                                                     <button class="btn default date-range-toggle" type="button">
                                                         <i class="fa fa-calendar"></i>
