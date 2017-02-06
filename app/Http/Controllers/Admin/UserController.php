@@ -225,7 +225,7 @@ class UserController extends Controller{
                     $user = User::find($input['user_id']);
                     if($user)
                     {
-                        $current = substr(md5(substr(md5($user->email),0,15).substr(md5(date('Y-m-d H:i')),0,15)),0,30);
+                        $current = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i')),0,10)),0,20);
                         $link = env('IMAGE_URL_OLDTB_SERVER').'/impersonate/'.$input['user_id'].'.'.$current;
                         return ['success'=>true,'link'=>$link];
                     }
