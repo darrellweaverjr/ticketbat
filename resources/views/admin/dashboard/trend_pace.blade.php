@@ -129,6 +129,7 @@
                         <thead>
                             <tr>
                                 <th>Show Name</th>
+                                <th style="text-align:center">Show<br>Time</th>
                                 <th style="text-align:center">Sales<br>-2D</th>
                                 <th style="text-align:center">Sales<br>-1D</th>
                                 <th style="text-align:center">Tickets<br>Sold</th>
@@ -145,6 +146,7 @@
                             @foreach($data as $d)
                             <tr>
                                 <td>{{$d->show_name}}</td>
+                                <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td style="text-align:center">{{$d->tickets_two}}</td>
                                 <td style="text-align:center">{{$d->tickets_one}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
