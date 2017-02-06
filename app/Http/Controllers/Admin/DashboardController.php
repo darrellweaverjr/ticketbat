@@ -398,7 +398,7 @@ class DashboardController extends Controller
                 $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases,
+                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, show_times.show_time,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
                                                   WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
@@ -411,7 +411,7 @@ class DashboardController extends Controller
                                         SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                         SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
-                        ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
+                        ->orderBy('shows.name','show_times.show_time desc')->groupBy('show_times.id')->get()->toArray();
                 //info for the graph 
                 $start = date('Y-m-d', strtotime('-1 year'));
                 $where[] = ['purchases.created','>=',$start];
