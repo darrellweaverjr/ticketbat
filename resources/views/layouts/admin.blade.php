@@ -85,12 +85,12 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-default">
                                     <li>
-                                        <a href="page_user_profile_1.html">
+                                        <a data-toggle="modal" href="#modal_model_update_profile"> 
                                             <i class="icon-user"></i> My Profile 
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="app_todo.html">
+                                        <a href="javascript:impersonate();">
                                             <i class="icon-rocket"></i> Impersonate
                                         </a>
                                     </li>
@@ -422,6 +422,193 @@
                                 </div>
                             </div>
                             <!-- END MEDIA PICTURE UPLOAD MODAL--> 
+                            <!-- BEGIN UPDATE PROFILE MODAL--> 
+                            <div id="modal_model_update_profile" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+                                <div class="modal-dialog" style="width:800px !important;">
+                                    <div class="modal-content portlet">
+                                        <div class="modal-header alert-block bg-dark">
+                                            <h4 class="modal-title bold uppercase" style="color:white;"><center>{{Auth::user()->first_name}}'s Profile</center></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- BEGIN FORM-->
+                                            <form method="post" id="form_model_update_profile">
+                                                <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                                                <div class="form-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">First Name:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="first_name" value="{{Auth::user()->first_name}}" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>   
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">Last Name:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="last_name" value="{{Auth::user()->last_name}}" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>   
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">Email:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="email" value="{{Auth::user()->email}}" readonly="true" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">Phone:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="phone" value="{{Auth::user()->phone}}" required="false"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">Password:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="password" name="password" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">Address:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="address" value="{{Auth::user()->location->address}}" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>   
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">City:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="city" value="{{Auth::user()->location->city}}" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>   
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">State:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="state" value="{{Auth::user()->location->state}}" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">Zip:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="zip" value="{{Auth::user()->location->zip}}" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">Country:
+                                                                    <span class="required"> * </span>
+                                                                </label>
+                                                                <div class="col-md-8 show-error">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" name="country" value="{{Auth::user()->location->country}}" readonly="true" required="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-actions">
+                                                    <div class="row">
+                                                        <div class="modal-footer">
+                                                            <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_update_profile').trigger('reset')">Cancel</button>
+                                                            <button type="button" class="btn sbold sbold dark btn-outline" id="submit_model_update_profile">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form> 
+                                            <!-- END FORM-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END UPDATE PROFILE MODAL-->  
+                            <!-- BEGIN IMPERSONATE MODAL--> 
+                            <div id="modal_model_impersonate" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+                                <div class="modal-dialog" style="width:600px !important;">
+                                    <div class="modal-content portlet">
+                                        <div class="modal-header alert-block bg-dark">
+                                            <h4 class="modal-title bold uppercase" style="color:white;"><center>Impersonate</center></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- BEGIN FORM-->
+                                            <form method="post" id="form_model_impersonate">
+                                                <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                                                <div class="form-body">
+                                                    <div class="row">
+                                                        <div class="form-group">    
+                                                            <label class="control-label col-md-3">User Types
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 show-error" id="impersonate_user_type">
+                                                            </div> 
+                                                        </div>
+                                                        <div class="form-group">    
+                                                            <label class="control-label col-md-3">Impersonate to
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 show-error">
+                                                                <select class="form-control" name="user_id">
+                                                                </select>
+                                                            </div> 
+                                                        </div>
+                                                        <div class="form-group">  
+                                                            <label class="control-label col-md-3">Link (valid 2min)
+                                                                <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 show-error" id="impersonate_link" style="font-size:11px">
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-actions">
+                                                    <div class="row">
+                                                        <div class="modal-footer">
+                                                            <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_update_profile').trigger('reset')">Cancel</button>
+                                                            <button type="button" class="btn sbold sbold dark btn-outline" id="submit_model_impersonate">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form> 
+                                            <!-- END FORM-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END IMPERSONATE MODAL-->  
                     </div>    
                     <!-- END CONTENT BODY -->
                 </div>

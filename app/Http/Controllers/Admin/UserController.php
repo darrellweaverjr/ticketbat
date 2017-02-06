@@ -155,4 +155,88 @@ class UserController extends Controller{
             throw new Exception('Error Users Remove: '.$ex->getMessage());
         }
     }
+    /**
+     * Save logged user.
+     *
+     * @void
+     */
+    public function profile()
+    {
+        try {
+            //init
+            $input = Input::all();
+            $current = date('Y-m-d H:i:s');
+            //save all record      
+            if($input)
+            {
+                $user = User::find(Auth::user()->id);
+                $user->updated = $current;
+                $location = $user->location;
+                $location->updated = $current;
+                if(isset($input['password']) && $input['password'])
+                    $user->password = md5($input['password']);
+                //save location
+                $location->address = $input['address'];
+                $location->city = $input['city'];
+                $location->state = strtoupper($input['state']);
+                $location->zip = $input['zip'];
+                $location->country = $input['country'];
+                $location->set_lng_lat();
+                $location->save();
+                //save user
+                $user->location()->associate($location);
+                $user->first_name = $input['first_name'];
+                $user->last_name = $input['last_name'];
+                $user->phone = $input['phone'];
+                $user->set_slug();
+                $user->save();
+                //return
+                return ['success'=>true,'msg'=>'User saved successfully!'];
+            }
+            return ['success'=>false,'msg'=>'There was an error saving the user.<br>The server could not retrieve the data.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Users Profile: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Code for impersonate.
+     *
+     * @void
+     */
+    public function impersonate()
+    {
+        try {
+            //init
+            $input = Input::all();
+            //save all record      
+            if($input)
+            {
+                if(isset($input['action']) && $input['action']==0)
+                {
+                    $user_types = UserType::orderBy('user_type')->pluck ('user_type')                            ;
+                    $users = DB::table('users')
+                                ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
+                                ->select(DB::raw('users.id, user_types.user_type, CONCAT(users.first_name," ",users.last_name) AS name'))
+                                ->orderBy('users.first_name')->get();
+                    return ['success'=>true,'user_types'=>$user_types,'users'=>$users];
+                }
+                else if(isset($input['user_id']) && !empty($input['user_id']))
+                {
+                    $user = User::find($input['user_id']);
+                    if($user)
+                    {
+                        $current = substr(md5(substr(md5($user->email),0,15).substr(md5(date('Y-m-d H:i')),0,15)),0,30);
+                        $link = env('IMAGE_URL_OLDTB_SERVER').'/impersonate/'.$input['user_id'].'.'.$current;
+                        return ['success'=>true,'link'=>$link];
+                    }
+                    return ['success'=>false,'msg'=>'There was an error.<br>That user does not exist.'];
+                }
+                else
+                    return ['success'=>false,'msg'=>'There was an error.<br>Option Invalid!.'];
+            }
+            return ['success'=>false,'msg'=>'There was an error.<br>The server could not retrieve the data.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Users Impersonate: '.$ex->getMessage());
+        }
+    }
 }
