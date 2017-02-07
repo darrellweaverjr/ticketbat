@@ -180,7 +180,7 @@ class Purchase extends Model
     /**
      * Send by email given purchases receipts.
      */
-    public static function email_receipts($subject,$receipts,$type_email)
+    public static function email_receipts($subject,$receipts,$type_email,$change=null)
     {
         try {
             if(is_array($receipts) && count($receipts) && is_string($subject) && is_string($type_email))
@@ -189,7 +189,7 @@ class Purchase extends Model
                 $rows_html = $totals_html = '';
                 $pdf_receipts = $pdf_tickets = $purchases = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
-
+                $top='';
                 //loop receipts
                 foreach ($receipts as $receipt)
                 {
@@ -226,6 +226,14 @@ class Purchase extends Model
                         $totals['processing_fee']+=$receipt['purchase']->processing_fee;
                         $totals['retail_price']+=$receipt['purchase']->retail_price;
                         $totals['discount']+=$receipt['purchase']->retail_price-$receipt['purchase']->price_paid+$receipt['purchase']->processing_fee;
+                        //show on top if change date
+                        if($change)
+                        {
+                            $top = 'Your purchase of '.$receipt['purchase']->quantity.' '.$receipt['purchase']->ticket_type_type.' ticket(s) for '.
+                                   $receipt['purchase']->show_name.' on '.date('l, F jS - g:i A',strtotime($change)).
+                                   ' has been changed to '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).
+                                   '.<br>Your updated receipt and tickets are attached.' ;
+                        }
                     }
                 }
                 //send email           
@@ -249,7 +257,7 @@ class Purchase extends Model
                         $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
                     $totals_html.='<tr> <td align="right" style="color:#1F9F0B;"><b>GRAND TOTAL</b>:</td> <td align="right" style="color:#1F9F0B;">$ '.number_format($totals['total'],2).'</td> </tr>';
                     //info to send by email content
-                    $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>'']);
+                    $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>'','top'=>$top]);
                     $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
                 }
                 $response = $email->send();

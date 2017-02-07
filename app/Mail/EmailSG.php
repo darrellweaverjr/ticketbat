@@ -236,6 +236,7 @@ class EmailSG {
                             $body[] = array('variable'=>':rows', 'value' => $data['rows']);
                             $body[] = array('variable'=>':totals', 'value' => $data['totals']);
                             $body[] = array('variable'=>':banners', 'value' => $data['banners']);
+                            $body[] = array('variable'=>':top', 'value' => (isset($data['top'])? $data['top'] : ''));
                         }
                         break;
                     }
