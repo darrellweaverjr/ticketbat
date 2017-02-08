@@ -473,11 +473,15 @@ class ConsignmentController extends Controller{
                                         $commission = $new_seat->percent_commission;
                                     else
                                         $commission = $ticket->percent_commission;
+                                    //new values
+                                    $ret_pric = ($new_seat->retail_price)? $new_seat->retail_price : $ticket->retail_price;
+                                    $pro_fees = ($new_seat->processing_fee)? $new_seat->processing_fee : $ticket->processing_fee;
+                                    //fill out purchase
                                     $new_seat->purchase_id = $purchase->id;
-                                    $purchase->retail_price += ($new_seat->retail_price)? $new_seat->retail_price : $ticket->retail_price;
-                                    $purchase->processing_fee += ($new_seat->processing_fee)? $new_seat->processing_fee : $ticket->processing_fee;
+                                    $purchase->retail_price += $ret_pric;
+                                    $purchase->processing_fee += $pro_fees;
                                     $purchase->commission_percent += $commission;
-                                    $purchase->price_paid += $purchase->retail_price + $purchase->processing_fee;
+                                    $purchase->price_paid += $ret_pric + $pro_fees;
                                     $purchase->ticket_id = $ticket->id;
                                     $purchase->save();
                                 }  
