@@ -31,7 +31,7 @@ var TableDatatablesManaged = function () {
                 [5, 10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 10,            
+            "pageLength": 5,            
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
@@ -64,7 +64,15 @@ var TableDatatablesManaged = function () {
                 }
             });
             check_models(); 
-        });        
+        });  
+        
+        table.on('click', 'tbody tr td:not(:first-child)', function () {
+            var action = $(this).parent().find('.checkboxes').is(':checked');
+            if(!action)
+                table.find('.checkboxes').prop('checked',false);
+            $(this).parent().find('.checkboxes').prop('checked',!action);
+            check_models();
+        });
         
         table.on('change', 'tbody tr .checkboxes', function () {
             check_models();             

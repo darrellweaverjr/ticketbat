@@ -51,6 +51,10 @@ var TableDatatablesManaged = function () {
             ] // set first column as a default sort by asc
         });
         
+        table.on('click', 'tbody tr', function () {
+            $(this).find('[name="radios"]').prop('checked',true).trigger('change');
+        });
+        
         table.on('change', 'tbody tr .radios', function () {
             $(this).parents('tr').toggleClass("active");
         });

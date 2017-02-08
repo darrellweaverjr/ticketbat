@@ -31,7 +31,7 @@ var TableDatatablesManaged = function () {
                 [5, 10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 15,            
+            "pageLength": 10,            
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
@@ -50,6 +50,15 @@ var TableDatatablesManaged = function () {
                 [5, "desc"]
             ] // set first column as a default sort by asc
         });
+        
+        table.on('click', 'tbody tr', function () {
+            $(this).find('[name="radios"]').prop('checked',true).trigger('change');
+        });
+        
+        table.on('change', 'tbody tr .radios', function () {
+            $(this).parents('tr').toggleClass("active");
+        });
+        
         //PERSONALIZED FUNCTIONS
         //start_end_date
         $('#start_end_date').daterangepicker({

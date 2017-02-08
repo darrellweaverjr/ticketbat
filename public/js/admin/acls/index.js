@@ -64,7 +64,15 @@ var TableDatatablesManaged = function () {
                 }
             });
             check_models(); 
-        });        
+        });   
+        
+        table.on('click', 'tbody tr td:not(:first-child)', function () {
+            var action = $(this).parent().find('.checkboxes').is(':checked');
+            if(!action)
+                table.find('.checkboxes').prop('checked',false);
+            $(this).parent().find('.checkboxes').prop('checked',!action);
+            check_models();
+        });
         
         table.on('change', 'tbody tr .checkboxes', function () {
             check_models();             
