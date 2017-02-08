@@ -75,6 +75,7 @@ class UserController extends Controller{
         try {
             //init
             $input = Input::all();
+            $customer=null;
             //save all record      
             if($input)
             {
@@ -87,6 +88,8 @@ class UserController extends Controller{
                     $location->updated = $current;
                     if(isset($input['password']) && $input['password'])
                         $user->password = md5($input['password']);
+                    //get customer
+                    $customer = Customer::where('email',$user->email)->first();
                 }                    
                 else
                 {                    
@@ -108,6 +111,20 @@ class UserController extends Controller{
                 $location->country = $input['country'];
                 $location->set_lng_lat();
                 $location->save();
+                //save customer location
+                if($customer)
+                {
+                    $location_c = $customer->location;
+                    $location_c->updated = $current;
+                    $location_c->address = $input['address'];
+                    $location_c->city = $input['city'];
+                    $location_c->state = strtoupper($input['state']);
+                    $location_c->zip = $input['zip'];
+                    $location_c->country = $input['country'];
+                    $location_c->set_lng_lat();
+                    $location_c->save();
+                    $customer->location()->associate($location_c);
+                }
                 //save user
                 $user->location()->associate($location);
                 $user->user_type_id = $input['user_type_id'];
@@ -124,6 +141,16 @@ class UserController extends Controller{
                     $user->venues_check_ticket = implode(',',$input['venues_check_ticket']);
                 $user->set_slug();
                 $user->save();
+                //update table customers
+                if($customer)
+                {
+                    $customer->email = $input['email'];
+                    $customer->first_name = $input['first_name'];
+                    $customer->last_name = $input['last_name'];
+                    $customer->phone = $input['phone'];
+                    $customer->updated = $current;
+                    $customer->save();
+                }
                 //update intermediate table with discounts
                 if(isset($input['discounts']) && $input['discounts'] && count($input['discounts']))
                     $user->user_discounts()->sync($input['discounts']);

@@ -246,5 +246,5 @@
 @endsection
 
 @section('scripts') 
-
+<script src="/js/admin/users/index.js" type="text/javascript"></script>
 @endsection
