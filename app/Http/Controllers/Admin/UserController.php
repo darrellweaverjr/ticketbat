@@ -133,6 +133,7 @@ class UserController extends Controller{
                 $user->last_name = $input['last_name'];
                 $user->phone = $input['phone'];
                 $user->is_active = $input['is_active'];
+                //remove these fields from DB
                 //$user->commission_percent = $input['commission_percent'];
                 //$user->percentage_processing_fee = $input['percentage_processing_fee'];
                 //$user->fixed_processing_fee = $input['fixed_processing_fee'];
