@@ -336,7 +336,7 @@ var FormValidation = function () {
                 ignore: "", // validate all fields including form hidden input
                 rules: {
                     name: {
-                        minlength: 5,
+                        minlength: 1,
                         maxlength: 50,
                         required: true
                     },
