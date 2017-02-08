@@ -108,6 +108,7 @@ class DashboardController extends Controller
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, 
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code,
+                                          purchases.ticket_type AS type, purchases.payment_type,
                                           SUM(purchases.quantity) AS tickets, 
                                           SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
                                           SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
