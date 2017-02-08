@@ -350,7 +350,7 @@ var FormValidation = function () {
                     password: {
                         minlength: 5,
                         maxlength: 100,
-                        required: true
+                        required: false
                     },
                     address: {
                         minlength: 5,

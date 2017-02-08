@@ -11,6 +11,7 @@ use App\Http\Models\UserType;
 use App\Http\Models\Discount;
 use App\Http\Models\Venue;
 use App\Http\Models\Country;
+use App\Http\Models\Customer;
 use App\Http\Models\Location;
 
 /**
