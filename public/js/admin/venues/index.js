@@ -75,33 +75,37 @@ var TableDatatablesManaged = function () {
         //PERSONALIZED FUNCTIONS
         //link to venues page
         $('#go_to_slug').on('click', function(ev) {
-            var id = $('#form_model_update [name="id"]').val()
+            var id = $('#form_model_update [name="id"]').val();
             var slug = $('#form_model_update [name="slug"]').val();
             if(id && slug)
                 window.open('http://www.ticketbat.com/venue/'+slug);
         });
         //get slug on name change
         $('#form_model_update [name="name"]').bind('change',function() {
-            if($('#form_model_update [name="name"]').val().length >= 5)
+            var id = $('#form_model_update [name="id"]').val();
+            if(!id)
             {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/venues/slug', 
-                    data: {
-                        name:$('#form_model_update [name="name"]').val(),
-                        venue_id:$('#form_model_update [name="id"]').val()
-                    }, 
-                    success: function(data) {
-                        if(data) $('#form_model_update [name="slug"]').val(data);
-                        else $('#form_model_update [name="slug"]').val('');
-                    },
-                    error: function(){
-                        $('#form_model_update [name="slug"]').val('');
-                    }
-                });
+                if($('#form_model_update [name="name"]').val().length >= 5)
+                {
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/admin/venues/slug', 
+                        data: {
+                            name:$('#form_model_update [name="name"]').val(),
+                            venue_id:$('#form_model_update [name="id"]').val()
+                        }, 
+                        success: function(data) {
+                            if(data) $('#form_model_update [name="slug"]').val(data);
+                            else $('#form_model_update [name="slug"]').val('');
+                        },
+                        error: function(){
+                            $('#form_model_update [name="slug"]').val('');
+                        }
+                    });
+                }
+                else $('#form_model_update [name="slug"]').val('');
             }
-            else $('#form_model_update [name="slug"]').val('');
         });
         //check/uncheck all
         var check_models = function(){
