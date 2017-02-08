@@ -174,7 +174,7 @@ var TableDatatablesManaged = function () {
         //get slug on name change
         $('#form_model_update [name="name"]').bind('change',function() {
             var id = $('#form_model_update [name="id"]').val();
-            if(!id)
+            if(!id || id=='')
             {
                 if($('#form_model_update [name="name"]').val().length >= 5)
                 {
