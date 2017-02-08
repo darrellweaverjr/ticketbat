@@ -174,7 +174,7 @@ var TableDatatablesManaged = function () {
         //get slug on name change
         $('#form_model_update [name="name"]').bind('change',function() {
             var id = $('#form_model_update [name="id"]').val();
-            if(!id || id=='')
+            if(!id)
             {
                 if($('#form_model_update [name="name"]').val().length >= 5)
                 {
@@ -198,7 +198,6 @@ var TableDatatablesManaged = function () {
                 }
                 else $('#form_model_update [name="slug"]').val('');
             }
-            
         });
         //check/uncheck all
         var check_models = function(){
