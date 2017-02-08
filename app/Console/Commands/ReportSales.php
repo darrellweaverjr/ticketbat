@@ -52,6 +52,7 @@ class ReportSales extends Command
                         DATE_FORMAT(st.show_time,'%m/%d/%Y %h:%s %p') AS shows_time, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, sum(p.retail_price) AS retail_price, 
                         SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, SUM(p.price_paid) AS gross_revenue, 
                         SUM(p.price_paid) AS total_paid, ROUND(SUM(p.retail_price)-SUM(p.commission),2) AS due_to_show, ROUND(SUM(p.commission),2) AS commission, 
+                        (CASE WHEN (p.ticket_type = 'Consignment') THEN p.ticket_type ELSE p.payment_type END) AS method,
                         SUBSTRING_INDEX(SUBSTRING_INDEX(p.referrer_url, '://', -1),'/', 1) AS referral_url,
                         SUBSTRING_INDEX(p.referrer_url, '://', -1) AS url, SUM(p.price_paid)-SUM(p.commission)-SUM(p.processing_fee) AS net ";
 
@@ -102,6 +103,8 @@ class ReportSales extends Command
                     array_unshift($data,$result);
                 }
                 
+                dd($data);
+                
                 //MANIFEST SALES CUTOMIZED ACCORDING TO VENUES, SHOWS OR ADMIN                
                 $format = 'customized';
                 $pdf_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
@@ -130,7 +133,6 @@ class ReportSales extends Command
                     $manifest_csv = View::make('command.report_sales', compact('purchases' ,'date_report','format'));
                     $csv_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.csv';
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
-                    
                     $email->attachment([$csv_path,$pdf_referrer_]);
                 }
                 if($email->send())

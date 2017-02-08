@@ -1,7 +1,7 @@
 @if($format == 'csv')
-"#","NAME","TICKET TYPE","SHOW TIME","QTY","PURCHASE COUNT","RETAIL PRICE","PROCESSING FEE","SAVINGS","TOTAL PAID","COMMISSION","DUE TO SHOW","REFERRER"
+"#","NAME","TICKET TYPE","SHOW TIME","QTY","PURCHASES","METHOD","RETAIL PRICE","PROCESSING FEE","SAVINGS","TOTAL PAID","COMMISSION","DUE TO SHOW","REFERRER"
 @foreach ($purchases as $n => $p)
-"{{$n+1}}","{{$p->s_name}}","{{$p->ticket_type}}","{{$p->shows_time}}","{{$p->qty}}","{{$p->purchase_count}}","$ {{$p->retail_price}}","$ {{$p->processing_fee}}","$ {{$p->savings}}","$ {{$p->total_paid}}","$ {{$p->commission}}","$ {{$p->due_to_show}}","{{$p->url}}"
+"{{$n+1}}","{{$p->s_name}}","{{$p->ticket_type}}","{{$p->shows_time}}","{{$p->qty}}","{{$p->purchase_count}}","{{$p->method}}","$ {{$p->retail_price}}","$ {{$p->processing_fee}}","$ {{$p->savings}}","$ {{$p->total_paid}}","$ {{$p->commission}}","$ {{$p->due_to_show}}","{{$p->url}}"
 @endforeach
 @else
 <!DOCTYPE html>
@@ -112,7 +112,8 @@
                     <th>NAME</th>
                     <th>TICKET TYPE</th>
                     <th>QTY</th>
-                    <th>PURCHASE COUNT</th>
+                    <th>PURCHASES</th>
+                    <th>METHOD</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -123,6 +124,7 @@
                         <td>{{$p->ticket_type}}</td>
                         <td>{{$p->qty}}</td>
                         <td>{{$p->purchase_count}}</td>
+                        <td>{{$p->method}}</td>
                     </tr>
                 @endforeach
                 </tbody>
