@@ -49,8 +49,9 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="88%"> Name </th>
-                                <th width="10%"> Category </th>
+                                <th width="10%">Band</th>
+                                <th width="78%">Description</th>
+                                <th width="10%">Category</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,13 +63,13 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td class="search-item clearfix" width="88%"> 
-                                    <div class="search-content col-md-2"> 
-                                        @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
-                                        @if(preg_match('/\/s3\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$b->image_url) @endphp @endif
-                                        <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
-                                    </div>
-                                    <div class="search-content col-md-10" style="padding-left:35px">
+                                <td width="10%" data-order="{{$b->name}}"> 
+                                    @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
+                                    @if(preg_match('/\/s3\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$b->image_url) @endphp @endif
+                                    <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
+                                </td>
+                                <td class="search-item clearfix" width="78%"> 
+                                    <div class="search-content">
                                         <h3 class="search-title"><a data-toggle="modal" href="#modal_details_{{$b->id}}">{{$b->name}}</a></h3>
                                         <p><small><i>
                                             @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a>@endif
