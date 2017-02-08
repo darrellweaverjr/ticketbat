@@ -50,8 +50,9 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="95%"> Name </th>
-                                <th width="5%"> Featured </th>
+                                <th width="15%">Venue</th>
+                                <th width="80%">Description</th>
+                                <th width="5%">Featured</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,13 +64,13 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td class="search-item clearfix" width="95%"> 
-                                    <div class="search-content col-md-3"> 
-                                        @if(preg_match('/\/uploads\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_OLDTB_SERVER').$v->image_url @endphp @endif
-                                        @if(preg_match('/\/s3\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$v->image_url) @endphp @endif
-                                        <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$v->id}}"><img alt="- No image -" height="100px" width="200px" src="{{$v->image_url}}"/></a></b></i></center>
-                                    </div>
-                                    <div class="search-content col-md-9">
+                                <td width="15%" data-order="{{$v->name}}"> 
+                                    @if(preg_match('/\/uploads\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_OLDTB_SERVER').$v->image_url @endphp @endif
+                                    @if(preg_match('/\/s3\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$v->image_url) @endphp @endif
+                                    <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$v->id}}"><img alt="- No image -" height="100px" width="200px" src="{{$v->image_url}}"/></a></b></i></center>
+                                </td>
+                                <td class="search-item clearfix" width="80%"> 
+                                    <div class="search-content">
                                         <h4 class="search-title"><b><a data-toggle="modal" href="#modal_details_{{$v->id}}">{{$v->name}}</a></b> [<a href="https://www.ticketbat.com/venue/{{$v->slug}}" target="_blank">{{$v->slug}}</a>]</h4>
                                         <small><i>
                                             Location: <a>{{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</a>

@@ -53,10 +53,11 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="82%"> Name </th>
-                                <th width="8%"> Category </th>
-                                <th width="3%"> Featured </th>
-                                <th width="5%"> Status </th>
+                                <th width="15%">Show</th>
+                                <th width="67%">Description</th>
+                                <th width="8%">Category</th>
+                                <th width="3%">Featured</th>
+                                <th width="5%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,13 +69,13 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td class="search-item clearfix" width="82%"> 
-                                    <div class="search-content col-md-3"> 
-                                        @if(preg_match('/\/uploads\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_OLDTB_SERVER').$s->image_url @endphp @endif
-                                        @if(preg_match('/\/s3\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$s->image_url) @endphp @endif
-                                        <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$s->id}}"><img alt="- No image -" height="100px" width="200px" src="{{$s->image_url}}"/></a></b></i></center>
-                                    </div>
-                                    <div class="search-content col-md-9">
+                                <td width="15%" data-order="{{$s->name}}"> 
+                                    @if(preg_match('/\/uploads\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_OLDTB_SERVER').$s->image_url @endphp @endif
+                                    @if(preg_match('/\/s3\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$s->image_url) @endphp @endif
+                                    <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$s->id}}"><img alt="- No image -" height="100px" width="200px" src="{{$s->image_url}}"/></a></b></i></center>
+                                </td>
+                                <td class="search-item clearfix" width="67%"> 
+                                    <div class="search-content">
                                         <h4 class="search-title"><b><a data-toggle="modal" href="#modal_details_{{$s->id}}">{{$s->name}}</a></b> [<a href="https://www.ticketbat.com/event/{{$s->slug}}" target="_blank">{{$s->slug}}</a>]</h4>
                                         <small><i>
                                             @if($s->url)Web Site: <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
