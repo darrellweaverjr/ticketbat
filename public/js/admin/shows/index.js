@@ -198,6 +198,7 @@ var TableDatatablesManaged = function () {
                 }
                 else $('#form_model_update [name="slug"]').val('');
             }
+            
         });
         //check/uncheck all
         var check_models = function(){
