@@ -228,7 +228,7 @@
                                                     <div class="col-md-9 show-error">
                                                         <select class="form-control" name="venue_id">
                                                             @foreach($venues as $index=>$v)
-                                                            <option class="{{$v->restrictions}}" value="{{$v->id}}">{{$v->name}}</option>
+                                                            <option rel="{{$v->restrictions}}" value="{{$v->id}}">{{$v->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div> 
@@ -238,7 +238,7 @@
                                                     <div class="col-md-9 show-error">
                                                         <select class="form-control" name="stage_id">
                                                             @foreach($stages as $index=>$t)
-                                                                <option style = "display:@if(isset($venues[0]) && $venues[0]->id == $t->venue_id) block @else none @endif ;"                         class="venue_{{$t->venue_id}}" value="{{$t->id}}">{{$t->name}}</option>
+                                                                <option style = "display:@if(isset($venues[0]) && $venues[0]->id == $t->venue_id) block @else none @endif ;"                         rel="{{$t->venue_id}}" value="{{$t->id}}">{{$t->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div> 

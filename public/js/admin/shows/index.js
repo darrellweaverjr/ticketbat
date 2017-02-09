@@ -257,13 +257,21 @@ var TableDatatablesManaged = function () {
         }); 
         //on select venue
         $('#form_model_update [name="venue_id"]').on('change', function(ev) {
+            //init
+            var venue_id = $(this).find('option:selected').val(); 
+            var venue_rest = $(this).find('option:selected').attr('rel');
             //show stages
-            var venue_id = $('#form_model_update [name="venue_id"] option:selected').val(); 
-            $('#form_model_update [name="stage_id"]').children('option').css('display','none'); 
-            $('#form_model_update [name="stage_id"]').children('option[class="venue_'+venue_id+'"]').css('display','block'); 
-            $('#form_model_update [name="stage_id"]').val($('#form_model_update [name="stage_id"] option[class="venue_'+venue_id+'"]:first').val());
+            if(venue_id && venue_id != '')
+            {
+                $('#form_model_update select[name="stage_id"] option[rel!="'+venue_id+'"]').css('display','none');
+                $('#form_model_update select[name="stage_id"] option[rel="'+venue_id+'"]').css('display','block');
+                $('#form_model_update select[name="stage_id"]').val($('#form_model_update [name="stage_id"] option[rel="'+venue_id+'"]:first').val());
+            }
+            else
+            {
+                $('#form_model_update select[name="stage_id"] option[value!=""]').css('display','none');
+            }
             //show restrictions
-            var venue_rest = $('#form_model_update [name="venue_id"] option:selected').attr('class');
             $('#form_model_update [name="restrictions"] option').each(function()
             {
                 if($(this).val() == venue_rest)
@@ -277,6 +285,39 @@ var TableDatatablesManaged = function () {
                     $(this).text($(this).val()+' - WARNING: Not venue default');                   
                 }
             });
+            //select default reports for that venue
+            if(venue_id && venue_id != '')
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows', 
+                    data: { venue_id:venue_id }, 
+                    success: function(data) {
+                        if(data) 
+                        {
+                            $('#form_model_update input[name="emails"]').val(data.default.weekly_email);
+                            $('#form_model_update input[name="accounting_email"]').val(data.default.accounting_email);
+                            $('#form_model_update .make-switch:checkbox[name="daily_sales_emails"]').bootstrapSwitch('state',(data.default.daily_sales_emails)? true : false);
+                            $('#form_model_update .make-switch:checkbox[name="financial_report_emails"]').bootstrapSwitch('state',(data.default.financial_report_emails)? true : false);
+                        }
+                        else 
+                        {
+                            $('#form_model_update input[name*="email"]').val('');
+                            $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
+                        }
+                    },
+                    error: function(){
+                        $('#form_model_update input[name*="email"]').val('');
+                        $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
+                    }
+                });
+            }
+            else
+            {
+                $('#form_model_update input[name*="email"]').val('');
+                $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
+            }
         });
         
         //function edit
@@ -2544,6 +2585,7 @@ var TableDatatablesManaged = function () {
         $('input[name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
         $('input[name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
         $('input[name="fixed_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,prefix:'$' });
+        $('#form_model_update [name="venue_id"]').trigger('change');
     }
     return {
         //main function to initiate the module
