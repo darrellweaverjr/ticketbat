@@ -72,11 +72,11 @@
                                 <td width="15%" data-order="{{$s->name}}"> 
                                     @if(preg_match('/\/uploads\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_OLDTB_SERVER').$s->image_url @endphp @endif
                                     @if(preg_match('/\/s3\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$s->image_url) @endphp @endif
-                                    <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$s->id}}"><img alt="- No image -" height="100px" width="200px" src="{{$s->image_url}}"/></a></b></i></center>
+                                    <center style="color:red;"><i><b><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}"><img alt="- No image -" height="100px" width="200px" src="{{$s->image_url}}"/></a></b></i></center>
                                 </td>
                                 <td class="search-item clearfix" width="67%"> 
                                     <div class="search-content">
-                                        <h4 class="search-title"><b><a data-toggle="modal" href="#modal_details_{{$s->id}}">{{$s->name}}</a></b> [<a href="https://www.ticketbat.com/event/{{$s->slug}}" target="_blank">{{$s->slug}}</a>]</h4>
+                                        <h4 class="search-title"><b><a>{{$s->name}}</a></b> [<a>{{$s->slug}}</a>]</h4>
                                         <small><i>
                                             @if($s->url)Web Site: <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
                                             @if($s->googleplus)Google+: <a href="{{$s->googleplus}}" target="_blank">{{$s->googleplus}} </a>@endif
@@ -103,112 +103,6 @@
                                     </center></span> 
                                 </td>
                             </tr>
-                            <!-- BEGIN DETAILS MODAL--> 
-                            <!--{{-- 
-                            <div id="modal_details_{{$s->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-                                <div class="modal-dialog">
-                                    <div class="modal-content portlet">
-                                        <div id="modal_model_update_header" class="modal-header">
-                                            <h4 class="modal-title bold uppercase"><center>{{$s->name}}</center></h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="portlet light ">
-                                                <div class="portlet-title">
-                                                    <center style="color:red;"><i><b><img alt="- No image -" height="200px" width="500px" src="{{$s->image_url}}"/></b></i></center>
-                                                </div>
-                                                <div class="portlet-body">
-                                                    <ul class="chats">
-                                                        <li class="in">
-                                                            <div class="avatar">Slug</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> <a href="https://www.ticketbat.com/event/{{$s->slug}}" target="_blank">{{$s->slug}}</a> </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Location</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> 
-                                                                    Venue: <b>{{$s->venue_name}}</b><br>
-                                                                    Stage: <b>{{$s->stage_name}}</b><br>
-                                                                    Restrictions: <b>{{$s->restrictions}}</b>
-                                                                </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Category</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> {{$s->category}} </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Social Media</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> 
-                                                                    @if($s->url)Web Site: <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
-                                                                    @if($s->googleplus)Google+: <a href="{{$s->googleplus}}" target="_blank">{{$s->googleplus}} </a>@endif
-                                                                    @if($s->youtube)YouTube: <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
-                                                                    @if($s->facebook)Facebook: <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
-                                                                    @if($s->twitter)Twitter: <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
-                                                                    @if($s->yelpbadge)YelpBadge: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
-                                                                    @if($s->instagram)Instagram: <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
-                                                                    @if(!$s->url && !$s->googleplus && !$s->youtube && !$s->facebook && !$s->twitter && !$s->yelpbadge && !$s->instagram) <i style="color:red"><b>- No social media links -</b></i> @endif
-                                                                </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Sponsorship</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> 
-                                                                    @if($s->sponsor)Sponsor: <b>{{$s->sponsor}}</b> <br>@endif
-                                                                    @if($s->presented_by)Presented By: <b>{{$s->presented_by}}</b>@endif
-                                                                    @if(!$s->sponsor && !$s->presented_by && !$s->sponsor_logo_id) <i style="color:red"><b>- No sponsorship -</b></i> @endif
-                                                                </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Feature</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> 
-                                                                    Featured?: <b>@if($s->is_featured) Yes @else No @endif</b><br>
-                                                                    Active?: <b>@if($s->is_active) Yes @else No @endif</b><br>
-                                                                    Enable print tickets?: <b>@if($s->printed_tickets) Yes @else No @endif</b><br>
-                                                                    On Sale: <b>@if($s->on_sale && $s->on_sale!='0000-00-00 00:00:00') {{date('m/d/Y g:ia',strtotime($s->on_sale))}} @else - @endif</b><br>
-                                                                </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Short Description</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> @if($s->short_description) {{$s->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Full Description</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> @if($s->description) {{$s->description}} @else <i style="color:red"><b>- No description -</b></i> @endif </span>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                </div> 
-                                            </div>
-                                            <div class="row">
-                                                <div class="modal-footer">
-                                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> --}}-->
-                            <!-- END DETAILS MODAL--> 
                             @endforeach 
                         </tbody>
                     </table>

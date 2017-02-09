@@ -66,11 +66,11 @@
                                 <td width="10%" data-order="{{$b->name}}"> 
                                     @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
                                     @if(preg_match('/\/s3\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$b->image_url) @endphp @endif
-                                    <center style="color:red;"><i><b><a data-toggle="modal" href="#modal_details_{{$b->id}}"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
+                                    <center style="color:red;"><i><b><a><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
                                 </td>
                                 <td class="search-item clearfix" width="78%"> 
                                     <div class="search-content">
-                                        <h3 class="search-title"><a data-toggle="modal" href="#modal_details_{{$b->id}}">{{$b->name}}</a></h3>
+                                        <h3 class="search-title"><a>{{$b->name}}</a></h3>
                                         <p><small><i>
                                             @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a>@endif
                                             @if($b->youtube)YouTube: <a href="{{$b->youtube}}" target="_blank">{{$b->youtube}} </a>@endif 
@@ -86,71 +86,6 @@
                                 </td>
                                 <td width="10%"><center> {{$b->category}} </center></td>
                             </tr>
-                            <!-- BEGIN DETAILS MODAL--> 
-                            <div id="modal_details_{{$b->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-                                <div class="modal-dialog">
-                                    <div class="modal-content portlet">
-                                        <div id="modal_model_update_header" class="modal-header">
-                                            <h4 class="modal-title bold uppercase"><center>{{$b->name}}</center></h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="portlet light ">
-                                                <div class="portlet-title">
-                                                    <center style="color:red;"><i><b><img alt="- No image -" height="200px" width="220px" src="{{$b->image_url}}"/></b></i></center>
-                                                </div>
-                                                <div class="portlet-body">
-                                                    <ul class="chats">
-                                                        <li class="in">
-                                                            <div class="avatar">Category</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> {{$b->category}} </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Social Media</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> 
-                                                                    @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a><br>@endif
-                                                                    @if($b->youtube)YouTube: <a href="{{$b->youtube}}" target="_blank">{{$b->youtube}} </a><br>@endif 
-                                                                    @if($b->facebook)Facebook: <a href="{{$b->facebook}}" target="_blank">{{$b->facebook}} </a><br>@endif 
-                                                                    @if($b->twitter)Twitter: <a href="{{$b->twitter}}" target="_blank">{{$b->twitter}} </a><br>@endif 
-                                                                    @if($b->my_space)MySpace: <a href="{{$b->my_space}}" target="_blank">{{$b->my_space}} </a><br>@endif 
-                                                                    @if($b->flickr)Flickr: <a href="{{$b->flickr}}" target="_blank">{{$b->flickr}} </a><br>@endif 
-                                                                    @if($b->instagram)Instagram: <a href="{{$b->instagram}}" target="_blank">{{$b->instagram}} </a><br>@endif 
-                                                                    @if($b->soundcloud)SoundCloud: <a href="{{$b->soundcloud}}" target="_blank">{{$b->soundcloud}} </a><br>@endif 
-                                                                    @if(!$b->website && !$b->youtube && !$b->facebook && !$b->twitter && !$b->my_space && !$b->flickr && !$b->instagram && !$b->soundcloud) <i style="color:red"><b>- No social media links -</b></i> @endif
-                                                                </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Short Description</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> @if($b->short_description) {{$b->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </span>
-                                                            </div>
-                                                        </li>
-                                                        <li class="in">
-                                                            <div class="avatar">Full Description</div>
-                                                            <div class="message">
-                                                                <span class="arrow"> </span>
-                                                                <span class="body"> @if($b->description) {{$b->description}} @else <i style="color:red"><b>- No description -</b></i> @endif </span>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                </div> 
-                                            </div>
-                                            <div class="row">
-                                                <div class="modal-footer">
-                                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END DETAILS MODAL--> 
                             @endforeach 
                         </tbody>
                     </table>
