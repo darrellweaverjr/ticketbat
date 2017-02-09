@@ -12,7 +12,7 @@
     <!-- BEGIN PAGE HEADER-->   
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
-        <small>statistics, charts, recent events and reports</small>
+        <small>statistics, charts and reports (by default the last 30 days).</small>
     </h1>
     <!-- END PAGE TITLE-->                   
     <!-- END PAGE HEADER-->
