@@ -2635,37 +2635,37 @@ var FormValidation = function () {
                     },  
                     youtube: {
                         minlength: 5,
-                        maxlength: 100,
+                        maxlength: 500,
                         required: false
                     },
                     facebook: {
                         minlength: 5,
-                        maxlength: 100,
+                        maxlength: 500,
                         required: false
                     },
                     twitter: {
                         minlength: 5,
-                        maxlength: 100,
+                        maxlength: 500,
                         required: false
                     },
                     googleplus: {
                         minlength: 5,
-                        maxlength: 100,
+                        maxlength: 500,
                         required: false
                     },
                     instagram: {
                         minlength: 5,
-                        maxlength: 100,
+                        maxlength: 500,
                         required: false
                     },
                     yelpbadge: {
                         minlength: 5,
-                        maxlength: 100,
+                        maxlength: 500,
                         required: false
                     },
                     url: {
                         minlength: 5,
-                        maxlength: 100,
+                        maxlength: 200,
                         required: false
                     }
                 },
