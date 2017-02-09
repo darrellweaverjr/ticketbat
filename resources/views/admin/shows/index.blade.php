@@ -800,31 +800,31 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                        <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                     </div> 
                                     <label class="col-md-5 control-label">Proccessing Fee ($)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                        <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                     </div> 
                                     <label class="col-md-5 control-label">Proccessing Fee (%)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                        <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                     </div> 
                                     <label class="col-md-5 control-label">Commission ($)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                        <input type="text" value="0" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                     </div> 
                                     <label class="col-md-5 control-label">Commission (%)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                        <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                     </div> 
                                     <label class="control-label col-md-5">Make default ticket
                                         <span class="required"> * </span>
@@ -1247,31 +1247,31 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                            <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                         </div> 
                                         <label class="col-md-5 control-label">Proc.Fee ($)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                            <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                         </div> 
                                         <label class="col-md-5 control-label">Proc.Fee (%)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                            <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                         </div> 
                                         <label class="col-md-5 control-label">Commission ($)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                            <input type="text" value="" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                         </div>
                                         <label class="col-md-5 control-label">Commission (%)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                            <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
                                         </div> 
                                         <label class="control-label col-md-5">Make default 
                                             <span class="required"> * </span>
