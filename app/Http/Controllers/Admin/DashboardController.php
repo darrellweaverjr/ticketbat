@@ -76,7 +76,7 @@ class DashboardController extends Controller
             if($showtime_start_date != '' && $showtime_end_date != '')
             {
                 $where[] = ['show_times.show_time','>=',$showtime_start_date];
-                $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
             } 
             //search soldtime
             if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
@@ -92,7 +92,7 @@ class DashboardController extends Controller
             if($soldtime_start_date != '' && $soldtime_end_date != '')
             {
                 $where[] = ['purchases.created','>=',$soldtime_start_date];
-                $where[] = ['purchases.created','<=',$soldtime_end_date];
+                $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
             }  
             //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
             if(Auth::user()->user_type->id == 5)
@@ -180,7 +180,7 @@ class DashboardController extends Controller
             if($showtime_start_date != '' && $showtime_end_date != '')
             {
                 $where[] = ['show_times.show_time','>=',$showtime_start_date];
-                $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
             } 
             //search soldtime
             if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
@@ -196,7 +196,7 @@ class DashboardController extends Controller
             if($soldtime_start_date != '' && $soldtime_end_date != '')
             {
                 $where[] = ['purchases.created','>=',$soldtime_start_date];
-                $where[] = ['purchases.created','<=',$soldtime_end_date];
+                $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
             }  
             //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
             if(Auth::user()->user_type->id == 5)
@@ -274,7 +274,7 @@ class DashboardController extends Controller
             if($showtime_start_date != '' && $showtime_end_date != '')
             {
                 $where[] = ['show_times.show_time','>=',$showtime_start_date];
-                $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
             }  
             //search soldtime
             if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
@@ -290,7 +290,7 @@ class DashboardController extends Controller
             if($soldtime_start_date != '' && $soldtime_end_date != '')
             {
                 $where[] = ['purchases.created','>=',$soldtime_start_date];
-                $where[] = ['purchases.created','<=',$soldtime_end_date];
+                $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
             }  
             //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
             if(Auth::user()->user_type->id == 5)
@@ -374,7 +374,7 @@ class DashboardController extends Controller
             if($showtime_start_date != '' && $showtime_end_date != '')
             {
                 $where[] = ['show_times.show_time','>=',$showtime_start_date];
-                $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
             }  
             //search soldtime
             if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
@@ -390,7 +390,7 @@ class DashboardController extends Controller
             if($soldtime_start_date != '' && $soldtime_end_date != '')
             {
                 $where[] = ['purchases.created','>=',$soldtime_start_date];
-                $where[] = ['purchases.created','<=',$soldtime_end_date];
+                $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
             } 
             //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
             if(Auth::user()->user_type->id == 1 || Auth::user()->user_type->id == 6)
@@ -488,7 +488,7 @@ class DashboardController extends Controller
             if($showtime_start_date != '' && $showtime_end_date != '')
             {
                 $where[] = ['show_times.show_time','>=',$showtime_start_date];
-                $where[] = ['show_times.show_time','<=',$showtime_end_date];
+                $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
             } 
             //search soldtime
             if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
@@ -504,7 +504,7 @@ class DashboardController extends Controller
             if($soldtime_start_date != '' && $soldtime_end_date != '')
             {
                 $where[] = ['purchases.created','>=',$soldtime_start_date];
-                $where[] = ['purchases.created','<=',$soldtime_end_date];
+                $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
             }  
             //search arrange by order url or show
             if(isset($input) && isset($input['order']) && $input['order']=='url')

@@ -31,14 +31,14 @@ class PurchaseController extends Controller{
             if(isset($input) && isset($input['start_date']) && isset($input['end_date']))
             {
                 //input dates 
-                $start_date = date('Y-m-d',strtotime($input['start_date']));
-                $end_date = date('Y-m-d',strtotime($input['end_date']));
+                $start_date = date('Y-m-d H:i:s',strtotime($input['start_date']));
+                $end_date = date('Y-m-d H:i:s',strtotime($input['end_date']));
             }
             else
             {
                 //default dates 
-                $start_date = date('Y-m-d', strtotime('-30 DAY'));
-                $end_date = date('Y-m-d');
+                $start_date = date('Y-m-d H:i:s', strtotime('-30 DAY'));
+                $end_date = date('Y-m-d H:i:s');
             }
             //get all records  
             $purchases = DB::table('purchases')
