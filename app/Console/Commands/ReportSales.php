@@ -125,12 +125,7 @@ class ReportSales extends Command
                 //MANIFEST SALES CUTOMIZED ACCORDING TO VENUES, SHOWS OR ADMIN                
                 $format = 'customized';
                 $pdf_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                $manifest_email = View::make('command.report_sales', compact('data','send','format'));
-                
-                echo  $manifest_email;
-                exit();
-                
-                
+                $manifest_email = View::make('command.report_sales', compact('data','send','format'));                
                 PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
 
                 //SENDING EMAIL
