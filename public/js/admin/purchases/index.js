@@ -189,6 +189,103 @@ var TableDatatablesManaged = function () {
                 $('#form_model_search select[name="show"] option[value!=""]').css('display','none');
             }
         });
+        //function show move modal window
+        $('#btn_model_move').on('click', function(ev) {
+            var purchase_id = $("#tb_model [name=radios]:checked").val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/purchases', 
+                data: {action:0,purchase_id:purchase_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_model_move input[name="purchase_id"]:hidden').val(purchase_id);
+                        $('#form_model_move input[name="ticket_id"]:hidden').val(data.ticket.id);
+                        $('#form_model_move select[name="show_time_id_to"]').append('<option disabled selected value=""></option>');
+                        $.each(data.showtimes,function(k, v) {
+                            var date = moment(v.show_time);
+                            $('#form_model_move select[name="show_time_id_to"]').append('<option value="'+v.id+'">'+date.format('MM/DD/YYYY @ h:mma')+' - Active</option>');
+                        });
+                        $('#tb_purchase_tickets').html('<tr><td><b>Current</b></td><td>'+data.ticket.ticket_type+'</td><td>'+data.ticket.retail_price+'</td><td>'+data.ticket.processing_fee+
+                                                         '</td><td>'+data.ticket.percent_pf+'</td><td>'+data.ticket.fixed_commission+'</td><td>'+data.ticket.percent_commission+
+                                                         '</td><td>'+data.ticket.max_tickets+'</td><td>'+data.ticket.is_active+'</td></tr>'); 
+                        $('#modal_model_move').modal('show');
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the purchase information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });
+        });
+        //on select showtimes date change
+        $('#form_model_move select[name="show_time_id_to"]').on('change', function(ev) {
+            var show_time_id = $(this).val();
+            var ticket_id = $('#form_model_move input[name="ticket_id"]:hidden').val();
+            if(show_time_id)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/purchases', 
+                    data: {action:1,show_time_id:show_time_id,ticket_id:ticket_id},
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#tb_purchase_tickets').children('tr:not(:first)').remove();
+                            $('#tb_purchase_tickets').append('<tr><td><b>Target</b></td><td>'+data.ticket.ticket_type+'</td><td>'+data.ticket.retail_price+'</td><td>'+data.ticket.processing_fee+
+                                                            '</td><td>'+data.ticket.percent_pf+'</td><td>'+data.ticket.fixed_commission+'</td><td>'+data.ticket.percent_commission+
+                                                            '</td><td>'+data.ticket.max_tickets+'</td><td>'+data.ticket.is_active+'</td></tr>'); 
+                        }
+                        else{
+                            $('#modal_model_move').modal('hide');					
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_move').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        $('#modal_model_move').modal('hide');	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_move').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                $('#modal_model_move').modal('hide');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select a valid showtime!",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_move').modal('show');
+                });
+            }
+        });
         //function email
         $('#btn_model_email').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
@@ -322,6 +419,7 @@ var TableDatatablesManaged = function () {
                 $('#btn_model_email').prop('disabled',false);
                 $('#btn_model_tickets').prop('disabled',false);
                 $('#btn_model_note').prop('disabled',false);
+                $('#btn_model_move').prop('disabled',false);
             }
         });
     }

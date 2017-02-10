@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\View;
 use App\Http\Models\Purchase;
 use App\Http\Models\Venue;
 use App\Http\Models\Show;
+use App\Http\Models\Ticket;
+use App\Http\Models\ShowTime;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Models\Util;
 
@@ -30,77 +32,127 @@ class PurchaseController extends Controller{
         try {
             //init
             $input = Input::all(); 
-            //conditions to search
-            $where = [['purchases.status','=','Active']];
-            //search venue
-            if(isset($input) && isset($input['venue']))
+            if(isset($input) && isset($input['action']) && $input['action']==0)
             {
-                $venue = $input['venue'];
-                if($venue != '')
-                    $where[] = ['shows.venue_id','=',$venue];
-            }
-            else
-                $venue = '';
-            //search show
-            if(isset($input) && isset($input['show']))
-            {
-                $show = $input['show'];
-                if($show != '')
-                    $where[] = ['shows.id','=',$show];
-            }
-            else
-                $show = '';
-            //search showtime
-            if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
-            {
-                $showtime_start_date = $input['showtime_start_date'];
-                $showtime_end_date = $input['showtime_end_date'];
-            }
-            else
-            {
-                $showtime_start_date = '';
-                $showtime_end_date = '';
-            }
-            if($showtime_start_date != '' && $showtime_end_date != '')
-            {
-                $where[] = ['show_times.show_time','>=',$showtime_start_date];
-                $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
-            } 
-            //search soldtime
-            if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
-            {
-                $soldtime_start_date = $input['soldtime_start_date'];
-                $soldtime_end_date = $input['soldtime_end_date'];
-            }
-            else
-            {
-                $soldtime_start_date = date('Y-m-d', strtotime('-30 DAY'));
-                $soldtime_end_date = date('Y-m-d');
-            }
-            if($soldtime_start_date != '' && $soldtime_end_date != '')
-            {
-                $where[] = ['purchases.created','>=',$soldtime_start_date];
-                $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
-            } 
-            //get all records  
-            $purchases = DB::table('purchases')
-                                ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
-                                ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                                ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                $show = DB::table('show_times')
+                                ->join('purchases', 'purchases.show_time_id', '=', 'show_times.id')
                                 ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                                ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                                ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
-                                ->join('packages', 'packages.id', '=', 'tickets.package_id')
-                                ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                                ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
-                                        'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
-                                ->where($where)
-                                ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
-                                ->get();
-            $status = Util::getEnumValues('purchases','status');
-            $venues = Venue::all('id','name');
-            $shows = Show::all('id','name','venue_id');
-            return view('admin.purchases.index',compact('purchases','status','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
+                                ->select('shows.id')
+                                ->where('purchases.id','=',$input['purchase_id'])->first();
+                $showtimes = DB::table('show_times')->select('id','show_time')
+                                ->where('show_id','=',$show->id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s'))
+                                ->orderBy('show_times.show_time')->get();
+                $ticket = DB::table('tickets')
+                                ->join('purchases','purchases.ticket_id','=','tickets.id')
+                                ->select('tickets.*')
+                                ->where('purchases.id','=',$input['purchase_id'])->first();
+                return ['success'=>true,'ticket'=>$ticket,'showtimes'=>$showtimes];
+            }
+            else if(isset($input) && isset($input['action']) && $input['action']==1)
+            {
+                $showtime = ShowTime::find($input['show_time_id']);
+                if($showtime)
+                {
+                    $ticket = null;
+                    $contracts = DB::table('show_contracts')->select('data')
+                                ->where('show_id','=',$showtime->show_id)
+                                ->where('effective_date','<=',date('Y-m-d',strtotime($showtime->show_time)))->where('effective_date','>=',date('Y-m-d'))
+                                ->orderBy('effective_date','desc')->get();
+                    foreach ($contracts as $c)
+                    {
+                        if(!empty($c->data) && Util::isJSON($c->data))
+                        {
+                            $data = json_decode($c->data);
+                            foreach ($data as $d)
+                            {
+                                if($d->ticket_id == $input['ticket_id'])
+                                    return ['success'=>true,'ticket'=>$d];
+                            }
+                        }
+                    }
+                    if(!$ticket)
+                        $ticket = Ticket::find($input['ticket_id']);
+                    return ['success'=>true,'ticket'=>$ticket];
+                }
+                else return ['success'=>false,'msg'=>'There was an error.<br>That event date is not longer in the system.'];
+                        
+                
+                return ['success'=>true,'ticket'=>$ticket,'showtimes'=>$showtimes];
+            }
+            else
+            {
+                //conditions to search
+                $where = [['purchases.status','=','Active']];
+                //search venue
+                if(isset($input) && isset($input['venue']))
+                {
+                    $venue = $input['venue'];
+                    if($venue != '')
+                        $where[] = ['shows.venue_id','=',$venue];
+                }
+                else
+                    $venue = '';
+                //search show
+                if(isset($input) && isset($input['show']))
+                {
+                    $show = $input['show'];
+                    if($show != '')
+                        $where[] = ['shows.id','=',$show];
+                }
+                else
+                    $show = '';
+                //search showtime
+                if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
+                {
+                    $showtime_start_date = $input['showtime_start_date'];
+                    $showtime_end_date = $input['showtime_end_date'];
+                }
+                else
+                {
+                    $showtime_start_date = '';
+                    $showtime_end_date = '';
+                }
+                if($showtime_start_date != '' && $showtime_end_date != '')
+                {
+                    $where[] = ['show_times.show_time','>=',$showtime_start_date];
+                    $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
+                } 
+                //search soldtime
+                if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
+                {
+                    $soldtime_start_date = $input['soldtime_start_date'];
+                    $soldtime_end_date = $input['soldtime_end_date'];
+                }
+                else
+                {
+                    $soldtime_start_date = date('Y-m-d', strtotime('-30 DAY'));
+                    $soldtime_end_date = date('Y-m-d');
+                }
+                if($soldtime_start_date != '' && $soldtime_end_date != '')
+                {
+                    $where[] = ['purchases.created','>=',$soldtime_start_date];
+                    $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
+                } 
+                //get all records  
+                $purchases = DB::table('purchases')
+                                    ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                                    ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
+                                    ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                                    ->join('shows', 'shows.id', '=', 'show_times.show_id')
+                                    ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                                    ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
+                                    ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                                    ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
+                                            'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
+                                    ->where($where)
+                                    ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
+                                    ->get();
+                $status = Util::getEnumValues('purchases','status');
+                $venues = Venue::all('id','name');
+                $shows = Show::all('id','name','venue_id');
+                return view('admin.purchases.index',compact('purchases','status','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
+            }
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Index: '.$ex->getMessage());
         }

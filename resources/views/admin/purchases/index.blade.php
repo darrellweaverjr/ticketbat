@@ -36,6 +36,9 @@
                             <button id="btn_model_note" class="btn sbold bg-red" disabled="true">Add Note 
                                 <i class="fa fa-edit"></i>
                             </button>
+                            <button id="btn_model_move" class="btn sbold bg-purple" disabled="true">Move to Event
+                                <i class="fa fa-arrow-circle-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -285,6 +288,66 @@
         </div>
     </div>
     <!-- END SEARCH MODAL--> 
+    <!-- BEGIN MOVE MODAL--> 
+    <div id="modal_model_move" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:700px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-purple">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Move to Event</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_move">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="purchase_id" value="" />
+                        <input type="hidden" name="ticket_id" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-7">Select the showtime to move the current purchase:</label>
+                                    <div class="col-md-5 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="show_time_id_to">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                            <div class="row">
+                                <hr><table class="table table-striped table-hover table-bordered" >
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Ticket Type</th>
+                                            <th>Ret.Price</th>
+                                            <th>P.Fee($)</th>
+                                            <th>P.Fee(%)</th>
+                                            <th>Commis.($)</th>
+                                            <th>Commis.(%)</th>
+                                            <th>Max</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tb_purchase_tickets">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="submit" class="btn sbold purple">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MOVE MODAL--> 
 @endsection
 
 @section('scripts') 
