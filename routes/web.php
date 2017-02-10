@@ -109,7 +109,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'App'], 
     //Route::match(['get','post'], 'contracts', 'xxxController@index');
 });
 //COMMAND ROUTES
-Route::group(['prefix' => 'command'], function () {
+Route::group(['prefix' => 'command','middleware' => 'auth'], function () {
     //reports
     Route::get('ReportManifest', function () {
         Artisan::call('Report:manifest');
