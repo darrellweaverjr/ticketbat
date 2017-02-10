@@ -110,10 +110,10 @@
                 <tr>
                     <th>REFERRER</th>
                     <th>NAME</th>
-                    <th>TICKET TYPE</th>
-                    <th>QTY</th>
-                    <th>PURCHASES</th>
-                    <th>METHOD</th>
+                    <th style='text-align:center'>TICKET TYPE</th>
+                    <th style='text-align:center'>QTY</th>
+                    <th style='text-align:center'>PURCHASES</th>
+                    <th style='text-align:center'>METHOD</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -121,14 +121,56 @@
                     <tr>
                         <td>{{$p->referral_url}}</td>
                         <td>{{$p->s_name}}</td>
-                        <td>{{$p->ticket_type}}</td>
-                        <td>{{number_format($p->qty)}}</td>
-                        <td>{{number_format($p->purchase_count)}}</td>
-                        <td>{{$p->method}}</td>
+                        <td style='text-align:center'>{{$p->ticket_type}}</td>
+                        <td style='text-align:center'>{{number_format($p->qty)}}</td>
+                        <td style='text-align:center'>{{number_format($p->purchase_count)}}</td>
+                        <td style='text-align:center'>{{$p->method}}</td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
+        @elseif($format == 'types')
+            @if(isset($data[0]['types']))
+              <h1><center>TicketBat.com</center></h1>
+              <h2><center>Total Sales Report for {{$data[0]['date']}}</center></h2>
+              <hr><table class="table table-striped table-responsive">
+                  <thead>
+                  <tr>
+                      <th>TYPE</th>
+                      <th style='text-align:center'>PURCHASES</th>
+                      <th style='text-align:center'>QTY</th>
+                      <th style='text-align:right'>GROSS REVENUE</th>
+                      <th style='text-align:right'>PROCESSING FEE</th>
+                      <th style='text-align:right'>COMMISSION</th>
+                      <th style='text-align:right'>NET</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  @foreach($data[0]['types'] as $k => $e)  
+                      <tr @if($e->payment_type=='Subtotal') style="font-weight:bold;" @endif >
+                          <td>{{$e->payment_type}}</td>
+                          <td style='text-align:center'>{{number_format($e->purchase_count)}}</td>
+                          <td style='text-align:center'>{{number_format($e->qty)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->net,2)}}</td>
+                      </tr>
+                  @endforeach 
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                        <th>TOTALS:</th>
+                        <th style='text-align:center'>{{$data[0]['total']['t_purchases']}}</th>
+                        <th style='text-align:center'>{{$data[0]['total']['t_ticket']}}</th>
+                        <th style='text-align:right'>$ {{number_format($data[0]['total']['t_gross_revenue'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($data[0]['total']['t_processing_fee'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($data[0]['total']['t_commission'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($data[0]['total']['t_net'],2)}}</th>
+                      </tr>
+                  </tfoot>
+              </table>
+               @endif
         @else
             @foreach($data as $d)
             <div style="page-break-after:always;">
@@ -144,8 +186,8 @@
                   <thead>
                   <tr>
                       <th>TYPE</th>
-                      <th align='center'>PURCHASES</th>
-                      <th align='center'>QTY</th>
+                      <th style='text-align:center'>PURCHASES</th>
+                      <th style='text-align:center'>QTY</th>
                       <th style='text-align:right'>GROSS REVENUE</th>
                       <th style='text-align:right'>PROCESSING FEE</th>
                       <th style='text-align:right'>COMMISSION</th>
@@ -154,10 +196,10 @@
                   </thead>
                   <tbody>
                   @foreach($d['types'] as $k => $e)  
-                      <tr @if($k=='Subtotal') style="font-weight:bold;" @endif >
+                      <tr @if($e->payment_type=='Subtotal') style="font-weight:bold;" @endif >
                           <td>{{$e->payment_type}}</td>
-                          <td align='center'>{{number_format($e->purchase_count)}}</td>
-                          <td align='center'>{{number_format($e->qty)}}</td>
+                          <td style='text-align:center'>{{number_format($e->purchase_count)}}</td>
+                          <td style='text-align:center'>{{number_format($e->qty)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
@@ -171,8 +213,8 @@
                   <thead>
                   <tr>
                       <th @if($d['name'] == 'Totals') colspan="2" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW @else VENUE @endif</th>
-                      @if($d['name'] != 'Totals')<th align='center'>TICKET TYPE</th>@endif
-                      <th align='center'>QTY</th>
+                      @if($d['name'] != 'Totals')<th style='text-align:center'>TICKET TYPE</th>@endif
+                      <th style='text-align:center'>QTY</th>
                       <th style='text-align:right'>GROSS REVENUE</th>
                       <th style='text-align:right'>PROCESSING FEE</th>
                       <th style='text-align:right'>COMMISSION</th>
@@ -183,8 +225,8 @@
                   @foreach($d['elements'] as $e)  
                       <tr>
                           <td @if($d['name'] == 'Totals')colspan="2" @endif>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e->s_name}} @else {{$e->name}} @endif</td>
-                          @if($d['name'] != 'Totals')<td align='center'>{{$e->ticket_type}}</td>@endif
-                          <td align='center'>{{number_format($e->qty)}}</td>
+                          @if($d['name'] != 'Totals')<td style='text-align:center'>{{$e->ticket_type}}</td>@endif
+                          <td style='text-align:center'>{{number_format($e->qty)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
@@ -195,7 +237,7 @@
                   <tfoot>
                       <tr>
                         <th colspan="2">TOTALS:</th>
-                        <th align='center'>{{$d['total']['t_ticket']}}</th>
+                        <th style='text-align:center'>{{$d['total']['t_ticket']}}</th>
                         <th style='text-align:right'>$ {{number_format($d['total']['t_gross_revenue'],2)}}</th>
                         <th style='text-align:right'>$ {{number_format($d['total']['t_processing_fee'],2)}}</th>
                         <th style='text-align:right'>$ {{number_format($d['total']['t_commission'],2)}}</th>

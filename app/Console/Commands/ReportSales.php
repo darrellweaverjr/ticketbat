@@ -76,6 +76,41 @@ class ReportSales extends Command
                                 't_commission'=>array_sum(array_column($elements,'commission')));
                 return $total;
             }
+            //FUNCTION CALCULATE SUBTOTALS
+            function calculate_types($elements)
+            {
+                $types = []; 
+                //get values into array by type
+                foreach ($elements as $t)
+                {
+                    if($t->payment_type!='Subtotal')
+                    {
+                        $types[$t->payment_type][] = (object)['payment_type'=>$t->payment_type,'qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
+                        if($t->payment_type!='Consignment')
+                            $types['Subtotal'][] = (object)['payment_type'=>'Subtotal','qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
+                    }
+                }
+                //sum values of each sub array
+                foreach ($types as $k => $t)
+                {
+                    $c = calculate_total($t); 
+                    $types[$k] = (object)['payment_type'=>$k,'qty'=>$c['t_ticket'],'purchase_count'=>$c['t_purchases'],'gross_revenue'=>$c['t_gross_revenue'],'processing_fee'=>$c['t_processing_fee'],'commission'=>$c['t_commission'], 'net'=>$c['t_net']];
+                }
+                //move at last the subtotal and consignments
+                if(isset($types['Subtotal']))
+                {
+                    $e = $types['Subtotal'];
+                    unset($types['Subtotal']);
+                    $types['Subtotal'] = $e;
+                }
+                if(isset($types['Consignment']))
+                {
+                    $e = $types['Consignment'];
+                    unset($types['Consignment']);
+                    $types['Consignment'] = $e;
+                }
+                return $types;
+            }
             //FUNCTION SENDING EMAIL
             function sendEmailReport($data,$send,$date_report,$sqlMain,$sqlFrom)
             {
@@ -88,37 +123,15 @@ class ReportSales extends Command
                 }
                 else
                 {
-                    $elements = []; $types = []; $subtotals = [];
+                    $elements = []; $types = []; 
                     foreach ($data as $d)
                     {
                         $elements[] = (object)['name'=>$d['name'], 'ticket_type'=>'', 'qty'=>$d['total']['t_ticket'], 'purchase_count'=>$d['total']['t_purchases'], 'gross_revenue'=>$d['total']['t_gross_revenue'], 'processing_fee'=>$d['total']['t_processing_fee'], 'commission'=>$d['total']['t_commission'], 'net'=>$d['total']['t_net']];
                         foreach ($d['types'] as $t)
-                        {
-                            $types[$t->payment_type][] = (object)['payment_type'=>$t->payment_type,'qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
-                            if($t->payment_type!='Consignment')
-                                $types['Subtotal'][] = (object)['payment_type'=>'Subtotal','qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
-                        }
+                            $types[] = (object)['payment_type'=>$t->payment_type,'qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
                     } 
-                    foreach ($types as $k => $t)
-                    {
-                        $c = calculate_total($t); 
-                        $types[$k] = (object)['payment_type'=>$k,'qty'=>$c['t_ticket'],'purchase_count'=>$c['t_purchases'],'gross_revenue'=>$c['t_gross_revenue'],'processing_fee'=>$c['t_processing_fee'],'commission'=>$c['t_commission'], 'net'=>$c['t_net']];
-                    }     
-                    //move at last the subtotal and consignments
-                    if(isset($types['Subtotal']))
-                    {
-                        $e = $types['Subtotal'];
-                        unset($types['Subtotal']);
-                        array_push($types,$e);
-                    }
-                    if(isset($types['Consignment']))
-                    {
-                        $e = $types['Consignment'];
-                        unset($types['Consignment']);
-                        array_push($types,$e);
-                    }
                     //result array
-                    $result = array('elements'=>$elements,'total'=>calculate_total($elements),'types'=>$types,'name'=>'Totals','email'=>' ','type'=>'venue','date'=>$date_report);
+                    $result = array('elements'=>$elements,'total'=>calculate_total($elements),'types'=>calculate_types($types),'name'=>'Totals','email'=>' ','type'=>'venue','date'=>$date_report);
                     array_unshift($data,$result);
                 }
                 
@@ -137,6 +150,11 @@ class ReportSales extends Command
                 $email->attachment($pdf_path);
                 if($send == 'admin')
                 {
+                    //add resume of types on the email body
+                    $format = 'types';
+                    $email_body = View::make('command.report_sales', compact('data','send','format'));          
+                    $email->view($email_body);
+                    
                     //SALES REFERRER PDF
                     $format = 'referrer';
                     $pdf_referrer_ = '/tmp/ReportSales_Referrer_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
@@ -175,7 +193,7 @@ class ReportSales extends Command
             {   
                 $elements = DB::select($sqlMain.$sqlFrom." AND v.id = ? GROUP BY s.name;",array($venue->id));      
                 $types = DB::select($sqlTypes.$sqlFrom." AND v.id = ? GROUP BY payment_type;",array($venue->id));       
-                $result = array('elements'=>$elements,'types'=>$types,'total'=>calculate_total($elements),'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
+                $result = array('elements'=>$elements,'types'=>calculate_types($types),'total'=>calculate_total($elements),'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
                 if($venue->email && $venue->v_daily_sales_emails==1)
                 {
                     $dataSend = array();
