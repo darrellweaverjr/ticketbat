@@ -23,19 +23,17 @@
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
                     <div class="actions"> 
-                        <div id="start_end_date" class="pull-left tooltips btn btn-sm" data-container="body" data-placement="bottom">
-                            <i class="icon-calendar"></i>&nbsp;
-                            <span class="thin uppercase hidden-xs"> - </span>&nbsp;
-                            <i class="fa fa-angle-down"></i>
-                        </div>
                         <div class="btn-group">
-                            <button id="btn_model_email" class="btn sbold bg-green" disabled="true"> Email Receipt 
+                            <button id="btn_model_search" class="btn sbold grey-salsa">Search
+                                <i class="fa fa-search"></i>
+                            </button>
+                            <button id="btn_model_email" class="btn sbold bg-green" disabled="true">Email Receipt 
                                 <i class="fa fa-envelope"></i>
                             </button>
-                            <button id="btn_model_tickets" class="btn sbold bg-yellow" disabled="true"> View Tickets 
+                            <button id="btn_model_tickets" class="btn sbold bg-yellow" disabled="true">View Tickets 
                                 <i class="fa fa-ticket"></i>
                             </button>
-                            <button id="btn_model_note" class="btn sbold bg-red" disabled="true"> Add Note 
+                            <button id="btn_model_note" class="btn sbold bg-red" disabled="true">Add Note 
                                 <i class="fa fa-edit"></i>
                             </button>
                         </div>
@@ -190,15 +188,103 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
-    <div style="display: none;">
-        <form method="post" action="/admin/purchases" id="form_model_search">
-            <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-            <input name="start_date" type="hidden" value="{{$start_date}}"/>
-            <input name="end_date" type="hidden" value="{{$end_date}}"/>
-        </form>   
-    </div>  
-    <!-- END UPDATE MODAL--> 
+    <!-- BEGIN SEARCH MODAL--> 
+    <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:470px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="/admin/purchases" id="form_model_search">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Venue:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="venue" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($venues as $index=>$v)
+                                                <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>   
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Show:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="show" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($shows as $index=>$s)
+                                                <option @if($s->id==$show) selected @endif @if(!empty($show) && $venue==$s->venue_id) style="display:block" @else style="display:none" @endif value="{{$s->id}}" rel="{{$s->venue_id}}">{{$s->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Show Time:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group" id="show_times_date">
+                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$showtime_start_date}}" readonly="true">
+                                            <span class="input-group-addon"> to </span>
+                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$showtime_end_date}}" readonly="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-range-toggle" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                                <button class="btn default" type="button" id="clear_show_times_date">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Sold Date:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group" id="sold_times_date">
+                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$soldtime_start_date}}" readonly="true">
+                                            <span class="input-group-addon"> to </span>
+                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$soldtime_end_date}}" readonly="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-range-toggle" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                                <button class="btn default" type="button" id="clear_sold_times_date">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
+                                                                                                    title: 'Searching information',
+                                                                                                    text: 'Please, wait.',
+                                                                                                    type: 'info',
+                                                                                                    showConfirmButton: false
+                                                                                                });" >Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SEARCH MODAL--> 
 @endsection
 
 @section('scripts') 

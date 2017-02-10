@@ -137,6 +137,58 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
+        //function search
+        $('#btn_model_search').on('click', function(ev) {
+            $('#modal_model_search').modal('show');
+        });
+        //show_times_date
+        $('#show_times_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD',
+                separator: ' to '
+            },
+            function (start, end) {
+                $('#form_model_search input[name="showtime_start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="showtime_end_date"]').val(end.format('YYYY-MM-DD'));
+            }
+        ); 
+        //clear show_times_date
+        $('#clear_show_times_date').on('click', function(ev) {
+            $('#form_model_search [name="showtime_start_date"]').val('');
+            $('#form_model_search [name="showtime_end_date"]').val('');
+            $('#show_times_date').datetimepicker('update');
+        }); 
+        //sold_times_date
+        $('#sold_times_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD',
+                separator: ' to '
+            },
+            function (start, end) {
+                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('YYYY-MM-DD'));
+            }
+        ); 
+        //clear sold_times_date
+        $('#clear_sold_times_date').on('click', function(ev) {
+            $('#form_model_search [name="soldtime_start_date"]').val('');
+            $('#form_model_search [name="soldtime_end_date"]').val('');
+            $('#sold_times_date').datetimepicker('update');
+        }); 
+        //search venue on select
+        $('#form_model_search select[name="venue"]').bind('change click', function() {
+            var venue = $(this).val();
+            if(venue && venue != '')
+            {
+                $('#form_model_search select[name="show"] option[rel!="'+venue+'"]').css('display','none');
+                $('#form_model_search select[name="show"] option[rel="'+venue+'"]').css('display','block');
+                $('#form_model_search select[name="show"] option[value=""]').css('display','block');
+            }
+            else
+            {
+                $('#form_model_search select[name="show"] option[value!=""]').css('display','none');
+            }
+        });
         //function email
         $('#btn_model_email').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();

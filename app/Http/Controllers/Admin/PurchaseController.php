@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Http\Models\Purchase;
+use App\Http\Models\Venue;
+use App\Http\Models\Show;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Models\Util;
 
@@ -28,18 +30,58 @@ class PurchaseController extends Controller{
         try {
             //init
             $input = Input::all(); 
-            if(isset($input) && isset($input['start_date']) && isset($input['end_date']))
+            //conditions to search
+            $where = [['purchases.status','=','Active']];
+            //search venue
+            if(isset($input) && isset($input['venue']))
             {
-                //input dates 
-                $start_date = date('Y-m-d H:i:s',strtotime($input['start_date']));
-                $end_date = date('Y-m-d H:i:s',strtotime($input['end_date']));
+                $venue = $input['venue'];
+                if($venue != '')
+                    $where[] = ['shows.venue_id','=',$venue];
+            }
+            else
+                $venue = '';
+            //search show
+            if(isset($input) && isset($input['show']))
+            {
+                $show = $input['show'];
+                if($show != '')
+                    $where[] = ['shows.id','=',$show];
+            }
+            else
+                $show = '';
+            //search showtime
+            if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
+            {
+                $showtime_start_date = $input['showtime_start_date'];
+                $showtime_end_date = $input['showtime_end_date'];
             }
             else
             {
-                //default dates 
-                $start_date = date('Y-m-d H:i:s', strtotime('-30 DAY'));
-                $end_date = date('Y-m-d H:i:s');
+                $showtime_start_date = '';
+                $showtime_end_date = '';
             }
+            if($showtime_start_date != '' && $showtime_end_date != '')
+            {
+                $where[] = ['show_times.show_time','>=',$showtime_start_date];
+                $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
+            } 
+            //search soldtime
+            if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
+            {
+                $soldtime_start_date = $input['soldtime_start_date'];
+                $soldtime_end_date = $input['soldtime_end_date'];
+            }
+            else
+            {
+                $soldtime_start_date = date('Y-m-d', strtotime('-30 DAY'));
+                $soldtime_end_date = date('Y-m-d');
+            }
+            if($soldtime_start_date != '' && $soldtime_end_date != '')
+            {
+                $where[] = ['purchases.created','>=',$soldtime_start_date];
+                $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
+            } 
             //get all records  
             $purchases = DB::table('purchases')
                                 ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
@@ -52,11 +94,13 @@ class PurchaseController extends Controller{
                                 ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
                                         'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
-                                ->whereBetween('purchases.created', [$start_date,$end_date])
+                                ->where($where)
                                 ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                 ->get();
             $status = Util::getEnumValues('purchases','status');
-            return view('admin.purchases.index',compact('purchases','status','start_date','end_date'));
+            $venues = Venue::all('id','name');
+            $shows = Show::all('id','name','venue_id');
+            return view('admin.purchases.index',compact('purchases','status','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Index: '.$ex->getMessage());
         }
