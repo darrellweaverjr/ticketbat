@@ -101,7 +101,7 @@
             }
         </style>
     </head>
-    <body>
+    <body style="font-size:10px">
         @if($format == 'referrer')
             <h1>TicketBat.com</h1>
             <p>Sales For {{$date_report}}</p>
@@ -122,8 +122,8 @@
                         <td>{{$p->referral_url}}</td>
                         <td>{{$p->s_name}}</td>
                         <td>{{$p->ticket_type}}</td>
-                        <td>{{$p->qty}}</td>
-                        <td>{{$p->purchase_count}}</td>
+                        <td>{{number_format($p->qty)}}</td>
+                        <td>{{number_format($p->purchase_count)}}</td>
                         <td>{{$p->method}}</td>
                     </tr>
                 @endforeach
@@ -139,13 +139,13 @@
               <p><h3>Sales For @if($d['type']=='venue')Venue @else Show @endif : <i>{{$d['name']}}</i></h3></p>
               @endif
               <p><h3>Date: <i>{{$d['date']}}</i></h3></p>
-              <table class="table table-striped table-responsive">
+             @if(isset($d['types']))
+              <hr><table class="table table-striped table-responsive">
                   <thead>
                   <tr>
-                      <th @if($d['name'] == 'Totals') colspan="2" @endif align='center'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW @else VENUE @endif</th>
-                      @if($d['name'] != 'Totals')<th align='center'>TICKET TYPE</th>@endif
+                      <th>TYPE</th>
+                      <th align='center'>PURCHASES</th>
                       <th align='center'>QTY</th>
-                      <!--<th align='center'>PURCHASE COUNT</th>-->
                       <th style='text-align:right'>GROSS REVENUE</th>
                       <th style='text-align:right'>PROCESSING FEE</th>
                       <th style='text-align:right'>COMMISSION</th>
@@ -153,16 +153,42 @@
                   </tr>
                   </thead>
                   <tbody>
-                  @foreach($d['elements'] as $e)
+                  @foreach($d['types'] as $e)  
                       <tr>
-                          <td @if($d['name'] == 'Totals')colspan="2" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e['s_name']}} @else {{$e['name']}} @endif</td>
-                          @if($d['name'] != 'Totals')<td align='center'>{{$e['ticket_type']}}</td>@endif
-                          <td align='center'>{{$e['qty']}}</td>
-                          <!--<td align='center'>{{$e['purchase_count']}}</td>-->
-                          <td style='text-align:right'>$ {{$e['gross_revenue']}}</td>
-                          <td style='text-align:right'>$ {{$e['processing_fee']}}</td>
-                          <td style='text-align:right'>$ {{$e['commission']}}</td>
-                          <td style='text-align:right'>$ {{$e['net']}}</td>
+                          <td>{{$e->payment_type}}</td>
+                          <td align='center'>{{number_format($e->purchase_count)}}</td>
+                          <td align='center'>{{number_format($e->qty)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->net,2)}}</td>
+                      </tr>
+                  @endforeach
+                  </tbody>
+              </table>
+               @endif
+              <hr><table class="table table-striped table-responsive">
+                  <thead>
+                  <tr>
+                      <th @if($d['name'] == 'Totals') colspan="2" @endif align='center'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW (ALL SALES) @else VENUE (ALL SALES) @endif</th>
+                      @if($d['name'] != 'Totals')<th align='center'>TICKET TYPE</th>@endif
+                      <th align='center'>QTY</th>
+                      <th style='text-align:right'>GROSS REVENUE</th>
+                      <th style='text-align:right'>PROCESSING FEE</th>
+                      <th style='text-align:right'>COMMISSION</th>
+                      <th style='text-align:right'>NET</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  @foreach($d['elements'] as $e)  
+                      <tr>
+                          <td @if($d['name'] == 'Totals')colspan="2" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e->s_name}} @else {{$e->name}} @endif</td>
+                          @if($d['name'] != 'Totals')<td align='center'>{{$e->ticket_type}}</td>@endif
+                          <td align='center'>{{number_format($e->qty)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->net,2)}}</td>
                       </tr>
                   @endforeach
                   </tbody>
@@ -170,11 +196,10 @@
                       <tr>
                         <th colspan="2">TOTALS:</th>
                         <th align='center'>{{$d['total']['t_ticket']}}</th>
-                        <!--<th align='center'>{{$d['total']['t_purchases']}}</th>-->
-                        <th style='text-align:right'>$ {{$d['total']['t_gross_revenue']}}</th>
-                        <th style='text-align:right'>$ {{$d['total']['t_processing_fee']}}</th>
-                        <th style='text-align:right'>$ {{$d['total']['t_commission']}}</th>
-                        <th style='text-align:right'>$ {{$d['total']['t_net']}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['total']['t_gross_revenue'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['total']['t_processing_fee'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['total']['t_commission'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['total']['t_net'],2)}}</th>
                       </tr>
                   </tfoot>
               </table>

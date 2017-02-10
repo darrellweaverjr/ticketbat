@@ -51,39 +51,31 @@ class ReportSales extends Command
                         v.daily_sales_emails AS v_daily_sales_emails, s.daily_sales_emails AS s_daily_sales_emails,
                         DATE_FORMAT(st.show_time,'%m/%d/%Y %h:%s %p') AS shows_time, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, sum(p.retail_price) AS retail_price, 
                         SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, SUM(p.price_paid) AS gross_revenue, 
-                        SUM(p.price_paid) AS total_paid, ROUND(SUM(p.retail_price)-SUM(p.commission),2) AS due_to_show, ROUND(SUM(p.commission),2) AS commission, 
+                        SUM(p.price_paid) AS total_paid, ROUND(SUM(p.retail_price)-SUM(p.commission_percent),2) AS due_to_show, ROUND(SUM(p.commission_percent),2) AS commission, 
                         (CASE WHEN (p.ticket_type = 'Consignment') THEN p.ticket_type ELSE p.payment_type END) AS method,
                         SUBSTRING_INDEX(SUBSTRING_INDEX(p.referrer_url, '://', -1),'/', 1) AS referral_url,
-                        SUBSTRING_INDEX(p.referrer_url, '://', -1) AS url, SUM(p.price_paid)-SUM(p.commission)-SUM(p.processing_fee) AS net ";
+                        SUBSTRING_INDEX(p.referrer_url, '://', -1) AS url, SUM(p.price_paid)-SUM(p.commission_percent)-SUM(p.processing_fee) AS net ";
+            $sqlTypes = "SELECT (CASE WHEN p.ticket_type = 'Consignment' THEN p.ticket_type ELSE p.payment_type END) AS payment_type, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, SUM(p.price_paid) AS gross_revenue, SUM(p.processing_fee) AS processing_fee,
+                        ROUND(SUM(p.commission_percent),2) AS commission, SUM(p.price_paid)-SUM(p.commission_percent)-SUM(p.processing_fee) AS net ";
 
-            $sqlFrom =" FROM (SELECT *, commission_percent AS commission
-                        FROM purchases WHERE date(created) ".$bound." (CURRENT_DATE - INTERVAL ".$days." DAY) AND Status = 'Active') AS p
+            $sqlFrom =" FROM purchases p
                         LEFT JOIN show_times st ON st.id = p.show_time_id
                         LEFT JOIN shows s ON s.id = st.show_id
                         INNER JOIN venues v ON v.id = s.venue_id
-                        LEFT JOIN tickets t ON p.ticket_id = t.id ";
+                        LEFT JOIN tickets t ON p.ticket_id = t.id 
+                        WHERE date(p.created) ".$bound." (CURRENT_DATE - INTERVAL ".$days." DAY) AND p.status = 'Active' ";
 
             //FUNCTION CALCULATE SUBTOTALS
             function calculate_total($elements)
             {
-                $total = array('t_ticket'=>0, 't_purchases'=>0, 't_gross_revenue'=>0, 't_processing_fee'=>0, 't_net'=>0, 't_commission'=>0);
-                (count($elements)>0)? $cant=count($elements):$cant=1;
-                foreach ($elements as $e)
-                    $total = array('t_ticket'=>$total['t_ticket']+$e['qty'], 't_purchases'=>number_format($total['t_purchases']+$e['purchase_count'],2), 
-                                   't_gross_revenue'=>number_format($total['t_gross_revenue']+$e['gross_revenue'],2), 't_processing_fee'=>number_format($total['t_processing_fee']+$e['processing_fee'],2), 
-                                   't_net'=>number_format($total['t_net']+$e['net'],2), 't_commission'=>number_format($total['t_commission']+$e['commission'],2));
+                $total = array( 't_ticket'=>array_sum(array_column($elements,'qty')),
+                                't_purchases'=>array_sum(array_column($elements,'purchase_count')),
+                                't_gross_revenue'=>array_sum(array_column($elements,'gross_revenue')),
+                                't_processing_fee'=>array_sum(array_column($elements,'processing_fee')),
+                                't_net'=>array_sum(array_column($elements,'net')),
+                                't_commission'=>array_sum(array_column($elements,'commission')));
                 return $total;
             }
-
-            //CHANGE ELEMENTS FORMAT
-            function format($elements)
-            {
-                $data = array();
-                foreach ($elements as $e)
-                    $data[] = (array)$e;
-                return $data;
-            }
-
             //FUNCTION SENDING EMAIL
             function sendEmailReport($data,$send,$date_report,$sqlMain,$sqlFrom)
             {
@@ -96,19 +88,31 @@ class ReportSales extends Command
                 }
                 else
                 {
-                    $elements = array();
+                    $elements = []; $types = []; $types1 = [];
                     foreach ($data as $d)
-                        $elements[] = array('name'=>$d['name'], 'ticket_type'=>'', 'qty'=>$d['total']['t_ticket'], 'purchase_count'=>$d['total']['t_purchases'], 'gross_revenue'=>$d['total']['t_gross_revenue'], 'processing_fee'=>$d['total']['t_processing_fee'], 'commission'=>$d['total']['t_commission'], 'net'=>$d['total']['t_net']);
-                    $result = array('elements'=>$elements, 'total'=>calculate_total($elements), 'name'=>'Totals', 'email'=>' ', 'type'=>'venue', 'date'=>$date_report);
+                    {
+                        $elements[] = (object)['name'=>$d['name'], 'ticket_type'=>'', 'qty'=>$d['total']['t_ticket'], 'purchase_count'=>$d['total']['t_purchases'], 'gross_revenue'=>$d['total']['t_gross_revenue'], 'processing_fee'=>$d['total']['t_processing_fee'], 'commission'=>$d['total']['t_commission'], 'net'=>$d['total']['t_net']];
+                        foreach ($d['types'] as $t)
+                            $types[$t->payment_type][] = (object)['payment_type'=>$t->payment_type,'qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
+                    } 
+                    foreach ($types as $k => $t)
+                    {
+                        $c = calculate_total($t); 
+                        $types[$k] = (object)['payment_type'=>$k,'qty'=>$c['t_ticket'],'purchase_count'=>$c['t_purchases'],'gross_revenue'=>$c['t_gross_revenue'],'processing_fee'=>$c['t_processing_fee'],'commission'=>$c['t_commission'], 'net'=>$c['t_net']];
+                    }
+                    $result = array('elements'=>$elements,'total'=>calculate_total($elements),'types'=>$types,'name'=>'Totals', 'email'=>' ', 'type'=>'venue', 'date'=>$date_report);
                     array_unshift($data,$result);
                 }
-                
-                dd($data);
                 
                 //MANIFEST SALES CUTOMIZED ACCORDING TO VENUES, SHOWS OR ADMIN                
                 $format = 'customized';
                 $pdf_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $manifest_email = View::make('command.report_sales', compact('data','send','format'));
+                
+                //echo  $manifest_email;
+                //exit();
+                
+                
                 PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
 
                 //SENDING EMAIL
@@ -135,6 +139,7 @@ class ReportSales extends Command
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
                     $email->attachment([$csv_path,$pdf_referrer_]);
                 }
+                
                 if($email->send())
                 {
                     if($send == 'admin')
@@ -155,8 +160,9 @@ class ReportSales extends Command
             $progressbar = $this->output->createProgressBar(count($venues));
             foreach ($venues as $venue)
             {   
-                $elements = format((array)DB::select($sqlMain.$sqlFrom." WHERE v.id = ? GROUP BY s.name;",array($venue->id)));                
-                $result = array('elements'=>$elements, 'total'=>calculate_total($elements), 'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
+                $elements = DB::select($sqlMain.$sqlFrom." AND v.id = ? GROUP BY s.name;",array($venue->id));      
+                $types = DB::select($sqlTypes.$sqlFrom." AND v.id = ? GROUP BY payment_type;",array($venue->id));       
+                $result = array('elements'=>$elements,'types'=>$types,'total'=>calculate_total($elements),'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
                 if($venue->email && $venue->v_daily_sales_emails==1)
                 {
                     $dataSend = array();
@@ -168,29 +174,7 @@ class ReportSales extends Command
                 $progressbar->advance(); 
             }
             //finish progress bar
-            $progressbar->finish();               
-/*
-            //CREATING REPORTS FOR SHOWS
-            $shows = DB::select($sqlMain.$sqlFrom." GROUP BY s.name");
-            //create progress bar
-            $progressbar = $this->output->createProgressBar(count($shows));
-            foreach ($shows as $show)
-            {
-                if($show->s_email && $show->s_daily_sales_emails==1)
-                {
-                    $elements = array((array)$show);
-                    $result = array('elements'=>$elements, 'total'=>calculate_total($elements), 'name'=>$show->s_name, 'email'=>$show->s_email, 'type'=>'show', 'date'=>$date_report);
-                    $dataSend = array();
-                    $dataSend[] = $result;
-                    sendEmailReport($dataSend,'regular',$date_report,$sqlMain,$sqlFrom);
-                }
-                //advance progress bar
-                $progressbar->advance(); 
-            }
-            //finish progress bar
-            $progressbar->finish(); 
-*/
-            //MERGING REPORTS FOR ADMIN
+            $progressbar->finish();     
             //create progress bar
             $progressbar = $this->output->createProgressBar(1);
             sendEmailReport($resultArray,'admin',$date_report,$sqlMain,$sqlFrom);
