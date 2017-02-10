@@ -153,8 +153,8 @@
                   </tr>
                   </thead>
                   <tbody>
-                  @foreach($d['types'] as $e)  
-                      <tr>
+                  @foreach($d['types'] as $k => $e)  
+                      <tr @if($k=='Subtotal') style="font-weight:bold;" @endif >
                           <td>{{$e->payment_type}}</td>
                           <td align='center'>{{number_format($e->purchase_count)}}</td>
                           <td align='center'>{{number_format($e->qty)}}</td>
@@ -163,7 +163,7 @@
                           <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->net,2)}}</td>
                       </tr>
-                  @endforeach
+                  @endforeach 
                   </tbody>
               </table>
                @endif

@@ -88,19 +88,37 @@ class ReportSales extends Command
                 }
                 else
                 {
-                    $elements = []; $types = []; $types1 = [];
+                    $elements = []; $types = []; $subtotals = [];
                     foreach ($data as $d)
                     {
                         $elements[] = (object)['name'=>$d['name'], 'ticket_type'=>'', 'qty'=>$d['total']['t_ticket'], 'purchase_count'=>$d['total']['t_purchases'], 'gross_revenue'=>$d['total']['t_gross_revenue'], 'processing_fee'=>$d['total']['t_processing_fee'], 'commission'=>$d['total']['t_commission'], 'net'=>$d['total']['t_net']];
                         foreach ($d['types'] as $t)
+                        {
                             $types[$t->payment_type][] = (object)['payment_type'=>$t->payment_type,'qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
+                            if($t->payment_type!='Consignment')
+                                $types['Subtotal'][] = (object)['payment_type'=>'Subtotal','qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
+                        }
                     } 
                     foreach ($types as $k => $t)
                     {
                         $c = calculate_total($t); 
                         $types[$k] = (object)['payment_type'=>$k,'qty'=>$c['t_ticket'],'purchase_count'=>$c['t_purchases'],'gross_revenue'=>$c['t_gross_revenue'],'processing_fee'=>$c['t_processing_fee'],'commission'=>$c['t_commission'], 'net'=>$c['t_net']];
+                    }     
+                    //move at last the subtotal and consignments
+                    if(isset($types['Subtotal']))
+                    {
+                        $e = $types['Subtotal'];
+                        unset($types['Subtotal']);
+                        array_push($types,$e);
                     }
-                    $result = array('elements'=>$elements,'total'=>calculate_total($elements),'types'=>$types,'name'=>'Totals', 'email'=>' ', 'type'=>'venue', 'date'=>$date_report);
+                    if(isset($types['Consignment']))
+                    {
+                        $e = $types['Consignment'];
+                        unset($types['Consignment']);
+                        array_push($types,$e);
+                    }
+                    //result array
+                    $result = array('elements'=>$elements,'total'=>calculate_total($elements),'types'=>$types,'name'=>'Totals','email'=>' ','type'=>'venue','date'=>$date_report);
                     array_unshift($data,$result);
                 }
                 
@@ -109,8 +127,8 @@ class ReportSales extends Command
                 $pdf_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $manifest_email = View::make('command.report_sales', compact('data','send','format'));
                 
-                //echo  $manifest_email;
-                //exit();
+                echo  $manifest_email;
+                exit();
                 
                 
                 PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
