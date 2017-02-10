@@ -170,7 +170,7 @@
               <hr><table class="table table-striped table-responsive">
                   <thead>
                   <tr>
-                      <th @if($d['name'] == 'Totals') colspan="2" @endif align='center'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW (ALL SALES) @else VENUE (ALL SALES) @endif</th>
+                      <th @if($d['name'] == 'Totals') colspan="2" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW @else VENUE @endif</th>
                       @if($d['name'] != 'Totals')<th align='center'>TICKET TYPE</th>@endif
                       <th align='center'>QTY</th>
                       <th style='text-align:right'>GROSS REVENUE</th>
@@ -182,7 +182,7 @@
                   <tbody>
                   @foreach($d['elements'] as $e)  
                       <tr>
-                          <td @if($d['name'] == 'Totals')colspan="2" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e->s_name}} @else {{$e->name}} @endif</td>
+                          <td @if($d['name'] == 'Totals')colspan="2" @endif>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e->s_name}} @else {{$e->name}} @endif</td>
                           @if($d['name'] != 'Totals')<td align='center'>{{$e->ticket_type}}</td>@endif
                           <td align='center'>{{number_format($e->qty)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
