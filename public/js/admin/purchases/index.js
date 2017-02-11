@@ -252,7 +252,7 @@ var TableDatatablesManaged = function () {
                                 {
                                     var e = $('#tb_purchase_tickets').children('tr:last').children()[k];
                                     if(e.innerHTML != v.innerHTML)
-                                        e.innerHTML = '<b style="color:red">'+e.innerHTML+'</b>';
+                                        e.innerHTML = '<span class="label label-sm sbold label-danger">'+e.innerHTML+'</span>';
                                 }
                             });
                         }
