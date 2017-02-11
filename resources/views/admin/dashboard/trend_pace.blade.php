@@ -128,7 +128,7 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                <th>Show/Venue</th>
+                                <th width="20%">Show/Venue</th>
                                 <th style="text-align:center">Show<br>Time</th>
                                 <th style="text-align:center">Sales<br>-2D</th>
                                 <th style="text-align:center">Sales<br>-1D</th>
@@ -145,7 +145,7 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td><small><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></small></td>
+                                <td width="20%"><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td style="text-align:center">{{$d->tickets_two}}</td>
                                 <td style="text-align:center">{{$d->tickets_one}}</td>

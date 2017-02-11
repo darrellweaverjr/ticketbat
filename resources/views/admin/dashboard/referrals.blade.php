@@ -150,9 +150,9 @@
                             <tr>
                                 @if($order=='url')
                                 <td>{{$d->referral_url}}</td>
-                                <td width="25%"><small><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></small></td>
+                                <td width="25%"><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
                                 @else
-                                <td width="25%"><small><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></small></td>
+                                <td width="25%"><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
                                 <td>{{$d->referral_url}}</td>
                                 @endif
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
