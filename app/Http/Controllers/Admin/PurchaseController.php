@@ -167,10 +167,10 @@ class PurchaseController extends Controller{
         try {
             //init
             $input = Input::all();
+            $current = date('Y-m-d H:i:s');
             //save all record      
             if($input && isset($input['id']))
             {
-                $current = date('Y-m-d H:i:s');
                 $purchase = Purchase::find($input['id']);
                 if(isset($input['status']))
                 {
@@ -189,7 +189,24 @@ class PurchaseController extends Controller{
                 }               
                 else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>Invalid data.'];
             }
-            return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>The server could not retrieve the data.'];
+            else if($input && isset($input['purchase_id']))
+            {
+                $purchase = Purchase::find($input['purchase_id']);
+                if($purchase)
+                {
+                    $showtime_from = ShowTime::find($purchase->show_time_id);
+                    $showtime_to = ShowTime::find($input['show_time_id']);
+                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current))
+                            .'): </b>Change show time date from '.date('m/d/Y g:i a',strtotime($showtime_from->show_time))
+                            .' to '.date('m/d/Y g:i a',strtotime($showtime_to->show_time)).' &nbsp;';
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note; 
+                    $purchase->show_time_id = $input['show_time_id'];
+                    $purchase->save();
+                    return ['success'=>true,'msg'=>'Purchase saved successfully!'];
+                }
+                else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>That purchase is not longer in the system.'];
+            }
+            return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Save: '.$ex->getMessage());
         }

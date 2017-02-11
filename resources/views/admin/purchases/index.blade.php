@@ -307,7 +307,7 @@
                                     <label class="control-label col-md-7">Select the showtime to move the current purchase:</label>
                                     <div class="col-md-5 show-error">
                                         <div class="input-group">
-                                            <select class="form-control" name="show_time_id_to">
+                                            <select class="form-control" name="show_time_id" required="true"> 
                                             </select>
                                         </div>
                                     </div>
@@ -337,7 +337,7 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                    <button type="submit" class="btn sbold purple">Save</button>
+                                    <button type="button" id="btn_model_save" class="btn sbold purple">Save</button>
                                 </div>
                             </div>
                         </div>
