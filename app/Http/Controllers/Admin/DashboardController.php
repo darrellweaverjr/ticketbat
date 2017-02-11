@@ -105,9 +105,10 @@ class DashboardController extends Controller
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, 
-                                          tickets.ticket_type, purchases.created, show_times.show_time, discounts.code,
+                                          tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name,
                                           (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
                                           SUM(purchases.quantity) AS tickets, 
                                           SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
@@ -208,10 +209,11 @@ class DashboardController extends Controller
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                         ->select(DB::raw('purchases.id, COALESCE(transactions.card_holder,CONCAT(customers.first_name," ",customers.last_name)) AS card_holder, 
                                           COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,0) AS amount, COALESCE(transactions.authcode,0) AS authcode, 
-                                          shows.name AS show_name, show_times.show_time, purchases.status AS status,
+                                          shows.name AS show_name, show_times.show_time, purchases.status AS status, venues.name AS venue_name,
                                           purchases.quantity AS tickets, purchases.transaction_id, purchases.ticket_type, purchases.created, purchases.note '))
                         ->where($where)
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
@@ -301,7 +303,8 @@ class DashboardController extends Controller
             $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS purchases, 
+                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                     SUM(purchases.quantity) AS tickets, 
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
@@ -399,7 +402,8 @@ class DashboardController extends Controller
                 $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, show_times.show_time,
+                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, show_times.show_time, venues.name AS venue_name,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
                                                   WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
                                         COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
@@ -526,7 +530,8 @@ class DashboardController extends Controller
                 $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases,
+                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                         COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
                                         SUM(purchases.quantity) AS tickets, 
                                         SUM(ROUND(purchases.price_paid,2)) AS price_paids, 

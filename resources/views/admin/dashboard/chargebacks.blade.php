@@ -60,7 +60,7 @@
                         <thead>
                             <tr>
                                 <th>Cardholder</th>
-                                <th>Show Name</th>
+                                <th width="25%">Show/Venue</th>
                                 <th>Show<br>Date</th>
                                 <th>Sold<br>Date</th>
                                 <th>Tickets<br>Sold</th>
@@ -72,7 +72,7 @@
                             @foreach($data as $d)
                             <tr>
                                 <td>{{$d->card_holder}}</td>
-                                <td>{{$d->show_name}}</td>
+                                <td width="25%"><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
                                 <td data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td data-order="{{strtotime($d->created)}}">{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
