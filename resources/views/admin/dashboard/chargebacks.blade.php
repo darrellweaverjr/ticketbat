@@ -16,7 +16,7 @@
     <!-- END PAGE TITLE-->                  
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
-    <div class="row">
+    <div class="row" id="totals">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 dark">
                 <div class="visual">

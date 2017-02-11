@@ -33,7 +33,18 @@ var TableDatatablesButtons = function () {
                         $('#modal_model_search').modal('show');
                     }
                 },
-                { extend: 'print', className: 'btn default' },
+                { extend: 'print', 
+                  className: 'btn default',
+                  customize: function ( win ) {
+                      var t = '<hr><table width="100%"><thead><tr>';
+                      $.each($('#totals .details').clone(),function(k, v) {
+                          if(k==1)  t = t + '<th valign="top" style="text-align:right" width="19%">'+v.innerHTML+'</th>';
+                          else t = t + '<th valign="top" style="text-align:right" width="16%">'+v.innerHTML+'</th>';
+                      });
+                      t = t + '</tr></thead></table><hr>';
+                      $(win.document.body).find('h1').append(t);
+                  }
+                },
                 { extend: 'copy', className: 'btn default' },
                 { extend: 'pdf', className: 'btn default' },
                 { extend: 'csv', className: 'btn default' }

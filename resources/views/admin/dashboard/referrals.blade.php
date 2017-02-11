@@ -17,7 +17,7 @@
     <!-- END PAGE TITLE-->              
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
-    <div class="row">
+    <div class="row" id="totals">
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 dark">
                 <div class="visual">
@@ -67,7 +67,7 @@
                 <div class="details">
                     <div class="number"> 
                         $ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}"></span></div>
-                    <div class="desc">Commission Revenue</div>
+                    <div class="desc">Commission<br>Revenue</div>
                 </div>
             </a>
         </div>
