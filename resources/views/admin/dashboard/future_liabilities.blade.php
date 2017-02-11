@@ -111,7 +111,7 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="25%" style="text-align:center">Show/Venue</th>
+                                <th style="text-align:center">Show/Venue</th>
                                 <th style="text-align:center">Tickets<br>Sold</th>
                                 <th style="text-align:center">Purch.<br>Qty</th>
                                 <th style="text-align:center">Total<br>Revenue</th>  
@@ -125,7 +125,7 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td width="25%"><a>{{$d->name}}</a><br>at <a>{{$d->venue_name}}</a></td>
+                                <td><a>{{$d->name}}</a><br>at <a>{{$d->venue_name}}</a></td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:center">{{number_format($d->purchases)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>

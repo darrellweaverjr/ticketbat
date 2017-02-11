@@ -128,16 +128,16 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="20%">Show/Venue</th>
+                                <th>Show/Venue</th>
                                 <th style="text-align:center">Show<br>Time</th>
                                 <th style="text-align:center">Sales<br>-2D</th>
                                 <th style="text-align:center">Sales<br>-1D</th>
                                 <th style="text-align:center">Tickets<br>Sold</th>
                                 <th style="text-align:center">Purch.<br>Qty</th>
-                                <th style="text-align:center">Total<br>Rev.</th>  
+                                <th style="text-align:center">Total<br>Revenue</th>  
                                 <th style="text-align:center">Disc.</th>
                                 <th style="text-align:center">To Show</th>
-                                <th style="text-align:center">Com.</th>
+                                <th style="text-align:center">Comm.</th>
                                 <th style="text-align:center">Fees</th>
                                 <th style="text-align:center">Gross<br>Profit</th>
                             </tr>
@@ -145,7 +145,7 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td width="20%"><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
+                                <td><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td style="text-align:center">{{$d->tickets_two}}</td>
                                 <td style="text-align:center">{{$d->tickets_one}}</td>
