@@ -5,6 +5,7 @@
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="/themes/admin/assets/global/plugins/cubeportfolio/css/cubeportfolio.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -226,20 +227,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <label class="control-label">
-                                            <span class="required"> Others </span>
-                                        </label><hr>
-                                        <div class="row">
-                                            <label class="col-md-2 control-label">Ticket Info
+                                        <div class="row" style="padding:0 20px">
+                                            <label class="control-label">Ticket Info
                                                 <span class="required"> * </span>
                                             </label>
-                                            <div class="col-md-10 show-error">
+                                            <div class="show-error">
                                                 <textarea name="ticket_info" class="form-control" rows="2"></textarea>
                                             </div> 
-                                        </div>
-                                        <div class="row">
-                                            <label class="col-md-2 control-label">Description</label>
-                                            <div class="col-md-10 show-error">
+                                            <label class="control-label">Description:</label>
+                                            <div class="show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
                                             </div>
                                         </div>
@@ -699,5 +695,6 @@
 @section('scripts') 
 <script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/cubeportfolio/js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/venues/index.js" type="text/javascript"></script>
 @endsection

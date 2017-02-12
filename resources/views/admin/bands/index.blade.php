@@ -4,6 +4,7 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -207,36 +208,18 @@
                                     </div>
                                 </div>
                             </div> 
-                            <div class="row">
-                                <label class="col-md-2 control-label">Short Descript.
+                            <div class="row" style="padding:0 20px">
+                                <label class="control-label">Short Description:
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-10 show-error">
+                                <div class="show-error">
                                     <textarea name="short_description" class="form-control" rows="2"></textarea>
                                 </div> 
-                            </div>
-                            <div class="row">
-                                <label class="col-md-2 control-label">Description</label>
-                                <div class="col-md-10 show-error">
+                                <label class="control-label">Description:</label>
+                                <div class="show-error">
                                     <textarea name="description" class="form-control" rows="5"></textarea>
                                 </div>
                             </div>
-<!--                            <div class="row">
-                                <table class="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th width="80%"> Show </th>
-                                            <th width="20%"> Order </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td width="80%"> sdfdfdfdf </td>
-                                            <td width="20%"> 1 </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>  -->
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -298,5 +281,6 @@
 @endsection
 
 @section('scripts') 
+<script src="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/bands/index.js" type="text/javascript"></script>
 @endsection

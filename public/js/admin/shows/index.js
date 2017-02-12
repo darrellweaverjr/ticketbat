@@ -230,6 +230,8 @@ var TableDatatablesManaged = function () {
         } 
         //function full reset form
         var fullReset = function(){
+            $('#form_model_update [name="description"]').summernote('reset');
+            $('#form_model_update [name="description"]').summernote('destroy');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
@@ -249,6 +251,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_contracts"]').parent().css('display','none');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
             $("#form_model_update").trigger('reset');
+            $('#form_model_update [name="description"]').summernote({height:150});
             $('#modal_model_update').modal('show');
         });
         //function load form to upload image
@@ -376,6 +379,7 @@ var TableDatatablesManaged = function () {
                             else
                                 e.val(data.show[key]);
                         }
+                        $('#form_model_update [name="description"]').summernote({height:150});
                         //fill out checking ticket 
                         if(data.tickets)
                         {

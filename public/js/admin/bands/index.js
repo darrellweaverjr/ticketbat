@@ -103,6 +103,8 @@ var TableDatatablesManaged = function () {
         } 
         //function full reset form
         var fullReset = function(){
+            $('#form_model_update [name="description"]').summernote('reset');
+            $('#form_model_update [name="description"]').summernote('destroy');
             $('#form_model_update [name="image_url"]').attr('src','');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update input[name='image_url']:hidden").val('').trigger('change');
@@ -115,6 +117,7 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add Band');
+            $('#form_model_update [name="description"]').summernote({height:150});
             $('#modal_model_update').modal('show');
         });
         //function edit
@@ -144,6 +147,7 @@ var TableDatatablesManaged = function () {
                             else
                                 e.val(data.band[key]);
                         }
+                        $('#form_model_update [name="description"]').summernote({height:150});
                         $('#modal_model_update').modal('show');
                     }
                     else swal({
@@ -310,7 +314,7 @@ var TableDatatablesManaged = function () {
             FormImageUpload('bands.image_url','#modal_model_update','#form_model_update [name="image_url"]');       
         });        
         //init functions
-        check_models();        
+        check_models();  
     }
     return {
         //main function to initiate the module

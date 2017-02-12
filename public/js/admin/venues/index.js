@@ -138,6 +138,8 @@ var TableDatatablesManaged = function () {
         } 
         //function full reset form
         var fullReset = function(){
+            $('#form_model_update [name="description"]').summernote('reset');
+            $('#form_model_update [name="description"]').summernote('destroy');
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
@@ -153,6 +155,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_banners"]').parent().css('display','none');
             $('a[href="#tab_model_update_videos"]').parent().css('display','none');
             $("#form_model_update").trigger('reset');
+            $('#form_model_update [name="description"]').summernote({height:150});
             $('#modal_model_update').modal('show');
         });
         //function edit
@@ -192,6 +195,7 @@ var TableDatatablesManaged = function () {
                             else
                                 e.val(data.venue[key]);
                         }
+                        $('#form_model_update [name="description"]').summernote({height:150});
                         //fill out stages
                         $('#grid_venue_stages .cbp-item').remove();
                         $('#grid_venue_stages').trigger('resize.cbp');

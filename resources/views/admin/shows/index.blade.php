@@ -8,6 +8,7 @@
 <link href="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
 <link href="/themes/admin/assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
 <link href="/themes/admin/assets/global/plugins/cubeportfolio/css/cubeportfolio.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -343,20 +344,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <label class="control-label">
-                                            <span class="required"> Descriptions </span>
-                                        </label><hr>
-                                        <div class="row">
-                                            <label class="col-md-2 control-label">Short Descript.
+                                        <div class="row" style="padding:0 20px">
+                                            <label class="control-label">Short Description:
                                                 <span class="required"> * </span>
                                             </label>
-                                            <div class="col-md-10 show-error">
+                                            <div class="show-error">
                                                 <textarea name="short_description" class="form-control" rows="2"></textarea>
                                             </div> 
-                                        </div>
-                                        <div class="row">
-                                            <label class="col-md-2 control-label">Description</label>
-                                            <div class="col-md-10 show-error">
+                                            <label class="control-label">Description:</label>
+                                            <div class="show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
                                             </div>
                                         </div>
@@ -1523,5 +1519,6 @@
 <script src="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/clockface/js/clockface.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/cubeportfolio/js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/shows/index.js" type="text/javascript"></script>
 @endsection
