@@ -552,10 +552,17 @@ class DashboardController extends Controller
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->select(DB::raw('COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
-                                          SUM(purchases.quantity) AS qty_tickets, SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
+                                          SUM(purchases.processing_fee+purchases.commission_percent) AS amount'))
                         ->where($where)
                         ->whereNotNull('purchases.referrer_url')
-                        ->groupBy($groupby)->distinct()->get()->toJson();
+                        ->groupBy('referral_url')->distinct()->get()->toJson();
+                $graph1 = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
+                        ->where($where)
+                        ->whereNotNull('purchases.referrer_url')
+                        ->groupBy('show_name')->distinct()->get()->toJson();
             }
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
@@ -569,7 +576,7 @@ class DashboardController extends Controller
             $venues = Venue::all('id','name');
             $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.referrals',compact('data','total','graph','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date','order'));
+            return view('admin.dashboard.referrals',compact('data','total','graph','graph1','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date','order'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Referrals: '.$ex->getMessage());
         }

@@ -106,7 +106,8 @@
                    <div id="referral_chart_tickets" class="chart" style="height:250px;"></div>
                </div>
            </div>
-       </div>
+       </div><div style="display:none" id="referral_json1">{{$graph1}}</div>
+       
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
                <div class="portlet-body">

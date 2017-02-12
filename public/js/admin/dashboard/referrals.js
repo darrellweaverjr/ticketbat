@@ -113,9 +113,12 @@ var TableDatatablesButtons = function () {
         });
         // charts totals
         var graph = jQuery.parseJSON($('#referral_json').html());
+        var graph1 = jQuery.parseJSON($('#referral_json1').html());
         var referral_url=[],show_name=[];
         $.each(graph,function(k, v) {
             referral_url.push({"url":v.referral_url,"value":v.amount});
+        });
+        $.each(graph1,function(k, v) {
             show_name.push({"show":v.show_name,"value":v.amount});
         });
         // chart url
