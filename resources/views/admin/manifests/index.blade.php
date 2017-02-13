@@ -30,10 +30,10 @@
                         </div>                        
                         <div class="btn-group">
                             <button id="btn_model_csv" class="btn sbold bg-green" disabled="true"> CSV 
-                                <i class="fa fa-table"></i>
+                                <i class="fa fa-file-excel-o"></i>
                             </button>
                             <button id="btn_model_pdf" class="btn sbold bg-yellow" disabled="true"> PDF 
-                                <i class="fa fa-archive"></i>
+                                <i class="fa fa-file-pdf-o"></i>
                             </button>
                         </div>
                     </div>
