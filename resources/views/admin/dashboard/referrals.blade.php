@@ -129,33 +129,35 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                @if($order=='url')
+                                @if($search['order']=='url')
                                 <th style="text-align:center">Referral</th>
-                                <th style="text-align:center">Show/Venue</th>
+                                <th style="text-align:center">Show</th>
                                 @else
-                                <th style="text-align:center">Show/Venue</th>
+                                <th style="text-align:center">Show</th>
                                 <th style="text-align:center">Referral</th>
                                 @endif
-                                <th style="text-align:center">Tickets<br>Sold</th>
-                                <th style="text-align:center">Purch.<br>Qty</th>
+                                <th style="text-align:center">Venue</th>
+                                <th style="text-align:center">Qty<br>Sold</th>
+                                <th style="text-align:center">Purch.</th>
                                 <th style="text-align:center">Total<br>Revenue</th>  
                                 <th style="text-align:center">Discounts</th>
-                                <th style="text-align:center">To Show</th>
+                                <th style="text-align:center">To<br>Show</th>
                                 <th style="text-align:center">Commiss.</th>
-                                <th style="text-align:center">Fees</th>
+                                <th style="text-align:center">P.Fees</th>
                                 <th style="text-align:center">Gross<br>Profit</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                @if($order=='url')
+                                @if($search['order']=='url')
                                 <td>{{$d->referral_url}}</td>
-                                <td><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
+                                <td>{{$d->show_name}}</td>
                                 @else
-                                <td><a>{{$d->show_name}}</a><br>at <a>{{$d->venue_name}}</a></td>
+                                <td>{{$d->show_name}}</td>
                                 <td>{{$d->referral_url}}</td>
                                 @endif
+                                <td>{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:center">{{number_format($d->purchases)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>
@@ -193,7 +195,7 @@
                                             <select class="form-control" name="venue" style="width: 321px !important">
                                                 <option selected value="">All</option>
                                                 @foreach($venues as $index=>$v)
-                                                <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
+                                                <option @if($v->id==$search['venue']) selected @endif value="{{$v->id}}">{{$v->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -206,7 +208,7 @@
                                             <select class="form-control" name="show" style="width: 321px !important">
                                                 <option selected value="">All</option>
                                                 @foreach($shows as $index=>$s)
-                                                <option @if($s->id==$show) selected @endif @if(!empty($show) && $venue==$s->venue_id) style="display:block" @else style="display:none" @endif value="{{$s->id}}" rel="{{$s->venue_id}}">{{$s->name}}</option>
+                                                <option @if($s->id==$search['show']) selected @endif @if(!empty($search['show']) && $search['venue']==$s->venue_id) style="display:block" @else style="display:none" @endif value="{{$s->id}}" rel="{{$s->venue_id}}">{{$s->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -216,9 +218,9 @@
                                     <label class="control-label col-md-3">Show Time:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group" id="show_times_date">
-                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$showtime_start_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$search['showtime_start_date']}}" readonly="true">
                                             <span class="input-group-addon"> to </span>
-                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$showtime_end_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$search['showtime_end_date']}}" readonly="true">
                                             <span class="input-group-btn">
                                                 <button class="btn default date-range-toggle" type="button">
                                                     <i class="fa fa-calendar"></i>
@@ -234,9 +236,9 @@
                                     <label class="control-label col-md-3">Sold Date:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group" id="sold_times_date">
-                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$soldtime_start_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$search['soldtime_start_date']}}" readonly="true">
                                             <span class="input-group-addon"> to </span>
-                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$soldtime_end_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$search['soldtime_end_date']}}" readonly="true">
                                             <span class="input-group-btn">
                                                 <button class="btn default date-range-toggle" type="button">
                                                     <i class="fa fa-calendar"></i>
@@ -254,11 +256,11 @@
                                         <div class="input-group">
                                             <select class="form-control" name="order" style="width: 321px !important">
                                                 <option selected value="url">URL</option>
-                                                <option @if($order=='show') selected @endif value="show">Show</option>
+                                                <option @if($search['order']=='show') selected @endif value="show">Show</option>
                                             </select>
                                         </div>
                                     </div>
-                                </div>   
+                                </div> 
                             </div>
                         </div>
                         <div class="form-actions">

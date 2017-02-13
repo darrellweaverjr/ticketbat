@@ -27,27 +27,47 @@ var TableDatatablesButtons = function () {
             },
             "buttons": [
                 {
-                    text: 'Search',
+                    text: 'Search <i class="fa fa-search"></i>',
                     className: 'btn sbold grey-salsa',
                     action: function () {
                         $('#modal_model_search').modal('show');
                     }
                 },
-                { extend: 'print', 
-                  className: 'btn default',
-                  customize: function ( win ) {
-                      var t = '<hr><table width="100%"><thead><tr>';
-                      $.each($('#totals .details').clone(),function(k, v) {
-                          if(k==1)  t = t + '<th valign="top" style="text-align:right" width="19%">'+v.innerHTML+'</th>';
-                          else t = t + '<th valign="top" style="text-align:right" width="16%">'+v.innerHTML+'</th>';
-                      });
-                      t = t + '</tr></thead></table><hr>';
-                      $(win.document.body).find('h1').append(t);
-                  }
+                { 
+                    extend: 'print', 
+                    text:      'Print <i class="fa fa-print"></i>',
+                    titleAttr: 'Print',
+                    className: 'btn sbold yellow',
+                    orientation: 'landscape',
+                    customize: function ( win ) {
+                        var t = '<hr><table width="100%"><thead><tr>';
+                        $.each($('#totals .details').clone(),function(k, v) {
+                            t = t + '<th valign="top" style="text-align:right" width="16.5%">'+v.innerHTML+'</th>';
+                        });
+                        t = t + '</tr></thead></table><hr>';
+                        $(win.document.body).find('h1').append(t);
+                        $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
+                    }
                 },
-                { extend: 'copy', className: 'btn default' },
-                { extend: 'pdf', className: 'btn default' },
-                { extend: 'csv', className: 'btn default' }
+                { 
+                    extend: 'copy', 
+                    text:      'Copy <i class="fa fa-files-o"></i>',
+                    titleAttr: 'Copy',
+                    className: 'btn sbold blue'
+                },
+                {
+                    extend: 'pdf',
+                    text:      'PDF <i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',
+                    className: 'btn sbold red',
+                    orientation: 'landscape'
+                },
+                { 
+                    extend: 'csv', 
+                    text:      'CSV <i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'CSV',
+                    className: 'btn sbold bg-green'
+                }
             ],
             "order": [
                 [0, 'asc']
