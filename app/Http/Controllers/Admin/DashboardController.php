@@ -71,7 +71,7 @@ class DashboardController extends Controller
         }
         if($data['search']['showtime_start_date'] != '' && $data['search']['showtime_end_date'] != '')
         {
-            $data['where'][] = ['show_times.show_time','>=',$data['search']['showtime_start_date']];
+            $data['where'][] = ['show_times.show_time','>=',$data['search']['showtime_start_date'].' 00:00:00'];
             $data['where'][] = ['show_times.show_time','<=',$data['search']['showtime_end_date'].' 11:59:59'];
         } 
         //search soldtime
@@ -87,7 +87,7 @@ class DashboardController extends Controller
         }
         if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '')
         {
-            $data['where'][] = ['purchases.created','>=',$data['search']['soldtime_start_date']];
+            $data['where'][] = ['purchases.created','>=',$data['search']['soldtime_start_date'].' 00:00:00'];
             $data['where'][] = ['purchases.created','<=',$data['search']['soldtime_end_date'].' 11:59:59'];
         }  
         //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
