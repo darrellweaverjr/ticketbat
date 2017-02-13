@@ -114,8 +114,8 @@ class PurchaseController extends Controller{
                 }
                 if($showtime_start_date != '' && $showtime_end_date != '')
                 {
-                    $where[] = ['show_times.show_time','>=',$showtime_start_date];
-                    $where[] = ['show_times.show_time','<=',$showtime_end_date.' 11:59:59'];
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$showtime_start_date];
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$showtime_end_date];
                 } 
                 //search soldtime
                 if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
@@ -130,8 +130,8 @@ class PurchaseController extends Controller{
                 }
                 if($soldtime_start_date != '' && $soldtime_end_date != '')
                 {
-                    $where[] = ['purchases.created','>=',$soldtime_start_date];
-                    $where[] = ['purchases.created','<=',$soldtime_end_date.' 11:59:59'];
+                    $where[] = [DB::raw('DATE(purchases.created)'),'>=',$soldtime_start_date];
+                    $where[] = [DB::raw('DATE(purchases.created)'),'<=',$soldtime_end_date];
                 } 
                 //get all records  
                 $purchases = DB::table('purchases')
