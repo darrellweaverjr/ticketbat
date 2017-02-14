@@ -232,13 +232,35 @@ class UserController extends Controller{
      *
      * @void
      */
-    public function impersonate()
+    public function impersonate($user=null,$code=null)
     {
         try {
             //init
             $input = Input::all();
+            if($user && $code)
+            {
+                $user = User::find($user);
+                if($user)
+                {
+                    $current0 = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i')),0,10)),0,20);
+                    $current1 = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i',strtotime('-1 minutes'))),0,10)),0,20);
+                    if(!($code == $current0 || $code == $current1))
+                    {
+                        if (Auth::attempt(['email' => $user->email, 'password' => $user->password])) 
+                        {
+                            if(Auth::user()->is_active > 0 && in_array(Auth::user()->user_type->id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))))
+                                return redirect()->route('home');
+                            else
+                                return redirect()->route('home');
+                        } 
+                        return redirect()->route('home');
+                    }
+                    return redirect()->route('home');
+                }
+                return redirect()->route('home');
+            }
             //save all record      
-            if($input)
+            else if($input)
             {
                 if(isset($input['action']) && $input['action']==0)
                 {
@@ -255,7 +277,7 @@ class UserController extends Controller{
                     if($user)
                     {
                         $current = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i')),0,10)),0,20);
-                        $link = env('IMAGE_URL_OLDTB_SERVER').'/admin/impersonate/'.$input['user_id'].'/'.$current;
+                        $link = $input['user_id'].'/'.$current;
                         return ['success'=>true,'link'=>$link];
                     }
                     return ['success'=>false,'msg'=>'There was an error.<br>That user does not exist.'];

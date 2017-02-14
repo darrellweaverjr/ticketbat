@@ -589,7 +589,7 @@
                                                             <label class="control-label col-md-3">Link (valid 2min)
                                                                 <span class="required"></span>
                                                             </label>
-                                                            <div class="col-md-9 show-error" id="impersonate_link" style="font-size:11px">
+                                                            <div class="col-md-9 show-error" id="impersonate_link">
                                                             </div> 
                                                         </div>
                                                     </div>
