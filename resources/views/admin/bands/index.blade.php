@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="portlet-body">
+                <div class="portlet-body"><input type="number" id="autopen" style="display:none" value="{{$autopen}}"/>
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>

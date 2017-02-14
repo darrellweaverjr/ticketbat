@@ -315,6 +315,8 @@ var TableDatatablesManaged = function () {
         });        
         //init functions
         check_models();  
+        if($('#autopen').val() && $('#autopen').val() == 0)
+            $('#btn_model_add').click();
     }
     return {
         //main function to initiate the module

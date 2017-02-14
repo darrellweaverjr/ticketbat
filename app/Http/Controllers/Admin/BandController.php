@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Models\Category;
 use App\Http\Models\Band;
 use App\Http\Models\Image;
@@ -20,9 +21,12 @@ class BandController extends Controller{
      *
      * @return view
      */
-    public function index()
+    public function index($autopen=null)
     {
         try {
+            //autopen modal with id or new
+            if(!is_null($autopen) && $autopen!='0')
+                return redirect()->route('logout');
             //init
             $input = Input::all(); 
             if(isset($input) && isset($input['id']))
@@ -64,7 +68,7 @@ class BandController extends Controller{
                 }
                 $categories = Category::all();
                 //return view
-                return view('admin.bands.index',compact('bands','categories','onlyerrors'));
+                return view('admin.bands.index',compact('bands','categories','onlyerrors','autopen'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Bands Index: '.$ex->getMessage());

@@ -997,7 +997,49 @@ var TableDatatablesManaged = function () {
         $('#btn_model_band_add').on('click', function(ev) {
             $('#form_model_show_bands input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_show_bands').trigger('reset');
-            $('#modal_model_show_bands').modal('show');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/bands', 
+                data: {action:2}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_model_show_bands select[name="band_id"]').empty(); 
+                        $.each(data.bands,function(k, b) {                            
+                            $('#form_model_show_bands select[name="band_id"]').append('<option value="'+b.id+'">'+b.name+'</option>');   
+                        });
+                        $('#modal_model_show_bands').modal('show');
+                    }
+                    else
+                    {
+                        $('#modal_model_update').modal('hide');						
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    $('#modal_model_update').modal('hide');	   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the bands!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                    });
+                }
+            });
+        });
+        //create new
+        $('#btn_model_band_create').on('click', function(ev) {
+            window.open('/admin/bands/0', '_blank');
         });
         //edit
         tableBands.on( 'row-reordered', function ( e, diff, edit ) {

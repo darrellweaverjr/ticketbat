@@ -537,7 +537,12 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_bands" >
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_band_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_band_add" class="btn sbold bg-green">Add existing
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_band_create" class="btn sbold bg-purple">Create new 
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
@@ -881,9 +886,6 @@
                                     </label>
                                     <div class="col-md-7 show-error">
                                         <select class="form-control" name="band_id">
-                                            @foreach($bands as $index=>$b)
-                                                <option value="{{$b->id}}">{{$b->name}}</option>
-                                            @endforeach
                                         </select>
                                     </div>
                                 </div>  
