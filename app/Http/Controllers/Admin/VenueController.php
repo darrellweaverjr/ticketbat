@@ -59,30 +59,41 @@ class VenueController extends Controller{
             }
             else
             {      
-                $current = date('Y-m-d H:i:s');
-                //conditions to search
-                $where = [['venues.id','>',0]];
-                //$where = [['images.image_type','=','Header']];
                 //search with error
-                if(isset($input) && isset($input['onlyerrors']))
+                if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
                 {
-                    $onlyerrors = $input['onlyerrors'];
-                     if($onlyerrors == 1)
-                     {
-                         
-                     }
-                }
-                else
-                    $onlyerrors = 0;
-                //get all records        
-                $venues = DB::table('venues')
+                    $onlyerrors = 1;
+                    //get all records        
+                    $venues = DB::table('venues')
                                 ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                 ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
                                 ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
-                                ->select('venues.*','images.url AS image_url','locations.address','locations.city','locations.state','locations.zip','locations.country')
-                                ->where($where)
+                                ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
+                                ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                         'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
+                                         'images.url AS image_url',
+                                         'locations.address','locations.city','locations.state','locations.zip','locations.country')
+                                ->whereNull('stages.id')
+                                ->orWhereNull('images.url')
                                 ->orderBy('venues.name')->groupBy('venues.id')
                                 ->distinct()->get();
+                }
+                else
+                {
+                    $onlyerrors = 0;
+                    //get all records        
+                    $venues = DB::table('venues')
+                                ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
+                                ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
+                                ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                         'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
+                                         'images.url AS image_url',
+                                         'locations.address','locations.city','locations.state','locations.zip','locations.country')
+                                ->where('images.image_type','Logo')
+                                ->orderBy('venues.name')->groupBy('venues.id')
+                                ->distinct()->get();
+                }
                 $restrictions = Util::getEnumValues('venues','restrictions');
                 $image_types = Util::getEnumValues('images','image_type');
                 $banner_types = Util::getEnumValues('banners','type');

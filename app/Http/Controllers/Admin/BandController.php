@@ -42,7 +42,7 @@ class BandController extends Controller{
             {
                 if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
                 {
-                    $onlyerrors = $input['onlyerrors'];
+                    $onlyerrors = 1;
                     //get all records with errors    
                     $bands = DB::table('bands')
                                     ->join('categories', 'categories.id', '=' ,'bands.category_id')

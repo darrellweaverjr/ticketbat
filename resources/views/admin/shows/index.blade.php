@@ -54,8 +54,8 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="15%">Show</th>
-                                <th width="67%">Description</th>
+                                <th width="10%">Logo</th>
+                                <th width="72%">Description</th>
                                 <th width="8%">Category</th>
                                 <th width="3%">Featured</th>
                                 <th width="5%">Status</th>
@@ -70,12 +70,12 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="15%" data-order="{{$s->name}}"> 
+                                <td width="10%" data-order="{{$s->name}}"> 
                                     @if(preg_match('/\/uploads\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_OLDTB_SERVER').$s->image_url @endphp @endif
                                     @if(preg_match('/\/s3\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$s->image_url) @endphp @endif
-                                    <center style="color:red;"><i><b><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}"><img alt="- No image -" height="100px" width="200px" src="{{$s->image_url}}"/></a></b></i></center>
+                                    <center style="color:red;"><i><b><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}"><img alt="- No image -" height="110px" width="110px" src="{{$s->image_url}}"/></a></b></i></center>
                                 </td>
-                                <td class="search-item clearfix" width="67%"> 
+                                <td class="search-item clearfix" width="72%"> 
                                     <div class="search-content">
                                         <h4 class="search-title"><b><a>{{$s->name}}</a></b> [<a>{{$s->slug}}</a>]</h4>
                                         <small><i>
@@ -86,8 +86,9 @@
                                             @if($s->twitter)Twitter: <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
                                             @if($s->yelpbadge)YelpBadge: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
                                             @if($s->instagram)Instagram: <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
-                                        </i></small><br>
+                                        </i><br>
                                         @if($s->short_description) {{$s->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif 
+                                        </small>
                                     </div>
                                 </td>
                                 <td width="8%"><center> {{$s->category}} </center></td>
@@ -651,7 +652,7 @@
                                         <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
                                         @endforeach
                                     </select>
-                                </div>    
+                                </div>  
                                 <div class="form-group">
                                     <label for="showtime" class="col-md-5"> <span>Show Time:</span> </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="showtime" style="width:100px !important">
@@ -659,7 +660,7 @@
                                         <option @if($showtime=='P') selected @endif value="P">Passed</option>
                                         <option @if($showtime=='U') selected @endif value="U">Upcoming</option>
                                     </select>
-                                </div>    
+                                </div>   
                                 <div class="form-group">
                                     <label for="status" class="col-md-5"> <span>Status:</span> </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="status" style="width:90px !important">

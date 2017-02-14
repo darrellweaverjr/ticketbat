@@ -50,7 +50,7 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="10%">Band</th>
+                                <th width="10%">Logo</th>
                                 <th width="78%">Description</th>
                                 <th width="10%">Category</th>
                             </tr>
@@ -72,7 +72,7 @@
                                 <td class="search-item clearfix" width="78%"> 
                                     <div class="search-content">
                                         <h3 class="search-title"><a>{{$b->name}}</a></h3>
-                                        <p><small><i>
+                                        <small><p><i>
                                             @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a>@endif
                                             @if($b->youtube)YouTube: <a href="{{$b->youtube}}" target="_blank">{{$b->youtube}} </a>@endif 
                                             @if($b->facebook)Facebook: <a href="{{$b->facebook}}" target="_blank">{{$b->facebook}} </a>@endif 
@@ -81,8 +81,9 @@
                                             @if($b->flickr)Flickr: <a href="{{$b->flickr}}" target="_blank">{{$b->flickr}} </a>@endif 
                                             @if($b->instagram)Instagram: <a href="{{$b->instagram}}" target="_blank">{{$b->instagram}} </a>@endif 
                                             @if($b->soundcloud)SoundCloud: <a href="{{$b->soundcloud}}" target="_blank">{{$b->soundcloud}} </a>@endif 
-                                        </i></small></p>
+                                        </i></p>
                                         <p> @if($b->short_description) {{$b->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </p>
+                                        </small>
                                     </div>
                                 </td>
                                 <td width="10%"><center> {{$b->category}} </center></td>

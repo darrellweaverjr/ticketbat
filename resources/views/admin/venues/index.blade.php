@@ -51,8 +51,8 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="15%">Venue</th>
-                                <th width="80%">Description</th>
+                                <th width="10%">Logo</th>
+                                <th width="85%">Description</th>
                                 <th width="5%">Featured</th>
                             </tr>
                         </thead>
@@ -65,26 +65,27 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="15%" data-order="{{$v->name}}"> 
+                                <td width="10%" data-order="{{$v->name}}"> 
                                     @if(preg_match('/\/uploads\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_OLDTB_SERVER').$v->image_url @endphp @endif
                                     @if(preg_match('/\/s3\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$v->image_url) @endphp @endif
-                        <center style="color:red;"><i><b><a href="https://www.ticketbat.com/venue/{{$v->slug}}" target="_blank"><img alt="- No image -" height="100px" width="200px" src="{{$v->image_url}}"/></a></b></i></center>
+                        <center style="color:red;"><i><b><a href="https://www.ticketbat.com/venue/{{$v->slug}}" target="_blank"><img alt="- No image -" height="110px" width="110px" src="{{$v->image_url}}"/></a></b></i></center>
                                 </td>
-                                <td class="search-item clearfix" width="80%"> 
+                                <td class="search-item clearfix" width="85%"> 
                                     <div class="search-content">
                                         <h4 class="search-title"><b><a>{{$v->name}}</a></b> [<a>{{$v->slug}}</a>]</h4>
                                         <small><i>
                                             Location: <a>{{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</a>
-                                        </i></small><br>
-                                        <small><i>
+                                        </i><br>
+                                        <i>
                                             @if($v->googleplus)Google+: <a href="{{$v->googleplus}}" target="_blank">{{$v->googleplus}} </a>@endif
                                             @if($v->youtube)YouTube: <a href="{{$v->youtube}}" target="_blank">{{$v->youtube}} </a>@endif 
                                             @if($v->facebook)Facebook: <a href="{{$v->facebook}}" target="_blank">{{$v->facebook}} </a>@endif 
                                             @if($v->twitter)Twitter: <a href="{{$v->twitter}}" target="_blank">{{$v->twitter}} </a>@endif 
                                             @if($v->yelpbadge)YelpBadge: <a href="{{$v->yelpbadge}}" target="_blank">{{$v->yelpbadge}} </a>@endif 
                                             @if($v->instagram)Instagram: <a href="{{$v->instagram}}" target="_blank">{{$v->instagram}} </a>@endif 
-                                        </i></small><br>
+                                        </i><br>
                                         @if($v->description) {{$v->description}} @else <i style="color:red"><b>- No description -</b></i> @endif 
+                                        </small>
                                     </div>
                                 </td>
                                 <td width="5%"><center> <span class="label label-sm sbold
@@ -409,7 +410,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" action="/admin/shows" id="form_model_search">
+                    <form method="post" action="/admin/venues" id="form_model_search">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
