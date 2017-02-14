@@ -155,16 +155,14 @@ var TableDatatablesManaged = function () {
             $('#show_times_date').datetimepicker('update');
         });
         //show_times_time
-        $('#show_times_time').clockface({
-            format: 'HH:mm',
-            trigger: 'manual'
+        $('.timepicker-no-seconds').timepicker({
+                autoclose: true,
+                minuteStep: 15
         });
-        $('#show_times_time_toggle').click(function (e) {
-            e.stopPropagation();
-            $('#show_times_time').clockface('toggle');
-        });
-        $('#clear_show_times_time').on('click', function(ev) {
-            $('#show_times_time').val('');
+        // handle input group button click
+        $('.timepicker').parent('.input-group').on('click', '.input-group-btn', function(e){
+            e.preventDefault();
+            $(this).parent('.input-group').find('.timepicker').timepicker('showWidget');
         });
         //render calendar when showtimes tab is clicked
         $('a[href="#tab_model_update_showtimes"]').on('click', function(ev) {

@@ -6,7 +6,7 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-<link href="/themes/admin/assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
+<link href="/themes/admin/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="/themes/admin/assets/global/plugins/cubeportfolio/css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <link href="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
@@ -1007,13 +1007,10 @@
                                         <label class="control-label col-md-3">Time</label>
                                         <div class="col-md-5 show-error">
                                             <div class="input-group">
-                                                <input type="text" id="show_times_time" name="time" value="00:00" class="form-control" readonly="true" />
+                                                <input type="text" name="time" class="form-control timepicker timepicker-no-seconds" value="12:00 AM" readonly="true">
                                                 <span class="input-group-btn">
-                                                    <button class="btn default" type="button" id="show_times_time_toggle">
+                                                    <button class="btn default" type="button">
                                                         <i class="fa fa-clock-o"></i>
-                                                    </button>
-                                                    <button class="btn default" type="button" id="clear_show_times_time">
-                                                    <i class="fa fa-remove"></i>
                                                     </button>
                                                 </span>
                                             </div>
@@ -1518,7 +1515,7 @@
 <script src="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/clockface/js/clockface.js" type="text/javascript"></script>
+<script src="/themes/admin/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/cubeportfolio/js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/shows/index.js" type="text/javascript"></script>
