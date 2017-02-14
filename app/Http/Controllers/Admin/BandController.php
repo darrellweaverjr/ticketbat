@@ -25,7 +25,7 @@ class BandController extends Controller{
     {
         try {
             //autopen modal with id or new
-            if(!is_null($autopen) && $autopen!='0')
+            if($autopen!=null && $autopen!=0)
                 return redirect()->route('logout');
             //init
             $input = Input::all(); 
