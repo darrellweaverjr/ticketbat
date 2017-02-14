@@ -186,7 +186,7 @@
                                                     <label class="control-label col-md-3">Featured</label>
                                                     <div class="col-md-2">
                                                         <input type="hidden" name="is_featured" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_featured" data-size="small" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch" name="is_featured" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>
