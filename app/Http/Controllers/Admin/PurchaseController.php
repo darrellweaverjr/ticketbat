@@ -149,8 +149,8 @@ class PurchaseController extends Controller{
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->get();
                 $status = Util::getEnumValues('purchases','status');
-                $venues = Venue::all('id','name');
-                $shows = Show::all('id','name','venue_id');
+                $venues = Venue::orderBy('name')->get(['id','name']);
+                $shows = Show::orderBy('name')->get(['id','name','venue_id']);
                 return view('admin.purchases.index',compact('purchases','status','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
             }
         } catch (Exception $ex) {
