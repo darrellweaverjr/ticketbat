@@ -414,7 +414,7 @@
                                                             </div>
                                                         </div>
                                                     </form>    
-                                                    <div class="fileinput-preview thumbnail" style="width:1350px; height: 800px; line-height: 372px;" id="image_preview"></div>
+                                                    <div class="fileinput-preview thumbnail" style="width:1360px; height: 810px; line-height: 810px; text-align: center" id="image_preview"></div>
                                                 </div> 
                                             </div>
                                         </div>

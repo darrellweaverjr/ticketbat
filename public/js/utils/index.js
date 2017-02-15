@@ -103,17 +103,19 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
         {
             var image = new Image();
             image.onload = function () {
+                var currentWidth = this.width;
+                var currentHeight = this.height;
                 //max width and height permitted to the form
-                if(this.width > maxWidth || this.height > maxHeight)
+                if(currentWidth > maxWidth || currentHeight > maxHeight)
                 {
                     reset_form();
-                    alert('ERROR: This file has '+this.width+' width x '+this.height+' height. The required values must be less or equal than '+maxWidth+' width x '+maxHeight+' height.');
+                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be less or equal than '+maxWidth+' width x '+maxHeight+' height.');
                 }  
                 //min width and height permitted according to the type of image to upload
-                else if(this.width < fixWidth || this.height < fixHeight)
+                else if(currentWidth < fixWidth || currentHeight < fixHeight)
                 {
                     reset_form();
-                    alert('ERROR: This file has '+this.width+' width x '+this.height+' height. The required values must be more or equal than '+fixWidth+' width x '+fixHeight+' height.');
+                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be more or equal than '+fixWidth+' width x '+fixHeight+' height.');
                 }
                 //if ok update form
                 else
@@ -121,8 +123,8 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                     //fill out the image info
                     $('#input_media_picture_name').html(file.name);
                     $('#form_media_picture_load [name="pic_size"]').val((file.size/1024).toFixed(1));
-                    $('#form_media_picture_load [name="pic_width"]').val(this.width);
-                    $('#form_media_picture_load [name="pic_height"]').val(this.height);
+                    $('#form_media_picture_load [name="pic_width"]').val(currentWidth);
+                    $('#form_media_picture_load [name="pic_height"]').val(currentHeight);
                     $('#form_media_picture_load [name="resize_width"]').val(fixWidth);
                     $('#form_media_picture_load [name="resize_height"]').val(fixHeight);
                 }
