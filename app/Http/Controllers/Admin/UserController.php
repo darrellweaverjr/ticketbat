@@ -237,27 +237,31 @@ class UserController extends Controller{
         try {
             //init
             $input = Input::all();
+            $current = date('Y-m-d H:i');
             if($user && $code)
             {
                 $user = User::find($user);
                 if($user)
                 {
-                    $current0 = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i')),0,10)),0,20);
-                    $current1 = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i',strtotime('-1 minutes'))),0,10)),0,20);
-                    if(!($code == $current0 || $code == $current1))
+                    $current0 = substr(md5(substr(md5($user->email),0,10).substr(md5($current),0,10)),0,20);
+                    $current1 = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i',strtotime($current.' -1 minutes'))),0,10)),0,20);
+                    if($code == $current0 || $code == $current1)
                     {
                         if (Auth::attempt(['email' => $user->email, 'password' => $user->password])) 
                         {
                             if(Auth::user()->is_active > 0 && in_array(Auth::user()->user_type->id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))))
                                 return redirect()->route('home');
                             else
-                                return redirect()->route('home');
+                                return redirect()->route('logout');
                         } 
-                        return redirect()->route('home');
+                        else 
+                            return redirect()->route('logout');
                     }
-                    return redirect()->route('home');
+                    else 
+                        return redirect()->route('home');
                 }
-                return redirect()->route('home');
+                else 
+                    return redirect()->route('home');
             }
             //save all record      
             else if($input)
