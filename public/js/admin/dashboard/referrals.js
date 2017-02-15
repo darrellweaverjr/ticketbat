@@ -132,17 +132,17 @@ var TableDatatablesButtons = function () {
             }
         });
         // charts totals
-        var graph = jQuery.parseJSON($('#referral_json').html());
-        var graph1 = jQuery.parseJSON($('#referral_json1').html());
-        var referral_url=[],show_name=[];
-        $.each(graph,function(k, v) {
+        var graph_url = jQuery.parseJSON($('#referral_url_json').html());
+        var graph_show = jQuery.parseJSON($('#referral_show_json').html());
+        var referral_url=[],referral_show=[];
+        $.each(graph_url,function(k, v) {
             referral_url.push({"url":v.referral_url,"value":v.amount});
         });
-        $.each(graph1,function(k, v) {
-            show_name.push({"show":v.show_name,"value":v.amount});
+        $.each(graph_show,function(k, v) {
+            referral_show.push({"show":v.show_name,"value":v.amount});
         });
         // chart url
-	var referral_chart_tickets = AmCharts.makeChart("referral_chart_tickets", {
+	var referral_chart_url = AmCharts.makeChart("referral_chart_url", {
             "type": "pie",
             //"theme": "light",
             "fontFamily": 'Open Sans',
@@ -162,12 +162,12 @@ var TableDatatablesButtons = function () {
             }
         });
         // chart show
-	var referral_chart_qty = AmCharts.makeChart("referral_chart_qty", {
+	var referral_chart_show = AmCharts.makeChart("referral_chart_show", {
             "type": "pie",
             //"theme": "light",
             "fontFamily": 'Open Sans',
             "color":    '#888',
-            "dataProvider": show_name,
+            "dataProvider": referral_show,
             "valueField": "value",
             "titleField": "show",
             "outlineAlpha": 0.4,

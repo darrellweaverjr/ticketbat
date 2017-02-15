@@ -90,14 +90,39 @@ class DashboardController extends Controller
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',$data['search']['soldtime_start_date']];
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',$data['search']['soldtime_end_date']];
         }  
-        //if 5(only his report), if 1 or 6(all reports), others check a 0 result query
+        //if 5(only his report) 
         if(Auth::user()->user_type->id == 5)
-            $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
-        else if(Auth::user()->user_type->id != 1 && Auth::user()->user_type->id != 6)
-            $data['where'][] = ['shows.create_user_id','=',0]; 
-        //add shows and venues for search
-        $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
-        $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
+        {
+            if(Auth::user()->venues_edit && count(explode(',',Auth::user()->venues_edit)))
+            {
+                $data['where'][] = [DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.create_user_id'),'=',Auth::user()->id];
+                //add shows and venues for search
+                $data['search']['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
+            } 
+            else 
+            {
+                $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
+                //add shows and venues for search
+                $data['search']['venues'] = [];
+                $data['search']['shows'] = Show::where('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
+            }
+        }  
+        //if 1 or 6(all reports)
+        else if(Auth::user()->user_type->id == 1 || Auth::user()->user_type->id == 6)
+        {
+            //add shows and venues for search
+            $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
+            $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
+        }  
+        //others check a 0 result query
+        else
+        {
+            $data['where'][] = ['shows.id','=',0]; 
+            //add shows and venues for search
+            $data['search']['venues'] = [];
+            $data['search']['shows'] = [];
+        }
         //return     
         return $data;
     }
@@ -287,7 +312,6 @@ class DashboardController extends Controller
                     ->where($where)
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
                     ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
-          
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
@@ -355,7 +379,7 @@ class DashboardController extends Controller
                 $groupby = 'referral_url';
             else
                 $groupby = 'shows.id';
-            $graph = DB::table('purchases')
+            $graph['url'] = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
@@ -363,14 +387,13 @@ class DashboardController extends Controller
                     ->where($where)
                     ->whereNotNull('purchases.referrer_url')
                     ->groupBy('referral_url')->distinct()->get()->toJson();
-            $graph1 = DB::table('purchases')
+            $graph['show'] = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
                     ->where($where)
                     ->whereNotNull('purchases.referrer_url')
                     ->groupBy('show_name')->distinct()->get()->toJson();
-          
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
@@ -381,7 +404,7 @@ class DashboardController extends Controller
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //return view
-            return view('admin.dashboard.referrals',compact('data','total','graph','graph1','search'));
+            return view('admin.dashboard.referrals',compact('data','total','graph','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Referrals: '.$ex->getMessage());
         }
