@@ -187,7 +187,7 @@
                                         <div class="input-group">
                                             <select class="form-control" name="venue" style="width: 321px !important">
                                                 <option selected value="">All</option>
-                                                @foreach($venues as $index=>$v)
+                                                @foreach($search['venues'] as $index=>$v)
                                                 <option @if($v->id==$search['venue']) selected @endif value="{{$v->id}}">{{$v->name}}</option>
                                                 @endforeach
                                             </select>
@@ -200,7 +200,7 @@
                                         <div class="input-group">
                                             <select class="form-control" name="show" style="width: 321px !important">
                                                 <option selected value="">All</option>
-                                                @foreach($shows as $index=>$s)
+                                                @foreach($search['shows'] as $index=>$s)
                                                 <option @if($s->id==$search['show']) selected @endif @if(!empty($search['show']) && $search['venue']==$s->venue_id) style="display:block" @else style="display:none" @endif value="{{$s->id}}" rel="{{$s->venue_id}}">{{$s->name}}</option>
                                                 @endforeach
                                             </select>

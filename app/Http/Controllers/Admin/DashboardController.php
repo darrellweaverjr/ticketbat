@@ -95,6 +95,9 @@ class DashboardController extends Controller
             $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
         else if(Auth::user()->user_type->id != 1 && Auth::user()->user_type->id != 6)
             $data['where'][] = ['shows.create_user_id','=',0]; 
+        //add shows and venues for search
+        $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
+        $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
         //return     
         return $data;
     }
@@ -143,10 +146,8 @@ class DashboardController extends Controller
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
-            $venues = Venue::all('id','name');
-            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.ticket_sales',compact('data','total','venues','shows','search'));
+            return view('admin.dashboard.ticket_sales',compact('data','total','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Ticket Sales: '.$ex->getMessage());
         }
@@ -184,10 +185,8 @@ class DashboardController extends Controller
             //calculate totals
             $total = array( 'amount'=>array_sum(array_column($data,'amount')),
                             'tickets'=>array_sum(array_column($data,'tickets')));
-            $venues = Venue::all('id','name');
-            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.chargebacks',compact('data','total','venues','shows','search'));
+            return view('admin.dashboard.chargebacks',compact('data','total','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Chargebacks: '.$ex->getMessage());
         }
@@ -235,10 +234,8 @@ class DashboardController extends Controller
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
-            $venues = Venue::all('id','name');
-            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.future_liabilities',compact('data','total','venues','shows','search'));
+            return view('admin.dashboard.future_liabilities',compact('data','total','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Future Liabilities: '.$ex->getMessage());
         }
@@ -300,10 +297,8 @@ class DashboardController extends Controller
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
-            $venues = Venue::all('id','name');
-            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.trend_pace',compact('data','total','graph','venues','shows','search'));
+            return view('admin.dashboard.trend_pace',compact('data','total','graph','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Trend and Pace: '.$ex->getMessage());
         }
@@ -385,10 +380,8 @@ class DashboardController extends Controller
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
-            $venues = Venue::all('id','name');
-            $shows = Show::all('id','name','venue_id');
             //return view
-            return view('admin.dashboard.referrals',compact('data','total','graph','graph1','venues','shows','search'));
+            return view('admin.dashboard.referrals',compact('data','total','graph','graph1','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Referrals: '.$ex->getMessage());
         }
