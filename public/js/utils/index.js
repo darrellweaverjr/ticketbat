@@ -348,8 +348,9 @@ $('#submit_model_impersonate').on('click', function(ev) {
             success: function(data) {
                 if(data.success) 
                 {
-                    $('#impersonate_link').html('<h4><a target="_blank" href="https://ticketbat.com/admin/impersonate/'+data.link+'">TicketBat.com</a>'
-                                               +' / <a href="/admin/users/impersonate/'+data.link+'">TicketBat Admin</a></h4>');
+                    $('#impersonate_link').html('<a target="_blank" href="https://ticketbat.com/admin/impersonate/'+data.link+'">TicketBat.com</a>'
+                                               +' / <a href="/admin/users/impersonate/'+data.link+'">TicketBat Admin</a> '
+                                               +'valid on '+moment().format('MM/DD/YYYY h:mma'));
                 }
                 else{
                     $('#modal_model_impersonate').modal('hide');
