@@ -130,13 +130,14 @@
                         <thead>
                             <tr>
                                 @if($search['order']=='url')
-                                <th style="text-align:center">Referral</th>
-                                <th style="text-align:center">Show</th>
-                                @else
-                                <th style="text-align:center">Show</th>
-                                <th style="text-align:center">Referral</th>
-                                @endif
                                 <th style="text-align:center">Venue</th>
+                                <th style="text-align:center">Show</th>
+                                <th style="text-align:center">Referral</th>
+                                @else
+                                <th style="text-align:center">Referral</th>
+                                <th style="text-align:center">Venue</th>
+                                <th style="text-align:center">Show</th>
+                                @endif
                                 <th style="text-align:center">Qty<br>Sold</th>
                                 <th style="text-align:center">Purch.</th>
                                 <th style="text-align:center">Total<br>Revenue</th>  
@@ -151,13 +152,14 @@
                             @foreach($data as $d)
                             <tr>
                                 @if($search['order']=='url')
-                                <td>{{$d->referral_url}}</td>
-                                <td>{{$d->show_name}}</td>
-                                @else
-                                <td>{{$d->show_name}}</td>
-                                <td>{{$d->referral_url}}</td>
-                                @endif
                                 <td>{{$d->venue_name}}</td>
+                                <td>{{$d->show_name}}</td>
+                                <td>{{$d->referral_url}}</td>
+                                @else
+                                <td>{{$d->referral_url}}</td>
+                                <td>{{$d->venue_name}}</td>
+                                <td>{{$d->show_name}}</td>
+                                @endif
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:center">{{number_format($d->purchases)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>

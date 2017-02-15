@@ -70,7 +70,7 @@ var TableDatatablesButtons = function () {
                 }
             ],
             "order": [
-                [0, 'asc']
+                [2, 'asc']
             ],
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
