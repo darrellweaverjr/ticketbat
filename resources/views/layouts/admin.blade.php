@@ -656,24 +656,15 @@
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="/themes/admin/assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
-        <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="/themes/admin/assets/pages/scripts/dashboard.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL SCRIPTS -->
-        <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <script src="/themes/admin/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
-        <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
-        <script src="/js/utils/index.js" type="text/javascript"></script>
-        <!-- END THEME LAYOUT SCRIPTS -->
-        <script src="/themes/admin/assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
-
         <script src="/themes/admin/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
+        <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
+        <script src="/js/utils/index.js" type="text/javascript"></script>
         @yield('scripts')
     </body>
 
