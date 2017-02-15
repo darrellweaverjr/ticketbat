@@ -37,19 +37,13 @@ class UserType extends Model
     public function getACLs()
     {
         $acls = array();
-        $acl_codes = array();
         foreach ($this->user_type_permissions()->orderBy('permission_id')->get() as $p)
         {
-            if(isset($acls[$p->pivot->permission_id]))
-            {
-                $acls[$p->pivot->permission_id]['permission_types'][] = $p->pivot->permission_type;
-            }
+            if(isset($acls[$p->code]))
+                $acls[$p->code]['permission_types'][] = $p->pivot->permission_type;
             else
-            {
-                $acls[$p->pivot->permission_id] = array('permission_id'=>$p->pivot->permission_id,'user_type_id'=>$p->pivot->user_type_id,'code'=>$p->code,'user_type'=>$this->attributes['user_type'],'permission_types'=>array($p->pivot->permission_type),'permission_scope'=>$p->pivot->permission_scope);
-                $acl_codes[$p->code] = $p->pivot->permission_scope;
-            }
+                $acls[$p->code] = array('permission_id'=>$p->pivot->permission_id,'user_type_id'=>$p->pivot->user_type_id,'code'=>$p->code,'user_type'=>$this->attributes['user_type'],'permission_types'=>array($p->pivot->permission_type),'permission_scope'=>$p->pivot->permission_scope);
         }
-        return compact("acls", "acl_codes");
+        return $acls;
     }
 }

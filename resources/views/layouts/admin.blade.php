@@ -138,6 +138,7 @@
                                     <span></span>
                                 </div>
                             </li>
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('REPORTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item start open @if(!(strpos(url()->current(),'/admin/home')===false) || !(strpos(url()->current(),'/admin/dashboard')===false)) active @endif">
                                 <a href="/admin/home" class="nav-link nav-toggle">
                                     <i class="icon-home"></i>
@@ -179,7 +180,8 @@
                                     </li>
                                 </ul>
                             </li>
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('USERS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @endif
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('USERS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/users')===false)) active @endif">
                                 <a href="/admin/users" class="nav-link nav-toggle">
                                     <i class="icon-user"></i>
@@ -188,7 +190,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('BANDS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('BANDS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/bands')===false)) active @endif">
                                 <a href="/admin/bands" class="nav-link nav-toggle">
                                     <i class="icon-music-tone"></i>
@@ -196,7 +198,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('VENUES', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('VENUES', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/venues')===false)) active @endif">
                                 <a href="/admin/venues" class="nav-link nav-toggle">
                                     <i class="icon-pointer"></i>
@@ -204,7 +206,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('SHOWS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('SHOWS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/shows')===false)) active @endif">
                                 <a href="/admin/shows" class="nav-link nav-toggle">
                                     <i class="icon-microphone"></i>
@@ -212,7 +214,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('TYPES', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('TYPES', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/ticket_types')===false)) active @endif">
                                 <a href="/admin/ticket_types" class="nav-link nav-toggle">
                                     <i class="icon-layers"></i>
@@ -220,7 +222,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('COUPONS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('COUPONS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/coupons')===false)) active @endif">
                                 <a href="/admin/coupons" class="nav-link nav-toggle">
                                     <i class="icon-wallet"></i>
@@ -228,7 +230,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('PACKAGES', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('PACKAGES', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/packages')===false)) active @endif">
                                 <a href="/admin/packages" class="nav-link nav-toggle">
                                     <i class="icon-support"></i>
@@ -236,7 +238,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('ACLS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('ACLS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/acls')===false)) active @endif">
                                 <a href="/admin/acls" class="nav-link nav-toggle">
                                     <i class="icon-settings"></i>
@@ -244,7 +246,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/manifests')===false)) active @endif">
                                 <a href="/admin/manifests" class="nav-link nav-toggle">
                                     <i class="icon-envelope"></i>
@@ -252,7 +254,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('CONTACTS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('CONTACTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/contacts')===false)) active @endif">
                                 <a href="/admin/contacts" class="nav-link nav-toggle">
                                     <i class="icon-feed"></i>
@@ -260,7 +262,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('PURCHASES', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('PURCHASES', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/purchases')===false)) active @endif">
                                 <a href="/admin/purchases" class="nav-link nav-toggle">
                                     <i class="icon-basket"></i>
@@ -268,7 +270,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('SLIDERS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('SLIDERS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/sliders')===false)) active @endif">
                                 <a href="/admin/sliders" class="nav-link nav-toggle">
                                     <i class="icon-camera"></i>
@@ -276,7 +278,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('TICKETS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('CONSIGNMENTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/consignments')===false)) active @endif">
                                 <a href="/admin/consignments" class="nav-link nav-toggle">
                                     <i class="icon-tag"></i>
@@ -284,7 +286,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(Auth::user()->user_type->id == 1 || array_key_exists('APPS', Auth::user()->user_type->getACLs()['acl_codes']))
+                            @if(Auth::user()->user_type->id == 1 || array_key_exists('APPS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/apps')===false)) active @endif">
                                 <a href="/admin/apps" class="nav-link nav-toggle">
                                     <i class="icon-calendar"></i>

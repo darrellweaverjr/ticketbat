@@ -455,17 +455,17 @@ var FormValidation = function () {
                 ignore: "", // validate all fields including form hidden input
                 rules: {
                     permission: {
-                        minlength: 4,
+                        minlength: 2,
                         maxlength: 200,
                         required: true
                     },
                     code: {
-                        minlength: 4,
+                        minlength: 2,
                         maxlength: 10,
                         required: true
                     },
                     description: {
-                        minlength: 5,
+                        minlength: 2,
                         maxlength: 1000,
                         required: true
                     }

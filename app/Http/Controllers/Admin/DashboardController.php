@@ -30,6 +30,16 @@ class DashboardController extends Controller
     {
         return $this->ticket_sales();
     }
+    /**
+     * Security method each time to enter.
+     *
+     * @return Method
+     */
+    private function security()
+    {
+        if(!Auth::check() || !array_key_exists('REPORTS', Auth::user()->user_type->getACLs()) || !isset(Auth::user()->user_type->getACLs()['REPORTS']))
+            \Illuminate\Support\Facades\Redirect::to(route('logout'))->send();
+    }
     
     /**
      * Makes where for queries in all report and search values.
@@ -90,36 +100,38 @@ class DashboardController extends Controller
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',$data['search']['soldtime_start_date']];
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',$data['search']['soldtime_end_date']];
         }  
-        //if 5(only his report) 
-        if(Auth::user()->user_type->id == 5)
+        //PERMISSIONS
+        //if user has permission to view
+        if(in_array('View',Auth::user()->user_type->getACLs()['REPORTS']['permission_types']))
         {
-            if(Auth::user()->venues_edit && count(explode(',',Auth::user()->venues_edit)))
+            if(Auth::user()->user_type->getACLs()['REPORTS']['permission_scope'] != 'All')
             {
-                $data['where'][] = [DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.create_user_id'),'=',Auth::user()->id];
-                //add shows and venues for search
-                $data['search']['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
-                $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
-            } 
+                if(Auth::user()->venues_edit && count(explode(',',Auth::user()->venues_edit)))
+                {
+                    $data['where'][] = [DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.create_user_id'),'=',Auth::user()->id];
+                    //add shows and venues for search
+                    $data['search']['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                    $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
+                } 
+                else 
+                {
+                    $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
+                    //add shows and venues for search
+                    $data['search']['venues'] = [];
+                    $data['search']['shows'] = [];
+                }
+            }  
+            //all
             else 
             {
-                $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
                 //add shows and venues for search
-                $data['search']['venues'] = [];
-                $data['search']['shows'] = Show::where('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
-            }
-        }  
-        //if 1 or 6(all reports)
-        else if(Auth::user()->user_type->id == 1 || Auth::user()->user_type->id == 6)
-        {
-            //add shows and venues for search
-            $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
-            $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
-        }  
-        //others check a 0 result query
+                $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
+                $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
+            }  
+        }
         else
         {
-            $data['where'][] = ['shows.id','=',0]; 
-            //add shows and venues for search
+            $data['where'][] = ['purchases.id','=',0];
             $data['search']['venues'] = [];
             $data['search']['shows'] = [];
         }
@@ -135,6 +147,8 @@ class DashboardController extends Controller
     public function ticket_sales()
     {
         try {
+            //security
+            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
@@ -186,6 +200,8 @@ class DashboardController extends Controller
     public function chargebacks()
     {
         try {
+            //security
+            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
@@ -225,6 +241,8 @@ class DashboardController extends Controller
     public function future_liabilities()
     {
         try {
+            //security
+            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
@@ -274,6 +292,8 @@ class DashboardController extends Controller
     public function trend_pace()
     {
         try {
+            //security
+            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = $graph = array();
@@ -336,6 +356,8 @@ class DashboardController extends Controller
     public function referrals()
     {
         try {
+            //security
+            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
