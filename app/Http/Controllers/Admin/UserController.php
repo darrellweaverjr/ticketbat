@@ -20,7 +20,7 @@ use App\Http\Models\Location;
  * @author ivan
  */
 class UserController extends Controller{
-        
+    
     /**
      * List all users and return default view.
      *
@@ -50,16 +50,39 @@ class UserController extends Controller{
             }
             else
             {
-                //get all records        
-                $users = DB::table('users')
+                $user_types = [];
+                $discounts = [];
+                $venues = [];
+                $countries = [];
+                $users = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['USERS']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['USERS']['permission_scope'] != 'All')
+                    {
+                        //get audit user records        
+                        $users = DB::table('users')
+                                ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
+                                ->select('users.id','users.email','users.first_name','users.last_name','users.phone','users.is_active','users.user_type_id','user_types.user_type')
+                                ->where('users.audit_user_id','=',Auth::user()->id)
+                                ->orderBy('users.last_name')
+                                ->get();
+                    }  
+                    else 
+                    {
+                        //get all records        
+                        $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
                                 ->select('users.id','users.email','users.first_name','users.last_name','users.phone','users.is_active','users.user_type_id','user_types.user_type')
                                 ->orderBy('users.last_name')
                                 ->get();
-                $user_types = UserType::orderBy('user_type')->get(['id','user_type','description']);
-                $discounts = Discount::orderBy('code')->get(['id','code','description']);
-                $venues = Venue::orderBy('name')->get(['id','name']);
-                $countries = Country::orderBy('code')->get(['code','name']);
+                    }  
+                    //other enum
+                    $user_types = UserType::orderBy('user_type')->get(['id','user_type','description']);
+                    $discounts = Discount::orderBy('code')->get(['id','code','description']);
+                    $venues = Venue::orderBy('name')->get(['id','name']);
+                    $countries = Country::orderBy('code')->get(['code','name']);
+                }
                 //return view
                 return view('admin.users.index',compact('users','user_types','discounts','venues','countries'));
             }

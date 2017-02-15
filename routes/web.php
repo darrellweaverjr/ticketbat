@@ -25,17 +25,17 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('media/upload_image','ImageController@upload_image'); 
     Route::get('media/preview/{filename}', function ($filename) {return Image::make(storage_path().'/app/tmp/'.$filename)->response();});
     //dashboard
-    Route::match(['get','post'], 'dashboard/ticket_sales', 'DashboardController@ticket_sales');
-    Route::match(['get','post'], 'dashboard/chargebacks', 'DashboardController@chargebacks');
-    Route::match(['get','post'], 'dashboard/future_liabilities', 'DashboardController@future_liabilities');
-    Route::match(['get','post'], 'dashboard/trend_pace', 'DashboardController@trend_pace');
-    Route::match(['get','post'], 'dashboard/referrals', 'DashboardController@referrals');
+    Route::match(['get','post'], 'dashboard/ticket_sales', 'DashboardController@ticket_sales')->middleware('permissions:REPORTS');
+    Route::match(['get','post'], 'dashboard/chargebacks', 'DashboardController@chargebacks')->middleware('permissions:REPORTS');
+    Route::match(['get','post'], 'dashboard/future_liabilities', 'DashboardController@future_liabilities')->middleware('permissions:REPORTS');
+    Route::match(['get','post'], 'dashboard/trend_pace', 'DashboardController@trend_pace')->middleware('permissions:REPORTS');
+    Route::match(['get','post'], 'dashboard/referrals', 'DashboardController@referrals')->middleware('permissions:REPORTS');
     //users
-    Route::post('users/profile', 'UserController@profile');
-    Route::match(['get','post'],'users/impersonate/{user?}/{code?}', 'UserController@impersonate');
-    Route::post('users/save', 'UserController@save');
-    Route::post('users/remove', 'UserController@remove'); 
-    Route::match(['get','post'], 'users', 'UserController@index');
+    Route::post('users/profile', 'UserController@profile')->middleware('permissions:USERS');
+    Route::match(['get','post'],'users/impersonate/{user?}/{code?}', 'UserController@impersonate')->middleware('permissions:USERS');
+    Route::post('users/save', 'UserController@save')->middleware('permissions:USERS');
+    Route::post('users/remove', 'UserController@remove')->middleware('permissions:USERS'); 
+    Route::match(['get','post'], 'users', 'UserController@index')->middleware('permissions:USERS');
     //bands
     Route::post('bands/save', 'BandController@save');
     Route::post('bands/remove', 'BandController@remove');

@@ -30,16 +30,6 @@ class DashboardController extends Controller
     {
         return $this->ticket_sales();
     }
-    /**
-     * Security method each time to enter.
-     *
-     * @return Method
-     */
-    private function security()
-    {
-        if(!Auth::check() || !array_key_exists('REPORTS', Auth::user()->user_type->getACLs()) || !isset(Auth::user()->user_type->getACLs()['REPORTS']))
-            \Illuminate\Support\Facades\Redirect::to(route('logout'))->send();
-    }
     
     /**
      * Makes where for queries in all report and search values.
@@ -147,8 +137,6 @@ class DashboardController extends Controller
     public function ticket_sales()
     {
         try {
-            //security
-            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
@@ -200,8 +188,6 @@ class DashboardController extends Controller
     public function chargebacks()
     {
         try {
-            //security
-            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
@@ -241,8 +227,6 @@ class DashboardController extends Controller
     public function future_liabilities()
     {
         try {
-            //security
-            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
@@ -292,8 +276,6 @@ class DashboardController extends Controller
     public function trend_pace()
     {
         try {
-            //security
-            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = $graph = array();
@@ -356,8 +338,6 @@ class DashboardController extends Controller
     public function referrals()
     {
         try {
-            //security
-            $this->security(); 
             //init
             $input = Input::all();
             $data = $total = array();
