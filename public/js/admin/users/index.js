@@ -47,7 +47,7 @@ var TableDatatablesManaged = function () {
                 }
             ],
             "order": [
-                [0, "asc"]
+                [3, "asc"]
             ] // set first column as a default sort by asc
         });
         
@@ -110,10 +110,21 @@ var TableDatatablesManaged = function () {
         //function on role select
         var toggle_venues_check = function()
         {
-            if($('#form_model_update [name="user_type_id"] option:selected').val()==3)
-                $('#div_model_update_advanced').css('display','none');
+            if($('#form_model_update [name="user_type_id"] option:selected').val()==3)  //customer
+            {
+                $('a[href="#tab_model_update_discounts"]').parent().css('display','none');
+                $('a[href="#tab_model_update_permissions"]').parent().css('display','none');
+            }
             else
-                $('#div_model_update_advanced').css('display','block');
+            {
+                $('a[href="#tab_model_update_discounts"]').parent().css('display','block');
+                $('a[href="#tab_model_update_permissions"]').parent().css('display','block');
+                if($('#form_model_update [name="user_type_id"] option:selected').val()==5)  //show admin
+                    $('#form_model_update select[name="venues_edit[]"]').prop("disabled",false);
+                else
+                    $('#form_model_update select[name="venues_edit[]"]').prop("disabled",true);
+            }
+            $('a[href="#tab_model_update_general"]').click();
         }
         $('#form_model_update [name="user_type_id"]').on('change', function(ev) {
             toggle_venues_check();

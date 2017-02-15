@@ -42,23 +42,24 @@ class UserController extends Controller{
                 foreach($user->user_discounts as $d)
                     $discounts[] = $d->pivot->discount_id;
                 $user->venues_check_ticket = explode(',',$user->venues_check_ticket);
+                $user->venues_edit = explode(',',$user->venues_edit);
                 //dont show these fields
                 unset($user->password);
                 unset($location->id);
-                return ['success'=>true,'user'=>array_merge($user->getAttributes(),$location->getAttributes(),['discounts[]'=>$discounts],['venues_check_ticket[]'=>$user->venues_check_ticket])];
+                return ['success'=>true,'user'=>array_merge($user->getAttributes(),$location->getAttributes(),['discounts[]'=>$discounts],['venues_check_ticket[]'=>$user->venues_check_ticket],['venues_edit[]'=>$user->venues_edit])];
             }
             else
             {
                 //get all records        
                 $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                                ->select('users.*', 'user_types.user_type')
+                                ->select('users.id','users.email','users.first_name','users.last_name','users.phone','users.is_active','users.user_type_id','user_types.user_type')
                                 ->orderBy('users.last_name')
                                 ->get();
-                $user_types = UserType::all();
-                $discounts = Discount::all();
-                $venues = Venue::orderBy('name')->get();
-                $countries = Country::orderBy('code')->get();
+                $user_types = UserType::orderBy('user_type')->get(['id','user_type','description']);
+                $discounts = Discount::orderBy('code')->get(['id','code','description']);
+                $venues = Venue::orderBy('name')->get(['id','name']);
+                $countries = Country::orderBy('code')->get(['code','name']);
                 //return view
                 return view('admin.users.index',compact('users','user_types','discounts','venues','countries'));
             }
@@ -141,7 +142,13 @@ class UserController extends Controller{
                 $user->force_password_reset = $input['force_password_reset'];
                 if(isset($input['venues_check_ticket']) && $input['venues_check_ticket'] && count($input['venues_check_ticket']))
                     $user->venues_check_ticket = implode(',',$input['venues_check_ticket']);
-                $user->set_slug();
+                else
+                    $user->venues_check_ticket = null;
+                if(isset($input['venues_edit']) && $input['venues_edit'] && count($input['venues_edit']))
+                    $user->venues_edit = implode(',',$input['venues_edit']);
+                else
+                    $user->venues_edit = null;
+                //$user->set_slug();
                 $user->save();
                 //update table customers
                 if($customer)
