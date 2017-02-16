@@ -29,18 +29,26 @@
                     </div>
                     <div class="actions">
                         <div class="btn-group">
+                            @if(in_array('Add',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
                             <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search 
                                 <i class="fa fa-search"></i>
                             </button>
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
+                            @endif
+                            @if(in_array('Add',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
                                 <i class="fa fa-plus"></i>
                             </button>
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
+                            @endif
+                            @if(in_array('Edit',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true"> Remove 
+                            @endif
+                            @if(in_array('Delete',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
+                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove 
                                 <i class="fa fa-remove"></i>
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>
