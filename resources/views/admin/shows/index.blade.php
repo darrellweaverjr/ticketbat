@@ -29,7 +29,7 @@
                     </div>
                     <div class="actions">
                         <div class="btn-group">
-                            @if(in_array('Add',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
                             <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search 
                                 <i class="fa fa-search"></i>
                             </button>
