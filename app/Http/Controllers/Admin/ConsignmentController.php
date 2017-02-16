@@ -108,8 +108,41 @@ class ConsignmentController extends Controller{
             }
             else
             {
-                //get all records        
-                $consignments = DB::table('consignments')
+                //if user has permission to view
+                $sellers = [];
+                $venues = [];
+                $stages = [];
+                $status = [];
+                $status_seat = [];
+                $sections = [];
+                $consignments = [];
+                if(in_array('View',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_scope'] != 'All')
+                    {
+                        $consignments = DB::table('consignments')
+                                ->join('users', 'users.id', '=' ,'consignments.seller_id')
+                                ->join('show_times', 'show_times.id', '=' ,'consignments.show_time_id')
+                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                ->leftJoin('seats', 'seats.consignment_id', '=' ,'consignments.id')
+                                ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
+                                ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
+                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
+                                        COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
+                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                ->where(DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.audit_user_id'),'=',Auth::user()->id)
+                                ->where(function ($query) {
+                                    return $query->whereNull('seats.status')
+                                                 ->orWhere('seats.status','<>','Voided');
+                                })
+                                ->groupBy('consignments.id')    
+                                ->orderBy('shows.name','show_times.show_time')
+                                ->get();
+                        $venues = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                    }//all
+                    else
+                    {
+                        $consignments = DB::table('consignments')
                                 ->join('users', 'users.id', '=' ,'consignments.seller_id')
                                 ->join('show_times', 'show_times.id', '=' ,'consignments.show_time_id')
                                 ->join('shows', 'shows.id', '=' ,'show_times.show_id')
@@ -126,17 +159,18 @@ class ConsignmentController extends Controller{
                                 ->groupBy('consignments.id')    
                                 ->orderBy('shows.name','show_times.show_time')
                                 ->get();
-                $sellers = DB::table('users')
+                        $venues = Venue::orderBy('name')->get(['id','name']);
+                    }
+                    $sellers = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
                                 ->select('users.*')
                                 ->where('user_types.user_type','=','Seller')
                                 ->orderBy('users.email')
                                 ->get();
-                $venues = Venue::orderBy('name')->get();
-                $stages = Stage::orderBy('name')->get();
-                $status = Util::getEnumValues('consignments','status');
-                $status_seat = Util::getEnumValues('seats','status');
-                $sections = Util::getEnumValues('tickets','ticket_type');
+                    $status = Util::getEnumValues('consignments','status');
+                    $status_seat = Util::getEnumValues('seats','status');
+                    $sections = Util::getEnumValues('tickets','ticket_type');
+                }
                 //return view
                 return view('admin.consignments.index',compact('consignments','sellers','venues','stages','status','status_seat','sections'));
             }

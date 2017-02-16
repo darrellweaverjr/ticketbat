@@ -25,15 +25,21 @@
                     </div>
                     <div class="actions">                        
                         <div class="btn-group">
+                            @if(in_array('Add',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
                             <button id="btn_model_add" class="btn sbold bg-green"> Add 
                                 <i class="fa fa-plus"></i>
                             </button>
+                            @endif
+                            @if(in_array('Edit',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
                             <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
                                 <i class="fa fa-edit"></i>
                             </button>
+                            @endif
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
                             <button id="btn_model_tickets" class="btn sbold bg-red" disabled="true"> View Tickets 
                                 <i class="fa fa-ticket"></i>
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>
