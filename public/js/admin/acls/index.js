@@ -461,7 +461,7 @@ var FormValidation = function () {
                     },
                     code: {
                         minlength: 2,
-                        maxlength: 10,
+                        maxlength: 20,
                         required: true
                     },
                     description: {
