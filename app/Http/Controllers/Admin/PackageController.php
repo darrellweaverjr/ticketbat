@@ -33,8 +33,19 @@ class PackageController extends Controller{
             }
             else
             {
-                //get all records        
-                $packages = Package::orderBy('title')->get();
+                $packages = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['PACKAGES']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['PACKAGES']['permission_scope'] != 'All')
+                    {
+                        $packages = Package::where('audit_user_id','=',Auth::user()->id)->orderBy('title')->get(['id','title','description']);
+                    }
+                    else
+                    {
+                        $packages = Package::orderBy('title')->get(['id','title','description']);
+                    }
+                }
                 //return view
                 return view('admin.packages.index',compact('packages'));
             }
