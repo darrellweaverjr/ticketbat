@@ -43,11 +43,36 @@ class AclController extends Controller{
             }
             else
             {
-                //get all records        
-                $permissions = Permission::orderBy('code')->get();
-                $user_types = UserType::orderBy('user_type')->get();
-                $permission_types = Util::getEnumValues('user_type_permissions','permission_type');
-                $permission_scopes = Util::getEnumValues('user_type_permissions','permission_scope');
+                $permissions = [];
+                $user_types = [];
+                $permission_types = [];
+                $permission_scopes = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['ACLS']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['ACLS']['permission_scope'] != 'All')
+                    {
+                        $permissions = DB::table('permissions')
+                                        ->join('user_type_permissions', 'user_type_permissions.permission_id', '=' ,'permissions.id')
+                                        ->select('permissions.*')
+                                        ->where('user_type_permissions.audit_user_id','=',Auth::user()->id)
+                                        ->orderBy('permissions.code')
+                                        ->distinct()->get();
+                        $user_types = DB::table('user_types')
+                                        ->join('user_type_permissions', 'user_type_permissions.user_type_id', '=' ,'user_types.id')
+                                        ->select('user_types.*')
+                                        ->where('user_type_permissions.audit_user_id','=',Auth::user()->id)
+                                        ->orderBy('user_types.user_type')
+                                        ->distinct()->get();
+                    }//all
+                    else
+                    {
+                        $permissions = Permission::orderBy('code')->get();
+                        $user_types = UserType::orderBy('user_type')->get();
+                    }
+                    $permission_types = Util::getEnumValues('user_type_permissions','permission_type');
+                    $permission_scopes = Util::getEnumValues('user_type_permissions','permission_scope');
+                }
                 //return view
                 return view('admin.acls.index',compact('permissions','user_types','permission_types','permission_scopes'));
             }
