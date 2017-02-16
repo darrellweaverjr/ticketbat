@@ -89,11 +89,13 @@
                                             <i class="icon-user"></i> My Profile 
                                         </a>
                                     </li>
+                                    @if(Auth::user()->user_type_id == 1)
                                     <li>
                                         <a href="javascript:impersonate();">
                                             <i class="icon-rocket"></i> Impersonate
                                         </a>
                                     </li>
+                                    @endif
                                 </ul>
                             </li>
                             <!-- END USER LOGIN DROPDOWN -->
