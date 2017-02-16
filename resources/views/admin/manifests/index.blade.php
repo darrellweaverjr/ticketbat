@@ -23,6 +23,7 @@
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} EMAILS </span>
                     </div>
                     <div class="actions">
+                        @if(in_array('Other',Auth::user()->user_type->getACLs()['MANIFESTS']['permission_types']))
                         <div id="start_end_date" class="pull-left tooltips btn btn-sm" data-container="body" data-placement="bottom">
                             <i class="icon-calendar"></i>&nbsp;
                             <span class="thin uppercase hidden-xs"> - </span>&nbsp;
@@ -36,6 +37,7 @@
                                 <i class="fa fa-file-pdf-o"></i>
                             </button>
                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="portlet-body">

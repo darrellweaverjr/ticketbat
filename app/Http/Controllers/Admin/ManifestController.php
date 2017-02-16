@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Manifest;
 use App\Http\Models\Util;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -39,16 +40,36 @@ class ManifestController extends Controller{
                 $start_date = date('Y-m-d H:i:s', strtotime('-30 DAY'));
                 $end_date = date('Y-m-d H:i:s');
             }
-            //get all records        
-            $manifests = DB::table('manifest_emails')
-                                ->join('show_times', 'show_times.id', '=' ,'manifest_emails.show_time_id')
-                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                                ->select('manifest_emails.*', 'shows.name', 'show_times.show_time')
-                                ->whereBetween('manifest_emails.created', [$start_date,$end_date])
-                                ->groupBy('show_times.id','manifest_emails.created')
-                                ->orderBy(DB::raw('DATE_FORMAT(manifest_emails.created,"%Y-%m-%d")'),'desc')
-                                ->orderBy('manifest_emails.show_time_id','desc')
-                                ->get();
+             //if user has permission to view
+            $manifests = [];
+            if(in_array('View',Auth::user()->user_type->getACLs()['MANIFESTS']['permission_types']))
+            {
+                if(Auth::user()->user_type->getACLs()['MANIFESTS']['permission_scope'] != 'All')
+                {
+                    $manifests = DB::table('manifest_emails')
+                                        ->join('show_times', 'show_times.id', '=' ,'manifest_emails.show_time_id')
+                                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                        ->select('manifest_emails.*', 'shows.name', 'show_times.show_time')
+                                        ->whereBetween('manifest_emails.created', [$start_date,$end_date])
+                                        ->where(DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.audit_user_id'),'=',Auth::user()->id)
+                                        ->groupBy('show_times.id','manifest_emails.created')
+                                        ->orderBy(DB::raw('DATE_FORMAT(manifest_emails.created,"%Y-%m-%d")'),'desc')
+                                        ->orderBy('manifest_emails.show_time_id','desc')
+                                        ->get();
+                }//all
+                else
+                {     
+                    $manifests = DB::table('manifest_emails')
+                                        ->join('show_times', 'show_times.id', '=' ,'manifest_emails.show_time_id')
+                                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                        ->select('manifest_emails.*', 'shows.name', 'show_times.show_time')
+                                        ->whereBetween('manifest_emails.created', [$start_date,$end_date])
+                                        ->groupBy('show_times.id','manifest_emails.created')
+                                        ->orderBy(DB::raw('DATE_FORMAT(manifest_emails.created,"%Y-%m-%d")'),'desc')
+                                        ->orderBy('manifest_emails.show_time_id','desc')
+                                        ->get();
+                }
+            }
             //return view
             return view('admin.manifests.index',compact('manifests','start_date','end_date'));
         } catch (Exception $ex) {
