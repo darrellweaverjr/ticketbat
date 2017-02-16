@@ -141,11 +141,12 @@
                                                     @endforeach 
                                                 </select>
                                             </td>
-                                            <td width="70%"> 
+                                            <td width="70%" class="mt-checkbox-inline"> 
                                                 @foreach($permission_types as $indexP=>$p)
-                                                    <label class="col-md-2">
-                                                        <input type="checkbox" name="user_type_permissions[{{$t->id}}][permission_type][]" value="{{$indexP}}" /> {{$p}}                                   
-                                                    </label>
+                                                <label class="mt-checkbox">
+                                                    <input type="checkbox" name="user_type_permissions[{{$t->id}}][permission_type][]" value="{{$indexP}}" />
+                                                    {{$p}}<span></span>                                   
+                                                </label>
                                                 @endforeach 
                                             </td> 
                                         </tr>
