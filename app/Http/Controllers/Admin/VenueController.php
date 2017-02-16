@@ -59,45 +59,97 @@ class VenueController extends Controller{
             }
             else
             {      
-                //search with error
-                if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
+                $restrictions = [];
+                $image_types = [];
+                $banner_types = [];
+                $video_types = [];
+                $onlyerrors = 0;
+                $venues = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['VENUES']['permission_types']))
                 {
-                    $onlyerrors = 1;
-                    //get all records        
-                    $venues = DB::table('venues')
-                                ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                                ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                                ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
-                                ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
-                                         'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                         'images.url AS image_url',
-                                         'locations.address','locations.city','locations.state','locations.zip','locations.country')
-                                ->whereNull('stages.id')
-                                ->orWhereNull('images.url')
-                                ->orderBy('venues.name')->groupBy('venues.id')
-                                ->distinct()->get();
+                    if(Auth::user()->user_type->getACLs()['VENUES']['permission_scope'] != 'All')
+                    {
+                        if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
+                        {
+                            $onlyerrors = 1;
+                            //get all records        
+                            $venues = DB::table('venues')
+                                        ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
+                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
+                                        ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
+                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                                 'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
+                                                 'images.url AS image_url',
+                                                 'locations.address','locations.city','locations.state','locations.zip','locations.country')
+                                        ->where('venues.audit_user_id','=',Auth::user()->id)
+                                        ->whereNull('stages.id')
+                                        ->orWhereNull('images.url')
+                                        ->orderBy('venues.name')->groupBy('venues.id')
+                                        ->distinct()->get();
+                        }
+                        else
+                        {
+                            $onlyerrors = 0;
+                            //get all records        
+                            $venues = DB::table('venues')
+                                        ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
+                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
+                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                                 'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
+                                                 'images.url AS image_url',
+                                                 'locations.address','locations.city','locations.state','locations.zip','locations.country')
+                                        ->where('venues.audit_user_id','=',Auth::user()->id)
+                                        ->where('images.image_type','Logo')
+                                        ->orderBy('venues.name')->groupBy('venues.id')
+                                        ->distinct()->get();
+                        }
+                    }  //all elements
+                    else 
+                    {
+                        if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
+                        {
+                            $onlyerrors = 1;
+                            //get all records        
+                            $venues = DB::table('venues')
+                                        ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
+                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
+                                        ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
+                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                                 'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
+                                                 'images.url AS image_url',
+                                                 'locations.address','locations.city','locations.state','locations.zip','locations.country')
+                                        ->whereNull('stages.id')
+                                        ->orWhereNull('images.url')
+                                        ->orderBy('venues.name')->groupBy('venues.id')
+                                        ->distinct()->get();
+                        }
+                        else
+                        {
+                            $onlyerrors = 0;
+                            //get all records        
+                            $venues = DB::table('venues')
+                                        ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
+                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
+                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                                 'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
+                                                 'images.url AS image_url',
+                                                 'locations.address','locations.city','locations.state','locations.zip','locations.country')
+                                        ->where('images.image_type','Logo')
+                                        ->orderBy('venues.name')->groupBy('venues.id')
+                                        ->distinct()->get();
+                        }
+                    }  
+                    //other enum
+                    $restrictions = Util::getEnumValues('venues','restrictions');
+                    $image_types = Util::getEnumValues('images','image_type');
+                    $banner_types = Util::getEnumValues('banners','type');
+                    $video_types = Util::getEnumValues('videos','video_type');
                 }
-                else
-                {
-                    $onlyerrors = 0;
-                    //get all records        
-                    $venues = DB::table('venues')
-                                ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                                ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                                ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
-                                ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
-                                         'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                         'images.url AS image_url',
-                                         'locations.address','locations.city','locations.state','locations.zip','locations.country')
-                                ->where('images.image_type','Logo')
-                                ->orderBy('venues.name')->groupBy('venues.id')
-                                ->distinct()->get();
-                }
-                $restrictions = Util::getEnumValues('venues','restrictions');
-                $image_types = Util::getEnumValues('images','image_type');
-                $banner_types = Util::getEnumValues('banners','type');
-                $video_types = Util::getEnumValues('videos','video_type');
                 //return view
                 return view('admin.venues.index',compact('venues','restrictions','banner_types','image_types','video_types','onlyerrors'));
             }
