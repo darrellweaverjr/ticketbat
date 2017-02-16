@@ -14,7 +14,6 @@ use App\Http\Models\Venue;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Seat;
 use App\Http\Models\Ticket;
-use App\Http\Models\Stage;
 use App\Http\Models\Consignment;
 use App\Http\Models\Purchase;
 use App\Http\Models\Customer;

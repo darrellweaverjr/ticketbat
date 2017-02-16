@@ -658,6 +658,7 @@
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="/themes/admin/assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
+        <script src="/themes/admin/assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
         <script src="/themes/admin/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>

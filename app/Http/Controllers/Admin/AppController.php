@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Deal;
 use App\Http\Models\Show;
 use App\Http\Models\Venue;
@@ -141,15 +142,39 @@ class AppController extends Controller
             //get all
             else
             {
-                $deals = DB::table('deals')
+                //if user has permission to view
+                $shows = [];
+                $venues = [];
+                $discounts = [];
+                $deals = [];
+                if(in_array('View',Auth::user()->user_type->getACLs()['APPS']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['APPS']['permission_scope'] != 'All')
+                    {
+                        $deals = DB::table('deals')
+                                ->leftJoin('shows', 'shows.id', '=' ,'deals.show_id')
+                                ->leftJoin('discounts', 'discounts.id', '=' ,'deals.discount_id')
+                                ->select('deals.*','shows.name','discounts.code')
+                                ->where(DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.audit_user_id'),'=',Auth::user()->id)
+                                ->get();
+                        foreach ($deals as $d)
+                            $d->image_url = Image::view_image($d->image_url);
+                        $shows = Show::where('is_active','>',0)->whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
+                        $venues = Venue::where('is_featured','>',0)->whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                    }//all
+                    else
+                    {
+                        $deals = DB::table('deals')
                                 ->leftJoin('shows', 'shows.id', '=' ,'deals.show_id')
                                 ->leftJoin('discounts', 'discounts.id', '=' ,'deals.discount_id')
                                 ->select('deals.*','shows.name','discounts.code')->get();
-                foreach ($deals as $d)
-                    $d->image_url = Image::view_image($d->image_url);
-                $shows = Show::where('is_active','>',0)->orderBy('name')->get();
-                $venues = Venue::where('is_featured','>',0)->orderBy('name')->get();
-                $discounts = Discount::all();
+                        foreach ($deals as $d)
+                            $d->image_url = Image::view_image($d->image_url);
+                        $shows = Show::where('is_active','>',0)->orderBy('name')->get();
+                        $venues = Venue::where('is_featured','>',0)->orderBy('name')->get();
+                    }
+                    $discounts = Discount::orderBy('code')->get(['id','code','description']);
+                }
                 //return view
                 return view('admin.apps.deals',compact('deals','shows','venues','discounts'));
             }   
