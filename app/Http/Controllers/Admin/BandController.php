@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Category;
 use App\Http\Models\Band;
 use App\Http\Models\Image;
@@ -44,29 +44,39 @@ class BandController extends Controller{
             }
             else
             {
-                if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
+                $categories = [];
+                $onlyerrors = 0;
+                $bands = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['BANDS']['permission_types']))
                 {
-                    $onlyerrors = 1;
-                    //get all records with errors    
-                    $bands = DB::table('bands')
-                                    ->join('categories', 'categories.id', '=' ,'bands.category_id')
-                                    ->select('bands.*', 'categories.name AS category')
-                                    ->whereNull('bands.image_url')
-                                    ->orWhereNull('bands.short_description')
-                                    ->orderBy('categories.name')
-                                    ->get();
+                    if(Auth::user()->user_type->getACLs()['BANDS']['permission_scope'] == 'All')
+                    {
+                        if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
+                        {
+                            $onlyerrors = 1;
+                            //get all records with errors    
+                            $bands = DB::table('bands')
+                                            ->join('categories', 'categories.id', '=' ,'bands.category_id')
+                                            ->select('bands.*', 'categories.name AS category')
+                                            ->whereNull('bands.image_url')
+                                            ->orWhereNull('bands.short_description')
+                                            ->orderBy('categories.name')
+                                            ->get();
+                        }
+                        else
+                        {
+                            $onlyerrors = 0;
+                            //get all records        
+                            $bands = DB::table('bands')
+                                            ->join('categories', 'categories.id', '=' ,'bands.category_id')
+                                            ->select('bands.*', 'categories.name AS category')
+                                            ->orderBy('categories.name')
+                                            ->get();
+                        }
+                        $categories = Category::all();
+                    }  
                 }
-                else
-                {
-                    $onlyerrors = 0;
-                    //get all records        
-                    $bands = DB::table('bands')
-                                    ->join('categories', 'categories.id', '=' ,'bands.category_id')
-                                    ->select('bands.*', 'categories.name AS category')
-                                    ->orderBy('categories.name')
-                                    ->get();
-                }
-                $categories = Category::all();
                 //return view
                 return view('admin.bands.index',compact('bands','categories','onlyerrors','autopen'));
             }
