@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Ticket;
 use App\Http\Models\Util;
 
@@ -43,12 +44,20 @@ class TicketTypeController extends Controller{
             else
             {
                 $tickets = [];
-                foreach ($ticket_types as $tt)
+                $ticket_styles = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
                 {
-                    $t = Ticket::where('ticket_type',$tt)->first();
-                    $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(in_array($tt,$inactives))? '' : 'checked'];
+                    if(Auth::user()->user_type->getACLs()['TYPES']['permission_scope'] == 'All')
+                    {
+                        foreach ($ticket_types as $tt)
+                        {
+                            $t = Ticket::where('ticket_type',$tt)->first();
+                            $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(in_array($tt,$inactives))? '' : 'checked'];
+                        }
+                        $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
+                    }
                 }
-                $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
                 //return view
                 return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles'));
             }

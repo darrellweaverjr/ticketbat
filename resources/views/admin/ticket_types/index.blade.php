@@ -24,18 +24,24 @@
                     </div>
                     <div class="actions">                        
                         <div class="btn-group">
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true"> Add 
+                            @if(in_array('Add',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
                                 <i class="fa fa-plus"></i>
                             </button>
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true"> Edit 
-                                <i class="fa fa-edit"></i><!--
+                            @endif
+                            @if(in_array('Edit',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                                <i class="fa fa-edit"></i>
                             </button>
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true"> Remove 
+                            @endif
+                            <!--<button id="btn_model_remove" class="btn sbold bg-red" disabled="true"> Remove 
                                 <i class="fa fa-remove"></i>
                             </button>-->
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
                             <button id="btn_model_user_type" class="btn sbold bg-purple" disabled="true"> Styles 
                                 <i class="fa fa-deviantart"></i>
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>
