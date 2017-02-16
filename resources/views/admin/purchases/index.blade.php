@@ -94,11 +94,13 @@
                                     @if($previous_color != $color) @if($p->price_paid > 0) $ {{number_format($p->price_paid,2)}} @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
                                 <td width="11%"> 
+                                    @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                                     <select ref="{{$p->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
                                         <option @if($indexS == $p->status) selected @endif value="{{$indexS}}">{{$s}}</option>
                                         @endforeach
                                     </select>
+                                    @else <center>{{$p->status}}</center> @endif
                                 </td> 
                             </tr>
                             <!-- BEGIN DETAILS MODAL--> 
