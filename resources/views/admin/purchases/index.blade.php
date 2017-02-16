@@ -24,6 +24,7 @@
                     </div>
                     <div class="actions"> 
                         <div class="btn-group">
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                             <button id="btn_model_search" class="btn sbold grey-salsa">Search
                                 <i class="fa fa-search"></i>
                             </button>
@@ -33,12 +34,15 @@
                             <button id="btn_model_tickets" class="btn sbold bg-yellow" disabled="true">View Tickets 
                                 <i class="fa fa-ticket"></i>
                             </button>
+                            @endif
+                            @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                             <button id="btn_model_note" class="btn sbold bg-red" disabled="true">Add Note 
                                 <i class="fa fa-edit"></i>
                             </button>
                             <button id="btn_model_move" class="btn sbold bg-purple" disabled="true">Move to Event
                                 <i class="fa fa-arrow-circle-right"></i>
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>

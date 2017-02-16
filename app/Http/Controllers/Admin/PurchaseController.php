@@ -133,8 +133,37 @@ class PurchaseController extends Controller{
                     $where[] = [DB::raw('DATE(purchases.created)'),'>=',$soldtime_start_date];
                     $where[] = [DB::raw('DATE(purchases.created)'),'<=',$soldtime_end_date];
                 } 
-                //get all records  
-                $purchases = DB::table('purchases')
+                //if user has permission to view
+                $status = [];
+                $venues = [];
+                $shows = [];
+                $purchases = [];
+                if(in_array('View',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['PURCHASES']['permission_scope'] != 'All')
+                    {
+                        $purchases = DB::table('purchases')
+                                    ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                                    ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
+                                    ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                                    ->join('shows', 'shows.id', '=', 'show_times.show_id')
+                                    ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                                    ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
+                                    ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                                    ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
+                                            'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
+                                    ->where($where)
+                                    ->where(DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.audit_user_id'),'=',Auth::user()->id)
+                                    ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
+                                    ->get();
+                        $venues = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                        $shows = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
+
+                    }//all
+                    else
+                    {
+                        $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                                     ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
@@ -148,9 +177,11 @@ class PurchaseController extends Controller{
                                     ->where($where)
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->get();
-                $status = Util::getEnumValues('purchases','status');
-                $venues = Venue::orderBy('name')->get(['id','name']);
-                $shows = Show::orderBy('name')->get(['id','name','venue_id']);
+                        $venues = Venue::orderBy('name')->get(['id','name']);
+                        $shows = Show::orderBy('name')->get(['id','name','venue_id']);
+                    }   
+                    $status = Util::getEnumValues('purchases','status');
+                }
                 return view('admin.purchases.index',compact('purchases','status','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
             }
         } catch (Exception $ex) {
