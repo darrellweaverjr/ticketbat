@@ -1329,7 +1329,7 @@ var TableDatatablesManaged = function () {
                     $('#modal_model_update').modal('hide');	   	
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to save the event's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to save the showtime's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     },function(){
@@ -1538,7 +1538,7 @@ var TableDatatablesManaged = function () {
                     $('#modal_model_update').modal('hide');	   	
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the event's information!<br>The request could not be sent to the server.",
+                        text: "There was an error trying to get the showtime's information!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
                     },function(){
@@ -1592,7 +1592,7 @@ var TableDatatablesManaged = function () {
 			$('#modal_model_update').modal('hide');	   	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to get the showtime's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
@@ -1659,7 +1659,7 @@ var TableDatatablesManaged = function () {
 			$('#modal_model_update').modal('hide');	   	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to save the showtime's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
@@ -1738,7 +1738,7 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update').modal('hide');	   	                        
                         swal({                             
                             title: "<span style='color:red;'>Error!</span>",                             
-                            text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",                             
+                            text: "There was an error trying to save the showtime's information!<br>The request could not be sent to the server.",                             
                             html: true,                             
                             type: "error"                         
                         },function(){                             
