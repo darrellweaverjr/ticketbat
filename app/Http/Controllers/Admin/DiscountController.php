@@ -39,18 +39,43 @@ class DiscountController extends Controller{
             }
             else
             {
-                //get all records        
-                $discounts = Discount::orderBy('code')->get();
-                $discounts = DB::table('discounts')
+                //SEARCH
+                $discount_types = [];
+                $discount_scopes = [];
+                $coupon_types = [];
+                $shows = [];
+                $discounts = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['COUPONS']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['COUPONS']['permission_scope'] != 'All')
+                    {
+                        $discounts = DB::table('discounts')
                                 ->leftJoin('purchases', 'purchases.discount_id', '=', 'discounts.id')
-                                ->select(DB::raw('discounts.*, COUNT(purchases.id) AS purchases'))
+                                ->select(DB::raw('discounts.id,discounts.code,discounts.description,discounts.discount_type,discounts.discount_scope,discounts.coupon_type, 
+                                                  COUNT(purchases.id) AS purchases'))
+                                ->where('discounts.audit_user_id','=',Auth::user()->id)
                                 ->groupBy('discounts.id')
                                 ->orderBy('discounts.code')
                                 ->get();
-                $discount_types = Util::getEnumValues('discounts','discount_type');
-                $discount_scopes = Util::getEnumValues('discounts','discount_scope');
-                $coupon_types = Util::getEnumValues('discounts','coupon_type');
-                $shows = Show::orderBy('name')->get();
+                        $shows = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                    }//all
+                    else
+                    {
+                        $discounts = DB::table('discounts')
+                                ->leftJoin('purchases', 'purchases.discount_id', '=', 'discounts.id')
+                                ->select(DB::raw('discounts.id,discounts.code,discounts.description,discounts.discount_type,discounts.discount_scope,discounts.coupon_type, 
+                                                  COUNT(purchases.id) AS purchases'))
+                                ->groupBy('discounts.id')
+                                ->orderBy('discounts.code')
+                                ->get();
+                        $shows = Show::orderBy('name')->get(['id','name']);
+                    }
+                    //enum
+                    $discount_types = Util::getEnumValues('discounts','discount_type');
+                    $discount_scopes = Util::getEnumValues('discounts','discount_scope');
+                    $coupon_types = Util::getEnumValues('discounts','coupon_type');
+                }
                 //return view
                 return view('admin.coupons.index',compact('discounts','discount_types','discount_scopes','coupon_types','shows'));
             }
