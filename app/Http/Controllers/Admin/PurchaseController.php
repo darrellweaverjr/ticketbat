@@ -82,7 +82,7 @@ class PurchaseController extends Controller{
             else
             {
                 //conditions to search
-                $where = [['purchases.status','=','Active']];
+                $where = [['purchases.id','>',0]];
                 //search venue
                 if(isset($input) && isset($input['venue']))
                 {
