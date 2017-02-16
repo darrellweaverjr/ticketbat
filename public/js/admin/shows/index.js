@@ -1346,6 +1346,20 @@ var TableDatatablesManaged = function () {
             $('#subform_show_times').css('display','none');
             $('#modal_model_show_times').modal('show');
         });
+        //open purchases pagen on click when purchase no available
+        $(document).on('click', 'a.link-purchases', function(e){
+            e.preventDefault();
+            var myWindow = window.open('','_blank');
+            myWindow.document.write('<form method="post" id="purchases" action="/admin/purchases" target="_self">\n\
+                    <input type="hidden" name="_token" value="'+$('meta[name="csrf-token"]').attr('content')+'">\n\
+                    <input type="hidden" name="venue" value="">\n\
+                    <input type="hidden" name="show" value="'+$(this).attr('href')+'">\n\
+                    <input type="hidden" name="showtime_start_date" value="'+$(this).attr('rel')+'">\n\
+                    <input type="hidden" name="showtime_end_date" value="'+$(this).attr('rel')+'">\n\
+                    <input type="hidden" name="soldtime_start_date" value="">\n\
+                    <input type="hidden" name="soldtime_end_date" value="">\n\
+               </form><script>document.getElementById("purchases").submit();</script>');
+        });
         $('#available_show_times').on('click', function(ev) {
             $('#tb_show_times').empty();
             $('#tb_show_times').append('<tr><td colspan="5"><center><h3>Checking. Please Wait...</h3></center></td></tr>');
@@ -1378,12 +1392,12 @@ var TableDatatablesManaged = function () {
                                 {
                                     $('#tb_show_times').empty();
                                     $.each(data.dates,function(k, v) {
+                                        var st = moment(v.showtime);
                                         //default style
                                         if(v.available)
                                             var available = '<input type="hidden" name="showtime[]" value="'+v.showtime+'"><span class="label label-sm sbold label-success">Yes</span>';
                                         else
-                                            var available = '<span class="label label-sm sbold label-danger">No</span>';
-                                        var st = moment(v.showtime);
+                                            var available = '<a class="link-purchases" href="'+show_id+'" rel="'+st.format('YYYY-MM-DD')+'"><span class="label label-sm sbold label-danger">No</span></a>';
                                         $('#tb_show_times').append('<tr><td>'+st.format('dddd')+'</td><td>'+st.format('MM/DD/YYYY')+'</td><td>'+st.format('h:mma')+'</td><td><center>'+available+'</center></td><td><input type="button" value="X" class="btn sbold bg-red red"></td></tr>');
                                     });  
                                 }   
