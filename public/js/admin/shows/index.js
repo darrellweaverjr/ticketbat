@@ -870,12 +870,10 @@ var TableDatatablesManaged = function () {
                             for(var key in data.ticket)
                             {
                                 //fill out
-                                var e = $('#form_model_show_tickets [name="'+key+'"]');
-                                if(e.is('input:checkbox'))
-                                    $('#form_model_show_tickets .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.ticket[key])? true : false, true);
-                                else
-                                    e.val(data.ticket[key]);
+                                $('#form_model_show_tickets [name="'+key+'"]').val(data.ticket[key]);
                             }
+                            $('#form_model_show_tickets .make-switch:checkbox[name="is_default"]').bootstrapSwitch('state', (data.ticket.is_default)? true : false, true);
+                            $('#form_model_show_tickets .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.ticket.is_active)? true : false, true);
                             $('#modal_model_show_tickets').modal('show');
                         }
                         else{
@@ -942,7 +940,7 @@ var TableDatatablesManaged = function () {
                                 else
                                     v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
                                 //unlimited tickets
-                                if(v.max_tickets == 0) v.max_tickets = 'Unlimited';
+                                if(v.max_tickets == 0) v.max_tickets = '&#8734;';
                                 //commission$
                                 if(!v.fixed_commission) v.fixed_commission = '0.00';
                                 $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
