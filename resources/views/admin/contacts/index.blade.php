@@ -23,6 +23,7 @@
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} </span>
                     </div>
                     <div class="actions">  
+                        @if(in_array('Other',Auth::user()->user_type->getACLs()['CONTACTS']['permission_types']))
                         <div id="start_end_date" class="pull-left tooltips btn btn-sm" data-container="body" data-placement="bottom">
                             <i class="icon-calendar"></i>&nbsp;
                             <span class="thin uppercase hidden-xs"> - </span>&nbsp;
@@ -30,6 +31,7 @@
                         </div>
                         <div class="btn-group">
                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="portlet-body">
