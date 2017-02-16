@@ -35,10 +35,17 @@ class SliderController extends Controller{
             }
             else
             {      
-                //get all records        
-                $sliders = Slider::orderBy('n_order')->get();
-                foreach ($sliders as $s)
-                    $s->image_url = Image::view_image($s->image_url);
+                //if user has permission to view
+                $sliders = [];
+                if(in_array('View',Auth::user()->user_type->getACLs()['SLIDERS']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['SLIDERS']['permission_scope'] == 'All')
+                    {
+                        $sliders = Slider::orderBy('n_order')->get();
+                        foreach ($sliders as $s)
+                            $s->image_url = Image::view_image($s->image_url);
+                    }
+                }
                 //return view
                 return view('admin.sliders.index',compact('sliders'));
             }
