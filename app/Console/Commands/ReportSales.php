@@ -140,7 +140,7 @@ class ReportSales extends Command
                 $pdf_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $manifest_email = View::make('command.report_sales', compact('data','send','format'));                
                 PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
-
+                
                 //SENDING EMAIL
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Daily Sales Report to '.$namex);
                 $email->cc(env('MAIL_REPORT_CC'));
@@ -149,7 +149,7 @@ class ReportSales extends Command
                 $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
                 $email->attachment($pdf_path);
                 if($send == 'admin')
-                {
+                {   
                     //add resume of types on the email body
                     $format = 'types';
                     $email_body = View::make('command.report_sales', compact('data','send','format'));          
@@ -191,7 +191,7 @@ class ReportSales extends Command
             $progressbar = $this->output->createProgressBar(count($venues));
             foreach ($venues as $venue)
             {   
-                $elements = DB::select($sqlMain.$sqlFrom." AND v.id = ? GROUP BY s.name;",array($venue->id));      
+                $elements = DB::select($sqlMain.$sqlFrom." AND v.id = ? GROUP BY s.name, st.show_time;",array($venue->id));      
                 $types = DB::select($sqlTypes.$sqlFrom." AND v.id = ? GROUP BY payment_type;",array($venue->id));       
                 $result = array('elements'=>$elements,'types'=>calculate_types($types),'total'=>calculate_total($elements),'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
                 if($venue->email && $venue->v_daily_sales_emails==1)

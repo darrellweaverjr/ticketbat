@@ -213,7 +213,10 @@
                   <thead>
                   <tr>
                       <th @if($d['name'] == 'Totals') colspan="2" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW @else VENUE @endif</th>
-                      @if($d['name'] != 'Totals')<th style='text-align:center'>TICKET TYPE</th>@endif
+                      @if($d['name'] != 'Totals')
+                      <th style='text-align:center'>DATE</th>
+                      <th style='text-align:center'>TICKET TYPE</th>
+                      @endif
                       <th style='text-align:center'>QTY</th>
                       <th style='text-align:right'>GROSS REVENUE</th>
                       <th style='text-align:right'>PROCESSING FEE</th>
@@ -225,7 +228,10 @@
                   @foreach($d['elements'] as $e)  
                       <tr>
                           <td @if($d['name'] == 'Totals')colspan="2" @endif>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e->s_name}} @else {{$e->name}} @endif</td>
-                          @if($d['name'] != 'Totals')<td style='text-align:center'>{{$e->ticket_type}}</td>@endif
+                          @if($d['name'] != 'Totals')
+                          <td style='text-align:center'>{{$e->shows_time}}</td>
+                          <td style='text-align:center'>{{$e->ticket_type}}</td>
+                          @endif
                           <td style='text-align:center'>{{number_format($e->qty)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
@@ -236,7 +242,7 @@
                   </tbody>
                   <tfoot>
                       <tr>
-                        <th colspan="2">TOTALS:</th>
+                        <th colspan="3">TOTALS:</th>
                         <th style='text-align:center'>{{$d['total']['t_ticket']}}</th>
                         <th style='text-align:right'>$ {{number_format($d['total']['t_gross_revenue'],2)}}</th>
                         <th style='text-align:right'>$ {{number_format($d['total']['t_processing_fee'],2)}}</th>
