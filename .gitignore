@@ -6,7 +6,6 @@
 /storage/logs
 >>>>>>> 1b8f14402dbd12342a229737875f2db63464ad63
 /vendor
-/storage
 
 /build/logs
 /build/coverage
@@ -27,8 +26,9 @@ composer.phar
 
 /app/config/packages
 /public/packages
-
-
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs/laravel.log
 /node_modules
 
 
