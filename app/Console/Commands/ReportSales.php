@@ -49,7 +49,7 @@ class ReportSales extends Command
 
             $sqlMain = "SELECT v.id as v_id, v.name as v_name, v.accounting_email as v_email, s.id as s_id, s.name as s_name, s.accounting_email as s_email, t.ticket_type,
                         v.daily_sales_emails AS v_daily_sales_emails, s.daily_sales_emails AS s_daily_sales_emails,
-                        DATE_FORMAT(st.show_time,'%m/%d/%Y %h:%s %p') AS shows_time, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, sum(p.retail_price) AS retail_price, 
+                        DATE_FORMAT(st.show_time,'%c/%e/%y %l:%s%p') AS shows_time, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, sum(p.retail_price) AS retail_price, 
                         SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, SUM(p.price_paid) AS gross_revenue, 
                         SUM(p.price_paid) AS total_paid, ROUND(SUM(p.retail_price)-SUM(p.commission_percent),2) AS due_to_show, ROUND(SUM(p.commission_percent),2) AS commission, 
                         (CASE WHEN (p.ticket_type = 'Consignment') THEN p.ticket_type ELSE p.payment_type END) AS method,

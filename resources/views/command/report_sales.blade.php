@@ -212,9 +212,9 @@
               <hr><table class="table table-striped table-responsive">
                   <thead>
                   <tr>
-                      <th @if($d['name'] == 'Totals') colspan="2" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW @else VENUE @endif</th>
+                      <th @if($d['name'] == 'Totals') colspan="3" @endif align='left'>@if($d['type']=='venue' && $d['name'] !='Totals')SHOW @else VENUE @endif</th>
                       @if($d['name'] != 'Totals')
-                      <th style='text-align:center'>DATE</th>
+                      <th style='text-align:center'>DATE/TIME</th>
                       <th style='text-align:center'>TICKET TYPE</th>
                       @endif
                       <th style='text-align:center'>QTY</th>
@@ -227,7 +227,7 @@
                   <tbody>
                   @foreach($d['elements'] as $e)  
                       <tr>
-                          <td @if($d['name'] == 'Totals')colspan="2" @endif>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e->s_name}} @else {{$e->name}} @endif</td>
+                          <td @if($d['name'] == 'Totals')colspan="3" @endif>@if($d['type']=='venue' && $d['name'] !='Totals') {{$e->s_name}} @else {{$e->name}} @endif</td>
                           @if($d['name'] != 'Totals')
                           <td style='text-align:center'>{{$e->shows_time}}</td>
                           <td style='text-align:center'>{{$e->ticket_type}}</td>
