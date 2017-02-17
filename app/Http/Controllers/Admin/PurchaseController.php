@@ -154,7 +154,11 @@ class PurchaseController extends Controller{
                                     ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
                                             'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
                                     ->where($where)
-                                    ->where(DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.audit_user_id'),'=',Auth::user()->id)
+                                    ->where(function($query)
+                                    {
+                                        $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
+                                              ->orWhere('shows.audit_user_id','=',Auth::user()->id);
+                                    })
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->get();
                         $venues = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);

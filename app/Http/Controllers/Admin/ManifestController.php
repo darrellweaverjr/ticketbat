@@ -51,7 +51,11 @@ class ManifestController extends Controller{
                                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                                         ->select('manifest_emails.*', 'shows.name', 'show_times.show_time')
                                         ->whereBetween('manifest_emails.created', [$start_date,$end_date])
-                                        ->where(DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.audit_user_id'),'=',Auth::user()->id)
+                                        ->where(function($query)
+                                        {
+                                            $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
+                                                  ->orWhere('shows.audit_user_id','=',Auth::user()->id);
+                                        })
                                         ->groupBy('show_times.id','manifest_emails.created')
                                         ->orderBy(DB::raw('DATE_FORMAT(manifest_emails.created,"%Y-%m-%d")'),'desc')
                                         ->orderBy('manifest_emails.show_time_id','desc')

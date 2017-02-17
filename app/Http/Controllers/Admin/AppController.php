@@ -155,7 +155,11 @@ class AppController extends Controller
                                 ->leftJoin('shows', 'shows.id', '=' ,'deals.show_id')
                                 ->leftJoin('discounts', 'discounts.id', '=' ,'deals.discount_id')
                                 ->select('deals.*','shows.name','discounts.code')
-                                ->where(DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.audit_user_id'),'=',Auth::user()->id)
+                                ->where(function($query)
+                                {
+                                    $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
+                                          ->orWhere('shows.audit_user_id','=',Auth::user()->id);
+                                })
                                 ->get();
                         foreach ($deals as $d)
                             $d->image_url = Image::view_image($d->image_url);
