@@ -130,37 +130,8 @@
                                 <label class="control-label col-md-2">Code
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-3 show-error">
-                                    <input type="text" name="code" class="form-control" placeholder="0000" /> </div>
-                                <label class="control-label col-md-2">Percent Off
-                                </label>
-                                <div class="col-md-1 show-error">
-                                    <input type="text" name="start_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 0 "/> </div>    
-                                <label class="control-label col-md-3"># of Codes (0 for infinite)
-                                </label>
-                                <div class="col-md-1 show-error">
-                                    <input type="text" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 0 "/> </div>  
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Discount Type
-                                </label>
                                 <div class="col-md-2 show-error">
-                                    <select class="form-control" name="discount_type">
-                                        @foreach($discount_types as $index=>$t)
-                                        <option value="{{$index}}"> {{$t}} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <label class="control-label col-md-2">Discount Scope
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <select class="form-control" name="discount_scope">
-                                        @foreach($discount_scopes as $index=>$t)
-                                        <option value="{{$index}}"> {{$t}} </option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" name="code" class="form-control" placeholder="0000" /> 
                                 </div>
                                 <label class="control-label col-md-2">Coupon Type
                                 </label>
@@ -171,6 +142,37 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <label class="control-label col-md-2"># of Codes (0=&#8734;)
+                                </label>
+                                <div class="col-md-2 show-error">
+                                    <input type="text" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+   event.charCode == 0 "/> </div>  
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Discount Scope
+                                </label>
+                                <div class="col-md-2 show-error">
+                                    <select class="form-control" name="discount_scope">
+                                        @foreach($discount_scopes as $index=>$t)
+                                        <option value="{{$index}}"> {{$t}} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <label class="control-label col-md-2">Discount Type
+                                </label>
+                                <div class="col-md-2 show-error">
+                                    <select class="form-control" name="discount_type">
+                                        @foreach($discount_types as $index=>$t)
+                                        <option value="{{$index}}"> {{$t}} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <label class="control-label col-md-2" id="label_num">Percent Off
+                                </label>
+                                <div class="col-md-2 show-error">
+                                    <input type="text" name="start_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
+                                    <span id="end_num"><input type="text" name="end_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/></span> 
+                                </div>   
                             </div>
                             <hr>
                             <div class="form-group"> 
@@ -239,5 +241,6 @@
 @endsection
 
 @section('scripts') 
+<script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
 <script src="/js/admin/coupons/index.js" type="text/javascript"></script>
 @endsection

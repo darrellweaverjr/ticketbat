@@ -184,6 +184,28 @@ var TableDatatablesManaged = function () {
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
         };
+        //on discount type change
+        $('#form_model_update select[name="discount_type"]').on('change', function(ev) {
+            var v = $(this).val();
+            if(v=='Percent')
+            {
+                $('#label_num').html('Percent Off');
+                $('input[name="start_num"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%'});
+                $('#end_num').css('display','none');
+            }
+            else if(v=='Dollar')
+            {
+                $('#label_num').html('Dollars Off');
+                $('input[name="start_num"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$'});
+                $('#end_num').css('display','none');
+            }
+            else
+            {
+                $('#label_num').html('N Range');
+                $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
+                $('#end_num').css('display','block');
+            }
+        });
         //function add
         $('#btn_model_add').on('click', function(ev) {
             fullReset();
@@ -230,6 +252,7 @@ var TableDatatablesManaged = function () {
                             else
                                 e.val(data.discount[key]);
                         }
+                        $('#form_model_update select[name="discount_type"]').trigger('change');
                         //change default dates
                         var start = moment($('#form_model_update [name="start_date"]').val());
                         var end = moment($('#form_model_update [name="end_date"]').val());
@@ -409,6 +432,10 @@ var TableDatatablesManaged = function () {
         });       
         //init functions
         check_models();        
+        $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
+        $('input[name="end_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
+        $('input[name="quantity"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
+        $('#form_model_update select[name="discount_type"]').trigger('change');
     }
     return {
         //main function to initiate the module

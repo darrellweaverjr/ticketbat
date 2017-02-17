@@ -118,6 +118,7 @@ class DiscountController extends Controller{
                 $discount->start_date = $input['start_date'];
                 $discount->end_date = $input['end_date'];
                 $discount->start_num = $input['start_num'];
+                $discount->end_num = (isset($input['end_num']) && $input['end_num'])? $input['end_num'] : null;
                 $discount->quantity = $input['quantity'];
                 $discount->effective_dates = $input['effective_dates'];
                 if($discount->effective_dates)
