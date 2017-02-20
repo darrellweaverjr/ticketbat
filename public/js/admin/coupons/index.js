@@ -137,6 +137,7 @@ var TableDatatablesManaged = function () {
         //function full reset form
         var fullReset = function(){
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
+            $('#form_model_update select[name="discount_type"]').val($('#form_model_update select[name="discount_type"] option:first').val()).trigger('change');
             $("#form_model_update").trigger('reset');
         };
         //on discount type change
@@ -156,7 +157,7 @@ var TableDatatablesManaged = function () {
             }
             else
             {
-                $('#label_num').html('N Range');
+                $('#label_num').html('Buy');
                 $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
                 $('#end_num').css('display','block');
             }
@@ -390,7 +391,6 @@ var TableDatatablesManaged = function () {
         $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="end_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="quantity"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
-        $('#form_model_update select[name="discount_type"]').trigger('change');
     }
     return {
         //main function to initiate the module

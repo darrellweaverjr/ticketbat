@@ -183,8 +183,15 @@
                                                 </label>
                                                 <div class="col-md-2 show-error">
                                                     <input type="text" name="start_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
-                                                    <span id="end_num"><input type="text" name="end_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/></span> 
-                                                </div>   
+                                                </div>  
+                                                <div id="end_num">
+                                                    <div class="col-md-8"></div>
+                                                    <label class="control-label col-md-2" id="label_num">Get
+                                                    </label>
+                                                    <div class="col-md-2 show-error">
+                                                        <input type="text" name="end_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
+                                                    </div>  
+                                                </div> 
                                             </div>
                                         </div>
                                         <div class="row"><hr>
