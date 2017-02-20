@@ -137,16 +137,17 @@ class DiscountController extends Controller{
                 $discount->start_num = $input['start_num'];
                 $discount->end_num = (isset($input['end_num']) && $input['end_num'])? $input['end_num'] : null;
                 $discount->quantity = $input['quantity'];
-                $discount->effective_dates = $input['effective_dates'];
-                if($discount->effective_dates)
+                if(isset($input['effective_start_date']) && strtotime($input['effective_start_date']) && isset($input['effective_end_date']) && strtotime($input['effective_end_date']))
                 {
                     $discount->effective_start_date = $input['effective_start_date'];
                     $discount->effective_end_date = $input['effective_end_date'];
+                    $discount->effective_dates = 1;
                 }
                 else
                 {
                     $discount->effective_start_date = null;
                     $discount->effective_end_date = null;
+                    $discount->effective_dates = 0;
                 }
                 $discount->coupon_type = $input['coupon_type'];
                 $discount->save();

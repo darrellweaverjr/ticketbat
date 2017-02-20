@@ -81,83 +81,38 @@ var TableDatatablesManaged = function () {
         
         //PERSONALIZED FUNCTIONS
         //start_end_date
-        $('#start_end_date').daterangepicker({
-            "ranges": {
-                'Today': [moment(), moment()],
-                'Tomorrow': [moment().add(1,'days'), moment().add(1,'days')],
-                'Next 7 Days': [moment(), moment().add(6,'days')],
-                'Next 30 Days': [moment(), moment().add(29,'days')],
-                'This Month': [moment(), moment().endOf('month')],
-                'Next Month': [moment().subtract(1,'month').endOf('month'), moment().add(1,'month').startOf('month')]
+        $('#action_dates').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
             },
-            "locale": {
-                "format": "MM/DD/YYYY",
-                "separator": " - ",
-                "applyLabel": "Apply",
-                "cancelLabel": "Cancel",
-                "fromLabel": "From",
-                "toLabel": "To",
-                "customRangeLabel": "Custom",
-                "daysOfWeek": [
-                    "Su",
-                    "Mo",
-                    "Tu",
-                    "We",
-                    "Th",
-                    "Fr",
-                    "Sa"
-                ]
-            },
-//            "startDate": moment().format('MMMM D, YYYY'),
-//            "endDate": moment().add('days', 29).format('MMMM D, YYYY'),
-            opens: (App.isRTL() ? 'right' : 'left'),
-        }, function(start, end, label) {
-            if ($('#start_end_date').attr('data-display-range') != '0') {
-                $('#form_model_update [name="start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_update [name="end_date"]').val(end.format('YYYY-MM-DD'));
-                $('#start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            function (start, end) {
+                $('#form_model_update input[name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_update input[name="end_date"]').val(end.format('YYYY-MM-DD'));
             }
-        });
-        $('#start_end_date').show();        
+        );  
         //effective_start_end_date
-        $('#effective_start_end_date').daterangepicker({
-            "ranges": {
-                'Today': [moment(), moment()],
-                'Tomorrow': [moment().add(1,'days'), moment().add(1,'days')],
-                'Next 7 Days': [moment(), moment().add(6,'days')],
-                'Next 30 Days': [moment(), moment().add(29,'days')],
-                'This Month': [moment(), moment().endOf('month')],
-                'Next Month': [moment().subtract(1,'month').endOf('month'), moment().add(1,'month').startOf('month')]
+        $('#effective_dates').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
             },
-            "locale": {
-                "format": "MM/DD/YYYY",
-                "separator": " - ",
-                "applyLabel": "Apply",
-                "cancelLabel": "Cancel",
-                "fromLabel": "From",
-                "toLabel": "To",
-                "customRangeLabel": "Custom",
-                "daysOfWeek": [
-                    "Su",
-                    "Mo",
-                    "Tu",
-                    "We",
-                    "Th",
-                    "Fr",
-                    "Sa"
-                ]
-            },
-//            "startDate": moment().format('MMMM D, YYYY'),
-//            "endDate": moment().add('days', 29).format('MMMM D, YYYY'),
-            opens: (App.isRTL() ? 'right' : 'left'),
-        }, function(start, end, label) {
-            if ($('#effective_start_end_date').attr('data-display-range') != '0') {
-                $('#form_model_update [name="effective_start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_update [name="effective_end_date"]').val(end.format('YYYY-MM-DD'));
-                $('#effective_start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            function (start, end) {
+                $('#form_model_update input[name="effective_start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_update input[name="effective_end_date"]').val(end.format('YYYY-MM-DD'));
             }
-        });
-        $('#effective_start_end_date').show();        
+        ); 
+        $('#clear_effective_dates').on('click', function(ev) {
+            $('#form_model_update [name="effective_start_date"]').val('');
+            $('#form_model_update [name="effective_end_date"]').val('');
+            $('#effective_dates').datetimepicker('update');
+        }); 
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");

@@ -187,35 +187,44 @@
                                                 </div>   
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="form-group"> 
-                                                <div class="col-md-6 show-error">
-                                                    <input type="hidden"   name="start_date" value="" />
-                                                    <input type="hidden"   name="end_date" value="" />
-                                                    <label class="control-label">Dates Action:
-                                                    </label><br>
-                                                    <div id="start_end_date" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom">
-                                                        <i class="icon-calendar"></i>&nbsp;
-                                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
-                                                        <i class="fa fa-angle-down"></i>
+                                        <div class="row"><hr>
+                                            <div class="form-group col-md-6"> 
+                                                <label class="control-label col-md-4">Dates Action:
+                                                </label>
+                                                <div class="col-md-8 show-error">
+                                                    <div class="input-group" id="action_dates" style="width:275px">
+                                                        <input type="text" class="form-control" name="start_date" value="{{date('Y-m-d')}}" readonly="true">
+                                                        <span class="input-group-addon"> to </span>
+                                                        <input type="text" class="form-control" name="end_date" value="{{date('Y-m-d')}}" readonly="true">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default date-range-toggle" type="button">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </button>
+                                                        </span>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 show-error">
-                                                    <input type="hidden"   name="effective_start_date" value="" />
-                                                    <input type="hidden"   name="effective_end_date" value="" />
-                                                    <label>                                        
-                                                        <input type="hidden"   name="effective_dates" value="0" />
-                                                        <input type="checkbox" name="effective_dates" value="1" /> Use Effective Dates?
-                                                    </label><br>
-                                                    <div id="effective_start_end_date" class="pull-right tooltips btn btn-sm show-error" data-container="body" data-placement="bottom">
-                                                        <i class="icon-calendar"></i>&nbsp;
-                                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
-                                                        <i class="fa fa-angle-down"></i>
+                                            </div>
+                                            <div class="form-group col-md-6"> 
+                                                <label class="control-label col-md-5">Effective Dates:
+                                                </label>
+                                                <div class="col-md-7 show-error">
+                                                    <div class="input-group" id="effective_dates" style="width:313px">
+                                                        <input type="text" class="form-control" name="effective_start_date" value="" readonly="true">
+                                                        <span class="input-group-addon"> to </span>
+                                                        <input type="text" class="form-control" name="effective_end_date" value="" readonly="true">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default date-range-toggle" type="button">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </button>
+                                                            <button class="btn default" type="button" id="clear_effective_dates">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </span>
                                                     </div>
-                                                </div>  
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row"><hr>
                                             <div class="form-group">
                                                 <label class="control-label col-md-2">Description:
                                                     <span class="required"> * </span>
