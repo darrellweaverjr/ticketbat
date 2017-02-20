@@ -126,102 +126,124 @@
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Code
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <input type="text" name="code" class="form-control" placeholder="0000" /> 
-                                </div>
-                                <label class="control-label col-md-2">Coupon Type
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <select class="form-control" name="coupon_type">
-                                        @foreach($coupon_types as $index=>$t)
-                                        <option value="{{$index}}"> {{$t}} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <label class="control-label col-md-2"># of Codes (0=&#8734;)
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <input type="text" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-   event.charCode == 0 "/> </div>  
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Discount Scope
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <select class="form-control" name="discount_scope">
-                                        @foreach($discount_scopes as $index=>$t)
-                                        <option value="{{$index}}"> {{$t}} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <label class="control-label col-md-2">Discount Type
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <select class="form-control" name="discount_type">
-                                        @foreach($discount_types as $index=>$t)
-                                        <option value="{{$index}}"> {{$t}} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <label class="control-label col-md-2" id="label_num">Percent Off
-                                </label>
-                                <div class="col-md-2 show-error">
-                                    <input type="text" name="start_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
-                                    <span id="end_num"><input type="text" name="end_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/></span> 
-                                </div>   
-                            </div>
-                            <hr>
-                            <div class="form-group"> 
-                                <div class="col-md-6 show-error">
-                                    <input type="hidden"   name="start_date" value="" />
-                                    <input type="hidden"   name="end_date" value="" />
-                                    <label class="control-label">Dates Action:
-                                    </label><br>
-                                    <div id="start_end_date" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom">
-                                        <i class="icon-calendar"></i>&nbsp;
-                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
-                                        <i class="fa fa-angle-down"></i>
+                            <div class="tabbable-line">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true">General</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_scope" data-toggle="tab" aria-expanded="false">Scope</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_model_update_general" style="padding:0 20px">    
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Code
+                                                    <span class="required"> * </span>
+                                                </label>
+                                                <div class="col-md-2 show-error">
+                                                    <input type="text" name="code" class="form-control" placeholder="0000" /> 
+                                                </div>
+                                                <label class="control-label col-md-2">Coupon Type
+                                                </label>
+                                                <div class="col-md-2 show-error">
+                                                    <select class="form-control" name="coupon_type">
+                                                        @foreach($coupon_types as $index=>$t)
+                                                        <option value="{{$index}}"> {{$t}} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <label class="control-label col-md-2"># of Codes (0=&#8734;)
+                                                </label>
+                                                <div class="col-md-2 show-error">
+                                                    <input type="text" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
+                   event.charCode == 0 "/> </div>  
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Discount Scope
+                                                </label>
+                                                <div class="col-md-2 show-error">
+                                                    <select class="form-control" name="discount_scope">
+                                                        @foreach($discount_scopes as $index=>$t)
+                                                        <option value="{{$index}}"> {{$t}} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <label class="control-label col-md-2">Discount Type
+                                                </label>
+                                                <div class="col-md-2 show-error">
+                                                    <select class="form-control" name="discount_type">
+                                                        @foreach($discount_types as $index=>$t)
+                                                        <option value="{{$index}}"> {{$t}} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <label class="control-label col-md-2" id="label_num">Percent Off
+                                                </label>
+                                                <div class="col-md-2 show-error">
+                                                    <input type="text" name="start_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
+                                                    <span id="end_num"><input type="text" name="end_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/></span> 
+                                                </div>   
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group"> 
+                                                <div class="col-md-6 show-error">
+                                                    <input type="hidden"   name="start_date" value="" />
+                                                    <input type="hidden"   name="end_date" value="" />
+                                                    <label class="control-label">Dates Action:
+                                                    </label><br>
+                                                    <div id="start_end_date" class="pull-right tooltips btn btn-sm" data-container="body" data-placement="bottom">
+                                                        <i class="icon-calendar"></i>&nbsp;
+                                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 show-error">
+                                                    <input type="hidden"   name="effective_start_date" value="" />
+                                                    <input type="hidden"   name="effective_end_date" value="" />
+                                                    <label>                                        
+                                                        <input type="hidden"   name="effective_dates" value="0" />
+                                                        <input type="checkbox" name="effective_dates" value="1" /> Use Effective Dates?
+                                                    </label><br>
+                                                    <div id="effective_start_end_date" class="pull-right tooltips btn btn-sm show-error" data-container="body" data-placement="bottom">
+                                                        <i class="icon-calendar"></i>&nbsp;
+                                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Description:
+                                                    <span class="required"> * </span>
+                                                </label>
+                                                <div class="col-md-10 show-error">
+                                                    <textarea name="description" class="form-control" rows="4"></textarea>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_scope" style="padding:0 40px">   
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    <span class="required">Coupon Scope [Shows->Tickets->Package]:</span>
+                                                </label>
+                                                <div class="show-error">
+                                                    <select class="form-control" name="tickets[]" multiple="multiple" size="13">
+                                                        @foreach($tickets as $index=>$t)
+                                                        <option value="{{$t->id}}">{{$t->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div> 
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 show-error">
-                                    <input type="hidden"   name="effective_start_date" value="" />
-                                    <input type="hidden"   name="effective_end_date" value="" />
-                                    <label>                                        
-                                        <input type="hidden"   name="effective_dates" value="0" />
-                                        <input type="checkbox" name="effective_dates" value="1" /> Use Effective Dates?
-                                    </label><br>
-                                    <div id="effective_start_end_date" class="pull-right tooltips btn btn-sm show-error" data-container="body" data-placement="bottom">
-                                        <i class="icon-calendar"></i>&nbsp;
-                                        <span class="thin uppercase hidden-xs"> - </span>&nbsp;
-                                        <i class="fa fa-angle-down"></i>
-                                    </div>
-                                </div>  
-                            </div>
-                            <hr>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Description:
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-10 show-error">
-                                    <textarea name="description" class="form-control" rows="4"></textarea>
-                                </div> 
-                            </div>
-                            <hr>
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Coupon Scope [Shows]:
-                                </label>
-                                <div class="col-md-10 show-error">
-                                    <select class="form-control" name="shows[]" multiple="multiple" size="8">
-                                        @foreach($shows as $index=>$s)
-                                        <option value="{{$s->id}}">{{$s->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div> 
-                            </div>
+                            </div>  
                         </div>
                         <div class="form-actions">
                             <div class="row">

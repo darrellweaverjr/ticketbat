@@ -32,10 +32,10 @@ class DiscountController extends Controller{
                 $discount = Discount::find($input['id']);  
                 if(!$discount)
                     return ['success'=>false,'msg'=>'There was an error getting the coupon.<br>Maybe it is not longer in the system.'];
-                $shows = [];
-                foreach($discount->discount_shows as $s)
-                    $shows[] = $s->pivot->show_id;
-                return ['success'=>true,'discount'=>array_merge($discount->getAttributes(),['shows[]'=>$shows])];
+                $tickets = [];
+                foreach($discount->discount_tickets as $s)
+                    $tickets[] = $s->pivot->ticket_id;
+                return ['success'=>true,'discount'=>array_merge($discount->getAttributes(),['tickets[]'=>$tickets])];
             }
             else
             {
@@ -43,7 +43,7 @@ class DiscountController extends Controller{
                 $discount_types = [];
                 $discount_scopes = [];
                 $coupon_types = [];
-                $shows = [];
+                $tickets = [];
                 $discounts = [];
                 //if user has permission to view
                 if(in_array('View',Auth::user()->user_type->getACLs()['COUPONS']['permission_types']))
@@ -58,7 +58,18 @@ class DiscountController extends Controller{
                                 ->groupBy('discounts.id')
                                 ->orderBy('discounts.code')
                                 ->get();
-                        $shows = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                        $tickets = DB::table('tickets')
+                                ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                                ->join('shows', 'shows.id', '=', 'tickets.show_id')
+                                ->select(DB::raw('tickets.id, CONCAT(shows.name," -> ",tickets.ticket_type," -> ",packages.title) AS name'))
+                                ->where(function($query)
+                                {
+                                    $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
+                                          ->orWhere('discounts.audit_user_id','=',Auth::user()->id);
+                                })
+                                ->groupBy('tickets.id')
+                                ->orderBy('shows.name','ASC')
+                                ->get();
                     }//all
                     else
                     {
@@ -69,7 +80,13 @@ class DiscountController extends Controller{
                                 ->groupBy('discounts.id')
                                 ->orderBy('discounts.code')
                                 ->get();
-                        $shows = Show::orderBy('name')->get(['id','name']);
+                        $tickets = DB::table('tickets')
+                                ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                                ->join('shows', 'shows.id', '=', 'tickets.show_id')
+                                ->select(DB::raw('tickets.id, CONCAT(shows.name," -> ",tickets.ticket_type," -> ",packages.title) AS name'))
+                                ->groupBy('tickets.id')
+                                ->orderBy('shows.name','ASC')
+                                ->get();
                     }
                     //enum
                     $discount_types = Util::getEnumValues('discounts','discount_type');
@@ -77,7 +94,7 @@ class DiscountController extends Controller{
                     $coupon_types = Util::getEnumValues('discounts','coupon_type');
                 }
                 //return view
-                return view('admin.coupons.index',compact('discounts','discount_types','discount_scopes','coupon_types','shows'));
+                return view('admin.coupons.index',compact('discounts','discount_types','discount_scopes','coupon_types','tickets'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Discount Index: '.$ex->getMessage());
@@ -133,11 +150,11 @@ class DiscountController extends Controller{
                 }
                 $discount->coupon_type = $input['coupon_type'];
                 $discount->save();
-                //update intermediate table with shows
-                if(isset($input['shows']) && $input['shows'] && count($input['shows']))
-                    $discount->discount_shows()->sync($input['shows']);
+                //update intermediate table with tickets
+                if(isset($input['tickets']) && $input['tickets'] && count($input['tickets']))
+                    $discount->discount_tickets()->sync($input['tickets']);
                 else
-                    $discount->discount_shows()->detach();
+                    $discount->discount_tickets()->detach();
                 //return
                 return ['success'=>true,'msg'=>'Discount saved successfully!'];
             }
@@ -157,9 +174,19 @@ class DiscountController extends Controller{
             //init
             $input = Input::all();
             //delete all records   
-            if(Discount::destroy($input['id']))
-                return ['success'=>true,'msg'=>'All records deleted successfully!'];
-            return ['success'=>false,'msg'=>'There was an error deleting the discount(s)!<br>They might have some dependences.'];
+            foreach ($input['id'] as $id)
+            {
+                $discount = Discount::find($id);
+                if($discount)
+                {
+                    $discount->discount_tickets()->detach();
+                    $discount->discount_shows()->detach();
+                    $discount->user_discounts()->detach();
+                }
+                if(!$discount->delete())
+                    return ['success'=>false,'msg'=>'There was an error deleting the discount(s)!<br>They might have some dependences.'];
+            }
+            return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Discounts Remove: '.$ex->getMessage());
         }
