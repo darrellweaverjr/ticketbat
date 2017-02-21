@@ -48,7 +48,7 @@
         <!-- END PAGE LEVEL PLUGINS -->
         
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.ico" /> 
+        <!--<link rel="shortcut icon" href="favicon.ico" /> -->
         @yield('styles')
     </head>
     <!-- END HEAD -->
