@@ -237,44 +237,69 @@
                                             </div>
                                         </div>
                                         <div class="row" style="padding:0 20px">
-                                            <label class="control-label">Ticket Info
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="show-error">
-                                                <textarea name="ticket_info" class="form-control" rows="2"></textarea>
-                                            </div> 
                                             <label class="control-label">Description:</label>
                                             <div class="show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane" id="tab_model_update_tickets">
+                                    <div class="tab-pane" id="tab_model_update_tickets" style="padding:0 20px">
                                         <div class="row">
-                                            <div class="form-group">
-                                                <label class="control-label col-md-3">Default Fixed Proccessing Fee</label>
-                                                <div class="col-md-3">
-                                                    <input type="text" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                            <label class="control-label">
+                                                <span class="required">Default ticket's values for this venue</span>
+                                            </label><br><br>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default Fixed Proccessing Fee</label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default % Proccessing Fee</label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-md-3">Default % Proccessing Fee</label>
-                                                <div class="col-md-3">
-                                                    <input type="text" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default Fixed Commission</label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" value="0.00" name="default_fixed_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default Commission %</label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="control-label">
+                                                <span class="required">Ticket Info *</span>
+                                            </label>
+                                            <div class="form-group" >
+                                                <div class="show-error" style="padding:20px">
+                                                    <textarea name="ticket_info" class="form-control" rows="2"></textarea>
+                                                </div> 
+                                            </div> 
+                                        </div>
+                                        <div class="row">
+                                            <label class="control-label">
+                                                <span class="required">Cuttoff text</span>
+                                            </label>
                                             <div class="form-group">
-                                                <label class="control-label col-md-3">Default Fixed Commission</label>
-                                                <div class="col-md-3">
-                                                    <input type="text" value="0.00" name="default_fixed_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-md-3">Default Commission %</label>
-                                                <div class="col-md-3">
-                                                    <input type="text" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                                </div>
-                                            </div>
+                                                <div class="show-error" style="padding:20px">
+                                                    <textarea name="cutoff_text" class="form-control" rows="2"></textarea>
+                                                </div> 
+                                            </div> 
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_location">

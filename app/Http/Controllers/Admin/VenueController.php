@@ -210,6 +210,7 @@ class VenueController extends Controller{
                 $venue->yelpbadge = $input['yelpbadge'];
                 $venue->youtube = $input['youtube'];
                 $venue->instagram = $input['instagram'];
+                $venue->cutoff_text = (!empty($input['cutoff_text']))? $input['cutoff_text'] : null;
                 $venue->daily_sales_emails = $input['daily_sales_emails'];
                 $venue->financial_report_emails = $input['financial_report_emails'];
                 $venue->weekly_sales_emails = $input['weekly_sales_emails'];
