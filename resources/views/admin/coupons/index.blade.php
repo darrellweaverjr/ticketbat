@@ -245,15 +245,36 @@
                                     <div class="tab-pane" id="tab_model_update_scope" style="padding:0 40px">   
                                         <div class="row">
                                             <div class="form-group">
-                                                <label class="control-label">
-                                                    <span class="required">Coupon Scope [Shows->Tickets->Package]:</span>
-                                                </label>
-                                                <div class="show-error">
-                                                    <select class="form-control" name="tickets[]" multiple="multiple" size="13">
-                                                        @foreach($tickets as $index=>$t)
-                                                        <option value="{{$t->id}}">{{$t->name}}</option>
-                                                        @endforeach
-                                                    </select>
+                                                <div class="show-error portlet-body" style="max-height:350px;overflow-y: auto;">
+                                                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_ticket">
+                                                        <thead>
+                                                            <tr>
+                                                                <th width="2%"></th>
+                                                                <th width="26%">Venue</th>
+                                                                <th width="26%">Show</th>
+                                                                <th width="14%">Ticket Type</th>
+                                                                <th width="22%">Package</th>
+                                                                <th width="10%">Fix Commission</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($tickets as $index=>$t)
+                                                            <tr>
+                                                                <td width="2%">
+                                                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                                        <input type="checkbox" class="tcheckboxes" value="{{$t->id}}" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td width="26%"><small>{{$t->venue_name}}</small></td>
+                                                                <td width="26%"><small>{{$t->show_name}}</small></td> 
+                                                                <td width="14%"><small>{{$t->ticket_type}}</small></td> 
+                                                                <td width="22%"><small>{{$t->title}}</small></td> 
+                                                                <td width="10%"><center><input class="fix_commission" disabled="true" name="tickets[{{$t->id}}]" value="" style="width:75px" /></center></td> 
+                                                            </tr>
+                                                            @endforeach 
+                                                        </tbody>
+                                                    </table>
                                                 </div> 
                                             </div>
                                         </div>

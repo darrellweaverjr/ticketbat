@@ -44,7 +44,7 @@ class Discount extends Model
      */
     public function discount_tickets()
     {
-        return $this->belongsToMany('App\Http\Models\Ticket','discount_tickets','discount_id','ticket_id');
+        return $this->belongsToMany('App\Http\Models\Ticket','discount_tickets','discount_id','ticket_id')->withPivot('fixed_commission');
     }
     /**
      * The user_discounts that belong to the discount.

@@ -32,10 +32,10 @@ class DiscountController extends Controller{
                 $discount = Discount::find($input['id']);  
                 if(!$discount)
                     return ['success'=>false,'msg'=>'There was an error getting the coupon.<br>Maybe it is not longer in the system.'];
-                $tickets = [];
-                foreach($discount->discount_tickets as $s)
-                    $tickets[] = $s->pivot->ticket_id;
-                return ['success'=>true,'discount'=>array_merge($discount->getAttributes(),['tickets[]'=>$tickets])];
+                $tickets = DB::table('discount_tickets')
+                                ->select('ticket_id AS id','fixed_commission AS fc')
+                                ->where('discount_id','=',$discount->id)->get();
+                return ['success'=>true,'discount'=>$discount,'tickets'=>$tickets];
             }
             else
             {
@@ -61,14 +61,18 @@ class DiscountController extends Controller{
                         $tickets = DB::table('tickets')
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->join('shows', 'shows.id', '=', 'tickets.show_id')
-                                ->select(DB::raw('tickets.id, CONCAT(shows.name," -> ",tickets.ticket_type," -> ",packages.title) AS name'))
+                                ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                                ->select('tickets.id','venues.name AS venue_name','shows.name AS show_name','tickets.ticket_type','packages.title')
+                                ->where('tickets.is_active','=',1)
                                 ->where(function($query)
                                 {
                                     $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
                                           ->orWhere('discounts.audit_user_id','=',Auth::user()->id);
                                 })
                                 ->groupBy('tickets.id')
+                                ->orderBy('venues.name','ASC')
                                 ->orderBy('shows.name','ASC')
+                                ->orderBy('tickets.ticket_type','ASC')
                                 ->get();
                     }//all
                     else
@@ -83,9 +87,13 @@ class DiscountController extends Controller{
                         $tickets = DB::table('tickets')
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->join('shows', 'shows.id', '=', 'tickets.show_id')
-                                ->select(DB::raw('tickets.id, CONCAT(shows.name," -> ",tickets.ticket_type," -> ",packages.title) AS name'))
+                                ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                                ->select('tickets.id','venues.name AS venue_name','shows.name AS show_name','tickets.ticket_type','packages.title')
+                                ->where('tickets.is_active','=',1)
                                 ->groupBy('tickets.id')
+                                ->orderBy('venues.name','ASC')
                                 ->orderBy('shows.name','ASC')
+                                ->orderBy('tickets.ticket_type','ASC')
                                 ->get();
                     }
                     //enum
@@ -109,7 +117,7 @@ class DiscountController extends Controller{
     {
         try {
             //init
-            $input = Input::all();  //dd($input);
+            $input = Input::all();  
             //save all record      
             if($input)
             {
@@ -153,7 +161,16 @@ class DiscountController extends Controller{
                 $discount->save();
                 //update intermediate table with tickets
                 if(isset($input['tickets']) && $input['tickets'] && count($input['tickets']))
-                    $discount->discount_tickets()->sync($input['tickets']);
+                {
+                    $ticket_ids = [];
+                    $discount_tickets = [];
+                    foreach ($input['tickets'] as $ticket_id => $fixed_commission)
+                    {
+                        $ticket_ids[] = $ticket_id;
+                        $discount->discount_tickets()->updateExistingPivot($ticket_id,['fixed_commission'=>(!empty($fixed_commission))? $fixed_commission : null]);
+                    }
+                    $discount->discount_tickets()->sync($ticket_ids);
+                }    
                 else
                     $discount->discount_tickets()->detach();
                 //return

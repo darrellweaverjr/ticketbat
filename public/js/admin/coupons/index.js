@@ -80,6 +80,19 @@ var TableDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS
+        //table tickets
+        $('#tb_ticket').on('click', 'tbody tr td:not(:first-child):not(:last-child)', function () {
+            var action = $(this).parent().find('.tcheckboxes').is(':checked');
+            $(this).parent().find('.tcheckboxes').prop('checked',!action).trigger('change');
+        });
+        $('#tb_ticket .tcheckboxes').on('change', function () {
+            var active = $(this).is(':checked');
+            var value = $(this).val();
+            $('#tb_ticket input[name="tickets['+value+']"]').val('');
+            $('#tb_ticket input[name="tickets['+value+']"]').prop('disabled',!active);
+            if(active) $(this).closest('tr').addClass('warning');
+            else $(this).closest('tr').removeClass();
+        });
         //start_end_date
         $('#action_dates').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
@@ -138,6 +151,7 @@ var TableDatatablesManaged = function () {
         var fullReset = function(){
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $('#form_model_update select[name="discount_type"]').val($('#form_model_update select[name="discount_type"] option:first').val()).trigger('change');
+            $('#tb_ticket .tcheckboxes').prop('checked',false).trigger('change');
             $("#form_model_update").trigger('reset');
         };
         //on discount type change
@@ -200,14 +214,14 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        //fill out discount attrb
                         for(var key in data.discount)
-                        {
-                            var e = $('#form_model_update [name="'+key+'"]');
-                            if(e.is('input:checkbox'))
-                                e.prop('checked',data.discount[key]);
-                            else
-                                e.val(data.discount[key]);
-                        }
+                            $('#form_model_update [name="'+key+'"]').val(data.discount[key]);
+                        //fill out tickets
+                        $.each(data.tickets,function(k, v) {
+                            $('#tb_ticket').find('input:checkbox[value="'+v.id+'"]').prop('checked',true).trigger('change');
+                            $('#tb_ticket input[name="tickets['+v.id+']"]').val(v.fc);
+                        });
                         $('#form_model_update select[name="discount_type"]').trigger('change');
                         //change default dates
                         var start = moment($('#form_model_update [name="start_date"]').val());
@@ -391,6 +405,7 @@ var TableDatatablesManaged = function () {
         $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="end_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="quantity"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
+        $('input.fix_commission').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:999.99,prefix:'$' });
     }
     return {
         //main function to initiate the module
