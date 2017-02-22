@@ -92,6 +92,8 @@ class DashboardController extends Controller
         }  
         //PERMISSIONS
         //if user has permission to view
+        $data['search']['venues'] = [];
+        $data['search']['shows'] = [];
         if(in_array('View',Auth::user()->user_type->getACLs()['REPORTS']['permission_types']))
         {
             if(Auth::user()->user_type->getACLs()['REPORTS']['permission_scope'] != 'All')
@@ -104,12 +106,7 @@ class DashboardController extends Controller
                     $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
                 } 
                 else 
-                {
                     $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
-                    //add shows and venues for search
-                    $data['search']['venues'] = [];
-                    $data['search']['shows'] = [];
-                }
             }  
             //all
             else 
@@ -120,11 +117,7 @@ class DashboardController extends Controller
             }  
         }
         else
-        {
             $data['where'][] = ['purchases.id','=',0];
-            $data['search']['venues'] = [];
-            $data['search']['shows'] = [];
-        }
         //return     
         return $data;
     }
