@@ -245,7 +245,7 @@
                                     <div class="tab-pane" id="tab_model_update_scope" style="padding:0 40px">   
                                         <div class="row">
                                             <div class="form-group">
-                                                <div class="show-error portlet-body" style="max-height:350px;overflow-y: auto;">
+                                                <div class="show-error portlet-body" style="padding:0 15px;max-height:450px;overflow-y: auto;">
                                                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_ticket">
                                                         <thead>
                                                             <tr>

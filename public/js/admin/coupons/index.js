@@ -80,6 +80,22 @@ var TableDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS
+        $('#tb_ticket').dataTable({
+            "language": {
+                "aria": {
+                    "sortAscending": ": activate to sort column ascending",
+                    "sortDescending": ": activate to sort column descending"
+                },
+                "emptyTable": "No data available in table",
+                "infoEmpty": "No records found",
+                "search": "Search:",
+                "zeroRecords": "No matching records found"
+            },
+            "bStateSave": true, 
+            // set the initial value
+            "pageLength": -1,
+            "lengthMenu": [ [-1],["All"] ]
+        });
         //table tickets
         $('#tb_ticket').on('click', 'tbody tr td:not(:first-child):not(:last-child)', function () {
             var action = $(this).parent().find('.tcheckboxes').is(':checked');
