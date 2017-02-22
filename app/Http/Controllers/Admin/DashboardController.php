@@ -98,7 +98,7 @@ class DashboardController extends Controller
         {
             if(Auth::user()->user_type->getACLs()['REPORTS']['permission_scope'] != 'All')
             {
-                if(Auth::user()->venues_edit && count(explode(',',Auth::user()->venues_edit)))
+                if(!empty(Auth::user()->venues_edit) && count(explode(',',Auth::user()->venues_edit)))
                 {
                     $data['where'][] = [DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.create_user_id'),'=',Auth::user()->id];
                     //add shows and venues for search
