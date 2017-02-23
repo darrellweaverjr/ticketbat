@@ -210,8 +210,8 @@
                                         <div class="input-group">
                                             <select class="form-control" name="venue" style="width: 321px !important">
                                                 <option selected value="">All</option>
-                                                @foreach($venues as $index=>$v)
-                                                <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
+                                                @foreach($search['venues'] as $index=>$v)
+                                                <option @if($v->id==$search['venue']) selected @endif value="{{$v->id}}">{{$v->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -221,10 +221,12 @@
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
-                                            <select class="form-control" name="show" style="width: 321px !important">
+                                            <select class="form-control" name="show" style="width: 321px !important" data-content='@php echo str_replace("'"," ",json_encode($search['shows']));@endphp'>
                                                 <option selected value="">All</option>
-                                                @foreach($shows as $index=>$s)
-                                                <option @if($s->id==$show) selected @endif @if(!empty($show) && $venue==$s->venue_id) style="display:block" @else style="display:none" @endif value="{{$s->id}}" rel="{{$s->venue_id}}">{{$s->name}}</option>
+                                                @foreach($search['shows'] as $index=>$s)
+                                                    @if($s->venue_id == $search['venue'] || $s->id==$search['show'])
+                                                    <option @if($s->id==$search['show']) selected @endif value="{{$s->id}}">{{$s->name}}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>
@@ -234,9 +236,9 @@
                                     <label class="control-label col-md-3">Show Time:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group" id="show_times_date">
-                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$showtime_start_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$search['showtime_start_date']}}" readonly="true">
                                             <span class="input-group-addon"> to </span>
-                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$showtime_end_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$search['showtime_end_date']}}" readonly="true">
                                             <span class="input-group-btn">
                                                 <button class="btn default date-range-toggle" type="button">
                                                     <i class="fa fa-calendar"></i>
@@ -252,9 +254,9 @@
                                     <label class="control-label col-md-3">Sold Date:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group" id="sold_times_date">
-                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$soldtime_start_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$search['soldtime_start_date']}}" readonly="true">
                                             <span class="input-group-addon"> to </span>
-                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$soldtime_end_date}}" readonly="true">
+                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$search['soldtime_end_date']}}" readonly="true">
                                             <span class="input-group-btn">
                                                 <button class="btn default date-range-toggle" type="button">
                                                     <i class="fa fa-calendar"></i>

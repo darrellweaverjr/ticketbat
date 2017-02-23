@@ -82,61 +82,62 @@ class PurchaseController extends Controller{
             else
             {
                 //conditions to search
+                $search = [];
                 $where = [['purchases.id','>',0]];
                 //search venue
                 if(isset($input) && isset($input['venue']))
                 {
-                    $venue = $input['venue'];
-                    if($venue != '')
-                        $where[] = ['shows.venue_id','=',$venue];
+                    $search['venue'] = $input['venue'];
+                    if($search['venue'] != '')
+                        $where[] = ['shows.venue_id','=',$search['venue']];
                 }
                 else
-                    $venue = '';
+                    $search['venue'] = '';
                 //search show
                 if(isset($input) && isset($input['show']))
                 {
-                    $show = $input['show'];
-                    if($show != '')
-                        $where[] = ['shows.id','=',$show];
+                    $search['show'] = $input['show'];
+                    if($search['show'] != '')
+                        $where[] = ['shows.id','=',$search['show']];
                 }
                 else
-                    $show = '';
+                    $search['show'] = '';
                 //search showtime
                 if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
                 {
-                    $showtime_start_date = $input['showtime_start_date'];
-                    $showtime_end_date = $input['showtime_end_date'];
+                    $search['showtime_start_date'] = $input['showtime_start_date'];
+                    $search['showtime_end_date'] = $input['showtime_end_date'];
                 }
                 else
                 {
-                    $showtime_start_date = '';
-                    $showtime_end_date = '';
+                    $search['showtime_start_date'] = '';
+                    $search['showtime_end_date'] = '';
                 }
-                if($showtime_start_date != '' && $showtime_end_date != '')
+                if($search['showtime_start_date'] != '' && $search['showtime_end_date'] != '')
                 {
-                    $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$showtime_start_date];
-                    $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$showtime_end_date];
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$search['showtime_start_date']];
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$search['showtime_end_date']];
                 } 
                 //search soldtime
                 if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
                 {
-                    $soldtime_start_date = $input['soldtime_start_date'];
-                    $soldtime_end_date = $input['soldtime_end_date'];
+                    $search['soldtime_start_date'] = $input['soldtime_start_date'];
+                    $search['soldtime_end_date'] = $input['soldtime_end_date'];
                 }
                 else
                 {
-                    $soldtime_start_date = date('Y-m-d', strtotime('-30 DAY'));
-                    $soldtime_end_date = date('Y-m-d');
+                    $search['soldtime_start_date'] = date('Y-m-d', strtotime('-30 DAY'));
+                    $search['soldtime_end_date'] = date('Y-m-d');
                 }
-                if($soldtime_start_date != '' && $soldtime_end_date != '')
+                if($search['soldtime_start_date'] != '' && $search['soldtime_end_date'] != '')
                 {
-                    $where[] = [DB::raw('DATE(purchases.created)'),'>=',$soldtime_start_date];
-                    $where[] = [DB::raw('DATE(purchases.created)'),'<=',$soldtime_end_date];
+                    $where[] = [DB::raw('DATE(purchases.created)'),'>=',$search['soldtime_start_date']];
+                    $where[] = [DB::raw('DATE(purchases.created)'),'<=',$search['soldtime_end_date']];
                 } 
                 //if user has permission to view
                 $status = [];
-                $venues = [];
-                $shows = [];
+                $search['venues'] = [];
+                $search['shows'] = [];
                 $purchases = [];
                 if(in_array('View',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                 {
@@ -165,8 +166,8 @@ class PurchaseController extends Controller{
                                     })
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->get();
-                        $venues = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
-                        $shows = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
+                        $search['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                        $search['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
 
                     }//all
                     else
@@ -189,12 +190,12 @@ class PurchaseController extends Controller{
                                     ->where($where)
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->get();
-                        $venues = Venue::orderBy('name')->get(['id','name']);
-                        $shows = Show::orderBy('name')->get(['id','name','venue_id']);
+                        $search['venues'] = Venue::orderBy('name')->get(['id','name']);
+                        $search['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
                     }   
                     $status = Util::getEnumValues('purchases','status');
                 }
-                return view('admin.purchases.index',compact('purchases','status','venues','shows','venue','show','showtime_start_date','showtime_end_date','soldtime_start_date','soldtime_end_date'));
+                return view('admin.purchases.index',compact('purchases','status','search'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Index: '.$ex->getMessage());
