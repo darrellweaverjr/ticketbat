@@ -125,13 +125,16 @@ var TableDatatablesButtons = function () {
             var venue = $(this).val();
             if(venue && venue != '')
             {
-                $('#form_model_search select[name="show"] option[rel!="'+venue+'"]').css('display','none');
-                $('#form_model_search select[name="show"] option[rel="'+venue+'"]').css('display','block');
-                $('#form_model_search select[name="show"] option[value=""]').css('display','block');
+                //$('#form_model_search select[name="show"] option[rel!="'+venue+'"]').css('display','none');
+                //$('#form_model_search select[name="show"] option[rel="'+venue+'"]').css('display','block');
+                //$('#form_model_search select[name="show"] option[value=""]').css('display','block');
+                $('#form_model_search select[name="show"] option[rel!="'+venue+'"]').attr('disabled', 'disabled').hide();
+                $('#form_model_search select[name="show"] option[rel="'+venue+'"]').removeAttr('disabled').show();
+                $('#form_model_search select[name="show"] option[value=""]').removeAttr('disabled').show();
             }
             else
             {
-                $('#form_model_search select[name="show"] option[value!=""]').css('display','none');
+                $('#form_model_search select[name="show"] option[value!=""]').attr('disabled', 'disabled').hide();
             }
         });
     }
