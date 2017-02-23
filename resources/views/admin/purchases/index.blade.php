@@ -63,13 +63,7 @@
                         <tbody>
                             @php $previous_color = '0' @endphp
                             @foreach($purchases as $index=>$p)
-                                @if($p->transaction_id && is_numeric($p->transaction_id)) 
-                                    @php $color = substr(dechex(crc32($p->transaction_id)),0,6) @endphp
-                                    @php $transaction = true @endphp
-                                @else 
-                                    @php $color = substr(dechex(crc32($p->user_id.floor($p->price_paid*100))),0,6) @endphp
-                                    @php $transaction = false @endphp
-                                @endif
+                                @php $color = substr(dechex(crc32($p->color)),0,6) @endphp
                             <tr>
                                 <td width="2%">
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
@@ -91,7 +85,7 @@
                                 <td width="8%" data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}}</center></td>
                                 <td width="8%" data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}}</center></td>
                                 <td width="5%" style="text-align:right"> 
-                                    @if($previous_color != $color) @if($p->price_paid > 0) $ {{number_format($p->price_paid,2)}} @else @php echo '(Comp)' @endphp @endif @endif
+                                    @if($previous_color != $color) @if($p->amount > 0) $ {{number_format($p->amount,2)}} @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
                                 <td width="11%"> 
                                     @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
@@ -157,7 +151,7 @@
                                                                 <span class="arrow"> </span>
                                                                 <span class="body" style="height:50px"> 
                                                                     <div class="col-md-6"> Retail Price: <b>${{number_format($p->retail_price,2)}}</b><br> Fees: <b>${{number_format($p->processing_fee,2)}}</b><br> Commission: <b>${{number_format($p->commission_percent,2)}}</b></div>
-                                                                    <div class="col-md-6"> Savings: <b>${{number_format($p->savings,2)}}</b><br> Amount: <b>${{number_format($p->price_paid,2)}}</b></div>
+                                                                    <div class="col-md-6"> Savings: <b>${{number_format($p->savings,2)}}</b><br> Amount: <b>${{number_format($p->amount,2)}}</b></div>
                                                                 </span>
                                                             </div>
                                                         </li>

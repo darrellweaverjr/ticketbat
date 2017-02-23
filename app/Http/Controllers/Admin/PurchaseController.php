@@ -151,8 +151,12 @@ class PurchaseController extends Controller{
                                     ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                                    ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
-                                            'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
+                                    ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
+                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
+                                                      IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
+                                                      discounts.code, tickets.ticket_type AS ticket_type_type,
+                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email,
+                                                      show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where($where)
                                     ->where(function($query)
                                     {
@@ -176,8 +180,12 @@ class PurchaseController extends Controller{
                                     ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                                    ->select('purchases.*', 'transactions.card_holder', 'transactions.authcode', 'transactions.refnum', 'transactions.last_4', 'discounts.code', 'tickets.ticket_type AS ticket_type_type', 
-                                            'venues.name AS venue_name', 'customers.first_name', 'customers.last_name', 'customers.email', 'show_times.show_time', 'shows.name AS show_name', 'packages.title')
+                                    ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
+                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
+                                                      IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
+                                                      discounts.code, tickets.ticket_type AS ticket_type_type,
+                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email,
+                                                      show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where($where)
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->get();
