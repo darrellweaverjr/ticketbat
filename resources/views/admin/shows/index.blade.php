@@ -246,9 +246,11 @@
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <select class="form-control" name="stage_id">
+                                                        <select class="form-control" name="stage_id" data-content='@php echo str_replace("'"," ",json_encode($stages));@endphp'>
                                                             @foreach($stages as $index=>$t)
-                                                                <option style = "display:@if(isset($venues[0]) && $venues[0]->id == $t->venue_id) block @else none @endif ;"                         rel="{{$t->venue_id}}" value="{{$t->id}}">{{$t->name}}</option>
+                                                                @if($venues[0]) && $venues[0]->id == $t->venue_id)
+                                                                <option value="{{$t->id}}">{{$t->name}}</option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </div> 

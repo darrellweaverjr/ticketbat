@@ -262,15 +262,14 @@ var TableDatatablesManaged = function () {
             var venue_id = $(this).find('option:selected').val(); 
             var venue_rest = $(this).find('option:selected').attr('rel');
             //show stages
-            if(venue_id && venue_id != '')
+            $('#form_model_update select[name="stage_id"]').html('<option selected value="">All</option>');
+            var stages = $('#form_model_update select[name="stage_id"]').data('content');
+            if(stages)
             {
-                $('#form_model_update select[name="stage_id"] option[rel!="'+venue_id+'"]').css('display','none');
-                $('#form_model_update select[name="stage_id"] option[rel="'+venue_id+'"]').css('display','block');
-                $('#form_model_update select[name="stage_id"]').val($('#form_model_update [name="stage_id"] option[rel="'+venue_id+'"]:first').val());
-            }
-            else
-            {
-                $('#form_model_update select[name="stage_id"] option[value!=""]').css('display','none');
+                $.each(stages,function(k, v) {
+                    if(v.venue_id == venue_id)
+                        $('#form_model_update select[name="stage_id"]').append('<option value="'+v.id+'">'+v.name+'</option>');
+                });
             }
             //show restrictions
             $('#form_model_update [name="restrictions"] option').each(function()
