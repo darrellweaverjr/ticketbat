@@ -175,10 +175,12 @@
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
-                                            <select class="form-control" name="show" style="width: 321px !important">
+                                            <select class="form-control" name="show" style="width: 321px !important" data-content='@php echo str_replace("'"," ",json_encode($search["shows"]));@endphp'>
                                                 <option selected value="">All</option>
                                                 @foreach($search['shows'] as $index=>$s)
-                                                <option @if($s->id==$search['show']) selected @endif @if(!empty($search['show']) && $search['venue']==$s->venue_id) style="display:block" @else style="display:none" @endif value="{{$s->id}}" rel="{{$s->venue_id}}">{{$s->name}}</option>
+                                                    @if($s->venue_id == $search['venue'])
+                                                    <option @if($s->id==$search['show']) selected @endif value="{{$s->id}}">{{$s->name}}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>

@@ -123,18 +123,14 @@ var TableDatatablesButtons = function () {
         //venue on select
         $('#form_model_search select[name="venue"]').bind('change click', function() {
             var venue = $(this).val();
-            if(venue && venue != '')
+            $('#form_model_search select[name="show"]').html('<option selected value="">All</option>');
+            var shows = $('#form_model_search select[name="show"]').data('content');
+            if(shows)
             {
-                //$('#form_model_search select[name="show"] option[rel!="'+venue+'"]').css('display','none');
-                //$('#form_model_search select[name="show"] option[rel="'+venue+'"]').css('display','block');
-                //$('#form_model_search select[name="show"] option[value=""]').css('display','block');
-                $('#form_model_search select[name="show"] option[rel!="'+venue+'"]').attr('disabled', 'disabled').hide();
-                $('#form_model_search select[name="show"] option[rel="'+venue+'"]').removeAttr('disabled').show();
-                $('#form_model_search select[name="show"] option[value=""]').removeAttr('disabled').show();
-            }
-            else
-            {
-                $('#form_model_search select[name="show"] option[value!=""]').attr('disabled', 'disabled').hide();
+                $.each(shows,function(k, v) {
+                    if(v.venue_id == venue)
+                        $('#form_model_search select[name="show"]').append('<option value="'+v.id+'">'+v.name+'</option>');
+                });
             }
         });
     }
