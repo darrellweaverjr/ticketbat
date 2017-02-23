@@ -248,7 +248,7 @@
                                                     <div class="col-md-9 show-error">
                                                         <select class="form-control" name="stage_id" data-content='@php echo str_replace("'"," ",json_encode($stages));@endphp'>
                                                             @foreach($stages as $index=>$t)
-                                                                @if($venues[0]) && $venues[0]->id == $t->venue_id)
+                                                                @if(count($venues) && $venues[0]->id == $t->venue_id)
                                                                 <option value="{{$t->id}}">{{$t->name}}</option>
                                                                 @endif
                                                             @endforeach

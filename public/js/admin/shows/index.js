@@ -262,7 +262,7 @@ var TableDatatablesManaged = function () {
             var venue_id = $(this).find('option:selected').val(); 
             var venue_rest = $(this).find('option:selected').attr('rel');
             //show stages
-            $('#form_model_update select[name="stage_id"]').html('<option selected value="">All</option>');
+            $('#form_model_update select[name="stage_id"]').empty();
             var stages = $('#form_model_update select[name="stage_id"]').data('content');
             if(stages)
             {
