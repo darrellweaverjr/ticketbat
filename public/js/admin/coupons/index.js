@@ -25,7 +25,7 @@ var TableDatatablesManaged = function () {
                 }
             },
             //"ajax": '/admin/users/ajax',
-            "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+            "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
                 [10, 15, 20, -1],
                 [10, 15, 20, "All"] // change per page values here
@@ -82,19 +82,35 @@ var TableDatatablesManaged = function () {
         //PERSONALIZED FUNCTIONS
         $('#tb_ticket').dataTable({
             "language": {
-                "aria": {
-                    "sortAscending": ": activate to sort column ascending",
-                    "sortDescending": ": activate to sort column descending"
-                },
                 "emptyTable": "No data available in table",
                 "infoEmpty": "No records found",
                 "search": "Search:",
                 "zeroRecords": "No matching records found"
             },
+            "buttons": [
+                {
+                    text: 'All <i class="fa fa-search"></i>',
+                    className: 'btn sbold grey-salsa',
+                    action: function () {
+                        $('#tb_ticket').dataTable().fnFilter('');
+                        $('.tcheckboxes:checkbox').parents('tr').show();
+                    }
+                },
+                {
+                    text: 'Checked <i class="fa fa-search"></i>',
+                    className: 'btn sbold grey-salsa',
+                    action: function () {
+                        $('#tb_ticket').dataTable().fnFilter('');
+                        $('.tcheckboxes:checkbox:not(:checked)').parents('tr').hide();
+                    }
+                }
+            ],
             "bStateSave": true, 
             // set the initial value
             "pageLength": -1,
-            "lengthMenu": [ [-1],["All"] ]
+            "lengthMenu": [ [-1],["All"] ],
+            "pagingType": "bootstrap_full_number",
+            "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>"
         });
         //table tickets
         $('#tb_ticket').on('click', 'tbody tr td:not(:first-child):not(:last-child)', function () {
@@ -168,6 +184,7 @@ var TableDatatablesManaged = function () {
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $('#form_model_update select[name="discount_type"]').val($('#form_model_update select[name="discount_type"] option:first').val()).trigger('change');
             $('#tb_ticket .tcheckboxes').prop('checked',false).trigger('change');
+            $('#tb_ticket').dataTable().fnFilter('');
             $("#form_model_update").trigger('reset');
         };
         //on discount type change
@@ -288,6 +305,7 @@ var TableDatatablesManaged = function () {
         });
         //function save
         $('#btn_model_save').on('click', function(ev) {
+            $('#tb_ticket').dataTable().fnFilter('');
             $('#modal_model_update').modal('hide');
             var valid_effective_dates = true;
             if($('#form_model_update [name="effective_dates"]:checkbox').is(':checked')) 
@@ -417,11 +435,11 @@ var TableDatatablesManaged = function () {
             });            
         });       
         //init functions
-        check_models();        
+        check_models();  
+        $('input.fix_commission').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:999.99,prefix:'$' });
         $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="end_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="quantity"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
-        $('input.fix_commission').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:999.99,prefix:'$' });
     }
     return {
         //main function to initiate the module
