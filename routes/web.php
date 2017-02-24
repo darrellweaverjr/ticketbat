@@ -115,7 +115,7 @@ Route::group(['prefix' => 'command','middleware' => 'auth'], function () {
         Artisan::call('Report:manifest');
     })->middleware('permissions:COMMANDS');
     Route::get('ReportSales', function () {
-        Artisan::call('Report:sales',['days'=>100]);
+        Artisan::call('Report:sales',['days'=>100,'onlyadmin'=>1]);
     })->middleware('permissions:COMMANDS');
     Route::get('ReportSalesReceipt', function () {
         Artisan::call('Report:sales_receipt',['days'=>1]);

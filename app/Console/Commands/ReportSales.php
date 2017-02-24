@@ -15,7 +15,7 @@ class ReportSales extends Command
      *
      * @var string
      */
-    protected $signature = 'Report:sales {days=1}';
+    protected $signature = 'Report:sales {days=1} {onlyadmin=0}';
 
     /**
      * The console command description.
@@ -43,6 +43,7 @@ class ReportSales extends Command
     {
         try {
             $days = $this->argument('days');
+            $onlyadmin = $this->argument('onlyadmin');
             ($days == 1)? $bound = ' = ' : $bound = ' >= ';
             $date_report = date("F j, Y", strtotime("yesterday"));
             setlocale(LC_MONETARY, 'en_US');
@@ -198,7 +199,8 @@ class ReportSales extends Command
                 {
                     $dataSend = array();
                     $dataSend[] = $result;
-                    sendEmailReport($dataSend,'regular',$date_report,$sqlMain,$sqlFrom);
+                    if(!$onlyadmin)
+                        sendEmailReport($dataSend,'regular',$date_report,$sqlMain,$sqlFrom);
                 }
                 $resultArray[] = $result;                
                 //advance progress bar
@@ -208,7 +210,8 @@ class ReportSales extends Command
             $progressbar->finish();     
             //create progress bar
             $progressbar = $this->output->createProgressBar(1);
-            sendEmailReport($resultArray,'admin',$date_report,$sqlMain,$sqlFrom);
+            if($onlyadmin)
+                sendEmailReport($resultArray,'admin',$date_report,$sqlMain,$sqlFrom);
             //advance progress bar
             $progressbar->advance(); 
             //finish progress bar
