@@ -132,7 +132,7 @@ Route::group(['prefix' => 'command','middleware' => 'auth'], function () {
         Artisan::call('Shoppingcart:clean',['days'=>10]);
     })->middleware('permissions:COMMANDS');
     Route::get('ShoppingcartRecover', function () {
-        Artisan::call('Shoppingcart:recover');
+        Artisan::call('Shoppingcart:recover',['hours'=>4]);
     })->middleware('permissions:COMMANDS');
     Route::get('ContractUpdateTickets', function () {
         Artisan::call('Contract:update_tickets');

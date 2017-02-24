@@ -14,7 +14,7 @@ class ShoppingcartRecover extends Command
      *
      * @var string
      */
-    protected $signature = 'Shoppingcart:recover';
+    protected $signature = 'Shoppingcart:recover {hours=4}';
 
     /**
      * The console command description.
@@ -41,12 +41,13 @@ class ShoppingcartRecover extends Command
     public function handle()
     {
         try {
+            $hours = $this->argument('hours');
             $sessions = array();    
             $abandoned_carts = DB::select(' SELECT DISTINCT sh.*, u.email, CONCAT(u.first_name," ",u.last_name) AS name, i.url AS image, s.id AS show_id 
                                             FROM shoppingcart sh INNER JOIN users u ON u.id = sh.user_id OR u.email = sh.user_id
                                             INNER JOIN show_times st ON st.id = sh.item_id INNER JOIN shows s ON st.show_id = s.id 
                                             INNER JOIN show_images si ON s.id = si.show_id INNER JOIN images i ON si.image_id
-                                            WHERE sh.status = 0 AND (sh.timestamp + INTERVAL 4 HOUR) <= NOW() AND i.image_type = "Header" GROUP BY id');        
+                                            WHERE sh.status = 0 AND (sh.timestamp + INTERVAL '+$hours+' HOUR) <= NOW() AND i.image_type = "Header" GROUP BY id');        
             //create progress bar
             $progressbar = $this->output->createProgressBar(count($abandoned_carts));
             foreach ($abandoned_carts as $cart)
