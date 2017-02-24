@@ -106,7 +106,7 @@
        <div style="display:none" id="referral_url_json">{{$graph['url']}}</div>
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
-               <div class="portlet-body">
+               <div class="portlet-body responsive">
                    <div id="referral_chart_url" class="chart" style="height:250px;"></div>
                </div>
            </div>
@@ -114,7 +114,7 @@
        
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
-               <div class="portlet-body">
+               <div class="portlet-body responsive">
                    <div id="referral_chart_show" class="chart" style="height:250px;"></div>
                </div>
            </div>

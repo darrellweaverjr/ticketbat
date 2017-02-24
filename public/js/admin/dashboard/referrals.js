@@ -143,7 +143,6 @@ var TableDatatablesButtons = function () {
         // chart url
 	var referral_chart_url = AmCharts.makeChart("referral_chart_url", {
             "type": "pie",
-            //"theme": "light",
             "fontFamily": 'Open Sans',
             "color":    '#888',
             "dataProvider": referral_url,
@@ -163,7 +162,6 @@ var TableDatatablesButtons = function () {
         // chart show
 	var referral_chart_show = AmCharts.makeChart("referral_chart_show", {
             "type": "pie",
-            //"theme": "light",
             "fontFamily": 'Open Sans',
             "color":    '#888',
             "dataProvider": referral_show,

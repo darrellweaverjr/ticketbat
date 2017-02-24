@@ -381,14 +381,14 @@ class DashboardController extends Controller
                                       SUM(purchases.processing_fee+purchases.commission_percent) AS amount'))
                     ->where($where)
                     ->whereNotNull('purchases.referrer_url')
-                    ->groupBy('referral_url')->distinct()->get()->toJson();
+                    ->groupBy('referral_url')->orderBy('amount','ASC')->distinct()->get()->toJson();
             $graph['show'] = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
                     ->where($where)
                     ->whereNotNull('purchases.referrer_url')
-                    ->groupBy('show_name')->distinct()->get()->toJson();
+                    ->groupBy('show_name')->orderBy('amount','ASC')->distinct()->get()->toJson();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
