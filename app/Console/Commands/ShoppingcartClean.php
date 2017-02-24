@@ -40,9 +40,10 @@ class ShoppingcartClean extends Command
     {
         try {
             $days = $this->argument('days');
+            $date = date('Y-m-d', strtotime('-'.$days.' days'));
             //create progress bar
             $progressbar = $this->output->createProgressBar(1);
-            Shoppingcart::where('timestamp','<',date('Y-m-d H:i:s',strtotime('-'.$days.' day',strtotime(date('Y-m-d')))))->delete();
+            Shoppingcart::where('timestamp','<',$date)->delete();
             //advance progress bar
             $progressbar->advance(); 
             //finish progress bar

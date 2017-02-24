@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Mail\EmailSG;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Image;
 
 class ShoppingcartRecover extends Command
 {
@@ -47,20 +48,22 @@ class ShoppingcartRecover extends Command
                                             FROM shoppingcart sh INNER JOIN users u ON u.id = sh.user_id OR u.email = sh.user_id
                                             INNER JOIN show_times st ON st.id = sh.item_id INNER JOIN shows s ON st.show_id = s.id 
                                             INNER JOIN show_images si ON s.id = si.show_id INNER JOIN images i ON si.image_id
-                                            WHERE sh.status = 0 AND (sh.timestamp + INTERVAL '+$hours+' HOUR) <= NOW() AND i.image_type = "Header" GROUP BY id');        
+                                            WHERE sh.status = 0 AND (sh.timestamp + INTERVAL '.$hours.' HOUR) <= NOW() AND i.image_type = "Header" GROUP BY id');        
             //create progress bar
             $progressbar = $this->output->createProgressBar(count($abandoned_carts));
             foreach ($abandoned_carts as $cart)
             {
-                if(substr($cart->image,0,1)=='/') $cart->image = url()->current().$cart->image;    
+                $cart->image = Image::view_image($cart->image);
                 $image = '<img src="'.$cart->image.'" />';    
                 if(isset($sessions[$cart->session_id]) && strpos($sessions[$cart->session_id]['images'], $image)===false) $sessions[$cart->session_id]['images'].=$image; 
-                else $sessions[$cart->session_id] = array('name'=>$cart->name,'email'=>$cart->email,'link'=>url()."/shoppingcart/viewcart/".$cart->session_id,'images'=>$image); 
-            }        
+                else $sessions[$cart->session_id] = array('name'=>$cart->name,'email'=>$cart->email,'link'=>env('IMAGE_URL_OLDTB_SERVER')."/shoppingcart/viewcart/".$cart->session_id,'images'=>$image); 
+            }     
+            //send email
+            //dd($sessions);
             foreach ($sessions as $s_id => $s) 
-            {   
-                $dataSendEmail = array('name'=>$s['name'],'email'=>$s['email'],'link'=>url()->current()."/shoppingcart/viewcart/".$s_id,'images'=>$s['images']);
-                $email = new EmailSG(env('MAIL_REMINDER_FROM'),$s['email'],env('MAIL_REMINDER_SUBJECT'));
+            {   $s['email'] = 'ivan@ticketbat.com';
+                $dataSendEmail = array('name'=>$s['name'],'email'=>$s['email'],'link'=>env('IMAGE_URL_OLDTB_SERVER')."/shoppingcart/viewcart/".$s_id,'images'=>$s['images']);
+                $email = new EmailSG(['TicketBat Admin',env('MAIL_REMINDER_FROM')],$s['email'],env('MAIL_REMINDER_SUBJECT'));
                 $email->cc(env('MAIL_REMINDER_CC'));
                 $email->body('recover_cart',$dataSendEmail);
                 $email->category('Reminder');
