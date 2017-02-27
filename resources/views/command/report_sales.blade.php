@@ -129,6 +129,67 @@
                 @endforeach
                 </tbody>
             </table>
+        @elseif($format == 'future_liabilities')
+            @foreach($data as $d)
+            <div style="page-break-after:always;">
+              <h1>TicketBat.com</h1>
+              <p><h3>Future Liabilities @if($d['name'] == 'Totals') Total @else For Venue: <i>{{$d['name']}}</i> @endif</h3></p>
+              <p><h3>Date: <i>{{$d['date']}}</i></h3></p>
+                <table class="table table-striped table-responsive">
+                  <thead>
+                  <tr>
+                      @if($d['name'] != 'Totals')
+                      <th>SHOW</th>
+                      <th style='text-align:center'>PURCHASES</th>
+                      <th style='text-align:center'>QTY</th>
+                      <th style='text-align:right'>GROSS REVENUE</th>
+                      <th style='text-align:right'>PROCESSING FEE</th>
+                      <th style='text-align:right'>TB COMMISSION<br>EXPENSE</th>
+                      <th style='text-align:right'>TB RETAINS</th>
+                      @else
+                      <th>VENUE</th>
+                      <th>SHOW</th>
+                      <th style='text-align:center'>PURCHASES</th>
+                      <th style='text-align:center'>QTY</th>
+                      <th style='text-align:right'>GROSS REVENUE</th>
+                      <th style='text-align:right'>PROCESSING FEE</th>
+                      <th style='text-align:right'>COMMISSION</th>
+                      <th style='text-align:right'>GROSS PROFIT</th>
+                      @endif
+                  </tr>
+                  </thead>
+                  <tbody>
+                  @foreach($d['future'] as $e)  
+                      <tr>
+                          @if($d['name'] != 'Totals')
+                          <td>{{$e->s_name}}</td>
+                          @else
+                          <td>{{$e->v_name}}</td>
+                          <td>{{$e->s_name}}</td>
+                          @endif
+                          <td style='text-align:center'>{{number_format($e->purchase_count)}}</td>
+                          <td style='text-align:center'>{{number_format($e->qty)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->net,2)}}</td>
+                      </tr>
+                  @endforeach
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                        <th @if($d['name'] == 'Totals') colspan="2" @endif>TOTALS:</th>
+                        <th style='text-align:center'>{{$d['future_t']['t_purchases']}}</th>
+                        <th style='text-align:center'>{{$d['future_t']['t_ticket']}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['future_t']['t_gross_revenue'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['future_t']['t_processing_fee'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['future_t']['t_commission'],2)}}</th>
+                        <th style='text-align:right'>$ {{number_format($d['future_t']['t_net'],2)}}</th>
+                      </tr>
+                  </tfoot>
+              </table>
+            </div>
+            @endforeach
         @elseif($format == 'types')
             @if(isset($data[0]['types']))
               <h1><center>TicketBat.com</center></h1>
