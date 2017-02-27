@@ -25,7 +25,7 @@ var TableDatatablesManaged = function () {
                 }
             },
             //"ajax": '/admin/users/ajax',
-            "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
+            "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
                 [10, 15, 20, -1],
                 [10, 15, 20, "All"] // change per page values here
@@ -105,7 +105,7 @@ var TableDatatablesManaged = function () {
                     }
                 }
             ],
-            "bStateSave": true, 
+            "bStateSave": false, 
             // set the initial value
             "pageLength": -1,
             "lengthMenu": [ [-1],["All"] ],
