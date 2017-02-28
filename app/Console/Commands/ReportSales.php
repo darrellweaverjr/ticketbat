@@ -45,7 +45,9 @@ class ReportSales extends Command
             $days = $this->argument('days');
             $onlyadmin = $this->argument('onlyadmin');
             ($days == 1)? $bound = ' = ' : $bound = ' >= ';
-            $date_report = date("F j, Y", strtotime("yesterday"));
+            //$date_report = date("F j, Y", strtotime('yesterday'));
+            $date_report = date("F j, Y", strtotime('- '.$days.' day')).' to '.date("F j, Y", strtotime('yesterday'));
+            //dd($date_report);
             setlocale(LC_MONETARY, 'en_US');
 
             $sqlMain = "SELECT v.id as v_id, v.name as v_name, v.accounting_email as v_email, s.id as s_id, s.name as s_name, s.accounting_email as s_email, t.ticket_type,
@@ -159,7 +161,7 @@ class ReportSales extends Command
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Daily Sales Report to '.$namex);
                 $email->cc(env('MAIL_REPORT_CC'));
                 $email->category('Reports');
-                $email->body('sales_report',array('date'=>date('m/d/Y',strtotime($date_report))));
+                $email->body('sales_report',array('date'=>$date_report));
                 $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
                 $email->attachment($pdf_path);
                 $email->attachment($pdf_future_path);

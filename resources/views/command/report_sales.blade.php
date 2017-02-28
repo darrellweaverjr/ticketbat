@@ -104,7 +104,7 @@
     <body style="font-size:10px">
         @if($format == 'referrer')
             <h1>TicketBat.com</h1>
-            <p>Sales For {{$date_report}}</p>
+            <h3>Referrer Sales<br><i>{{$date_report}}</i></h3>
             <table class="table table-striped table-responsive">
                 <thead>
                 <tr>
@@ -133,8 +133,7 @@
             @foreach($data as $d)
             <div style="page-break-after:always;">
               <h1>TicketBat.com</h1>
-              <p><h3>Future Liabilities @if($d['name'] == 'Totals') Total @else For Venue: <i>{{$d['name']}}</i> @endif</h3></p>
-              <p><h3>Date: <i>{{$d['date']}}</i></h3></p>
+              <h3>Future Liabilities @if($d['name'] == 'Totals') Total @else For Venue: <i>{{$d['name']}}</i> @endif<br><i>{{$d['date']}}</i></h3>
                 <table class="table table-striped table-responsive">
                   <thead>
                   <tr>
@@ -236,12 +235,7 @@
             @foreach($data as $d)
             <div style="page-break-after:always;">
               <h1>TicketBat.com</h1>
-              @if($d['name'] == 'Totals')
-              <p><h3>Total Sales</h3></p>
-              @else
-              <p><h3>Sales For @if($d['type']=='venue')Venue @else Show @endif : <i>{{$d['name']}}</i></h3></p>
-              @endif
-              <p><h3>Date: <i>{{$d['date']}}</i></h3></p>
+              <h3>Sales @if($d['name'] == 'Totals') Total @else For @if($d['type']=='venue')Venue @else Show @endif: <i>{{$d['name']}}</i> @endif<br><i>{{$d['date']}}</i></h3>
              @if(isset($d['types']))
               <hr><table class="table table-striped table-responsive">
                   <thead>
