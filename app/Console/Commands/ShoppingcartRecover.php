@@ -59,9 +59,8 @@ class ShoppingcartRecover extends Command
                 else $sessions[$cart->session_id] = array('name'=>$cart->name,'email'=>$cart->email,'link'=>env('IMAGE_URL_OLDTB_SERVER')."/shoppingcart/viewcart/".$cart->session_id,'images'=>$image); 
             }     
             //send email
-            //dd($sessions);
             foreach ($sessions as $s_id => $s) 
-            {   $s['email'] = 'ivan@ticketbat.com';
+            {   
                 $dataSendEmail = array('name'=>$s['name'],'email'=>$s['email'],'link'=>env('IMAGE_URL_OLDTB_SERVER')."/shoppingcart/viewcart/".$s_id,'images'=>$s['images']);
                 $email = new EmailSG(['TicketBat Admin',env('MAIL_REMINDER_FROM')],$s['email'],env('MAIL_REMINDER_SUBJECT'));
                 $email->cc(env('MAIL_REMINDER_CC'));
