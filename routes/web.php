@@ -102,10 +102,8 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'apps', 'AppController@index')->middleware('permissions:APPS');
 });
 //ADMIN ROUTES FOR APP
-Route::group(['prefix' => 'app',/*'middleware' => 'auth',*/'namespace' => 'App'], function () {
+Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], function () {
     //apps config
-    //Route::post('contracts/save', 'xxxController@save');
-    //Route::post('contracts/remove', 'xxxController@remove');
     Route::match(['get','post'], 'shows', 'AppController@shows');
     Route::match(['get','post'], 'venues', 'AppController@venues');
 });
