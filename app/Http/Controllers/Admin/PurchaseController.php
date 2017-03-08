@@ -156,7 +156,7 @@ class PurchaseController extends Controller{
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,
-                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email,
+                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email, customers.phone,
                                                       show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where($where)
                                     ->where(function($query)
@@ -185,7 +185,7 @@ class PurchaseController extends Controller{
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,
-                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email,
+                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email, customers.phone,
                                                       show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where($where)
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')

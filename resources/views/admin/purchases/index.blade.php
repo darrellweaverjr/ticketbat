@@ -115,6 +115,7 @@
                                                                 <span class="body" style="margin-left:15px"> 
                                                                     Name: <b>@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</b> 
                                                                     <br> Email: <b><a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></b>
+                                                                    <br> Phone: <b>{{$p->phone}}</b>
                                                                 </span>
                                                             </div>
                                                         </li>
