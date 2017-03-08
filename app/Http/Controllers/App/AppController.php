@@ -24,7 +24,7 @@ class AppController extends Controller{
                     ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
                     ->join('images', 'show_images.image_id', '=' ,'images.id')
                     ->select('shows.id','shows.venue_id','shows.name','images.url')
-                    ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                    ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                     ->whereNotNull('images.url')
                     ->orderBy('shows.name')->groupBy('shows.id')
                     ->distinct()->get();
@@ -42,7 +42,7 @@ class AppController extends Controller{
                     ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
                     ->join('images', 'venue_images.image_id', '=' ,'images.id')
                     ->select('venues.id','venues.name','images.url')
-                    ->where('venues.is_featured','>',0)
+                    ->where('venues.is_featured','>',0)->where('images.image_type','=','Logo')
                     ->whereNotNull('images.url')
                     ->orderBy('venues.name')->groupBy('venues.id')
                     ->distinct()->get();
