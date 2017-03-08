@@ -144,7 +144,7 @@
                       <th style='text-align:right'>GROSS REVENUE</th>
                       <th style='text-align:right'>PROCESSING FEE</th>
                       <th style='text-align:right'>TB COMMISSION<br>EXPENSE</th>
-                      <th style='text-align:right'>TB RETAINS</th>
+                      <th style='text-align:right'>NET TO SHOW</th>
                       @else
                       <th>VENUE</th>
                       <th>SHOW</th>
@@ -171,7 +171,11 @@
                           <td style='text-align:right'>$ {{number_format($e->gross_revenue,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->processing_fee,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->commission,2)}}</td>
+                          @if($d['name'] != 'Totals')
                           <td style='text-align:right'>$ {{number_format($e->net,2)}}</td>
+                          @else
+                          <td style='text-align:right'>$ {{number_format($e->processing_fee+$e->commission,2)}}</td>
+                          @endif
                       </tr>
                   @endforeach
                   </tbody>
