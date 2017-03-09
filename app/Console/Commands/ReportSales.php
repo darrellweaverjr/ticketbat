@@ -140,7 +140,7 @@ class ReportSales extends Command
                             $types[] = (object)['payment_type'=>$t->payment_type,'qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
                     } 
                     //result array
-                    $future = DB::select($sqlMain.$sqlFuture." GROUP BY v.id, s.id;");
+                    $future = DB::select($sqlMain.$sqlFuture." GROUP BY st.show_time, v.id, s.id;");
                     $result = array('elements'=>$elements,'total'=>calculate_total($elements),'future'=>$future,'future_t'=>calculate_total($future),'types'=>calculate_types($types),'name'=>'Totals','email'=>' ','type'=>'venue','date'=>$date_report);
                     array_unshift($data,$result);
                 }
@@ -210,7 +210,7 @@ class ReportSales extends Command
             foreach ($venues as $venue)
             {   
                 $elements = DB::select($sqlMain.$sqlFrom." AND v.id = ? GROUP BY s.id, st.show_time ORDER BY s.name;",array($venue->id));   
-                $future = DB::select($sqlMain.$sqlFuture." AND v.id = ? GROUP BY s.id ORDER BY s.name;",array($venue->id));
+                $future = DB::select($sqlMain.$sqlFuture." AND v.id = ? GROUP BY st.show_time,s.id ORDER BY st.show_time,s.name;",array($venue->id));
                 $types = DB::select($sqlTypes.$sqlFrom." AND v.id = ? GROUP BY payment_type;",array($venue->id));       
                 $result = array('elements'=>$elements,'total'=>calculate_total($elements),'future'=>$future,'future_t'=>calculate_total($future),'types'=>calculate_types($types),'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
                 if($venue->email && $venue->v_daily_sales_emails==1)

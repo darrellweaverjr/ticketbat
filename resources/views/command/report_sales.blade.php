@@ -137,6 +137,7 @@
                 <table class="table table-striped table-responsive">
                   <thead>
                   <tr>
+                      <th>DATE/TIME</th>
                       @if($d['name'] != 'Totals')
                       <th>SHOW</th>
                       <th style='text-align:center'>PURCHASES</th>
@@ -160,6 +161,7 @@
                   <tbody>
                   @foreach($d['future'] as $e)  
                       <tr>
+                          <td>{{$e->shows_time}}</td>
                           @if($d['name'] != 'Totals')
                           <td>{{$e->s_name}}</td>
                           @else
@@ -181,7 +183,7 @@
                   </tbody>
                   <tfoot>
                       <tr>
-                        <th @if($d['name'] == 'Totals') colspan="2" @endif>TOTALS:</th>
+                        <th @if($d['name'] == 'Totals') colspan="3" @else colspan="2" @endif>TOTALS:</th>
                         <th style='text-align:center'>{{$d['future_t']['t_purchases']}}</th>
                         <th style='text-align:center'>{{$d['future_t']['t_ticket']}}</th>
                         <th style='text-align:right'>$ {{number_format($d['future_t']['t_gross_revenue'],2)}}</th>
