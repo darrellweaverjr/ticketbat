@@ -104,8 +104,9 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 //ADMIN ROUTES FOR APP
 Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], function () {
     //apps config
-    Route::match(['get','post'], 'shows', 'AppController@shows');
-    Route::match(['get','post'], 'venues', 'AppController@venues');
+    Route::get('cities', 'AppController@cities');
+    Route::get('shows/{id?}/{venue_id?}', 'AppController@shows');
+    Route::get('venues', 'AppController@venues');
 });
 //COMMAND ROUTES
 Route::group(['prefix' => 'command','middleware' => 'auth'], function () {
