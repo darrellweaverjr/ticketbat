@@ -1059,6 +1059,8 @@ class ShowController extends Controller{
                 $contract = new ShowContract;
                 if($file)
                     $contract->set_file($file);
+                else 
+                    return ['success'=>false,'msg'=>'There was an error saving the contract.<br>There is no file to upload.'];
                 $contract->show_id = $input['show_id'];
                 $contract->effective_date = $input['effective_date'];
                 $contract->data = (isset($input['tickets']) && is_array($input['tickets']) && count($input['tickets']))? '['.implode(',',$input['tickets']).']' : null;
