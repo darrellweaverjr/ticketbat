@@ -23,6 +23,8 @@ class Kernel extends ConsoleKernel
         Commands\ShoppingcartClean::class,
         Commands\ShoppingcartRecover::class,
         Commands\ContractUpdateTickets::class,
+        
+        Commands\CheckConsignments::class,
     ];
 
     /**

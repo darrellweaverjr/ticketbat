@@ -137,4 +137,7 @@ Route::group(['prefix' => 'command','middleware' => 'auth'], function () {
     Route::get('ContractUpdateTickets', function () {
         Artisan::call('Contract:update_tickets');
     })->middleware('permissions:COMMANDS');
+    Route::get('CheckConsignments', function () {
+        Artisan::call('Consignments:check');
+    })->middleware('permissions:COMMANDS');
 });

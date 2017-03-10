@@ -204,6 +204,8 @@ class ConsignmentController extends Controller{
                     $consignment->due_date = $input['due_date'];
                     if($file)
                         $consignment->set_agreement($file);
+                    else
+                        $consignment->agreement = null;
                     $consignment->save();
                     if(isset($input['action']) && isset($input['seat']) && count($input['seat']))
                     {
