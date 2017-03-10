@@ -177,7 +177,7 @@
                                         </div> 
                                         <div class="col-md-4 show-error">
                                             <span class="btn btn-block green fileinput-button">Agreement <i class="fa fa-plus"></i>
-                                                <input type="file" name="agreement_file" accept="application/pdf"  onchange="$('#form_model_update [name=agreement]').val(this.value);"> 
+                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update [name=agreement]').val(this.value);"> 
                                             </span>
                                         </div> 
                                         <div class="col-md-8 show-error">
@@ -331,7 +331,7 @@
                                         </label>
                                         <div class="col-md-4 show-error">
                                             <span class="btn btn-block green fileinput-button"><i class="fa fa-edit"></i>
-                                                <input type="file" name="agreement_file" accept="application/pdf" onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
+                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
                                             </span>
                                         </div>
                                         <div class="col-md-4 show-error">
