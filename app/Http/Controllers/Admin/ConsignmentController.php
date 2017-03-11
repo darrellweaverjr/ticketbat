@@ -202,6 +202,7 @@ class ConsignmentController extends Controller{
                 {
                     $consignment = Consignment::find($input['id']);
                     $consignment->due_date = $input['due_date'];
+                    $consignment->seller_id = $input['seller_id'];
                     if($file)
                         $consignment->set_agreement($file);
                     else
@@ -360,6 +361,18 @@ class ConsignmentController extends Controller{
                                 }
                                 DB::table('seats')->where('id',$s)->update($updates);
                             }   
+                        }
+                        else if($input['action'] == 'showseats' && isset($input['showseats']))
+                        {
+                           foreach ($seats as $s)
+                           {
+                                $purchase_seat = Seat::find($s);
+                                if($purchase_seat)
+                                {
+                                    $purchase_seat->show_seat = $input['showseats'];
+                                    $purchase_seat->save();
+                                }
+                           }
                         }
                     }
                     //return

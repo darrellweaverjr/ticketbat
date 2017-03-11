@@ -314,7 +314,7 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-8 show-error">
-                                            <select class="form-control" name="seller_id" disabled="true">
+                                            <select class="form-control" name="seller_id">
                                                 @foreach($sellers as $index=>$s)
                                                 <option value="{{$s->id}}"> {{$s->email}} </option>
                                                 @endforeach
@@ -371,25 +371,20 @@
                                     <label class="control-label">
                                         <span class="required"> Actions with selected seats </span>
                                     </label><hr>
-                                    <div class="form-group col-md-6"> 
-                                        <div class="mt-radio-list">
-                                            <label class="mt-radio"> No action
+                                    <div class="form-group" style="padding:0 20px"> 
+                                        <div class="mt-radio-list col-md-12">
+                                            <label class="mt-radio">No action
                                                 <input value="no" name="action" type="radio" checked="true">
                                                 <span></span>
                                             </label>
-                                            <label class="mt-radio"> Change Status
+                                        </div>
+                                        <div class="mt-radio-list col-md-5">
+                                            <label class="mt-radio">Change Status
                                                 <input value="status" name="action" type="radio">
                                                 <span></span>
                                             </label>
-                                            <label class="mt-radio"> Move to
-                                                <input value="moveto" name="action" type="radio">
-                                                <span></span>
-                                            </label>
                                         </div>
-                                    </div>
-                                    <div class="form-group col-md-6">  
-                                        <br>
-                                        <div class="form-group">  
+                                        <div class="form-group col-md-7">  
                                             <select class="form-control" name="status">
                                                 <option selected disabled value=""></option>
                                                 @foreach($status_seat as $indexS=>$s)
@@ -397,10 +392,25 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group">  
-                                            <select class="form-control" name="moveto">
-                                                
+                                        <div class="mt-radio-list col-md-5">
+                                            <label class="mt-radio">Move to
+                                                <input value="moveto" name="action" type="radio">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group col-md-7">  
+                                            <select class="form-control" name="moveto">                                                
                                             </select>
+                                        </div>
+                                        <div class="mt-radio-list col-md-5">
+                                            <label class="mt-radio">Toggle Seats #
+                                                <input value="showseats" name="action" type="radio">
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group col-md-7">
+                                            <input type="hidden" name="showseats" value="0" />
+                                            <input type="checkbox" class="make-switch" name="showseats" checked="true" value="1"  data-size="small" data-on-text="Show Seats #" data-off-text="Hide Seats #" data-on-color="primary" data-off-color="danger">
                                         </div>
                                     </div>
                                 </div>
