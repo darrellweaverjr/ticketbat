@@ -79,7 +79,7 @@
                                 <td width="15%"> 
                                     <select ref="{{$c->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
-                                        <option @if($indexS == $c->status) selected @endif value="{{$indexS}}">{{$s}}</option>
+                                        <option @if($indexS == $c->status) selected="true" @endif value="{{$indexS}}">{{$s}}</option>
                                         @endforeach
                                     </select>
                                 </td> 

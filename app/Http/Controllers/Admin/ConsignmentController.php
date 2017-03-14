@@ -213,50 +213,58 @@ class ConsignmentController extends Controller{
                         $seats = array_unique($input['seat']);
                         if($input['action'] == 'status' && isset($input['status']))
                         {
-                           foreach ($seats as $s)
+                           if($consignment->seats()->count() == count($seats) && $input['status']=='Voided')
                            {
-                                $purchase_seat = Seat::find($s);
-                                if($purchase_seat)
+                               $consignment->status = $input['status'];
+                               $consignment->save();
+                           }    
+                           else
+                           {
+                                foreach ($seats as $s)
                                 {
-                                    $oldStatus = $purchase_seat->status;
-                                    $purchase_seat->status = $input['status'];
-                                    $purchase_seat->save();
-                                    //if it has purchase change values
-                                    if($purchase_seat->purchase_id)
-                                    {
-                                        $t = DB::table('tickets')
-                                                ->join('seats', 'tickets.id', '=' ,'seats.ticket_id')
-                                                ->select(DB::raw('tickets.id,
-                                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
-                                                                  COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
-                                                                  COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
-                                                                  COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
-                                                ->where('tickets.id','=',$purchase_seat->ticket_id)->first();
-                                        if($oldStatus == 'Voided' && $purchase_seat->status != $oldStatus)
-                                        {
-                                            $purchase = Purchase::find($purchase_seat->purchase_id);
-                                            if($purchase)
-                                            {
-                                                $purchase->increment('quantity',1);
-                                                $purchase->increment('retail_price',$t->retail_price);
-                                                $purchase->increment('processing_fee',$t->processing_fee);
-                                                $purchase->increment('price_paid',$t->retail_price+$t->processing_fee);
-                                            }
-                                        }
-                                        else if($oldStatus != 'Voided' && $purchase_seat->status == 'Voided')
-                                        {
-                                            $purchase = Purchase::find($purchase_seat->purchase_id);
-                                            if($purchase)
-                                            {
-                                                $purchase->decrement('quantity',1);
-                                                $purchase->decrement('retail_price',$t->retail_price);
-                                                $purchase->decrement('processing_fee',$t->processing_fee);
-                                                $purchase->decrement('price_paid',$t->retail_price+$t->processing_fee);
-                                            }
-                                        }
-                                    }
+                                     $purchase_seat = Seat::find($s);
+                                     if($purchase_seat)
+                                     {
+                                         $oldStatus = $purchase_seat->status;
+                                         $purchase_seat->status = $input['status'];
+                                         $purchase_seat->save();
+                                         //if it has purchase change values
+                                         if($purchase_seat->purchase_id)
+                                         {
+                                             $t = DB::table('tickets')
+                                                     ->join('seats', 'tickets.id', '=' ,'seats.ticket_id')
+                                                     ->select(DB::raw('tickets.id,
+                                                                       COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                                       COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
+                                                                       COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
+                                                                       COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
+                                                     ->where('tickets.id','=',$purchase_seat->ticket_id)->first();
+                                             if($oldStatus == 'Voided' && $purchase_seat->status != $oldStatus)
+                                             {
+                                                 $purchase = Purchase::find($purchase_seat->purchase_id);
+                                                 if($purchase)
+                                                 {
+                                                     $purchase->increment('quantity',1);
+                                                     $purchase->increment('retail_price',$t->retail_price);
+                                                     $purchase->increment('processing_fee',$t->processing_fee);
+                                                     $purchase->increment('price_paid',$t->retail_price+$t->processing_fee);
+                                                 }
+                                             }
+                                             else if($oldStatus != 'Voided' && $purchase_seat->status == 'Voided')
+                                             {
+                                                 $purchase = Purchase::find($purchase_seat->purchase_id);
+                                                 if($purchase)
+                                                 {
+                                                     $purchase->decrement('quantity',1);
+                                                     $purchase->decrement('retail_price',$t->retail_price);
+                                                     $purchase->decrement('processing_fee',$t->processing_fee);
+                                                     $purchase->decrement('price_paid',$t->retail_price+$t->processing_fee);
+                                                 }
+                                             }
+                                         }
+                                     }
                                 }
-                           }
+                            }
                         }
                         else if($input['action'] == 'moveto' && isset($input['moveto']))
                         {
