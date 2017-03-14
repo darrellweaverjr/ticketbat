@@ -93,7 +93,7 @@ class AppController extends Controller{
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')->where('venues.id','=',$venue_id)
-                        ->orderBy('shows.sequence ASC')->orderBy('show_times.show_time ASC')
+                        ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
                         ->distinct()->get();
         }
@@ -109,7 +109,7 @@ class AppController extends Controller{
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
-                        ->orderBy('shows.sequence ASC')->orderBy('show_times.show_time ASC')
+                        ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
                         ->distinct()->get();
         }    
