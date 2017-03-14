@@ -47,7 +47,7 @@ class AppController extends Controller{
                     ->leftJoin('images', 'show_images.image_id', '=' ,'images.id')
                     ->select('shows.id','shows.name','images.url','shows.description','shows.slug',
                              'locations.address','locations.city','locations.state','locations.zip','locations.lat','locations.lng')
-                    ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                    ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('show_times.is_active','=',1)
                     ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('shows.id','=',$id)
                     ->whereIn('images.image_type',['Header','Logo'])
                     ->orderBy('shows.name')->groupBy('shows.id')
@@ -91,9 +91,10 @@ class AppController extends Controller{
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->select('shows.id','shows.venue_id','shows.name','images.url','locations.city')
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())
+                        ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')->where('venues.id','=',$venue_id)
-                        ->orderBy('shows.name')->groupBy('shows.id')
+                        ->orderBy('shows.sequence ASC')->orderBy('show_times.show_time ASC')
+                        ->groupBy('shows.id')
                         ->distinct()->get();
         }
         else
@@ -106,9 +107,10 @@ class AppController extends Controller{
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->select('shows.id','shows.venue_id','shows.name','images.url','locations.city')
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())
+                        ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
-                        ->orderBy('shows.name')->groupBy('shows.id')
+                        ->orderBy('shows.sequence ASC')->orderBy('show_times.show_time ASC')
+                        ->groupBy('shows.id')
                         ->distinct()->get();
         }    
         foreach ($shows as $s)

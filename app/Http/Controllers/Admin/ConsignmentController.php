@@ -71,7 +71,7 @@ class ConsignmentController extends Controller{
                                                   COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
                                                   COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
                                 ->where('seats.consignment_id','=',$input['id'])
-                                ->orderBy('tickets.ticket_type','seats.seat')
+                                ->orderBy('tickets.ticket_type')->orderByRaw('CAST(seats.seat AS UNSIGNED)')
                                 ->distinct()->get();
                 $moveto = DB::table('consignments')
                                 ->join('users', 'users.id', '=' ,'consignments.seller_id')
