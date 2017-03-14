@@ -612,6 +612,66 @@ class ConsignmentController extends Controller{
         }
     }
     /**
+     * Generate contract of consignment.
+     *
+     * @void
+     */
+    public function contract($id)
+    {
+        try {
+            $consignment = DB::table('consignments')
+                                ->join('users', 'users.id', '=' ,'consignments.seller_id')
+                                ->join('show_times', 'show_times.id', '=' ,'consignments.show_time_id')
+                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                ->leftJoin('seats', 'seats.consignment_id', '=' ,'consignments.id')
+                                ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
+                                ->select(DB::raw('consignments.id,shows.name AS show_name,show_times.show_time, consignments.created,
+                                        CONCAT(users.first_name," ",users.last_name) AS seller_name, 
+                                        COUNT(seats.id) AS qty, 
+                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                ->where(function ($query) {
+                                    return $query->whereNull('seats.status')
+                                                 ->orWhere('seats.status','<>','Voided');
+                                })
+                                ->where('consignments.id','=',$id)
+                                ->groupBy('consignments.id')    
+                                ->first();
+            if($consignment && $consignment->qty > 0)
+            {
+                //set creator of the consignment
+                $creator = DB::table('consignments')
+                                ->join('users', 'users.id', '=' ,'consignments.create_user_id')
+                                ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name'))
+                                ->where('consignments.id','=',$id)
+                                ->first();
+                $consignment->creator = ($creator && isset($creator->name))? $creator->name : '___________________________________';
+                //set up seats by type
+                $types = DB::table('seats')
+                                ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
+                                ->select(DB::raw('tickets.ticket_type, COUNT(seats.id) AS qty, 
+                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                  COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee'))
+                                ->where('seats.consignment_id','=',$consignment->id)->where('seats.status','<>','Voided')
+                                ->groupBy('tickets.ticket_type')->orderBy('tickets.ticket_type')
+                                ->distinct()->get();
+                $consignment->types = $types;
+                //create pdf tickets
+                $format = 'pdf';
+                $pdf_receipt = View::make('command.consignment_contract', compact('consignment','format')); 
+                //return $pdf_receipt->render();
+                return PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - Consignment Contract - '.$id.'.pdf');            
+            }
+            else
+            {
+                $format='plain';
+                $consignment = '<script>alert("The system could not load the information from the DB. This consignment is not longer in the system or it has not tickets for the contract.");window.close();</script>';
+                return View::make('command.consignment_contract', compact('consignment','format'))->render();
+            }          
+        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            throw new Exception('Error Consignment tickets: '.$ex->getMessage());
+        }
+    }
+    /**
      * View consignment agreement.
      *
      * @void

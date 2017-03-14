@@ -519,6 +519,11 @@ var TableDatatablesManaged = function () {
                 }
             });
         });  
+        //function generate contract
+        $('#btn_model_contract').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            window.open('/admin/consignments/contract/'+id);
+        });  
         //function save on add
         $('#btn_model_save').on('click', function(ev) {
             //if shows not ours you must add tickets, if our shows, you can add and purchase later
@@ -545,6 +550,7 @@ var TableDatatablesManaged = function () {
         $('input:radio[name=radios]').change(function () {
             if($('input:radio[name=radios]:checked').length > 0)
             {
+                $('#btn_model_contract').prop('disabled',false);
                 $('#btn_model_tickets').prop('disabled',false);
                 $('#btn_model_edit').prop('disabled',false);
             }
