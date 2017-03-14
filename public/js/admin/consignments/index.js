@@ -397,7 +397,7 @@ var TableDatatablesManaged = function () {
                                 var percent_commission_col = '<td>$'+e.fixed_commission+'</td>';
                             else
                                 var percent_commission_col = '<td>'+e.percent_commission+'%</td>';
-                            if(e.show_seat)
+                            if(e.show_seat=='1')
                                 var show_seat_col = '<td><span class="label label-sm sbold label-success">S</span></td>';
                             else
                                 var show_seat_col = '<td><span class="label label-sm sbold label-warning">H</span></td>';
