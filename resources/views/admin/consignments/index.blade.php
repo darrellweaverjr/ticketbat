@@ -408,7 +408,7 @@
                                         </div>
                                         <div class="form-group col-md-7">
                                             <input type="hidden" name="showseats" value="0" />
-                                            <input type="checkbox" class="make-switch" name="showseats" checked="true" value="1"  data-size="small" data-on-text="Show Seats #" data-off-text="Hide Seats #" data-on-color="primary" data-off-color="danger">
+                                            <input type="checkbox" class="make-switch" name="showseats" value="1"  data-size="small" data-on-text="Show Seats #" data-off-text="Hide Seats #" data-on-color="primary" data-off-color="warning">
                                         </div>
                                     </div>
                                 </div>

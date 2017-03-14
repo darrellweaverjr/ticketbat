@@ -400,7 +400,7 @@ var TableDatatablesManaged = function () {
                             if(e.show_seat)
                                 var show_seat_col = '<td><span class="label label-sm sbold label-success">S</span></td>';
                             else
-                                var show_seat_col = '<td><span class="label label-sm sbold label-danger">H</span></td>';
+                                var show_seat_col = '<td><span class="label label-sm sbold label-warning">H</span></td>';
                             var status_col = '<td><span class="label label-sm sbold '+style+'" '+checkable+'>'+e.status+'</span></td>';
                             $('#tb_seats_consignment_edit').append('<tr>'+check_col+ticket_type_col+seat_col+retail_price_col+processing_fee_col+percent_commission_col+show_seat_col+status_col+'</tr>');
                         }
