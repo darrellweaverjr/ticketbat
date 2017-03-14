@@ -166,7 +166,7 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-8 show-error">
-                                            <div id="due_date" class="input-group date date-picker">
+                                            <div class="input-group date date-picker due_date">
                                                 <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}">
                                                 <span class="input-group-btn">
                                                     <button class="btn default" type="button">
@@ -214,7 +214,7 @@
                                         </label>
                                         <div class="col-md-8 show-error"> 
                                             <input type="hidden" name="show_seat" value="0" />
-                                            <input type="checkbox" class="make-switch" name="show_seat" checked="true" value="1"  data-size="medium" data-on-text="Show on ticket" data-off-text="Hide on ticket" data-on-color="primary" data-off-color="danger">
+                                            <input type="checkbox" class="make-switch" name="show_seat" value="1"  data-size="medium" data-on-text="Show on ticket" data-off-text="Hide on ticket" data-on-color="primary" data-off-color="warning">
                                         </div>
                                     </div>    
                                     <div class="col-md-9 form-group">  
@@ -244,7 +244,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="button" style="height:135px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
+                                        <button type="button" style="height:137px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
                                             <i class="fa fa-arrow-right"></i>
                                         </button>
                                     </div>
@@ -253,17 +253,17 @@
                                     <label class="control-label">
                                         <span class="required"> Seats </span>
                                     </label><hr>
-                                    <div style="max-height:610px; overflow: auto;">
+                                    <div style="max-height:670px; overflow: auto;">
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>
-                                                    <th width="35%"> Ticket Type </th>
-                                                    <th width="10%"> Seat </th>
-                                                    <th width="13%"> Price </th>
-                                                    <th width="13%"> Fee </th>
-                                                    <th width="13%"> Comm. </th>
-                                                    <th width="8%"> Show </th>
-                                                    <th width="8%"> </th>
+                                                    <th width="35%">Ticket Type</th>
+                                                    <th width="10%">Seat</th>
+                                                    <th width="13%">Price</th>
+                                                    <th width="13%">Fee</th>
+                                                    <th width="13%">Comm.</th>
+                                                    <th width="8%">Show</th>
+                                                    <th width="8%">Del</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tb_seats">
@@ -310,10 +310,10 @@
                                         <span class="required"> Consignment Info </span>
                                     </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-4">Seller
+                                        <label class="control-label col-md-3">Seller
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-8 show-error">
+                                        <div class="col-md-9 show-error">
                                             <select class="form-control" name="seller_id">
                                                 @foreach($sellers as $index=>$s)
                                                 <option value="{{$s->id}}"> {{$s->email}} </option>
@@ -322,29 +322,31 @@
                                         </div> 
                                     </div>
                                     <div class="form-group">  
-                                        <label class="control-label col-md-4"> Agreement
+                                        <label class="control-label col-md-3"> Agreement
                                         </label>
-                                        <div class="col-md-8 show-error">
-                                            <input type="text" name="agreement" class="form-control" readonly="true"/>
+                                        <div class="col-md-9 show-error">
+                                            <input type="text" name="agreement" class="form-control col-md-6" readonly="true" style="width:140px !important"/>
+                                            <span class="btn yellow fileinput-button col-md-3"><i class="fa fa-edit"></i>
+                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
+                                            </span>
+                                            <span class="btn green col-md-3" id="btn_model_file" ><i class="fa fa-search"></i>
+                                            </span>
                                         </div>
                                         <label class="control-label col-md-4"> 
                                         </label>
                                         <div class="col-md-4 show-error">
-                                            <span class="btn btn-block green fileinput-button"><i class="fa fa-edit"></i>
-                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
-                                            </span>
+                                            
                                         </div>
                                         <div class="col-md-4 show-error">
-                                            <span class="btn btn-block green" id="btn_model_file" ><i class="fa fa-search"></i>
-                                            </span>
+                                            
                                         </div>
                                     </div>
                                     <div class="form-group">  
-                                        <label class="control-label col-md-4">Due Date
+                                        <label class="control-label col-md-3">Due Date
                                             <span class="required"> * </span>
                                         </label>
-                                        <div class="col-md-8 show-error">
-                                            <div id="due_date2" class="input-group date date-picker">
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group date date-picker due_date">
                                                 <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}">
                                                 <span class="input-group-btn">
                                                     <button class="btn default" type="button">
@@ -355,17 +357,13 @@
                                         </div> 
                                     </div>
                                     <div class="form-group">  
-                                        <label class="control-label col-md-4">Qty
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-2 show-error">
-                                            <input readonly class="form-control" type="text" name="qty">
-                                        </div> 
-                                        <label class="control-label col-md-3">Total ($)
-                                            <span class="required"> * </span>
-                                        </label>
+                                        <label class="control-label col-md-3">Qty</label>
                                         <div class="col-md-3 show-error">
-                                            <input readonly class="form-control" type="text" name="total">
+                                            <input readonly class="form-control" type="number" name="qty" style="width:80px !important">
+                                        </div> 
+                                        <label class="control-label col-md-2">Total($)</label>
+                                        <div class="col-md-4 show-error">
+                                            <input readonly class="form-control" type="number" name="total" style="width:110px !important">
                                         </div> 
                                     </div>
                                     <label class="control-label">

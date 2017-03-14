@@ -248,7 +248,7 @@ var TableDatatablesManaged = function () {
                 else
                 {
                     var show_seat = 0;
-                    var row_show_seat = '<span class="label label-sm sbold label-danger">H</span>';
+                    var row_show_seat = '<span class="label label-sm sbold label-warning">H</span>';
                 }
                 //fill out rows
                 for (var i = start_seat; i <= end_seat; i++) 
@@ -265,7 +265,7 @@ var TableDatatablesManaged = function () {
                                              +'<td>$'+processing_fee+'</td>'
                                              +commission_row
                                              +'<td><center>'+row_show_seat+'</center></td>'
-                                             +'<td><center><input type="button" value="X" class="btn sbold bg-red"></center><td>';
+                                             +'<td><center><input type="button" value="-" class="btn btn-block bg-red" style="height:16px !important"></center></td>';
                     if($('#'+id).length < 1)
                         $('#tb_seats').append('<tr id="'+id+'">'+row+'</tr>');
                     else
@@ -293,7 +293,7 @@ var TableDatatablesManaged = function () {
         $('#form_model_update [name="start_seat"]').TouchSpin({ initval:1,min:1,max:500 });
         $('#form_model_update [name="end_seat"]').TouchSpin({ initval:1,min:1,max:500 });
         //due_date
-        $('#due_date').datepicker({
+        $('.due_date').datepicker({
             autoclose: true,
             isRTL: App.isRTL(),
             format: "yyyy-mm-dd",
