@@ -365,14 +365,7 @@ class ConsignmentController extends Controller{
                         else if($input['action'] == 'showseats' && isset($input['showseats']))
                         {
                            foreach ($seats as $s)
-                           {
-                                $purchase_seat = Seat::find($s);
-                                if($purchase_seat)
-                                {
-                                    $purchase_seat->show_seat = $input['showseats'];
-                                    $purchase_seat->save();
-                                }
-                           }
+                               DB::table('seats')->where('id',$s)->update(['show_seat'=>$input['showseats']]); 
                         }
                     }
                     //return
