@@ -422,14 +422,19 @@
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>
-                                                    <th width="2%"> </th>
-                                                    <th width="29%"> Ticket Type </th>
-                                                    <th width="10%"> Seat </th>
-                                                    <th width="13%"> Price </th>
-                                                    <th width="13%"> Fee </th>
-                                                    <th width="13%"> Comm. </th>
-                                                    <th width="8%"> Show </th>
-                                                    <th width="12%"> Status </th>
+                                                    <th width="2%">
+                                                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                            <input type="checkbox" id="group-checkable"/>
+                                                            <span></span>
+                                                        </label>
+                                                    </th>
+                                                    <th width="29%">Ticket Type</th>
+                                                    <th width="10%">Seat</th>
+                                                    <th width="13%">Price</th>
+                                                    <th width="13%">Fee</th>
+                                                    <th width="13%">Comm.</th>
+                                                    <th width="8%">Show</th>
+                                                    <th width="12%">Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tb_seats_consignment_edit">

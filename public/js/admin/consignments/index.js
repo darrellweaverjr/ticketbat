@@ -59,6 +59,10 @@ var TableDatatablesManaged = function () {
             $(this).parents('tr').toggleClass("active");
         });
         
+        $('#group-checkable').change(function () {
+            $('#tb_seats_consignment_edit .checkboxes').prop("checked",$(this).is(":checked"));
+        });   
+        
         //PERSONALIZED FUNCTIONS  
         //on venue select
         $('#modal_model_update [name="venue_id"]').on('change', function () {
