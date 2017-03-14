@@ -424,6 +424,7 @@ class ConsignmentController extends Controller{
                     $consignment->due_date = $input['due_date'];
                     $consignment->created = $current;
                     $consignment->updated = $current;
+                    $consignment->create_user_id = Auth::user()->id;
                     $consignment->agreement = ($file)? Util::upload_file($file,'consignments') : '';
                     $consignment->save();
                     if($file)
