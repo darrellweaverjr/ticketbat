@@ -22,22 +22,22 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 <body>
   @if ($type && $type=='S')
         @foreach($tickets as $ticket)
-        <div style='page-break-after:always;text-align:center;'>
-                <div style='float:center;position:absolute;top:-23;left:38;'>
-                      <div style='font-size:12px;'>${{$ticket['price_each']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$ticket['id']}}-{{$ticket['number']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$ticket['ticket_type']}}</div>   
+        <div style='page-break-after:always;text-align:center;width:447px'>
+                <div style='float:center;position:absolute;top:-21;left:45;'>
+                      <div style='font-size:12px;'>${{$ticket['price_each']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$ticket['id']}}-{{$ticket['number']}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$ticket['ticket_type']}}</div>   
                 </div>
                 <div style='text-align:center;width:90%;position:absolute;top:0;left:-20;'>
                         <div style='padding-top:2px;'><span style='font-size:22px'>{{$ticket['show_name']}}</span></div>
                         <div style='padding-top:2px;'><span style='font-size:12px'>@if($ticket['package'] != 'None') ({{$ticket['package']}}) @endif at<br/></span>{{$ticket['venue_name']}}</div>
                         <div style='padding-top:3px;'><span style='font-size:12px'>on&nbsp;</span> {{date('l, m/d/Y',strtotime($ticket['show_time']))}} <span style='font-size:12px'>@if($ticket['time_alternative']) - @else at @endif</span>@if($ticket['time_alternative']) - @else {{date('h:i a',strtotime($ticket['show_time']))}} @endif</div>                     
                 </div>
-                <div class="rotate" style='font-size:12px;position:absolute;top:85;left:317;'>
+                <div class="rotate" style='font-size:12px;position:absolute;top:83;left:325;'>
                         <div style='padding-top:3px;font-size:12px;'>${{$ticket['price_each']}}</div>
                 </div>
                 <div class="rotate" style='font-size:12px;position:absolute;top:10;left:302;'>
                         <img src='{{$ticket['QRcode']}}' alt='TB{{$ticket['id']}}{{$ticket['user_id']}}{{$ticket['number']}}' width=70px height=70px/>
                 </div>
-                <div class="rotate" style='font-size:12px;position:absolute;top:-5;left:327;'>
+                <div class="rotate" style='font-size:12px;position:absolute;top:0;left:335;'>
                         <div style='padding-top:3px;font-size:12px;text-align:center;width:40px'>{{$ticket['id']}}-{{$ticket['number']}}</div>
                 </div>
                 <div style='width:80%;position:absolute;top:85;left:-20;font-size:12px;'>
