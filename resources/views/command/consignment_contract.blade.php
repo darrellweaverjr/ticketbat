@@ -118,13 +118,13 @@
         <table class="table table-striped table-responsive table-bordered table-condensed">
             <thead>
                 <tr>
-                    <th>TYPE</th>
-                    <th>FACE VALUE</th>
-                    <th>AMT DUE</th>
-                    <th>QUANTITY</th>
-                    <th>SERVICE CHARGE</th>  
-                    <th>TOTAL PRICE</th>  
-                    <th>TOTAL DUE</th>  
+                    <th style="text-align:center;">TYPE</th>
+                    <th style="text-align:right;">FACE VALUE</th>
+                    <th style="text-align:right;">AMT DUE</th>
+                    <th style="text-align:center;">QUANTITY</th>
+                    <th style="text-align:right;">SERVICE CHARGE</th>  
+                    <th style="text-align:right;">TOTAL PRICE</th>  
+                    <th style="text-align:right;">TOTAL DUE</th>  
                 </tr>
             </thead>
             <tbody>
@@ -132,11 +132,11 @@
                 <tr>
                     <td style="text-align:center;">{{$t->ticket_type}}</td>
                     <td style="text-align:right;">$ {{number_format($t->retail_price + $t->processing_fee,2)}}</td>
-                    <td style="text-align:right;">$ 0.00</td>
+                    <td style="text-align:right;">$ {{number_format($t->collect_price,2)}}</td>
                     <td style="text-align:center;">{{number_format($t->qty)}}</td>
                     <td style="text-align:right;">$ 0.00</td>
                     <td style="text-align:right;">$ {{number_format(($t->retail_price + $t->processing_fee) * $t->qty,2)}}</td>
-                    <td style="text-align:right;">$ 0.00</td>
+                    <td style="text-align:right;">$ {{number_format($t->collect_price * $t->qty,2)}}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -146,7 +146,7 @@
                     <td style="text-align:center;">{{number_format($consignment->qty)}}</td>
                     <td style="text-align:right;">$ 0.00</td>
                     <td style="text-align:right;">$ {{number_format($consignment->total,2)}}</td>
-                    <td style="text-align:right;">$ 0.00</td>
+                    <td style="text-align:right;">$ {{number_format($consignment->due,2)}}</td>
                 </tr>
             </tfoot>
         </table>

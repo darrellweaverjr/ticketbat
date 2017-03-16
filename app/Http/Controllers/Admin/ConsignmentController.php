@@ -627,7 +627,8 @@ class ConsignmentController extends Controller{
                                 ->select(DB::raw('consignments.id,shows.name AS show_name,show_times.show_time, consignments.created,
                                         CONCAT(users.first_name," ",users.last_name) AS seller_name, 
                                         COUNT(seats.id) AS qty, 
-                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total,
+                                        ROUND(SUM(COALESCE(seats.collect_price,0)),2) AS due'))
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
@@ -649,9 +650,10 @@ class ConsignmentController extends Controller{
                                 ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                 ->select(DB::raw('tickets.ticket_type, COUNT(seats.id) AS qty, 
                                                   COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                  COALESCE(seats.collect_price,0) AS collect_price, 
                                                   COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee'))
                                 ->where('seats.consignment_id','=',$consignment->id)->where('seats.status','<>','Voided')
-                                ->groupBy('tickets.ticket_type')->orderBy('tickets.ticket_type')
+                                ->groupBy('tickets.ticket_type')->groupBy('retail_price')->groupBy('collect_price')->orderBy('tickets.ticket_type')
                                 ->distinct()->get();
                 $consignment->types = $types;
                 //create pdf tickets
