@@ -120,13 +120,13 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <label class="control-label">
-                                        <span class="required"> Event </span>
+                                        <span class="required">General</span>
                                     </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-4">Venue
-                                            <span class="required"> * </span>
+                                        <label class="control-label col-md-3">Venue
+                                            <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-8 show-error">
+                                        <div class="col-md-9 show-error">
                                             <select class="form-control" name="venue_id">
                                                 <option selected disabled value=""></option>
                                                 @foreach($venues as $index=>$v)
@@ -134,43 +134,36 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <label class="control-label col-md-4">Show
-                                            <span class="required"> * </span>
+                                        <label class="control-label col-md-3">Show
+                                            <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-8 show-error">
+                                        <div class="col-md-9 show-error">
                                             <select class="form-control" name="show_id">
 
                                             </select>
                                         </div>  
-                                        <label class="control-label col-md-4">Time
-                                            <span class="required"> * </span>
+                                        <label class="control-label col-md-3">Time
+                                            <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-8 show-error">
-                                            <select class="form-control" name="show_time_id">
-
-                                            </select>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="show_time_id"></select>
                                         </div>  
                                     </div>
-                                    <label class="control-label">
-                                        <span class="required"> Seller </span>
-                                    </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-4">Seller
-                                            <span class="required"> * </span>
+                                        <label class="control-label col-md-3">Seller
+                                            <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-8 show-error">
+                                        <div class="col-md-9 show-error">
                                             <select class="form-control" name="seller_id">
                                                 @foreach($sellers as $index=>$s)
                                                 <option value="{{$s->id}}"> {{$s->email}} </option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <label class="control-label col-md-4">Due Date
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-8 show-error">
+                                        <label class="control-label col-md-3">Due Date</label>
+                                        <div class="col-md-4 show-error">
                                             <div class="input-group date date-picker due_date">
-                                                <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}">
+                                                <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}" style="width:100px">
                                                 <span class="input-group-btn">
                                                     <button class="btn default" type="button">
                                                         <i class="fa fa-calendar"></i>
@@ -178,24 +171,20 @@
                                                 </span>
                                             </div>                          
                                         </div> 
-                                        <div class="col-md-4 show-error">
+                                        <div class="col-md-5 show-error">
                                             <span class="btn btn-block green fileinput-button">Agreement <i class="fa fa-plus"></i>
-                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update [name=agreement]').val(this.value);"> 
+                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
                                             </span>
-                                        </div> 
-                                        <div class="col-md-8 show-error">
-                                            <input type="text" name="agreement" class="form-control" readonly="true"/>
-                                        </div> 
+                                        </div>
                                     </div>
-                                    
                                     <label class="control-label">
-                                        <span class="required"> Section </span>
+                                        <span class="required">Section</span>
                                     </label><hr>
                                     <div class="form-group">    
-                                        <label class="control-label col-md-4">Ticket Type
-                                            <span class="required"> * </span>
+                                        <label class="control-label col-md-3">T.Type
+                                            <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-8 show-error"> 
+                                        <div class="col-md-9 show-error"> 
                                             <select class="form-control" name="section">
                                                 <option selected disabled value=""></option>
                                                 @foreach($sections as $index=>$s)
@@ -203,60 +192,57 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <label class="control-label col-md-4">Seat
-                                            <span class="required"> * </span>
+                                        <label class="control-label col-md-3">Seat
+                                            <span class="required">*</span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
+                                            <input type="text" style="width:75px" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
                                         </div> 
                                         <div class="col-md-4">
-                                            <input type="text" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
+                                            <input type="text" style="width:80px" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
                                         </div> 
-                                        <label class="control-label col-md-4">Seat Number
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-8 show-error"> 
+                                        <label class="control-label col-md-3">Seat #</label>
+                                        <div class="col-md-9 show-error"> 
                                             <input type="hidden" name="show_seat" value="0" />
-                                            <input type="checkbox" class="make-switch" name="show_seat" value="1"  data-size="medium" data-on-text="Show on ticket" data-off-text="Hide on ticket" data-on-color="primary" data-off-color="warning">
+                                            <input type="checkbox" class="make-switch" name="show_seat" value="1"  data-size="medium" data-on-text="Show # on tickets" data-off-text="Hide # on tickets" data-on-color="primary" data-off-color="warning">
                                         </div>
                                     </div>    
-                                    <div class="col-md-9 form-group">  
-                                        <label class="control-label col-md-6">S.Price ($)
-                                            <span class="required"> * </span>
+                                    <div class="form-group">  
+                                        <label class="control-label col-md-3">S.Pric($)
+                                            <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-6 show-error">
-                                            <input type="number" name="retail_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
+                                        <div class="col-md-3 show-error">
+                                            <input type="number" style="width:90px" name="retail_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
                                         </div>    
-                                        <label class="control-label col-md-6">Proc.Fee ($)
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-6 show-error">
-                                            <input type="number" name="processing_fee" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
-                                        </div>   
-                                        <label class="control-label col-md-6">Commiss.(%)
-                                            <span class="required"> * </span>
-                                        </label>
-                                        <div class="col-md-6 show-error">
-                                            <input type="number" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                        <label class="control-label col-md-3">Comm(%)</label>
+                                        <div class="col-md-3 show-error">
+                                            <input type="number" style="width:80px" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
                                         </div>
-                                        <label class="control-label col-md-6">Commiss.($)
-                                            <span class="required"> * </span>
+                                        <label class="control-label col-md-3">P.Fee($)
+                                            <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-6 show-error">
-                                            <input type="number" name="fixed_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                        <div class="col-md-3 show-error">
+                                            <input type="number" style="width:90px" name="processing_fee" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                        </div> 
+                                        <label class="control-label col-md-3">Comm($)</label>
+                                        <div class="col-md-3 show-error">
+                                            <input type="number" style="width:80px" name="fixed_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <button type="button" style="height:137px" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
-                                            <i class="fa fa-arrow-right"></i>
-                                        </button>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3"></label>
+                                        <div class="col-md-9 show-error">
+                                            <button type="button" id="btn_model_add_seat" class="btn sbold dark btn-outline btn-block">
+                                                Add / Modify seats <i class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-7">
                                     <label class="control-label">
-                                        <span class="required"> Seats </span>
+                                        <span class="required">Seats</span>
                                     </label><hr>
-                                    <div style="max-height:670px; overflow: auto;">
+                                    <div style="max-height:560px; overflow: auto;">
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>

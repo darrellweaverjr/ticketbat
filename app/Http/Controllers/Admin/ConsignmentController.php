@@ -425,10 +425,7 @@ class ConsignmentController extends Controller{
                     $consignment->created = $current;
                     $consignment->updated = $current;
                     $consignment->create_user_id = Auth::user()->id;
-                    $consignment->agreement = ($file)? Util::upload_file($file,'consignments') : '';
-                    $consignment->save();
-                    if($file)
-                        $consignment->set_agreement($file);
+                    $consignment->agreement = ($file)? Util::upload_file($file,'consignments') : null;
                     $consignment->save();
                     //create purchase
                     if(isset($input['purchase']) && $input['purchase'] && isset($input['seats'])&& $input['seats'])
