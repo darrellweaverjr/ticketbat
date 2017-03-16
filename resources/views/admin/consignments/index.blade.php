@@ -228,6 +228,12 @@
                                         <div class="col-md-3 show-error">
                                             <input type="number" style="width:80px" name="fixed_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
                                         </div>
+                                        <label class="control-label col-md-3">Collect($)</label>
+                                        <div class="col-md-3 show-error">
+                                            <input type="number" style="width:90px" name="collect_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
+                                        </div> 
+                                        <label class="control-label col-md-3"></label>
+                                        <div class="col-md-3 show-error"></div> 
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3"></label>
@@ -246,13 +252,14 @@
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>
                                                 <tr>
-                                                    <th width="35%">Ticket Type</th>
+                                                    <th width="30%">Ticket Type</th>
                                                     <th width="10%">Seat</th>
-                                                    <th width="13%">Price</th>
-                                                    <th width="13%">Fee</th>
-                                                    <th width="13%">Comm.</th>
-                                                    <th width="8%">Show</th>
-                                                    <th width="8%">Del</th>
+                                                    <th width="12%">Price</th>
+                                                    <th width="12%">Fee</th>
+                                                    <th width="12%">Comm.</th>
+                                                    <th width="12%">Collect</th>
+                                                    <th width="5%">#</th>
+                                                    <th width="7%"><center><input type="button" id="deleteAllPreSeats" value="-" class="btn btn-block bg-red" style="height:16px !important"></center></th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tb_seats">
@@ -331,9 +338,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">  
-                                        <label class="control-label col-md-3">Due Date
-                                            <span class="required"> * </span>
-                                        </label>
+                                        <label class="control-label col-md-3">Due Date</label>
                                         <div class="col-md-9 show-error">
                                             <div class="input-group date date-picker due_date">
                                                 <input readonly class="form-control" type="text" name="due_date" value="{{date('Y-m-d')}}">
@@ -415,12 +420,13 @@
                                                             <span></span>
                                                         </label>
                                                     </th>
-                                                    <th width="29%">Ticket Type</th>
+                                                    <th width="23%">Ticket Type</th>
                                                     <th width="10%">Seat</th>
-                                                    <th width="13%">Price</th>
-                                                    <th width="13%">Fee</th>
-                                                    <th width="13%">Comm.</th>
-                                                    <th width="8%">Show</th>
+                                                    <th width="12%">Price</th>
+                                                    <th width="12%">Fee</th>
+                                                    <th width="12%">Com.</th>
+                                                    <th width="12%">Coll.</th>
+                                                    <th width="5%">#</th>
                                                     <th width="12%">Status</th>
                                                 </tr>
                                             </thead>

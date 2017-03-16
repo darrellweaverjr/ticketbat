@@ -472,24 +472,24 @@ class ConsignmentController extends Controller{
                         $seats = array_unique($input['seats']);
                         foreach ($seats as $s)
                         {
-                            $seat = explode('|',$s);
+                            $seat = json_decode($s);
                             //create ticket
-                            $ticket = Ticket::where('ticket_type','=',$seat[0])->where('show_id','=',$input['show_id'])->first();
+                            $ticket = Ticket::where('ticket_type','=',$seat->ticket_type)->where('show_id','=',$input['show_id'])->first();
                             if(!$ticket)
                             {
                                 $ticket = new Ticket;
                                 $ticket->show_id = $input['show_id'];
-                                $ticket->ticket_type = $seat[0];
-                                $ticket->retail_price = $seat[2];
-                                $ticket->processing_fee = $seat[3];
-                                if(isset($seat[6]) && !empty($seat[6]))
+                                $ticket->ticket_type = $seat->ticket_type;
+                                $ticket->retail_price = $seat->retail_price;
+                                $ticket->processing_fee = $seat->processing_fee;
+                                if(isset($seat->fixed_commission) && !empty($seat->fixed_commission))
                                 {
                                     $ticket->percent_commission = 0.00;
-                                    $ticket->fixed_commission = $seat[6];
+                                    $ticket->fixed_commission = $seat->fixed_commission;
                                 }
                                 else
                                 {
-                                    $ticket->percent_commission = $seat[4];
+                                    $ticket->percent_commission = $seat->percent_commission;
                                     $ticket->fixed_commission = null;
                                 }
                                 $ticket->audit_user_id = Auth::user()->id;
@@ -502,16 +502,18 @@ class ConsignmentController extends Controller{
                                 $new_seat = new Seat;
                                 $new_seat->ticket_id = $ticket->id;
                                 $new_seat->consignment_id = $consignment->id;
-                                $new_seat->seat = $seat[1];
-                                if($seat[2] != $ticket->retail_price)
-                                    $new_seat->retail_price = $seat[2];
-                                if($seat[3] != $ticket->processing_fee)
-                                    $new_seat->processing_fee = $seat[3];
-                                if($seat[4] != $ticket->percent_commission)
-                                    $new_seat->percent_commission = $seat[4];
-                                if(!empty($seat[6]) && $seat[6] != $ticket->fixed_commission)
-                                    $new_seat->fixed_commission = $seat[6];
-                                $new_seat->show_seat = $seat[5];
+                                $new_seat->seat = $seat->seat;
+                                if($seat->retail_price != $ticket->retail_price)
+                                    $new_seat->retail_price = $seat->retail_price;
+                                if($seat->processing_fee != $ticket->processing_fee)
+                                    $new_seat->processing_fee = $seat->processing_fee;
+                                if($seat->percent_commission != $ticket->percent_commission)
+                                    $new_seat->percent_commission = $seat->percent_commission;
+                                if(!empty($seat->fixed_commission) && $seat->fixed_commission != $ticket->fixed_commission)
+                                    $new_seat->fixed_commission = $seat->fixed_commission;
+                                if(!empty($seat->collect_price))
+                                    $new_seat->collect_price = $seat->collect_price;
+                                $new_seat->show_seat = $seat->show_seat;
                                 $new_seat->status = 'Created';
                                 $new_seat->updated = $current;
                                 if($input['purchase'] && $purchase)
@@ -539,7 +541,7 @@ class ConsignmentController extends Controller{
                                 $new_seat->save();
                             }
                             else
-                                return ['success'=>false,'msg'=>'There was an error saving the ticket: '.$seat[0].' Seat:'.$seat[1].'.<br>The server could not retrieve the data.'];
+                                return ['success'=>false,'msg'=>'There was an error saving the ticket: '.$seat->ticket_type.' Seat:'.$seat->seat.'.<br>The server could not retrieve the data.'];
                         }
                     }
                     //return
