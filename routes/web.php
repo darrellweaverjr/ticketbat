@@ -108,6 +108,7 @@ Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], fu
     Route::get('cities', 'AppController@cities');
     Route::get('shows/{id?}/{venue_id?}', 'AppController@shows');
     Route::get('venues', 'AppController@venues');
+    Route::get('showtime/{id}', 'AppController@showtime');
 });
 //COMMAND ROUTES
 Route::group(['prefix' => 'command','middleware' => 'auth'], function () {
