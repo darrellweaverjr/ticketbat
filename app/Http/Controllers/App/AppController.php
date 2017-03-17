@@ -52,12 +52,23 @@ class AppController extends Controller{
                     ->whereIn('images.image_type',['Header','Logo'])
                     ->orderBy('shows.name')->groupBy('shows.id')
                     ->distinct()->get(); 
-            $showtimes = ShowTime::where('show_id','=',$id)->where('show_time','>',$current)->orderBy('show_time')->take(50)->get(['id','show_time']); 
+            $showtimes = DB::table('show_times')
+                    ->select(DB::raw('DATE_FORMAT(show_time,"%Y-%m-%d") AS s_date'))
+                    ->where('show_time','>',\Carbon\Carbon::now())->where('is_active','=',1)->where('show_id','=',$id)
+                    ->orderBy('s_date')->groupBy('s_date')
+                    ->distinct()->take(30)->get(); 
+            foreach ($showtimes as $st)
+            {
+                $times = DB::table('show_times')
+                        ->select(DB::raw('id, DATE_FORMAT(show_time,"%h:%i %p") AS s_time'))
+                        ->whereDate('show_time',$st->s_date)->where('show_id','=',$id)
+                        ->distinct()->get(); 
+                $st->times = $times;
+            }
             $videos = DB::table('videos')
                         ->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
-                        ->join('shows', 'show_videos.show_id', '=' ,'shows.id')
                         ->select('videos.id','videos.embed_code')
-                        ->where('shows.id','=',$id)
+                        ->where('show_videos.show_id','=',$id)
                         ->distinct()->get();
             foreach ($videos as $v)
             {
@@ -67,9 +78,8 @@ class AppController extends Controller{
             } 
             $images = DB::table('images')
                         ->join('show_images', 'show_images.image_id', '=' ,'images.id')
-                        ->join('shows', 'show_images.show_id', '=' ,'shows.id')
                         ->select('images.id','images.url','images.image_type')
-                        ->where('shows.id','=',$id)
+                        ->where('show_images.show_id','=',$id)
                         ->where('images.image_type','=','Image')
                         ->distinct()->get();
             foreach ($images as $i)
