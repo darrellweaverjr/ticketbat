@@ -158,19 +158,90 @@ var TableDatatablesManaged = function () {
             $('#form_model_update [name="description"]').summernote({height:150});
             $('#modal_model_update').modal('show');
         });
-        //function edit
-        $('#btn_model_edit').on('click', function(ev) {
+        //funcion load modal by id
+        function loadModal(data) {
+            //reset modal
             fullReset();
             if($('#modal_model_update_header').hasClass('bg-green'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
-            var set = $('.group-checkable').attr("data-set");
-            var id = $(set+"[type=checkbox]:checked")[0].id;
             $('a[href="#tab_model_update_stages"]').parent().css('display','block');
             $('a[href="#tab_model_update_images"]').parent().css('display','block');
             $('a[href="#tab_model_update_banners"]').parent().css('display','block');
             $('a[href="#tab_model_update_videos"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Venue');
+            //fill out defaults
+            $('#form_model_update [name="id"]').val(data.venue.id).change();
+            $('#form_model_venue_stages input[name="venue_id"]:hidden').val(data.venue.id).trigger('change');
+            $('#form_model_venue_images input[name="venue_id"]:hidden').val(data.venue.id).trigger('change');
+            $('#form_model_venue_banners input[name="parent_id"]:hidden').val(data.venue.id).trigger('change');
+            $('#form_model_venue_videos input[name="venue_id"]:hidden').val(data.venue.id).trigger('change');
+            //fill out venues
+            for(var key in data.venue)
+            {
+                //fill out
+                var e = $('#form_model_update [name="'+key+'"]');
+                if(e.is('input:checkbox'))
+                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.venue[key])? true : false, true);
+                else
+                    e.val(data.venue[key]);
+            }
+            $('#form_model_update [name="description"]').summernote({height:150});
+            //fill out stages
+            $('#grid_venue_stages .cbp-item').remove();
+            $('#grid_venue_stages').trigger('resize.cbp');
+            if(data.stages && data.stages.length)
+            {
+                var html = '';
+                $.each(data.stages,function(k, v) {
+                    html = html + fn_venue_stages(v); 
+                });
+                $('#grid_venue_stages').cubeportfolio('appendItems', html);
+                $('#grid_venue_stages').trigger('resize.cbp');
+            }
+            //fill out images
+            $('#grid_venue_images .cbp-item').remove();
+            $('#grid_venue_images').trigger('resize.cbp');
+            if(data.images && data.images.length)
+            {
+                var html = '';
+                $.each(data.images,function(k, v) {
+                    html = html + fn_venue_images(v); 
+                });
+                $('#grid_venue_images').cubeportfolio('appendItems', html);
+                $('#grid_venue_images').trigger('resize.cbp');
+            }
+            //fill out banners
+            $('#grid_venue_banners .cbp-item').remove();
+            $('#grid_venue_banners').trigger('resize.cbp');
+            if(data.banners && data.banners.length)
+            {
+                var html = '';
+                $.each(data.banners,function(k, v) {
+                    html = html + fn_venue_banners(v); 
+                });
+                $('#grid_venue_banners').cubeportfolio('appendItems', html);
+                $('#grid_venue_banners').trigger('resize.cbp');
+            }
+            //fill out videos
+            $('#grid_venue_videos .cbp-item').remove();
+            $('#grid_venue_videos').trigger('resize.cbp');
+            if(data.videos && data.videos.length)
+            {
+                var html = '';
+                $.each(data.videos,function(k, v) {
+                    html = html + fn_venue_videos(v); 
+                });
+                $('#grid_venue_videos').cubeportfolio('appendItems', html);
+                $('#grid_venue_videos').trigger('resize.cbp');
+            }
+            //show modal
+            $('#modal_model_update').modal('show');
+        }
+        //function edit
+        $('#btn_model_edit').on('click', function(ev) {            
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;            
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -179,73 +250,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        //fill out defaults
-                        $('#form_model_update [name="id"]').val(data.venue.id).change();
-                        $('#form_model_venue_stages input[name="venue_id"]:hidden').val(data.venue.id).trigger('change');
-                        $('#form_model_venue_images input[name="venue_id"]:hidden').val(data.venue.id).trigger('change');
-                        $('#form_model_venue_banners input[name="parent_id"]:hidden').val(data.venue.id).trigger('change');
-                        $('#form_model_venue_videos input[name="venue_id"]:hidden').val(data.venue.id).trigger('change');
-                        //fill out venues
-                        for(var key in data.venue)
-                        {
-                            //fill out
-                            var e = $('#form_model_update [name="'+key+'"]');
-                            if(e.is('input:checkbox'))
-                                $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.venue[key])? true : false, true);
-                            else
-                                e.val(data.venue[key]);
-                        }
-                        $('#form_model_update [name="description"]').summernote({height:150});
-                        //fill out stages
-                        $('#grid_venue_stages .cbp-item').remove();
-                        $('#grid_venue_stages').trigger('resize.cbp');
-                        if(data.stages && data.stages.length)
-                        {
-                            var html = '';
-                            $.each(data.stages,function(k, v) {
-                                html = html + fn_venue_stages(v); 
-                            });
-                            $('#grid_venue_stages').cubeportfolio('appendItems', html);
-                            $('#grid_venue_stages').trigger('resize.cbp');
-                        }
-                        //fill out images
-                        $('#grid_venue_images .cbp-item').remove();
-                        $('#grid_venue_images').trigger('resize.cbp');
-                        if(data.images && data.images.length)
-                        {
-                            var html = '';
-                            $.each(data.images,function(k, v) {
-                                html = html + fn_venue_images(v); 
-                            });
-                            $('#grid_venue_images').cubeportfolio('appendItems', html);
-                            $('#grid_venue_images').trigger('resize.cbp');
-                        }
-                        //fill out banners
-                        $('#grid_venue_banners .cbp-item').remove();
-                        $('#grid_venue_banners').trigger('resize.cbp');
-                        if(data.banners && data.banners.length)
-                        {
-                            var html = '';
-                            $.each(data.banners,function(k, v) {
-                                html = html + fn_venue_banners(v); 
-                            });
-                            $('#grid_venue_banners').cubeportfolio('appendItems', html);
-                            $('#grid_venue_banners').trigger('resize.cbp');
-                        }
-                        //fill out videos
-                        $('#grid_venue_videos .cbp-item').remove();
-                        $('#grid_venue_videos').trigger('resize.cbp');
-                        if(data.videos && data.videos.length)
-                        {
-                            var html = '';
-                            $.each(data.videos,function(k, v) {
-                                html = html + fn_venue_videos(v); 
-                            });
-                            $('#grid_venue_videos').cubeportfolio('appendItems', html);
-                            $('#grid_venue_videos').trigger('resize.cbp');
-                        }
-                        //show modal
-                        $('#modal_model_update').modal('show');
+                        loadModal(data);
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
@@ -291,7 +296,10 @@ var TableDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            location.reload(); 
+                            if(typeof(data.venue) != 'undefined' && data.venue !== null)
+                                loadModal(data);
+                            else
+                                location.reload();
                         }
                         else{
                             swal({

@@ -34,28 +34,7 @@ class VenueController extends Controller{
             $input = Input::all(); 
             if(isset($input) && isset($input['id']))
             {
-                $current = date('Y-m-d');
-                //get selected record 
-                $venue = DB::table('venues')
-                                ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                                ->select('venues.*','locations.address','locations.city','locations.state','locations.zip','locations.country')
-                                ->where('venues.id','=',$input['id'])->first();
-                if(!$venue)
-                    return ['success'=>false,'msg'=>'There was an error getting the venue.<br>Maybe it is not longer in the system.'];
-                //search sub elements
-                $stages = Stage::where('venue_id',$venue->id)->get();
-                foreach ($stages as $s)
-                    $s->image_url = Image::view_image($s->image_url);
-                $images = DB::table('images')->join('venue_images', 'venue_images.image_id', '=' ,'images.id')
-                                ->select('images.*')->where('venue_images.venue_id','=',$venue->id)->distinct()->get();
-                foreach ($images as $i)
-                    $i->url = Image::view_image($i->url);
-                $banners = Banner::where('parent_id','=',$venue->id)->where('belongto','=','venue')->distinct()->get();
-                foreach ($banners as $b)
-                    $b->file = Image::view_image($b->file);
-                $videos = DB::table('videos')->join('venue_videos', 'venue_videos.video_id', '=' ,'videos.id')
-                                ->select('videos.*')->where('venue_videos.venue_id','=',$venue->id)->distinct()->get();
-                return ['success'=>true,'venue'=>$venue,'stages'=>$stages,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+                return $this->get($input['id']);
             }
             else
             {      
@@ -158,6 +137,44 @@ class VenueController extends Controller{
         }
     } 
     /**
+     * Get venue by id.
+     *
+     * @return view
+     */
+    private function get($id)
+    {
+        try {   
+            //init
+            if(!empty($id) && is_numeric($id))
+            {
+                $current = date('Y-m-d');
+                //get selected record 
+                $venue = DB::table('venues')
+                                ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                ->select('venues.*','locations.address','locations.city','locations.state','locations.zip','locations.country')
+                                ->where('venues.id','=',$id)->first();
+                if(!$venue)
+                    return ['success'=>false,'msg'=>'There was an error getting the venue.<br>Maybe it is not longer in the system.'];
+                //search sub elements
+                $stages = Stage::where('venue_id',$venue->id)->get();
+                foreach ($stages as $s)
+                    $s->image_url = Image::view_image($s->image_url);
+                $images = DB::table('images')->join('venue_images', 'venue_images.image_id', '=' ,'images.id')
+                                ->select('images.*')->where('venue_images.venue_id','=',$venue->id)->distinct()->get();
+                foreach ($images as $i)
+                    $i->url = Image::view_image($i->url);
+                $banners = Banner::where('parent_id','=',$venue->id)->where('belongto','=','venue')->distinct()->get();
+                foreach ($banners as $b)
+                    $b->file = Image::view_image($b->file);
+                $videos = DB::table('videos')->join('venue_videos', 'venue_videos.video_id', '=' ,'videos.id')
+                                ->select('videos.*')->where('venue_videos.venue_id','=',$venue->id)->distinct()->get();
+                return ['success'=>true,'venue'=>$venue,'stages'=>$stages,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Venues Get: '.$ex->getMessage());
+        }
+    } 
+    /**
      * Save new or updated Venues or subtable related with Venues.
      *
      * @void
@@ -221,7 +238,9 @@ class VenueController extends Controller{
                 $venue->default_percent_commission = $input['default_percent_commission'];
                 $venue->save();
                 //return
-                return ['success'=>true,'msg'=>'Venue saved successfully!'];
+                if(isset($input['id']) && $input['id'])
+                    return ['success'=>true,'msg'=>'Venue saved successfully!'];
+                return $this->get($venue->id);
             }
             return ['success'=>false,'msg'=>'There was an error saving the venue.<br>The server could not retrieve the data.'];
         } catch (Exception $ex) {
