@@ -44,34 +44,7 @@ class ShowController extends Controller{
             $input = Input::all(); 
             if(isset($input) && isset($input['id']))
             {
-                $current = date('Y-m-d');
-                //get selected record
-                $show = Show::find($input['id']);  
-                if(!$show)
-                    return ['success'=>false,'msg'=>'There was an error getting the show.<br>Maybe it is not longer in the system.'];
-                // change relative url uploads for real one
-                $show->sponsor_logo_id = Image::view_image($show->sponsor_logo_id);
-                //search sub elements
-                $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')
-                                ->select('tickets.*','packages.title')->where('tickets.show_id','=',$show->id)->distinct()->get();
-                $tt_inactive = DB::table('ticket_types_inactive')->select('ticket_types_inactive.*')->distinct()->implode('ticket_types_inactive.ticket_type',',');
-                $show_times = ShowTime::where('show_id','=',$show->id)->where('show_time','>=',$current)->distinct()->get();
-                $passwords = DB::table('show_passwords')->select('show_passwords.*')
-                                ->where('show_passwords.show_id','=',$show->id)->distinct()->get();
-                $bands = DB::table('bands')->join('show_bands', 'show_bands.band_id', '=' ,'bands.id')
-                                ->select('bands.name','show_bands.*')->where('show_bands.show_id','=',$show->id)
-                                ->orderBy('show_bands.n_order')->distinct()->get();
-                $contracts = ShowContract::where('show_id','=',$show->id)->orderBy('updated','desc')->get();
-                $images = DB::table('images')->join('show_images', 'show_images.image_id', '=' ,'images.id')
-                                ->select('images.*')->where('show_images.show_id','=',$show->id)->distinct()->get();
-                foreach ($images as $i)
-                    $i->url = Image::view_image($i->url);
-                $banners = Banner::where('parent_id','=',$show->id)->where('belongto','=','show')->distinct()->get();
-                foreach ($banners as $b)
-                    $b->file = Image::view_image($b->file);
-                $videos = DB::table('videos')->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
-                                ->select('videos.*')->where('show_videos.show_id','=',$show->id)->distinct()->get();
-                return ['success'=>true,'show'=>array_merge($show->getAttributes()),'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+                return $this->get($input['id']);
             }
             if(isset($input) && isset($input['venue_id']))
             {
@@ -244,6 +217,50 @@ class ShowController extends Controller{
         }
     } 
     /**
+     * Get show by id.
+     *
+     * @return view
+     */
+    private function get($id)
+    {
+        try {   
+            //init
+            if(!empty($id) && is_numeric($id))
+            {
+                $current = date('Y-m-d');
+                //get selected record
+                $show = Show::find($id);  
+                if(!$show)
+                    return ['success'=>false,'msg'=>'There was an error getting the show.<br>Maybe it is not longer in the system.'];
+                // change relative url uploads for real one
+                $show->sponsor_logo_id = Image::view_image($show->sponsor_logo_id);
+                //search sub elements
+                $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')
+                                ->select('tickets.*','packages.title')->where('tickets.show_id','=',$show->id)->distinct()->get();
+                $tt_inactive = DB::table('ticket_types_inactive')->select('ticket_types_inactive.*')->distinct()->implode('ticket_types_inactive.ticket_type',',');
+                $show_times = ShowTime::where('show_id','=',$show->id)->where('show_time','>=',$current)->distinct()->get();
+                $passwords = DB::table('show_passwords')->select('show_passwords.*')
+                                ->where('show_passwords.show_id','=',$show->id)->distinct()->get();
+                $bands = DB::table('bands')->join('show_bands', 'show_bands.band_id', '=' ,'bands.id')
+                                ->select('bands.name','show_bands.*')->where('show_bands.show_id','=',$show->id)
+                                ->orderBy('show_bands.n_order')->distinct()->get();
+                $contracts = ShowContract::where('show_id','=',$show->id)->orderBy('updated','desc')->get();
+                $images = DB::table('images')->join('show_images', 'show_images.image_id', '=' ,'images.id')
+                                ->select('images.*')->where('show_images.show_id','=',$show->id)->distinct()->get();
+                foreach ($images as $i)
+                    $i->url = Image::view_image($i->url);
+                $banners = Banner::where('parent_id','=',$show->id)->where('belongto','=','show')->distinct()->get();
+                foreach ($banners as $b)
+                    $b->file = Image::view_image($b->file);
+                $videos = DB::table('videos')->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
+                                ->select('videos.*')->where('show_videos.show_id','=',$show->id)->distinct()->get();
+                return ['success'=>true,'show'=>array_merge($show->getAttributes()),'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Shows Get: '.$ex->getMessage());
+        }
+    } 
+    /**
      * Save new or updated show or subtable related with show.
      *
      * @void
@@ -315,7 +332,9 @@ class ShowController extends Controller{
                     $show->set_sponsor_logo_id($input['sponsor_logo_id']);
                 $show->save();
                 //return
-                return ['success'=>true,'msg'=>'Show saved successfully!'];
+                if(isset($input['id']) && $input['id'])
+                    return ['success'=>true,'msg'=>'Show saved successfully!'];
+                return $this->get($show->id);
             }
             return ['success'=>false,'msg'=>'There was an error saving the show.<br>The server could not retrieve the data.'];
         } catch (Exception $ex) {

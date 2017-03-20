@@ -319,15 +319,13 @@ var TableDatatablesManaged = function () {
                 $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
             }
         });
-        
-        //function edit
-        $('#btn_model_edit').on('click', function(ev) {
+        //funcion load modal by id
+        function loadModal(data) {
+            //reset modal
             fullReset();
             if($('#modal_model_update_header').hasClass('bg-green'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
-            else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
-            var set = $('.group-checkable').attr("data-set");
-            var id = $(set+"[type=checkbox]:checked")[0].id;
+            else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');            
             $('a[href="#tab_model_update_checking"]').parent().css('display','block');
             $('#form_model_update .ticket_types_lists').empty();
             $('a[href="#tab_model_update_passwords"]').parent().css('display','block');
@@ -343,6 +341,155 @@ var TableDatatablesManaged = function () {
             $('#tb_show_contracts').empty();
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Show');
+            //fill out defaults
+            $('#form_model_update [name="venue_id"]').val(data.show.venue_id).change();
+            $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+            $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+            $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+            $('#form_model_show_images input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+            $('#form_model_show_banners input[name="parent_id"]:hidden').val(data.show.id).trigger('change');
+            $('#form_model_show_videos input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+            $('#form_model_show_contracts input[name="show_id"]:hidden').val(data.show.id).trigger('change');
+            //fill out shows
+            for(var key in data.show)
+            {
+                //checking
+                if(key=='on_sale' || key=='amex_only_start_date' || key=='amex_only_end_date')
+                    if(data.show[key]=='0000-00-00 00:00:00')
+                        data.show[key] = '';
+                //fill out
+                var e = $('#form_model_update [name="'+key+'"]');
+                if(e.is('img'))
+                    e.attr('src',data.show[key]);
+                else if(e.is('input:checkbox'))
+                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
+                else
+                    e.val(data.show[key]);
+            }
+            $('#form_model_update [name="description"]').summernote({height:150});
+            //fill out checking ticket 
+            if(data.tickets)
+            {
+                if(data.show.amex_only_ticket_types && data.show.amex_only_ticket_types!='') var amex_tt = data.show.amex_only_ticket_types.split(','); else var amex_tt = [];
+                if(data.ticket_types_inactive && data.ticket_types_inactive!='') var tt_inactive = data.ticket_types_inactive.split(','); else var tt_inactive = [];  
+                $.each(data.tickets,function(k, v) {
+                    if(v.is_active == 1 && tt_inactive.indexOf(v.ticket_type)<0)
+                    {
+                        if(amex_tt.indexOf(v.ticket_type)>=0) 
+                            var checked = 'checked';
+                        else var checked = '';
+                        $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label><br>');
+                        $('#modal_model_show_passwords .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                        $('#form_model_show_times_toggle .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                        $('#form_model_show_times .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
+                    }
+                });
+            }
+            //fill out passwords
+            if(data.passwords && data.passwords.length)
+            {
+                $.each(data.passwords,function(k, v) {
+                    $('#tb_show_passwords').append('<tr class="'+v.id+'"><td>'+v.password+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td>'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                });
+            }
+            //fill out tickets
+            $('#form_model_show_contracts select[name="ticket_id"]').append('<option disabled selected value=""></option>');
+            if(data.tickets && data.tickets.length)
+            {
+                $.each(data.tickets,function(k, v) {
+                    //default style
+                    if(v.is_default==1)
+                        v.is_default = '<span class="label label-sm sbold label-success">Yes</span>';
+                    else
+                        v.is_default = '<span class="label label-sm sbold label-danger">No</span>';
+                    //active style
+                    if(v.is_active==1)
+                        v.is_active = '<span class="label label-sm sbold label-success">Active</span>';
+                    else
+                        v.is_active = '<span class="label label-sm sbold label-danger">Inactive</span>';
+                    //unlimited tickets
+                    if(v.max_tickets == 0) v.max_tickets = '&#8734;';
+                    //commission$
+                    if(!v.fixed_commission) v.fixed_commission = '0.00';
+                    $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
+                    $('#form_model_show_contracts select[name="ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' ('+v.is_active+') '+v.title+'</option>');
+                });
+            }
+            //fill out bands
+            tableBands.clear().draw();
+            if(data.bands && data.bands.length)
+            {
+                $.each(data.bands,function(k, v) {
+                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                
+                });
+            }
+            //fill out showtimes
+            calendarShowTimes.fullCalendar('removeEvents');
+            calendarShowTimes.fullCalendar('removeEventSources');
+            if(data.show_times && data.show_times.length)
+            {
+                $.each(data.show_times,function(k, v) {
+                    fn_show_times(v) ;                          
+                });
+            }
+            //fill out contracts
+            if(data.contracts && data.contracts.length)
+            {
+                $.each(data.contracts,function(k, v) {
+                    //status for cron job
+                    if(!v.data)
+                        v.data = '<span class="label label-sm sbold label-warning">Nothing to run</span>';
+                    else
+                        v.data = '<span class="label label-sm sbold label-danger">Pending</span>';
+                    var updated = moment(v.updated);
+                    var effective_date = moment(v.effective_date);
+                    $('#tb_show_contracts').append('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+v.id+'" class="btn sbold bg-red delete"></td></tr>');
+                });
+            }
+            //fill out images
+            $('#grid_show_images .cbp-item').remove();
+            $('#grid_show_images').trigger('resize.cbp');
+            if(data.images && data.images.length)
+            {
+                var html = '';
+                $.each(data.images,function(k, v) {
+                    html = html + fn_show_images(v); 
+                });
+                $('#grid_show_images').cubeportfolio('appendItems', html);
+                $('#grid_show_images').trigger('resize.cbp');
+            }
+            //fill out banners
+            $('#grid_show_banners .cbp-item').remove();
+            $('#grid_show_banners').trigger('resize.cbp');
+            if(data.banners && data.banners.length)
+            {
+                var html = '';
+                $.each(data.banners,function(k, v) {
+                    html = html + fn_show_banners(v); 
+                });
+                $('#grid_show_banners').cubeportfolio('appendItems', html);
+                $('#grid_show_banners').trigger('resize.cbp');
+            }
+            //fill out videos
+            $('#grid_show_videos .cbp-item').remove();
+            $('#grid_show_videos').trigger('resize.cbp');
+            if(data.videos && data.videos.length)
+            {
+                var html = '';
+                $.each(data.videos,function(k, v) {
+                    html = html + fn_show_videos(v); 
+                });
+                $('#grid_show_videos').cubeportfolio('appendItems', html);
+                $('#grid_show_videos').trigger('resize.cbp');
+            }
+            //show modal
+            $('#modal_model_update').modal('show');
+        }
+        
+        //function edit
+        $('#btn_model_edit').on('click', function(ev) {  
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -351,149 +498,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        //fill out defaults
-                        $('#form_model_update [name="venue_id"]').val(data.show.venue_id).change();
-                        $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
-                        $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
-                        $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
-                        $('#form_model_show_images input[name="show_id"]:hidden').val(data.show.id).trigger('change');
-                        $('#form_model_show_banners input[name="parent_id"]:hidden').val(data.show.id).trigger('change');
-                        $('#form_model_show_videos input[name="show_id"]:hidden').val(data.show.id).trigger('change');
-                        $('#form_model_show_contracts input[name="show_id"]:hidden').val(data.show.id).trigger('change');
-                        //fill out shows
-                        for(var key in data.show)
-                        {
-                            //checking
-                            if(key=='on_sale' || key=='amex_only_start_date' || key=='amex_only_end_date')
-                                if(data.show[key]=='0000-00-00 00:00:00')
-                                    data.show[key] = '';
-                            //fill out
-                            var e = $('#form_model_update [name="'+key+'"]');
-                            if(e.is('img'))
-                                e.attr('src',data.show[key]);
-                            else if(e.is('input:checkbox'))
-                                $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
-                            else
-                                e.val(data.show[key]);
-                        }
-                        $('#form_model_update [name="description"]').summernote({height:150});
-                        //fill out checking ticket 
-                        if(data.tickets)
-                        {
-                            if(data.show.amex_only_ticket_types && data.show.amex_only_ticket_types!='') var amex_tt = data.show.amex_only_ticket_types.split(','); else var amex_tt = [];
-                            if(data.ticket_types_inactive && data.ticket_types_inactive!='') var tt_inactive = data.ticket_types_inactive.split(','); else var tt_inactive = [];  
-                            $.each(data.tickets,function(k, v) {
-                                if(v.is_active == 1 && tt_inactive.indexOf(v.ticket_type)<0)
-                                {
-                                    if(amex_tt.indexOf(v.ticket_type)>=0) 
-                                        var checked = 'checked';
-                                    else var checked = '';
-                                    $('#modal_model_update .ticket_types_lists').append('<label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" '+checked+' />'+v.ticket_type+'<span></span></label><br>');
-                                    $('#modal_model_show_passwords .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
-                                    $('#form_model_show_times_toggle .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
-                                    $('#form_model_show_times .ticket_types_lists').append('<br><label class="mt-checkbox"><input type="checkbox" name="ticket_types[]" value="'+v.id+'" />'+v.ticket_type+'<span></span></label>');
-                                }
-                            });
-                        }
-                        //fill out passwords
-                        if(data.passwords && data.passwords.length)
-                        {
-                            $.each(data.passwords,function(k, v) {
-                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td>'+v.password+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td>'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
-                            });
-                        }
-                        //fill out tickets
-                        $('#form_model_show_contracts select[name="ticket_id"]').append('<option disabled selected value=""></option>');
-                        if(data.tickets && data.tickets.length)
-                        {
-                            $.each(data.tickets,function(k, v) {
-                                //default style
-                                if(v.is_default==1)
-                                    v.is_default = '<span class="label label-sm sbold label-success">Yes</span>';
-                                else
-                                    v.is_default = '<span class="label label-sm sbold label-danger">No</span>';
-                                //active style
-                                if(v.is_active==1)
-                                    v.is_active = '<span class="label label-sm sbold label-success">Active</span>';
-                                else
-                                    v.is_active = '<span class="label label-sm sbold label-danger">Inactive</span>';
-                                //unlimited tickets
-                                if(v.max_tickets == 0) v.max_tickets = '&#8734;';
-                                //commission$
-                                if(!v.fixed_commission) v.fixed_commission = '0.00';
-                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
-                                $('#form_model_show_contracts select[name="ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' ('+v.is_active+') '+v.title+'</option>');
-                            });
-                        }
-                        //fill out bands
-                        tableBands.clear().draw();
-                        if(data.bands && data.bands.length)
-                        {
-                            $.each(data.bands,function(k, v) {
-                                tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                
-                            });
-                        }
-                        //fill out showtimes
-                        calendarShowTimes.fullCalendar('removeEvents');
-                        calendarShowTimes.fullCalendar('removeEventSources');
-                        if(data.show_times && data.show_times.length)
-                        {
-                            $.each(data.show_times,function(k, v) {
-                                fn_show_times(v) ;                          
-                            });
-                        }
-                        //fill out contracts
-                        if(data.contracts && data.contracts.length)
-                        {
-                            $.each(data.contracts,function(k, v) {
-                                //status for cron job
-                                if(!v.data)
-                                    v.data = '<span class="label label-sm sbold label-warning">Nothing to run</span>';
-                                else
-                                    v.data = '<span class="label label-sm sbold label-danger">Pending</span>';
-                                var updated = moment(v.updated);
-                                var effective_date = moment(v.effective_date);
-                                $('#tb_show_contracts').append('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+v.id+'" class="btn sbold bg-red delete"></td></tr>');
-                            });
-                        }
-                        //fill out images
-                        $('#grid_show_images .cbp-item').remove();
-                        $('#grid_show_images').trigger('resize.cbp');
-                        if(data.images && data.images.length)
-                        {
-                            var html = '';
-                            $.each(data.images,function(k, v) {
-                                html = html + fn_show_images(v); 
-                            });
-                            $('#grid_show_images').cubeportfolio('appendItems', html);
-                            $('#grid_show_images').trigger('resize.cbp');
-                        }
-                        //fill out banners
-                        $('#grid_show_banners .cbp-item').remove();
-                        $('#grid_show_banners').trigger('resize.cbp');
-                        if(data.banners && data.banners.length)
-                        {
-                            var html = '';
-                            $.each(data.banners,function(k, v) {
-                                html = html + fn_show_banners(v); 
-                            });
-                            $('#grid_show_banners').cubeportfolio('appendItems', html);
-                            $('#grid_show_banners').trigger('resize.cbp');
-                        }
-                        //fill out videos
-                        $('#grid_show_videos .cbp-item').remove();
-                        $('#grid_show_videos').trigger('resize.cbp');
-                        if(data.videos && data.videos.length)
-                        {
-                            var html = '';
-                            $.each(data.videos,function(k, v) {
-                                html = html + fn_show_videos(v); 
-                            });
-                            $('#grid_show_videos').cubeportfolio('appendItems', html);
-                            $('#grid_show_videos').trigger('resize.cbp');
-                        }
-                        //show modal
-                        $('#modal_model_update').modal('show');
+                        loadModal(data);
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
@@ -539,7 +544,10 @@ var TableDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            location.reload(); 
+                            if(typeof(data.show) != 'undefined' && data.show !== null)
+                                loadModal(data);
+                            else
+                                location.reload();
                         }
                         else{
                             swal({
