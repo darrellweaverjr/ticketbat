@@ -50,7 +50,7 @@
                             </button>
                             @endif
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
-                            <button id="btn_model_sort" class="btn sbold purple">Sort 
+                            <button id="btn_model_sort" class="btn sbold purple"git s>Sort 
                                 <i class="fa fa-sort"></i>
                             </button>
                             @endif
