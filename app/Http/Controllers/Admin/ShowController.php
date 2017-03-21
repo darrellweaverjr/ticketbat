@@ -60,7 +60,7 @@ class ShowController extends Controller{
             {      
                 $current = date('Y-m-d H:i:s');
                 //conditions to search
-                $where = [['images.image_type','=','Logo']];
+                $where = [['shows.id','>',0]];
                 //search venue
                 if(isset($input) && isset($input['venue']))
                 {
@@ -117,7 +117,11 @@ class ShowController extends Controller{
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
                                         ->leftJoin('show_images', 'show_images.show_id', '=' ,'shows.id')
-                                        ->leftJoin('images', 'show_images.image_id', '=' ,'images.id')
+                                        ->leftJoin('images', function($join)
+                                        {
+                                            $join->on('show_images.image_id','=','images.id');
+                                            $join->where('images.image_type','=','Logo');
+                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge',
                                                  'categories.name AS category','images.url AS image_url')
@@ -142,7 +146,11 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('show_images', 'show_images.show_id', '=' ,'shows.id')
-                                        ->leftJoin('images', 'show_images.image_id', '=' ,'images.id')
+                                        ->leftJoin('images', function($join)
+                                        {
+                                            $join->on('show_images.image_id','=','images.id');
+                                            $join->where('images.image_type','=','Logo');
+                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge',
                                                  'categories.name AS category','images.url AS image_url')
@@ -168,7 +176,11 @@ class ShowController extends Controller{
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
                                         ->leftJoin('show_images', 'show_images.show_id', '=' ,'shows.id')
-                                        ->leftJoin('images', 'show_images.image_id', '=' ,'images.id')
+                                        ->leftJoin('images', function($join)
+                                        {
+                                            $join->on('show_images.image_id','=','images.id');
+                                            $join->where('images.image_type','=','Logo');
+                                        })                                      
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge',
                                                  'categories.name AS category','images.url AS image_url')
@@ -188,11 +200,20 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('show_images', 'show_images.show_id', '=' ,'shows.id')
-                                        ->leftJoin('images', 'show_images.image_id', '=' ,'images.id')
+                                        ->leftJoin('images', function($join)
+                                        {
+                                            $join->on('show_images.image_id','=','images.id');
+                                            $join->where('images.image_type','=','Logo');
+                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
+                                        ->where(function($query)
+                                        {
+                                            $query->whereNull('images.url')
+                                                  ->orWhereNotNull('images.url');
+                                        })
                                         ->orderBy('shows.name')->groupBy('shows.id')
                                         ->distinct()->get();
                         }
