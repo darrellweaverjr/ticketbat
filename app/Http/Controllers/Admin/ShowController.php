@@ -39,7 +39,7 @@ class ShowController extends Controller{
      */
     public function index()
     {
-        try {   
+        try {  
             //init
             $input = Input::all(); 
             if(isset($input) && isset($input['id']))
@@ -303,6 +303,7 @@ class ShowController extends Controller{
                 $show->restrictions = $input['restrictions'];
                 $show->is_featured = $input['is_featured'];
                 $show->cutoff_hours = $input['cutoff_hours'];
+                $show->sequence = $input['sequence'];
                 $show->is_active = $input['is_active'];
                 $show->facebook = $input['facebook'];
                 $show->twitter = $input['twitter'];
@@ -331,6 +332,10 @@ class ShowController extends Controller{
                 if(preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
                     $show->set_sponsor_logo_id($input['sponsor_logo_id']);
                 $show->save();
+                //order shows
+                $shows = Show::where('sequence','<',10000)->orderBy('sequence')->get(['id']);
+                foreach($shows as $key=>$s) 
+                    Show::where('id',$s->id)->update(['sequence'=>$key+1]);
                 //return
                 if(isset($input['id']) && $input['id'])
                     return ['success'=>true,'msg'=>'Show saved successfully!'];

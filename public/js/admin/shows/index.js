@@ -2641,7 +2641,8 @@ var TableDatatablesManaged = function () {
        
         //init functions
         check_models(); 
-        $('input[name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0 });
+        $('input[name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0,max:99 });
+        $('input[name="sequence"]').TouchSpin({ initval:10000,min:1,step:1,decimals:0,max:10000 });
         $('input[name="max_tickets"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000 });
         $('input[name="retail_price"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('input[name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });

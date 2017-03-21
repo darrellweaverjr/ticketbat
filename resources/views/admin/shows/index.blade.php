@@ -49,11 +49,6 @@
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
-                            @if(in_array('Other',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
-                            <button id="btn_model_sort" class="btn sbold purple"git s>Sort 
-                                <i class="fa fa-sort"></i>
-                            </button>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -288,8 +283,12 @@
                                                         </div>
                                                     </div>
                                                     <label class="control-label col-md-3">Cutoff Hours</label>
-                                                    <div class="col-md-9">
-                                                        <input type="text" value="1" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                    <div class="col-md-3">
+                                                        <input type="text" value="1" name="cutoff_hours" style="width:43px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                    </div>
+                                                    <label class="control-label col-md-2">Sequence</label>
+                                                    <div class="col-md-4">
+                                                        <input type="text" value="10000" name="sequence" style="width:73px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
