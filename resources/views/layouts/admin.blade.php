@@ -562,7 +562,7 @@
                             <!-- END UPDATE PROFILE MODAL-->  
                             <!-- BEGIN IMPERSONATE MODAL--> 
                             <div id="modal_model_impersonate" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-                                <div class="modal-dialog" style="width:600px !important;">
+                                <div class="modal-dialog" style="width:800px !important;">
                                     <div class="modal-content portlet">
                                         <div class="modal-header alert-block bg-dark">
                                             <h4 class="modal-title bold uppercase" style="color:white;"><center>Impersonate</center></h4>
@@ -574,27 +574,25 @@
                                                 <div class="form-body">
                                                     <div class="row">
                                                         <div class="form-group">    
-                                                            <label class="control-label col-md-3">User Types
+                                                            <label class="control-label col-md-2">User Types
                                                                 <span class="required">*</span>
                                                             </label>
-                                                            <div class="col-md-9 show-error" id="impersonate_user_type">
-                                                            </div> 
+                                                            <div class="col-md-10 show-error" id="impersonate_user_type"></div> 
                                                         </div>
                                                         <div class="form-group">    
-                                                            <label class="control-label col-md-3">Impersonate to
+                                                            <label class="control-label col-md-2">Impersonate
                                                                 <span class="required">*</span>
                                                             </label>
-                                                            <div class="col-md-9 show-error">
-                                                                <select class="form-control" name="user_id">
-                                                                </select>
+                                                            <div class="col-md-8 show-error">
+                                                                <select class="form-control" name="user_id"></select>
+                                                            </div> 
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn sbold dark btn-outline" id="submit_model_impersonate">Update Links</button>
                                                             </div> 
                                                         </div>
-                                                        <div class="form-group">  
-                                                            <label class="control-label col-md-3">Link (valid 2min)
-                                                                <span class="required"></span>
-                                                            </label>
-                                                            <div class="col-md-9 show-error" id="impersonate_link">
-                                                            </div> 
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-2"></label>
+                                                            <div class="col-md-10" id="impersonate_link"></div> 
                                                         </div>
                                                     </div>
                                                 </div>
@@ -602,7 +600,6 @@
                                                     <div class="row">
                                                         <div class="modal-footer">
                                                             <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_update_profile').trigger('reset')">Cancel</button>
-                                                            <button type="button" class="btn sbold sbold dark btn-outline" id="submit_model_impersonate">Save</button>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -301,7 +301,7 @@ class UserController extends Controller{
                     $user_types = UserType::orderBy('user_type')->pluck ('user_type')                            ;
                     $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                                ->select(DB::raw('users.id, user_types.user_type, CONCAT(users.first_name," ",users.last_name) AS name'))
+                                ->select(DB::raw('users.id, user_types.user_type, CONCAT(users.first_name," ",users.last_name) AS name, users.email'))
                                 ->orderBy('users.first_name')->get();
                     return ['success'=>true,'user_types'=>$user_types,'users'=>$users];
                 }

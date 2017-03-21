@@ -302,7 +302,7 @@ var impersonate = function()
                         $('#impersonate_user_type').append('<label class="mt-checkbox"><input type="checkbox" checked="true" name="user_type[]" value="'+v+'"/>'+v+'<span></span></label>');
                     });
                     $.each(data.users,function(k, v) {
-                        $('#modal_model_impersonate select[name="user_id"]').append('<option value="'+v.id+'" rel="'+v.user_type+'">'+v.name+' ('+v.user_type+')'+'</option>');
+                        $('#modal_model_impersonate select[name="user_id"]').append('<option value="'+v.id+'" rel="'+v.user_type+'">'+v.name+' ['+v.email+']'+' ('+v.user_type+')'+'</option>');
                     });
                     //show modal
                     $('#modal_model_impersonate').modal('show');
@@ -350,9 +350,9 @@ $('#submit_model_impersonate').on('click', function(ev) {
             success: function(data) {
                 if(data.success) 
                 {
-                    $('#impersonate_link').html('<a target="_blank" href="https://ticketbat.com/admin/impersonate/'+data.link+'">TicketBat.com</a>'
-                                               +' / <a href="/admin/users/impersonate/'+data.link+'">TicketBat Admin</a> '
-                                               +'valid on '+moment().format('MM/DD/YYYY h:mma'));
+                    $('#impersonate_link').html('<br><a class="btn sbold blue" target="_blank" href="https://dev.ticketbat.com/impersonate/'+data.link+'">TicketBat Public Site</a>'
+                                               +' / <a class="btn sbold green" href="/admin/users/impersonate/'+data.link+'">TicketBat Admin</a> '
+                                               +'<b style="color:red"> (valid only on '+moment().format('MM/DD/YYYY @ h:mma')+')</b>');
                 }
                 else{
                     $('#modal_model_impersonate').modal('hide');
