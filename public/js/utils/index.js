@@ -350,7 +350,7 @@ $('#submit_model_impersonate').on('click', function(ev) {
             success: function(data) {
                 if(data.success) 
                 {
-                    $('#impersonate_link').html('<br><a class="btn sbold blue" target="_blank" href="https://dev.ticketbat.com/impersonate/'+data.link+'">TicketBat Public Site</a>'
+                    $('#impersonate_link').html('<br><a class="btn sbold blue" target="_blank" href="https://ticketbat.com/impersonate/'+data.link+'">TicketBat Public Site</a>'
                                                +' / <a class="btn sbold green" href="/admin/users/impersonate/'+data.link+'">TicketBat Admin</a> '
                                                +'<b style="color:red"> (valid only on '+moment().format('MM/DD/YYYY @ h:mma')+')</b>');
                 }
