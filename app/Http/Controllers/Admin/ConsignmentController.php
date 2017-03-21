@@ -107,14 +107,69 @@ class ConsignmentController extends Controller{
             }
             else
             {
+                //conditions to search
+                $search = [];
+                $where = [['consignments.id','>',0]];
+                //search venue
+                if(isset($input) && isset($input['venue']))
+                {
+                    $search['venue'] = $input['venue'];
+                    if($search['venue'] != '')
+                        $where[] = ['shows.venue_id','=',$search['venue']];
+                }
+                else
+                    $search['venue'] = '';
+                //search show
+                if(isset($input) && isset($input['show']))
+                {
+                    $search['show'] = $input['show'];
+                    if($search['show'] != '')
+                        $where[] = ['shows.id','=',$search['show']];
+                }
+                else
+                    $search['show'] = '';
+                //search showtime
+                if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
+                {
+                    $search['showtime_start_date'] = $input['showtime_start_date'];
+                    $search['showtime_end_date'] = $input['showtime_end_date'];
+                }
+                else
+                {
+                    $search['showtime_start_date'] = '';
+                    $search['showtime_end_date'] = '';
+                }
+                if($search['showtime_start_date'] != '' && $search['showtime_end_date'] != '')
+                {
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$search['showtime_start_date']];
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$search['showtime_end_date']];
+                } 
+                //search created
+                if(isset($input) && isset($input['created_start_date']) && isset($input['created_end_date']))
+                {
+                    $search['created_start_date'] = $input['created_start_date'];
+                    $search['created_end_date'] = $input['created_end_date'];
+                }
+                else
+                {
+                    $search['created_start_date'] = date('Y-m-d', strtotime('-30 DAY'));
+                    $search['created_end_date'] = date('Y-m-d');
+                }
+                if($search['created_start_date'] != '' && $search['created_end_date'] != '')
+                {
+                    $where[] = [DB::raw('DATE(consignments.created)'),'>=',$search['created_start_date']];
+                    $where[] = [DB::raw('DATE(consignments.created)'),'<=',$search['created_end_date']];
+                } 
+                
                 //if user has permission to view
                 $sellers = [];
-                $venues = [];
                 $stages = [];
                 $status = [];
                 $status_seat = [];
                 $sections = [];
                 $consignments = [];
+                $search['venues'] = [];
+                $search['shows'] = [];
                 if(in_array('View',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
                 {
                     if(Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_scope'] != 'All')
@@ -129,6 +184,7 @@ class ConsignmentController extends Controller{
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
                                         ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                ->where($where)
                                 ->where(function($query)
                                 {
                                     $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
@@ -141,7 +197,8 @@ class ConsignmentController extends Controller{
                                 ->groupBy('consignments.id')    
                                 ->orderBy('shows.name','show_times.show_time')
                                 ->get();
-                        $venues = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                        $search['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                        $search['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
                     }//all
                     else
                     {
@@ -155,6 +212,7 @@ class ConsignmentController extends Controller{
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
                                         ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                ->where($where)
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
@@ -162,7 +220,8 @@ class ConsignmentController extends Controller{
                                 ->groupBy('consignments.id')    
                                 ->orderBy('shows.name','show_times.show_time')
                                 ->get();
-                        $venues = Venue::orderBy('name')->get(['id','name']);
+                        $search['venues'] = Venue::orderBy('name')->get(['id','name']);
+                        $search['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
                     }
                     $sellers = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
@@ -175,7 +234,7 @@ class ConsignmentController extends Controller{
                     $sections = Util::getEnumValues('tickets','ticket_type');
                 }
                 //return view
-                return view('admin.consignments.index',compact('consignments','sellers','venues','stages','status','status_seat','sections'));
+                return view('admin.consignments.index',compact('consignments','sellers','stages','status','status_seat','sections','search'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Consignment Index: '.$ex->getMessage());

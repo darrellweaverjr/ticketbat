@@ -12,7 +12,7 @@
     <!-- BEGIN PAGE HEADER-->   
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}} 
-        <small> - List, add, edit and remove consignment tickets.</small>
+        <small> - List, add, edit and remove consignment tickets. (By default the last 30 days.)</small>
     </h1>
     <!-- END PAGE TITLE-->    
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
@@ -25,6 +25,11 @@
                     </div>
                     <div class="actions">                        
                         <div class="btn-group">
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
+                            <button id="btn_model_search" class="btn sbold grey-salsa">Search
+                                <i class="fa fa-search"></i>
+                            </button>
+                            @endif
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
                             <button id="btn_model_add" class="btn sbold bg-green">Add 
                                 <i class="fa fa-plus"></i>
@@ -129,7 +134,7 @@
                                         <div class="col-md-9 show-error">
                                             <select class="form-control" name="venue_id">
                                                 <option selected disabled value=""></option>
-                                                @foreach($venues as $index=>$v)
+                                                @foreach($search['venues'] as $index=>$v)
                                                 <option value="{{$v->id}}">{{$v->name}}</option>
                                                 @endforeach
                                             </select>
@@ -452,6 +457,105 @@
         </div>
     </div>
     <!-- END EDIT MODAL--> 
+    <!-- BEGIN SEARCH MODAL--> 
+    <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:470px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="/admin/consignments" id="form_model_search">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Venue:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="venue" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['venues'] as $index=>$v)
+                                                <option @if($v->id==$search['venue']) selected @endif value="{{$v->id}}">{{$v->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>   
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Show:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="show" style="width: 321px !important" data-content='@php echo str_replace("'"," ",json_encode($search['shows']));@endphp'>
+                                                <option selected value="">All</option>
+                                                @foreach($search['shows'] as $index=>$s)
+                                                    @if($s->venue_id == $search['venue'] || $s->id==$search['show'])
+                                                    <option @if($s->id==$search['show']) selected @endif value="{{$s->id}}">{{$s->name}}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Show Time:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group" id="show_times_date">
+                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$search['showtime_start_date']}}" readonly="true">
+                                            <span class="input-group-addon"> to </span>
+                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$search['showtime_end_date']}}" readonly="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-range-toggle" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                                <button class="btn default" type="button" id="clear_show_times_date">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Created:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group" id="created_date">
+                                            <input type="text" class="form-control" name="created_start_date" value="{{$search['created_start_date']}}" readonly="true">
+                                            <span class="input-group-addon"> to </span>
+                                            <input type="text" class="form-control" name="created_end_date" value="{{$search['created_end_date']}}" readonly="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-range-toggle" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                                <button class="btn default" type="button" id="clear_created_date">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
+                                                                                                    title: 'Searching information',
+                                                                                                    text: 'Please, wait.',
+                                                                                                    type: 'info',
+                                                                                                    showConfirmButton: false
+                                                                                                });" >Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SEARCH MODAL--> 
 @endsection
 
 @section('scripts') 

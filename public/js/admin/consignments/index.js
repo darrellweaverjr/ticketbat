@@ -64,6 +64,58 @@ var TableDatatablesManaged = function () {
         });   
         
         //PERSONALIZED FUNCTIONS  
+        //function search
+        $('#btn_model_search').on('click', function(ev) {
+            $('#modal_model_search').modal('show');
+        });
+        //show_times_date
+        $('#show_times_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD',
+                separator: ' to '
+            },
+            function (start, end) {
+                $('#form_model_search input[name="showtime_start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="showtime_end_date"]').val(end.format('YYYY-MM-DD'));
+            }
+        ); 
+        //clear show_times_date
+        $('#clear_show_times_date').on('click', function(ev) {
+            $('#form_model_search [name="showtime_start_date"]').val('');
+            $('#form_model_search [name="showtime_end_date"]').val('');
+            $('#show_times_date').datetimepicker('update');
+        }); 
+        //created_date
+        $('#created_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD',
+                separator: ' to '
+            },
+            function (start, end) {
+                $('#form_model_search input[name="created_start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="created_end_date"]').val(end.format('YYYY-MM-DD'));
+            }
+        ); 
+        //clear created_date
+        $('#clear_created_date').on('click', function(ev) {
+            $('#form_model_search [name="created_start_date"]').val('');
+            $('#form_model_search [name="created_end_date"]').val('');
+            $('#created_date').datetimepicker('update');
+        }); 
+        //search venue on select
+        $('#form_model_search select[name="venue"]').bind('change click', function() {
+            var venue = $(this).val();
+            $('#form_model_search select[name="show"]').html('<option selected value="">All</option>');
+            var shows = $('#form_model_search select[name="show"]').data('content');
+            if(shows)
+            {
+                $.each(shows,function(k, v) {
+                    if(v.venue_id == venue)
+                        $('#form_model_search select[name="show"]').append('<option value="'+v.id+'">'+v.name+'</option>');
+                });
+            }
+        });      
+      
         //on venue select
         $('#modal_model_update [name="venue_id"]').on('change', function () {
             var venue_id = $('#modal_model_update [name="venue_id"] option:selected').val();
