@@ -180,7 +180,7 @@ class AppController extends Controller{
                                          (CASE WHEN (packages.title != "None") THEN packages.title ELSE "" END) AS title,
                                          (CASE WHEN (packages.title != "None") THEN packages.description ELSE "" END) AS description,
                                          (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS max_available'))
-                        ->where('tickets.is_active','=',1)->where('shows.id','=',$showtime[0]->show_id)->where('purchases.show_time_id','=',$id)
+                        ->where('tickets.is_active','=',1)->where('shows.id','=',$showtime[0]->show_id)
                         ->whereNotIn('tickets.id', function($query) use ($id)
                         {
                             $query->select(DB::raw('ticket_id'))
@@ -188,7 +188,7 @@ class AppController extends Controller{
                                   ->where('show_time_id','=',$id);
                         })
                         ->having('max_available','<>',0)
-                        ->groupBy('tickets.id')->get();
+                        ->groupBy('tickets.id')->get(); 
             foreach ($tickets as $t)
             {
                 if(isset($types[$t->ticket_type]))
@@ -196,7 +196,7 @@ class AppController extends Controller{
                 else
                     $types[$t->ticket_type] = ['type'=>$t->ticket_type,'tickets'=>[$t]];
             }
-            $showtime[0]->types = $types;   
+            $showtime[0]->types = array_values($types);  
         }
         return $showtime->toJson();   
     }
