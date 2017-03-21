@@ -284,7 +284,7 @@
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/consignments')===false)) active @endif">
                                 <a href="/admin/consignments" class="nav-link nav-toggle">
                                     <i class="icon-tag"></i>
-                                    <span class="title">Consignment Tickets</span>
+                                    <span class="title">Consignments</span>
                                 </a>
                             </li>
                             @endif
