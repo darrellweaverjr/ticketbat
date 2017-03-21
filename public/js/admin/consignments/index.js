@@ -102,7 +102,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_search [name="created_end_date"]').val('');
             $('#created_date').datetimepicker('update');
         }); 
-        //search venue on select
+        //search venue on select search
         $('#form_model_search select[name="venue"]').bind('change click', function() {
             var venue = $(this).val();
             $('#form_model_search select[name="show"]').html('<option selected value="">All</option>');
@@ -114,61 +114,27 @@ var TableDatatablesManaged = function () {
                         $('#form_model_search select[name="show"]').append('<option value="'+v.id+'">'+v.name+'</option>');
                 });
             }
-        });      
-      
+        });   
         //on venue select
-        $('#modal_model_update [name="venue_id"]').on('change', function () {
-            var venue_id = $('#modal_model_update [name="venue_id"] option:selected').val();
-            if(venue_id)
+        $('#form_model_update select[name="venue_id"]').bind('change click', function() {
+            var venue = $(this).val();
+            $('#modal_model_update select[name="show_id"]').html('<option selected disabled value=""></option>');
+            $('#modal_model_update select[name="show_time_id"]').html('<option selected disabled value=""></option>');
+            var shows = $('#modal_model_update select[name="show_id"]').data('content');
+            if(shows)
             {
-                $('#modal_model_update [name="show_time_id"]').empty();
-                $('#modal_model_update [name="ticket_id"]').empty();
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/consignments', 
-                    data: {venue_id:venue_id}, 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            $('#modal_model_update [name="show_id"]').empty().append('<option disabled selected value=""></option>');
-                            $.each(data.shows,function(key, value) {
-                                $('#modal_model_update [name="show_id"]').append('<option value="'+value.id+'">'+value.name+'</option>');
-                            });
-                            $('#form_model_update [name="section"]').val('');
-                            $('#modal_model_update [name="retail_price"]').val(0);
-                            $('#modal_model_update [name="processing_fee"]').val(0);
-                            $('#modal_model_update [name="percent_commission"]').val(0);
-                            $('#modal_model_update [name="fixed_commission"]').val(0);
-                            $('#tb_seats').empty();
-                        }
-                    },
-                    error: function(){
-                        $('#modal_model_update').modal('hide');
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the information!<br>The request could not be sent to the server.",
-                            html: true,
-                            type: "error"
-                        },function(){
-                            $('#modal_model_update').modal('show');
-                        });
-                    }
+                $.each(shows,function(k, v) {
+                    if(v.venue_id == venue)
+                        $('#modal_model_update select[name="show_id"]').append('<option value="'+v.id+'">'+v.name+'</option>');
                 });
+                $('#form_model_update [name="section"]').val('');
+                $('#modal_model_update [name="retail_price"]').val(0);
+                $('#modal_model_update [name="processing_fee"]').val(0);
+                $('#modal_model_update [name="percent_commission"]').val(0);
+                $('#modal_model_update [name="fixed_commission"]').val(0);
+                $('#tb_seats').empty();
             }
-            else
-            {
-                $('#modal_model_update').modal('hide');
-                swal({
-                    title: "<span style='color:red;'>Error!</span>",
-                    text: "You must select a valid Venue.",
-                    html: true,
-                    type: "error"
-                },function(){
-                    $('#modal_model_update').modal('show');
-                });
-            }
-        });
+        });   
         //on show select
         $('#modal_model_update [name="show_id"]').on('change', function () {
             var show_id = $('#modal_model_update [name="show_id"] option:selected').val();

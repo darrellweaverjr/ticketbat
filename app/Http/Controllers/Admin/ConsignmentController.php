@@ -84,12 +84,6 @@ class ConsignmentController extends Controller{
                                 ->get();
                 return ['success'=>true,'consignment'=>$consignment, 'seats'=>$seats, 'moveto'=>$moveto];
             }
-            else if(isset($input) && isset($input['venue_id']))
-            {
-                $shows = Show::where('is_active','=',1)->where('venue_id','=',$input['venue_id'])
-                                ->select('id', 'name')->distinct()->get();
-                return ['success'=>true,'shows'=>$shows];
-            }
             else if(isset($input) && isset($input['ticket_type']) && isset($input['show_id']))
             {
                 $ticket = Ticket::whereRaw('md5(ticket_type) = "'.$input['ticket_type'].'"')->where('show_id','=',$input['show_id'])->first();

@@ -143,8 +143,7 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <select class="form-control" name="show_id">
-
+                                            <select class="form-control" name="show_id" data-content='@php echo str_replace("'"," ",json_encode($search['shows']));@endphp'>
                                             </select>
                                         </div>  
                                         <label class="control-label col-md-3">Time
