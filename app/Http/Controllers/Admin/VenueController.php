@@ -81,7 +81,10 @@ class VenueController extends Controller{
                                                  'images.url AS image_url',
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->where('venues.audit_user_id','=',Auth::user()->id)
-                                        ->where('images.image_type','Logo')
+                                        ->where(function ($query) {
+                                            $query->where('images.image_type','Logo')
+                                                  ->orWhereNull('images.url');
+                                        })
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
                         }
@@ -118,7 +121,10 @@ class VenueController extends Controller{
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url',
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
-                                        ->where('images.image_type','Logo')
+                                        ->where(function ($query) {
+                                            $query->where('images.image_type','Logo')
+                                                  ->orWhereNull('images.url');
+                                        })
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
                         }
