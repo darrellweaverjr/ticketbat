@@ -83,11 +83,13 @@ class ShowController extends Controller{
                     $showtime = 'A';
                 //search status
                 if(isset($input) && isset($input['status']))
+                {
                     $status = $input['status'];
+                    if($status != '')
+                        $where[] = ['shows.is_active','=',$status];
+                }
                 else
-                    $status = 1;
-                $where[] = ['shows.is_active','=',$status];   
-                
+                    $status = '';                
                 //SEARCH
                 $categories = [];
                 $venues = [];

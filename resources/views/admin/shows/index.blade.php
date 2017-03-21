@@ -683,8 +683,9 @@
                                 <div class="form-group">
                                     <label for="status" class="col-md-5"> <span>Status:</span> </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="status" style="width:90px !important">
-                                        <option @if($status==1) selected @endif value="1">Active</option>
-                                        <option @if($status==0) selected @endif value="0">Inactive</option>
+                                        <option selected value="">All</option>
+                                        <option @if($status=='1') selected @endif value="1">Active</option>
+                                        <option @if($status=='0') selected @endif value="0">Inactive</option>
                                     </select>
                                 </div>    
                                 <div class="form-group">
