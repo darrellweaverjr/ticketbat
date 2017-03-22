@@ -187,8 +187,7 @@ class AppController extends Controller{
                                   ->from('soldout_tickets')
                                   ->where('show_time_id','=',$id);
                         })
-                        ->having('max_available','<>',0)
-                        ->groupBy('tickets.id')->get(); 
+                        ->having('max_available','<>',0)->groupBy('tickets.id')->get(); 
             foreach ($tickets as $t)
             {
                 if(isset($types[$t->ticket_type]))
