@@ -175,7 +175,7 @@ class AppController extends Controller{
                         ->join('shows', 'tickets.show_id', '=' ,'shows.id')
                         ->join('packages', 'tickets.package_id', '=' ,'packages.id')
                         ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
-                        ->select(DB::raw('tickets.id, tickets.retail_price, tickets.processing_fee, tickets.is_default,
+                        ->select(DB::raw('tickets.id, (tickets.retail_price+tickets.processing_fee) AS amount, tickets.is_default,
                                          tickets.package_id, tickets.ticket_type, tickets.ticket_type_class,
                                          (CASE WHEN (packages.title != "None") THEN packages.title ELSE "" END) AS title,
                                          (CASE WHEN (packages.title != "None") THEN packages.description ELSE "" END) AS description,
