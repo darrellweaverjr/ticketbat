@@ -179,7 +179,7 @@ class AppController extends Controller{
                                          tickets.package_id, tickets.ticket_type, tickets.ticket_type_class,
                                          (CASE WHEN (packages.title != "None") THEN packages.title ELSE "" END) AS title,
                                          (CASE WHEN (packages.title != "None") THEN packages.description ELSE "" END) AS description,
-                                         (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS max_available'))
+                                         (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE 100 END) AS max_available'))
                         ->where('tickets.is_active','=',1)->where('shows.id','=',$showtime[0]->show_id)
                         ->whereNotIn('tickets.id', function($query) use ($id)
                         {
@@ -187,7 +187,7 @@ class AppController extends Controller{
                                   ->from('soldout_tickets')
                                   ->where('show_time_id','=',$id);
                         })
-                        ->having('max_available','<>',0)->groupBy('tickets.id')->get(); 
+                        ->having('max_available','>',0)->groupBy('tickets.id')->get(); 
             foreach ($tickets as $t)
             {
                 if(isset($types[$t->ticket_type]))
