@@ -196,8 +196,8 @@ class AppController extends Controller{
                     $types[$t->ticket_type] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'default'=>$t->is_default,'tickets'=>[$t]];
             }
             $showtime[0]->types = array_values($types);  
-        }
-        return $showtime->toJson();   
+        } 
+        return response()->json($showtime,200,[],JSON_NUMERIC_CHECK);
     }
     
 }
