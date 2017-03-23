@@ -267,6 +267,11 @@ var TableDatatablesManaged = function () {
                 });
             }       
         });
+        //function open styles
+        $('#btn_model_styles').on('click', function(ev) {
+            //show modal
+            $('#modal_model_style').modal('show');
+        });  
         //init functions
         check_models();        
     }

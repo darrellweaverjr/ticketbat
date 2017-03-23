@@ -62,7 +62,7 @@ class TicketTypeController extends Controller{
                 return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles'));
             }
         } catch (Exception $ex) {
-            throw new Exception('Error Ticket Index: '.$ex->getMessage());
+            throw new Exception('Error Ticket Type Index: '.$ex->getMessage());
         }
     }
     /**
@@ -137,6 +137,46 @@ class TicketTypeController extends Controller{
             else return ['success'=>false,'msg'=>'There was an error saving the Ticket Type.<br>The server could not retrieve the data.'];
         } catch (Exception $ex) {
             throw new Exception('Error Ticket Type Save: '.$ex->getMessage());
+        }
+    }
+    /**
+     * List all ticket types and return default view.
+     *
+     * @return view
+     */
+    public function classes()
+    {
+        try {
+            //init
+            $input = Input::all(); 
+            //get all records        
+            $classes = Util::getEnumValues('tickets','ticket_type_class');
+            if(isset($input) && isset($input['action']) )
+            {
+                
+            }
+            else
+            {
+                $tickets = [];
+                $ticket_styles = [];
+                //if user has permission to view
+                if(in_array('View',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
+                {
+                    if(Auth::user()->user_type->getACLs()['TYPES']['permission_scope'] == 'All')
+                    {
+                        foreach ($ticket_types as $tt)
+                        {
+                            $t = Ticket::where('ticket_type',$tt)->first();
+                            $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(in_array($tt,$inactives))? '' : 'checked'];
+                        }
+                        $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
+                    }
+                }
+                //return view
+                return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles'));
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Ticket Index: '.$ex->getMessage());
         }
     }
     
