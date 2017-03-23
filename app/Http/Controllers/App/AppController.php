@@ -4,8 +4,8 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use App\Http\Models\Image;
-use App\Http\Models\ShowTime;
 
 /**
  * Manage Users
@@ -28,7 +28,7 @@ class AppController extends Controller{
                     ->whereNotNull('images.url')
                     ->orderBy('locations.city')->groupBy('locations.city')
                     ->distinct()->get();
-        return $cities->toJson();       
+        return Response::json($cities,200,[],JSON_NUMERIC_CHECK);
     }
     
     /*
@@ -126,7 +126,7 @@ class AppController extends Controller{
         foreach ($shows as $s)
             if(!empty($s->url))
                 $s->url = Image::view_image($s->url);
-        return $shows->toJson();     
+        return Response::json($shows,200,[],JSON_NUMERIC_CHECK);
     }
     
     /*
@@ -148,7 +148,7 @@ class AppController extends Controller{
                     ->distinct()->get();
         foreach ($venues as $v)
             $v->url = Image::view_image($v->url);
-        return $venues->toJson();     
+        return Response::json($venues,200,[],JSON_NUMERIC_CHECK);
     }
     
     /*
@@ -197,7 +197,7 @@ class AppController extends Controller{
             }
             $showtime[0]->types = array_values($types);  
         } 
-        return response()->json($showtime,200,[],JSON_NUMERIC_CHECK);
+        return Response::json($showtime,200,[],JSON_NUMERIC_CHECK);
     }
     
 }
