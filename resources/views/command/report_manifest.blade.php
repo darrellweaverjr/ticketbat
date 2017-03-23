@@ -1,7 +1,7 @@
 @if($format == 'csv')
-"#","EVENT NAME","SHOW DATE","DATE PURCHASED","CUSTOMER NAME","CUSTOMER ADDRESS","CUSTOMER PHONE","EMAIL","QTY","CODE","DESCRIPTION","AMOUNT","SHARED TO"
+"#","ORDER","EVENT NAME","SHOW DATE","DATE PURCHASED","CUSTOMER NAME","CUSTOMER ADDRESS","CUSTOMER PHONE","EMAIL","QTY","CODE","DESCRIPTION","AMOUNT","SHARED TO"
 @foreach ($data['purchases'] as $n => $p)
-"{{$n+1}}","{{$p['event_name']}}","{{date('m/d/Y g:ia',strtotime($p['show_time']))}}","{{date('m/d/Y g:ia',strtotime($p['created']))}}","{{$p['customer_name']}}","{{$p['address']}}","{{$p['phone']}}","{{$p['email']}}","{{$p['quantity']}}","{{$p['code']}}","{{$p['description']}}","{{$p['amount']}}","{{$p['gifts']}}"
+"{{$n+1}}","{{$p['id']}}","{{$p['event_name']}}","{{date('m/d/Y g:ia',strtotime($p['show_time']))}}","{{date('m/d/Y g:ia',strtotime($p['created']))}}","{{$p['customer_name']}}","{{$p['address']}}","{{$p['phone']}}","{{$p['email']}}","{{$p['quantity']}}","{{$p['code']}}","{{$p['description']}}","{{$p['amount']}}","{{$p['gifts']}}"
 @endforeach
 @elseif($format == 'pdf')
 <!DOCTYPE html>
@@ -101,13 +101,14 @@
             }
         </style>
     </head>
-    <body>
+    <body style="font-size:10px">
         <h1>TicketBat.com</h1>
         <p>The following tickets have been purchased for {{$data['name']}} - {{date('m/d/Y g:ia',strtotime($data['show_time']))}}</p>
         <table class="table table-striped table-responsive">
             <thead>
                 <tr>
                     <th></th>
+                    <th>ORDER</th>
                     <th>CUSTOMER NAME</th>
                     <th>EMAIL</th>
                     <th>QTY</th>
@@ -120,6 +121,7 @@
             @foreach ($data['purchases'] as $n => $p)
                 <tr>
                     <td>{{$n+1}}</td>
+                    <td>{{$p['id']}}</td>
                     <td>{{$p['customer_name']}}</td>
                     <td>{{$p['email']}}</td>
                     <td>{{$p['quantity']}}</td>
