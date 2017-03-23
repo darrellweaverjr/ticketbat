@@ -111,7 +111,7 @@ Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], fu
     Route::get('showtime/{id}', 'AppController@showtime');
 });
 //ADMIN ROUTES FOR JSON FEED
-Route::group(['prefix' => 'feed',/*'middleware' => 'cors',*/'namespace' => 'Feed'], function () {
+Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {
     //feeds config
     Route::get('events/{venue_id}', 'FeedController@events');
 });

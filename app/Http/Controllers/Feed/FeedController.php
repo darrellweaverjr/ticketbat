@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Feed;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use App\Http\Models\Image;
 
 /**
