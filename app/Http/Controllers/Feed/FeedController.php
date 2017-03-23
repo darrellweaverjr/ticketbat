@@ -37,7 +37,7 @@ class FeedController extends Controller{
         foreach ($events as $e)
             if(!empty($e->url))
                 $e->url = Image::view_image($e->url);
-        return Response::json($events,200,[],JSON_NUMERIC_CHECK);
+        return $events->toJson();
     }
     
 }
