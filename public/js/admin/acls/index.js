@@ -347,7 +347,7 @@ var TableDatatablesManaged = function () {
                                     if (inputUserType === false) return false;
                                     if ($.trim(inputUserType) === "") {
                                       swal.showInputError("You need to write something!");
-                                      return false
+                                      return false;
                                     }
                                     swal({
                                         title: "Enter the description for the user type: "+inputUserType,
@@ -359,7 +359,7 @@ var TableDatatablesManaged = function () {
                                         if (inputDescription === false) return false;
                                         if ($.trim(inputDescription) === "") {
                                           swal.showInputError("You need to write something!");
-                                          return false
+                                          return false;
                                         }
                                         jQuery.ajax({
                                             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

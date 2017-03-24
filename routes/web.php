@@ -63,6 +63,8 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('shows/remove', 'ShowController@remove')->middleware('permissions:SHOWS');
     Route::match(['get','post'], 'shows', 'ShowController@index')->middleware('permissions:SHOWS');
     //ticket_types
+    Route::post('ticket_types/classes', 'TicketTypeController@classes')->middleware('permissions:TYPES');
+    Route::post('ticket_types/styles', 'TicketTypeController@styles')->middleware('permissions:TYPES');
     Route::post('ticket_types/save', 'TicketTypeController@save')->middleware('permissions:TYPES');
     Route::match(['get','post'], 'ticket_types', 'TicketTypeController@index')->middleware('permissions:TYPES');
     //coupons

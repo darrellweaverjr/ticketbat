@@ -142,15 +142,9 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" id="form_model_style" class="form-horizontal">
-                        <input name="id" type="hidden" value=""/>
-                        <div class="form-body">
-                            <div class="alert alert-danger display-hide">
-                                <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
-                            <div class="alert alert-success display-hide">
-                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            <div class="form-group">
-                            <div class="col-md-6">
+                    <div class="form-body">
+                        <div class="col-md-6">
+                            <form method="post" id="form_model_style" class="form-horizontal">
                                 <label class="control-label">
                                     <span class="required">In the System</span>
                                 </label><hr>
@@ -180,38 +174,38 @@
                                         <button type="button" class="btn btn-block">Preview Selected Style</button>
                                     </div>  
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="control-label">
-                                    <span class="required">In the Cloud</span>
-                                </label><hr>
-                                <div class="form-group">
-                                    <div class="col-md-6 show-error">
-                                        <button type="button" id="btn-download-style" class="btn sbold btn-block green">Download
-                                            <i class="fa fa-download"></i>
-                                        </button>
-                                    </div>
-                                    <div class="col-md-6 show-error">
-                                        <button type="button" id="btn-upload-style" class="btn sbold btn-block red">Upload
-                                            <i class="fa fa-upload"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-md-12 show-error">
-                                        <textarea name="ticket_type_file" class="form-control input-block-level" rows="20"></textarea>
-                                    </div>  
-                                </div>
-                            </div> 
+                            </form>
                         </div>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                        <div class="col-md-6">
+                            <label class="control-label">
+                                <span class="required">In the Cloud</span>
+                            </label><hr>
+                            <div class="form-group">
+                                <div class="col-md-6 show-error">
+                                    <button type="button" id="btn-download-style" class="btn sbold btn-block green">Download
+                                        <i class="fa fa-download"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-6 show-error">
+                                    <button type="button" id="btn-upload-style" class="btn sbold btn-block red">Upload
+                                        <i class="fa fa-upload"></i>
+                                    </button>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <div class="col-md-12 show-error">
+                                    <textarea name="ticket_type_file" class="form-control input-block-level" rows="20"></textarea>
+                                </div>  
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                            </div>
                         </div>
-                    </form>
+                    </div>
                     <!-- END FORM-->
                 </div>
             </div>

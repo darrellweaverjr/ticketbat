@@ -149,32 +149,25 @@ class TicketTypeController extends Controller{
         try {
             //init
             $input = Input::all(); 
-            //get all records        
-            $classes = Util::getEnumValues('tickets','ticket_type_class');
-            if(isset($input) && isset($input['action']) )
+            $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
+            if(isset($input) && isset($input['action']) && isset($input['ticket_type_class']) && $input['action']==1)
             {
-                
+                $ticket_styles[$input['ticket_type_class']] = $input['ticket_type_class'];
+                $ticket_styles = array_unique(array_values($ticket_styles));
+                DB::statement('ALTER TABLE tickets CHANGE COLUMN ticket_type_class ticket_type_class ENUM( "'.implode('","',$ticket_styles).'" ) DEFAULT "btn-primary"');
+                $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
+                return ['success'=>true,'classes'=>$ticket_styles];
             }
-            else
+            elseif(isset($input) && isset($input['action']) && isset($input['ticket_type_class']) && count($input['ticket_type_class']) && $input['action']==-1)
             {
-                $tickets = [];
-                $ticket_styles = [];
-                //if user has permission to view
-                if(in_array('View',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
-                {
-                    if(Auth::user()->user_type->getACLs()['TYPES']['permission_scope'] == 'All')
-                    {
-                        foreach ($ticket_types as $tt)
-                        {
-                            $t = Ticket::where('ticket_type',$tt)->first();
-                            $tickets[$tt] = ['ticket_type'=>$tt,'ticket_type_class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : '(btn-primary)','active'=>(in_array($tt,$inactives))? '' : 'checked'];
-                        }
-                        $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
-                    }
-                }
-                //return view
-                return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles'));
+                if(($key = array_search('btn-primary',$input['ticket_type_class'])) !== false) 
+                    unset($input['ticket_type_class'][$key]);
+                $ticket_styles = array_diff(array_unique(array_values($ticket_styles)),$input['ticket_type_class']);
+                DB::statement('ALTER TABLE tickets CHANGE COLUMN ticket_type_class ticket_type_class ENUM( "'.implode('","',$ticket_styles).'" ) DEFAULT "btn-primary"');
+                $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
+                return ['success'=>true,'classes'=>$ticket_styles];
             }
+            return ['success'=>false,'msg'=>'There was an error updating the clases.<br>Invalid option/data.'];
         } catch (Exception $ex) {
             throw new Exception('Error Ticket Index: '.$ex->getMessage());
         }

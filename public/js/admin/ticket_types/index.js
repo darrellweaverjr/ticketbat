@@ -272,6 +272,119 @@ var TableDatatablesManaged = function () {
             //show modal
             $('#modal_model_style').modal('show');
         });  
+        //add styles
+        $('#btn-add-style').on('click', function(ev) {
+            $('#modal_model_style').modal('hide');
+            swal({
+                title: "Enter the new style class",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                inputPlaceholder: "New Style Class"
+            }, function (inputStyle) {
+                if (inputStyle === false) 
+                {
+                    $('#modal_model_style').modal('show');
+                    return false;
+                }
+                if ($.trim(inputStyle) === "") {
+                  swal.showInputError("You need to write something!");
+                  $('#modal_model_style').modal('show');
+                  return false;
+                }
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/ticket_types/classes', 
+                    data: {action:1,ticket_type_class:inputStyle}, 
+                    success: function(data) {
+                        if(data.success)
+                        {
+                            $('#form_model_style select[name="ticket_type_class"]').empty();
+                            $.each(data.classes,function(k, v) {
+                                $('#form_model_style select[name="ticket_type_class"]').append('<option value="'+k+'">'+v+'</option>');
+                            });
+                            $('#modal_model_style').modal('show');
+                        }
+                        else swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_style').modal('show');
+                            });
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error adding the Style Class!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_style').modal('show');
+                        });
+                    }
+                });
+            });
+        });  
+        //remove styles
+        $('#btn-remove-style').on('click', function(ev) {
+            if($('#form_model_style select[name="ticket_type_class"] option:selected').length)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/ticket_types/classes', 
+                    data: {action:-1,ticket_type_class:$('#form_model_style select[name="ticket_type_class"]').val()}, 
+                    success: function(data) {
+                        if(data.success)
+                        {
+                            $('#form_model_style select[name="ticket_type_class"]').empty();
+                            $.each(data.classes,function(k, v) {
+                                $('#form_model_style select[name="ticket_type_class"]').append('<option value="'+k+'">'+v+'</option>');
+                            });
+                            $('#modal_model_style').modal('show');
+                        }
+                        else 
+                        {
+                            $('#modal_model_style').modal('hide');
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_style').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        $('#modal_model_style').modal('hide');
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error removing the Style Class!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_style').modal('show');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                $('#modal_model_style').modal('hide');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: 'You must select at least a class to delete.',
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_style').modal('show');
+                });
+            }
+        });  
         //init functions
         check_models();        
     }
