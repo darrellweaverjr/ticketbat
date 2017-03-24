@@ -342,7 +342,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Show');
             //fill out defaults
-            $('#form_model_update [name="venue_id"]').val(data.show.venue_id).change();
+            $('#form_model_update [name="venue_id"]').val(data.show.venue_id);
             $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
             $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
             $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
