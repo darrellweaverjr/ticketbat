@@ -999,6 +999,10 @@ class ShowController extends Controller{
                 if($showtime)
                 {
                     $showtime->is_active = $input['is_active'];
+                    if(!empty($input['slug']) && preg_match('/^http(s)?:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i',$input['slug']))
+                        $showtime->slug = $input['slug'];
+                    else
+                        $showtime->slug = null;
                     $showtime->save();
                     //delete all dependences that are not marked
                     if(isset($input['ticket_types']) && count($input['ticket_types']))

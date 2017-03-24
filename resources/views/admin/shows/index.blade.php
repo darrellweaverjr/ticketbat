@@ -950,6 +950,12 @@
                                     <div class="col-md-9 ticket_types_lists">                                     
                                     </div>                                 
                                 </div> 
+                                <div class="form-group">                                     
+                                    <label class="col-md-3 control-label">External slug</label>                                     
+                                    <div class="col-md-9">  
+                                        <input type="url" class="form-control" name="slug">
+                                    </div>                                 
+                                </div> 
                             </div>
                         </div>
                         <div class="form-actions">

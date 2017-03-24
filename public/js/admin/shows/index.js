@@ -1233,7 +1233,8 @@ var TableDatatablesManaged = function () {
                                 $('#form_model_show_times_toggle :checkbox[value="'+t+'"]').prop('checked',true);   
                             });
                             var st = moment(event.showtime);
-                            var link = 'http://www.ticketbat.com/buy/'+$('#form_model_update input[name="slug"]').val()+'/'+event.id;
+                            $('#form_model_show_times_toggle input[name="slug"]').val(data.showtime.slug);
+                            var link = (data.showtime.slug)? data.showtime.slug : 'http://www.ticketbat.com/buy/'+$('#form_model_update input[name="slug"]').val()+'/'+event.id;
                             $('.link_model_show_times_toggle').html(st.format('dddd, MMMM Do, YYYY @ hh:mm A')+'<br><a href="'+link+'" target="_blank">'+link+'</a>');
                             $('#modal_model_show_times_toggle').modal('show');
                         }
