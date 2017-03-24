@@ -536,18 +536,20 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            swal({
-                                title: "<span style='color:green;'>Saved!</span>",
-                                text: data.msg,
-                                html: true,
-                                timer: 1500,
-                                type: "success",
-                                showConfirmButton: false
-                            });
                             if(typeof(data.show) != 'undefined' && data.show !== null)
                                 loadModal(data);
                             else
+                            {
+                                swal({
+                                    title: "<span style='color:green;'>Saved!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    timer: 1500,
+                                    type: "success",
+                                    showConfirmButton: false
+                                });
                                 location.reload();
+                            }
                         }
                         else{
                             swal({
