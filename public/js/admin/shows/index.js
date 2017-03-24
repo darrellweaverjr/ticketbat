@@ -2734,6 +2734,20 @@ var FormValidation = function () {
                         minlength: 5,
                         maxlength: 200,
                         required: false
+                    },
+                    ext_slug: {
+                        minlength: 5,
+                        maxlength: 100,
+                        required: false
+                    },
+                    stage_id: {
+                        required: true
+                    },
+                    venue_id: {
+                        required: true
+                    },
+                    category_id: {
+                        required: true
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   

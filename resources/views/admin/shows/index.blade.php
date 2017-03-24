@@ -214,6 +214,10 @@
                                                             <i class="fa fa-link"></i>
                                                         </button>
                                                     </div>
+                                                    <label class="control-label col-md-3">Ext Slug</label>
+                                                    <div class="col-md-9 show-error">
+                                                        <input type="text" name="ext_slug" class="form-control"/> 
+                                                    </div>
                                                     <label class="control-label col-md-3">Category
                                                     <span class="required"> * </span>
                                                     </label>

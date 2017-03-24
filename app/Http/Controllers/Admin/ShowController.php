@@ -354,6 +354,10 @@ class ShowController extends Controller{
                 }
                 if(preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
                     $show->set_sponsor_logo_id($input['sponsor_logo_id']);
+                if(!empty($input['ext_slug']) && preg_match('/^http(s)?:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i',$input['ext_slug']))
+                    $show->ext_slug = $input['ext_slug'];
+                else
+                    $show->ext_slug = null;
                 $show->save();
                 //order shows
                 $shows = Show::where('sequence','<',10000)->orderBy('sequence')->get(['id']);
