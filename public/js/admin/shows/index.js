@@ -1234,7 +1234,12 @@ var TableDatatablesManaged = function () {
                             });
                             var st = moment(event.showtime);
                             $('#form_model_show_times_toggle input[name="slug"]').val(data.showtime.slug);
-                            var link = (data.showtime.slug)? data.showtime.slug : 'http://www.ticketbat.com/buy/'+$('#form_model_update input[name="slug"]').val()+'/'+event.id;
+                            if(data.showtime.slug)
+                                var link = data.showtime.slug;
+                            else if($('#form_model_update input[name="ext_slug"]').val())
+                                var link = $('#form_model_update input[name="ext_slug"]').val();
+                            else
+                                var link = 'http://www.ticketbat.com/buy/'+$('#form_model_update input[name="slug"]').val()+'/'+event.id;
                             $('.link_model_show_times_toggle').html(st.format('dddd, MMMM Do, YYYY @ hh:mm A')+'<br><a href="'+link+'" target="_blank">'+link+'</a>');
                             $('#modal_model_show_times_toggle').modal('show');
                         }
