@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Ticket;
 use App\Http\Models\Util;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Manage TicketsTypes
@@ -16,6 +17,7 @@ use App\Http\Models\Util;
  */
 class TicketTypeController extends Controller{
     
+    private $style_url = 'styles/ticket_types.css';
     /**
      * List all ticket types and return default view.
      *
@@ -58,8 +60,14 @@ class TicketTypeController extends Controller{
                         $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
                     }
                 }
+                //get styles from cloud
+                $ticket_types_css = '';
+                if(Storage::disk('s3')->exists($this->style_url))
+                    $ticket_types_css = Storage::disk('s3')->get($this->style_url);
+                else
+                    Storage::disk('s3')->put($this->style_url,$ticket_types_css);
                 //return view
-                return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles'));
+                return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles','ticket_types_css'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Ticket Type Index: '.$ex->getMessage());
@@ -140,7 +148,7 @@ class TicketTypeController extends Controller{
         }
     }
     /**
-     * List all ticket types and return default view.
+     * Modify all clases of ticket types.
      *
      * @return view
      */
@@ -170,6 +178,26 @@ class TicketTypeController extends Controller{
             return ['success'=>false,'msg'=>'There was an error updating the clases.<br>Invalid option/data.'];
         } catch (Exception $ex) {
             throw new Exception('Error Ticket Index: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Modify the file css in the cloud.
+     *
+     * @return view
+     */
+    public function styles()
+    {
+        try {
+            //init
+            $input = Input::all(); 
+            if(isset($input) && isset($input['ticket_type_file']))
+            {
+                Storage::disk('s3')->put($this->style_url,$input['ticket_type_file']);
+                return ['success'=>true];
+            }
+            return ['success'=>false,'msg'=>'There was an error updating the file.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Ticket Type File Index: '.$ex->getMessage());
         }
     }
     

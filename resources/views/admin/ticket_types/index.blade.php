@@ -4,6 +4,7 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<style>@php echo $ticket_types_css; @endphp</style>
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -171,38 +172,37 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12 show-error">
-                                        <button type="button" class="btn btn-block">Preview Selected Style</button>
+                                        <button type="button" id="btn-preview" class="btn btn-block">Preview Selected Style</button>
                                     </div>  
                                 </div>
                             </form>
                         </div>
                         <div class="col-md-6">
-                            <label class="control-label">
-                                <span class="required">In the Cloud</span>
-                            </label><hr>
-                            <div class="form-group">
-                                <div class="col-md-6 show-error">
-                                    <button type="button" id="btn-download-style" class="btn sbold btn-block green">Download
-                                        <i class="fa fa-download"></i>
-                                    </button>
+                            <form method="post" id="form_model_file" class="form-horizontal">
+                                <label class="control-label">
+                                    <span class="required">In the Cloud</span>
+                                </label><hr>
+                                <div class="form-group">
+                                    <div class="col-md-12 show-error">
+                                        <button type="button" id="btn-upload-style" class="btn sbold btn-block blue">Upload
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 show-error">
-                                    <button type="button" id="btn-upload-style" class="btn sbold btn-block red">Upload
-                                        <i class="fa fa-upload"></i>
-                                    </button>
+                                <div class="form-group">
+                                    <div class="col-md-12 show-error">
+                                        <textarea name="ticket_type_file" class="form-control input-block-level" rows="17">
+                                            @php echo $ticket_types_css; @endphp
+                                        </textarea>
+                                    </div>  
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12 show-error">
-                                    <textarea name="ticket_type_file" class="form-control input-block-level" rows="20"></textarea>
-                                </div>  
-                            </div>
+                            </form>
                         </div> 
                     </div>
                     <div class="form-actions">
                         <div class="row">
                             <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="location.reload();">Cancel</button>
                             </div>
                         </div>
                     </div>

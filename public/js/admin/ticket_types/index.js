@@ -279,7 +279,7 @@ var TableDatatablesManaged = function () {
                 title: "Enter the new style class",
                 type: "input",
                 showCancelButton: true,
-                closeOnConfirm: false,
+                closeOnConfirm: true,
                 inputPlaceholder: "New Style Class"
             }, function (inputStyle) {
                 if (inputStyle === false) 
@@ -304,7 +304,16 @@ var TableDatatablesManaged = function () {
                             $.each(data.classes,function(k, v) {
                                 $('#form_model_style select[name="ticket_type_class"]').append('<option value="'+k+'">'+v+'</option>');
                             });
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             $('#modal_model_style').modal('show');
+                            return true;
                         }
                         else swal({
                                 title: "<span style='color:red;'>Error!</span>",
@@ -313,6 +322,7 @@ var TableDatatablesManaged = function () {
                                 type: "error"
                             },function(){
                                 $('#modal_model_style').modal('show');
+                                return false;
                             });
                     },
                     error: function(){
@@ -323,6 +333,7 @@ var TableDatatablesManaged = function () {
                             type: "error"
                         },function(){
                             $('#modal_model_style').modal('show');
+                            return false;
                         });
                     }
                 });
@@ -330,6 +341,7 @@ var TableDatatablesManaged = function () {
         });  
         //remove styles
         $('#btn-remove-style').on('click', function(ev) {
+            $('#modal_model_style').modal('hide');
             if($('#form_model_style select[name="ticket_type_class"] option:selected').length)
             {
                 jQuery.ajax({
@@ -344,11 +356,18 @@ var TableDatatablesManaged = function () {
                             $.each(data.classes,function(k, v) {
                                 $('#form_model_style select[name="ticket_type_class"]').append('<option value="'+k+'">'+v+'</option>');
                             });
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             $('#modal_model_style').modal('show');
                         }
                         else 
                         {
-                            $('#modal_model_style').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -360,7 +379,6 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-                        $('#modal_model_style').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error removing the Style Class!<br>The request could not be sent to the server.",
@@ -374,7 +392,6 @@ var TableDatatablesManaged = function () {
             }
             else
             {
-                $('#modal_model_style').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: 'You must select at least a class to delete.',
@@ -384,6 +401,56 @@ var TableDatatablesManaged = function () {
                     $('#modal_model_style').modal('show');
                 });
             }
+        }); 
+        //change styles according to selected class
+        $('#form_model_style select[name="ticket_type_class"]').bind('change','click', function (){
+            var classes = $(this).val()[0];
+            $('#btn-preview').removeClass().addClass('btn btn-block '+classes);
+        });
+        //upload file styles
+        $('#btn-upload-style').on('click', function(ev) {
+            $('#modal_model_style').modal('hide');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/ticket_types/styles', 
+                data: {ticket_type_file:$('#form_model_file [name="ticket_type_file"]').val()}, 
+                success: function(data) {
+                    if(data.success)
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Saved!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                        $('#modal_model_style').modal('show');
+                    }
+                    else 
+                    {
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_style').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error uploading the Style File!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_style').modal('show');
+                    });
+                }
+            });
         });  
         //init functions
         check_models();        
