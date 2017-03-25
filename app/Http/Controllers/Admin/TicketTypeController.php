@@ -65,7 +65,7 @@ class TicketTypeController extends Controller{
                 if(Storage::disk('s3')->exists($this->style_url))
                     $ticket_types_css = Storage::disk('s3')->get($this->style_url);
                 else
-                    Storage::disk('s3')->put($this->style_url,$ticket_types_css);
+                    Storage::disk('s3')->put($this->style_url,$ticket_types_css,'public');
                 //return view
                 return view('admin.ticket_types.index',compact('tickets','ticket_types','ticket_styles','ticket_types_css'));
             }
@@ -192,7 +192,7 @@ class TicketTypeController extends Controller{
             $input = Input::all(); 
             if(isset($input) && isset($input['ticket_type_file']))
             {
-                Storage::disk('s3')->put($this->style_url,$input['ticket_type_file']);
+                Storage::disk('s3')->put($this->style_url,$input['ticket_type_file'],'public');
                 return ['success'=>true];
             }
             return ['success'=>false,'msg'=>'There was an error updating the file.'];
