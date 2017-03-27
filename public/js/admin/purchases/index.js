@@ -51,15 +51,56 @@ var TableDatatablesManaged = function () {
             ] // set first column as a default sort by asc
         });
         
-        table.on('click', 'tbody tr', function () {
-            $(this).find('[name="radios"]').prop('checked',true).trigger('change');
+        table.find('.group-checkable').change(function () {
+            var set = jQuery(this).attr("data-set");
+            var checked = jQuery(this).is(":checked");
+            jQuery(set).each(function () {
+                if (checked) {
+                    $(this).prop("checked", true);
+                    $(this).parents('tr').addClass("active");
+                } else {
+                    $(this).prop("checked", false);
+                    $(this).parents('tr').removeClass("active");
+                }
+            });
+            check_models(); 
+        });        
+        
+        table.on('click', 'tbody tr td:not(:first-child)', function () {
+            var action = $(this).parent().find('.checkboxes').is(':checked');
+            if(!action)
+                table.find('.checkboxes').prop('checked',false);
+            $(this).parent().find('.checkboxes').prop('checked',!action);
+            check_models();
         });
         
-        table.on('change', 'tbody tr .radios', function () {
+        table.on('change', 'tbody tr .checkboxes', function () {
+            check_models();             
             $(this).parents('tr').toggleClass("active");
         });
         
         //PERSONALIZED FUNCTIONS
+        
+        //check/uncheck all
+        var check_models = function(){
+            var set = $('.group-checkable').attr("data-set");
+            var checked = $(set+"[type=checkbox]:checked").length;
+            if(checked == 1)
+            {
+                $('button[id*="btn_model_"]').prop("disabled",false);
+            }
+            else if(checked > 1)
+            {
+                $('button[id*="btn_model_"]').prop("disabled",true);
+                $('#btn_model_email').prop("disabled",false);
+            }
+            else
+            {
+                $('button[id*="btn_model_"]').prop("disabled",true);
+            }
+            $('#btn_model_search').prop("disabled",false);
+        } 
+       
         //function on status select
         $('#tb_model select[name="status"]').on('change', function(ev) {
             var id = $(this).attr('ref');
@@ -320,50 +361,149 @@ var TableDatatablesManaged = function () {
         });
         //function email
         $('#btn_model_email').on('click', function(ev) {
-            var id = $("#tb_model [name=radios]:checked").val();
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
             swal({
-                title: "Sending email",
-                text: "Please, wait.",
+                title: "Send Email to Customers",
+                text: "Select the email type",
                 type: "info",
-                showConfirmButton: false
-            });
-            jQuery.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '/admin/purchases/email', 
-                data: {id:id}, 
-                success: function(data) {
-                    if(data.success) 
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Re-send Receipt",
+                cancelButtonText: "Send Custom",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+              function(isConfirm) {
+                if (isConfirm) {
+                    if(id)
                     {
                         swal({
-                            title: "<span style='color:green;'>Email Sent Successfully!</span>",
-                            text: data.msg,
-                            html: true,
-                            timer: 1500,
-                            type: "success",
+                            title: "Sending email",
+                            text: "Please, wait.",
+                            type: "info",
                             showConfirmButton: false
                         });
+                        jQuery.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '/admin/purchases/email', 
+                            data: {id:id,action:'receipt'}, 
+                            success: function(data) {
+                                if(data.success) 
+                                {
+                                    swal({
+                                        title: "<span style='color:green;'>Email Sent Successfully!</span>",
+                                        text: data.msg,
+                                        html: true,
+                                        timer: 1500,
+                                        type: "success",
+                                        showConfirmButton: false
+                                    });
+                                }
+                                else swal({
+                                        title: "<span style='color:red;'>Error!</span>",
+                                        text: data.msg,
+                                        html: true,
+                                        type: "error"
+                                    });
+                            },
+                            error: function(){
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
+                                    html: true,
+                                    type: "error"
+                                });
+                            }
+                        });
                     }
-                    else swal({
+                    else
+                    {
+                        swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: data.msg,
+                            text: "Please, you must select the purchase first.",
                             html: true,
                             type: "error"
                         });
-                },
-                error: function(){
-                    swal({
-                        title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
-                        html: true,
-                        type: "error"
-                    });
+                    }
+                } else {
+                    $("#form_model_email").trigger('reset');
+                    $('#modal_model_email').modal('show');
                 }
             });
         });
+        //function send custom email
+        $('#btn_model_send').on('click', function(ev) {
+            var ids = [];
+            var set = $('.group-checkable').attr("data-set");
+            var checked = $(set+"[type=checkbox]:checked");
+            jQuery(checked).each(function (key, item) {
+                ids.push(item.id);
+            });  
+            $('#modal_model_email').modal('hide');
+            if(ids)
+            {
+                swal({
+                    title: "Sending email",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/purchases/email', 
+                    data: {ids:ids,search:$('#form_model_search').serializeArray(),email:$('#form_model_email').serializeArray(),action:'custom'},  
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Email Sent Successfully!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                        }
+                        else swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_email').modal('show');
+                            });
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_email').modal('show');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Please, you must select the purchase first.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_email').modal('show');
+                });
+            }
+        });
         //function note
         $('#btn_model_note').on('click', function(ev) {
-            var id = $("#tb_model [name=radios]:checked").val();
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
             swal({
                 title: "Add note",
                 text: "Write purchase's note:",
@@ -424,7 +564,8 @@ var TableDatatablesManaged = function () {
         });
         //function tickets
         $('#btn_model_tickets').on('click', function(ev) {
-            var id = $("#tb_model [name=radios]:checked").val();
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
             swal({
                 title: "View tickets",
                 text: "Select the way you want to view the tickets",
@@ -444,16 +585,8 @@ var TableDatatablesManaged = function () {
                 }
             });
         });  
-        //enable function buttons on check radio 
-        $('input:radio[name=radios]').change(function () {
-            if($('input:radio[name=radios]:checked').length > 0)
-            {
-                $('#btn_model_email').prop('disabled',false);
-                $('#btn_model_tickets').prop('disabled',false);
-                $('#btn_model_note').prop('disabled',false);
-                $('#btn_model_move').prop('disabled',false);
-            }
-        });
+        //init functions
+        check_models(); 
     }
     return {
         //main function to initiate the module

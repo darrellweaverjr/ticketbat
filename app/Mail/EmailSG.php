@@ -287,6 +287,12 @@ class EmailSG {
                         }
                         break;
                     }
+                case 'custom': {
+                        if (isset($data)) {
+                            $body[] = array('variable' => ':body', 'value' => $data['body']);
+                        }
+                        break;
+                    }
                 default:
                     break;
             }

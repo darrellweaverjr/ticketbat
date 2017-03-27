@@ -14,6 +14,7 @@ use App\Http\Models\Ticket;
 use App\Http\Models\ShowTime;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Models\Util;
+use App\Mail\EmailSG;
 
 /**
  * Manage Purchases
@@ -266,15 +267,73 @@ class PurchaseController extends Controller{
             //init
             $input = Input::all();
             //save all record      
-            if($input && isset($input['id']))
+            if($input && isset($input['action']))
             {
-                $receipt = Purchase::find($input['id'])->get_receipt();
-                $sent = Purchase::email_receipts('Re-sending: TicketBat Purchase',[$receipt],'receipt');
-                if($sent)
-                    return ['success'=>true,'msg'=>'Email sent successfully!'];
-                return ['success'=>false,'msg'=>'There was an error sending the email.'];    
+                if($input['action']=='receipt' && isset($input['id']))
+                {
+                    $receipt = Purchase::find($input['id'])->get_receipt();
+                    $sent = Purchase::email_receipts('Re-sending: TicketBat Purchase',[$receipt],'receipt');
+                    if($sent)
+                        return ['success'=>true,'msg'=>'Email sent successfully!'];
+                    return ['success'=>false,'msg'=>'There was an error sending the email.']; 
+                }
+                else if($input['action']=='custom')
+                {
+                    $to = [];
+                    if(!empty($input['email'][1]['value']) && !empty($input['ids']))
+                    {
+                        $to = DB::table('purchases')
+                                    ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                                    ->select('customers.email')
+                                    ->whereIn('purchases.id', $input['ids'])->distinct()->get();
+                    }
+                    else 
+                    {
+                        $where =[['purchases.id','>',0]];
+                        //by venue
+                        if($input['search'][1]['value'] != '')
+                            $where[] = ['shows.venue_id','=',$input['search'][1]['value']];
+                        //by show
+                        if($input['search'][2]['value'] != '')
+                            $where[] = ['shows.id','=',$input['search'][2]['value']];
+                        //by showtime date
+                        if($input['search'][3]['value'] != '' && $input['search'][4]['value'] != '')
+                        {
+                            $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$input['search'][3]['value']];
+                            $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$input['search'][4]['value']];
+                        }  
+                        //by created date
+                        if($input['search'][5]['value'] != '' && $input['search'][6]['value'] != '')
+                        {
+                            $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$input['search'][5]['value']];
+                            $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$input['search'][6]['value']];
+                        }  
+                        $to = DB::table('purchases')
+                                    ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                    ->select('customers.email')
+                                    ->where($where)->distinct()->get();
+                    }
+                    //send email
+                    if(!empty($to) && !empty($input['email'][2]['value']) && !empty($input['email'][3]['value']))
+                    {
+                        foreach ($to as $t)
+                        {
+                            //send email           
+                            $email = new EmailSG(null, $t, $input['email'][2]['value']);
+                            //$email->cc(env('MAIL_REPORT_CC'));
+                            $email->body('custom',['body'=>$input['email'][3]['value']]);
+                            $email->template('46388c48-5397-440d-8f67-48f82db301f7');
+                            $email->send();
+                        }
+                        return ['success'=>true,'msg'=>'Email sent successfully!'];
+                    }
+                    return ['success'=>false,'msg'=>'There was an error sending the email.<br>Needed values missing.'];
+                }
+                return ['success'=>false,'msg'=>'There was an error sending the email.<br>Invalid option and values.'];
             }
-            return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>The server could not retrieve the data.'];
+            return ['success'=>false,'msg'=>'There was an error sending the email.<br>The server could not retrieve the data.'];
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Email: '.$ex->getMessage());
         }
