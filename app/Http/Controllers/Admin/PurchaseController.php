@@ -318,16 +318,21 @@ class PurchaseController extends Controller{
                     //send email
                     if(!empty($to) && !empty($input['email'][2]['value']) && !empty($input['email'][3]['value']))
                     {
+                        $msg = '';
                         foreach ($to as $t)
                         {
                             //send email           
-                            $email = new EmailSG(null, $t, $input['email'][2]['value']);
+                            $email = new EmailSG(null, $t->email, $input['email'][2]['value']);
                             //$email->cc(env('MAIL_REPORT_CC'));
                             $email->body('custom',['body'=>$input['email'][3]['value']]);
                             $email->template('46388c48-5397-440d-8f67-48f82db301f7');
-                            $email->send();
+                            $response = $email->send();
+                            if(!$response)
+                                $msg = (empty($msg))? $t->email : ', '.$t->email;
                         }
-                        return ['success'=>true,'msg'=>'Email sent successfully!'];
+                        if(empty($msg))
+                            return ['success'=>true,'msg'=>'Email sent successfully!'];
+                        return ['success'=>false,'msg'=>'The system could not send email to:<br>'.$msg];
                     }
                     return ['success'=>false,'msg'=>'There was an error sending the email.<br>Needed values missing.'];
                 }
