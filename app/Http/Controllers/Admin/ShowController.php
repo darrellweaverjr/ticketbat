@@ -211,7 +211,8 @@ class ShowController extends Controller{
                                         ->where($where)
                                         ->where(function($query)
                                         {
-                                            $query->whereNull('images.url')
+                                            $query->where('images.image_type','=','Logo')
+                                                  ->orWhereNull('show_images.image_id')
                                                   ->orWhereNotNull('images.url');
                                         })
                                         ->orderBy('shows.name')->groupBy('shows.id')
