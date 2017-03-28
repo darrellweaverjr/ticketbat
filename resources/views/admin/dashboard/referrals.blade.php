@@ -298,8 +298,8 @@
 @endsection
 
 @section('scripts') 
-<script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/amcharts/amcharts/pie.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/amcharts.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/pie.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/referrals.js" type="text/javascript"></script>
 @endsection

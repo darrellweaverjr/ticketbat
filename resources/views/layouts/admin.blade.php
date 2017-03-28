@@ -13,38 +13,33 @@
         <title>{{ config('app.name', 'TicketBat Admin') }} - @yield('title')</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="Preview page of Metronic Admin Theme #1 for statistics, charts, recent events and reports" name="description" />
-        <meta content="" name="author" />
+        <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
         <!-- END GLOBAL MANDATORY STYLES -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="/themes/admin/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/bootstrap-sweetalert/sweetalert.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/jcrop/css/jquery.Jcrop.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/jquery-file-upload/css/jquery.fileupload.css" rel="stylesheet" type="text/css">
+        <link href="{{config('app.theme')}}css/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/sweetalert.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/jquery.Jcrop.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/jquery.fileupload.css" rel="stylesheet" type="text/css">
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="/themes/admin/assets/global/css/components.min.css" rel="stylesheet"type="text/css" />
-        <link href="/themes/admin/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/components.min.css" rel="stylesheet"type="text/css" />
+        <link href="{{config('app.theme')}}css/plugins.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
-        <link href="/themes/admin/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css"/>
-        <link href="/themes/admin/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/layout.min.css" rel="stylesheet" type="text/css" />
 
-        <link href="/themes/admin/assets/pages/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/style.css" rel="stylesheet" type="text/css" />
 
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="/themes/admin/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <link href="/themes/admin/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
         
         <!-- END THEME LAYOUT STYLES -->
@@ -62,7 +57,7 @@
                     <!-- BEGIN LOGO -->
                     <div class="page-logo">
                         <a href="">
-                            <img src="/themes/admin/assets/layouts/layout/img/logo.png" alt="logo" class="logo-default" /> </a>
+                            <img src="{{config('app.theme')}}img/logo.png" alt="logo" class="logo-default" /> </a>
                         <div class="menu-toggler sidebar-toggler">
                             <span></span>
                         </div>
@@ -627,44 +622,27 @@
             </div>
             <!-- END FOOTER -->
         </div>
-        <!--[if lt IE 9]>
-<script src="/themes/admin/assets/global/plugins/respond.min.js"></script>
-<script src="/themes/admin/assets/global/plugins/excanvas.min.js"></script> 
-<script src="/themes/admin/assets/global/plugins/ie8.fix.min.js"></script> 
-<![endif]-->
         <!-- BEGIN CORE PLUGINS -->
-        <script src="/themes/admin/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/jquery.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/bootstrap-switch.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="/themes/admin/assets/global/plugins/moment.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/morris/raphael-min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.color.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jcrop/js/jquery.Jcrop.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/moment.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/daterangepicker.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/jquery.waypoints.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/jquery.counterup.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/fullcalendar.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/jquery.Jcrop.min.js" type="text/javascript"></script>
         <!-- SCRIPT FOR SWEET ALERT -->
-        <script src="/themes/admin/assets/global/plugins/bootstrap-sweetalert/sweetalert.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/sweetalert.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="/themes/admin/assets/global/scripts/app.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
-        <script src="/themes/admin/assets/global/scripts/datatable.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
-        <script src="/themes/admin/assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/jquery.validate.min.js" type="text/javascript"></script>
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         @yield('scripts')

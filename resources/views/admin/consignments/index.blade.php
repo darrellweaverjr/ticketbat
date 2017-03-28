@@ -4,7 +4,8 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="{{config('app.theme')}}css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -557,9 +558,9 @@
     <!-- END SEARCH MODAL--> 
 @endsection
 
-@section('scripts') 
-<script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
+@section('scripts')     
+<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap.touchspin.min.js" type="text/javascript"></script>
 <script src="/js/admin/consignments/index.js" type="text/javascript"></script>
 @endsection

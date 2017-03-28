@@ -278,7 +278,7 @@
 @endsection
 
 @section('scripts') 
-<script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/global/plugins/highcharts/js/highcharts.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/trend_pace.js" type="text/javascript"></script>
 @endsection

@@ -300,6 +300,6 @@
 @endsection
 
 @section('scripts') 
-<script src="/themes/admin/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap.touchspin.js" type="text/javascript"></script>
 <script src="/js/admin/coupons/index.js" type="text/javascript"></script>
 @endsection

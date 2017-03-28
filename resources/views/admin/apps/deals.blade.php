@@ -219,7 +219,7 @@
 @endsection
 
 @section('scripts') 
-<script src="/themes/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="/themes/admin/assets/pages/scripts/table-datatables-buttons.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/table-datatables-buttons.min.js" type="text/javascript"></script>
 <script src="/js/admin/apps/deals.js" type="text/javascript"></script>
 @endsection

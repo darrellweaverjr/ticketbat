@@ -4,7 +4,7 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
+<link href="{{config('app.theme')}}css/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -290,6 +290,6 @@
 @endsection
 
 @section('scripts') 
-<script src="/themes/admin/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/bands/index.js" type="text/javascript"></script>
 @endsection
