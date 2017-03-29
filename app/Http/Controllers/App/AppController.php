@@ -15,9 +15,17 @@ use App\Http\Models\Image;
 class AppController extends Controller{
     
     /*
+     * return arrays of all init values in json format
+     */
+    public function init()
+    {
+        $init = ['cities'=>$this->cities(1),'shows'=>$this->shows(null,null,1),'venues'=>$this->venues(1)];
+        return Response::json($init,200,[],JSON_NUMERIC_CHECK);
+    }    
+    /*
      * return arrays of all cities in json format
      */
-    public function cities()
+    public function cities($raw=null)
     {
         $cities = DB::table('venues')
                     ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
@@ -28,13 +36,14 @@ class AppController extends Controller{
                     ->whereNotNull('images.url')
                     ->orderBy('locations.city')->groupBy('locations.city')
                     ->distinct()->get();
+        if($raw) return $cities;
         return Response::json($cities,200,[],JSON_NUMERIC_CHECK);
     }
     
     /*
      * return arrays of all shows (or by id, or by venue id) in json format
      */
-    public function shows($id=null,$venue_id=null)
+    public function shows($id=null,$venue_id=null,$raw=null)
     {
         $current = date('Y-m-d');
         if(!empty($id) && is_numeric($id))
@@ -126,13 +135,14 @@ class AppController extends Controller{
         foreach ($shows as $s)
             if(!empty($s->url))
                 $s->url = Image::view_image($s->url);
+        if($raw) return $shows;
         return Response::json($shows,200,[],JSON_NUMERIC_CHECK);
     }
     
     /*
      * return arrays of all venues in json format
      */
-    public function venues()
+    public function venues($raw=null)
     {
         $venues = DB::table('venues')
                     ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
@@ -148,6 +158,7 @@ class AppController extends Controller{
                     ->distinct()->get();
         foreach ($venues as $v)
             $v->url = Image::view_image($v->url);
+        if($raw) return $venues;
         return Response::json($venues,200,[],JSON_NUMERIC_CHECK);
     }
     
