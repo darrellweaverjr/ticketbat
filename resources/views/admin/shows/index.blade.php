@@ -83,19 +83,20 @@
                                     <center style="color:red;"><i><b><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}"><img alt="- No image -" height="110px" width="110px" src="{{$s->image_url}}"/></a></b></i></center>
                                 </td>
                                 <td class="search-item clearfix" width="72%"> 
+                                    <div class="search-title">
+                                        <h4>
+                                            <a>{{$s->name}}</a>&nbsp;&nbsp;&nbsp;
+                                            @if($s->url)<a class="social-icon social-icon-color rss" href="{{$s->url}}" target="_blank"></a>@endif
+                                            @if($s->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$s->googleplus}}" target="_blank"></a>@endif 
+                                            @if($s->facebook)<a class="social-icon social-icon-color facebook" href="{{$s->facebook}}" target="_blank"></a>@endif 
+                                            @if($s->twitter)<a class="social-icon social-icon-color twitter" href="{{$s->twitter}}" target="_blank"></a>@endif 
+                                            @if($s->youtube)<a class="social-icon social-icon-color youtube" href="{{$s->youtube}}" target="_blank"></a>@endif 
+                                            @if($s->instagram)<a class="social-icon social-icon-color instagram" href="{{$s->instagram}}" target="_blank"></a>@endif 
+                                            @if($s->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$s->yelpbadge}}" target="_blank"></a>@endif 
+                                        </h4>
+                                    </div>
                                     <div class="search-content">
-                                        <h4 class="search-title"><b><a>{{$s->name}}</a></b> [<a>{{$s->slug}}</a>]</h4>
-                                        <small><i>
-                                            @if($s->url)<a data-original-title="rss" class="social-icon social-icon-color rss"></a> <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
-                                            @if($s->googleplus)<a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a> <a href="{{$s->googleplus}}" target="_blank">{{$s->googleplus}} </a>@endif
-                                            @if($s->youtube)<a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
-                                            @if($s->facebook)<a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
-                                            @if($s->twitter)<a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
-                                            @if($s->yelpbadge)<a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a> <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
-                                            @if($s->instagram)<a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
-                                        </i><br>
-                                        @if($s->short_description) {{$s->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif 
-                                        </small>
+                                        <small>@if($s->short_description){{$s->short_description}}@else <i style="color:red"><b>- No short description -</b></i>@endif</small>
                                     </div>
                                 </td>
                                 <td width="8%"><center> {{$s->category}} </center></td>

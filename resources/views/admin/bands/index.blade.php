@@ -78,20 +78,21 @@
                                     <center style="color:red;"><i><b><a><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
                                 </td>
                                 <td class="search-item clearfix" width="78%"> 
+                                    <div class="search-title">
+                                        <h4>
+                                            <a>{{$b->name}}</a>&nbsp;&nbsp;&nbsp;
+                                            @if($b->website)<a class="social-icon social-icon-color rss" href="{{$b->website}}" target="_blank"></a>@endif
+                                            @if($b->youtube)<a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a>@endif 
+                                            @if($b->facebook)<a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a>@endif 
+                                            @if($b->twitter)<a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a>@endif 
+                                            @if($b->my_space)<a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a>@endif 
+                                            @if($b->flickr)<a class="social-icon social-icon-color flickr" href="{{$b->flickr}}" target="_blank"></a>@endif 
+                                            @if($b->instagram)<a class="social-icon social-icon-color instagram" href="{{$b->instagram}}" target="_blank"></a>@endif 
+                                            @if($b->soundcloud)<a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a>@endif 
+                                        </h4>
+                                    </div>
                                     <div class="search-content">
-                                        <h3 class="search-title"><a>{{$b->name}}</a></h3>
-                                        <small><p><i>
-                                            @if($b->website)Web Site: <a href="{{$b->website}}" target="_blank">{{$b->website}} </a>@endif
-                                            @if($b->youtube)YouTube: <a href="{{$b->youtube}}" target="_blank">{{$b->youtube}} </a>@endif 
-                                            @if($b->facebook)Facebook: <a href="{{$b->facebook}}" target="_blank">{{$b->facebook}} </a>@endif 
-                                            @if($b->twitter)Twitter: <a href="{{$b->twitter}}" target="_blank">{{$b->twitter}} </a>@endif 
-                                            @if($b->my_space)MySpace: <a href="{{$b->my_space}}" target="_blank">{{$b->my_space}} </a>@endif 
-                                            @if($b->flickr)Flickr: <a href="{{$b->flickr}}" target="_blank">{{$b->flickr}} </a>@endif 
-                                            @if($b->instagram)Instagram: <a href="{{$b->instagram}}" target="_blank">{{$b->instagram}} </a>@endif 
-                                            @if($b->soundcloud)SoundCloud: <a href="{{$b->soundcloud}}" target="_blank">{{$b->soundcloud}} </a>@endif 
-                                        </i></p>
-                                        <p> @if($b->short_description) {{$b->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif </p>
-                                        </small>
+                                        <small>@if($b->short_description){{$b->short_description}}@else <i style="color:red"><b>- No short description -</b></i>@endif</small>
                                     </div>
                                 </td>
                                 <td width="10%"><center> {{$b->category}} </center></td>
@@ -127,11 +128,8 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <input type="text" name="name" class="form-control" placeholder="My Band" /> </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
+                                            <input type="text" name="name" class="form-control" placeholder="My Band" /> 
+                                        </div>
                                         <label class="control-label col-md-3">Category
                                             <span class="required"> * </span>
                                         </label>
@@ -149,80 +147,72 @@
                                                     @endif
                                                 @endforeach
                                             </select>
-                                        </div>    
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
+                                        </div>
                                         <label class="control-label col-md-3">Image
                                         </label>
                                         <div class="col-md-9 show-error" >
                                             <center>
                                                 <input type="hidden" name="image_url"/>
                                                 <button type="button" id="btn_bands_upload_image_url" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
-                                                <img name="image_url" alt="- No image -" src="" width="323px" height="270px" />
+                                                <img name="image_url" alt="- No image -" src="" width="200px" height="200px" />
                                             </center>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">Web Site
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="website" class="form-control" placeholder="https://www.myband.com" /> 
                                         </div> 
-                                        <label class="col-md-3 control-label">
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-12 show-error">
                                             <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
                                         </div> 
-                                        <label class="col-md-3 control-label">Youtube
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myband" /> 
                                         </div>
-                                        <label class="col-md-3 control-label">Facebook
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myband" /> 
                                         </div>
-                                        <label class="col-md-3 control-label">Twitter
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myband" /> 
                                         </div>
-                                        <label class="col-md-3 control-label">My Space
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="myspace" class="social-icon social-icon-color myspace"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="my_space" class="form-control" placeholder="https://myspace.com/myband" /> 
                                         </div>
-                                        <label class="col-md-3 control-label">Flickr
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="flickr" class="social-icon social-icon-color flickr"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="flickr" class="form-control" placeholder="https://flickr.com/myband" /> 
                                         </div>
-                                        <label class="col-md-3 control-label">Instagram
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myband" /> 
                                         </div>
-                                        <label class="col-md-3 control-label">SoundCloud
-                                        </label>
-                                        <div class="col-md-9 show-error">
+                                        <div class="col-md-1"><a data-original-title="jolicloud" class="social-icon social-icon-color jolicloud"></a> 
+                                        </div>
+                                        <div class="col-md-11 show-error">
                                             <input type="text" name="soundcloud" class="form-control" placeholder="https://soundcloud.com/myband" /> 
                                         </div>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="row" style="padding:0 20px">
                                 <label class="control-label">Short Description:
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="show-error">
-                                    <textarea name="short_description" class="form-control" rows="2"></textarea>
+                                    <textarea name="short_description" class="form-control" rows="3"></textarea>
                                 </div> 
                                 <label class="control-label">Description:</label>
                                 <div class="show-error">

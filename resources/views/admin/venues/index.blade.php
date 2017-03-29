@@ -79,21 +79,21 @@
                         <center style="color:red;"><i><b><a href="https://www.ticketbat.com/venue/{{$v->slug}}" target="_blank"><img alt="- No image -" height="110px" width="110px" src="{{$v->image_url}}"/></a></b></i></center>
                                 </td>
                                 <td class="search-item clearfix" width="85%"> 
+                                    <div class="search-title">
+                                        <h4>
+                                            <a>{{$v->name}}</a>&nbsp;&nbsp;&nbsp;
+                                            @if($v->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$v->googleplus}}" target="_blank"></a>@endif 
+                                            @if($v->facebook)<a class="social-icon social-icon-color facebook" href="{{$v->facebook}}" target="_blank"></a>@endif 
+                                            @if($v->twitter)<a class="social-icon social-icon-color twitter" href="{{$v->twitter}}" target="_blank"></a>@endif 
+                                            @if($v->youtube)<a class="social-icon social-icon-color youtube" href="{{$v->youtube}}" target="_blank"></a>@endif 
+                                            @if($v->instagram)<a class="social-icon social-icon-color instagram" href="{{$v->instagram}}" target="_blank"></a>@endif 
+                                            @if($v->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$v->yelpbadge}}" target="_blank"></a>@endif 
+                                            &nbsp;&nbsp;&nbsp;
+                                            <a href='http://maps.google.com/?q={{$v->address}} {{$v->city}} {{$v->state}} {{$v->country}} {{$v->zip}}' target="_blank" class="fa fa-map-marker"><small> {{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</small></a>
+                                        </h4>
+                                    </div>
                                     <div class="search-content">
-                                        <h4 class="search-title"><b><a>{{$v->name}}</a></b> [<a>{{$v->slug}}</a>]</h4>
-                                        <small><i>
-                                            Location: <a>{{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</a>
-                                        </i><br>
-                                        <i>
-                                            @if($v->googleplus)Google+: <a href="{{$v->googleplus}}" target="_blank">{{$v->googleplus}} </a>@endif
-                                            @if($v->youtube)YouTube: <a href="{{$v->youtube}}" target="_blank">{{$v->youtube}} </a>@endif 
-                                            @if($v->facebook)Facebook: <a href="{{$v->facebook}}" target="_blank">{{$v->facebook}} </a>@endif 
-                                            @if($v->twitter)Twitter: <a href="{{$v->twitter}}" target="_blank">{{$v->twitter}} </a>@endif 
-                                            @if($v->yelpbadge)YelpBadge: <a href="{{$v->yelpbadge}}" target="_blank">{{$v->yelpbadge}} </a>@endif 
-                                            @if($v->instagram)Instagram: <a href="{{$v->instagram}}" target="_blank">{{$v->instagram}} </a>@endif 
-                                        </i><br>
-                                        @if($v->description) {{$v->description}} @else <i style="color:red"><b>- No description -</b></i> @endif 
-                                        </small>
+                                        <small>@if($v->description){{$v->description}}@else <i style="color:red"><b>- No description -</b></i>@endif</small>
                                     </div>
                                 </td>
                                 <td width="5%"><center> <span class="label label-sm sbold
@@ -203,34 +203,34 @@
                                                     <span class="required"> Social Media & Others </span>
                                                 </label><hr>
                                                 <div class="form-group">
-                                                    <label class="col-md-3 control-label">Youtube
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="youtube" class="form-control" placeholder="venue-youtube" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Facebook
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="facebook" class="form-control" placeholder="venue-url" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Twitter
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="twitter" class="form-control" placeholder="venue-username" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Google+
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="googleplus" class="form-control" placeholder="venue-id" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">YelpBadge
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="yelpbadge" class="form-control" placeholder="venue-link" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Instagram
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="instagram" class="form-control" placeholder="venue-username" /> 
                                                     </div>
                                                 </div>
