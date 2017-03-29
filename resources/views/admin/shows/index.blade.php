@@ -149,7 +149,7 @@
                                         <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false"> Reports </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_checking" data-toggle="tab" aria-expanded="false"> Checking </a>
+                                        <a href="#tab_model_update_checking" data-toggle="tab" aria-expanded="false"> Restrictions </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="true"> Showtimes </a>

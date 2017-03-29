@@ -434,7 +434,7 @@ var TableDatatablesManaged = function () {
             });
         });
         //function send custom email
-        $('#btn_model_send').on('click', function(ev) {
+        $('#btn_send_custom').on('click', function(ev) {
             var ids = [];
             var set = $('.group-checkable').attr("data-set");
             var checked = $(set+"[type=checkbox]:checked");

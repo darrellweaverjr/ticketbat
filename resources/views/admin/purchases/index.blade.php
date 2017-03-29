@@ -347,7 +347,7 @@
                             <div class="row">
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                    <button type="button" id="btn_model_send" class="btn sbold bg-green">Send</button>
+                                    <button type="button" id="btn_send_custom" class="btn sbold bg-green">Send</button>
                                 </div>
                             </div>
                         </div>
