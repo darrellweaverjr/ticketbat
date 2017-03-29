@@ -586,6 +586,7 @@ var TableDatatablesManaged = function () {
             });
         });  
         //init functions
+        $('#form_model_email [name="body"]').summernote({height:150});
         check_models(); 
     }
     return {

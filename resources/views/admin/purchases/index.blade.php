@@ -4,6 +4,7 @@
 
 @section('styles') 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="{{config('app.theme')}}css/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -420,5 +421,6 @@
 @endsection
 
 @section('scripts') 
+<script src="{{config('app.theme')}}js/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/purchases/index.js" type="text/javascript"></script>
 @endsection
