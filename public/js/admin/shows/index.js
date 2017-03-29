@@ -242,7 +242,6 @@ var TableDatatablesManaged = function () {
             $('#modal_model_update_title').html('Add Show');
             $('a[href="#tab_model_update_checking"]').parent().css('display','none');
             $('#form_model_update .ticket_types_lists').empty();
-            $('a[href="#tab_model_update_passwords"]').parent().css('display','none');
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','none');
             $('a[href="#tab_model_update_tickets"]').parent().css('display','none');
             $('a[href="#tab_model_update_bands"]').parent().css('display','none');
@@ -328,7 +327,6 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');            
             $('a[href="#tab_model_update_checking"]').parent().css('display','block');
             $('#form_model_update .ticket_types_lists').empty();
-            $('a[href="#tab_model_update_passwords"]').parent().css('display','block');
             $('#form_model_show_passwords .ticket_types_lists').empty();
             $('#tb_show_passwords').empty();
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','block');

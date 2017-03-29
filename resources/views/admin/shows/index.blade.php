@@ -86,13 +86,13 @@
                                     <div class="search-content">
                                         <h4 class="search-title"><b><a>{{$s->name}}</a></b> [<a>{{$s->slug}}</a>]</h4>
                                         <small><i>
-                                            @if($s->url)Web Site: <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
-                                            @if($s->googleplus)Google+: <a href="{{$s->googleplus}}" target="_blank">{{$s->googleplus}} </a>@endif
-                                            @if($s->youtube)YouTube: <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
-                                            @if($s->facebook)Facebook: <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
-                                            @if($s->twitter)Twitter: <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
-                                            @if($s->yelpbadge)YelpBadge: <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
-                                            @if($s->instagram)Instagram: <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
+                                            @if($s->url)<a data-original-title="rss" class="social-icon social-icon-color rss"></a> <a href="{{$s->url}}" target="_blank">{{$s->url}} </a>@endif
+                                            @if($s->googleplus)<a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a> <a href="{{$s->googleplus}}" target="_blank">{{$s->googleplus}} </a>@endif
+                                            @if($s->youtube)<a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> <a href="{{$s->youtube}}" target="_blank">{{$s->youtube}} </a>@endif 
+                                            @if($s->facebook)<a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> <a href="{{$s->facebook}}" target="_blank">{{$s->facebook}} </a>@endif 
+                                            @if($s->twitter)<a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> <a href="{{$s->twitter}}" target="_blank">{{$s->twitter}} </a>@endif 
+                                            @if($s->yelpbadge)<a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a> <a href="{{$s->yelpbadge}}" target="_blank">{{$s->yelpbadge}} </a>@endif 
+                                            @if($s->instagram)<a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> <a href="{{$s->instagram}}" target="_blank">{{$s->instagram}} </a>@endif 
                                         </i><br>
                                         @if($s->short_description) {{$s->short_description}} @else <i style="color:red"><b>- No short description -</b></i> @endif 
                                         </small>
@@ -149,9 +149,6 @@
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_checking" data-toggle="tab" aria-expanded="false"> Checking </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#tab_model_update_passwords" data-toggle="tab" aria-expanded="true"> Passwords </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="true"> Showtimes </a>
@@ -294,68 +291,64 @@
                                                         <input type="text" value="10000" name="sequence" style="width:73px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-3">Status</label>
-                                                    <div class="col-md-9">
-                                                        <input type="hidden" name="is_active" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">
                                                     <span class="required"> Social Media & Others </span>
                                                 </label><hr>
                                                 <div class="form-group">
-                                                    <label class="col-md-3 control-label">Web Site
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="url" class="form-control" placeholder="https://www.myshow.com" /> 
                                                     </div> 
-                                                    <label class="col-md-3 control-label">
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-12 show-error">
                                                         <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
-                                                    </div> 
-                                                    <label class="col-md-3 control-label">Youtube
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    </div><br>
+                                                    <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Facebook
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Twitter
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Google+
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="googleplus" class="form-control" placeholder="https://googleplus.com/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">YelpBadge
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="yelpbadge" class="form-control" placeholder="https://yelpbadge.com/myshow" /> 
                                                     </div>
-                                                    <label class="col-md-3 control-label">Instagram
-                                                    </label>
-                                                    <div class="col-md-9 show-error">
+                                                    <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> 
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
                                                         <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" /> 
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-md-3">Featured</label>
+                                                    <label class="control-label col-md-1">Active</label>
+                                                    <div class="col-md-2">
+                                                        <input type="hidden" name="is_active" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                    <label class="control-label col-md-2">Featured</label>
                                                     <div class="col-md-2">
                                                         <input type="hidden" name="is_featured" value="0"/>
                                                         <input type="checkbox" class="make-switch" name="is_featured" data-size="small" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
-                                                    <label class="control-label col-md-4">Able Print Ticket</label>
-                                                    <div class="col-md-3">
+                                                    <label class="control-label col-md-2">Print.Tk?</label>
+                                                    <div class="col-md-2">
                                                         <input type="hidden" name="printed_tickets" value="0"/>
                                                         <input type="checkbox" class="make-switch input-large" name="printed_tickets" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
@@ -449,11 +442,11 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_checking">
-                                        <label class="control-label">
-                                            <span class="required"> American Express Card Checking </span>
-                                        </label><hr>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-5">
+                                                <label class="control-label">
+                                                    <span class="required">American Express Card Checking</span>
+                                                </label><hr>
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Date range:
                                                     </label>
@@ -471,36 +464,41 @@
                                                         </span>
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">Ticket types:
+                                                    </label>
+                                                    <div class="col-md-9 mt-checkbox-inline ticket_types_lists">
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label class="col-md-3 control-label">Ticket types:
-                                                </label>
-                                                <div class="col-md-9 mt-checkbox-inline ticket_types_lists">
-                                                </div> 
+                                            <div class="col-md-7">
+                                                <label class="control-label">
+                                                    <span class="required">Passwords</span>
+                                                </label><hr>
+                                                <div class="form-group">
+                                                    <div class="btn-group" style="padding-left:20px">
+                                                        <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add 
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                                        <table class="table table-striped table-hover table-bordered" >
+                                                            <thead>
+                                                                <tr>
+                                                                    <th> Password </th>
+                                                                    <th> Date Start </th>
+                                                                    <th> Date End </th>
+                                                                    <th> Ticket Types </th>
+                                                                    <th> </th>
+                                                                    <th> </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tb_show_passwords">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="tab_model_update_passwords">
-                                        <div class="btn-group">
-                                            <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add 
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
-                                            <table class="table table-striped table-hover table-bordered" >
-                                                <thead>
-                                                    <tr>
-                                                        <th> Password </th>
-                                                        <th> Date Start </th>
-                                                        <th> Date End </th>
-                                                        <th> Ticket Types </th>
-                                                        <th> </th>
-                                                        <th> </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="tb_show_passwords">
-                                                </tbody>
-                                            </table>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_showtimes">
@@ -1539,7 +1537,7 @@
 @section('scripts') 
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/bootstrap.touchspin.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap.touchspin.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-timepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/summernote.min.js" type="text/javascript"></script>
