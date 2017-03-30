@@ -442,7 +442,6 @@ var TableDatatablesManaged = function () {
             $('#form_model_venue_stages input[name="action"]:hidden').val('1').trigger('change');
             $('#form_model_venue_stages input[name="image_url"]:hidden').val('').trigger('change');
             $('#form_model_venue_stages img[name="image_url"]').attr('src','');
-            //$('#subform_venue_stages').css('display','block');
             $('#modal_model_venue_stages').modal('show');
         });
         //edit
@@ -453,7 +452,6 @@ var TableDatatablesManaged = function () {
             $('#form_model_venue_stages input[name="action"]:hidden').val('0').trigger('change');
             $('#form_model_venue_stages input[name="image_url"]:hidden').val('').trigger('change');
             $('#form_model_venue_stages img[name="image_url"]').attr('src','');
-            //$('#subform_venue_stages').css('display','none');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -815,7 +813,10 @@ var TableDatatablesManaged = function () {
         //function load form to upload image
         $('#btn_venue_upload_images').on('click', function(ev) {
             var type = $('#form_model_venue_images [name="image_type"]').val().toLowerCase();
-            FormImageUpload('images.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');       
+            if(type=='logo')
+                FormImageUpload('venues.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');   
+            else
+                FormImageUpload('images.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');       
         }); 
         //function with venue_images  *****************************************************************************************************   VENUE IMAGES END
         //function with venue_banners  ****************************************************************************************************   VENUE BANNERS BEGIN
