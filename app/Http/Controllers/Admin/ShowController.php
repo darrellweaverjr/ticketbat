@@ -1063,10 +1063,14 @@ class ShowController extends Controller{
             $resp = DB::table('show_sweepstakes')->where('show_id',$input['show_id'])->update(['selected' => 0]);
             if($resp>=0)
             {
-                $resp = DB::table('show_sweepstakes')->where('show_id',$input['show_id'])->whereIn('user_id',$input['user_id'])->update(['selected' => 1]);
-                if($resp>=0)
-                    return ['success'=>true];
-                return ['success'=>false,'msg'=>'Error updating all sweepstakes. Check the user input value.'];
+                if(count($input['user_id']))
+                {
+                    $resp = DB::table('show_sweepstakes')->where('show_id',$input['show_id'])->whereIn('user_id',$input['user_id'])->update(['selected' => 1]);
+                    if($resp>=0)
+                        return ['success'=>true];
+                    return ['success'=>false,'msg'=>'Error updating all sweepstakes. Check the user input value.'];
+                }
+                return ['success'=>true];
             }   
             else
                 return ['success'=>false,'msg'=>'Error updating all sweepstakes. Check the show input value.'];
