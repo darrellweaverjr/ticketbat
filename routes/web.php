@@ -50,6 +50,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('venues/remove', 'VenueController@remove')->middleware('permissions:VENUES');
     Route::match(['get','post'], 'venues', 'VenueController@index')->middleware('permissions:VENUES');
     //shows
+    Route::post('shows/sweepstakes', 'ShowController@sweepstakes')->middleware('permissions:SHOWS');
     Route::match(['get','post'], 'shows/passwords', 'ShowController@passwords')->middleware('permissions:SHOWS');
     Route::match(['get','post'], 'shows/tickets', 'ShowController@tickets')->middleware('permissions:SHOWS');
     Route::match(['get','post'], 'shows/bands', 'ShowController@bands')->middleware('permissions:SHOWS');

@@ -161,6 +161,9 @@
                                         <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="true"> Bands </a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_sweepstakes" data-toggle="tab" aria-expanded="true"> Sweepstakes </a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_contracts" data-toggle="tab" aria-expanded="true"> Contracts </a>
                                     </li>
                                     <li class="dropdown">
@@ -576,6 +579,28 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_sweepstakes">
+                                        <div class="btn-group" style="padding-bottom:20px;">
+                                            <button type="button" id="btn_model_sweepstakes_edit" class="btn sbold bg-yellow">Pick 
+                                                <i class="fa fa-gift"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Address</th>
+                                                        <th>Signed up</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_sub_sweepstakes">
+                                                </tbody>
+                                            </table>
+                                        </div>   
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_contracts">
                                         <div class="btn-group" style="padding-bottom:20px;">

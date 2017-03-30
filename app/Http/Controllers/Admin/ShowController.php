@@ -268,6 +268,13 @@ class ShowController extends Controller{
                 $bands = DB::table('bands')->join('show_bands', 'show_bands.band_id', '=' ,'bands.id')
                                 ->select('bands.name','show_bands.*')->where('show_bands.show_id','=',$show->id)
                                 ->orderBy('show_bands.n_order')->distinct()->get();
+                $sweepstakes = DB::table('users')
+                                ->join('show_sweepstakes', 'show_sweepstakes.user_id', '=' ,'users.id')
+                                ->join('locations', 'locations.id', '=' ,'users.location_id')
+                                ->select(DB::raw('show_sweepstakes.*, CONCAT(users.first_name," ",users.last_name) AS name, users.email,
+                                                  CONCAT(locations.address,", ",locations.city,", ",locations.state,", ",locations.zip) AS address'))
+                                ->where('show_sweepstakes.show_id','=',$show->id)
+                                ->orderBy('show_sweepstakes.created','DESC')->distinct()->get();
                 $contracts = ShowContract::where('show_id','=',$show->id)->orderBy('updated','desc')->get();
                 $images = DB::table('images')->join('show_images', 'show_images.image_id', '=' ,'images.id')
                                 ->select('images.*')->where('show_images.show_id','=',$show->id)->distinct()->get();
@@ -278,7 +285,7 @@ class ShowController extends Controller{
                     $b->file = Image::view_image($b->file);
                 $videos = DB::table('videos')->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
                                 ->select('videos.*')->where('show_videos.show_id','=',$show->id)->distinct()->get();
-                return ['success'=>true,'show'=>array_merge($show->getAttributes()),'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+                return ['success'=>true,'show'=>array_merge($show->getAttributes()),'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'sweepstakes'=>$sweepstakes,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
             }
         } catch (Exception $ex) {
             throw new Exception('Error Shows Get: '.$ex->getMessage());
@@ -1041,6 +1048,31 @@ class ShowController extends Controller{
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error ShowTimes Index: '.$ex->getMessage());
+        }
+    } 
+    /**
+     * Edit, Remove sweepstakes for show
+     *
+     * @return view
+     */
+    public function sweepstakes()
+    {
+        try {   
+            //init
+            $input = Input::all(); 
+            $resp = DB::table('show_sweepstakes')->where('show_id',$input['show_id'])->update(['selected' => 0]);
+            if($resp>=0)
+            {
+                $resp = DB::table('show_sweepstakes')->where('show_id',$input['show_id'])->whereIn('user_id',$input['user_id'])->update(['selected' => 1]);
+                if($resp>=0)
+                    return ['success'=>true];
+                return ['success'=>false,'msg'=>'Error updating all sweepstakes. Check the user input value.'];
+            }   
+            else
+                return ['success'=>false,'msg'=>'Error updating all sweepstakes. Check the show input value.'];
+        } 
+        catch (Exception $ex) {
+            throw new Exception('Error ShowSweepstakes Index: '.$ex->getMessage());
         }
     } 
     /**

@@ -245,6 +245,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_showtimes"]').parent().css('display','none');
             $('a[href="#tab_model_update_tickets"]').parent().css('display','none');
             $('a[href="#tab_model_update_bands"]').parent().css('display','none');
+            $('a[href="#tab_model_update_sweepstakes"]').parent().css('display','none');
             $('a[href="#tab_model_update_contracts"]').parent().css('display','none');
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','none');
             $("#form_model_update").trigger('reset');
@@ -338,6 +339,8 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_bands"]').parent().css('display','block');
             $('a[href="#tab_model_update_contracts"]').parent().css('display','block');
             $('#tb_show_contracts').empty();
+            $('a[href="#tab_model_update_sweepstakes"]').parent().css('display','block');
+            $('#tb_sub_sweepstakes').empty();
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Show');
             //fill out defaults
@@ -420,6 +423,15 @@ var TableDatatablesManaged = function () {
             {
                 $.each(data.bands,function(k, v) {
                     tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                
+                });
+            }
+            //fill out sweepstakes
+            if(data.sweepstakes && data.sweepstakes.length)
+            {
+                $.each(data.sweepstakes,function(k, v) {
+                    var selected = ''; if(v.selected==1) selected = 'checked';
+                    var checkbox = '<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" name="user_id[]" value="'+v.user_id+'" '+selected+'><span></span></label>';
+                    $('#tb_sub_sweepstakes').append('<tr><td>'+checkbox+'</td><td>'+v.name+'</td><td>'+v.email+'</td><td>'+v.address+'</td><td>'+v.created+'</td></tr>');
                 });
             }
             //fill out showtimes
@@ -832,6 +844,70 @@ var TableDatatablesManaged = function () {
             }   
         });
         //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD END
+        //function with show_sweepstakes  *****************************************************************************************************   SHOW sweepstakes BEGIN
+        //function submit show_sweepstakes
+        $('#btn_model_sweepstakes_edit').on('click', function(ev) {
+            $('#modal_model_update').modal('hide');
+            if($('#tb_sub_sweepstakes [name="user_id[]"]:checked').length)
+            {
+                var user_id = [];
+                $('#tb_sub_sweepstakes [name="user_id[]"]:checked').each(function() {
+                    user_id.push($(this).val());
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/sweepstakes', 
+                    data: {show_id:$('#form_model_update [name="id"]:hidden').val(),user_id:user_id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Selected!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                            $('#modal_model_update').modal('show');
+                        }
+                        else{	
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){	 
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the sweepstakes' selection!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select at least one valid element!",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }   
+        });
+        //function with show_sweepstakes  *****************************************************************************************************   SHOW sweepstakes END
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS BEGIN
         $('#btn_model_ticket_add').on('click', function(ev) {
             $('#form_model_show_tickets input[name="id"]:hidden').val('').trigger('change');
