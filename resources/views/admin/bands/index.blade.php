@@ -166,7 +166,8 @@
                                         <div class="col-md-11 show-error">
                                             <input type="text" name="website" class="form-control" placeholder="https://www.myband.com" /> 
                                         </div> 
-                                        <div class="col-md-12 show-error">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-11 show-error">
                                             <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
                                         </div> 
                                         <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> 
