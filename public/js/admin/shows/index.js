@@ -269,6 +269,7 @@ var TableDatatablesManaged = function () {
                     if(v.venue_id == venue_id)
                         $('#form_model_update select[name="stage_id"]').append('<option value="'+v.id+'">'+v.name+'</option>');
                 });
+                $('#form_model_update select[name="stage_id"] option:first').prop('selected',true);
             }
             //show restrictions
             $('#form_model_update [name="restrictions"] option').each(function()
