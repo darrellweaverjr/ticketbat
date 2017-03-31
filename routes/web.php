@@ -108,6 +108,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 //ADMIN ROUTES FOR APP
 Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], function () {
     //apps config
+    Route::get('init', 'AppController@init');
     Route::get('cities', 'AppController@cities');
     Route::get('shows/{id?}/{venue_id?}', 'AppController@shows');
     Route::get('venues', 'AppController@venues');

@@ -394,7 +394,8 @@ var FormValidation = function () {
                         required: true
                     },
                     phone: {
-                        phoneUS: true,
+                        digits: true,
+                        range: [1000000000, 9999999999],
                         required: false
                     }
                 },
