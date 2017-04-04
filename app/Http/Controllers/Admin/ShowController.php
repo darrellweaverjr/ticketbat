@@ -209,12 +209,6 @@ class ShowController extends Controller{
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
-                                        ->where(function($query)
-                                        {
-                                            $query->where('images.image_type','=','Logo')
-                                                  ->orWhereNull('show_images.image_id')
-                                                  ->orWhereNotNull('images.url');
-                                        })
                                         ->orderBy('shows.name')->groupBy('shows.id')
                                         ->distinct()->get();
                         }
