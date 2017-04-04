@@ -19,7 +19,7 @@ class AppController extends Controller{
      */
     public function init()
     {
-        $init = ['cities'=>$this->cities(1),'shows'=>$this->shows(null,null,1),'venues'=>$this->venues(1)];
+        $init = ['cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1)];
         return Response::json($init,200,[],JSON_NUMERIC_CHECK);
     }    
     /*
@@ -43,7 +43,7 @@ class AppController extends Controller{
     /*
      * return arrays of all shows (or by id, or by venue id) in json format
      */
-    public function shows($id=null,$venue_id=null,$raw=null)
+    public function shows($id=null,$raw=null)
     {
         $current = date('Y-m-d');
         if(!empty($id) && is_numeric($id))
@@ -52,13 +52,10 @@ class AppController extends Controller{
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                     ->join('locations', 'locations.id', '=' ,'venues.location_id')
                     ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                    ->leftJoin('show_images', 'show_images.show_id', '=' ,'shows.id')
-                    ->leftJoin('images', 'show_images.image_id', '=' ,'images.id')
-                    ->select('shows.id','shows.name','images.url','shows.description','shows.slug',
+                    ->select('shows.id','shows.name','shows.description','shows.slug',
                              'locations.address','locations.city','locations.state','locations.zip','locations.lat','locations.lng')
                     ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('show_times.is_active','=',1)
                     ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('shows.id','=',$id)
-                    ->whereIn('images.image_type',['Header','Logo'])
                     ->orderBy('shows.name')->groupBy('shows.id')
                     ->distinct()->get(); 
             $showtimes = DB::table('show_times')
@@ -89,7 +86,7 @@ class AppController extends Controller{
                         ->join('show_images', 'show_images.image_id', '=' ,'images.id')
                         ->select('images.id','images.url','images.image_type')
                         ->where('show_images.show_id','=',$id)
-                        ->where('images.image_type','=','Image')
+                        ->whereIn('images.image_type',['Header','Image'])
                         ->distinct()->get();
             foreach ($images as $i)
                 $i->url = Image::view_image($i->url);
@@ -99,23 +96,7 @@ class AppController extends Controller{
                 $s->videos = $videos;
                 $s->images = $images;
             }                
-        }         
-        else if(!empty($venue_id) && is_numeric($venue_id))
-        {
-            $shows = DB::table('shows')
-                        ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
-                        ->join('images', 'show_images.image_id', '=' ,'images.id')
-                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                        ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                        ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->select('shows.id','shows.venue_id','shows.name','images.url','locations.city')
-                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
-                        ->whereNotNull('images.url')->where('venues.id','=',$venue_id)
-                        ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
-                        ->groupBy('shows.id')
-                        ->distinct()->get();
-        }
+        }  
         else
         {
             $shows = DB::table('shows')
