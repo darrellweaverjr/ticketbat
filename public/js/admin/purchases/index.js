@@ -192,7 +192,8 @@ var TableDatatablesManaged = function () {
         });
         //function show move modal window
         $('#btn_model_move').on('click', function(ev) {
-            var purchase_id = $("#tb_model [name=radios]:checked").val();
+            var set = $('.group-checkable').attr("data-set");
+            var purchase_id = $(set+"[type=checkbox]:checked")[0].id;
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
