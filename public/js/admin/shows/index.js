@@ -365,22 +365,19 @@ var TableDatatablesManaged = function () {
                 if(key=='on_sale' || key=='amex_only_start_date' || key=='amex_only_end_date')
                     if(data.show[key]=='0000-00-00 00:00:00')
                         data.show[key] = '';
-                else if(key=='stage_id')
-                {
+                if(key=='stage_id')
+                {   
                     $('#form_model_update select[name="stage_id"] option').prop('selected',false);
-                    $('#form_model_update select[name="stage_id"]').val(data.show.stage_id);
+                    $('#form_model_update select[name="stage_id"]').val(data.show.stage_id).trigger('change');
                 }
-                else
-                {
-                    //fill out
-                    var e = $('#form_model_update [name="'+key+'"]');
-                    if(e.is('img'))
-                        e.attr('src',data.show[key]);
-                    else if(e.is('input:checkbox'))
-                        $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
-                    else
-                        e.val(data.show[key]);
-                }
+                //fill out
+                var e = $('#form_model_update [name="'+key+'"]');
+                if(e.is('img'))
+                    e.attr('src',data.show[key]);
+                else if(e.is('input:checkbox'))
+                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
+                else if(key!='venue_id' && key!='stage_id')
+                    e.val(data.show[key]);
             }
             $('#form_model_update [name="description"]').summernote({height:150});
             //fill out checking ticket 
