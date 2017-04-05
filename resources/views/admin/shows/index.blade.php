@@ -140,45 +140,45 @@
                             <div class="tabbable-line">
                                 <ul class="nav nav-tabs">
                                     <li class="active">
-                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
+                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true">General</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_sponsor" data-toggle="tab" aria-expanded="true"> Sponsorship </a>
+                                        <a href="#tab_model_update_sponsor" data-toggle="tab" aria-expanded="true">Sponsorship</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false"> Reports </a>
+                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false">Reports</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_checking" data-toggle="tab" aria-expanded="false"> Restrictions </a>
+                                        <a href="#tab_model_update_checking" data-toggle="tab" aria-expanded="false">Restrictions</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="true"> Showtimes </a>
+                                        <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="true">Showtimes</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="true"> Tickets </a>
+                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="true">Tickets</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="true"> Bands </a>
+                                        <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="true">Bands</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_sweepstakes" data-toggle="tab" aria-expanded="true"> Sweepstakes </a>
+                                        <a href="#tab_model_update_sweepstakes" data-toggle="tab" aria-expanded="true">Sweepstakes</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_contracts" data-toggle="tab" aria-expanded="true"> Contracts </a>
+                                        <a href="#tab_model_update_contracts" data-toggle="tab" aria-expanded="true">Contracts</a>
                                     </li>
                                     <li class="dropdown">
-                                        <a href="#tab_model_update_multimedia" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Multimedia
+                                        <a href="#tab_model_update_multimedia" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Media
                                             <i class="fa fa-angle-down"></i>
                                         </a>
                                         <ul class="dropdown-menu pull-right">
                                             <li class="">
-                                                <a href="#tab_model_update_images" data-toggle="tab"> Images </a>
+                                                <a href="#tab_model_update_images" data-toggle="tab">Images</a>
                                             </li>
                                             <li class="">
-                                                <a href="#tab_model_update_banners" data-toggle="tab"> Banners </a>
+                                                <a href="#tab_model_update_banners" data-toggle="tab">Banners</a>
                                             </li>
                                             <li class="">
-                                                <a href="#tab_model_update_videos" data-toggle="tab"> Videos </a>
+                                                <a href="#tab_model_update_videos" data-toggle="tab">Videos</a>
                                             </li><!--
                                             <li class="">
                                                 <a href="#tab_model_update_reviews" data-toggle="tab"> Reviews </a>
