@@ -223,7 +223,7 @@ class VenueController extends Controller{
                 $venue->slug = $input['slug'];
                 $venue->accounting_email = $input['accounting_email'];
                 $venue->weekly_email = $input['weekly_email'];
-                $venue->description = $input['description'];
+                $venue->description = strip_tags($input['description'],'<p><a><br>');
                 $venue->ticket_info = $input['ticket_info'];
                 $venue->is_featured = $input['is_featured'];
                 $venue->restrictions = $input['restrictions'];

@@ -52,8 +52,9 @@ class AppController extends Controller{
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                     ->join('locations', 'locations.id', '=' ,'venues.location_id')
                     ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                    ->select('shows.id','shows.name','shows.description','shows.slug',
-                             'locations.address','locations.city','locations.state','locations.zip','locations.lat','locations.lng')
+                    ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
+                    ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, MIN(tickets.retail_price) AS retail_price,
+                                      locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                     ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('show_times.is_active','=',1)
                     ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('shows.id','=',$id)
                     ->orderBy('shows.name')->groupBy('shows.id')

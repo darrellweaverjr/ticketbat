@@ -7,7 +7,6 @@
 <link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
-<link href="{{config('app.theme')}}css/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -1567,6 +1566,5 @@
 <script src="{{config('app.theme')}}js/bootstrap.touchspin.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-timepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/shows/index.js" type="text/javascript"></script>
 @endsection

@@ -324,8 +324,8 @@ class ShowController extends Controller{
                 $show->slug = $input['slug'];
                 $show->presented_by = $input['presented_by'];
                 $show->sponsor = $input['sponsor'];
-                $show->short_description = $input['short_description'];
-                $show->description = $input['description'];
+                $show->short_description = strip_tags($input['short_description']);
+                $show->description = strip_tags($input['description'],'<p><a><br>');
                 $show->emails = $input['emails'];
                 $show->accounting_email = $input['accounting_email'];
                 $show->url = $input['url'];
