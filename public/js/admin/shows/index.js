@@ -256,11 +256,10 @@ var TableDatatablesManaged = function () {
         $('#btn_shows_upload_sponsor_logo_id').on('click', function(ev) {
             FormImageUpload('shows.sponsor_logo_id','#modal_model_update','#form_model_update [name="sponsor_logo_id"]');       
         }); 
-        //on select venue
-        $('#form_model_update [name="venue_id"]').on('change', function(ev) {
+        function onVenueChange(all){
             //init
-            var venue_id = $(this).find('option:selected').val(); 
-            var venue_rest = $(this).find('option:selected').attr('rel');
+            var venue_id = $('#form_model_update [name="venue_id"]').find('option:selected').val(); 
+            var venue_rest = $('#form_model_update [name="venue_id"]').find('option:selected').attr('rel');
             //show stages
             $('#form_model_update select[name="stage_id"]').empty();
             var stages = $('#form_model_update select[name="stage_id"]').data('content');
@@ -286,39 +285,45 @@ var TableDatatablesManaged = function () {
                     $(this).text($(this).val()+' - WARNING: Not venue default');                   
                 }
             });
-            //select default reports for that venue
-            if(venue_id && venue_id != '')
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows', 
-                    data: { venue_id:venue_id }, 
-                    success: function(data) {
-                        if(data) 
-                        {
-                            $('#form_model_update input[name="emails"]').val(data.default.weekly_email);
-                            $('#form_model_update input[name="accounting_email"]').val(data.default.accounting_email);
-                            $('#form_model_update .make-switch:checkbox[name="daily_sales_emails"]').bootstrapSwitch('state',(data.default.daily_sales_emails)? true : false);
-                            $('#form_model_update .make-switch:checkbox[name="financial_report_emails"]').bootstrapSwitch('state',(data.default.financial_report_emails)? true : false);
-                        }
-                        else 
-                        {
+            if(all){
+                //select default reports for that venue
+                if(venue_id && venue_id != '')
+                {
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/admin/shows', 
+                        data: { venue_id:venue_id }, 
+                        success: function(data) {
+                            if(data) 
+                            {
+                                $('#form_model_update input[name="emails"]').val(data.default.weekly_email);
+                                $('#form_model_update input[name="accounting_email"]').val(data.default.accounting_email);
+                                $('#form_model_update .make-switch:checkbox[name="daily_sales_emails"]').bootstrapSwitch('state',(data.default.daily_sales_emails)? true : false);
+                                $('#form_model_update .make-switch:checkbox[name="financial_report_emails"]').bootstrapSwitch('state',(data.default.financial_report_emails)? true : false);
+                            }
+                            else 
+                            {
+                                $('#form_model_update input[name*="email"]').val('');
+                                $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
+                            }
+                        },
+                        error: function(){
                             $('#form_model_update input[name*="email"]').val('');
                             $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
                         }
-                    },
-                    error: function(){
-                        $('#form_model_update input[name*="email"]').val('');
-                        $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
-                    }
-                });
+                    });
+                }
+                else
+                {
+                    $('#form_model_update input[name*="email"]').val('');
+                    $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
+                }
             }
-            else
-            {
-                $('#form_model_update input[name*="email"]').val('');
-                $('#form_model_update .make-switch:checkbox[name*="_emails"]').bootstrapSwitch('state',false);
-            }
+        }
+        //on select venue
+        $('#form_model_update [name="venue_id"]').on('change', function(ev) {
+            onVenueChange(true);
         });
         //funcion load modal by id
         function loadModal(data) {
@@ -345,6 +350,7 @@ var TableDatatablesManaged = function () {
             $('#modal_model_update_title').html('Edit Show');
             //fill out defaults
             $('#form_model_update [name="venue_id"]').val(data.show.venue_id);
+            onVenueChange(false);
             $('#form_model_show_passwords input[name="show_id"]:hidden').val(data.show.id).trigger('change');
             $('#form_model_show_tickets input[name="show_id"]:hidden').val(data.show.id).trigger('change');
             $('#form_model_show_times input[name="show_id"]:hidden').val(data.show.id).trigger('change');
@@ -359,14 +365,22 @@ var TableDatatablesManaged = function () {
                 if(key=='on_sale' || key=='amex_only_start_date' || key=='amex_only_end_date')
                     if(data.show[key]=='0000-00-00 00:00:00')
                         data.show[key] = '';
-                //fill out
-                var e = $('#form_model_update [name="'+key+'"]');
-                if(e.is('img'))
-                    e.attr('src',data.show[key]);
-                else if(e.is('input:checkbox'))
-                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
+                else if(key=='stage_id')
+                {
+                    $('#form_model_update select[name="stage_id"] option').prop('selected',false);
+                    $('#form_model_update select[name="stage_id"]').val(data.show.stage_id);
+                }
                 else
-                    e.val(data.show[key]);
+                {
+                    //fill out
+                    var e = $('#form_model_update [name="'+key+'"]');
+                    if(e.is('img'))
+                        e.attr('src',data.show[key]);
+                    else if(e.is('input:checkbox'))
+                        $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
+                    else
+                        e.val(data.show[key]);
+                }
             }
             $('#form_model_update [name="description"]').summernote({height:150});
             //fill out checking ticket 
