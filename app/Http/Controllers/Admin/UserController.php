@@ -107,6 +107,8 @@ class UserController extends Controller{
                 $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
+                    if(User::where('email','=',$input['email'])->where('id','!=',$input['id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the user.<br>That email is already in the system.','errors'=>'email'];
                     $user = User::find($input['id']);
                     $user->updated = $current;
                     $location = $user->location;

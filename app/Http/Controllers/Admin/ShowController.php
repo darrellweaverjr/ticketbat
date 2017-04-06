@@ -305,6 +305,8 @@ class ShowController extends Controller{
                 $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
+                    if(Show::where('slug','=',$input['slug'])->where('id','!=',$input['id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the show.<br>That slug is already in the system.','errors'=>'slug'];
                     $show = Show::find($input['id']);
                     $show->updated = $current;
                     if(preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
@@ -312,6 +314,8 @@ class ShowController extends Controller{
                 }                    
                 else
                 {                    
+                    if(Show::where('slug','=',$input['slug'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the show.<br>That slug is already in the system.','errors'=>'slug'];
                     $show = new Show;
                     $show->audit_user_id = Auth::user()->id;
                     $show->created = $current;

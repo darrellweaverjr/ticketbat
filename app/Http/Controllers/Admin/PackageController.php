@@ -69,6 +69,8 @@ class PackageController extends Controller{
                 $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
+                    if(Package::where('title','=',$input['title'])->where('id','!=',$input['id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the package.<br>That title is already in the system.','errors'=>'title'];
                     $package = Package::find($input['id']);
                     $package->updated = $current;
                 }                    

@@ -96,6 +96,8 @@ class AclController extends Controller{
                 $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
+                    if(Permission::where('code','=',$input['code'])->where('id','!=',$input['id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the acls.<br>That code is already in the system.','errors'=>'title'];
                     $permission = Permission::find($input['id']);
                     $permission->updated = $current;
                 }                    

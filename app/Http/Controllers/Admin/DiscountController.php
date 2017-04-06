@@ -124,6 +124,8 @@ class DiscountController extends Controller{
                 $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
+                    if(Discount::where('code','=',$input['code'])->where('id','!=',$input['id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the discount.<br>That code is already in the system.','errors'=>'code'];
                     $discount = Discount::find($input['id']);
                     $discount->updated = $current;
                 }                    

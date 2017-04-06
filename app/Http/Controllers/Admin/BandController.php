@@ -99,12 +99,16 @@ class BandController extends Controller{
             {
                 if(isset($input['id']) && $input['id'])
                 {
+                    if(Band::where('name','=',$input['name'])->where('id','!=',$input['id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the band.<br>That name is already in the system.','errors'=>'name'];
                     $band = Band::find($input['id']);
                     if(preg_match('/media\/preview/',$input['image_url'])) 
                         $band->delete_image_file();
                 }                    
                 else
                 {                    
+                    if(Band::where('name','=',$input['name'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the band.<br>That name is already in the system.','errors'=>'name'];
                     $band = new Band;
                 }
                 //save band

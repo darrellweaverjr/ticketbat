@@ -196,6 +196,8 @@ class VenueController extends Controller{
                 $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
+                    if(Venue::where('slug','=',$input['slug'])->where('id','!=',$input['id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the venue.<br>That slug is already in the system.','errors'=>'slug'];
                     $venue = Venue::find($input['id']);
                     $venue->updated = $current;
                     $location = $venue->location;
@@ -203,6 +205,8 @@ class VenueController extends Controller{
                 }                    
                 else
                 {                    
+                    if(Venue::where('slug','=',$input['slug'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the venue.<br>That slug is already in the system.','errors'=>'slug'];
                     $venue = new Venue;
                     $venue->audit_user_id = Auth::user()->id;
                     $venue->created = $current;
