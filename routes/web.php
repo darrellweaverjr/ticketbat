@@ -134,6 +134,9 @@ Route::group(['prefix' => 'command','middleware' => 'auth'], function () {
     Route::get('ReportFinancial', function () {
         Artisan::call('Report:financial',['weeks'=>0]);
     })->middleware('permissions:COMMANDS');
+    Route::get('ReportConsignment', function () {
+        Artisan::call('Report:consignment');
+    })->middleware('permissions:COMMANDS');
     //promotions
     Route::get('PromoAnnounced', function () {
         Artisan::call('Promo:announced',['days'=>7]);
