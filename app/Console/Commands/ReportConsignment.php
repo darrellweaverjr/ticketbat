@@ -58,12 +58,12 @@ class ReportConsignment extends Command
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
                                 })
-                                ->where('consignments.report','!=',1)->where('consignments.status','<>','Voided')
+                                ->where('consignments.report','!=',1)//->where('consignments.status','<>','Voided')
                                 ->whereDate('show_times.show_time', '=', $current)
                                 ->where(DB::raw('HOUR(show_times.show_time) - shows.cutoff_hours'),'<=',date('H'))
                                 ->groupBy('consignments.id')    
                                 ->orderBy('show_times.show_time')
-                                ->get();        
+                                ->get();    
             //create report for each consignment and send it
             foreach ($consignments as $c)
             {
@@ -78,12 +78,13 @@ class ReportConsignment extends Command
                 $c->seats = $seats;
                 //create csv
                 $format = 'csv';
-                $manifest_csv = View::make('command.report_consignments', compact('c','format'));
+                $manifest_csv = View::make('command.report_consignments', compact('c','format'));                
                 $csv_path = '/tmp/ReportConsignment_'.$current.'_'.$c->id.'_'.date('U').'.csv';
                 $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
                 //sending email
                 $email = new EmailSG(env('MAIL_REPORT_FROM'),$c->manifest_emails,'Consignment Report #'.$c->id.' - '.$c->show_name.' @ '.date('m/d/Y g:ia',strtotime($c->show_time)));
                 $email->cc(env('MAIL_REPORT_CC'));
+                $email->text('Report Consignment sent at: '.date('m/d/Y g:ia'));
                 $email->category('Consignments');
                 $email->attachment([$csv_path]);
                 if($email->send())
