@@ -58,7 +58,7 @@ class ReportConsignment extends Command
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
                                 })
-                                ->where('consignments.report','!=',1)//->where('consignments.status','<>','Voided')
+                                ->where('consignments.report','!=',1)->where('consignments.status','<>','Voided')
                                 ->whereDate('show_times.show_time', '=', $current)
                                 ->where(DB::raw('HOUR(show_times.show_time) - shows.cutoff_hours'),'<=',date('H'))
                                 ->groupBy('consignments.id')    
