@@ -655,7 +655,7 @@ var FormValidation = function () {
                     retail_price: {
                         required: true,
                         number: true,
-                        range: [0.01, 99999.99]
+                        range: [0, 99999.99]
                     },
                     processing_fee: {
                         required: true,
