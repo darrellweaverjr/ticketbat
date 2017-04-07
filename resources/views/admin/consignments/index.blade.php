@@ -595,6 +595,6 @@
 @section('scripts')     
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/bootstrap.touchspin.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="/js/admin/consignments/index.js" type="text/javascript"></script>
 @endsection

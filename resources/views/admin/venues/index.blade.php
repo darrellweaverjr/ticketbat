@@ -726,7 +726,7 @@
 @endsection
 
 @section('scripts') 
-<script src="{{config('app.theme')}}js/bootstrap.touchspin.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="/js/admin/venues/index.js" type="text/javascript"></script>
 @endsection
