@@ -43,6 +43,10 @@ class ReportConsignment extends Command
     {
         try {
             $current = date('Y-m-d');
+            //create progress bar
+            $progressbar = $this->output->createProgressBar(1);
+            //finish progress bar
+            $progressbar->finish(); 
             //get all consignments with cuttoff hours for today, that the report is not sent
             $consignments = DB::table('consignments')
                                 ->join('users', 'users.id', '=' ,'consignments.seller_id')
@@ -63,34 +67,43 @@ class ReportConsignment extends Command
                                 ->where(DB::raw('HOUR(show_times.show_time) - shows.cutoff_hours'),'<=',date('H'))
                                 ->groupBy('consignments.id')    
                                 ->orderBy('show_times.show_time')
-                                ->get();    
+                                ->get();  
+            //create progress bar                    
+            $progressbar = $this->output->createProgressBar(count($consignments));
             //create report for each consignment and send it
             foreach ($consignments as $c)
             {
-                //get all seats for the consignment
-                $seats = DB::table('seats')
-                                ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select(DB::raw('seats.id, tickets.ticket_type, seats.seat, 
-                                                  (CASE WHEN (seats.status = "Created") THEN "Cancelled" ELSE seats.status END) as status'))
-                                ->where('seats.consignment_id','=',$c->id)
-                                ->orderBy('tickets.ticket_type')->orderByRaw('CAST(seats.seat AS UNSIGNED)')
-                                ->distinct()->get()->toArray();
-                $c->seats = $seats;
-                //create csv
-                $format = 'csv';
-                $manifest_csv = View::make('command.report_consignments', compact('c','format'));                
-                $csv_path = '/tmp/ReportConsignment_'.$current.'_'.$c->id.'_'.date('U').'.csv';
-                $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
-                //sending email
-                $email = new EmailSG(env('MAIL_REPORT_FROM'),$c->manifest_emails,'Consignment Report #'.$c->id.' - '.$c->show_name.' @ '.date('m/d/Y g:ia',strtotime($c->show_time)));
-                $email->cc(env('MAIL_REPORT_CC'));
-                $email->text('Report Consignment sent at: '.date('m/d/Y g:ia'));
-                $email->category('Consignments');
-                $email->attachment([$csv_path]);
-                if($email->send())
-                    Consignment::where('id','=',$c->id)->update(['report'=>1]);
-                unlink($csv_path);                 
+                if(!empty($c->manifest_emails))
+                {
+                    //get all seats for the consignment
+                    $seats = DB::table('seats')
+                                    ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
+                                    ->select(DB::raw('seats.id, tickets.ticket_type, seats.seat, 
+                                                      (CASE WHEN (seats.status = "Created") THEN "Cancelled" ELSE seats.status END) as status'))
+                                    ->where('seats.consignment_id','=',$c->id)
+                                    ->orderBy('tickets.ticket_type')->orderByRaw('CAST(seats.seat AS UNSIGNED)')
+                                    ->distinct()->get()->toArray();
+                    $c->seats = $seats;
+                    //create csv
+                    $format = 'csv';
+                    $manifest_csv = View::make('command.report_consignments', compact('c','format'));                
+                    $csv_path = '/tmp/ReportConsignment_'.$current.'_'.$c->id.'_'.date('U').'.csv';
+                    $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
+                    //sending email
+                    $email = new EmailSG(env('MAIL_REPORT_FROM'),$c->manifest_emails,'Consignment Report #'.$c->id.' - '.$c->show_name.' @ '.date('m/d/Y g:ia',strtotime($c->show_time)));
+                    //$email->cc(env('MAIL_REPORT_CC'));
+                    $email->text('Report Consignment sent at: '.date('m/d/Y g:ia'));
+                    $email->category('Consignments');
+                    $email->attachment([$csv_path]);
+                    if($email->send())
+                        Consignment::where('id','=',$c->id)->update(['report'=>1]);
+                    unlink($csv_path);  
+                }
+                //advance progress bar
+                $progressbar->advance(); 
             }
+            //finish progress bar
+            $progressbar->finish();
             return true;
         } catch (Exception $ex) {
             throw new Exception('Error creating, saving and sending emails with ReportConsignment Command: '.$ex->getMessage());
