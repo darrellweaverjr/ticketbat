@@ -611,7 +611,7 @@ class ConsignmentController extends Controller{
      *
      * @void
      */
-    public function tickets($type,$ids)
+    public function tickets($type,$ids,$start=null,$end=null)
     {
         try {
             //check input values    
@@ -643,6 +643,9 @@ class ConsignmentController extends Controller{
                 foreach ($purchases_id as $id)
                 {
                     $t = Purchase::find($id)->get_receipt()['tickets'];
+                    //check for range to show
+                    if(!empty($start) && !empty($end) && is_numeric($start) && is_numeric($end))
+                        $t = array_slice($t, $start-1, $end-$start+1, true);
                     $tickets = array_merge($tickets,$t);
                 }
                 //create pdf tickets

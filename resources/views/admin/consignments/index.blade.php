@@ -73,7 +73,7 @@
                             <tr>
                                 <td width="2%">
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
-                                        <input type="radio" name="radios" id="{{$c->id}}" value="{{$c->id}}" />
+                                        <input type="radio" name="radios" value="{{$c->id}}" data-qty="{{$c->qty}}"/>
                                         <span></span>
                                     </label>
                                 </td>
@@ -556,6 +556,40 @@
         </div>
     </div>
     <!-- END SEARCH MODAL--> 
+    <!-- BEGIN TICKETS MODAL--> 
+    <div id="modal_model_tickets" class="modal fade" tabindex="1">
+        <div class="modal-dialog" style="width:470px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-red">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>View Tickets</center></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <p class="container-fluid">This option generates a PDF that allows you to view/print tickets.<br> 
+                                    You must select the range first.<br>Then, select the way you want to view/print the tickets.</p>
+                            </div>   
+                            <div id="range_options" class="form-group" style="margin-left:40%"></div>  
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="modal-footer">
+                                <div class="col-md-6 center-block">
+                                    <button type="button" id="btn_tickets_standard" class="btn sbold dark btn-outline btn-block">Standart Printer</button>
+                                </div>
+                                <div class="col-md-6 center-block">
+                                    <button type="button" id="btn_tickets_boca" class="btn sbold red btn-outline btn-block">BOCA Ticket Printer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END TICKETS MODAL--> 
 @endsection
 
 @section('scripts')     

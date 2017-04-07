@@ -535,26 +535,31 @@ var TableDatatablesManaged = function () {
         });  
         //function tickets
         $('#btn_model_tickets').on('click', function(ev) {
+            var qty = $("#tb_model [name=radios]:checked").attr("data-qty");
+            var c = qty;
+            var step = 100;
+            var range = '';
+            while(c > 0)
+            {
+                var start = qty-c+1;
+                var end = (c<step)? c : qty-c+step;
+                range += '<label class="mt-radio">'+start+' - '+end+'<input value="/'+start+'/'+end+'" name="range_tickets" type="radio"><span></span></label><br>';
+                (c < step)? c = 0 : c -= step;
+            }
+            $('#range_options').html(range);
+            $('#range_options input:radio[name="range_tickets"]:first').attr('checked',true);
+            $('#modal_model_tickets').modal('show');
+        }); 
+        $('#btn_tickets_standard').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
-            swal({
-                title: "View tickets",
-                text: "Select the way you want to view the tickets",
-                type: "info",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "BOCA Ticket Printer",
-                cancelButtonText: "Standard Printer",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-              function(isConfirm) {
-                if (isConfirm) {
-                    window.open('/admin/consignments/tickets/S/'+id);
-                } else {
-                    window.open('/admin/consignments/tickets/C/'+id);
-                }
-            });
-        });  
+            var range = $('#range_options input:radio[name="range_tickets"]:checked').val();
+            window.open('/admin/consignments/tickets/C/'+id+range);
+        }); 
+        $('#btn_tickets_boca').on('click', function(ev) {
+            var id = $("#tb_model [name=radios]:checked").val();
+            var range = $('#range_options input:radio[name="range_tickets"]:checked').val();
+            window.open('/admin/consignments/tickets/S/'+id+range);
+        }); 
         //function generate contract
         $('#btn_model_contract').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();

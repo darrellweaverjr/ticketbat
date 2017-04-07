@@ -97,7 +97,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'sliders', 'SliderController@index')->middleware('permissions:SLIDERS');
     //consignment tickets
     Route::get('consignments/contract/{id}', 'ConsignmentController@contract')->middleware('permissions:CONSIGNMENTS');
-    Route::get('consignments/tickets/{type}/{ids}', 'ConsignmentController@tickets')->middleware('permissions:CONSIGNMENTS');
+    Route::get('consignments/tickets/{type}/{ids}/{start?}/{end?}', 'ConsignmentController@tickets')->middleware('permissions:CONSIGNMENTS');
     Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view')->middleware('permissions:CONSIGNMENTS');
     Route::post('consignments/save', 'ConsignmentController@save')->middleware('permissions:CONSIGNMENTS');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index')->middleware('permissions:CONSIGNMENTS');
