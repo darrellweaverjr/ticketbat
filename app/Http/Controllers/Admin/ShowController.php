@@ -775,7 +775,7 @@ class ShowController extends Controller{
                 if($input['action']=='cc_show_times')
                 {
                     $showtimes = ShowTime::where('show_id',$input['show_id'])
-                                    ->where('is_active','>',0)->whereDate('show_time','>',$current)
+                                    ->where('is_active','>',0)->where('show_time','>',$current)
                                     ->orderBy('show_time','asc')->get(['id','show_time']);
                     return ['success'=>true,'showtimes'=>$showtimes];
                 }
