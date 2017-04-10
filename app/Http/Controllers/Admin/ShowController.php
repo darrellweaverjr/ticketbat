@@ -790,6 +790,7 @@ class ShowController extends Controller{
                     $showtime = ShowTime::where('id',$input['show_time_id'])->first();
                     if($showtime)
                     {
+                        $date_from = $showtime->show_time;
                         $purchases = Purchase::where('show_time_id',$showtime->id)->get();
                         $showtime_to = ShowTime::where('show_time',$input['show_time_to'])->where('show_id',$input['show_id'])->first();
                         if(!$showtime_to)
@@ -813,7 +814,7 @@ class ShowController extends Controller{
                             foreach ($purchases as $p)
                             {
                                 $receipt = $p->get_receipt();
-                                Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $input['show_time_to']);
+                                Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $date_from);
                             }
                         }
                         return ['success'=>true,'id'=>$input['show_time_id'],'showtime'=>$showtime_to];
