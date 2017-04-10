@@ -507,17 +507,17 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_showtimes">
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_show_time_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_show_time_add" class="btn sbold bg-green">Add 
                                                 <i class="fa fa-plus"></i>
                                             </button>
-                                            <button type="button" id="btn_model_show_time_edit" class="btn sbold bg-yellow"> Toggle 
+                                            <button type="button" id="btn_model_show_time_edit" class="btn sbold bg-yellow">Toggle 
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red"> Remove 
+                                            <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red">Remove 
                                                 <i class="fa fa-remove"></i>
                                             </button>
                                             @if (Auth::user()->user_type_id == 1)
-                                            <button type="button" id="btn_model_show_time_change" class="btn sbold bg-purple"> Change/Cancel 
+                                            <button type="button" id="btn_model_show_time_change" class="btn sbold bg-purple">Move 
                                                 <i class="fa fa-recycle"></i>
                                             </button>
                                             @endif
@@ -1126,16 +1126,16 @@
         </div>
     </div>
     <!-- END ADD/REMOVE SHOWTIMES MODAL--> 
-    <!-- BEGIN CANCEL SHOWTIMES MODAL--> 
-    <div id="modal_model_show_times_change" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+    <!-- BEGIN MOVE SHOWTIMES MODAL--> 
+    <div id="modal_model_show_times_move" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
-                <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Change/Cancel Show Time</center></h4>
+                <div class="modal-header alert-block bg-purple">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Move Event</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" id="form_model_show_times_change">
+                    <form method="post" id="form_model_show_times_move">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
@@ -1149,23 +1149,12 @@
                                     </div>
                                 </div> 
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Action
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" name="action">
-                                            <option value="change">Change Show Time Date</option>
-                                            <option value="cancel">Move dependences and cancel event</option>
-                                        </select>
-                                    </div> 
-                                </div><br><br><br><hr>
-                                <div class="form-group" id="subform_show_time_change">
-                                    <label class="control-label col-md-3">New Date
+                                    <label class="control-label col-md-3">Move to
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-9">
                                         <div id="show_time_to" class="input-group date form_datetime dtpicker">
-                                            <input size="16" readonly="" class="form-control" type="text" name="show_time_to" value="{{date('Y-m-d H:i')}}">
+                                            <input size="16" readonly="" class="form-control" type="text" name="show_time_to" value="{{date('Y-m-d 00:00')}}">
                                             <span class="input-group-btn">
                                                 <button class="btn default date-set" type="button">
                                                     <i class="fa fa-calendar"></i>
@@ -1173,25 +1162,12 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group" id="subform_show_time_cancel">
-                                    <label class="control-label col-md-3">Move to
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" name="show_time_id_to">
-                                        </select>
-                                    </div>
                                     <label class="control-label col-md-3">Email</label>
                                     <div class="col-md-9 show-error">
-                                        <input type="hidden" name="send_email" value="0"/>
                                         <input type="checkbox" class="make-switch block" name="send_email" data-size="small" value="1" data-on-text="Email clients" data-off-text="Don't email clients" data-on-color="primary" data-off-color="danger">
                                     </div>
-                                    <label class="control-label col-md-3">Next status</label>
-                                    <div class="col-md-9 show-error">
-                                        <input type="hidden" name="status" value="0"/>
-                                        <input type="checkbox" class="make-switch block" name="status" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
-                                    </div><br><br><br><hr>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-3">Dependences</label>
                                     <div class="col-md-9 table-responsive" style="max-height:300px;overflow-y: auto;">
                                         <table class="table table-striped table-hover table-bordered" >
@@ -1212,8 +1188,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_change').trigger('reset')">Cancel</button>
-                                    <button type="button" id="submit_model_show_times_change" class="btn sbold grey-salsa">Save</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_move').trigger('reset')">Cancel</button>
+                                    <button type="button" id="submit_model_show_times_move" class="btn sbold purple">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -1223,7 +1199,7 @@
             </div>
         </div>
     </div>
-    <!-- END CANCEL SHOWTIMES MODAL--> 
+    <!-- END MOVE SHOWTIMES MODAL--> 
     <!-- BEGIN ADD/EDIT CONTRACTS MODAL--> 
     <div id="modal_model_show_contracts" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">

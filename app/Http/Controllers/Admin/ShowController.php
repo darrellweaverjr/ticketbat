@@ -13,6 +13,7 @@ use App\Http\Models\Image;
 use App\Http\Models\Deal;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Consignment;
+use App\Http\Models\Transaction;
 use App\Http\Models\Purchase;
 use App\Http\Models\ShowContract;
 use App\Http\Models\Banner;
@@ -769,7 +770,7 @@ class ShowController extends Controller{
             $input = Input::all();                  
             $current = date('Y-m-d H:i:s');
             //get events for change/cancel
-            if(isset($input) && isset($input['action']) && in_array($input['action'],['cc_show_times','cc_show_time_info','change','cancel']))
+            if(isset($input) && isset($input['action']) && in_array($input['action'],['cc_show_times','cc_show_time_info','change','move']))
             {
                 if($input['action']=='cc_show_times')
                 {
@@ -784,46 +785,38 @@ class ShowController extends Controller{
                     $consignments = Consignment::where('show_time_id',$input['show_time_id'])->get(['id','created']);
                     return ['success'=>true,'purchases'=>$purchases,'consignments'=>$consignments];
                 }
-                else if($input['action']=='change')
+                else if($input['action']=='move')
                 {
                     $showtime = ShowTime::where('id',$input['show_time_id'])->first();
                     if($showtime)
                     {
-                        $showtime->show_time = $input['show_time_to'];
-                        $showtime->save();
-                        return ['success'=>true,'showtime'=>$showtime];
-                    }
-                    return ['success'=>false,'msg'=>'There was an error.<br>That event not longer exists!'];
-                }
-                else if($input['action']=='cancel')
-                {
-                    $showtime = ShowTime::where('id',$input['show_time_id'])->first();
-                    if($showtime)
-                    {
-                        $purchases=null;
-                        //get purchases id to edit
-                        if($input['send_email'] == 1)
-                            $purchases = Purchase::where('show_time_id',$input['show_time_id'])->get(['id']);
-                        //update dependences
-                        Purchase::where('show_time_id',$input['show_time_id'])->update(['show_time_id'=>$input['show_time_id_to']]);
-                        Consignment::where('show_time_id',$input['show_time_id'])->update(['show_time_id'=>$input['show_time_id_to']]);
-                        //update showtime
-                        $showtime->is_active = $input['status'];
-                        $showtime->save();
+                        $purchases = Purchase::where('show_time_id',$showtime->id)->get();
+                        $showtime_to = ShowTime::where('show_time',$input['show_time_to'])->where('show_id',$input['show_id'])->first();
+                        if(!$showtime_to)
+                        {
+                            $showtime->show_time = $input['show_time_to'];
+                            $showtime->save();
+                            $showtime_to = $showtime;
+                        }
+                        else
+                        {
+                            //update dependences
+                            Transaction::where('show_time_id',$showtime->id)->update(['show_time_id'=>$showtime_to->id]);
+                            Purchase::where('show_time_id',$showtime->id)->update(['show_time_id'=>$showtime_to->id]);
+                            Consignment::where('show_time_id',$showtime->id)->update(['show_time_id'=>$showtime_to->id]);
+                            //remove old showtime
+                            $showtime->delete();
+                        }
                         //send email after edit everything
-                        if($input['send_email'] == 1 && $purchases)
+                        if($input['send_email'] == 1 && $purchases && count($purchases))
                         {
                             foreach ($purchases as $p)
                             {
-                                $purchase = Purchase::find($p->id);
-                                if($purchase)
-                                {
-                                    $receipt = $purchase->get_receipt();
-                                    Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $showtime->show_time);
-                                }
+                                $receipt = $p->get_receipt();
+                                Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $input['show_time_to']);
                             }
                         }
-                        return ['success'=>true,'showtime'=>$showtime];
+                        return ['success'=>true,'id'=>$input['show_time_id'],'showtime'=>$showtime_to];
                     }
                     return ['success'=>false,'msg'=>'There was an error.<br>That event not longer exists!'];
                 }

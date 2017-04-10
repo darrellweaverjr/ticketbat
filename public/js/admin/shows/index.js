@@ -1597,24 +1597,10 @@ var TableDatatablesManaged = function () {
             minuteStep: 15,
             defaultDate:'now'
         });
-        //type action on change
-        $('#form_model_show_times_change [name="action"]').on('change', function () {
-            if($(this).val() == 'change')
-            {
-                $('#subform_show_time_change').css('display','block');
-                $('#subform_show_time_cancel').css('display','none');
-            }
-            else
-            {
-                $('#subform_show_time_change').css('display','none');
-                $('#subform_show_time_cancel').css('display','block');
-            }
-        });
-        //change/cancel show modal load shotimes
+        //move show modal load shotimes
         $('#btn_model_show_time_change').on('click', function(ev) {
             $('#tb_show_times_dependences').empty();
-            $('#form_model_show_times_change').trigger('reset');
-            $('#form_model_show_times_change [name="action"]').val('change').trigger('change');
+            $('#form_model_show_times_move').trigger('reset');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -1623,14 +1609,12 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#form_model_show_times_change select[name="show_time_id"]').html('<option selected disabled value=""></option>'); 
-                        $('#form_model_show_times_change select[name="show_time_id_to"]').html('<option selected disabled value=""></option>'); 
+                        $('#form_model_show_times_move select[name="show_time_id"]').html('<option selected disabled value=""></option>'); 
                         $.each(data.showtimes,function(k, s) {
                             var date = moment(s.show_time);
-                            $('#form_model_show_times_change select[name="show_time_id"]').append('<option value="'+s.id+'">'+date.format('MM/DD/YYYY h:mma')+'</option>');   
-                            $('#form_model_show_times_change select[name="show_time_id_to"]').append('<option value="'+s.id+'">'+date.format('MM/DD/YYYY h:mma')+'</option>');   
+                            $('#form_model_show_times_move select[name="show_time_id"]').append('<option value="'+s.id+'">'+date.format('MM/DD/YYYY h:mma')+'</option>'); 
                         });
-                        $('#modal_model_show_times_change').modal('show');
+                        $('#modal_model_show_times_move').modal('show');
                     }
                     else
                     {
@@ -1659,13 +1643,10 @@ var TableDatatablesManaged = function () {
             }); 
         });
         //on select showtimes date change
-        $('#form_model_show_times_change select[name="show_time_id"]').on('change', function(ev) {
+        $('#form_model_show_times_move select[name="show_time_id"]').on('change', function(ev) {
             var show_time_id = $(this).val();
             if(show_time_id)
             {
-                $('#form_model_show_times_change select[name="show_time_id_to"]').val('');
-                $('#form_model_show_times_change select[name="show_time_id_to"] option').css('display','block');
-                $('#form_model_show_times_change select[name="show_time_id_to"] option[value="'+show_time_id+'"]').css('display','none');
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -1685,7 +1666,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                         else{
-                            $('#modal_model_show_times_change').modal('hide');
+                            $('#modal_model_show_times_move').modal('hide');
 			    $('#modal_model_update').modal('hide');						
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
@@ -1694,12 +1675,12 @@ var TableDatatablesManaged = function () {
                                 type: "error"
                             },function(){
                                 $('#modal_model_update').modal('show');
-                                $('#modal_model_show_times_change').modal('show');
+                                $('#modal_model_show_times_move').modal('show');
                             });
                         }
                     },
                     error: function(){
-                        $('#modal_model_show_times_change').modal('hide');
+                        $('#modal_model_show_times_move').modal('hide');
 			$('#modal_model_update').modal('hide');	   	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
@@ -1708,14 +1689,14 @@ var TableDatatablesManaged = function () {
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
-                            $('#modal_model_show_times_change').modal('show');
+                            $('#modal_model_show_times_move').modal('show');
                         });
                     }
                 }); 
             }
             else 
             {
-                $('#modal_model_show_times_change').modal('hide');
+                $('#modal_model_show_times_move').modal('hide');
                 $('#modal_model_update').modal('hide');	   	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
@@ -1724,76 +1705,71 @@ var TableDatatablesManaged = function () {
                     type: "error"
                 },function(){
                     $('#modal_model_update').modal('show');
-                    $('#modal_model_show_times_change').modal('show');
+                    $('#modal_model_show_times_move').modal('show');
                 });
             }
         });
-        //function submit show_times 
-        $('#submit_model_show_times_change').on('click', function(ev) {
-            var show_time_id = $('#form_model_show_times_change select[name="show_time_id"]').val();
-            var show_time_id_to = $('#form_model_show_times_change select[name="show_time_id_to"]').val();
-            var action = $('#form_model_show_times_change select[name="action"]').val();
-            if((show_time_id && show_time_id!='' && action=='change') ||
-                    (show_time_id && show_time_id!='' && action=='cancel' && show_time_id_to!='') )
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/showtimes', 
-                    data: $('#form_model_show_times_change').serializeArray(), 
-                    success: function(data) {
-                        if(data.success) 
+        //function submit move show_times 
+        $('#submit_model_show_times_move').on('click', function(ev) {
+            $('#modal_model_show_times_move').modal('hide');
+            $('#modal_model_update').modal('hide');	
+            swal({
+                title: "Moving event",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            var show_time_id = $('#form_model_show_times_move select[name="show_time_id"]').val();
+            var show_time_to = $('#form_model_show_times_move input[name="show_time_to"]').val();
+            var show_id = $('#modal_model_update [name="id"]:hidden').val();
+            var send_email = ($('#form_model_show_times_move .make-switch:checkbox[name="send_email"]').bootstrapSwitch('state'))? 1 : 0;
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/shows/showtimes', 
+                data: {action:'move',show_time_id:show_time_id,show_time_to:show_time_to,show_id:show_id,send_email:send_email},
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#modal_model_update').modal('show');
+                        if(data.id && data.showtime)
                         {
-                            if(data.showtime)
-                            {
-                                calendarShowTimes.fullCalendar('removeEvents',data.showtime.id);
-                                fn_show_times(data.showtime); 
-                            }
-                            $('#modal_model_show_times_change').modal('hide');
+                            calendarShowTimes.fullCalendar('removeEvents',data.id);
+                            fn_show_times(data.showtime); 
                         }
-                        else{
-			    $('#modal_model_show_times_change').modal('hide');
-                            $('#modal_model_update').modal('hide');						
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            },function(){
-                                $('#modal_model_update').modal('show');
-                                $('#modal_model_show_times_change').modal('show');
-                            });
-                        }
-                    },
-                    error: function(){
-                        $('#modal_model_show_times_change').modal('hide');
-			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:green;'>Saved!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                    }
+                    else{					
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the showtime's information!<br>The request could not be sent to the server.",
+                            text: data.msg,
                             html: true,
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
-                            $('#modal_model_show_times_change').modal('show');
+                            $('#modal_model_show_times_move').modal('show');
                         });
                     }
-                }); 
-            }
-            else
-            {
-                $('#modal_model_show_times_change').modal('hide');
-                $('#modal_model_update').modal('hide');	   	
-                swal({
-                    title: "<span style='color:red;'>Error!</span>",
-                    text: "You have fill out correctly the form",
-                    html: true,
-                    type: "error"
-                },function(){
-                    $('#modal_model_update').modal('show');
-                    $('#modal_model_show_times_change').modal('show');
-                });
-            }    
+                },
+                error: function(){   	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to move the showtime!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                        $('#modal_model_show_times_move').modal('show');
+                    });
+                }
+            }); 
         });
         //function submit show_times         
         $('#submit_model_show_times').on('click', function(ev) {             
