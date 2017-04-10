@@ -155,7 +155,7 @@
     <body>
         <div class="container">
             <div class="header">
-                <img src="/public_html/public/img/newsletter/logo.jpg" alt="Ticket Bat">
+                <img src="https://ticketbat.com/img/newsletter/logo.jpg" alt="Ticket Bat">
             </div>
             <div class="tb-title">
                 Your Ticketbat purchase for <span class="tb-highlight-color">{{$purchase['show_name']}}</span> on <span class="tb-highlight-color">{{date('m/d/Y g:ia',strtotime($purchase['show_time']))}}</span> is confirmed. Have a great time!
