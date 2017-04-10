@@ -73,7 +73,7 @@ class ReportConsignment extends Command
             //create report for each consignment and send it
             foreach ($consignments as $c)
             {
-                if(!empty($c->manifest_emails))
+                if(!empty($c->emails))
                 {
                     //get all seats for the consignment
                     $seats = DB::table('seats')
@@ -90,8 +90,8 @@ class ReportConsignment extends Command
                     $csv_path = '/tmp/ReportConsignment_'.$current.'_'.$c->id.'_'.date('U').'.csv';
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
                     //sending email
-                    $email = new EmailSG(env('MAIL_REPORT_FROM'),$c->manifest_emails,'Consignment Report #'.$c->id.' - '.$c->show_name.' @ '.date('m/d/Y g:ia',strtotime($c->show_time)));
-                    //$email->cc(env('MAIL_REPORT_CC'));
+                    $email = new EmailSG(env('MAIL_REPORT_FROM'),$c->emails,'Consignment Report #'.$c->id.' - '.$c->show_name.' @ '.date('m/d/Y g:ia',strtotime($c->show_time)));
+                    $email->cc(env('MAIL_REPORT_CC'));
                     $email->text('Report Consignment sent at: '.date('m/d/Y g:ia'));
                     $email->category('Consignments');
                     $email->attachment([$csv_path]);
