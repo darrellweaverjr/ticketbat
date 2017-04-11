@@ -446,9 +446,9 @@
                                         </div>
                                         <div class="row" style="padding:0 45px">
                                             <div class="form-group">
-                                                <label class="control-label">Code Reports:</label>
+                                                <label class="control-label">Conversion Code:</label>
                                                 <div class="show-error">
-                                                    <textarea name="code_report" class="form-control" placeholder="<script>Place here the script code for Google Conversion, Facebook, etc. For the Thank You Page</script>" rows="5"></textarea>
+                                                    <textarea name="conversion_code" class="form-control" placeholder="<script>Place here the Conversion Code. For the Thank You Page</script>" rows="5"></textarea>
                                                 </div>
                                             </div>
                                         </div>

@@ -124,7 +124,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.code_report',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
@@ -154,7 +154,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.code_report',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
                                         ->where(function($query)
@@ -185,7 +185,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })                                     
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.code_report',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
@@ -210,7 +210,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.code_report',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
                                         ->orderBy('shows.name')->groupBy('shows.id')
@@ -349,7 +349,7 @@ class ShowController extends Controller{
                 $show->manifest_emails = $input['manifest_emails'];
                 $show->daily_sales_emails = $input['daily_sales_emails'];
                 $show->financial_report_emails = $input['financial_report_emails'];
-                $show->code_report = (empty($input['code_report']))? null : $input['code_report'];
+                $show->conversion_code = (empty($input['conversion_code']))? null : $input['conversion_code'];
                 if(isset($input['amex_only_start_date']) && $input['amex_only_start_date']!='' && isset($input['amex_only_end_date']) && $input['amex_only_end_date']!=''
                         && isset($input['ticket_types']) && count($input['ticket_types']))
                 {
