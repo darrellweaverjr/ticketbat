@@ -444,6 +444,14 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row" style="padding:0 45px">
+                                            <div class="form-group">
+                                                <label class="control-label">Code Reports:</label>
+                                                <div class="show-error">
+                                                    <textarea name="code_report" class="form-control" placeholder="<script>Place here the script code for Google Conversion, Facebook, etc. For the Thank You Page</script>" rows="5"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_checking">
                                         <div class="row">
