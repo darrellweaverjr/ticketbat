@@ -102,8 +102,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('consignments/save', 'ConsignmentController@save')->middleware('permissions:CONSIGNMENTS');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index')->middleware('permissions:CONSIGNMENTS');
     //apps
-    Route::match(['get','post'], 'apps/deals', 'AppController@deals')->middleware('permissions:APPS');
-    Route::match(['get','post'], 'apps', 'AppController@index')->middleware('permissions:APPS');
+    //Route::match(['get','post'], 'apps', 'AppController@index')->middleware('permissions:APPS');
 });
 //ADMIN ROUTES FOR APP
 Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], function () {

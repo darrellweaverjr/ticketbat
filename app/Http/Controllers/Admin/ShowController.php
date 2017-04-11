@@ -10,7 +10,6 @@ use App\Http\Models\Category;
 use App\Http\Models\Venue;
 use App\Http\Models\Ticket;
 use App\Http\Models\Image;
-use App\Http\Models\Deal;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Consignment;
 use App\Http\Models\Transaction;
@@ -456,10 +455,6 @@ class ShowController extends Controller{
                         $tickets = Ticket::where('show_id',$show->id)->delete();
                         //banners
                         $banners = Banner::where('parent_id',$show->id)->where('belongto','show')->delete();
-                        //broker_rates
-                        $broker_rates = DB::table('broker_rates')->where('show_id',$show->id)->delete();
-                        //deals
-                        $deals = Deal::where('show_id',$show->id)->delete();
                         //discount_shows
                         $discount_shows = DB::table('discount_shows')->where('show_id',$show->id)->delete();
                         //merchandise(merchandise_photos)

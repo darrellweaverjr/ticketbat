@@ -284,22 +284,14 @@
                             </li>
                             @endif
                             @if(array_key_exists('APPS', Auth::user()->user_type->getACLs()))
-                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/apps')===false)) active @endif">
+                            <!--<li class="nav-item @if(!(strpos(url()->current(),'/admin/apps')===false)) active @endif">
                                 <a href="/admin/apps" class="nav-link nav-toggle">
                                     <i class="icon-calendar"></i>
                                     <span class="title">Apps</span>
                                     <span class="selected"></span>
                                     <span class="arrow open"></span>
                                 </a>
-                                <ul class="sub-menu">
-                                    <li class="nav-item active">
-                                        <a href="/admin/apps/deals" class="nav-link">
-                                            <i class="icon-bar-chart"></i>
-                                            <span class="title">Deals</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            </li>-->
                             @endif
                         </ul>
                         <!-- END SIDEBAR MENU -->
