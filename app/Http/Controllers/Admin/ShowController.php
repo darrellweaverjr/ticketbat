@@ -96,6 +96,7 @@ class ShowController extends Controller{
                 $stages = [];
                 $restrictions = [];
                 $ticket_types = [];
+                $ticket_types_classes = [];
                 $image_types = [];
                 $banner_types = [];
                 $video_types = [];
@@ -223,6 +224,7 @@ class ShowController extends Controller{
                     $stages = Stage::all('id','name','venue_id');
                     $restrictions = Util::getEnumValues('shows','restrictions');
                     $ticket_types = Util::getEnumValues('tickets','ticket_type');
+                    $ticket_types_classes = Util::getEnumValues('tickets','ticket_type_class');
                     $image_types = Util::getEnumValues('images','image_type');
                     $banner_types = Util::getEnumValues('banners','type');
                     $video_types = Util::getEnumValues('videos','video_type');
@@ -232,7 +234,7 @@ class ShowController extends Controller{
                     $packages = Package::all();
                 }
                 //return view
-                return view('admin.shows.index',compact('shows','categories','venues','stages','restrictions','ticket_types','image_types','banner_types','video_types','packages','venue','showtime','status','onlyerrors'));
+                return view('admin.shows.index',compact('shows','categories','venues','stages','restrictions','ticket_types','ticket_types_classes','image_types','banner_types','video_types','packages','venue','showtime','status','onlyerrors'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Shows Index: '.$ex->getMessage());
@@ -637,6 +639,7 @@ class ShowController extends Controller{
                 $ticket->show_id = $input['show_id'];
                 $ticket->package_id = $input['package_id'];
                 $ticket->ticket_type = $input['ticket_type'];
+                $ticket->ticket_type_class = $input['ticket_type_class'];
                 $ticket->retail_price = $input['retail_price'];
                 $ticket->processing_fee = $input['processing_fee'];
                 $ticket->percent_pf = $input['percent_pf'];

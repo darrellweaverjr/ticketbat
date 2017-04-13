@@ -133,10 +133,9 @@ class TicketTypeController extends Controller{
                     else
                     {
                         $ticket_types[$input['ticket_type']] = $input['ticket_type'];
-                        $broker_rates = Util::setEnumValues('broker_rates','ticket_type',$ticket_types);
                         $tickets = Util::setEnumValues('tickets','ticket_type',$ticket_types);
                         //return
-                        if($broker_rates && $tickets)
+                        if($tickets)
                             return ['success'=>true,'msg'=>'Ticket Type saved successfully!'];
                         return ['success'=>false,'msg'=>'There was an error saving the ticket_type.'];
                     }

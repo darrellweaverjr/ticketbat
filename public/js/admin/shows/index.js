@@ -961,7 +961,8 @@ var TableDatatablesManaged = function () {
                             for(var key in data.ticket)
                             {
                                 //fill out
-                                $('#form_model_show_tickets [name="'+key+'"]').val(data.ticket[key]);
+                                if(key!='is_default' && key!='is_active')
+                                    $('#form_model_show_tickets [name="'+key+'"]').val(data.ticket[key]);
                             }
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_default"]').bootstrapSwitch('state', (data.ticket.is_default>0)? true : false, true);
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.ticket.is_active>0)? true : false, true);

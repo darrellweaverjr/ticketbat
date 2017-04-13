@@ -838,6 +838,16 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <label class="control-label col-md-5">Type Class
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-7 show-error">
+                                        <select class="form-control" name="ticket_type_class">
+                                            @foreach($ticket_types_classes as $index=>$tc)
+                                                <option value="{{$index}}">{{$tc}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <label class="control-label col-md-5">Package
                                         <span class="required"> * </span>
                                     </label>
