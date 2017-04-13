@@ -94,11 +94,15 @@ class Purchase extends Model
                             ->join('venues', 'venues.id', '=', 'shows.venue_id')
                             ->join('locations', 'locations.id', '=', 'venues.location_id')
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                            ->select('purchases.*', 'purchases.quantity AS qty', 'tickets.ticket_type AS ticket_type_type', 'show_times.time_alternative', 'show_times.show_time', 'discounts.code', 'packages.title', 'locations.lat', 'locations.lng', 
-                                    'shows.name AS show_name', 'shows.slug', 'shows.restrictions', 'shows.emails', 'shows.printed_tickets', 'shows.individual_emails AS s_individual_emails',
-                                    'shows.manifest_emails AS s_manifest_emails', 'shows.daily_sales_emails AS s_daily_sales_emails', 'shows.financial_report_emails AS s_financial_report_emails', 
-                                    'venues.name AS venue_name', 'venues.ticket_info', 'venues.daily_sales_emails AS v_daily_sales_emails', 'venues.financial_report_emails AS v_financial_report_emails', 
-                                    'venues.weekly_sales_emails AS v_weekly_sales_emails')
+                            ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
+                            ->select(DB::raw('purchases.*, purchases.quantity AS qty, tickets.ticket_type AS ticket_type_type, show_times.time_alternative, 
+                                    show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng, 
+                                    shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets, 
+                                    shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails, 
+                                    shows.daily_sales_emails AS s_daily_sales_emails, shows.financial_report_emails AS s_financial_report_emails, 
+                                    venues.name AS venue_name, venues.ticket_info, venues.daily_sales_emails AS v_daily_sales_emails, 
+                                    venues.financial_report_emails AS v_financial_report_emails, venues.weekly_sales_emails AS v_weekly_sales_emails, 
+                                    IF(ticket_number.id IS NULL, 0, 1) as section'))
                             ->where('purchases.id', '=', $this->id)
                             ->distinct()->first();
         //get customer info mix 
@@ -109,15 +113,15 @@ class Purchase extends Model
                             ->first();
         //get tickets 
         $tickets = [];
-        $ticket_numbers = DB::table('ticket_number')
+        //get all tickets by section
+        if($purchase->section)
+        {
+            $ticket_numbers = DB::table('ticket_number')
                             ->join('customers', 'customers.id', '=' ,'ticket_number.customers_id')
                             ->select('ticket_number.*', 'customers.first_name', 'customers.last_name', 'customers.email')
                             ->where('ticket_number.purchases_id', '=', $this->id)
                             ->orderBy('ticket_number.id')
                             ->get();
-        //if it has ticket number is the old way, without a seat by ticket
-        if($ticket_numbers->count())
-        {
             for ($i=1; $i<=$this->quantity; $i++)
             foreach($ticket_numbers as $tn)
                 if(in_array($i,explode(',',$tn->tickets)))
@@ -127,7 +131,7 @@ class Purchase extends Model
                     $tickets[] = array_merge($main_info,$extra_info);
                 }    
         }
-        //if it sells section/row/seat
+        //get all tickets by section/row/seat
         else
         {
             $seats = DB::table('seats')

@@ -106,12 +106,16 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 });
 //ADMIN ROUTES FOR APP
 Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], function () {
-    //apps config
-    Route::get('init', 'AppController@init');
-    Route::get('cities', 'AppController@cities');
-    Route::get('shows/{id?}/{venue_id?}', 'AppController@shows');
-    Route::get('venues', 'AppController@venues');
-    Route::get('showtime/{id}', 'AppController@showtime');
+    //apps config general
+    Route::get('init', 'GeneralController@init');
+    Route::get('shows/{id?}/{venue_id?}', 'GeneralController@shows');
+    Route::get('showtime/{id}', 'GeneralController@showtime');
+    
+    //apps config session
+    Route::get('purchases', 'SessionController@purchases');
+    Route::get('venues_check', 'SessionController@venues_to_check');
+    Route::get('events_check', 'SessionController@events_to_check');
+    Route::get('purchases_check', 'SessionController@purchases_to_check');
 });
 //ADMIN ROUTES FOR JSON FEED
 Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {
