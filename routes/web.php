@@ -112,10 +112,10 @@ Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], fu
     Route::get('showtime/{id}', 'GeneralController@showtime');
     
     //apps config session
-    Route::get('purchases', 'SessionController@purchases');
-    Route::get('venues_check', 'SessionController@venues_to_check');
-    Route::get('events_check', 'SessionController@events_to_check');
-    Route::get('purchases_check', 'SessionController@purchases_to_check');
+    Route::post('purchases', 'SessionController@purchases');
+    Route::post('venues_check', 'SessionController@venues_to_check');
+    Route::post('events_check', 'SessionController@events_to_check');
+    Route::post('purchases_check', 'SessionController@purchases_to_check');
 });
 //ADMIN ROUTES FOR JSON FEED
 Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {
