@@ -25,7 +25,7 @@ class GeneralController extends Controller{
             $init = ['cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1)];
             return Response::json($init,200,[],JSON_NUMERIC_CHECK);
         } catch (Exception $ex) {
-            return ['cities'=>[],'shows'=>[],'venues'=>[]];
+            return ['cities'=>[],'shows'=>[],'venues'=>[],'X_CSRF_TOKEN'=>csrf_field()];
         }
     }    
     /*
