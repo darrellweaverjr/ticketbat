@@ -916,9 +916,15 @@ var TableDatatablesManaged = function () {
         });
         //function with show_sweepstakes  *****************************************************************************************************   SHOW sweepstakes END
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS BEGIN
+        //on select ticket_type
+        $('#form_model_show_tickets [name="ticket_type"]').on('change', function(ev) {
+            var classX = $(this).find('option:selected').attr('data-class');
+            $('#form_model_show_tickets [name="ticket_type_class"]').val(classX);
+        });
         $('#btn_model_ticket_add').on('click', function(ev) {
             $('#form_model_show_tickets input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_show_tickets').trigger('reset');
+            $('#form_model_show_tickets [name="ticket_type"]').trigger('change');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',

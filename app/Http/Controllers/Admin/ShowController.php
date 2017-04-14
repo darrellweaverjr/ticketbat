@@ -223,7 +223,12 @@ class ShowController extends Controller{
                     $categories = Category::all();
                     $stages = Stage::all('id','name','venue_id');
                     $restrictions = Util::getEnumValues('shows','restrictions');
-                    $ticket_types = Util::getEnumValues('tickets','ticket_type');
+                    $ticket_types_aux = Util::getEnumValues('tickets','ticket_type');
+                    foreach ($ticket_types_aux as $tt)
+                    {
+                        $t = Ticket::where('ticket_type',$tt)->first();
+                        $ticket_types[] = ['type'=>$tt,'class'=>($t && $t->ticket_type_class)? $t->ticket_type_class : 'btn-primary'];
+                    }
                     $ticket_types_classes = Util::getEnumValues('tickets','ticket_type_class');
                     $image_types = Util::getEnumValues('images','image_type');
                     $banner_types = Util::getEnumValues('banners','type');

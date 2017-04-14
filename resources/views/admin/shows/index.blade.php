@@ -834,7 +834,7 @@
                                     <div class="col-md-7 show-error">
                                         <select class="form-control" name="ticket_type">
                                             @foreach($ticket_types as $index=>$tt)
-                                                <option value="{{$index}}">{{$tt}}</option>
+                                                <option data-class="{{$tt['class']}}" value="{{$tt['type']}}">{{$tt['type']}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -844,7 +844,7 @@
                                     <div class="col-md-7 show-error">
                                         <select class="form-control" name="ticket_type_class">
                                             @foreach($ticket_types_classes as $index=>$tc)
-                                                <option value="{{$index}}">{{$tc}}</option>
+                                                <option @if($index==$ticket_types[0]['class']) selected @endif value="{{$index}}">{{$tc}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -1267,7 +1267,7 @@
                                         <div class="col-md-7 show-error">
                                             <select class="form-control" name="ticket_type">
                                                 @foreach($ticket_types as $index=>$tt)
-                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                    <option value="{{$tt['type']}}">{{$tt['type']}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
