@@ -4,7 +4,6 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Input;
 use App\Http\Models\User;
 use App\Http\Models\Util;
@@ -33,12 +32,12 @@ class SessionController extends Controller{
                 $user = User::where('email',$info['email'])->where('password',$info['password'])->where('is_active','>',0)
                             ->get(['id','email','first_name','last_name','user_type_id']);
                 if($user) 
-                    return ['success'=>true, 'user'=>$user];  
-                return ['success'=>false, 'msg'=>'Credentials Invalid!'];
+                    return Util::json(['success'=>true,'user'=>$user]);
+                return Util::json(['success'=>false, 'msg'=>'Credentials Invalid!']);
             }
-            return ['success'=>false, 'msg'=>'You must enter a valid email and password!'];
+            return Util::json(['success'=>false, 'msg'=>'You must enter a valid email and password!']);
         } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }   
     
@@ -48,8 +47,8 @@ class SessionController extends Controller{
     public function purchases()
     {
         try {   
-            $info = Input::all();   $info['user_id']=3078;
-            if(!empty($info['user_id']) && is_numeric($info['user_id']))
+            $info = Input::all();   //$info['user_id']=3078;
+            if(!empty($info['user_id']))
             {
                 $purchases = DB::table('purchases')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
@@ -76,11 +75,11 @@ class SessionController extends Controller{
                             $p->tickets[] = Util::getQRcode($p->id,$p->user_id,$t,200);
                     }
                 }
-                return Response::json($purchases,200,[],JSON_NUMERIC_CHECK);
+                return Util::json(['success'=>true, 'purchases'=>$purchases]);
             }
-            return ['success'=>false, 'msg'=>'You must be logged to this option!'];
+            return Util::json(['success'=>false, 'msg'=>'You must be logged to this option!']);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }   
     
@@ -111,9 +110,9 @@ class SessionController extends Controller{
                             ->orderBy('purchases.created','DESC')
                             ->get();
             }
-            return Response::json($purchases,200,[],JSON_NUMERIC_CHECK);
+            return Util::json(['success'=>true, 'purchases'=>$purchases]);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }   
     /*
@@ -130,9 +129,9 @@ class SessionController extends Controller{
                 if($venues_check_ticket && $venues_check_ticket->venues_check_ticket)
                     $venues = explode(',',$venues_check_ticket->venues_check_ticket);
             }
-            return Response::json($venues,200,[],JSON_NUMERIC_CHECK);
+            return Util::json($venues,200);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }   
     
@@ -151,9 +150,9 @@ class SessionController extends Controller{
                                     ->whereDate('show_time','>=',date('Y-m-d H:i:s',strtotime(' - '.$this->check_tickets_hours_before.' hours')))
                                     ->get(['id','show_time','show_id']);
             }
-            return Response::json($events,200,[],JSON_NUMERIC_CHECK);
+            return Util::json(['success'=>false, 'events'=>$events]);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }   
     
@@ -165,10 +164,10 @@ class SessionController extends Controller{
         try {
             $info = Input::all();   
             if(!empty($info['purchase_id']) && is_numeric($info['purchase_id']) && !empty($info['qty']))
-                return $this->update_tickets($info['purchase_id'],null,$info['ticket']);
-            return ['success'=>false, 'msg'=>'You must send a valid request!'];
+                return Util::json($this->update_tickets($info['purchase_id'],null,$info['ticket']));
+            return Util::json(['success'=>false, 'msg'=>'You must send a valid request!']);
         } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }   
     
@@ -185,11 +184,11 @@ class SessionController extends Controller{
                 $purchase_id = ltrim(substr($info['code'],2,6),'0');
                 $user_id = ltrim(substr($info['code'],8,5),'0');
                 $ticket = substr($info['code'],13);
-                return $this->update_tickets($purchase_id,$user_id,$ticket);
+                return Util::json($this->update_tickets($purchase_id,$user_id,$ticket));
             }
-            return ['success'=>false, 'msg'=>'You must scan a valid code!'];
+            return Util::json(['success'=>false, 'msg'=>'You must scan a valid code!']);
         } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }   
     
@@ -288,7 +287,7 @@ class SessionController extends Controller{
                 }
                 //prepare message for successful text
                 if($user_id)
-                    return ['success'=>true, 'purchase'=>Response::json($purchase,200,[],JSON_NUMERIC_CHECK)];
+                    return ['success'=>true, 'purchase'=>$purchase];
                 return ['success'=>true];
             }
             return ['success'=>false, 'msg'=>'The system could not load the tickets for that purchase!'];

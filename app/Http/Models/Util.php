@@ -5,6 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Http\File;
 
 /**
@@ -222,6 +223,18 @@ class Util extends Model
             return '';
         } catch (Exception $ex) {
             return '';
+        }
+    }
+    
+    /**
+     * Generates a json response checking numbers
+     */
+    public static function json($response)
+    {
+        try { 
+            return Response::json($response,200,[],JSON_NUMERIC_CHECK);
+        } catch (Exception $ex) {
+            json_encode($response);
         }
     }
 }

@@ -4,9 +4,10 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
 use App\Http\Models\Image;
-use App\Http\Models\User;
+use App\Http\Models\Util;
 
 /**
  * Manage General options for the app
@@ -22,10 +23,9 @@ class GeneralController extends Controller{
     public function init()
     {
         try {
-            $init = ['cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1)];
-            return Response::json($init,200,[],JSON_NUMERIC_CHECK);
+            return Util::json(['success'=>true,'cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1),'x_token'=>csrf_field()]);
         } catch (Exception $ex) {
-            return ['cities'=>[],'shows'=>[],'venues'=>[],'X_CSRF_TOKEN'=>csrf_field()];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }    
     /*
@@ -44,9 +44,9 @@ class GeneralController extends Controller{
                         ->orderBy('locations.city')->groupBy('locations.city')
                         ->distinct()->get();
             if($raw) return $cities;
-            return Response::json($cities,200,[],JSON_NUMERIC_CHECK);
+            return Util::json(['success'=>true, 'cities'=>$cities]);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }
     
@@ -129,9 +129,9 @@ class GeneralController extends Controller{
                 if(!empty($s->url))
                     $s->url = Image::view_image($s->url);
             if($raw) return $shows;
-            return Response::json($shows,200,[],JSON_NUMERIC_CHECK);
+            return Util::json(['success'=>true, 'shows'=>$shows]);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }
     
@@ -156,9 +156,9 @@ class GeneralController extends Controller{
             foreach ($venues as $v)
                 $v->url = Image::view_image($v->url);
             if($raw) return $venues;
-            return Response::json($venues,200,[],JSON_NUMERIC_CHECK);
+            return Util::json(['success'=>true, 'venues'=>$venues]);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }
     
@@ -209,9 +209,30 @@ class GeneralController extends Controller{
                 }
                 $showtime[0]->types = array_values($types);  
             } 
-            return Response::json($showtime,200,[],JSON_NUMERIC_CHECK);
+            return Util::json(['success'=>true, 'showtime'=>$showtime]);
         } catch (Exception $ex) {
-            return [];
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+        }
+    } 
+    
+    /*
+     * send email for contact us
+     */
+    public function contact()
+    {
+        try {
+            $info = Input::all();
+            if(!empty($info['email']) && !empty($info['password']))
+            {
+                $user = User::where('email',$info['email'])->where('password',$info['password'])->where('is_active','>',0)
+                            ->get(['id','email','first_name','last_name','user_type_id']);
+                if($user) 
+                    return Util::json(['success'=>true, 'user'=>$user]);
+                return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
+            }
+            return Util::json(['success'=>false, 'msg'=>'You must enter a valid email and password!']);
+        } catch (Exception $ex) {
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }    
     
