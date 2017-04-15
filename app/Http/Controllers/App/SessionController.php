@@ -47,8 +47,8 @@ class SessionController extends Controller{
     public function purchases()
     {
         try {   
-            $info = Input::all();   //$info['user_id']=3078;
-            if(!empty($info['user_id']))
+            $info = Input::all();   
+            if(!empty($info['user_id']) && is_numeric($info['user_id']))
             {
                 $purchases = DB::table('purchases')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
