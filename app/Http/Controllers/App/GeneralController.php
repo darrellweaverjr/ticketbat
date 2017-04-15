@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
 use App\Http\Models\Image;
+use App\Http\Models\Contact;
 use App\Http\Models\Util;
+use App\Mail\EmailSG;
 
 /**
  * Manage General options for the app
@@ -221,15 +223,25 @@ class GeneralController extends Controller{
     {
         try {
             $info = Input::all();
-            if(!empty($info['email']) && !empty($info['password']))
+            if(!empty($info['name']) && !empty($info['email']) && !empty($info['phone']) 
+            && !empty($info['show_name']) && !empty($info['message']) && !empty($info['system_info']))
             {
-                $user = User::where('email',$info['email'])->where('password',$info['password'])->where('is_active','>',0)
-                            ->get(['id','email','first_name','last_name','user_type_id']);
-                if($user) 
-                    return Util::json(['success'=>true, 'user'=>$user]);
-                return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
+                //create entry on table
+                Contact::create(['name'=>$info['name'],'email'=>$info['email'],'phone'=>$info['phone'],
+                                 'show_name'=>$info['show_name'],'show_time'=>$info['show_time'],
+                                 'system_info'=>$info['system_info'],'message'=>$info['message']]);
+                //send email
+                $html = '<b>Customer: </b>'.$info['name'].'<br><b>Email: </b>'.$info['email'].'</b><b>Phone: </b>'.$info['phone'];
+                $html .= '<br><b>Show/Venue: </b>'.$info['show_name'].'<br><b>Date/Time: </b>'.$info['show_time'];
+                $html .= '<br><b>System Info: </b>'.$info['system_info'].'<br><b>Message: </b>'.$info['message'];
+                $email = new EmailSG(null,env('MAIL_APP_ADMIN'),'TicketBat App Contact');
+                $email->html($html);
+                $email->reply($info['email']);
+                if($email->send())
+                    return Util::json(['success'=>true]);
+                return Util::json(['success'=>false, 'msg'=>'There was an error sending the email. Please try later!']);
             }
-            return Util::json(['success'=>false, 'msg'=>'You must enter a valid email and password!']);
+            return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
