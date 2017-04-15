@@ -30,7 +30,7 @@ class SessionController extends Controller{
             if(!empty($info['email']) && !empty($info['password']))
             {
                 $user = User::where('email',$info['email'])->where('password',$info['password'])->where('is_active','>',0)
-                            ->get(['id','email','first_name','last_name','user_type_id']);
+                            ->first(['id','email','first_name','last_name','user_type_id']);
                 if($user) 
                     return Util::json(['success'=>true,'user'=>$user]);
                 return Util::json(['success'=>false, 'msg'=>'Credentials Invalid!']);
