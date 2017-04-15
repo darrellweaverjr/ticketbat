@@ -177,11 +177,10 @@ class GeneralController extends Controller{
                                          show_times.show_time, show_times.time_alternative, show_times.show_id,
                                          CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
-                        ->where('show_times.id','=',$id)
-                        ->distinct()->get();
-            if(count($showtime))
+                        ->where('show_times.id','=',$id)->first();
+            if($showtime)
             {
-                $showtime[0]->url = Image::view_image($showtime[0]->url);
+                $showtime->url = Image::view_image($showtime->url);
                 $types = [];
                 $tickets = DB::table('tickets')
                             ->join('shows', 'tickets.show_id', '=' ,'shows.id')
@@ -192,7 +191,7 @@ class GeneralController extends Controller{
                                              (CASE WHEN (packages.title != "None") THEN packages.title ELSE "" END) AS title,
                                              (CASE WHEN (packages.title != "None") THEN packages.description ELSE "" END) AS description,
                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE 100 END) AS max_available'))
-                            ->where('tickets.is_active','=',1)->where('shows.id','=',$showtime[0]->show_id)
+                            ->where('tickets.is_active','=',1)->where('shows.id','=',$showtime->show_id)
                             ->whereNotIn('tickets.id', function($query) use ($id)
                             {
                                 $query->select(DB::raw('ticket_id'))
@@ -207,7 +206,7 @@ class GeneralController extends Controller{
                     else
                         $types[$t->ticket_type] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'default'=>$t->is_default,'tickets'=>[$t]];
                 }
-                $showtime[0]->types = array_values($types);  
+                $showtime->types = array_values($types);  
             } 
             return Util::json(['success'=>true, 'showtime'=>$showtime]);
         } catch (Exception $ex) {
