@@ -226,16 +226,21 @@ class GeneralController extends Controller{
             && !empty($info['show_name']) && !empty($info['message']) && !empty($info['system_info']))
             {
                 //create entry on table
-                Contact::create(['name'=>$info['name'],'email'=>$info['email'],'phone'=>$info['phone'],
-                                 'show_name'=>$info['show_name'],'show_time'=>$info['show_time'],
-                                 'system_info'=>$info['system_info'],'message'=>$info['message']]);
+                $contact = new Contact;
+                $contact->name = $info['name'];
+                $contact->email = $info['email'];
+                $contact->phone = $info['phone'];
+                $contact->show_name = $info['show_name'];
+                $contact->system_info = $info['system_info'];
+                $contact->message = $info['message'];
+                $contact->save();
                 //send email
-                $html = '<b>Customer: </b>'.$info['name'].'<br><b>Email: </b>'.$info['email'].'</b><b>Phone: </b>'.$info['phone'];
-                $html .= '<br><b>Show/Venue: </b>'.$info['show_name'].'<br><b>Date/Time: </b>'.$info['show_time'];
+                $html = '<b>Customer: </b>'.$info['name'].'<br><b>Email: </b>'.$info['email'].'</b><br><b>Phone: </b>'.$info['phone'];
+                $html .= '<br><b>Show/Venue: </b>'.$info['show_name'];
                 $html .= '<br><b>System Info: </b>'.$info['system_info'].'<br><b>Message: </b>'.$info['message'];
-                $email = new EmailSG(null,env('MAIL_APP_ADMIN'),'TicketBat App Contact');
+                $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App Contact');
                 $email->html($html);
-                $email->reply($info['email']);
+                //$email->reply($info['email']);
                 if($email->send())
                     return Util::json(['success'=>true]);
                 return Util::json(['success'=>false, 'msg'=>'There was an error sending the email. Please try later!']);
