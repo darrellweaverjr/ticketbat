@@ -82,9 +82,6 @@ class SessionController extends Controller{
     {
         try {   
             $info = Input::all();   
-            $a_token = Request::header('Authorization');
-            $a_token = explode('.',$a_token);
-            $info['user_id'] = $a_token[0];
             if(!empty($info['user_id']) && is_numeric($info['user_id']))
             {
                 $purchases = DB::table('purchases')
