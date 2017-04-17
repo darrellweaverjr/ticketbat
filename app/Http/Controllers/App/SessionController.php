@@ -249,7 +249,9 @@ class SessionController extends Controller{
             if($purchase)
             {
                 //purchase checking
-                if(strtotime('+ '.$this->check_tickets_hours_after.' hours') < strtotime($purchase->show_time))
+                if(strtotime('+ '.$this->check_tickets_hours_before.' hours') < strtotime($purchase->show_time))
+                    return ['success'=>false, 'msg'=>'You can only check tickets '.$this->check_tickets_hours_before.' hours before the event starts!'];
+                if(strtotime('- '.$this->check_tickets_hours_after.' hours') > strtotime($purchase->show_time))
                     return ['success'=>false, 'msg'=>'You can only check tickets '.$this->check_tickets_hours_after.' hours after the event starts!'];
                 //check when purchase section 
                 if($purchase->section)
