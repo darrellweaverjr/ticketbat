@@ -5,6 +5,7 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
 use App\Http\Models\User;
 use App\Http\Models\Util;
 use App\Http\Models\ShowTime;
@@ -30,16 +31,49 @@ class SessionController extends Controller{
             if(!empty($info['email']) && !empty($info['password']))
             {
                 $user = User::where('email',$info['email'])->where('password',$info['password'])->where('is_active','>',0)
-                            ->first(['id','email','first_name','last_name','user_type_id']);
+                            ->first(['id','email','password','first_name','last_name','user_type_id']);
                 if($user) 
-                    return Util::json(['success'=>true,'user'=>$user]);
+                {
+                    $a_token = $user->id.'.'.md5($user->email.$user->password);
+                    $user->password = null;
+                    return Util::json(['success'=>true,'user'=>$user,'a_token'=>$a_token]);
+                } 
                 return Util::json(['success'=>false, 'msg'=>'Credentials Invalid!']);
             }
             return Util::json(['success'=>false, 'msg'=>'You must enter a valid email and password!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
-    }   
+    }  
+    
+    /*
+     * checked logged user
+     */
+    public function check()
+    {
+        try {
+            $a_token = Request::header('Authorization');
+            if(!empty($a_token))
+            {
+                $a_token = explode('.',$a_token);
+                if(count($a_token) == 2)
+                {
+                    $user = User::where('id',$a_token[0])->where('is_active','>',0)->first(['id','email','password']);
+                    if($user) 
+                    {
+                        if($a_token[1] == $user->id.'.'.md5($user->email.$user->password))
+                            return Util::json(['success'=>true]);
+                        return Util::json(['success'=>false]);
+                    } 
+                    return Util::json(['success'=>false]);
+                }
+                return Util::json(['success'=>false]);
+            }
+            return Util::json(['success'=>false]);
+        } catch (Exception $ex) {
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+        }
+    }  
     
     /*
      * List My purchases
@@ -48,6 +82,9 @@ class SessionController extends Controller{
     {
         try {   
             $info = Input::all();   
+            $a_token = Request::header('Authorization');
+            $a_token = explode('.',$a_token);
+            $info['user_id'] = $a_token[0];
             if(!empty($info['user_id']) && is_numeric($info['user_id']))
             {
                 $purchases = DB::table('purchases')

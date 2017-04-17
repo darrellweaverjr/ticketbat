@@ -1,6 +1,6 @@
 <?php
 
-//reports
+//REPORTS
 Artisan::command('ReportManifest', function () {
     $this->call('Report:manifest');
 });
@@ -16,14 +16,14 @@ Artisan::command('ReportFinancial {weeks=0}', function ($weeks) {
 Artisan::command('ReportConsignment', function () {
     $this->call('Report:consignment');
 });
-//promotions
+//PROMOTIONS
 Artisan::command('ReportSales {days=7}', function ($days) {
     $this->call('Promo:announced',['days'=>$days]);
 });
 Artisan::command('ReportSales {days=1} {onlyadmin=1}', function ($days, $onlyadmin) {
     $this->call('Report:sales',['days'=>$days,'onlyadmin'=>$onlyadmin]);
 });
-//utilities
+//UTILITIES
 Artisan::command('ShoppingcartClean {days=10}', function ($days) {
     $this->call('Shoppingcart:clean',['days'=>$days]);
 });

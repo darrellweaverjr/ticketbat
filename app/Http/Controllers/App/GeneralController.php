@@ -5,7 +5,6 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Response;
 use App\Http\Models\Image;
 use App\Http\Models\Contact;
 use App\Http\Models\Util;
@@ -25,7 +24,7 @@ class GeneralController extends Controller{
     public function init()
     {
         try {
-            return Util::json(['success'=>true,'cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1),'x_token'=>csrf_field()]);
+            return Util::json(['success'=>true,'cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1),'x_token'=>csrf_token()]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
