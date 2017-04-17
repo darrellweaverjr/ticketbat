@@ -163,7 +163,7 @@ class SessionController extends Controller{
                 if($venues_check_ticket && $venues_check_ticket->venues_check_ticket)
                     $venues = explode(',',$venues_check_ticket->venues_check_ticket);
             }
-            return Util::json($venues,200);
+            return Util::json(['success'=>true, 'venues'=>$venues]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
@@ -184,7 +184,7 @@ class SessionController extends Controller{
                                     ->whereDate('show_time','>=',date('Y-m-d H:i:s',strtotime(' - '.$this->check_tickets_hours_before.' hours')))
                                     ->get(['id','show_time','show_id']);
             }
-            return Util::json(['success'=>false, 'events'=>$events]);
+            return Util::json(['success'=>true, 'events'=>$events]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
@@ -197,8 +197,9 @@ class SessionController extends Controller{
     {
         try {
             $info = Input::all();   
-            if(!empty($info['purchase_id']) && is_numeric($info['purchase_id']) && !empty($info['qty']))
-                return Util::json($this->update_tickets($info['purchase_id'],null,$info['ticket']));
+            if(!empty($info['purchase_id']) && is_numeric($info['purchase_id']) && !empty($info['qty'])
+            && !empty($info['show_time_id']) && is_numeric($info['show_time_id']))
+                return Util::json($this->update_tickets($info['purchase_id'],null,$info['ticket'],$info['show_time_id']));
             return Util::json(['success'=>false, 'msg'=>'You must send a valid request!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
@@ -213,14 +214,14 @@ class SessionController extends Controller{
         try {
             $info = Input::all();
             $regex = '/^TB[0-9]{12,17}$/';			
-            if (preg_match($regex,$info['code']))
+            if (preg_match($regex,$info['code']) && !empty($info['show_time_id']) && is_numeric($info['show_time_id']))
             {
                 $purchase_id = ltrim(substr($info['code'],2,6),'0');
                 $user_id = ltrim(substr($info['code'],8,5),'0');
                 $ticket = substr($info['code'],13);
-                return Util::json($this->update_tickets($purchase_id,$user_id,$ticket));
+                return Util::json($this->update_tickets($purchase_id,$user_id,$ticket,$info['show_time_id']));
             }
-            return Util::json(['success'=>false, 'msg'=>'You must scan a valid code!']);
+            return Util::json(['success'=>false, 'msg'=>'You must scan a valid code for a valid event date!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
@@ -229,7 +230,7 @@ class SessionController extends Controller{
     /*
      * Update checked/scanned Tickets
      */
-    private function update_tickets($purchase_id, $user_id, $ticket)
+    private function update_tickets($purchase_id, $user_id, $ticket,$show_time_id)
     {
         try {
             $to_check = explode(',',$ticket);
@@ -244,7 +245,7 @@ class SessionController extends Controller{
                             ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, show_times.show_time, 
                                               packages.title, shows.name AS show_name, shows.restrictions, venues.name AS venue_name, 
                                               IF(ticket_number.id IS NULL, 0, 1) as section'))
-                            ->where('purchases.id','=',$purchase_id)->groupBy('purchases.id')->first();
+                            ->where('purchases.id','=',$purchase_id)->where('show_times.id','=',$show_time_id)->groupBy('purchases.id')->first();
             if($purchase)
             {
                 //purchase checking
