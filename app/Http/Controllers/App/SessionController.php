@@ -180,8 +180,8 @@ class SessionController extends Controller{
             if(!empty($info['show_id']) && is_numeric($info['show_id']))
             {
                 $events = ShowTime::where('show_id',$info['show_id'])
-                                    ->whereDate('show_time','>=',date('Y-m-d'))
-                                    ->whereDate('show_time','>=',date('Y-m-d H:i:s',strtotime(' - '.$this->check_tickets_hours_before.' hours')))
+                                    ->where('show_time','<=',date('Y-m-d H:i:s',strtotime(' + '.$this->check_tickets_hours_before.' hours')))
+                                    ->where('show_time','>=',date('Y-m-d H:i:s',strtotime(' - '.$this->check_tickets_hours_after.' hours')))
                                     ->get(['id','show_time','show_id']);
             }
             return Util::json(['success'=>true, 'events'=>$events]);
