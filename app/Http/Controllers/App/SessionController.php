@@ -135,14 +135,27 @@ class SessionController extends Controller{
                             ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                             ->join('packages', 'packages.id', '=', 'tickets.package_id')
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                            ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
                             ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type,
                                               IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
-                                              customers.first_name, customers.last_name, 
-                                              IF(ticket_number.checked, LENGTH(ticket_number.checked)-LENGTH(REPLACE(ticket_number.checked,",",""))+1, 0) AS checked'))
+                                              customers.first_name, customers.last_name'))
                             ->where('purchases.status','=','Active')->where('purchases.show_time_id','=',$info['show_time_id'])
                             ->orderBy('purchases.created','DESC')
                             ->get();
+                foreach ($purchases as $p)
+                {
+                    //init variables
+                    $p->tickets = $p->checked = 0; 
+                    $p->to_check = [];
+                    $tickets = DB::table('ticket_number')->select('id','tickets','checked')->where('purchases_id','=',$p->id)->get();
+                    foreach ($tickets as $t)
+                    {
+                        $qty_tck = (!empty($t->tickets))? explode(',',$t->tickets) : [];
+                        $checked = (!empty($t->checked))? explode(',',$t->checked) : [];
+                        $p->tickets += count($qty_tck);
+                        $p->checked += count($checked);
+                        $p->to_check = array_merge($p->to_check,array_diff($qty_tck, $checked));
+                    }
+                }
             }
             return Util::json(['success'=>true, 'purchases'=>$purchases]);
         } catch (Exception $ex) {
@@ -197,9 +210,9 @@ class SessionController extends Controller{
     {
         try {
             $info = Input::all();   
-            if(!empty($info['purchase_id']) && is_numeric($info['purchase_id']) && !empty($info['qty'])
+            if(!empty($info['purchase_id']) && is_numeric($info['purchase_id']) && !empty($info['tickets'])
             && !empty($info['show_time_id']) && is_numeric($info['show_time_id']))
-                return Util::json($this->update_tickets($info['purchase_id'],null,$info['ticket'],$info['show_time_id']));
+                return Util::json($this->update_tickets($info['purchase_id'],null,$info['tickets'],$info['show_time_id']));
             return Util::json(['success'=>false, 'msg'=>'You must send a valid request!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
@@ -241,10 +254,11 @@ class SessionController extends Controller{
                             ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                             ->join('shows', 'shows.id', '=', 'show_times.show_id')
                             ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                            ->join('customers', 'customers.id', '=', 'purchases.customer_id')
                             ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
                             ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, show_times.show_time, 
-                                              packages.title, shows.name AS show_name, shows.restrictions, venues.name AS venue_name, 
-                                              IF(ticket_number.id IS NULL, 0, 1) as section'))
+                                              packages.title, shows.name AS show_name, shows.restrictions, venues.name AS venue_name,
+                                              customers.first_name, customers.last_name, IF(ticket_number.id IS NULL, 0, 1) as section'))
                             ->where('purchases.id','=',$purchase_id)->where('show_times.id','=',$show_time_id)->groupBy('purchases.id')->first();
             if($purchase)
             {
