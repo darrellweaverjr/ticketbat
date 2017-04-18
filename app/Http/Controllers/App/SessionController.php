@@ -263,14 +263,14 @@ class SessionController extends Controller{
                     $purchase->tickets = $tickets->qty;
                     $purchase->checked = $tickets->checked;
                     $tickets = DB::table('ticket_number')
-                                    ->select(DB::raw('id, tickets, COALESCE(checked,"") AS checked
+                                    ->select(DB::raw('id, tickets, checked,
                                                       (LENGTH(tickets)-LENGTH(REPLACE(tickets,",",""))+1) AS qty'))
                                     ->where('purchases_id','=',$purchase->id)->get();
                     foreach ($tickets as $t)
                     {
                         //init variables
-                        $checked = explode(',',$tickets->checked);
-                        $qty_tck = explode(',',$tickets->tickets);
+                        $checked = (!empty($t->checked))? explode(',',$t->checked) : [];
+                        $qty_tck = (!empty($t->tickets))? explode(',',$t->tickets) : [];
                         //find tickets already checked
                         $already = array_intersect($checked,$to_check);
                         if(count($already))
@@ -281,14 +281,15 @@ class SessionController extends Controller{
                         {
                             $t_updated = implode(',',array_merge($checked,$to_update));
                             //continue to update
-                            $updated = DB::table('ticket_number')->where('id',$tickets->id)->update(['checked' => $t_updated]);
-                            if(!$updated)
-                                return ['success'=>false, 'msg'=>'There was an error updating these tickets: '.$t_updated];
-                            else
+                            $updated = DB::table('ticket_number')->where('id',$t->id)->update(['checked' => $t_updated]);
+                            
+                            if($updated>=0)
                             {
                                 $purchase->checked += count($to_update);
                                 $to_check = array_diff($to_check, $to_update);
                             } 
+                            else    
+                                return ['success'=>false, 'msg'=>'There was an error updating these tickets: '.$t_updated];
                         }
                     }
                     //after check all valid tickets there is something missing 
