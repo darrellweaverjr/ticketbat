@@ -16,6 +16,12 @@ Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], fu
     Route::post('purchases_check', 'SessionController@purchases_to_check');
     Route::post('check_tickets', 'SessionController@check_tickets');
     Route::post('scan_tickets', 'SessionController@scan_tickets');
+    //apps config buy
+    Route::post('cart_get', 'BuyController@get');
+    Route::post('cart_add', 'BuyController@add');
+    Route::post('cart_remove', 'BuyController@remove');
+    Route::post('cart_buy', 'BuyController@buy');
+    Route::post('cart_coupon', 'BuyController@coupon');
 });
 //ADMIN ROUTES FOR JSON FEED
 Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {

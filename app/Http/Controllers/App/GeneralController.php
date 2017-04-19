@@ -24,7 +24,9 @@ class GeneralController extends Controller{
     public function init()
     {
         try {
-            return Util::json(['success'=>true,'cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1),'x_token'=>csrf_token()]);
+            $x_token = csrf_token();
+            $s_token = uniqid();
+            return Util::json(['success'=>true,'cities'=>$this->cities(1),'shows'=>$this->shows(null,1),'venues'=>$this->venues(1),'x_token'=>$x_token,'s_token'=>$s_token]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }

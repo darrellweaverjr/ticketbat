@@ -237,4 +237,16 @@ class Util extends Model
             json_encode($response);
         }
     }
+    
+    /**
+     * round price
+     */
+    public static function round($number)
+    {
+        try { 
+            return round($number,2, PHP_ROUND_HALF_UP);
+        } catch (Exception $ex) {
+            return $number;
+        }
+    }
 }
