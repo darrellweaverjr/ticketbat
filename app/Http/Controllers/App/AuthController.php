@@ -4,7 +4,6 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Request;
 use App\Http\Models\User;
 use App\Http\Models\Util;
 
@@ -28,7 +27,7 @@ class AuthController extends Controller{
                             ->first(['id','email','password','first_name','last_name','user_type_id']);
                 if($user) 
                 {
-                    $a_token = $user->id.'.'.md5($user->email.$user->password);
+                    $a_token = $user->id.'.'.md5($user->email.$user->password.env('APP_KEY'));
                     $user->password = null;
                     return Util::json(['success'=>true,'user'=>$user,'a_token'=>$a_token]);
                 } 
