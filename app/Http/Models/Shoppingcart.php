@@ -48,7 +48,7 @@ class Shoppingcart extends Model
         try {
             $price = $qty = $fee = $save = $saveAll = $total = 0;
             $saveAllApplied = false;
-            $coupon = null; 
+            $coupon = $coupon_description = null; 
             $cart = [];
             //get all items
             $items = DB::table('shoppingcart')
@@ -142,7 +142,11 @@ class Shoppingcart extends Model
                                      'quantity'=>$i->number_of_items,'retail_price'=>Util::round($p),'processing_fee'=>Util::round($f)];
                 }
                 //change coupon name after loop
-                $coupon = (!empty($coupon))? $coupon['code'] : null;
+                if(!empty($coupon))
+                {
+                    $coupon_description = $coupon['description'];
+                    $coupon = $coupon['code'];
+                }
             }   
             //if return only list of calculate items values
             if($list) 
@@ -156,7 +160,7 @@ class Shoppingcart extends Model
                     $save = $price + $fee;
                     $total = 0;
                 }
-                return ['success'=>true,'coupon'=>$coupon,'quantity'=>$qty,'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'total'=>Util::round($total)];
+                return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'total'=>Util::round($total)];
             }
         } catch (Exception $ex) {
             return ['success'=>false];
@@ -174,7 +178,7 @@ class Shoppingcart extends Model
             {
                 $response = DB::table('shoppingcart')->where('session_id','=',$session_id)->update(['coupon'=>null]);
                 if($response || $response >= 0)
-                    return ['success'=>true,'description'=>'Coupon removed successfully!'];
+                    return ['success'=>true];
                 return ['success'=>false,'msg'=>'There was an error trying to remove the coupon.'];
             } 
             else
@@ -213,7 +217,7 @@ class Shoppingcart extends Model
                     {
                         $response = DB::table('shoppingcart')->where('session_id','=',$session_id)->update(['coupon'=>json_encode($coupon,true)]);
                         if($response || $response >= 0)
-                            return ['success'=>true,'description'=>$coupon->description];
+                            return ['success'=>true];
                         return ['success'=>false,'msg'=>'There was an error trying to add the coupon.'];
                     }
                     return ['success'=>false, 'msg'=>'That coupon is not valid!'];

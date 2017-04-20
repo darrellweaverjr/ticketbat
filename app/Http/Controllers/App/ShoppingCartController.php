@@ -32,9 +32,8 @@ class ShoppingCartController extends Controller{
                             ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, 
-                                              shoppingcart.product_type, shoppingcart.cost_per_product,
-                                              IF(packages.title="None","",packages.title) AS package,
-                                              shoppingcart.number_of_items, shoppingcart.total_cost, 
+                                              shoppingcart.product_type, shoppingcart.cost_per_product, show_times.show_time, shoppingcart.number_of_items,
+                                              IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, 
                                               (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee'))
                             ->where('shoppingcart.session_id','=',$info['s_token'])->where('shoppingcart.status','=',0)
                             ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
