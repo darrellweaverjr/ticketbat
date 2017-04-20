@@ -3,26 +3,27 @@
 //ADMIN ROUTES FOR APP
 Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], function () {
     //apps config general
-    Route::get('init', 'GeneralController@init');
-    Route::get('shows/{id?}/{venue_id?}', 'GeneralController@shows');
-    Route::get('showtime/{id}', 'GeneralController@showtime');
-    Route::post('contact', 'GeneralController@contact');
-    //apps config session
-    Route::post('login', 'SessionController@login');
-    Route::get('check', 'SessionController@check');
-    Route::post('purchases', 'SessionController@purchases');
-    Route::post('venues_check', 'SessionController@venues_to_check');
-    Route::post('events_check', 'SessionController@events_to_check');
-    Route::post('purchases_check', 'SessionController@purchases_to_check');
-    Route::post('check_tickets', 'SessionController@check_tickets');
-    Route::post('scan_tickets', 'SessionController@scan_tickets');
-    //apps config buy
-    Route::post('cart_get', 'BuyController@get');
-    Route::post('cart_add', 'BuyController@add');
-    Route::post('cart_update', 'BuyController@update');
-    Route::post('cart_remove', 'BuyController@remove');
-    Route::post('cart_buy', 'BuyController@buy');
-    Route::post('cart_coupon', 'BuyController@coupon');
+    Route::post('general_init', 'GeneralController@init');
+    Route::post('general_show', 'GeneralController@show');
+    Route::post('general_showtime', 'GeneralController@showtime');
+    Route::post('general_contact', 'GeneralController@contact');
+    //apps config session auth
+    Route::post('auth_login', 'AuthController@login');
+    //apps config user options    
+    Route::post('my_purchases', 'UserController@purchases');
+    Route::post('my_venues_check', 'UserController@venues_to_check');
+    Route::post('my_events_check', 'UserController@events_to_check');
+    Route::post('my_purchases_check', 'UserController@purchases_to_check');
+    Route::post('my_tickets_check', 'UserController@check_tickets');
+    Route::post('my_tickets_scan', 'UserController@scan_tickets');
+    //apps config manage shopping cart
+    Route::post('cart_get', 'ShoppingCartController@get');
+    Route::post('cart_add', 'ShoppingCartController@add');
+    Route::post('cart_update', 'ShoppingCartController@update');
+    Route::post('cart_remove', 'ShoppingCartController@remove');
+    Route::post('cart_coupon', 'ShoppingCartController@coupon');
+    //apps config purchase options
+    Route::post('purchase_make', 'PurchaseController@buy');    
 });
 //ADMIN ROUTES FOR JSON FEED
 Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {
