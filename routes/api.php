@@ -19,6 +19,7 @@ Route::group(['prefix' => 'app','middleware' => 'cors','namespace' => 'App'], fu
     //apps config buy
     Route::post('cart_get', 'BuyController@get');
     Route::post('cart_add', 'BuyController@add');
+    Route::post('cart_update', 'BuyController@update');
     Route::post('cart_remove', 'BuyController@remove');
     Route::post('cart_buy', 'BuyController@buy');
     Route::post('cart_coupon', 'BuyController@coupon');
