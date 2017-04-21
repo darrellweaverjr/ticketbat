@@ -23,17 +23,8 @@ class GeneralController extends Controller{
      */
     public function init()
     {
-        try {
-            $info = Input::all();   
-            //check tokens for security here
-            if(!empty($info['x_token']))
-            {
-                $x_token = explode('.',$info['x_token']);
-                if($x_token[1] == md5($x_token[0].env('APP_KEY')))
-                    return Util::json(['success'=>true,'cities'=>$this->cities(),'shows'=>$this->shows(),'venues'=>$this->venues(),'s_token'=>uniqid()]);
-                return Util::json(['success'=>false, 'msg'=>'Bad token']);
-            }
-            return Util::json(['success'=>false, 'msg'=>'Unsecure connection']);
+        try {   
+            return Util::json(['success'=>true,'cities'=>$this->cities(),'shows'=>$this->shows(),'venues'=>$this->venues(),'s_token'=>uniqid()]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
