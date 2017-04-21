@@ -44,7 +44,7 @@ class AppSecurity
         }    
         $response = $next($request);
         return $response->header('Access-Control-Allow-Credentials', 'true')
-                        ->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+                        ->header('Access-Control-Allow-Methods', 'POST')
                         ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, X-TOKEN, S-TOKEN, A-TOKEN')
                         ->header('Access-Control-Allow-Origin', '*');
     }
