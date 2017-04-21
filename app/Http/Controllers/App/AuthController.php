@@ -4,7 +4,7 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
-use App\Http\Models\User;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\Util;
 
 /**
@@ -23,8 +23,12 @@ class AuthController extends Controller{
             $info = Input::all();
             if(!empty($info['email']) && !empty($info['password']))
             {
-                $user = User::where('email',$info['email'])->where('password',$info['password'])->where('is_active','>',0)
-                            ->first(['id','email','password','first_name','last_name','user_type_id']);
+                $user = DB::table('users')
+                            ->join('locations', 'locations.id', '=' ,'users.location_id')
+                            ->select('users.id','users.email','users.password','users.first_name','users.last_name','users.user_type_id',
+                                     'users.phone','locations.address','locations.city','locations.country','locations.state','locations.zip')
+                            ->where('users.email','=',$info['email'])->where('users.password','=',$info['password'])
+                            ->where('users.is_active','>',0)->first();
                 if($user) 
                 {
                     $a_token = $user->id.'.'.md5($user->email.$user->password.env('APP_KEY'));

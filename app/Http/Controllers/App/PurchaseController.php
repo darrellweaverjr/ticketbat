@@ -22,11 +22,47 @@ class PurchaseController extends Controller{
     public function buy()
     {
         try {
+            if(!empty($info['first_name']) && !empty($info['last_name']) && !empty($info['address']) && !empty($info['city']) 
+            && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['phone']) && !empty($info['s_token'])
+            && !empty($info['email']) && !empty($info['card']) && !empty($info['month']) && !empty($info['year']) && !empty($info['cvv']))
+            {
+                //get all items
+                $items = DB::table('shoppingcart')
+                            ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
+                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, 
+                                              shoppingcart.product_type, shoppingcart.cost_per_product, show_times.show_time, shoppingcart.number_of_items,
+                                              IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, 
+                                              (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee'))
+                            ->where('shoppingcart.session_id','=',$info['s_token'])->where('shoppingcart.status','=',0)
+                            ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
+                if($raw) return $items;
+                return Util::json(['success'=>true,'items'=>$items,'totals'=>Shoppingcart::calculate_session($info['s_token'])]);
+            }
+            
+            
+            
+            
+            
             return $this->transaction_make();
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
-    }   
+    } 
+    
+    /*
+     * setting up the customer
+     */
+    public function customer_set()
+    {
+        try {
+            
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }  
     
     /*
      * make transaction
@@ -36,23 +72,19 @@ class PurchaseController extends Controller{
         try {
             $tran=new umTransaction();
  
-            $tran->key="_U88GQ3F4A64h5QH82x26DhuBfB1aH5C"; 		// Your Source Key
-            $tran->pin="1234";		// Source Key Pin
-            $tran->usesandbox=true;		// Sandbox true/false
-            //$tran->ip=$REMOTE_ADDR;   // This allows fraud blocking on the customers ip address 
-            $tran->testmode=0;    // Change this to 0 for the transaction to process
-
-            //$tran->command="cc:sale";    // Command to run; Possible values are: cc:sale, cc:authonly, cc:capture, cc:credit, cc:postauth, check:sale, check:credit, void, void:release, refund, creditvoid and cc:save. Default is cc:sale. 
-
-            $tran->card="4000100011112224";		// card number, no dashes, no spaces
-            $tran->exp="0919";			// expiration date 4 digits no /
-            $tran->amount="1.00";			// charge amount in dollars
-            $tran->invoice="1234";   		// invoice number.  must be unique.
-            $tran->cardholder="Test T Jones"; 	// name of card holder
-            $tran->street="1234 Main Street";	// street address
-            $tran->zip="05673";			// zip code
-            $tran->description="Online Order";	// description of charge
-            $tran->cvv2="123";			// cvv2 code	
+            $tran->key="_U88GQ3F4A64h5QH82x26DhuBfB1aH5C"; 		
+            $tran->pin="1234";		
+            $tran->usesandbox=true;
+            $tran->testmode=1; 
+            $tran->card="4000100011112224";	
+            $tran->exp="0919";			
+            $tran->amount="1.00";			
+            $tran->invoice="1234";   		
+            $tran->cardholder="Test T Jones"; 	
+            $tran->street="1234 Main Street";	
+            $tran->zip="05673";			
+            $tran->description="Online Order";	
+            $tran->cvv2="123";			
 
 
             echo "<h1>Please wait one moment while we process your card...<br>\n";
@@ -70,6 +102,30 @@ class PurchaseController extends Controller{
                     echo "<b>Reason:</b> " . $tran->error . "<br>";	
                     if(@$tran->curlerror) echo "<b>Curl Error:</b> " . $tran->curlerror . "<br>";	
             }	
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }  
+    
+    /*
+     * saving the transaction into the database
+     */
+    public function transaction_save()
+    {
+        try {
+            
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }  
+    
+    /*
+     * saving the purchase into the database
+     */
+    public function purchase_save()
+    {
+        try {
+            
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
