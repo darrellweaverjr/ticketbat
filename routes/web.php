@@ -2,6 +2,7 @@
 
 //GENERAL ROUTES
 Auth::routes();
+Route::get('/xxx', 'App\PurchaseController@buy');
 Route::get('/', function () { return redirect()->route('home'); });
 Route::get('/home', function () { return redirect()->route('home'); });
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');

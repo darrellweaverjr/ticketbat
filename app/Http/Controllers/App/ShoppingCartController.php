@@ -174,21 +174,4 @@ class ShoppingCartController extends Controller{
         }
     }   
     
-    /*
-     * buy all items in the cart
-     */
-    public function buy()
-    {
-        try {
-            $info = Input::all();
-            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']) && !empty($info['s_token']))
-            {
-                
-            }
-            return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
-        } catch (Exception $ex) {
-            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
-        }
-    }   
-    
 }
