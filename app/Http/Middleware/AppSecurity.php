@@ -25,14 +25,17 @@ class AppSecurity
                 $x_token = explode('.',$x_token);
                 if($x_token[1] == md5($x_token[0].env('APP_KEY')))
                 {
-                    if($check_login || $request->headers->has('A-TOKEN'))
+                    if($check_login)
                     {
                         $response = response()->json(['success'=>false, 'msg'=>'Bad login connection']);
                         $a_token = $request->headers->get('A-TOKEN');
-                        $a_token = explode('.',$a_token);
-                        $user = User::where('id',$a_token[0])->where('is_active','>',0)->first(['id','email','password']);
-                        if($user && $a_token[1] == md5($user->email.$user->password.env('APP_KEY')))
-                            $response = $next($request);
+                        if(!empty($a_token))
+                        {
+                            $a_token = explode('.',$a_token);
+                            $user = User::where('id',$a_token[0])->where('is_active','>',0)->first(['id','email','password']);
+                            if($user && $a_token[1] == md5($user->email.$user->password.env('APP_KEY')))
+                                $response = $next($request);
+                        }
                     }
                     else
                         $response = $next($request);
