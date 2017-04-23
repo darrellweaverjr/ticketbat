@@ -179,7 +179,7 @@ var TableDatatablesManaged = function () {
                 //fill out
                 var e = $('#form_model_update [name="'+key+'"]');
                 if(e.is('input:checkbox'))
-                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.venue[key])? true : false, true);
+                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.venue[key]>0)? true : false, true);
                 else
                     e.val(data.venue[key]);
             }
