@@ -23,22 +23,32 @@ class PurchaseController extends Controller{
     public function buy()
     {
         try {
-            $created = date('Y-m-d h:i:s');
+            $current = date('Y-m-d h:i:s');
             if(!empty($info['first_name']) && !empty($info['last_name']) && !empty($info['address']) && !empty($info['city']) 
             && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['phone']) && !empty($info['s_token'])
             && !empty($info['email']) && !empty($info['card']) && !empty($info['month']) && !empty($info['year']) && !empty($info['cvv']))
             {
+                $client = $this->customer_set($info, $current);
+                if(!$client['success'])
+                    return Util::json($client);
                 //get all items in shoppingcart
                 $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
-                //make transaction
-                $transaction = Transaction::usaepay($user_id, $customer_id, $info, $shoppingcart, $created);
+                //check payment or free
+                if($shoppingcart['total']>0)
+                {
+                    //make transaction
+                    $transaction = Transaction::usaepay($client->user_id, $client->customer_id, $info, $shoppingcart, $current);
+                }
+                else
+                {
+                    
+                }
+                //save purchase
+                
+                //send receipts
+                
             }
-            
-            
-            
-            
-            
-            return $this->transaction_make();
+            return Util::json(['success'=>false, 'msg'=>'Fill the form out correctly!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
@@ -47,67 +57,56 @@ class PurchaseController extends Controller{
     /*
      * setting up the customer
      */
-    public function customer_set()
+    public function customer_set($info,$current)
     {
         try {
-            
-        } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
-        }
-    }  
-    
-    /*
-     * make transaction
-     */
-    public function transaction_make()
-    {
-        try {
-            $tran=new umTransaction();
- 
-            $tran->key="_U88GQ3F4A64h5QH82x26DhuBfB1aH5C"; 		
-            $tran->pin="1234";		
-            $tran->usesandbox=true;
-            $tran->testmode=1; 
-            $tran->card="4000100011112224";	
-            $tran->exp="0919";			
-            $tran->amount="1.00";			
-            $tran->invoice="1234";   		
-            $tran->cardholder="Test T Jones"; 	
-            $tran->street="1234 Main Street";	
-            $tran->zip="05673";			
-            $tran->description="Online Order";	
-            $tran->cvv2="123";			
-
-
-            echo "<h1>Please wait one moment while we process your card...<br>\n";
-            flush();
-
-            if($tran->Process())
+            //init set 
+            $send_welcome_email = false;
+            //checking the email
+            $info['email'] = trim(strtolower($info['email']));
+            if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
+                return ['success'=>false, 'msg'=>'Enter a valid email address.'];
+            //set up user and customer
+            $user = User::where('email','=',$info['email'])->first();
+            if(!$user)
             {
-                    echo "<b>Card Approved</b><br>";
-                    echo "<b>Authcode:</b> " . $tran->authcode . " <br>".env('SERVER_NAME').'<br>';
-                    echo "<b>RefNum:</b> " . $tran->refnum . "<br>";
-                    echo "<b>AVS Result:</b> " . $tran->avs_result . "<br>";
-                    echo "<b>Cvv2 Result:</b> " . $tran->cvv2_result . "<br>";
-            } else {
-                    echo "<b>Card Declined</b> (" . $tran->result . ")<br>";
-                    echo "<b>Reason:</b> " . $tran->error . "<br>";	
-                    if(@$tran->curlerror) echo "<b>Curl Error:</b> " . $tran->curlerror . "<br>";	
-            }	
+                //send welcome email
+                $send_welcome_email = true;
+                //create user
+                $user = new User;
+                $user->created = $current;
+                $user->user_type_id = 2;
+                $user->is_active = 1;
+                $user->force_password_reset = 0;
+                $location = new Location;
+                $location->created = $current;
+            }
+            else
+                $location = $user->location();
+            //save location
+            $location->address = $input['address'];
+            $location->city = $input['city'];
+            $location->state = strtoupper($input['region']);
+            $location->zip = $input['zip'];
+            $location->country = $input['country'];
+            $location->set_lng_lat();
+            $location->save();
+            //save user
+            $user->location()->associate($location);
+            $user->first_name = $input['first_name'];
+            $user->last_name = $input['last_name'];
+            $user->phone = $input['phone'];
+            $user->save();
+            //send email welcome
+            if($send_welcome_email)
+                $user->welcome_email(true);
+            //get customer
+            $customer_id = $user->update_customer();
+            if(!$customer)
+                return ['success'=>false, 'msg'=>'There is an error setting up the customer information.'];
+            return ['success'=>true, 'user_id'=>$user->id, 'customer_id'=>$customer_id];
         } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
-        }
-    }  
-    
-    /*
-     * saving the transaction into the database
-     */
-    public function transaction_save()
-    {
-        try {
-            
-        } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+            return ['success'=>false, 'msg'=>'There is an error setting up the customer information!'];
         }
     }  
     

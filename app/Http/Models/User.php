@@ -118,13 +118,36 @@ class User extends Authenticatable
     /*
      * send welcome email 
      */
+    public function update_customer()
+    {
+        try {
+            //get customer
+            $customer = Customer::where('email',$this->email)->first();
+            if(!$customer)
+            {
+                $customer = new Customer;
+                $customer->email = $this->email;
+            }
+            $location = $user->location;
+            $location->updated = $this->updated;
+            $customer->location()->associate($location);
+            $customer->first_name = $this->first_name;
+            $customer->last_name = $this->last_name;
+            $customer->phone = $this->phone;
+            $customer->updated = $this->updated;
+            $customer->save();
+            return $customer->id;
+        } catch (Exception $ex) {
+            return false;
+        }
+    }  
+    /*
+     * send welcome email 
+     */
     public function welcome_email($first_purchase=false)
     {
         try {
             //send email
-            $html = '<b>Customer: </b>'.$this->name.'<br><b>Email: </b>'.$this->email.'</b><br><b>Phone: </b>'.$this->phone;
-            $html .= '<br><b>Show/Venue: </b>'.$this->show_name;
-            $html .= '<br><b>System Info: </b>'.$this->system_info.'<br><b>Message: </b>'.$this->message;
             $email = new EmailSG(null,$this->email,'TicketBat Team - Welcome to TicketBat!');
             $email->body('welcome',['username'=>$this->email,'password'=> $this->slug,'first_purchase'=>$first_purchase]);
             $email->category('Primary');
