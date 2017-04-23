@@ -56,7 +56,7 @@ class Shoppingcart extends Model
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
                         ->join('packages', 'packages.id', '=' ,'tickets.package_id')
-                        ->select('shoppingcart.id','shoppingcart.product_type','shoppingcart.cost_per_product',
+                        ->select('shoppingcart.id','shoppingcart.product_type','shoppingcart.cost_per_product','shows.name','show_times.show_time',
                                  'shoppingcart.item_id','packages.title','tickets.percent_commission AS c_percent','tickets.fixed_commission AS c_fixed',
                                  'shoppingcart.number_of_items','shoppingcart.total_cost','shoppingcart.coupon','shoppingcart.ticket_id')
                         ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
@@ -136,8 +136,8 @@ class Shoppingcart extends Model
                     }
                     //calculate array for purchase when buy
                     if($list) 
-                        $cart[$i->id] = ['discount_id'=>($coupon)? $coupon['ticket_ids'] : 1,'show_time_id'=>$i->item_id,
-                                     'ticket_type'=>$i->product_type.' '.$i->title, 'savings'=>Util::round($s), 
+                        $cart[$i->id] = ['discount_id'=>($coupon)? $coupon['ticket_ids'] : 1,'show_time_id'=>$i->item_id,'show_time'=>$i->show_time,
+                                     'product_type'=>$i->product_type.' '.$i->title, 'savings'=>Util::round($s),'name'=>$i->name,
                                      'commission_percent'=>($i->c_fixed)? $i->c_fixed : Util::round($i->c_percent*$i->number_of_items*$p/100),
                                      'quantity'=>$i->number_of_items,'retail_price'=>Util::round($p),'processing_fee'=>Util::round($f)];
                 }

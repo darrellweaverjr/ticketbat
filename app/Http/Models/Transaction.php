@@ -4,6 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Libraries\usaepay\umTransaction;
+use App\Mail\EmailSG;
 
 /**
  * Transaction class
@@ -50,7 +51,7 @@ class Transaction extends Model
     /*
      * make transaction
      */
-    public function usaepay($card_info,$card_holder,$items)
+    public static function usaepay($user_id,$customer_id,$payment,$shoppingcart,$created)
     {
         try {
             //init params
@@ -64,70 +65,83 @@ class Transaction extends Model
             else
                 $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ"; 
             //card info            
-            $tran->card = $card_info['card'];	
-            $tran->exp = $card_info['month'].$card_info['year'];
-            if(!empty($card_info['cvv']))
-                $tran->cvv2 = $card_info['cvv'];
-            $tran->amount = $card_info['amount'];			
-            $tran->invoice = $card_info['s_token'];  
-            $tran->orderid = $card_info['s_token']; 
+            $tran->card = $payment['card'];	
+            $tran->exp = $payment['month'].$payment['year'];
+            if(!empty($payment['cvv']))
+                $tran->cvv2 = $payment['cvv'];
+            $tran->amount = $shoppingcart['total'];			
+            $tran->invoice = $payment['s_token'];  
+            $tran->orderid = $payment['s_token']; 
             //cardholder info
-            $tran->cardholder = strtoupper($card_holder['first_name'].' '.$card_holder['last_name']); 
-            if(!empty($card_holder['street']))
-                $tran->street = $tran->billstreet = $card_holder['street'];
-            if(!empty($card_holder['city']))
-                $tran->billcity = $card_holder['city'];
-            if(!empty($card_holder['region']))
-                $tran->billstate = $card_holder['region'];
-            if(!empty($card_holder['country']))
-                $tran->billcountry = $card_holder['country'];
-            if(!empty($card_holder['zip']))
-                $tran->zip = $tran->billzip = $card_holder['zip'];
+            $tran->cardholder = strtoupper($payment['first_name'].' '.$payment['last_name']); 
+            if(!empty($payment['street']))
+                $tran->street = $tran->billstreet = $payment['street'];
+            if(!empty($payment['city']))
+                $tran->billcity = $payment['city'];
+            if(!empty($payment['region']))
+                $tran->billstate = $payment['region'];
+            if(!empty($payment['country']))
+                $tran->billcountry = $payment['country'];
+            if(!empty($payment['zip']))
+                $tran->zip = $tran->billzip = $payment['zip'];
             //description
-            $tran->description = "Online Order";
-            //swipe card
-            if(!empty($card_info['UMcardpresent']))
+            $tran_description = '';
+            $coupon = (!empty($shoppingcart['coupon']))? ' coupon: '.$shoppingcart['items'] : ' no coupon';
+            foreach($shoppingcart['items'] as $item)
             {
-                $tran->cardpresent  = $card_info['UMcardpresent'];
-                $tran->magstripe  = $card_info['UMmagstripe'];
-                $tran->dukpt  = $card_info['UMdukpt'];
-                $tran->termtype  = $card_info['UMtermtype'];
-                $tran->magsupport  = $card_info['UMmagsupport'];
-                $tran->contactless  = $card_info['UMcontactless'];
-                $tran->signature  = $card_info['UMsignature'];
+                $tran_description.= '* '.$item->number_of_items.' '.$item->product_type.' for '.$item->name.' on '.$item->show_time.' with '.$coupon.' *'; 
+                $tran->custid = $item->show_time_id;
+            } 
+            $tran->description = $tran_description;
+            //swipe card
+            if(!empty($payment['UMcardpresent']))
+            {
+                $tran->cardpresent  = $payment['UMcardpresent'];
+                $tran->magstripe  = $payment['UMmagstripe'];
+                $tran->dukpt  = $payment['UMdukpt'];
+                $tran->termtype  = $payment['UMtermtype'];
+                $tran->magsupport  = $payment['UMmagsupport'];
+                $tran->contactless  = $payment['UMcontactless'];
+                $tran->signature  = $payment['UMsignature'];
             }
             //process
-            if($tran->Process())
+            $success = $tran->Process();
+            //hide credit card number  
+            unset($tran->card); 
+            $payment['card'] = '...'.substr($payment['card'], -4); 
+            //store into DB
+            $this->show_time_id = $tran->custid;
+            $this->customer_id = $customer_id;
+            $this->user_id = $user_id;
+            $this->trans_result = $tran->result;
+            $this->invoice_num = $tran->invoice;
+            $this->amount = $tran->amount;
+            $this->card_holder = $tran->cardholder;
+            $this->avs_result = $tran->avs_result;
+            $this->cvv2_result = $tran->cvv2_result;
+            $this->error_code = $tran->errorcode;
+            $this->error = $tran->error;
+            $this->authcode = $tran->authcode;
+            $this->refnum = $tran->refnum;
+            $this->last_4 = $tran->last_4;
+            $this->result = $tran->result;
+            $this->tracking_id = 0;
+            $this->shopping_cart_session_id = $payment['s_token'];
+            $this->transaction_status = 0;
+            $this->created = $created;
+            $this->save();
+            //return
+            if($success)
+                return ['success'=>true, 'transaction_id'=>$this->id];
+            else
             {
-                    echo "<b>Card Approved</b><br>";
-                    echo "<b>Authcode:</b> " . $tran->authcode . " <br>".env('SERVER_NAME').'<br>';
-                    echo "<b>RefNum:</b> " . $tran->refnum . "<br>";
-                    echo "<b>AVS Result:</b> " . $tran->avs_result . "<br>";
-                    echo "<b>Cvv2 Result:</b> " . $tran->cvv2_result . "<br>";
-            } else {
-                    echo "<b>Card Declined</b> (" . $tran->result . ")<br>";
-                    echo "<b>Reason:</b> " . $tran->error . "<br>";	
-                    if(@$tran->curlerror) echo "<b>Curl Error:</b> " . $tran->curlerror . "<br>";	
-            }	
-            unset($tran->card); $info['card'] = '...'.substr($info['card'], -4); //dont show credit card number       
-            // Add transaction even if it is declined
-            $output = $this->addTransaction($tran, $info, $sc_session, $customer_id, $user_id, $coupon_id, $created);
-            if(!$output['success'])
-            {
-                foreach ($tran as $key => $value) if(!$value) unset($tran->$key);
-                $browser = 'IP('.$_SERVER ['REMOTE_ADDR'].') - '.$_SERVER['HTTP_USER_AGENT'];
-                $params = array('stuff' => compact('tran', 'info', 'gift', 'items'),'errors'=>$output['errors'],'browser'=>$browser);
-                $viewEmail = View::make('emails.empty', $params);
-                $email = new EmailModel(Config::get('mail.from_transactions'),Config::get('mail.to_transactions'),'Transaction Error');
-                $email->view($viewEmail);
-                $response = $email->send();
-            }      
-            
-            
-            
-            
-            
-            
+                $html = '<b>Transaction:<b><br>'.json_encode((array)$tran,true).'<br>';
+                $html.= '<b>Items:<b><br>'.json_encode($shoppingcart,true).'<br>';
+                $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App - Transaction Error');
+                $email->html($html);
+                $email->send();
+                return ['success'=>false, 'msg'=>'Card Declined.<br>'.$tran->error];
+            }            
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }

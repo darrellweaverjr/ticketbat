@@ -258,14 +258,7 @@ class GeneralController extends Controller{
                 $contact->system_info = $info['system_info'];
                 $contact->message = $info['message'];
                 $contact->save();
-                //send email
-                $html = '<b>Customer: </b>'.$info['name'].'<br><b>Email: </b>'.$info['email'].'</b><br><b>Phone: </b>'.$info['phone'];
-                $html .= '<br><b>Show/Venue: </b>'.$info['show_name'];
-                $html .= '<br><b>System Info: </b>'.$info['system_info'].'<br><b>Message: </b>'.$info['message'];
-                $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App Contact');
-                $email->html($html);
-                //$email->reply($info['email']);
-                if($email->send())
+                if($contact->email_us())
                     return Util::json(['success'=>true]);
                 return Util::json(['success'=>false, 'msg'=>'There was an error sending the email. Please try later!']);
             }
