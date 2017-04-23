@@ -148,20 +148,17 @@ class Shoppingcart extends Model
                     $coupon = $coupon['code'];
                 }
             }   
-            //if return only list of calculate items values
-            if($list) 
-                return ['success'=>true,'items'=>$cart];
             //calculate and return sum of all values of the shoppingcart
-            else
+            $total = $price + $fee - $save;
+            if($total<0)
             {
-                $total = $price + $fee - $save;
-                if($total<0)
-                {
-                    $save = $price + $fee;
-                    $total = 0;
-                }
-                return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'total'=>Util::round($total)];
+                $save = $price + $fee;
+                $total = 0;
             }
+            return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,
+                    'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),
+                    'total'=>Util::round($total),'items'=>$cart];
+           
         } catch (Exception $ex) {
             return ['success'=>false];
         }
