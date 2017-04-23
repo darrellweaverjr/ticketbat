@@ -161,9 +161,6 @@ class UserController extends Controller{
                 $user->phone = $input['phone'];
                 $user->is_active = $input['is_active'];
                 //remove these fields from DB
-                //$user->commission_percent = $input['commission_percent'];
-                //$user->percentage_processing_fee = $input['percentage_processing_fee'];
-                //$user->fixed_processing_fee = $input['fixed_processing_fee'];
                 $user->force_password_reset = $input['force_password_reset'];
                 if(isset($input['venues_check_ticket']) && $input['venues_check_ticket'] && count($input['venues_check_ticket']))
                     $user->venues_check_ticket = implode(',',$input['venues_check_ticket']);

@@ -287,6 +287,18 @@ class EmailSG {
                         }
                         break;
                     }
+                case 'welcome':{
+                        if(isset($data['username']) && isset($data['password']))
+                        {
+                          $body[] = array('variable'=>':username', 'value' => $data['username']);
+                          $body[] = array('variable'=>':password', 'value' => $data['password']);
+                          if(empty($data['first_purchase']))
+                              $body[] = array('variable'=>':purchase', 'value' => '');
+                          else 
+                              $body[] = array('variable'=>':purchase', 'value' => 'Thank you for making your first purchase with <a href="https://ticketbat.com/" style="color:#00AA0E; text-transform:capitalize;">TicketBat.com</a>!');
+                        }
+                        break;
+                    }
                 case 'custom': {
                         if (isset($data)) {
                             $body[] = array('variable' => ':body', 'value' => $data['body']);

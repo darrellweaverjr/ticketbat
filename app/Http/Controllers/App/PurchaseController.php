@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Transaction;
 use App\Http\Models\Util;
 use App\Http\Libraries\usaepay\umTransaction;
 
@@ -22,24 +23,15 @@ class PurchaseController extends Controller{
     public function buy()
     {
         try {
+            $created = date('Y-m-d h:i:s');
             if(!empty($info['first_name']) && !empty($info['last_name']) && !empty($info['address']) && !empty($info['city']) 
             && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['phone']) && !empty($info['s_token'])
             && !empty($info['email']) && !empty($info['card']) && !empty($info['month']) && !empty($info['year']) && !empty($info['cvv']))
             {
-                //get all items
-                $items = DB::table('shoppingcart')
-                            ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
-                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                            ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
-                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
-                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, 
-                                              shoppingcart.product_type, shoppingcart.cost_per_product, show_times.show_time, shoppingcart.number_of_items,
-                                              IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, 
-                                              (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee'))
-                            ->where('shoppingcart.session_id','=',$info['s_token'])->where('shoppingcart.status','=',0)
-                            ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
-                if($raw) return $items;
-                return Util::json(['success'=>true,'items'=>$items,'totals'=>Shoppingcart::calculate_session($info['s_token'])]);
+                //get all items in shoppingcart
+                $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
+                //make transaction
+                $transaction = Transaction::usaepay($user_id, $customer_id, $info, $shoppingcart, $created);
             }
             
             

@@ -104,6 +104,7 @@ class User extends Authenticatable
     {
         $length = 10;
         $new_password = substr(bcrypt(bin2hex(uniqid())),-1*$length);
+        $this->slug = $new_password;
         $this->password = md5($new_password);
     }
     /**
@@ -113,4 +114,24 @@ class User extends Authenticatable
     {
         $this->slug = preg_replace('/[^a-z0-9\-]/', '', strtolower(str_replace(' ','-',$this->first_name.'-'.$this->last_name)));
     }
+    //PERSONALIZED FUNCTIONS
+    /*
+     * send welcome email 
+     */
+    public function welcome_email($first_purchase=false)
+    {
+        try {
+            //send email
+            $html = '<b>Customer: </b>'.$this->name.'<br><b>Email: </b>'.$this->email.'</b><br><b>Phone: </b>'.$this->phone;
+            $html .= '<br><b>Show/Venue: </b>'.$this->show_name;
+            $html .= '<br><b>System Info: </b>'.$this->system_info.'<br><b>Message: </b>'.$this->message;
+            $email = new EmailSG(null,$this->email,'TicketBat Team - Welcome to TicketBat!');
+            $email->body('welcome',['username'=>$this->email,'password'=> $this->slug,'first_purchase'=>$first_purchase]);
+            $email->category('Primary');
+            $email->template('a7b5c451-4d26-4292-97cd-239880e7dd20');
+            return $email->send();
+        } catch (Exception $ex) {
+            return false;
+        }
+    }    
 }
