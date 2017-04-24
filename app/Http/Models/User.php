@@ -142,7 +142,8 @@ class User extends Authenticatable
             $location->state = $this->location->state;
             $location->zip = $this->location->zip;
             $location->country = $this->location->country;
-            $location->set_lng_lat();
+            $location->lng = $this->location->lng;
+            $location->lat = $this->location->lat;
             $location->save();
             //update customer
             $customer->location()->associate($location);

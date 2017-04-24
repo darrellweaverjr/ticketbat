@@ -51,7 +51,7 @@ class Transaction extends Model
     /*
      * make transaction
      */
-    public static function usaepay($user_id,$customer_id,$payment,$shoppingcart,$created)
+    public static function usaepay($client,$payment,$shoppingcart,$created)
     {
         try {
             //init params
@@ -111,8 +111,8 @@ class Transaction extends Model
             $payment['card'] = '...'.substr($payment['card'], -4); 
             //store into DB
             $this->show_time_id = $tran->custid;
-            $this->customer_id = $customer_id;
-            $this->user_id = $user_id;
+            $this->customer_id = $client['customer_id'];
+            $this->user_id = $client['user_id'];
             $this->trans_result = $tran->result;
             $this->invoice_num = $tran->invoice;
             $this->amount = $tran->amount;

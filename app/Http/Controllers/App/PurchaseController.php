@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Transaction;
+use App\Http\Models\Purchase;
 use App\Http\Models\Util;
 use App\Http\Libraries\usaepay\umTransaction;
 
@@ -33,18 +34,22 @@ class PurchaseController extends Controller{
                     return Util::json($client);
                 //get all items in shoppingcart
                 $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
-                //check payment or free
+                if(!$shoppingcart['success'])
+                    return Util::json($shoppingcart);
+                //check payment type, if not free tickets
                 if($shoppingcart['total']>0)
                 {
                     //make transaction
-                    $transaction = Transaction::usaepay($client->user_id, $client->customer_id, $info, $shoppingcart, $current);
-                }
-                else
-                {
-                    
+                    $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
+                    if(!$transaction['success'])
+                        return Util::json($transaction);
+                    $shoppingcart['transaction_id'] = $transaction['transaction_id'];
+                    $shoppingcart['payment_type'] = 'Credit';
                 }
                 //save purchase
-                
+                $purchase = $this->purchase_save($info['s_token'],$client,$shoppingcart,$current);
+                if(!$purchase['success'])
+                        return Util::json($purchase);
                 //send receipts
                 
             }
@@ -112,10 +117,34 @@ class PurchaseController extends Controller{
     
     /*
      * saving the purchase into the database
-     */
-    public function purchase_save()
+     */                          
+    public function purchase_save($s_token,$client,$shoppingcart,$current)
     {
         try {
+            foreach ($shoppingcart['items'] as $i)
+            {
+                $purchase = new Purchase;
+                $purchase->user_id = $client['user_id'];
+                $purchase->customer_id = $client['customer_id'];
+                $purchase->transaction_id = (!empty($shoppingcart['transaction_id']))? $shoppingcart['transaction_id'] : null;
+                $purchase->payment_type = (!empty($shoppingcart['transaction_id']))? $shoppingcart['transaction_id'] : 'None';
+                $purchase->discount_id = $i['discount_id'];
+                $purchase->show_time_id = $i['show_time_id'];
+                $purchase->session_id = $s_token;
+                $purchase->referrer_url = 'http://app.ticketbat.com';
+                $purchase->quantity = $i['quantity'];
+                $purchase->savings = $i['savings'];
+                $purchase->status = 'Active';
+                $purchase->ticket_type = $i['name'].' '.$i['product_type'];
+                $purchase->retail_price = $i['retail_price'];
+                $purchase->commission_percent = $i['commission_percent'];
+                $purchase->processing_fee = $i['processing_fee'];
+                $purchase->price_paid = Util::round($purchase->retail_price+$purchase->processing_fee-$purchase->savings);
+                $purchase->updated = $current;
+                $purchase->created = $current;
+                $purchase->merchandise = ($i['product_type']=='merchandise')? 1 : 0;  
+                $purchase->save();
+            }
             
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];

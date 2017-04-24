@@ -136,7 +136,7 @@ class Shoppingcart extends Model
                     }
                     //calculate array for purchase when buy
                     if($list) 
-                        $cart[$i->id] = ['discount_id'=>($coupon)? $coupon['ticket_ids'] : 1,'show_time_id'=>$i->item_id,'show_time'=>$i->show_time,
+                        $cart[$i->id] = ['discount_id'=>($coupon)? $coupon['id'] : 1,'show_time_id'=>$i->item_id,'show_time'=>$i->show_time,
                                      'product_type'=>$i->product_type.' '.$i->title, 'savings'=>Util::round($s),'name'=>$i->name,
                                      'commission_percent'=>($i->c_fixed)? $i->c_fixed : Util::round($i->c_percent*$i->number_of_items*$p/100),
                                      'quantity'=>$i->number_of_items,'retail_price'=>Util::round($p),'processing_fee'=>Util::round($f)];
@@ -160,7 +160,7 @@ class Shoppingcart extends Model
                     'total'=>Util::round($total),'items'=>$cart];
            
         } catch (Exception $ex) {
-            return ['success'=>false];
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
     
@@ -222,7 +222,7 @@ class Shoppingcart extends Model
                 return ['success'=>false, 'msg'=>'That coupon is not valid for your items!'];
             }
         } catch (Exception $ex) {
-            return ['success'=>false];
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
 }
