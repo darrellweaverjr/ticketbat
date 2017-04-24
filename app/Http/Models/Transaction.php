@@ -59,7 +59,7 @@ class Transaction extends Model
             $tran->testmode=env('USAEPAY_TEST',1); 
             if($tran->testmode)
             {
-                $tran->key="_U88GQ3F4A64h5QH82x26DhuBfB1aH5C"; 
+                $tran->key="_5n4fazc17ya1luc3euqVSj648zOs0D8"; 
                 $tran->usesandbox=true;
             }
             else
@@ -89,8 +89,8 @@ class Transaction extends Model
             $coupon = (!empty($shoppingcart['coupon']))? ' coupon: '.$shoppingcart['items'] : ' no coupon';
             foreach($shoppingcart['items'] as $item)
             {
-                $tran_description.= '* '.$item->number_of_items.' '.$item->product_type.' for '.$item->name.' on '.$item->show_time.' with '.$coupon.' *'; 
-                $tran->custid = $item->show_time_id;
+                $tran_description.= '* '.$item['quantity'].' '.$item['product_type'].' for '.$item['name'].' on '.$item['show_time'].' with '.$coupon.' *'; 
+                $tran->custid = $item['show_time_id'];
             } 
             $tran->description = $tran_description;
             //swipe card
@@ -108,33 +108,35 @@ class Transaction extends Model
             $success = $tran->Process();
             //hide credit card number  
             unset($tran->card); 
+            $payment['card'] = substr($payment['card'], -4); 
             //store into DB
-            $this->show_time_id = $tran->custid;
-            $this->customer_id = $client['customer_id'];
-            $this->user_id = $client['user_id'];
-            $this->trans_result = $tran->result;
-            $this->invoice_num = $tran->invoice;
-            $this->amount = $tran->amount;
-            $this->card_holder = $tran->cardholder;
-            $this->avs_result = $tran->avs_result;
-            $this->cvv2_result = $tran->cvv2_result;
-            $this->error_code = $tran->errorcode;
-            $this->error = $tran->error;
-            $this->authcode = $tran->authcode;
-            $this->refnum = $tran->refnum;
-            $this->last_4 = $tran->last_4;
-            $this->result = $tran->result;
-            $this->tracking_id = 0;
-            $this->shopping_cart_session_id = $payment['s_token'];
-            $this->transaction_status = 0;
-            $this->created = $created;
-            $this->save();
+            $transaction = new Transaction;
+            $transaction->show_time_id = $tran->custid;
+            $transaction->customer_id = $client['customer_id'];
+            $transaction->user_id = $client['user_id'];
+            $transaction->trans_result = $tran->result;
+            $transaction->invoice_num = $tran->invoice;
+            $transaction->amount = $tran->amount;
+            $transaction->card_holder = $tran->cardholder;
+            $transaction->avs_result = $tran->avs_result;
+            $transaction->cvv2_result = $tran->cvv2_result;
+            $transaction->error_code = $tran->errorcode;
+            $transaction->error = $tran->error;
+            $transaction->authcode = $tran->authcode;
+            $transaction->refnum = $tran->refnum;
+            $transaction->last_4 = $payment['card'];
+            $transaction->result = json_encode($tran,true);
+            $transaction->tracking_id = 0;
+            $transaction->shopping_cart_session_id = $payment['s_token'];
+            $transaction->transaction_status = 0;
+            $transaction->created = $created;
+            $transaction->save();
             //return
             if($success)
-                return ['success'=>true, 'transaction_id'=>$this->id];
+                return ['success'=>true, 'transaction_id'=>$transaction->id];
             else
             {
-                $html = '<b>Transaction:<b><br>'.json_encode((array)$tran,true).'<br>';
+                $html = '<b>Transaction:<b><br>'.json_encode(array_filter((array)$tran),true).'<br><br>';
                 $html.= '<b>Items:<b><br>'.json_encode($shoppingcart,true).'<br>';
                 $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App - Transaction Error');
                 $email->html($html);

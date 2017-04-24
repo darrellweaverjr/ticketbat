@@ -113,50 +113,54 @@ class Purchase extends Model
                             ->first();
         //get tickets 
         $tickets = [];
-        //get all tickets by section
-        if($purchase->section)
+        
+        if($purchase)
         {
-            $ticket_numbers = DB::table('ticket_number')
-                            ->join('customers', 'customers.id', '=' ,'ticket_number.customers_id')
-                            ->select('ticket_number.*', 'customers.first_name', 'customers.last_name', 'customers.email')
-                            ->where('ticket_number.purchases_id', '=', $this->id)
-                            ->orderBy('ticket_number.id')
-                            ->get();
-            for ($i=1; $i<=$this->quantity; $i++)
-            foreach($ticket_numbers as $tn)
-                if(in_array($i,explode(',',$tn->tickets)))
-                {
-                    $main_info = ['number'=>$i,'customer_name'=>$tn->first_name.' '.$tn->last_name,'customer_email'=>$tn->email,'checked'=>(in_array($i,explode(',',$tn->checked)))? $checked_= 1 : $checked_= 0,'comment'=>$tn->comment,'QRcode'=>Util::getQRcode($this->id,$this->user_id,$i)];
-                    $extra_info = ['show_name'=>$purchase->show_name,'show_time'=>$purchase->show_time,'price_each'=>number_format($this->price_paid/$this->quantity,2),'id'=>$this->id,'venue_name'=>$purchase->venue_name,'restrictions'=>$purchase->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$purchase->ticket_type_type,'time_alternative'=>$purchase->time_alternative,'package'=>$purchase->title];
-                    $tickets[] = array_merge($main_info,$extra_info);
-                }    
-        }
-        //get all tickets by section/row/seat
-        else
-        {
-            $seats = DB::table('seats')
-                                ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->join('purchases', 'purchases.id', '=' ,'seats.purchase_id')
-                                ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
-                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                                ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                                ->select(DB::raw('seats.id,seats.purchase_id,seats.consignment_id,seats.ticket_id,seats.seat,seats.show_seat,seats.status,seats.updated, tickets.ticket_type, 
-                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
-                                                  COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
-                                                  COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission,
-                                                  shows.name AS show_name,show_times.show_time,venues.name AS venue_name,shows.restrictions,show_times.time_alternative'))
-                                ->where('seats.purchase_id',$this->id)
-                                ->orderBy('tickets.ticket_type','seats.seat')
-                                ->distinct()->get();
-            foreach ($seats as $s)
+            //get all tickets by section
+            if($purchase->section)
             {
-                $location = $s->ticket_type;
-                if($s->show_seat)
-                    $location .= ' Seat: '.$s->seat;
-                $main_info = ['number'=>$s->id,'customer_name'=>'','customer_email'=>'','checked'=>($s->status == 'Checked')? $checked_= 1 : $checked_= 0,'comment'=>'','QRcode'=>Util::getQRcode($this->id,$this->user_id,$s->id)];
-                $extra_info = ['show_name'=>$s->show_name,'show_time'=>$s->show_time,'price_each'=>number_format($s->retail_price+$s->processing_fee,2),'id'=>$this->id,'venue_name'=>$s->venue_name,'restrictions'=>$s->restrictions,
-                               'user_id'=>$this->user_id,'ticket_type'=>$s->ticket_id,'time_alternative'=>$s->time_alternative,'package'=>$location];
-                $tickets[] = array_merge($main_info,$extra_info);
+                $ticket_numbers = DB::table('ticket_number')
+                                ->join('customers', 'customers.id', '=' ,'ticket_number.customers_id')
+                                ->select('ticket_number.*', 'customers.first_name', 'customers.last_name', 'customers.email')
+                                ->where('ticket_number.purchases_id', '=', $this->id)
+                                ->orderBy('ticket_number.id')
+                                ->get();
+                for ($i=1; $i<=$this->quantity; $i++)
+                foreach($ticket_numbers as $tn)
+                    if(in_array($i,explode(',',$tn->tickets)))
+                    {
+                        $main_info = ['number'=>$i,'customer_name'=>$tn->first_name.' '.$tn->last_name,'customer_email'=>$tn->email,'checked'=>(in_array($i,explode(',',$tn->checked)))? $checked_= 1 : $checked_= 0,'comment'=>$tn->comment,'QRcode'=>Util::getQRcode($this->id,$this->user_id,$i)];
+                        $extra_info = ['show_name'=>$purchase->show_name,'show_time'=>$purchase->show_time,'price_each'=>number_format($this->price_paid/$this->quantity,2),'id'=>$this->id,'venue_name'=>$purchase->venue_name,'restrictions'=>$purchase->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$purchase->ticket_type_type,'time_alternative'=>$purchase->time_alternative,'package'=>$purchase->title];
+                        $tickets[] = array_merge($main_info,$extra_info);
+                    }    
+            }
+            //get all tickets by section/row/seat
+            else
+            {
+                $seats = DB::table('seats')
+                                    ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
+                                    ->join('purchases', 'purchases.id', '=' ,'seats.purchase_id')
+                                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                    ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                                    ->select(DB::raw('seats.id,seats.purchase_id,seats.consignment_id,seats.ticket_id,seats.seat,seats.show_seat,seats.status,seats.updated, tickets.ticket_type, 
+                                                      COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                      COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
+                                                      COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission,
+                                                      shows.name AS show_name,show_times.show_time,venues.name AS venue_name,shows.restrictions,show_times.time_alternative'))
+                                    ->where('seats.purchase_id',$this->id)
+                                    ->orderBy('tickets.ticket_type','seats.seat')
+                                    ->distinct()->get();
+                foreach ($seats as $s)
+                {
+                    $location = $s->ticket_type;
+                    if($s->show_seat)
+                        $location .= ' Seat: '.$s->seat;
+                    $main_info = ['number'=>$s->id,'customer_name'=>'','customer_email'=>'','checked'=>($s->status == 'Checked')? $checked_= 1 : $checked_= 0,'comment'=>'','QRcode'=>Util::getQRcode($this->id,$this->user_id,$s->id)];
+                    $extra_info = ['show_name'=>$s->show_name,'show_time'=>$s->show_time,'price_each'=>number_format($s->retail_price+$s->processing_fee,2),'id'=>$this->id,'venue_name'=>$s->venue_name,'restrictions'=>$s->restrictions,
+                                   'user_id'=>$this->user_id,'ticket_type'=>$s->ticket_id,'time_alternative'=>$s->time_alternative,'package'=>$location];
+                    $tickets[] = array_merge($main_info,$extra_info);
+                }
             }
         }
         //get banners from shows, if not then banners from venues
