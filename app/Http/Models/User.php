@@ -127,9 +127,24 @@ class User extends Authenticatable
             {
                 $customer = new Customer;
                 $customer->email = $this->email;
+                $location = new Location;
+                $location->created = $this->created;
+                $location->updated = $this->updated;
             }
-            $location = $user->location;
-            $location->updated = $this->updated;
+            else
+            {
+                $location = $customer->location;
+                $location->updated = $this->updated;
+            }
+            //update location
+            $location->address = $this->location->address;
+            $location->city = $this->location->city;
+            $location->state = $this->location->state;
+            $location->zip = $this->location->zip;
+            $location->country = $this->location->country;
+            $location->set_lng_lat();
+            $location->save();
+            //update customer
             $customer->location()->associate($location);
             $customer->first_name = $this->first_name;
             $customer->last_name = $this->last_name;
