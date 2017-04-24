@@ -85,8 +85,8 @@ class PurchaseController extends Controller{
                 }
                 $sent = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
                 if($sent)
-                    return Util::json(['success'=>true, 'msg'=>'Purchase successfully!<br>We sent you a receipt by email.<br>You can also see the purchases and the tickets in your options.']);
-                return Util::json(['success'=>true, 'msg'=>'Purchase successfully!<br>We could not send you a receipt by email.<br>You can see the purchases and the tickets in your options.']);
+                    return Util::json(['success'=>true, 'msg'=>'We sent you a receipt by email.<br>You can also see the purchases and the tickets in your options.']);
+                return Util::json(['success'=>true, 'msg'=>'We could not send you a receipt by email.<br>You can see the purchases and the tickets in your options.']);
             }
             return Util::json(['success'=>false, 'msg'=>'Fill the form out correctly!']);
         } catch (Exception $ex) {
