@@ -92,9 +92,17 @@ class EmailSG {
         }
     }
 
+    public function subject($subject) {
+        try {
+            $this->mail->setSubject($subject);
+        } catch (Exception $ex) {
+            throw new Exception('Error adding subject EmailSG: '.$ex->getMessage());
+        }        
+    }
+    
     public function reply($replyto) {
         try {
-            $this->mail->setReplyTo(new ReplyTo($replyto));
+            $this->mail->setReplyTo(new SendGrid\ReplyTo($replyto));
         } catch (Exception $ex) {
             throw new Exception('Error adding reply EmailSG: '.$ex->getMessage());
         }        

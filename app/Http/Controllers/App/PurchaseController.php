@@ -41,6 +41,8 @@ class PurchaseController extends Controller{
                 {
                     //make transaction
                     $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
+                    //remove hide credit card number
+                    $info['card'] = '...'.substr($info['card'], -4); 
                     if(!$transaction['success'])
                         return Util::json($transaction);
                     $shoppingcart['transaction_id'] = $transaction['transaction_id'];
@@ -50,11 +52,36 @@ class PurchaseController extends Controller{
                 $purchase = $this->purchase_save($info['s_token'],$client,$shoppingcart,$current);
                 if(!$purchase['success'])
                         return Util::json($purchase);
+                if(count($purchase['errors']))
+                {
+                    $html = '<b>Customer:<b><br>'.json_encode($info,true).'<br>';
+                    $html.= '<b>Items:<b><br>'.json_encode($shoppingcart,true).'<br>';
+                    $html.= '<b>Purchases ID success:<b><br>'.implode(',',$purchase['ids']).'<br>';
+                    $html.= '<b>ShoppingCart ID error:<b><br>'.implode(',',$purchase['errors']).'<br>';
+                    $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App - Purchase Error');
+                    $email->html($html);
+                    $email->send();
+                }
+                if(!count($purchase['ids']))
+                    return Util::json(['success'=>false, 'msg'=>'The system could not save your purchases correctly!<br>Please contact us.']);
                 //send receipts
-                
+                $receipts=[];
+                foreach ($purchase['ids'] as $id)
+                {
+                    $p = Purchase::find($id);
+                    if($p)  $receipts[] = $p->get_receipt();
+                }
+                $sent = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
+                if($sent)
+                    return Util::json(['success'=>true, 'msg'=>'Purchase successfully!<br>We sent you a receipt by email.<br>You can also see the purchases and the tickets in your options.']);
+                return Util::json(['success'=>true, 'msg'=>'Purchase successfully!<br>We could not send you a receipt by email.<br>You can see the purchases and the tickets in your options.']);
             }
             return Util::json(['success'=>false, 'msg'=>'Fill the form out correctly!']);
         } catch (Exception $ex) {
+            $html  = '<b>Exception:<b><br>'. strval($ex).'<br>';
+            $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App - Sell Error');
+            $email->html($html);
+            $email->send();
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     } 
@@ -121,8 +148,11 @@ class PurchaseController extends Controller{
     public function purchase_save($s_token,$client,$shoppingcart,$current)
     {
         try {
+            $purchase_ids=[];
+            $errors_ids=[];
             foreach ($shoppingcart['items'] as $i)
             {
+                //create purchase
                 $purchase = new Purchase;
                 $purchase->user_id = $client['user_id'];
                 $purchase->customer_id = $client['customer_id'];
@@ -143,9 +173,20 @@ class PurchaseController extends Controller{
                 $purchase->updated = $current;
                 $purchase->created = $current;
                 $purchase->merchandise = ($i['product_type']=='merchandise')? 1 : 0;  
-                $purchase->save();
+                if($purchase->save())
+                {
+                    //remove item from shoppingcart
+                    Shoppingcart::find($i['id'])->delete();
+                    //create tickets, no gifts
+                    $tickets = implode(range(1,$purchase->quantity));
+                    DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                    //get id for receipts
+                    $purchase_ids[] = $purchase->id;
+                }
+                else
+                    $errors_ids[] = $i['id'];
             }
-            
+            return ['success'=>true, 'ids'=>$purchase_ids, 'errors'=>$errors_ids];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }

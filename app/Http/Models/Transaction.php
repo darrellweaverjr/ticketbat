@@ -108,7 +108,6 @@ class Transaction extends Model
             $success = $tran->Process();
             //hide credit card number  
             unset($tran->card); 
-            $payment['card'] = '...'.substr($payment['card'], -4); 
             //store into DB
             $this->show_time_id = $tran->custid;
             $this->customer_id = $client['customer_id'];

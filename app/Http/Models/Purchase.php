@@ -184,7 +184,7 @@ class Purchase extends Model
     /**
      * Send by email given purchases receipts.
      */
-    public static function email_receipts($subject,$receipts,$type_email,$change=null)
+    public static function email_receipts($subject,$receipts,$type_email,$change=null,$promotor_copy=false)
     {
         try {
             if(is_array($receipts) && count($receipts) && is_string($subject) && is_string($type_email))
@@ -194,6 +194,8 @@ class Purchase extends Model
                 $pdf_receipts = $pdf_tickets = $purchases = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
                 $top='';
+                //set customer
+                $customer = $receipts[0]['customer'];
                 //loop receipts
                 foreach ($receipts as $receipt)
                 {
@@ -240,31 +242,58 @@ class Purchase extends Model
                         }
                     }
                 }
+                //table on email to show all totals
+                $totals['total'] = $totals['retail_price'] + $totals['processing_fee'] - $totals['discount'];
+                $totals_html = '<tr> <td align="right" width="80%">Subtotal:</td> <td width="20%" align="right">$ '.number_format($totals['retail_price'],2).'</td> </tr>
+                                <tr> <td align="right">Processing Fee:</td> <td align="right">$ '.number_format($totals['processing_fee'],2).'</td> </tr>';
+                if($totals['discount'] > 0)
+                    $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
+                $totals_html.='<tr> <td align="right" style="color:#1F9F0B;"><b>GRAND TOTAL</b>:</td> <td align="right" style="color:#1F9F0B;">$ '.number_format($totals['total'],2).'</td> </tr>';
+                
                 //send email           
-                $email = new EmailSG(null, $receipt['customer']->email , $subject);
+                $email = new EmailSG(null, $customer->email , $subject);
                 //$email->cc(env('MAIL_REPORT_CC'));
                 $email->category('Receipts');
                 $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
                 //check type of email to send
                 if($type === 'reminder')
                 {
-                    $email->body('reminder',['purchase'=>$purchases,'customer'=>$receipt['customer']]);
+                    $email->body('reminder',['purchase'=>$purchases,'customer'=>$customer]);
                     $email->template('330de7c4-3d1c-47b5-9f48-ca376cbbea99');
                 }
                 else
                 {
-                    //table on email to show all totals
-                    $totals['total'] = $totals['retail_price'] + $totals['processing_fee'] - $totals['discount'];
-                    $totals_html = '<tr> <td align="right" width="80%">Subtotal:</td> <td width="20%" align="right">$ '.number_format($totals['retail_price'],2).'</td> </tr>
-                                    <tr> <td align="right">Processing Fee:</td> <td align="right">$ '.number_format($totals['processing_fee'],2).'</td> </tr>';
-                    if($totals['discount'] > 0)
-                        $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
-                    $totals_html.='<tr> <td align="right" style="color:#1F9F0B;"><b>GRAND TOTAL</b>:</td> <td align="right" style="color:#1F9F0B;">$ '.number_format($totals['total'],2).'</td> </tr>';
                     //info to send by email content
                     $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>'','top'=>$top]);
                     $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
                 }
                 $response = $email->send();
+                
+                //send copy to event promotor if available option
+                if($promotor_copy)
+                {                    
+                    $p = $receipts[0]['purchase'];
+                    if($p->s_individual_emails == 1 && !empty($p->emails))
+                    {
+                        $email = new EmailSG(null, $customer->email , $subject.' (BO Receipt)');
+                        $email->category('Receipts');
+                        $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
+                        //check type of email to send
+                        if($type === 'reminder')
+                        {
+                            $email->body('reminder',['purchase'=>$purchases,'customer'=>$customer]);
+                            $email->template('330de7c4-3d1c-47b5-9f48-ca376cbbea99');
+                        }
+                        else
+                        {
+                            //info to send by email content
+                            $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>'','top'=>$top]);
+                            $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
+                        }
+                        $email->send();
+                    }
+                }
+                //clean up and return
                 foreach(array_merge($pdf_receipts,$pdf_tickets) as $link)
                     unlink($link);
                 return $response;

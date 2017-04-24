@@ -37,7 +37,7 @@ class Contact extends Model
             $html .= '<br><b>System Info: </b>'.$this->system_info.'<br><b>Message: </b>'.$this->message;
             $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App - Contact');
             $email->html($html);
-            //$email->reply($info['email']);
+            $email->reply($this->email);
             return $email->send();
         } catch (Exception $ex) {
             return false;
