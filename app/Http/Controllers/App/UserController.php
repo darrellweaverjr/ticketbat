@@ -51,7 +51,7 @@ class UserController extends Controller{
                         $p->tickets = [];
                         $tickets = range(1,$p->quantity);
                         foreach ($tickets as $t)
-                            $p->tickets[] = Util::getQRcode($p->id,$p->user_id,$t,200);
+                            $p->tickets[] = ['number'=>$t,'code'=>Util::getQRcode($p->id,$p->user_id,$t,400)];
                     }
                 }
                 return Util::json(['success'=>true, 'purchases'=>$purchases]);
