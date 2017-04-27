@@ -795,7 +795,13 @@ class ShowController extends Controller{
                     if($showtime)
                     {
                         $date_from = $showtime->show_time;
-                        $purchases = Purchase::where('show_time_id',$showtime->id)->get();
+                        $purchases = DB::table('purchases')
+                                        ->join('tickets', 'purchases.ticket_id','=','tickets.id')
+                                        ->select('purchases.id')
+                                        ->where('purchases.show_time_id','=',$showtime->id)
+                                        ->where('purchases.status','=','Active')
+                                        ->where('tickets.is_active','>',0)
+                                        ->distinct()->get();
                         $showtime_to = ShowTime::where('show_time',$input['show_time_to'])->where('show_id',$input['show_id'])->first();
                         if(!$showtime_to)
                         {
@@ -817,8 +823,12 @@ class ShowController extends Controller{
                         {
                             foreach ($purchases as $p)
                             {
-                                $receipt = $p->get_receipt();
-                                Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $date_from);
+                                $pur = Purchase::find($p->id);
+                                if($pur)
+                                {
+                                    $receipt = $pur->get_receipt();
+                                    Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $date_from);
+                                }
                             }
                         }
                         return ['success'=>true,'id'=>$input['show_time_id'],'showtime'=>$showtime_to];
