@@ -2,7 +2,6 @@
 
 //GENERAL ROUTES
 Auth::routes();
-Route::get('/xxx', 'App\PurchaseController@buy');
 Route::get('/', function () { return redirect()->route('home'); });
 Route::get('/home', function () { return redirect()->route('home'); });
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -91,6 +90,4 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view')->middleware('permissions:CONSIGNMENTS');
     Route::post('consignments/save', 'ConsignmentController@save')->middleware('permissions:CONSIGNMENTS');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index')->middleware('permissions:CONSIGNMENTS');
-    //apps
-    //Route::match(['get','post'], 'apps', 'AppController@index')->middleware('permissions:APPS');
 });
