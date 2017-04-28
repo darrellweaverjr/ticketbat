@@ -55,7 +55,7 @@ class AuthController extends Controller{
             && !empty($info['address']) && !empty($info['city']) && !empty($info['region']) && !empty($info['country']) && !empty($info['zip']))
             {
                 //check password
-                if(!(strlen($info['new_pass'])>=8 && preg_match('/[A-Z]+[a-z]+[0-9]+/',$info['new_pass']))) 
+                if(!(strlen($info['password'])>=8 && preg_match('/[A-Z]+[a-z]+[0-9]+/',$info['password']))) 
                     return Util::json(['success'=>false, 'msg'=>'The new password must have at least 8 characters, a lower case character, an upper case character, and a number']);
                 //check user
                 $user = User::where('email','=',$info['email'])->first();
