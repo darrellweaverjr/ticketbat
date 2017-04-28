@@ -437,7 +437,7 @@ var TableDatatablesManaged = function () {
         //init functions
         check_models();  
         $('input.fix_commission').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:999.99,prefix:'$' });
-        $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
+        $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:0.01,decimals:2,max:1000000});
         $('input[name="end_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="quantity"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
     }
