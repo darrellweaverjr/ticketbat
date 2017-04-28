@@ -9,6 +9,9 @@ Route::group(['prefix' => 'app','middleware' => 'app.security:0','namespace' => 
     Route::post('general_contact', 'GeneralController@contact');
     //apps config session auth
     Route::post('auth_login', 'AuthController@login');
+    Route::post('auth_register', 'AuthController@register');
+    Route::post('auth_recover', 'AuthController@recover');
+    Route::post('auth_change', 'AuthController@change');
     //apps config manage shopping cart
     Route::post('cart_get', 'ShoppingCartController@get');
     Route::post('cart_add', 'ShoppingCartController@add');

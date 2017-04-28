@@ -140,6 +140,8 @@ class PurchaseController extends Controller{
             //send email welcome
             if($send_welcome_email)
                 $user->welcome_email(true);
+            //erase temp pass
+            $user->set_slug();
             //get customer
             $customer_id = $user->update_customer();
             if(!$customer_id)

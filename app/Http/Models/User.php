@@ -100,11 +100,14 @@ class User extends Authenticatable
     /**
      * Set a random passoword for current user.
      */
-    public function set_password()
+    public function set_password($new_password=null)
     {
-        $length = 10;
-        $new_password = substr(bcrypt(bin2hex(uniqid())),-1*$length);
-        $this->slug = $new_password;
+        if(!$new_password)
+        {
+            $length = 10;
+            $new_password = substr(bcrypt(bin2hex(uniqid())),-1*$length);
+            $this->slug = $new_password;
+        }        
         $this->password = md5($new_password);
     }
     /**
