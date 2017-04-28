@@ -54,6 +54,10 @@ class AuthController extends Controller{
             if(!empty($info['email']) && !empty($info['password']) && !empty($info['first_name']) && !empty($info['last_name']) && !empty($info['phone']) 
             && !empty($info['address']) && !empty($info['city']) && !empty($info['region']) && !empty($info['country']) && !empty($info['zip']))
             {
+                //check password
+                if(!(strlen($info['new_pass'])>=8 && preg_match('/[A-Z]+[a-z]+[0-9]+/',$info['new_pass']))) 
+                    return Util::json(['success'=>false, 'msg'=>'The new password must have at least 8 characters, a lower case character, an upper case character, and a number']);
+                //check user
                 $user = User::where('email','=',$info['email'])->first();
                 if($user)
                     return ['success'=>false, 'msg'=>'That email is already in the system.'];
@@ -131,7 +135,7 @@ class AuthController extends Controller{
             $info = Input::all();
             if(!empty($info['a_token']) && $info['old_pass'] && !empty($info['new_pass']))
             {
-                if(!(strlen($info['new_pass']) && preg_match('/[A-Z]+[a-z]+[0-9]+/',$info['new_pass']))) 
+                if(!(strlen($info['new_pass'])>=8 && preg_match('/[A-Z]+[a-z]+[0-9]+/',$info['new_pass']))) 
                     return Util::json(['success'=>false, 'msg'=>'The new password must have at least 8 characters, a lower case character, an upper case character, and a number']);
                 $id = explode('.',$info['a_token']);
                 $user = User::where('id','=',$id[0])->where('password','=',md5($info['old_pass']))->first();
