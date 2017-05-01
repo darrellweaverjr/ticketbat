@@ -43,24 +43,62 @@ class Shoppingcart extends Model
     /**
      * Calculate totals and/or calculate items.
      */
-    public static function calculate_session($session_id,$list=false)
+    public static function items_session($session_id)
+    {
+        $items = DB::table('shoppingcart')
+                            ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
+                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
+                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id,
+                                              shoppingcart.product_type, shoppingcart.cost_per_product, show_times.show_time, shoppingcart.number_of_items, shoppingcart.item_id,
+                                              IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent,
+                                              (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon,
+                                              (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event,
+                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, 
+                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty'))
+                            ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
+                            ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
+        //search for availables items
+        foreach ($items as $i)
+        {
+            $i->unavailable = 0;    //availables by default
+            if($i->available_event < 1) //available events
+                $i->unavailable = 3;
+            else if($i->available_time < 1) //available time to purchase
+                $i->unavailable = 2;
+            else if($i->available_qty!=-1 && $i->available_qty-$i->number_of_items<0)   //available qty of items to buy
+            {
+                if($i->available_qty>0)
+                {
+                    $fee = $i->processing_fee/$i->number_of_items;
+                    $i->number_of_items = $i->available_qty;
+                    $i->processing_fee = $fee*$i->number_of_items;
+                    $i->total_cost = ($i->cost_per_product+$fee)*$i->number_of_items;
+                    Shoppingcart::where('id','=',$i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost]);
+                }
+                else
+                    $i->unavailable = 1;
+            }
+            //if there is unavailable item remove it
+            if($i->unavailable > 0)
+                Shoppingcart::where('id','=',$i->id)->delete();
+        }
+        //return
+        return $items;
+    }
+    /**
+     * Calculate totals and/or calculate items.
+     */
+    public static function calculate_session($session_id)
     {
         try {
             $price = $qty = $fee = $save = $saveAll = $total = 0;
             $saveAllApplied = false;
             $coupon = $coupon_description = null; 
-            $cart = [];
             //get all items
-            $items = DB::table('shoppingcart')
-                        ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
-                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
-                        ->join('packages', 'packages.id', '=' ,'tickets.package_id')
-                        ->select('shoppingcart.id','shoppingcart.product_type','shoppingcart.cost_per_product','shows.name','show_times.show_time','shoppingcart.ticket_id',
-                                 'shoppingcart.item_id','packages.title','tickets.percent_commission AS c_percent','tickets.fixed_commission AS c_fixed',
-                                 'shoppingcart.number_of_items','shoppingcart.total_cost','shoppingcart.coupon','shoppingcart.ticket_id')
-                        ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
-                        ->orderBy('shoppingcart.timestamp')->distinct()->get();
+            $items = Shoppingcart::items_session($session_id);
             if(count($items))
             {
                 //check coupon for discounts
@@ -72,81 +110,78 @@ class Shoppingcart extends Model
                 //loop for all items to calculate
                 foreach ($items as $i)
                 {
-                    //calculate price and fees
-                    $p = $i->cost_per_product * $i->number_of_items;
-                    $price += $p;
-                    $f = $i->total_cost - $p;
-                    $fee += $f;
-                    $qty += $i->number_of_items;
-                    //calculate discounts for each ticket the the coupon applies
-                    $s = 0;
-                    if(!empty($coupon) && in_array($i->ticket_id,$coupon['ticket_ids']))
+                    //calculate totals for availables items only
+                    if(!$i->unavailable)
                     {
-                        switch($coupon['discount_type'])
+                        //calculate price and fees
+                        $p = $i->cost_per_product * $i->number_of_items;
+                        $price += $p;
+                        $fee += Util::round($i->processing_fee);
+                        $qty += $i->number_of_items;
+                        //others
+                        $i->discount_id = ($coupon && $coupon['id'])? $coupon['id'] : 1;
+                        $i->commission = ($i->c_fixed)? $i->c_fixed : Util::round($i->c_percent*$i->number_of_items*$p/100);
+                        $i->retail_price = Util::round($p);                    
+                        //calculate discounts for each ticket the the coupon applies
+                        $s = 0;
+                        if(!empty($coupon) && in_array($i->ticket_id,$coupon['ticket_ids']))
                         {
-                            case 'Percent':
-                                    $s = Util::round($i->total_cost * $coupon['start_num'] / 100);
-                                    break;
-                            case 'Dollar':
-                                    $s = ($coupon['discount_scope']=='Total')? $coupon['start_num'] : $coupon['start_num'] * $i->number_of_items;
-                                    break;
-                            case 'N for N':
-                                    $maxFreeSets = floor($i->number_of_items / $coupon['start_num']);
-                                    $free = $total = 0;
-                                    while ($maxFreeSets > 0) 
-                                    {
-                                        $a = 0;
-                                        while ($a < $coupon['start_num'] && $total < $i->number_of_items) {
-                                            $total++; $a++;
-                                        }
-                                        $b = 0;
-                                        while ($b < $coupon['end_num'] && $total < $i->number_of_items) {
-                                            $free++; $total++; $b++;
-                                        }
-                                        $maxFreeSets--;
-                                    }
-                                    $s = Util::round($i->total_cost / $i->number_of_items * $free);
-                                    break;
-                            default:  
-                                    break;
-                        }
-                        //write savings or suming
-                        if(($coupon['discount_scope']=='Total' && $coupon['discount_type']=='Dollar'))
-                        {
-                            //add total savings if doesnt exist
-                            if($saveAll==0 && !$saveAllApplied)
+                            switch($coupon['discount_type'])
                             {
-                                $saveAllApplied = true;
-                                $saveAll = $s;
+                                case 'Percent':
+                                        $s = Util::round($i->total_cost * $coupon['start_num'] / 100);
+                                        break;
+                                case 'Dollar':
+                                        $s = ($coupon['discount_scope']=='Total')? $coupon['start_num'] : $coupon['start_num'] * $i->number_of_items;
+                                        break;
+                                case 'N for N':
+                                        $maxFreeSets = floor($i->number_of_items / $coupon['start_num']);
+                                        $free = $total = 0;
+                                        while ($maxFreeSets > 0) 
+                                        {
+                                            $a = 0;
+                                            while ($a < $coupon['start_num'] && $total < $i->number_of_items) {
+                                                $total++; $a++;
+                                            }
+                                            $b = 0;
+                                            while ($b < $coupon['end_num'] && $total < $i->number_of_items) {
+                                                $free++; $total++; $b++;
+                                            }
+                                            $maxFreeSets--;
+                                        }
+                                        $s = Util::round($i->total_cost / $i->number_of_items * $free);
+                                        break;
+                                default:  
+                                        break;
                             }
-                            //discount savings for each item from total
-                            if($saveAll>0)
+                            //write savings or suming
+                            if(($coupon['discount_scope']=='Total' && $coupon['discount_type']=='Dollar'))
                             {
-                                if($saveAll > $i->total_cost)
-                                    $s = $i->total_cost;
-                                else
-                                    $s = $saveAll;
-                                $saveAll -= $s;
+                                //add total savings if doesnt exist
+                                if($saveAll==0 && !$saveAllApplied)
+                                {
+                                    $saveAllApplied = true;
+                                    $saveAll = $s;
+                                }
+                                //discount savings for each item from total
+                                if($saveAll>0)
+                                {
+                                    if($saveAll > $i->total_cost)
+                                        $s = $i->total_cost;
+                                    else
+                                        $s = $saveAll;
+                                    $saveAll -= $s;
+                                    $save += $s;
+                                }
+                                else $s = 0;
+                            } 
+                            else
                                 $save += $s;
-                            }
-                            else $s = 0;
-                        } 
-                        else
-                            $save += $s;
+                        }
+                        //calculate savings for item
+                        $i->savings = Util::round($s);
                     }
-                    //calculate array for purchase when buy
-                    if($list) 
-                        $cart[$i->id] = ['discount_id'=>($coupon)? $coupon['id'] : 1,'show_time_id'=>$i->item_id,'show_time'=>$i->show_time,
-                                     'product_type'=>$i->product_type.' '.$i->title, 'savings'=>Util::round($s),'name'=>$i->name,'ticket_id'=>$i->ticket_id,
-                                     'commission_percent'=>($i->c_fixed)? $i->c_fixed : Util::round($i->c_percent*$i->number_of_items*$p/100),
-                                     'quantity'=>$i->number_of_items,'retail_price'=>Util::round($p),'processing_fee'=>Util::round($f)];
-                }
-                //change coupon name after loop
-                if(!empty($coupon))
-                {
-                    $coupon_description = $coupon['description'];
-                    $coupon = $coupon['code'];
-                }
+                }                
             }   
             //calculate and return sum of all values of the shoppingcart
             $total = $price + $fee - $save;
@@ -155,9 +190,15 @@ class Shoppingcart extends Model
                 $save = $price + $fee;
                 $total = 0;
             }
+            //coupons
+            if(!empty($coupon))
+            {
+                $coupon_description = $coupon['description'];
+                $coupon = $coupon['code'];
+            }
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),
-                    'total'=>Util::round($total),'items'=>$cart];
+                    'total'=>Util::round($total),'items'=>$items];
            
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];

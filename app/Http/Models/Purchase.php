@@ -144,7 +144,7 @@ class Purchase extends Model
                                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                                     ->select(DB::raw('seats.id,seats.purchase_id,seats.consignment_id,seats.ticket_id,seats.seat,seats.show_seat,seats.status,seats.updated, tickets.ticket_type, 
-                                                      COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                      COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, purchases.savings,
                                                       COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
                                                       COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission,
                                                       shows.name AS show_name,show_times.show_time,venues.name AS venue_name,shows.restrictions,show_times.time_alternative'))
@@ -235,7 +235,7 @@ class Purchase extends Model
                         $totals['qty']+=$receipt['purchase']->quantity;
                         $totals['processing_fee']+=$receipt['purchase']->processing_fee;
                         $totals['retail_price']+=$receipt['purchase']->retail_price;
-                        $totals['discount']+=$receipt['purchase']->retail_price-$receipt['purchase']->price_paid+$receipt['purchase']->processing_fee;
+                        $totals['discount']+=$receipt['purchase']->savings;
                         //show on top if change date
                         if($change)
                         {

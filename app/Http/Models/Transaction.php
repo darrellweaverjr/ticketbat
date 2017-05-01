@@ -86,11 +86,11 @@ class Transaction extends Model
                 $tran->zip = $tran->billzip = $payment['zip'];
             //description
             $tran_description = '';
-            $coupon = (!empty($shoppingcart['coupon']))? ' coupon: '.$shoppingcart['items'] : ' no coupon';
+            $coupon = (!empty($shoppingcart['coupon']))? ' coupon: '.$shoppingcart['coupon'] : ' no coupon';
             foreach($shoppingcart['items'] as $item)
             {
-                $tran_description.= '* '.$item['quantity'].' '.$item['product_type'].' for '.$item['name'].' on '.$item['show_time'].' with '.$coupon.' *'; 
-                $tran->custid = $item['show_time_id'];
+                $tran_description.= '* '.$item->number_of_items.' '.$item->product_type.' '.$item->package.' for '.$item->name.' on '.$item->show_time.' with '.$coupon.' *'; 
+                $tran->custid = $item->item_id;
             } 
             $tran->description = $tran_description;
             //swipe card

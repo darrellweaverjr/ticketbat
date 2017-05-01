@@ -44,6 +44,10 @@ class PurchaseController extends Controller{
                     return Util::json($shoppingcart);
                 if(!count($shoppingcart['items']))
                     return Util::json(['success'=>false, 'msg'=>'There are no items to buy in the Shopping Cart.']);
+                //remove unavailable items from shopingcart
+                foreach($shoppingcart['items'] as $key=>$item)
+                    if($item->unavailable)
+                        unset($shoppingcart['items'][$key]);
                 //set up customer
                 $client = $this->customer_set($info, $current);
                 if(!$client['success'])
@@ -160,7 +164,7 @@ class PurchaseController extends Controller{
         try {
             $purchase_ids=[];
             $errors_ids=[];
-            foreach ($shoppingcart['items'] as $id=>$i)
+            foreach ($shoppingcart['items'] as $i)
             {
                 //create purchase
                 $purchase = new Purchase;
@@ -168,26 +172,26 @@ class PurchaseController extends Controller{
                 $purchase->customer_id = $client['customer_id'];
                 $purchase->transaction_id = (!empty($shoppingcart['transaction_id']))? $shoppingcart['transaction_id'] : null;
                 $purchase->payment_type = (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None';
-                $purchase->discount_id = $i['discount_id'];
-                $purchase->ticket_id = $i['ticket_id'];
-                $purchase->show_time_id = $i['show_time_id'];
+                $purchase->discount_id = $i->discount_id;
+                $purchase->ticket_id = $i->ticket_id;
+                $purchase->show_time_id = $i->item_id;
                 $purchase->session_id = $x_token;
                 $purchase->referrer_url = 'http://app.ticketbat.com';
-                $purchase->quantity = $i['quantity'];
-                $purchase->savings = $i['savings'];
+                $purchase->quantity = $i->number_of_items;
+                $purchase->savings = $i->savings;
                 $purchase->status = 'Active';
-                $purchase->ticket_type = $i['name'].' '.$i['product_type'];
-                $purchase->retail_price = $i['retail_price'];
-                $purchase->commission_percent = $i['commission_percent'];
-                $purchase->processing_fee = $i['processing_fee'];
+                $purchase->ticket_type = $i->name.' '.$i->product_type;
+                $purchase->retail_price = $i->retail_price;
+                $purchase->commission_percent = $i->commission;
+                $purchase->processing_fee = $i->processing_fee;
                 $purchase->price_paid = Util::round($purchase->retail_price+$purchase->processing_fee-$purchase->savings);
                 $purchase->updated = $current;
                 $purchase->created = $current;
-                $purchase->merchandise = ($i['product_type']=='merchandise')? 1 : 0;  
+                $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;  
                 if($purchase->save())
                 {
                     //remove item from shoppingcart
-                    Shoppingcart::find($id)->delete();
+                    Shoppingcart::where('id','=',$i->id)->delete();
                     //create tickets, no gifts
                     $tickets = implode(range(1,$purchase->quantity));
                     DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
@@ -195,7 +199,7 @@ class PurchaseController extends Controller{
                     $purchase_ids[] = $purchase->id;
                 }
                 else
-                    $errors_ids[] = $i['id'];
+                    $errors_ids[] = $i->id;
             }
             return ['success'=>true, 'ids'=>$purchase_ids, 'errors'=>$errors_ids];
         } catch (Exception $ex) {

@@ -18,27 +18,14 @@ class ShoppingCartController extends Controller{
     /*
      * get all items in the cart
      */
-    public function get($raw=null)
+    public function get()
     {
         try {
             $info = Input::all();
-            if($raw) $info['s_token'] = $raw;
             if(!empty($info['s_token']))
             {
                 //get all items
-                $items = DB::table('shoppingcart')
-                            ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
-                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                            ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
-                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
-                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, 
-                                              shoppingcart.product_type, shoppingcart.cost_per_product, show_times.show_time, shoppingcart.number_of_items,
-                                              IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, 
-                                              (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee'))
-                            ->where('shoppingcart.session_id','=',$info['s_token'])->where('shoppingcart.status','=',0)
-                            ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
-                if($raw) return $items;
-                return Util::json(['success'=>true,'items'=>$items,'totals'=>Shoppingcart::calculate_session($info['s_token'])]);
+                return Util::json(['success'=>true,'totals'=>Shoppingcart::calculate_session($info['s_token'])]);
             }
             return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
         } catch (Exception $ex) {
@@ -113,7 +100,7 @@ class ShoppingCartController extends Controller{
                     $item->save();
                     $totals = Shoppingcart::calculate_session($info['s_token']);
                     if($totals['success'])
-                        return Util::json(['success'=>true,'items'=>$this->get($info['s_token']),'totals'=>$totals]);
+                        return Util::json(['success'=>true,'totals'=>$totals]);
                     return Util::json($totals); 
                 }
                 return Util::json(['success'=>false, 'msg'=>'That ticket is not longer available!']);
@@ -137,7 +124,7 @@ class ShoppingCartController extends Controller{
                 Shoppingcart::where('id','=',$info['shoppingcart_id'])->where('session_id','=',$info['s_token'])->delete();
                 $totals = Shoppingcart::calculate_session($info['s_token']);
                 if($totals['success'])
-                    return Util::json(['success'=>true,'items'=>$this->get($info['s_token']),'totals'=>$totals]);
+                    return Util::json(['success'=>true,'totals'=>$totals]);
                 return Util::json($totals); 
             }
             return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
