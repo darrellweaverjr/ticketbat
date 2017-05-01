@@ -90,9 +90,11 @@ class GeneralController extends Controller{
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select('venues.id','venues.name','images.url','locations.city')
-                        ->where('venues.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())
+                        ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where('show_times.is_active','>',0)->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
+                        ->where('images.image_type','=','Logo')->where('tickets.is_active','>',0)
                         ->whereNotNull('images.url')
                         ->orderBy('venues.name')->groupBy('venues.id')
                         ->distinct()->get();
@@ -118,28 +120,28 @@ class GeneralController extends Controller{
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue,
-                                          MIN(tickets.retail_price+tickets.processing_fee) AS retail_price,
                                           shows.restrictions, locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
-                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('show_times.is_active','=',1)
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('shows.id','=',$info['show_id'])
+                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
+                        ->where('show_times.is_active','>',0)->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
                         ->orderBy('shows.name')->groupBy('shows.id')->first(); 
                 if($show)
                 {
                     //get show times
                     $showtimes = DB::table('show_times')
-                            ->select(DB::raw('DATE_FORMAT(show_time,"%Y-%m-%d") AS s_date'))
-                            ->where('show_time','>',\Carbon\Carbon::now())->where('is_active','=',1)->where('show_id','=',$show->id)
+                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
+                            ->select(DB::raw('DATE_FORMAT(show_times.show_time,"%Y-%m-%d") AS s_date'))
+                            ->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')->where('shows.id','=',$show->id)
+                            ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
                             ->orderBy('s_date')->groupBy('s_date')
                             ->distinct()->take(30)->get(); 
                     foreach ($showtimes as $st)
                     {
-                        $times = DB::table('show_times')
-                                ->select(DB::raw('id, DATE_FORMAT(show_time,"%h:%i %p") AS s_time'))
-                                ->whereDate('show_time',$st->s_date)->where('show_id','=',$show->id)
-                                ->distinct()->get(); 
+                        //get date for only first element, speed issues
+                        $times = $this->showtimes($show->id,$st->s_date);
                         $st->times = $times;
+                        break;  
                     }
                     //get videos
                     $videos = DB::table('videos')
@@ -176,12 +178,44 @@ class GeneralController extends Controller{
         }
     }
     
-    
-    
     /*
      * return showtime details in json format
      */
-    public function showtime()
+    public function showtimes($show_id=null,$date=null)
+    {
+        try {
+            $info = Input::all();  
+            if($show_id && $date)
+            {
+                $info['show_id'] = $show_id;
+                $info['date'] = $date;
+            }
+            if(!empty($info['show_id']) && is_numeric($info['show_id']) && !empty($info['date']) && strtotime($info['date'])!=false 
+            && strtotime($info['date']) >= strtotime('today') )
+            {
+                $times = DB::table('show_times')        
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
+                        ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
+                        ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%h:%i %p") AS s_time,
+                                          MIN(tickets.retail_price+tickets.processing_fee) AS price,
+                                          (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE 100 END) AS availables'))
+                        ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$info['show_id'])
+                        ->distinct()->get(); 
+                if($show_id && $date)
+                    return $times;
+                return Util::json(['success'=>true, 'times'=>$times]);
+            }
+            return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
+        } catch (Exception $ex) {
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+        }
+    } 
+    
+    /*
+     * return event details in json format
+     */
+    public function event()
     {
         try {
             $info = Input::all();  
