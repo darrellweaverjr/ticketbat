@@ -50,7 +50,7 @@ class AuthController extends Controller{
     {
         try {
             $info = Input::all();
-            $current = date('Y-m-d h:i:s');
+            $current = date('Y-m-d H:i:s');
             if(!empty($info['email']) && !empty($info['password']) && !empty($info['first_name']) && !empty($info['last_name']) && !empty($info['phone']) 
             && !empty($info['address']) && !empty($info['city']) && !empty($info['region']) && !empty($info['country']) && !empty($info['zip']))
             {

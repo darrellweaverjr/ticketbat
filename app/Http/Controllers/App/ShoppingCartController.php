@@ -69,7 +69,7 @@ class ShoppingCartController extends Controller{
                         $item->coupon = ($i)? $i->coupon : null;
                         $item->status = 0;
                         $item->options = json_encode([]);
-                        $item->timestamp = date('Y-m-d h:i:s');
+                        $item->timestamp = date('Y-m-d H:i:s');
                         $item->save();
                     }
                     return Util::json(['success'=>true]);

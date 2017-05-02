@@ -25,7 +25,7 @@ class PurchaseController extends Controller{
     {
         try {
             $info = Input::all();  
-            $current = date('Y-m-d h:i:s');
+            $current = date('Y-m-d H:i:s');
             if(!empty($info['cardholder']) && !empty($info['address']) && !empty($info['city']) && !empty($info['s_token'])
             && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['x_token'])
             && !empty($info['email']) && !empty($info['card']) && !empty($info['month']) && !empty($info['year']) && !empty($info['cvv']))
