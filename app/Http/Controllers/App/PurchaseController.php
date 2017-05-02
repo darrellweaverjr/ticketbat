@@ -26,9 +26,8 @@ class PurchaseController extends Controller{
         try {
             $info = Input::all();  
             $current = date('Y-m-d H:i:s');
-            if(!empty($info['cardholder']) && !empty($info['address']) && !empty($info['city']) && !empty($info['s_token'])
-            && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['x_token'])
-            && !empty($info['email']) && !empty($info['card']) && !empty($info['month']) && !empty($info['year']) && !empty($info['cvv']))
+            if(!empty($info['cardholder']) && !empty($info['address']) && !empty($info['city']) && !empty($info['email']) 
+            && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['x_token']) && !empty($info['s_token']))
             {
                 //checking the email
                 $info['email'] = trim(strtolower($info['email']));
@@ -42,12 +41,16 @@ class PurchaseController extends Controller{
                 $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
                 if(!$shoppingcart['success'])
                     return Util::json($shoppingcart);
-                if(!count($shoppingcart['items']))
+                if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
                     return Util::json(['success'=>false, 'msg'=>'There are no items to buy in the Shopping Cart.']);
                 //remove unavailable items from shopingcart
                 foreach($shoppingcart['items'] as $key=>$item)
                     if($item->unavailable)
                         unset($shoppingcart['items'][$key]);
+                //check if it has to pay for the items or there are free
+                if($shoppingcart['total']>0)    
+                    if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
+                        return Util::json(['success'=>false, 'msg'=>'There is no payment method for your items.']);
                 //set up customer
                 $client = $this->customer_set($info, $current);
                 if(!$client['success'])
