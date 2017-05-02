@@ -62,6 +62,7 @@ class GeneralController extends Controller{
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
