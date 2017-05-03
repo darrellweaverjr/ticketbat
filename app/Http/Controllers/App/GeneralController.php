@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Input;
 use App\Http\Models\Image;
 use App\Http\Models\Contact;
 use App\Http\Models\Util;
-use App\Mail\EmailSG;
 
 /**
  * Manage General options for the app
@@ -24,11 +23,27 @@ class GeneralController extends Controller{
     public function init()
     {
         try {   
-            return Util::json(['success'=>true,'cities'=>$this->cities(),'shows'=>$this->shows(),'venues'=>$this->venues(),'s_token'=>uniqid()]);
+            return Util::json(['success'=>true,'countries'=>$this->countries(),'cities'=>$this->cities(),'shows'=>$this->shows(),'venues'=>$this->venues(),'s_token'=>uniqid()]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }    
+    
+    /*
+     * return arrays of all countries 
+     */
+    private function countries()
+    {
+        try {
+            $countries = DB::table('countries')
+                        ->select('code','name')
+                        ->distinct()->get();
+            return $countries;
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    
     /*
      * return arrays of all cities 
      */
