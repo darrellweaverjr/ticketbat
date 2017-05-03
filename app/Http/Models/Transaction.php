@@ -66,7 +66,7 @@ class Transaction extends Model
                 $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ"; 
             //card info            
             $tran->card = $payment['card'];	
-            $tran->exp = $payment['month'].$payment['year'];
+            $tran->exp = $payment['month'].substr($payment['year'],-2);
             if(!empty($payment['cvv']))
                 $tran->cvv2 = $payment['cvv'];
             $tran->amount = $shoppingcart['total'];			
