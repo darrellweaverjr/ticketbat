@@ -89,16 +89,19 @@ var TableDatatablesManaged = function () {
             {
                 $('#btn_model_edit').prop("disabled",false);
                 $('#btn_model_remove').prop("disabled",false);
+                $('#btn_model_purchases').prop("disabled",false);
             }
             else if(checked > 1)
             {
                 $('#btn_model_edit').prop("disabled",true);
                 $('#btn_model_remove').prop("disabled",false);
+                $('#btn_model_purchases').prop("disabled",true);
             }
             else
             {
                 $('#btn_model_edit').prop("disabled",true);
                 $('#btn_model_remove').prop("disabled",true);
+                $('#btn_model_purchases').prop("disabled",true);
             }
             $('#btn_model_add').prop("disabled",false);
         } 
@@ -314,6 +317,22 @@ var TableDatatablesManaged = function () {
                 } 
             });            
         });       
+        //open purchases pagen on click to see client's purchases
+        $('#btn_model_purchases').on('click', function(ev) {
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
+            var myWindow = window.open('','_blank');
+            myWindow.document.write('<form method="post" id="purchases" action="/admin/purchases" target="_self">\n\
+                    <input type="hidden" name="_token" value="'+$('meta[name="csrf-token"]').attr('content')+'">\n\
+                    <input type="hidden" name="venue" value="">\n\
+                    <input type="hidden" name="user_id" value="'+id+'">\n\
+                    <input type="hidden" name="show" value="">\n\
+                    <input type="hidden" name="showtime_start_date" value="">\n\
+                    <input type="hidden" name="showtime_end_date" value="">\n\
+                    <input type="hidden" name="soldtime_start_date" value="">\n\
+                    <input type="hidden" name="soldtime_end_date" value="">\n\
+               </form><script>document.getElementById("purchases").submit();</script>');
+        });
         //init functions
         check_models();        
     }

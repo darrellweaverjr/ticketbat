@@ -39,6 +39,11 @@
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['USERS']['permission_types']))
+                            <button id="btn_model_purchases" class="btn sbold bg-purple" disabled="true">Purchases 
+                                <i class="fa fa-ticket"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
