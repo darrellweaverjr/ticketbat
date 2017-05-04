@@ -11,7 +11,6 @@ use App\Http\Models\UserType;
 use App\Http\Models\Discount;
 use App\Http\Models\Venue;
 use App\Http\Models\Country;
-use App\Http\Models\Customer;
 use App\Http\Models\Location;
 
 /**
@@ -63,7 +62,7 @@ class UserController extends Controller{
                         //get audit user records        
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                                ->select('users.id','users.email','users.first_name','users.last_name','users.phone','users.is_active','users.user_type_id','user_types.user_type')
+                                ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
                                 ->where('users.audit_user_id','=',Auth::user()->id)
                                 ->orderBy('users.last_name')
                                 ->get();
@@ -73,7 +72,7 @@ class UserController extends Controller{
                         //get all records        
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                                ->select('users.id','users.email','users.first_name','users.last_name','users.phone','users.is_active','users.user_type_id','user_types.user_type')
+                                ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
                                 ->orderBy('users.last_name')
                                 ->get();
                     }  

@@ -62,34 +62,19 @@
                         </thead>
                         <tbody>
                             @foreach($users as $index=>$u)
-                            <tr @if(!$u->is_active) class="danger" @endif>
+                            <tr @if($u->is_active=='Inactive') class="danger" @endif>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$u->id}}" value="{{$u->email}} * {{$u->first_name}} {{$u->last_name}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="20%"> <a href="mailto:{{$u->email}}" target="_top">{{$u->email}}</a> </td>
-                                <td width="100"> {{$u->first_name}} </td>
-                                <td width="100"> {{$u->last_name}} </td>
-                                <td width="20%"> {{$u->phone}} </td>
-                                <td width="15%"> <span class="label label-sm sbold 
-                                    @if($u->user_type_id == 1) label-success 
-                                    @elseif($u->user_type_id == 1) label-success 
-                                    @elseif($u->user_type_id == 2) label-danger 
-                                    @elseif($u->user_type_id == 3) label-warning 
-                                    @elseif($u->user_type_id == 4) label-info 
-                                    @elseif($u->user_type_id == 5) label-primary
-                                    @else label-default
-                                    @endif
-                                    "> {{$u->user_type}} </span> 
-                                </td> 
-                                <td width="10%"> <span class="label label-sm sbold
-                                    @if($u->is_active) label-success"> Active 
-                                    @else label-danger"> Inactive 
-                                    @endif
-                                    </span> 
-                                </td>
+                                <td width="20%"><a href="mailto:{{$u->email}}" target="_top">{{$u->email}}</a></td>
+                                <td width="100">{{$u->first_name}}</td>
+                                <td width="100">{{$u->last_name}}</td>
+                                <td width="20%">{{$u->phone}}</td>
+                                <td width="15%">{{$u->user_type}}</td> 
+                                <td width="10%">{{$u->is_active}}</td>
                             </tr>
                             @endforeach 
                         </tbody>
@@ -203,7 +188,7 @@
                                             <label class="control-label col-md-1">Phone</label>
                                             <div class="col-md-2 show-error">
                                                 <input name="phone" class="form-control" placeholder="### ### ####" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
-               event.charCode == 45 || event.charCode == 40 || event.charCode == 41 || event.charCode == 32 || event.charCode == 0 " /> </div>
+               event.charCode == 45 || event.charCode == 40 || event.charCode == 41 || event.charCode == 32 " /> </div>
                                         </div>
                                         <hr>
                                         <div class="form-group">

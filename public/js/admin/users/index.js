@@ -392,11 +392,6 @@ var FormValidation = function () {
                         digits: true,
                         range: [10000, 99999],
                         required: true
-                    },
-                    phone: {
-                        digits: true,
-                        range: [1000000000, 9999999999],
-                        required: false
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
