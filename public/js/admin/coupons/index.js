@@ -120,8 +120,7 @@ var TableDatatablesManaged = function () {
         $('#tb_ticket .tcheckboxes').on('change', function () {
             var active = $(this).is(':checked');
             var value = $(this).val();
-            $('#tb_ticket input[name="tickets['+value+']"]').val('');
-            $('#tb_ticket input[name="tickets['+value+']"]').prop('disabled',!active);
+            $('#tb_ticket [name="btn_edit_'+value+'"]').prop('disabled',!active);
             if(active) $(this).closest('tr').addClass('warning');
             else $(this).closest('tr').removeClass();
         });
@@ -188,26 +187,134 @@ var TableDatatablesManaged = function () {
             $("#form_model_update").trigger('reset');
         };
         //on discount type change
-        $('#form_model_update select[name="discount_type"]').on('change', function(ev) {
+        $('#form_model_update select[name="discount_type"]').on('change', function(ev) {    
             var v = $(this).val();
             if(v=='Percent')
             {
-                $('#label_num').html('Percent Off');
-                $('input[name="start_num"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%'});
-                $('#end_num').css('display','none');
+                $('.label_num').html('% Off');
+                $('.range').css('display','none');
             }
             else if(v=='Dollar')
             {
-                $('#label_num').html('Dollars Off');
-                $('input[name="start_num"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$'});
-                $('#end_num').css('display','none');
+                $('.label_num').html('$ Off');
+                $('.range').css('display','none');
             }
             else
             {
-                $('#label_num').html('Buy');
-                $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
-                $('#end_num').css('display','block');
+                $('.label_num').html('Buy');
+                $('.range').css('display','block');
             }
+        });
+        $('#form_model_update select[name="multiple"]').on('change', function(ev) {
+            var v = $(this).val(); 
+            $('#form_model_edit [name="multiple"]:hidden').val(v);
+            if(v==1)
+            {
+                $('input[name="start_num"]').val(0);
+                $('input[name="end_num"]').val('');
+                $('#form_model_update input[name="start_num"]').prop('disabled',true);
+                $('#form_model_update input[name="end_num"]').prop('disabled',true);                
+                $('#form_model_edit input[name="start_num"]').prop('disabled',false);
+                $('#form_model_edit input[name="end_num"]').prop('disabled',false);
+            }
+            else
+            {
+                $('#form_model_update input[name="start_num"]').prop('disabled',false);
+                $('#form_model_update input[name="end_num"]').prop('disabled',false);                
+                $('#form_model_edit input[name="start_num"]').prop('disabled',true);
+                $('#form_model_edit input[name="end_num"]').prop('disabled',true);
+            }
+        });
+        //function openEditModal
+        $('#tb_ticket button').on('click', function(ev) {
+            $("#form_model_edit").trigger('reset');
+            var ticket_id = $(this).attr('data-ticket');
+            var discount_id = $('#form_model_update [name="id"]:hidden').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/coupons/tickets', 
+                data: {action:0,ticket_id:ticket_id,discount_id:discount_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        //fill out discount attrb
+                        for(var key in data.discount_tickets)
+                            $('#modal_model_edit [name="'+key+'"]').val(data.discount_tickets[key]);
+                        //fill out ids
+                        $('#modal_model_edit [name="discount_id"]').val(discount_id);
+                        $('#modal_model_edit [name="ticket_id"]').val(ticket_id);
+                        $('#modal_model_edit').modal('show');
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the ticket-coupon's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });
+        });
+        //function save tickets/coupon
+        $('#btn_model_save_ticket').on('click', function(ev) {
+            $('#modal_model_edit').modal('hide');
+            $('#modal_model_update').modal('hide');
+            swal({
+                title: "Updating coupon's information",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/coupons/tickets', 
+                data: $('#form_model_edit').serializeArray(), 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Saved!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                        $('#modal_model_update').modal('show');
+                    }
+                    else{
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_edit').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "The form is not valid!<br>Please check the information again.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                        $('#modal_model_edit').modal('show');
+                    });
+                }
+            }); 
         });
         //function add
         $('#btn_model_add').on('click', function(ev) {
@@ -225,8 +332,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_update [name="end_date"]').val(end.format('YYYY-MM-DD'));
             $('#form_model_update [name="effective_start_date"]').val(start.format('YYYY-MM-DD'));
             $('#form_model_update [name="effective_end_date"]').val(end.format('YYYY-MM-DD'));
-            $('#start_end_date span').html(start_html + ' - ' + end_html);
-            $('#effective_start_end_date span').html(start_html + ' - ' + end_html); 
+            $('#form_model_update select[name="multiple"]').trigger('change');
             //show modal
             $('#modal_model_update').modal('show');
         });
@@ -251,38 +357,12 @@ var TableDatatablesManaged = function () {
                         for(var key in data.discount)
                             $('#form_model_update [name="'+key+'"]').val(data.discount[key]);
                         //fill out tickets
-                        $.each(data.tickets,function(k, v) {
-                            $('#tb_ticket').find('input:checkbox[value="'+v.id+'"]').prop('checked',true).trigger('change');
-                            $('#tb_ticket input[name="tickets['+v.id+']"]').val(v.fc);
+                        $.each(data.tickets,function(k, v) {    
+                            $('#tb_ticket').find('input:checkbox[name="tickets[]"][value="'+v.id+'"]').prop('checked',true).trigger('change');
                         });
+                        var m = (data.discount.start_num>0)? 0 : 1;
+                        $('#form_model_update select[name="multiple"]').val(m).trigger('change');
                         $('#form_model_update select[name="discount_type"]').trigger('change');
-                        //change default dates
-                        var start = moment($('#form_model_update [name="start_date"]').val());
-                        var end = moment($('#form_model_update [name="end_date"]').val());
-                        if(start.isValid()) var start_html = start.format('MMMM D, YYYY');
-                        else {
-                            var start_html = 'NO START DATE';
-                            $('#form_model_update [name="start_date"]').val('');
-                        }
-                        if(end.isValid()) var end_html = end.format('MMMM D, YYYY');
-                        else {
-                            var end_html = 'NO END DATE';
-                            $('#form_model_update [name="end_date"]').val('');
-                        }
-                        $('#start_end_date span').html(start_html + ' - ' + end_html);
-                        var start = moment($('#form_model_update [name="effective_start_date"]').val());
-                        var end = moment($('#form_model_update [name="effective_end_date"]').val());
-                        if(start.isValid()) var start_html = start.format('MMMM D, YYYY');
-                        else {
-                            var start_html = 'NO START DATE';
-                            $('#form_model_update [name="effective_start_date"]').val('');
-                        }
-                        if(end.isValid()) var end_html = end.format('MMMM D, YYYY');
-                        else {
-                            var end_html = 'NO END DATE';
-                            $('#form_model_update [name="effective_end_date"]').val('');
-                        }
-                        $('#effective_start_end_date span').html(start_html + ' - ' + end_html); 
                         //show modal
                         $('#modal_model_update').modal('show');
                     }
@@ -396,7 +476,6 @@ var TableDatatablesManaged = function () {
               },
               function(isConfirm) {
                 if (isConfirm) {
-                    var form_delete = $('#form_model_delete');
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
@@ -436,8 +515,8 @@ var TableDatatablesManaged = function () {
         });       
         //init functions
         check_models();  
-        $('input.fix_commission').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:999.99,prefix:'$' });
-        $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:0.01,decimals:2,max:1000000});
+        $('input[name="fixed_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:999.99,prefix:'$' });
+        $('input[name="start_num"]').TouchSpin({ initval:0,min:0,step:0.01,decimals:2,max:999.99});
         $('input[name="end_num"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
         $('input[name="quantity"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000});
     }

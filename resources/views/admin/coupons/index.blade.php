@@ -52,12 +52,12 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="12%"> Code </th>
-                                <th width="12%"> Discount Type </th>
-                                <th width="12%"> Discount Scope </th>
-                                <th width="12%"> Coupon Type </th>
-                                <th width="5%"> Redemptions </th>
-                                <th width="45%"> Description </th>
+                                <th width="12%">Code</th>
+                                <th width="12%">Coupon Type</th>
+                                <th width="12%">Discount Type</th>
+                                <th width="12%">Discount Scope</th>                                
+                                <th width="5%">Redemptions</th>
+                                <th width="45%">Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,37 +69,37 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="12%"> {{$d->code}} </td>
-                                <td width="12%"> <span class="label label-sm sbold 
-                                    @if($d->discount_type == 'Dollar') label-success 
-                                    @elseif($d->discount_type == 'N for N') label-danger 
-                                    @elseif($d->discount_type == 'Percent') label-warning
-                                    @else label-default
-                                    @endif
-                                    "> {{$d->discount_type}} </span> 
-                                </td> 
-                                <td width="12%"> <span class="label label-sm sbold 
-                                    @if($d->discount_scope == 'Ticket') label-success 
-                                    @elseif($d->discount_scope == 'Total') label-danger 
-                                    @elseif($d->discount_scope == 'Merchandise') label-warning
-                                    @else label-default
-                                    @endif
-                                    "> {{$d->discount_scope}} </span> 
-                                </td> 
-                                <td width="12%"> <span class="label label-sm sbold 
+                                <td width="12%">{{$d->code}}</td>
+                                <td width="12%"><span class="label label-sm sbold 
                                     @if($d->coupon_type == 'Normal') label-success 
                                     @elseif($d->coupon_type == 'Broker') label-danger 
                                     @elseif($d->coupon_type == 'Affiliate') label-warning 
                                     @elseif($d->coupon_type == 'Admin') label-info 
                                     @else label-default
                                     @endif
-                                    "> {{$d->coupon_type}} </span> 
+                                    ">{{$d->coupon_type}}</span> 
+                                </td> 
+                                <td width="12%"><span class="label label-sm sbold 
+                                    @if($d->discount_type == 'Dollar') label-success 
+                                    @elseif($d->discount_type == 'N for N') label-danger 
+                                    @elseif($d->discount_type == 'Percent') label-warning
+                                    @else label-default
+                                    @endif
+                                    ">{{($d->discount_type)? $d->discount_type : 'Multiple'}}</span> 
+                                </td> 
+                                <td width="12%"><span class="label label-sm sbold 
+                                    @if($d->discount_scope == 'Ticket') label-success 
+                                    @elseif($d->discount_scope == 'Total') label-danger 
+                                    @elseif($d->discount_scope == 'Merchandise') label-warning
+                                    @else label-default
+                                    @endif
+                                    ">{{($d->discount_scope)? $d->discount_scope : 'Multiple'}}</span> 
                                 </td> 
                                 <td width="5%"><center><span class="label label-sm sbold 
                                     @if($d->purchases) label-success 
                                     @else label-danger 
                                     @endif
-                                    "> {{$d->purchases}} </span></center></td> 
+                                    ">{{$d->purchases}}</span></center></td> 
                                 <td width="45%"> {{$d->description}} </td>
                             </tr>
                             @endforeach 
@@ -139,13 +139,13 @@
                                     <div class="tab-pane active" id="tab_model_update_general" style="padding:0 20px">    
                                         <div class="row">
                                             <div class="form-group">
-                                                <label class="control-label col-md-2">Code
+                                                <label class="control-label col-md-1">Code
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-2 show-error">
                                                     <input type="text" name="code" class="form-control" placeholder="0000" /> 
                                                 </div>
-                                                <label class="control-label col-md-2">Coupon Type
+                                                <label class="control-label col-md-1">Type
                                                 </label>
                                                 <div class="col-md-2 show-error">
                                                     <select class="form-control" name="coupon_type">
@@ -154,14 +154,22 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <label class="control-label col-md-2"># of Codes (0=&#8734;)
+                                                <label class="control-label col-md-1">Reg/Mult
+                                                </label>
+                                                <div class="col-md-2 show-error">
+                                                    <select class="form-control" name="multiple">
+                                                        <option value="0">Regular</option>
+                                                        <option value="1">Multiple</option>
+                                                    </select>
+                                                </div>
+                                                <label class="control-label col-md-1">Qty(0=&#8734;)
                                                 </label>
                                                 <div class="col-md-2 show-error">
                                                     <input type="text" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||  
                    event.charCode == 0 "/> </div>  
                                             </div>
                                             <div class="form-group">
-                                                <label class="control-label col-md-2">Discount Scope
+                                                <label class="control-label col-md-1">Scope
                                                 </label>
                                                 <div class="col-md-2 show-error">
                                                     <select class="form-control" name="discount_scope">
@@ -170,7 +178,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <label class="control-label col-md-2">Discount Type
+                                                <label class="control-label col-md-1">Off
                                                 </label>
                                                 <div class="col-md-2 show-error">
                                                     <select class="form-control" name="discount_type">
@@ -179,18 +187,15 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <label class="control-label col-md-2" id="label_num">Percent Off
+                                                <label class="control-label col-md-1 label_num">% Off
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="text" name="start_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/> 
+                                                    <input type="text" name="start_num" class="form-control start_num" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/> 
                                                 </div>  
-                                                <div id="end_num">
-                                                    <div class="col-md-8"></div>
-                                                    <label class="control-label col-md-2" id="label_num">Get
-                                                    </label>
-                                                    <div class="col-md-2 show-error">
-                                                        <input type="text" name="end_num" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
-                                                    </div>  
+                                                <label class="control-label col-md-1 range">Get
+                                                </label>
+                                                <div class="col-md-2 show-error range">
+                                                    <input type="text" name="end_num" class="form-control end_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
                                                 </div> 
                                             </div>
                                         </div>
@@ -250,27 +255,27 @@
                                                         <thead>
                                                             <tr>
                                                                 <th width="2%"></th>
-                                                                <th width="26%">Venue</th>
-                                                                <th width="26%">Show</th>
-                                                                <th width="14%">Ticket Type</th>
-                                                                <th width="22%">Package</th>
-                                                                <th width="10%">Fix Commission</th>
+                                                                <th width="27%">Venue</th>
+                                                                <th width="27%">Show</th>
+                                                                <th width="15%">Ticket Type</th>
+                                                                <th width="24%">Package</th>
+                                                                <th width="5%"><center><i class="fa fa-edit"></i></center></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             @foreach($tickets as $index=>$t)
                                                             <tr>
-                                                                <td width="2%">
+                                                                <td>
                                                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                                        <input type="checkbox" class="tcheckboxes" value="{{$t->id}}" />
+                                                                        <input type="checkbox" name="tickets[]" class="tcheckboxes" value="{{$t->id}}" />
                                                                         <span></span>
                                                                     </label>
                                                                 </td>
-                                                                <td width="26%"><small>{{$t->venue_name}}</small></td>
-                                                                <td width="26%"><small>{{$t->show_name}}</small></td> 
-                                                                <td width="14%"><small>{{$t->ticket_type}}</small></td> 
-                                                                <td width="22%"><small>{{$t->title}}</small></td> 
-                                                                <td width="10%"><center><input class="fix_commission" disabled="true" name="tickets[{{$t->id}}]" value="" style="width:75px" /></center></td> 
+                                                                <td>{{$t->venue_name}}</td>
+                                                                <td>{{$t->show_name}}</td> 
+                                                                <td>{{$t->ticket_type}}</td> 
+                                                                <td>{{$t->title}}</td> 
+                                                                <td><button type="button" class="btn sbold bg-grey-salsa" data-ticket="{{$t->id}}"><i class="fa fa-edit"></i></button></td> 
                                                             </tr>
                                                             @endforeach 
                                                         </tbody>
@@ -297,6 +302,56 @@
         </div>
     </div>
     <!-- END UPDATE MODAL--> 
+    <!-- BEGIN EDIT MODAL--> 
+    <div id="modal_model_edit" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:380px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Discount for Ticket Type</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_edit">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="discount_id" value="" />
+                        <input type="hidden" name="ticket_id" value="" />
+                        <input type="hidden" name="action" value="1" />
+                        <input type="hidden" name="multiple" value="0" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-6">Fixed commission</label>
+                                    <div class="col-md-6 show-error">
+                                        <input type="text" class="form-control" name="fixed_commission" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/>
+                                    </div>                                    
+                                    <label class="control-label col-md-6 label_num">% Off
+                                    </label>
+                                    <div class="col-md-6 show-error">
+                                        <input type="text" name="start_num" class="form-control start_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/> 
+                                    </div>  
+                                    <label class="control-label col-md-6 range">Get
+                                    </label>
+                                    <div class="col-md-6 show-error range">
+                                        <input type="text" name="end_num" class="form-control end_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/> 
+                                    </div> 
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="btn_model_save_ticket" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form> 
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END EDIT MODAL--> 
 @endsection
 
 @section('scripts') 

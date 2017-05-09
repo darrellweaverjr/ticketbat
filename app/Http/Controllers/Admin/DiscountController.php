@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Discount;
-use App\Http\Models\Show;
 use App\Http\Models\Util;
 
 /**
@@ -33,7 +32,7 @@ class DiscountController extends Controller{
                 if(!$discount)
                     return ['success'=>false,'msg'=>'There was an error getting the coupon.<br>Maybe it is not longer in the system.'];
                 $tickets = DB::table('discount_tickets')
-                                ->select('ticket_id AS id','fixed_commission AS fc')
+                                ->select('discount_tickets.ticket_id AS id')
                                 ->where('discount_id','=',$discount->id)->get();
                 return ['success'=>true,'discount'=>$discount,'tickets'=>$tickets];
             }
@@ -122,6 +121,25 @@ class DiscountController extends Controller{
             if($input)
             {
                 $current = date('Y-m-d H:i:s');
+                //check type of coupon
+                if($input['multiple']>0)
+                {
+                    $input['start_num']=0;
+                    $input['end_num']=null;
+                }
+                else
+                {
+                    if(!($input['start_num']>0))
+                        return ['success'=>false,'msg'=>'You have to set the discount off for this coupon.','errors'=>'start_num'];
+                    if($input['discount_scope']=='N for N')
+                    {
+                        if(empty($input['end_num']))
+                            return ['success'=>false,'msg'=>'You have to set the end qty range for this coupon.','errors'=>'end_num'];
+                    }
+                    else
+                        $input['end_num']=null;
+                }
+                //get element
                 if(isset($input['id']) && $input['id'])
                 {
                     if(Discount::where('code','=',$input['code'])->where('id','!=',$input['id'])->count())
@@ -137,15 +155,15 @@ class DiscountController extends Controller{
                     $discount->created = $current;
                     $discount->audit_user_id = Auth::user()->id;
                 }
-                //save discount
+                //save discount                
                 $discount->code = $input['code'];
                 $discount->description = $input['description'];
                 $discount->discount_type = $input['discount_type'];
-                $discount->discount_scope = $input['discount_scope'];
+                $discount->discount_scope = $input['discount_scope'];                
                 $discount->start_date = $input['start_date'];
                 $discount->end_date = $input['end_date'];
                 $discount->start_num = $input['start_num'];
-                $discount->end_num = (isset($input['end_num']) && $input['end_num'])? $input['end_num'] : null;
+                $discount->end_num = $input['end_num'];
                 $discount->quantity = $input['quantity'];
                 if(isset($input['effective_start_date']) && strtotime($input['effective_start_date']) && isset($input['effective_end_date']) && strtotime($input['effective_end_date']))
                 {
@@ -163,15 +181,19 @@ class DiscountController extends Controller{
                 $discount->save();
                 //update intermediate table with tickets
                 if(isset($input['tickets']) && $input['tickets'] && count($input['tickets']))
-                {
-                    $ticket_ids = [];
-                    $discount_tickets = [];
-                    foreach ($input['tickets'] as $ticket_id => $fixed_commission)
+                {                    
+                    $discount->discount_tickets()->sync($input['tickets']);
+                    if($input['multiple']>0)
                     {
-                        $ticket_ids[] = $ticket_id;
-                        $discount->discount_tickets()->updateExistingPivot($ticket_id,['fixed_commission'=>(!empty($fixed_commission))? $fixed_commission : null]);
+                        if($input['discount_scope']!='N for N')
+                            DB::table('discount_tickets')->where('discount_id','=',$discount->id)
+                                ->update(['end_num'=>null]);
                     }
-                    $discount->discount_tickets()->sync($ticket_ids);
+                    else
+                    {
+                        DB::table('discount_tickets')->where('discount_id','=',$discount->id)
+                                ->update(['start_num'=>null,'end_num'=>null]);
+                    }
                 }    
                 else
                     $discount->discount_tickets()->detach();
@@ -209,6 +231,56 @@ class DiscountController extends Controller{
             return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Discounts Remove: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Update tickets .
+     *
+     * @void
+     */
+    public function tickets()
+    {
+        try {
+            //init
+            $input = Input::all();
+            //action 0, get
+            if(isset($input['action']) && $input['action']==0 && !empty($input['ticket_id']) && !empty($input['discount_id']))
+            {
+                $discount_tickets = DB::table('discount_tickets')->select('discount_tickets.*')
+                                ->where('discount_id','=',$input['discount_id'])->where('ticket_id','=',$input['ticket_id'])->first();
+                return ['success'=>true,'discount_tickets'=>$discount_tickets];
+            }
+            //action 1, update
+            else if(isset($input['action']) && $input['action']==1)
+            {
+                if(empty($input['fixed_commission']))
+                    $input['fixed_commission']=null;
+                if(empty($input['start_num']))
+                    $input['start_num']=null;
+                if(empty($input['end_num']))
+                    $input['end_num']=null;
+                if($input['multiple'] && empty($input['start_num']))
+                    return ['success'=>false,'msg'=>'You must set a qty off for this ticket!'];
+                $discount_tickets = DB::table('discount_tickets')->select('discount_tickets.*')
+                                ->where('discount_id','=',$input['discount_id'])->where('ticket_id','=',$input['ticket_id'])->first();
+                if($discount_tickets)
+                {
+                    DB::table('discount_tickets')->where('discount_id','=',$input['discount_id'])->where('ticket_id','=',$input['ticket_id'])
+                            ->update(['fixed_commission'=>$input['fixed_commission'],'start_num'=>$input['start_num'],'end_num'=>$input['end_num']]);
+                }
+                else
+                {
+                    DB::table('discount_tickets')->insert(
+                            ['discount_id'=>$input['discount_id'],'ticket_id'=>$input['ticket_id'],
+                             'fixed_commission'=>$input['fixed_commission'],'start_num'=>$input['start_num'],'end_num'=>$input['end_num']]
+                    );
+                }
+                return ['success'=>true];
+            }
+            return ['success'=>false,'msg'=>'You must fill out correctly the form!'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Discounts Tickets: '.$ex->getMessage());
         }
     }
 }
