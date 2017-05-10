@@ -333,6 +333,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_update [name="effective_start_date"]').val(start.format('YYYY-MM-DD'));
             $('#form_model_update [name="effective_end_date"]').val(end.format('YYYY-MM-DD'));
             $('#form_model_update select[name="multiple"]').trigger('change');
+            $('#tb_ticket').find('button').css('display','none');
             //show modal
             $('#modal_model_update').modal('show');
         });
@@ -364,6 +365,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_update select[name="multiple"]').val(m).trigger('change');
                         $('#form_model_update select[name="discount_type"]').trigger('change');
                         //show modal
+                        $('#tb_ticket').find('button').css('display','block');
                         $('#modal_model_update').modal('show');
                     }
                     else swal({
