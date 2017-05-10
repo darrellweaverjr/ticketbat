@@ -275,7 +275,7 @@
                                                                 <td>{{$t->show_name}}</td> 
                                                                 <td>{{$t->ticket_type}}</td> 
                                                                 <td>{{$t->title}}</td> 
-                                                                <td><button type="button" class="btn sbold bg-grey-salsa" data-ticket="{{$t->id}}"><i class="fa fa-edit"></i></button></td> 
+                                                                <td><center><button type="button" class="btn sbold bg-grey-salsa" data-ticket="{{$t->id}}"><i class="fa fa-edit"></i></button></center></td> 
                                                             </tr>
                                                             @endforeach 
                                                         </tbody>

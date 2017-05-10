@@ -120,7 +120,7 @@ var TableDatatablesManaged = function () {
         $('#tb_ticket .tcheckboxes').on('change', function () {
             var active = $(this).is(':checked');
             var value = $(this).val();
-            $('#tb_ticket [name="btn_edit_'+value+'"]').prop('disabled',!active);
+            $(this).closest('tr').find('button').prop('disabled',!active);
             if(active) $(this).closest('tr').addClass('warning');
             else $(this).closest('tr').removeClass();
         });
