@@ -103,10 +103,7 @@ class Shoppingcart extends Model
             {
                 //check coupon for discounts
                 if($items[0]->coupon)
-                {
                     $coupon = json_decode($items[0]->coupon,true);
-                    $coupon['ticket_ids'] = explode(',',$coupon['ticket_ids']);
-                } 
                 //loop for all items to calculate
                 foreach ($items as $i)
                 {
@@ -121,62 +118,70 @@ class Shoppingcart extends Model
                         //others
                         $i->discount_id = ($coupon && $coupon['id'])? $coupon['id'] : 1;
                         $i->commission = ($i->c_fixed)? $i->c_fixed : Util::round($i->c_percent*$i->number_of_items*$p/100);
-                        $i->retail_price = Util::round($p);                    
+                        $i->retail_price = Util::round($p);  
+                        
                         //calculate discounts for each ticket the the coupon applies
                         $s = 0;
-                        if(!empty($coupon) && in_array($i->ticket_id,$coupon['ticket_ids']))
+                        if(!empty($coupon) && !empty($coupon['tickets']))
                         {
-                            switch($coupon['discount_type'])
+                            foreach ($coupon['tickets'] as $dt)
                             {
-                                case 'Percent':
-                                        $s = Util::round($i->total_cost * $coupon['start_num'] / 100);
-                                        break;
-                                case 'Dollar':
-                                        $s = ($coupon['discount_scope']=='Total')? $coupon['start_num'] : $coupon['start_num'] * $i->number_of_items;
-                                        break;
-                                case 'N for N':
-                                        $maxFreeSets = floor($i->number_of_items / $coupon['start_num']);
-                                        $free = $total = 0;
-                                        while ($maxFreeSets > 0) 
+                                if($dt['ticket_id'] == $i->ticket_id)
+                                {
+                                    switch($coupon['discount_type'])
+                                    {
+                                        case 'Percent':
+                                                $s = Util::round($i->total_cost * $dt['start_num'] / 100);
+                                                break;
+                                        case 'Dollar':
+                                                $s = ($coupon['discount_scope']=='Total')? $dt['start_num'] : $dt['start_num'] * $i->number_of_items;
+                                                break;
+                                        case 'N for N':
+                                                $maxFreeSets = floor($i->number_of_items / $dt['start_num']);
+                                                $free = $total = 0;
+                                                while ($maxFreeSets > 0) 
+                                                {
+                                                    $a = 0;
+                                                    while ($a < $dt['start_num'] && $total < $i->number_of_items) {
+                                                        $total++; $a++;
+                                                    }
+                                                    $b = 0;
+                                                    while ($b < $dt['end_num'] && $total < $i->number_of_items) {
+                                                        $free++; $total++; $b++;
+                                                    }
+                                                    $maxFreeSets--;
+                                                }
+                                                $s = Util::round($i->total_cost / $i->number_of_items * $free);
+                                                break;
+                                        default:  
+                                                break;
+                                    }
+                                    //write savings or suming
+                                    if(($coupon['discount_scope']=='Total' && $coupon['discount_type']=='Dollar'))
+                                    {
+                                        //add total savings if doesnt exist
+                                        if($saveAll==0 && !$saveAllApplied)
                                         {
-                                            $a = 0;
-                                            while ($a < $coupon['start_num'] && $total < $i->number_of_items) {
-                                                $total++; $a++;
-                                            }
-                                            $b = 0;
-                                            while ($b < $coupon['end_num'] && $total < $i->number_of_items) {
-                                                $free++; $total++; $b++;
-                                            }
-                                            $maxFreeSets--;
+                                            $saveAllApplied = true;
+                                            $saveAll = $s;
                                         }
-                                        $s = Util::round($i->total_cost / $i->number_of_items * $free);
-                                        break;
-                                default:  
-                                        break;
-                            }
-                            //write savings or suming
-                            if(($coupon['discount_scope']=='Total' && $coupon['discount_type']=='Dollar'))
-                            {
-                                //add total savings if doesnt exist
-                                if($saveAll==0 && !$saveAllApplied)
-                                {
-                                    $saveAllApplied = true;
-                                    $saveAll = $s;
-                                }
-                                //discount savings for each item from total
-                                if($saveAll>0)
-                                {
-                                    if($saveAll > $i->total_cost)
-                                        $s = $i->total_cost;
+                                        //discount savings for each item from total
+                                        if($saveAll>0)
+                                        {
+                                            if($saveAll > $i->total_cost)
+                                                $s = $i->total_cost;
+                                            else
+                                                $s = $saveAll;
+                                            $saveAll -= $s;
+                                            $save += $s;
+                                        }
+                                        else $s = 0;
+                                    } 
                                     else
-                                        $s = $saveAll;
-                                    $saveAll -= $s;
-                                    $save += $s;
+                                        $save += $s;
+                                    break;
                                 }
-                                else $s = 0;
-                            } 
-                            else
-                                $save += $s;
+                            }
                         }
                         //calculate savings for item
                         $i->savings = Util::round($s);
@@ -211,6 +216,7 @@ class Shoppingcart extends Model
     public static function apply_coupon($session_id,$code)
     {
         try {
+            $current = date('Y-m-d');
             //check if add or remove coupon code
             if(empty($code) || $code=='0000')
             {
@@ -226,33 +232,38 @@ class Shoppingcart extends Model
                             ->join('discount_tickets', 'discount_tickets.ticket_id', '=' ,'shoppingcart.ticket_id')
                             ->join('discounts', 'discounts.id', '=' ,'discount_tickets.discount_id')
                             ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
-                            ->select('shoppingcart.id','shows.name','shows.restrictions','shoppingcart.product_type','shoppingcart.cost_per_product',
-                                     'shoppingcart.total_cost','shoppingcart.coupon')
+                            ->select('shoppingcart.id')
                             ->where('discounts.code','=',$code)->where('shoppingcart.session_id','=',$session_id)
-                            ->whereDate('show_times.show_time','>=','discounts.start_date')->whereDate('show_times.show_time','<=','discounts.end_date')
+                            ->whereRaw('DATE(show_times.show_time) BETWEEN DATE(discounts.start_date) AND DATE(discounts.end_date)')
                             ->where('discounts.coupon_type','=','Normal')
-                            ->where(function($query)
+                            ->where(function($query) use ($current)
                             {
                                 $query->whereNull('discounts.effective_start_date')
-                                      ->orWhereDate('discounts.effective_start_date','<=', \Carbon\Carbon::today());
+                                      ->orWhereDate('discounts.effective_start_date','<=',$current);
                             })
-                            ->where(function($query)
+                            ->where(function($query) use ($current)
                             {
                                 $query->whereNull('discounts.effective_end_date')
-                                      ->orWhereDate('discounts.effective_end_date','>=', \Carbon\Carbon::today());
+                                      ->orWhereDate('discounts.effective_end_date','>=',$current);
                             })
                             ->count();
                 if($items)
-                {
+                {   
                     $coupon = DB::table('discounts')
                             ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
                             ->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
                             ->select(DB::raw('discounts.id, discounts.code, discounts.description, discounts.start_num,
-                                              discounts.discount_type, discounts.discount_scope, discounts.end_num,
-                                              GROUP_CONCAT(DISTINCT discount_tickets.ticket_id) AS ticket_ids'))
+                                              discounts.discount_type, discounts.discount_scope, discounts.end_num'))
                             ->where('discounts.code',$code)->groupBy('discounts.id')->first();
                     if($coupon)
                     {
+                        $coupon->tickets = DB::table('discount_tickets')
+                                ->join('discounts', 'discount_tickets.discount_id', '=' ,'discounts.id')
+                                ->select(DB::raw('discount_tickets.ticket_id, 
+                                                  COALESCE(discount_tickets.fixed_commission,null) AS fixed_commission,
+                                                  COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num, 
+                                                  COALESCE(discount_tickets.end_num,discounts.end_num,null) AS end_num'))
+                                ->where('discounts.id',$coupon->id)->get();
                         $response = DB::table('shoppingcart')->where('session_id','=',$session_id)->update(['coupon'=>json_encode($coupon,true)]);
                         if($response || $response >= 0)
                             return ['success'=>true];
