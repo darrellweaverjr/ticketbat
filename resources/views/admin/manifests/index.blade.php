@@ -1,19 +1,20 @@
 @php $page_title='Manifests' @endphp
 @extends('layouts.admin')
-@section('title', 'Manifests' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List and view manifests.</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -28,12 +29,12 @@
                             <i class="icon-calendar"></i>&nbsp;
                             <span class="thin uppercase hidden-xs"> - </span>&nbsp;
                             <i class="fa fa-angle-down"></i>
-                        </div>                        
+                        </div>
                         <div class="btn-group">
-                            <button id="btn_model_csv" class="btn sbold bg-green" disabled="true"> CSV 
+                            <button id="btn_model_csv" class="btn sbold bg-green" disabled="true"> CSV
                                 <i class="fa fa-file-excel-o"></i>
                             </button>
-                            <button id="btn_model_pdf" class="btn sbold bg-yellow" disabled="true"> PDF 
+                            <button id="btn_model_pdf" class="btn sbold bg-yellow" disabled="true"> PDF
                                 <i class="fa fa-file-pdf-o"></i>
                             </button>
                         </div>
@@ -62,20 +63,20 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" style="background-color:#{{substr(dechex(crc32($m->show_time_id.date('mdYgi',strtotime($m->show_time)))),0,6)}}"></td>  
+                                <td width="1%" style="background-color:#{{substr(dechex(crc32($m->show_time_id.date('mdYgi',strtotime($m->show_time)))),0,6)}}"></td>
                                 <td width="20%">
                                     @if($previous_show_time_id != $m->show_time_id)
-                                    <center> 
+                                    <center>
                                         <b><a>{{$m->name}}</a></b><br><small>{{date('m/d/Y g:ia',strtotime($m->show_time))}}</small>
                                     </center>
                                     @endif
                                 </td>
                                 <td width="6%">
                                     <center>
-                                        <span class="label label-sm sbold 
-                                        @if($m->manifest_type=='Preliminary') label-success 
-                                        @elseif($m->manifest_type=='Primary') label-info 
-                                        @else label-warning 
+                                        <span class="label label-sm sbold
+                                        @if($m->manifest_type=='Preliminary') label-success
+                                        @elseif($m->manifest_type=='Primary') label-info
+                                        @else label-warning
                                         @endif
                                     "> {{$m->manifest_type}} </span>
                                     </center>
@@ -85,32 +86,32 @@
                                         <small><i>
                                         Purchases: <b>{{$m->num_purchases}}</b>, Tickets Sold: <b>{{$m->num_people}}</b><br>
                                         @php $emails = explode(',',$m->recipients) @endphp
-                                        Receipts: (@foreach($emails as $e) <a href="mailto:{{$e}}" target="_top">{{$e}}</a> . @endforeach) 
+                                        Receipts: (@foreach($emails as $e) <a href="mailto:{{$e}}" target="_top">{{$e}}</a> . @endforeach)
                                         </i></small>
                                     </div>
                                 </td>
                                 <td width="9%" data-order="{{strtotime($m->created)}}"><center> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}} </center></td>
                             </tr>
                             @php $previous_show_time_id = $m->show_time_id @endphp
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN UPDATE MODAL-->
     <div style="display: none;">
         <form method="post" action="/admin/manifests" id="form_model_search">
             <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
             <input name="start_date" type="hidden" value="{{$start_date}}"/>
             <input name="end_date" type="hidden" value="{{$end_date}}"/>
-        </form>   
-    </div>  
-    <!-- END UPDATE MODAL--> 
+        </form>
+    </div>
+    <!-- END UPDATE MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="/js/admin/manifests/index.js" type="text/javascript"></script>
 @endsection

@@ -1,19 +1,20 @@
 @php $page_title='Bands' @endphp
 @extends('layouts.admin')
-@section('title', 'Bands' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, add, edit and remove bands.</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -25,22 +26,22 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['BANDS']['permission_types']))
-                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search 
+                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search
                                 <i class="fa fa-search"></i>
                             </button>
                             @endif
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['BANDS']['permission_types']))
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
                                 <i class="fa fa-plus"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['BANDS']['permission_types']))
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif
                             @if(in_array('Delete',Auth::user()->user_type->getACLs()['BANDS']['permission_types']))
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove 
+                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
@@ -71,23 +72,23 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%" data-order="{{$b->name}}"> 
+                                <td width="10%" data-order="{{$b->name}}">
                                     @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
                                     @if(preg_match('/\/s3\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$b->image_url) @endphp @endif
                                     <center style="color:red;"><i><b><a><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
                                 </td>
-                                <td class="search-item clearfix" width="78%"> 
+                                <td class="search-item clearfix" width="78%">
                                     <div class="search-title">
                                         <h4>
                                             <a>{{$b->name}}</a>&nbsp;&nbsp;&nbsp;
                                             @if($b->website)<a class="social-icon social-icon-color rss" href="{{$b->website}}" target="_blank"></a>@endif
-                                            @if($b->youtube)<a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a>@endif 
-                                            @if($b->facebook)<a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a>@endif 
-                                            @if($b->twitter)<a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a>@endif 
-                                            @if($b->my_space)<a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a>@endif 
-                                            @if($b->flickr)<a class="social-icon social-icon-color flickr" href="{{$b->flickr}}" target="_blank"></a>@endif 
-                                            @if($b->instagram)<a class="social-icon social-icon-color instagram" href="{{$b->instagram}}" target="_blank"></a>@endif 
-                                            @if($b->soundcloud)<a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a>@endif 
+                                            @if($b->youtube)<a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a>@endif
+                                            @if($b->facebook)<a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a>@endif
+                                            @if($b->twitter)<a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a>@endif
+                                            @if($b->my_space)<a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a>@endif
+                                            @if($b->flickr)<a class="social-icon social-icon-color flickr" href="{{$b->flickr}}" target="_blank"></a>@endif
+                                            @if($b->instagram)<a class="social-icon social-icon-color instagram" href="{{$b->instagram}}" target="_blank"></a>@endif
+                                            @if($b->soundcloud)<a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a>@endif
                                         </h4>
                                     </div>
                                     <div class="search-content">
@@ -96,15 +97,15 @@
                                 </td>
                                 <td width="10%"><center> {{$b->category}} </center></td>
                             </tr>
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -127,7 +128,7 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-9 show-error">
-                                            <input type="text" name="name" class="form-control" placeholder="My Band" /> 
+                                            <input type="text" name="name" class="form-control" placeholder="My Band" />
                                         </div>
                                         <label class="control-label col-md-3">Category
                                             <span class="required"> * </span>
@@ -160,49 +161,49 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a> 
+                                        <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a>
                                         </div>
                                         <div class="col-md-11 show-error">
-                                            <input type="text" name="website" class="form-control" placeholder="https://www.myband.com" /> 
-                                        </div> 
+                                            <input type="text" name="website" class="form-control" placeholder="https://www.myband.com" />
+                                        </div>
                                         <div class="col-md-1"></div>
                                         <div class="col-md-11 show-error">
                                             <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
-                                        </div> 
-                                        <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> 
+                                        </div>
+                                        <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a>
                                         </div>
                                         <div class="col-md-11 show-error">
-                                            <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myband" /> 
+                                            <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myband" />
                                         </div>
-                                        <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> 
-                                        </div>
-                                        <div class="col-md-11 show-error">
-                                            <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myband" /> 
-                                        </div>
-                                        <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> 
+                                        <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a>
                                         </div>
                                         <div class="col-md-11 show-error">
-                                            <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myband" /> 
+                                            <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myband" />
                                         </div>
-                                        <div class="col-md-1"><a data-original-title="myspace" class="social-icon social-icon-color myspace"></a> 
-                                        </div>
-                                        <div class="col-md-11 show-error">
-                                            <input type="text" name="my_space" class="form-control" placeholder="https://myspace.com/myband" /> 
-                                        </div>
-                                        <div class="col-md-1"><a data-original-title="flickr" class="social-icon social-icon-color flickr"></a> 
+                                        <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a>
                                         </div>
                                         <div class="col-md-11 show-error">
-                                            <input type="text" name="flickr" class="form-control" placeholder="https://flickr.com/myband" /> 
+                                            <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myband" />
                                         </div>
-                                        <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> 
-                                        </div>
-                                        <div class="col-md-11 show-error">
-                                            <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myband" /> 
-                                        </div>
-                                        <div class="col-md-1"><a data-original-title="jolicloud" class="social-icon social-icon-color jolicloud"></a> 
+                                        <div class="col-md-1"><a data-original-title="myspace" class="social-icon social-icon-color myspace"></a>
                                         </div>
                                         <div class="col-md-11 show-error">
-                                            <input type="text" name="soundcloud" class="form-control" placeholder="https://soundcloud.com/myband" /> 
+                                            <input type="text" name="my_space" class="form-control" placeholder="https://myspace.com/myband" />
+                                        </div>
+                                        <div class="col-md-1"><a data-original-title="flickr" class="social-icon social-icon-color flickr"></a>
+                                        </div>
+                                        <div class="col-md-11 show-error">
+                                            <input type="text" name="flickr" class="form-control" placeholder="https://flickr.com/myband" />
+                                        </div>
+                                        <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a>
+                                        </div>
+                                        <div class="col-md-11 show-error">
+                                            <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myband" />
+                                        </div>
+                                        <div class="col-md-1"><a data-original-title="jolicloud" class="social-icon social-icon-color jolicloud"></a>
+                                        </div>
+                                        <div class="col-md-11 show-error">
+                                            <input type="text" name="soundcloud" class="form-control" placeholder="https://soundcloud.com/myband" />
                                         </div>
                                     </div>
                                 </div>
@@ -213,7 +214,7 @@
                                 </label>
                                 <div class="show-error">
                                     <textarea name="short_description" class="form-control" rows="3"></textarea>
-                                </div> 
+                                </div>
                                 <label class="control-label">Description:</label>
                                 <div class="show-error">
                                     <textarea name="description" class="form-control" rows="5"></textarea>
@@ -234,8 +235,8 @@
             </div>
         </div>
     </div>
-    <!-- END UPDATE MODAL--> 
-    <!-- BEGIN SEARCH MODAL--> 
+    <!-- END UPDATE MODAL-->
+    <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:400px !important;">
             <div class="modal-content portlet">
@@ -247,14 +248,14 @@
                     <form method="post" action="/admin/bands" id="form_model_search">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="form-body">
-                            <div class="row">  
+                            <div class="row">
                                 <div class="form-group">
                                     <label for="onlyerrors" class="col-md-5"> <span>Only With Error:</span> </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="onlyerrors" style="width:65px !important">
                                         <option @if($onlyerrors==0) selected @endif value="0">No</option>
                                         <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
                                     </select>
-                                </div>   
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -270,15 +271,15 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL--> 
+    <!-- END SEARCH MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="/js/admin/bands/index.js" type="text/javascript"></script>
 @endsection

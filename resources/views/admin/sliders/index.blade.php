@@ -1,19 +1,20 @@
 @php $page_title='Sliders' @endphp
 @extends('layouts.admin')
-@section('title', 'Sliders' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, add, edit and remove sliders.</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -25,17 +26,17 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['SLIDERS']['permission_types']))
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
                                 <i class="fa fa-plus"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['SLIDERS']['permission_types']))
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif
                             @if(in_array('Delete',Auth::user()->user_type->getACLs()['SLIDERS']['permission_types']))
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove 
+                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
@@ -72,15 +73,15 @@
                                 <td width="25%"><a href="{{env('IMAGE_URL_OLDTB_SERVER').$s->slug}}" target="_blank">{{$s->slug}}</a></td>
                                 <td width="25%"><a>{{$s->alt}}</a></td>
                             </tr>
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -95,7 +96,7 @@
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
-                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>                             
+                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Slug
@@ -153,9 +154,9 @@
             </div>
         </div>
     </div>
-    <!-- END UPDATE MODAL--> 
+    <!-- END UPDATE MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="/js/admin/sliders/index.js" type="text/javascript"></script>
 @endsection

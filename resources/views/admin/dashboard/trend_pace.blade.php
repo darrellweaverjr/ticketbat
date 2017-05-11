@@ -1,20 +1,21 @@
 @php $page_title='Trend & Pace' @endphp
 @extends('layouts.admin')
-@section('title', 'Trend & Pace' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
+@section('content')
 
-    <!-- BEGIN PAGE HEADER-->   
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
         <small>statistics, charts and reports (by default the last 30 days).</small>
     </h1>
-    <!-- END PAGE TITLE-->                   
+    <!-- END PAGE TITLE-->
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row" id="totals">
@@ -27,7 +28,7 @@
                     <div class="number">
                         <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
-                    <div class="desc">Tickets Sold 
+                    <div class="desc">Tickets Sold
                         <br>Purchases: <span data-counter="counterup" data-value="{{number_format($total['purchases'])}}">0</span>
                     </div>
                 </div>
@@ -39,9 +40,9 @@
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees'],2)}}"></span></div>
-                    <div class="desc">Total Revenue 
+                    <div class="desc">Total Revenue
                         @if(Auth::user()->user_type_id != 5)<br>Discounts: $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}"></span>@endif
                     </div>
                 </div>
@@ -53,7 +54,7 @@
                     <i class="fa fa-money"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}"></span></div>
                     <div class="desc">To Show</div>
                 </div>
@@ -65,7 +66,7 @@
                     <i class="fa fa-usd"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}"></span></div>
                     <div class="desc">
                         @if(Auth::user()->user_type_id != 5) Commission<br>Revenue @else TB Commission<br>Expense @endif
@@ -79,7 +80,7 @@
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span></div>
                     <div class="desc">Fee Revenue</div>
                 </div>
@@ -91,7 +92,7 @@
                     <i class="fa fa-shopping-cart"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees'],2)}}"></span>
                     </div>
                     <div class="desc">
@@ -139,7 +140,7 @@
                                 <th style="text-align:center">Sales<br>-1D</th>
                                 <th style="text-align:center">Qty<br>Sold</th>
                                 <th style="text-align:center">Purch.</th>
-                                <th style="text-align:center">Total<br>Revenue</th> 
+                                <th style="text-align:center">Total<br>Revenue</th>
                                 @if(Auth::user()->user_type_id != 5)
                                 <th style="text-align:center">Disc.</th>
                                 @endif
@@ -176,7 +177,7 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
-    <!-- BEGIN SEARCH MODAL--> 
+    <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
@@ -201,7 +202,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
@@ -216,7 +217,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show Time:</label>
                                     <div class="col-md-9 show-error">
@@ -234,7 +235,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Sold Date:</label>
                                     <div class="col-md-9 show-error">
@@ -252,7 +253,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -268,16 +269,16 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL-->                 
+    <!-- END SEARCH MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/trend_pace.js" type="text/javascript"></script>

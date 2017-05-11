@@ -1,8 +1,9 @@
 @php $page_title='Shows' @endphp
 @extends('layouts.admin')
-@section('title', 'Shows' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
@@ -10,13 +11,13 @@
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, add, edit and remove shows.</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -28,22 +29,22 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
-                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search">Search 
+                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search">Search
                                 <i class="fa fa-search"></i>
                             </button>
                             @endif
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
                                 <i class="fa fa-plus"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif
                             @if(in_array('Delete',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove 
+                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
@@ -76,22 +77,22 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%" data-order="{{$s->name}}"> 
+                                <td width="10%" data-order="{{$s->name}}">
                                     @if(preg_match('/\/uploads\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_OLDTB_SERVER').$s->image_url @endphp @endif
                                     @if(preg_match('/\/s3\//',$s->image_url)) @php $s->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$s->image_url) @endphp @endif
                                     <center style="color:red;"><i><b><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}"><img alt="- No image -" height="110px" width="110px" src="{{$s->image_url}}"/></a></b></i></center>
                                 </td>
-                                <td class="search-item clearfix" width="72%"> 
+                                <td class="search-item clearfix" width="72%">
                                     <div class="search-title">
                                         <h4>
                                             <a>{{$s->name}}</a>&nbsp;&nbsp;&nbsp;
                                             @if($s->url)<a class="social-icon social-icon-color rss" href="{{$s->url}}" target="_blank"></a>@endif
-                                            @if($s->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$s->googleplus}}" target="_blank"></a>@endif 
-                                            @if($s->facebook)<a class="social-icon social-icon-color facebook" href="{{$s->facebook}}" target="_blank"></a>@endif 
-                                            @if($s->twitter)<a class="social-icon social-icon-color twitter" href="{{$s->twitter}}" target="_blank"></a>@endif 
-                                            @if($s->youtube)<a class="social-icon social-icon-color youtube" href="{{$s->youtube}}" target="_blank"></a>@endif 
-                                            @if($s->instagram)<a class="social-icon social-icon-color instagram" href="{{$s->instagram}}" target="_blank"></a>@endif 
-                                            @if($s->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$s->yelpbadge}}" target="_blank"></a>@endif 
+                                            @if($s->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$s->googleplus}}" target="_blank"></a>@endif
+                                            @if($s->facebook)<a class="social-icon social-icon-color facebook" href="{{$s->facebook}}" target="_blank"></a>@endif
+                                            @if($s->twitter)<a class="social-icon social-icon-color twitter" href="{{$s->twitter}}" target="_blank"></a>@endif
+                                            @if($s->youtube)<a class="social-icon social-icon-color youtube" href="{{$s->youtube}}" target="_blank"></a>@endif
+                                            @if($s->instagram)<a class="social-icon social-icon-color instagram" href="{{$s->instagram}}" target="_blank"></a>@endif
+                                            @if($s->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$s->yelpbadge}}" target="_blank"></a>@endif
                                         </h4>
                                     </div>
                                     <div class="search-content">
@@ -100,27 +101,27 @@
                                 </td>
                                 <td width="8%"><center> {{$s->category}} </center></td>
                                 <td width="3%"><center> <span class="label label-sm sbold
-                                    @if($s->is_featured) label-success"> Yes 
-                                    @else label-danger"> No 
+                                    @if($s->is_featured) label-success"> Yes
+                                    @else label-danger"> No
                                     @endif
-                                    </center></span> 
+                                    </center></span>
                                 </td>
                                 <td width="5%"><center> <span class="label label-sm sbold
-                                    @if($s->is_active) label-success"> Active 
-                                    @else label-danger"> Inactive 
+                                    @if($s->is_active) label-success"> Active
+                                    @else label-danger"> Inactive
                                     @endif
-                                    </center></span> 
+                                    </center></span>
                                 </td>
                             </tr>
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -135,7 +136,7 @@
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
-                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>                             
+                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <div class="tabbable-line">
                                 <ul class="nav nav-tabs">
                                     <li class="active">
@@ -200,13 +201,13 @@
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="name" class="form-control" placeholder="My Show" /> 
+                                                        <input type="text" name="name" class="form-control" placeholder="My Show" />
                                                     </div>
                                                     <label class="control-label col-md-3">Slug
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-6 show-error">
-                                                        <input type="text" name="slug" class="form-control" readonly="true" /> 
+                                                        <input type="text" name="slug" class="form-control" readonly="true" />
                                                     </div>
                                                     <div class="col-md-3 show-error">
                                                         <button class="btn btn-block" id="go_to_slug" type="button">Go to
@@ -215,7 +216,7 @@
                                                     </div>
                                                     <label class="control-label col-md-3">Ext Slug</label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="ext_slug" class="form-control"/> 
+                                                        <input type="text" name="ext_slug" class="form-control"/>
                                                     </div>
                                                     <label class="control-label col-md-3">Category
                                                     <span class="required"> * </span>
@@ -244,7 +245,7 @@
                                                             <option rel="{{$v->restrictions}}" value="{{$v->id}}">{{$v->name}}</option>
                                                             @endforeach
                                                         </select>
-                                                    </div> 
+                                                    </div>
                                                     <label class="control-label col-md-3">Stage
                                                         <span class="required"> * </span>
                                                     </label>
@@ -256,7 +257,7 @@
                                                                 @endif
                                                             @endforeach
                                                         </select>
-                                                    </div> 
+                                                    </div>
                                                     <label class="control-label col-md-3">Restriction
                                                         <span class="required"> * </span>
                                                     </label>
@@ -287,11 +288,11 @@
                                                     </div>
                                                     <label class="control-label col-md-3">Cutoff Hours</label>
                                                     <div class="col-md-3">
-                                                        <input type="text" value="1" name="cutoff_hours" style="width:43px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                        <input type="text" value="1" name="cutoff_hours" style="width:43px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
                                                     <label class="control-label col-md-2">Sequence</label>
                                                     <div class="col-md-4">
-                                                        <input type="text" value="10000" name="sequence" style="width:73px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
+                                                        <input type="text" value="10000" name="sequence" style="width:73px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
                                                 </div>
                                             </div>
@@ -300,44 +301,44 @@
                                                     <span class="required"> Social Media & Others </span>
                                                 </label><hr>
                                                 <div class="form-group">
-                                                    <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a> 
+                                                    <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="url" class="form-control" placeholder="https://www.myshow.com" /> 
-                                                    </div> 
+                                                        <input type="text" name="url" class="form-control" placeholder="https://www.myshow.com" />
+                                                    </div>
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-11 show-error">
                                                         <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
                                                     </div><br>
-                                                    <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> 
+                                                    <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myshow" /> 
+                                                        <input type="text" name="youtube" class="form-control" placeholder="https://www.youtube.com/user/myshow" />
                                                     </div>
-                                                    <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> 
-                                                    </div>
-                                                    <div class="col-md-11 show-error">
-                                                        <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myshow" /> 
-                                                    </div>
-                                                    <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> 
+                                                    <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myshow" /> 
+                                                        <input type="text" name="facebook" class="form-control" placeholder="https://www.facebook.com/myshow" />
                                                     </div>
-                                                    <div class="col-md-1"><a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a> 
-                                                    </div>
-                                                    <div class="col-md-11 show-error">
-                                                        <input type="text" name="googleplus" class="form-control" placeholder="https://googleplus.com/myshow" /> 
-                                                    </div>
-                                                    <div class="col-md-1"><a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a> 
+                                                    <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="yelpbadge" class="form-control" placeholder="https://yelpbadge.com/myshow" /> 
+                                                        <input type="text" name="twitter" class="form-control" placeholder="https://twitter.com/myshow" />
                                                     </div>
-                                                    <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> 
+                                                    <div class="col-md-1"><a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" /> 
+                                                        <input type="text" name="googleplus" class="form-control" placeholder="https://googleplus.com/myshow" />
+                                                    </div>
+                                                    <div class="col-md-1"><a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a>
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
+                                                        <input type="text" name="yelpbadge" class="form-control" placeholder="https://yelpbadge.com/myshow" />
+                                                    </div>
+                                                    <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a>
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
+                                                        <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -365,7 +366,7 @@
                                             </label>
                                             <div class="show-error">
                                                 <textarea name="short_description" class="form-control" rows="2"></textarea>
-                                            </div> 
+                                            </div>
                                             <label class="control-label">Description:</label>
                                             <div class="show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
@@ -392,14 +393,14 @@
                                                     <label class="col-md-3 control-label">Sponsor
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="sponsor" class="form-control"/> 
+                                                        <input type="text" name="sponsor" class="form-control"/>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label">Presented by
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="presented_by" class="form-control"  /> 
+                                                        <input type="text" name="presented_by" class="form-control"  />
                                                     </div>
                                                 </div>
                                             </div>
@@ -412,12 +413,12 @@
                                                     <label class="control-label" style="padding-left:30px">Email for Individual Sales and Manifests Reports:
                                                     </label>
                                                     <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="emails" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" /> 
+                                                        <input type="text" name="emails" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
                                                     </div>
-                                                    <label class="control-label" style="padding-left:30px">Email for Daily Accounting: 
+                                                    <label class="control-label" style="padding-left:30px">Email for Daily Accounting:
                                                     </label>
                                                     <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" /> 
+                                                        <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -489,7 +490,7 @@
                                                 </label><hr>
                                                 <div class="form-group">
                                                     <div class="btn-group" style="padding-left:20px">
-                                                        <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add 
+                                                        <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add
                                                             <i class="fa fa-plus"></i>
                                                         </button>
                                                     </div>
@@ -515,17 +516,17 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_showtimes">
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_show_time_add" class="btn sbold bg-green">Add 
+                                            <button type="button" id="btn_model_show_time_add" class="btn sbold bg-green">Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
-                                            <button type="button" id="btn_model_show_time_edit" class="btn sbold bg-yellow">Toggle 
+                                            <button type="button" id="btn_model_show_time_edit" class="btn sbold bg-yellow">Toggle
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red">Remove 
+                                            <button type="button" id="btn_model_show_time_delete" class="btn sbold bg-red">Remove
                                                 <i class="fa fa-remove"></i>
                                             </button>
                                             @if (Auth::user()->user_type_id == 1)
-                                            <button type="button" id="btn_model_show_time_change" class="btn sbold bg-purple">Move 
+                                            <button type="button" id="btn_model_show_time_change" class="btn sbold bg-purple">Move
                                                 <i class="fa fa-recycle"></i>
                                             </button>
                                             @endif
@@ -536,7 +537,7 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_tickets">
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_ticket_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_ticket_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
@@ -569,7 +570,7 @@
                                             </button>
                                         </div>
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_band_create" class="btn sbold bg-purple">Create new 
+                                            <button type="button" id="btn_model_band_create" class="btn sbold bg-purple">Create new
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
@@ -589,7 +590,7 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_sweepstakes">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_sweepstakes_edit" class="btn sbold bg-yellow">Pick 
+                                            <button type="button" id="btn_model_sweepstakes_edit" class="btn sbold bg-yellow">Pick
                                                 <i class="fa fa-gift"></i>
                                             </button>
                                         </div>
@@ -607,11 +608,11 @@
                                                 <tbody id="tb_sub_sweepstakes">
                                                 </tbody>
                                             </table>
-                                        </div>   
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_contracts">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_contract_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_contract_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
@@ -629,37 +630,37 @@
                                                 <tbody id="tb_show_contracts">
                                                 </tbody>
                                             </table>
-                                        </div>  
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_images">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_image_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_image_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_show_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
-                                        </div>   
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_banners">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_banner_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_banner_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_show_banners" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
-                                        </div>   
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_videos">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_video_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_video_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_show_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
-                                        </div>   
+                                        </div>
                                     </div><!--
                                     <div class="tab-pane" id="tab_model_update_reviews">
                                         <h1>Not Implemented!</h1>
@@ -668,7 +669,7 @@
                                         <h1>Not Implemented!</h1>
                                     </div>-->
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -684,8 +685,8 @@
             </div>
         </div>
     </div>
-    <!-- END UPDATE MODAL--> 
-    <!-- BEGIN SEARCH MODAL--> 
+    <!-- END UPDATE MODAL-->
+    <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:400px !important;">
             <div class="modal-content portlet">
@@ -706,7 +707,7 @@
                                         <option @if($v->id==$venue) selected @endif value="{{$v->id}}">{{$v->name}}</option>
                                         @endforeach
                                     </select>
-                                </div>  
+                                </div>
                                 <div class="form-group">
                                     <label for="showtime" class="col-md-5"> <span>Show Time:</span> </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="showtime" style="width:100px !important">
@@ -714,7 +715,7 @@
                                         <option @if($showtime=='P') selected @endif value="P">Passed</option>
                                         <option @if($showtime=='U') selected @endif value="U">Upcoming</option>
                                     </select>
-                                </div>   
+                                </div>
                                 <div class="form-group">
                                     <label for="status" class="col-md-5"> <span>Status:</span> </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="status" style="width:90px !important">
@@ -722,14 +723,14 @@
                                         <option @if($status=='1') selected @endif value="1">Active</option>
                                         <option @if($status=='0') selected @endif value="0">Inactive</option>
                                     </select>
-                                </div>    
+                                </div>
                                 <div class="form-group">
                                     <label for="onlyerrors" class="col-md-5"> <span>Only With Error:</span> </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="onlyerrors" style="width:65px !important">
                                         <option @if($onlyerrors==0) selected @endif value="0">No</option>
                                         <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
                                     </select>
-                                </div>   
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -745,14 +746,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL--> 
-    <!-- BEGIN ADD/EDIT PASSWORD MODAL--> 
+    <!-- END SEARCH MODAL-->
+    <!-- BEGIN ADD/EDIT PASSWORD MODAL-->
     <div id="modal_model_show_passwords" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -772,7 +773,7 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-9 show-error">
-                                        <input type="text" name="password" class="form-control" required="true" /> 
+                                        <input type="text" name="password" class="form-control" required="true" />
                                     </div>
                                     <label class="control-label col-md-3">Date range:
                                         <span class="required"> * </span>
@@ -793,8 +794,8 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-9 ticket_types_lists">
-                                    </div> 
-                                </div>  
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -805,14 +806,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/EDIT PASSWORD MODAL--> 
-    <!-- BEGIN ADD/EDIT TICKET MODAL--> 
+    <!-- END ADD/EDIT PASSWORD MODAL-->
+    <!-- BEGIN ADD/EDIT TICKET MODAL-->
     <div id="modal_model_show_tickets" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -862,32 +863,32 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                    </div> 
+                                        <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
                                     <label class="col-md-5 control-label">Proccessing Fee ($)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                    </div> 
+                                        <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
                                     <label class="col-md-5 control-label">Proccessing Fee (%)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                    </div> 
+                                        <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
                                     <label class="col-md-5 control-label">Commission ($)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                    </div> 
+                                        <input type="text" value="0" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
                                     <label class="col-md-5 control-label">Commission (%)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                    </div> 
+                                        <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
                                     <label class="control-label col-md-5">Make default ticket
                                         <span class="required"> * </span>
                                     </label>
@@ -906,9 +907,9 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
-                                    </div> 
-                                </div>  
+                                        <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -919,14 +920,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/EDIT TICKET MODAL--> 
-    <!-- BEGIN ADD/EDIT BAND MODAL--> 
+    <!-- END ADD/EDIT TICKET MODAL-->
+    <!-- BEGIN ADD/EDIT BAND MODAL-->
     <div id="modal_model_show_bands" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -948,7 +949,7 @@
                                         <select class="form-control" name="band_id">
                                         </select>
                                     </div>
-                                </div>  
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -959,14 +960,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/EDIT BAND MODAL--> 
-    <!-- BEGIN TOGGLE SHOWTIMES MODAL--> 
+    <!-- END ADD/EDIT BAND MODAL-->
+    <!-- BEGIN TOGGLE SHOWTIMES MODAL-->
     <div id="modal_model_show_times_toggle" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -980,27 +981,27 @@
                         <input type="hidden" name="id" value="" />
                         <div class="form-body">
                             <div class="row">
-                                <div class="form-group">                                     
+                                <div class="form-group">
                                     <center><div class="show-error link_model_show_times_toggle"></div></center><hr>
-                                </div>                                 
-                                <div class="form-group">                                     
-                                    <label class="control-label col-md-3">Status</label>                                     
-                                    <div class="col-md-9 show-error">                                         
-                                        <input type="hidden" name="is_active" value="0"/>                                         
-                                        <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">                                     
-                                    </div>                                 
-                                </div>                                 
-                                <div class="form-group">                                     
-                                    <label class="col-md-3 control-label">Tickets to inactive for this event</label>                                     
-                                    <div class="col-md-9 ticket_types_lists">                                     
-                                    </div>                                 
-                                </div> 
-                                <div class="form-group">                                     
-                                    <label class="col-md-3 control-label">External slug</label>                                     
-                                    <div class="col-md-9">  
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Status</label>
+                                    <div class="col-md-9 show-error">
+                                        <input type="hidden" name="is_active" value="0"/>
+                                        <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Tickets to inactive for this event</label>
+                                    <div class="col-md-9 ticket_types_lists">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">External slug</label>
+                                    <div class="col-md-9">
                                         <input type="url" class="form-control" name="slug">
-                                    </div>                                 
-                                </div> 
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -1011,14 +1012,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END TOGGLE SHOWTIMES MODAL--> 
-    <!-- BEGIN ADD/REMOVE SHOWTIMES MODAL--> 
+    <!-- END TOGGLE SHOWTIMES MODAL-->
+    <!-- BEGIN ADD/REMOVE SHOWTIMES MODAL-->
     <div id="modal_model_show_times" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -1037,7 +1038,7 @@
                                     <label class="control-label">
                                         <span class="required"> Search Showtimes </span>
                                     </label><hr>
-                                    <div class="form-group">    
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">Week Days
                                             <span class="required"> * </span>
                                         </label>
@@ -1049,7 +1050,7 @@
                                             <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="5" />Fri<span></span></label>
                                             <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="6" />Sat<span></span></label>
                                             <label class="mt-checkbox"><input type="checkbox" checked="true" name="days[]" value="0" />Sun<span></span></label>
-                                        </div> 
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Date range
@@ -1070,7 +1071,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Time</label>
                                         <div class="col-md-5 show-error">
@@ -1103,13 +1104,13 @@
                                                 <input type="hidden" name="is_active" value="0"/>
                                                 <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
                                             </div>
-                                        </div> 
+                                        </div>
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Tickets to inactive for this event
                                             </label>
                                             <div class="col-md-9 ticket_types_lists">
-                                            </div> 
-                                        </div> 
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 table-responsive" style="padding:20px;max-height:600px;overflow-y: auto;">
@@ -1137,14 +1138,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE SHOWTIMES MODAL--> 
-    <!-- BEGIN MOVE SHOWTIMES MODAL--> 
+    <!-- END ADD/REMOVE SHOWTIMES MODAL-->
+    <!-- BEGIN MOVE SHOWTIMES MODAL-->
     <div id="modal_model_show_times_move" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -1165,7 +1166,7 @@
                                         <select class="form-control" name="show_time_id">
                                         </select>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Move to
                                         <span class="required"> * </span>
@@ -1211,14 +1212,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END MOVE SHOWTIMES MODAL--> 
-    <!-- BEGIN ADD/EDIT CONTRACTS MODAL--> 
+    <!-- END MOVE SHOWTIMES MODAL-->
+    <!-- BEGIN ADD/EDIT CONTRACTS MODAL-->
     <div id="modal_model_show_contracts" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -1245,14 +1246,14 @@
                                                     <i class="fa fa-calendar"></i>
                                                 </button>
                                             </span>
-                                        </div>                          
+                                        </div>
                                     </div>
                                     <label class="control-label col-md-5">Contract file
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
                                         <span class="btn btn-block green fileinput-button">Add <i class="fa fa-plus"></i>
-                                            <input type="file" name="file" accept="application/pdf" class="not_included"> 
+                                            <input type="file" name="file" accept="application/pdf" class="not_included">
                                         </span>
                                     </div> <hr>
                                     <label class="control-label">
@@ -1285,33 +1286,33 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                        </div> 
+                                            <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        </div>
                                         <label class="col-md-5 control-label">Proc.Fee ($)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                        </div> 
+                                            <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        </div>
                                         <label class="col-md-5 control-label">Proc.Fee (%)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                        </div> 
+                                            <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        </div>
                                         <label class="col-md-5 control-label">Commission ($)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                            <input type="text" value="" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                         </div>
                                         <label class="col-md-5 control-label">Commission (%)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
-                                        </div> 
-                                        <label class="control-label col-md-5">Make default 
+                                            <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        </div>
+                                        <label class="control-label col-md-5">Make default
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7">
@@ -1329,12 +1330,12 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "> 
-                                        </div> 
-                                    </div>  
+                                            <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                        </div>
+                                    </div>
                                     <div class="form-group show-error">
-                                        <button type="button" id="btn_show_contracts_ticket_add" disabled="true" class="btn btn-block sbold grey-salsa">Add cron job for this ticket <i class="fa fa-plus"></i></button> 
-                                    </div> 
+                                        <button type="button" id="btn_show_contracts_ticket_add" disabled="true" class="btn btn-block sbold grey-salsa">Add cron job for this ticket <i class="fa fa-plus"></i></button>
+                                    </div>
                                 </div>
                                 <div class="form-group col-md-7" style="max-height:500px;overflow-y: auto;">
                                     <table class="table table-striped table-hover table-bordered">
@@ -1347,7 +1348,7 @@
                                         <tbody id="tb_show_contracts_tickets">
                                         </tbody>
                                     </table>
-                                </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -1358,14 +1359,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/EDIT CONTRACTS MODAL--> 
-    <!-- BEGIN ADD/REMOVE SHOWIMAGES MODAL--> 
+    <!-- END ADD/EDIT CONTRACTS MODAL-->
+    <!-- BEGIN ADD/REMOVE SHOWIMAGES MODAL-->
     <div id="modal_model_show_images" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -1423,14 +1424,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE SHOWIMAGES MODAL--> 
-    <!-- BEGIN ADD/REMOVE SHOWBANNERS MODAL--> 
+    <!-- END ADD/REMOVE SHOWIMAGES MODAL-->
+    <!-- BEGIN ADD/REMOVE SHOWBANNERS MODAL-->
     <div id="modal_model_show_banners" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -1486,14 +1487,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE SHOWBANNERS MODAL--> 
-    <!-- BEGIN ADD/REMOVE SHOWVIDEOS MODAL--> 
+    <!-- END ADD/REMOVE SHOWBANNERS MODAL-->
+    <!-- BEGIN ADD/REMOVE SHOWVIDEOS MODAL-->
     <div id="modal_model_show_videos" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -1527,7 +1528,7 @@
                                     </label>
                                     <div class="col-md-9 show-error">
                                         <textarea name="embed_code" class="form-control" rows="4"></textarea>
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Description</label>
@@ -1545,16 +1546,16 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE SHOWBANNERS MODAL--> 
+    <!-- END ADD/REMOVE SHOWBANNERS MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>

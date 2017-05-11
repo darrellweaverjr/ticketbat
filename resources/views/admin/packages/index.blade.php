@@ -1,19 +1,20 @@
 @php $page_title='Packages' @endphp
 @extends('layouts.admin')
-@section('title', 'Packages' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, add, edit and remove packages.</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -22,20 +23,20 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
-                    <div class="actions">                        
+                    <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['PACKAGES']['permission_types']))
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
                                 <i class="fa fa-plus"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['PACKAGES']['permission_types']))
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif
                             @if(in_array('Delete',Auth::user()->user_type->getACLs()['PACKAGES']['permission_types']))
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove 
+                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
@@ -66,17 +67,17 @@
                                     </label>
                                 </td>
                                 <td width="23%"> {{$p->title}} </td>
-                                <td width="75%"> {{$p->description}} </td> 
+                                <td width="75%"> {{$p->description}} </td>
                             </tr>
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -106,7 +107,7 @@
                                 </label>
                                 <div class="col-md-10 show-error">
                                     <textarea name="description" class="form-control" rows="4"></textarea>
-                                </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -123,9 +124,9 @@
             </div>
         </div>
     </div>
-    <!-- END UPDATE MODAL--> 
+    <!-- END UPDATE MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="/js/admin/packages/index.js" type="text/javascript"></script>
 @endsection

@@ -1,19 +1,20 @@
 @php $page_title='Chargebacks' @endphp
 @extends('layouts.admin')
-@section('title', 'Chargebacks' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
         <small>statistics and reports (by default the last 30 days).</small>
     </h1>
-    <!-- END PAGE TITLE-->                  
+    <!-- END PAGE TITLE-->
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row" id="totals">
@@ -26,7 +27,7 @@
                     <div class="number">
                         <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
-                    <div class="desc">Tickets Sold 
+                    <div class="desc">Tickets Sold
                         <br>Purchases: <span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span>
                     </div>
                 </div>
@@ -89,7 +90,7 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
-    <!-- BEGIN SEARCH MODAL--> 
+    <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
@@ -114,7 +115,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
@@ -129,7 +130,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show Time:</label>
                                     <div class="col-md-9 show-error">
@@ -147,7 +148,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Sold Date:</label>
                                     <div class="col-md-9 show-error">
@@ -165,7 +166,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -181,16 +182,16 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL-->                   
+    <!-- END SEARCH MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/chargebacks.js" type="text/javascript"></script>
 @endsection

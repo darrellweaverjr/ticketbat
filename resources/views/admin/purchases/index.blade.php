@@ -1,20 +1,21 @@
 @php $page_title='Purchases' @endphp
 @extends('layouts.admin')
-@section('title', 'Purchases' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/summernote.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, re-send email, view tickets and change status (Only for admin purposes. By default the last 30 days.)</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -23,21 +24,21 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
-                    <div class="actions"> 
+                    <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                             <button id="btn_model_search" class="btn sbold grey-salsa">Search
                                 <i class="fa fa-search"></i>
                             </button>
-                            <button id="btn_model_email" class="btn sbold bg-green" disabled="true">Email Customers 
+                            <button id="btn_model_email" class="btn sbold bg-green" disabled="true">Email Customers
                                 <i class="fa fa-envelope"></i>
                             </button>
-                            <button id="btn_model_tickets" class="btn sbold bg-yellow" disabled="true">View Tickets 
+                            <button id="btn_model_tickets" class="btn sbold bg-yellow" disabled="true">View Tickets
                                 <i class="fa fa-ticket"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
-                            <button id="btn_model_note" class="btn sbold bg-red" disabled="true">Add Note 
+                            <button id="btn_model_note" class="btn sbold bg-red" disabled="true">Add Note
                                 <i class="fa fa-edit"></i>
                             </button>
                             <button id="btn_model_move" class="btn sbold bg-purple" disabled="true">Move to Event
@@ -77,11 +78,11 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" style="background-color:#{{$color}}"></td>  
-                                <td class="search-item clearfix" width="47%"> 
-                                    <div class="search-content" >       
+                                <td width="1%" style="background-color:#{{$color}}"></td>
+                                <td class="search-item clearfix" width="47%">
+                                    <div class="search-content" >
                                         <b class="search-title"><a data-toggle="modal" href="#modal_details_{{$p->id}}">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
-                                        <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <a>{{$p->id}}</a> Qty: <a>{{$p->quantity}}</a> T.Type: <a>{{$p->ticket_type_type}}</a> Pkg: <a>{{$p->title}}</a> 
+                                        <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <a>{{$p->id}}</a> Qty: <a>{{$p->quantity}}</a> T.Type: <a>{{$p->ticket_type_type}}</a> Pkg: <a>{{$p->title}}</a>
                                         <br> Ret.Price: <a>${{number_format($p->retail_price,2)}}</a> Fees: <a>${{number_format($p->processing_fee,2)}}</a> Commiss.: <a>${{number_format($p->commission_percent,2)}}</a> Savings: <a>${{number_format($p->savings,2)}}</a>
                                         @if($previous_color != $color) Method: <a>@if($p->ticket_type=='Consignment'){{$p->ticket_type}}@else{{$p->payment_type}}@endif</a> @if($p->transaction_id)AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a>@endif @endif
                                         <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small>
@@ -90,10 +91,10 @@
                                 <td width="18%"><center>{{$p->show_name}}<br>at<br>{{$p->venue_name}}</center></td>
                                 <td width="8%" data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}}</center></td>
                                 <td width="8%" data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}}</center></td>
-                                <td width="5%" style="text-align:right"> 
+                                <td width="5%" style="text-align:right">
                                     @if($previous_color != $color) @if($p->amount > 0) $ {{number_format($p->amount,2)}} @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
-                                <td width="11%"> 
+                                <td width="11%">
                                     @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                                     <select ref="{{$p->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
@@ -101,9 +102,9 @@
                                         @endforeach
                                     </select>
                                     @else <center>{{$p->status}}</center> @endif
-                                </td> 
+                                </td>
                             </tr>
-                            <!-- BEGIN DETAILS MODAL--> 
+                            <!-- BEGIN DETAILS MODAL-->
                             <div id="modal_details_{{$p->id}}" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
                                 <div class="modal-dialog">
                                     <div class="modal-content portlet">
@@ -118,8 +119,8 @@
                                                             <div class="avatar">Client Info</div>
                                                             <div class="message">
                                                                 <span class="arrow"> </span>
-                                                                <span class="body" style="margin-left:15px"> 
-                                                                    Name: <b>@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</b> 
+                                                                <span class="body" style="margin-left:15px">
+                                                                    Name: <b>@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</b>
                                                                     <br> Email: <b><a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></b>
                                                                     <br> Phone: <b>{{$p->phone}}</b>
                                                                 </span>
@@ -136,9 +137,9 @@
                                                             <div class="avatar">Purchase Info</div>
                                                             <div class="message">
                                                                 <span class="arrow"> </span>
-                                                                <span class="body" style="height:50px"> 
+                                                                <span class="body" style="height:50px">
                                                                     <div class="col-md-6"> ID: <b>{{$p->id}}</b><br> Qty: <b>{{$p->quantity}}</b><br> Ticket Type: <b>{{$p->ticket_type_type}}</b></div>
-                                                                    <div class="col-md-6"> Status: <b>{{$p->status}}</b><br> Package: <b>{{$p->title}}</b><br> Coupon: <b>{{$p->code}}</b></div> 
+                                                                    <div class="col-md-6"> Status: <b>{{$p->status}}</b><br> Package: <b>{{$p->title}}</b><br> Coupon: <b>{{$p->code}}</b></div>
                                                                 </span>
                                                             </div>
                                                         </li>
@@ -146,9 +147,9 @@
                                                             <div class="avatar">Transaction Info</div>
                                                             <div class="message">
                                                                 <span class="arrow"> </span>
-                                                                <span class="body" style="height:50px"> 
+                                                                <span class="body" style="height:50px">
                                                                     <div class="col-md-6"> ID:<b>{{$p->transaction_id}}</b><br> AuthCode: <b>{{$p->authcode}}</b><br> RefNum: <b>{{$p->refnum}}</b></div>
-                                                                    <div class="col-md-6"> Payment: <b>@if($p->ticket_type=='Consignment'){{$p->ticket_type}}@else{{$p->payment_type}}@endif</b><br> Card: <b>...{{$p->last_4}}</b></div> 
+                                                                    <div class="col-md-6"> Payment: <b>@if($p->ticket_type=='Consignment'){{$p->ticket_type}}@else{{$p->payment_type}}@endif</b><br> Card: <b>...{{$p->last_4}}</b></div>
                                                                 </span>
                                                             </div>
                                                         </li>
@@ -156,7 +157,7 @@
                                                             <div class="avatar">Accounting Info</div>
                                                             <div class="message">
                                                                 <span class="arrow"> </span>
-                                                                <span class="body" style="height:50px"> 
+                                                                <span class="body" style="height:50px">
                                                                     <div class="col-md-6"> Retail Price: <b>${{number_format($p->retail_price,2)}}</b><br> Fees: <b>${{number_format($p->processing_fee,2)}}</b><br> Commission: <b>${{number_format($p->commission_percent,2)}}</b></div>
                                                                     <div class="col-md-6"> Savings: <b>${{number_format($p->savings,2)}}</b><br> Amount: <b>${{number_format($p->amount,2)}}</b></div>
                                                                 </span>
@@ -177,7 +178,7 @@
                                                             </div>
                                                         </li>
                                                     </ul>
-                                                </div> 
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="modal-footer">
@@ -188,17 +189,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- END DETAILS MODAL--> 
+                            <!-- END DETAILS MODAL-->
                             @php $previous_color = $color @endphp
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN SEARCH MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
@@ -223,7 +224,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
@@ -238,7 +239,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show Time:</label>
                                     <div class="col-md-9 show-error">
@@ -256,7 +257,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Sold Date:</label>
                                     <div class="col-md-9 show-error">
@@ -274,7 +275,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -290,14 +291,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL--> 
-    <!-- BEGIN EMAIL MODAL--> 
+    <!-- END SEARCH MODAL-->
+    <!-- BEGIN EMAIL MODAL-->
     <div id="modal_model_email" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content portlet">
@@ -351,14 +352,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END EMAIL MODAL--> 
-    <!-- BEGIN MOVE MODAL--> 
+    <!-- END EMAIL MODAL-->
+    <!-- BEGIN MOVE MODAL-->
     <div id="modal_model_move" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content portlet">
@@ -377,11 +378,11 @@
                                     <label class="control-label col-md-7">Select the showtime to move the current purchase:</label>
                                     <div class="col-md-5 show-error">
                                         <div class="input-group">
-                                            <select class="form-control" name="show_time_id" required="true"> 
+                                            <select class="form-control" name="show_time_id" required="true">
                                             </select>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                             <div class="row">
                                 <hr><table class="table table-striped table-hover table-bordered" >
@@ -411,16 +412,16 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END MOVE MODAL--> 
+    <!-- END MOVE MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="{{config('app.theme')}}js/summernote.min.js" type="text/javascript"></script>
 <script src="/js/admin/purchases/index.js" type="text/javascript"></script>
 @endsection

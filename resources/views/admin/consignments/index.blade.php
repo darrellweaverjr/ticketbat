@@ -1,21 +1,22 @@
 @php $page_title='Consignment Tickets' @endphp
 @extends('layouts.admin')
-@section('title', 'Consignment Tickets' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, add, edit and remove consignment tickets. (By default the last 30 days.)</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -24,7 +25,7 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
-                    <div class="actions">                        
+                    <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
                             <button id="btn_model_search" class="btn sbold grey-salsa">Search
@@ -32,20 +33,20 @@
                             </button>
                             @endif
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
-                            <button id="btn_model_add" class="btn sbold bg-green">Add 
+                            <button id="btn_model_add" class="btn sbold bg-green">Add
                                 <i class="fa fa-plus"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['CONSIGNMENTS']['permission_types']))
-                            <button id="btn_model_tickets" class="btn sbold bg-red" disabled="true">View Tickets 
+                            <button id="btn_model_tickets" class="btn sbold bg-red" disabled="true">View Tickets
                                 <i class="fa fa-ticket"></i>
                             </button>
-                            <button id="btn_model_contract" class="btn sbold bg-purple" disabled="true">Generate Contract 
+                            <button id="btn_model_contract" class="btn sbold bg-purple" disabled="true">Generate Contract
                                 <i class="fa fa-copy"></i>
                             </button>
                             @endif
@@ -77,7 +78,7 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>  
+                                <td width="1%" class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>
                                 <td width="20%">{{$c->show_name}} </td>
                                 <td width="12%" data-order="{{strtotime($c->show_time)}}"><center>{{date('m/d/Y g:ia',strtotime($c->show_time))}}</center></td>
                                 <td width="12%" data-order="{{strtotime($c->created)}}"><center>{{date('m/d/Y g:ia',strtotime($c->created))}}</center></td>
@@ -85,23 +86,23 @@
                                 <td width="9%" data-order="{{strtotime($c->due_date)}}"><center>{{date('m/d/Y',strtotime($c->due_date))}}</center></td>
                                 <td width="6%"><center>{{number_format($c->qty,0)}}</center></td>
                                 <td width="10%" style="text-align:right"> $ {{number_format($c->total,2)}}</td>
-                                <td width="15%"> 
+                                <td width="15%">
                                     <select ref="{{$c->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
                                         <option @if($indexS == $c->status) selected="true" @endif value="{{$indexS}}">{{$s}}</option>
                                         @endforeach
                                     </select>
-                                </td> 
+                                </td>
                             </tr>
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN ADD MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN ADD MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -128,7 +129,7 @@
                                     <label class="control-label">
                                         <span class="required">General</span>
                                     </label><hr>
-                                    <div class="form-group">    
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">Venue
                                             <span class="required">*</span>
                                         </label>
@@ -146,15 +147,15 @@
                                         <div class="col-md-9 show-error">
                                             <select class="form-control" name="show_id" data-content='@php echo str_replace("'"," ",json_encode($search['shows']));@endphp'>
                                             </select>
-                                        </div>  
+                                        </div>
                                         <label class="control-label col-md-3">Time
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-9 show-error">
                                             <select class="form-control" name="show_time_id"></select>
-                                        </div>  
+                                        </div>
                                     </div>
-                                    <div class="form-group">    
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">Seller
                                             <span class="required">*</span>
                                         </label>
@@ -174,22 +175,22 @@
                                                         <i class="fa fa-calendar"></i>
                                                     </button>
                                                 </span>
-                                            </div>                          
-                                        </div> 
+                                            </div>
+                                        </div>
                                         <div class="col-md-5 show-error">
                                             <span class="btn btn-block green fileinput-button">Agreement <i class="fa fa-plus"></i>
-                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
+                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);">
                                             </span>
                                         </div>
                                     </div>
                                     <label class="control-label">
                                         <span class="required">Section</span>
                                     </label><hr>
-                                    <div class="form-group">    
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">T.Type
                                             <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-9 show-error"> 
+                                        <div class="col-md-9 show-error">
                                             <select class="form-control" name="section">
                                                 <option selected disabled value=""></option>
                                                 @foreach($sections as $index=>$s)
@@ -201,24 +202,24 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" style="width:75px" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
-                                        </div> 
+                                            <input type="text" style="width:75px" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
+                                        </div>
                                         <div class="col-md-4">
-                                            <input type="text" style="width:80px" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true"> 
-                                        </div> 
+                                            <input type="text" style="width:80px" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
+                                        </div>
                                         <label class="control-label col-md-3">Seat #</label>
-                                        <div class="col-md-9 show-error"> 
+                                        <div class="col-md-9 show-error">
                                             <input type="hidden" name="show_seat" value="0" />
                                             <input type="checkbox" class="make-switch" name="show_seat" value="1"  data-size="medium" data-on-text="Show # on tickets" data-off-text="Hide # on tickets" data-on-color="primary" data-off-color="warning">
                                         </div>
-                                    </div>    
-                                    <div class="form-group">  
+                                    </div>
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">S.Pric($)
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-3 show-error">
                                             <input type="number" style="width:90px" name="retail_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
-                                        </div>    
+                                        </div>
                                         <label class="control-label col-md-3">Comm(%)</label>
                                         <div class="col-md-3 show-error">
                                             <input type="number" style="width:80px" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
@@ -228,7 +229,7 @@
                                         </label>
                                         <div class="col-md-3 show-error">
                                             <input type="number" style="width:90px" name="processing_fee" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
-                                        </div> 
+                                        </div>
                                         <label class="control-label col-md-3">Comm($)</label>
                                         <div class="col-md-3 show-error">
                                             <input type="number" style="width:80px" name="fixed_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
@@ -236,9 +237,9 @@
                                         <label class="control-label col-md-3">Collect($)</label>
                                         <div class="col-md-3 show-error">
                                             <input type="number" style="width:90px" name="collect_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
-                                        </div> 
+                                        </div>
                                         <label class="control-label col-md-3"></label>
-                                        <div class="col-md-3 show-error"></div> 
+                                        <div class="col-md-3 show-error"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3"></label>
@@ -270,9 +271,9 @@
                                             <tbody id="tb_seats">
                                             </tbody>
                                         </table>
-                                    </div>  
+                                    </div>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -288,8 +289,8 @@
             </div>
         </div>
     </div>
-    <!-- END ADD MODAL--> 
-    <!-- BEGIN EDIT MODAL--> 
+    <!-- END ADD MODAL-->
+    <!-- BEGIN EDIT MODAL-->
     <div id="modal_model_update2" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -310,7 +311,7 @@
                                     <label class="control-label">
                                         <span class="required"> Consignment Info </span>
                                     </label><hr>
-                                    <div class="form-group">    
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">Seller
                                             <span class="required"> * </span>
                                         </label>
@@ -320,29 +321,29 @@
                                                 <option value="{{$s->id}}"> {{$s->email}} </option>
                                                 @endforeach
                                             </select>
-                                        </div> 
+                                        </div>
                                     </div>
-                                    <div class="form-group">  
+                                    <div class="form-group">
                                         <label class="control-label col-md-3"> Agreement
                                         </label>
                                         <div class="col-md-9 show-error">
                                             <input type="text" name="agreement" class="form-control col-md-6" readonly="true" style="width:140px !important"/>
                                             <span class="btn yellow fileinput-button col-md-3"><i class="fa fa-edit"></i>
-                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);"> 
+                                                <input type="file" name="agreement_file" accept="application/pdf" @if(Auth::user()->user_type_id != 1) disabled="true" @endif onchange="$('#form_model_update2 [name=agreement]').val(this.value);">
                                             </span>
                                             <span class="btn green col-md-3" id="btn_model_file" ><i class="fa fa-search"></i>
                                             </span>
                                         </div>
-                                        <label class="control-label col-md-4"> 
+                                        <label class="control-label col-md-4">
                                         </label>
                                         <div class="col-md-4 show-error">
-                                            
+
                                         </div>
                                         <div class="col-md-4 show-error">
-                                            
+
                                         </div>
                                     </div>
-                                    <div class="form-group">  
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">Due Date</label>
                                         <div class="col-md-9 show-error">
                                             <div class="input-group date date-picker due_date">
@@ -353,22 +354,22 @@
                                                     </button>
                                                 </span>
                                             </div>
-                                        </div> 
+                                        </div>
                                     </div>
-                                    <div class="form-group">  
+                                    <div class="form-group">
                                         <label class="control-label col-md-3">Qty</label>
                                         <div class="col-md-3 show-error">
                                             <input readonly class="form-control" type="number" name="qty" style="width:80px !important">
-                                        </div> 
+                                        </div>
                                         <label class="control-label col-md-2">Total($)</label>
                                         <div class="col-md-4 show-error">
                                             <input readonly class="form-control" type="number" name="total" style="width:110px !important">
-                                        </div> 
+                                        </div>
                                     </div>
                                     <label class="control-label">
                                         <span class="required"> Actions with selected seats </span>
                                     </label><hr>
-                                    <div class="form-group" style="padding:0 20px"> 
+                                    <div class="form-group" style="padding:0 20px">
                                         <div class="mt-radio-list col-md-12">
                                             <label class="mt-radio">No action
                                                 <input value="no" name="action" type="radio" checked="true">
@@ -381,7 +382,7 @@
                                                 <span></span>
                                             </label>
                                         </div>
-                                        <div class="form-group col-md-7">  
+                                        <div class="form-group col-md-7">
                                             <select class="form-control" name="status">
                                                 <option selected disabled value=""></option>
                                                 @foreach($status_seat as $indexS=>$s)
@@ -395,8 +396,8 @@
                                                 <span></span>
                                             </label>
                                         </div>
-                                        <div class="form-group col-md-7">  
-                                            <select class="form-control" name="moveto">                                                
+                                        <div class="form-group col-md-7">
+                                            <select class="form-control" name="moveto">
                                             </select>
                                         </div>
                                         <div class="mt-radio-list col-md-5">
@@ -440,7 +441,7 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -456,8 +457,8 @@
             </div>
         </div>
     </div>
-    <!-- END EDIT MODAL--> 
-    <!-- BEGIN SEARCH MODAL--> 
+    <!-- END EDIT MODAL-->
+    <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
@@ -482,7 +483,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
@@ -497,7 +498,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Show Time:</label>
                                     <div class="col-md-9 show-error">
@@ -515,7 +516,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Created:</label>
                                     <div class="col-md-9 show-error">
@@ -533,7 +534,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -549,14 +550,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL--> 
-    <!-- BEGIN TICKETS MODAL--> 
+    <!-- END SEARCH MODAL-->
+    <!-- BEGIN TICKETS MODAL-->
     <div id="modal_model_tickets" class="modal fade" tabindex="1">
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
@@ -567,10 +568,10 @@
                     <div class="form-body">
                         <div class="row">
                             <div class="form-group">
-                                <p class="container-fluid">This option generates a PDF that allows you to view/print tickets.<br> 
+                                <p class="container-fluid">This option generates a PDF that allows you to view/print tickets.<br>
                                     You must select the range first.<br>Then, select the way you want to view/print the tickets.</p>
-                            </div>   
-                            <div id="range_options" class="form-group" style="margin-left:40%"></div>  
+                            </div>
+                            <div id="range_options" class="form-group" style="margin-left:40%"></div>
                         </div>
                     </div>
                     <div class="form-actions">
@@ -589,10 +590,10 @@
             </div>
         </div>
     </div>
-    <!-- END TICKETS MODAL--> 
+    <!-- END TICKETS MODAL-->
 @endsection
 
-@section('scripts')     
+@section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>

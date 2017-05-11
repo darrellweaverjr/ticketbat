@@ -1,20 +1,21 @@
 @php $page_title='Venues' @endphp
 @extends('layouts.admin')
-@section('title', 'Venues' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, add, edit and remove venues.</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -26,22 +27,22 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['VENUES']['permission_types']))
-                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search 
+                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search"> Search
                                 <i class="fa fa-search"></i>
                             </button>
                             @endif
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['VENUES']['permission_types']))
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
                                 <i class="fa fa-plus"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['VENUES']['permission_types']))
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif
                             @if(in_array('Delete',Auth::user()->user_type->getACLs()['VENUES']['permission_types']))
-                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove 
+                            <button id="btn_model_remove" class="btn sbold bg-red" disabled="true">Remove
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
@@ -72,21 +73,21 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%" data-order="{{$v->name}}"> 
+                                <td width="10%" data-order="{{$v->name}}">
                                     @if(preg_match('/\/uploads\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_OLDTB_SERVER').$v->image_url @endphp @endif
                                     @if(preg_match('/\/s3\//',$v->image_url)) @php $v->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$v->image_url) @endphp @endif
                         <center style="color:red;"><i><b><a href="https://www.ticketbat.com/venue/{{$v->slug}}" target="_blank"><img alt="- No image -" height="110px" width="110px" src="{{$v->image_url}}"/></a></b></i></center>
                                 </td>
-                                <td class="search-item clearfix" width="85%"> 
+                                <td class="search-item clearfix" width="85%">
                                     <div class="search-title">
                                         <h4>
                                             <a>{{$v->name}}</a>&nbsp;&nbsp;&nbsp;
-                                            @if($v->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$v->googleplus}}" target="_blank"></a>@endif 
-                                            @if($v->facebook)<a class="social-icon social-icon-color facebook" href="{{$v->facebook}}" target="_blank"></a>@endif 
-                                            @if($v->twitter)<a class="social-icon social-icon-color twitter" href="{{$v->twitter}}" target="_blank"></a>@endif 
-                                            @if($v->youtube)<a class="social-icon social-icon-color youtube" href="{{$v->youtube}}" target="_blank"></a>@endif 
-                                            @if($v->instagram)<a class="social-icon social-icon-color instagram" href="{{$v->instagram}}" target="_blank"></a>@endif 
-                                            @if($v->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$v->yelpbadge}}" target="_blank"></a>@endif 
+                                            @if($v->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$v->googleplus}}" target="_blank"></a>@endif
+                                            @if($v->facebook)<a class="social-icon social-icon-color facebook" href="{{$v->facebook}}" target="_blank"></a>@endif
+                                            @if($v->twitter)<a class="social-icon social-icon-color twitter" href="{{$v->twitter}}" target="_blank"></a>@endif
+                                            @if($v->youtube)<a class="social-icon social-icon-color youtube" href="{{$v->youtube}}" target="_blank"></a>@endif
+                                            @if($v->instagram)<a class="social-icon social-icon-color instagram" href="{{$v->instagram}}" target="_blank"></a>@endif
+                                            @if($v->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$v->yelpbadge}}" target="_blank"></a>@endif
                                             &nbsp;&nbsp;&nbsp;
                                             <a href='http://maps.google.com/?q={{$v->address}} {{$v->city}} {{$v->state}} {{$v->country}} {{$v->zip}}' target="_blank" class="fa fa-map-marker"><small> {{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</small></a>
                                         </h4>
@@ -96,21 +97,21 @@
                                     </div>
                                 </td>
                                 <td width="5%"><center> <span class="label label-sm sbold
-                                    @if($v->is_featured) label-success"> Yes 
-                                    @else label-danger"> No 
+                                    @if($v->is_featured) label-success"> Yes
+                                    @else label-danger"> No
                                     @endif
-                                    </center></span> 
+                                    </center></span>
                                 </td>
                             </tr>
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -125,7 +126,7 @@
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
-                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>                             
+                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <div class="tabbable-line">
                                 <ul class="nav nav-tabs">
                                     <li class="active">
@@ -165,13 +166,13 @@
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-9 show-error">
-                                                        <input type="text" name="name" class="form-control" placeholder="My Venue" /> 
+                                                        <input type="text" name="name" class="form-control" placeholder="My Venue" />
                                                     </div>
                                                     <label class="control-label col-md-3">Slug
                                                         <span class="required"> * </span>
                                                     </label>
                                                     <div class="col-md-6 show-error">
-                                                        <input type="text" name="slug" class="form-control" readonly="true" /> 
+                                                        <input type="text" name="slug" class="form-control" readonly="true" />
                                                     </div>
                                                     <div class="col-md-3 show-error">
                                                         <button class="btn btn-block" id="go_to_slug" type="button">Go to
@@ -202,35 +203,35 @@
                                                     <span class="required"> Social Media & Others </span>
                                                 </label><hr>
                                                 <div class="form-group">
-                                                    <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a> 
+                                                    <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="youtube" class="form-control" placeholder="venue-youtube" /> 
+                                                        <input type="text" name="youtube" class="form-control" placeholder="venue-youtube" />
                                                     </div>
-                                                    <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a> 
-                                                    </div>
-                                                    <div class="col-md-11 show-error">
-                                                        <input type="text" name="facebook" class="form-control" placeholder="venue-url" /> 
-                                                    </div>
-                                                    <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a> 
+                                                    <div class="col-md-1"><a data-original-title="facebook" class="social-icon social-icon-color facebook"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="twitter" class="form-control" placeholder="venue-username" /> 
+                                                        <input type="text" name="facebook" class="form-control" placeholder="venue-url" />
                                                     </div>
-                                                    <div class="col-md-1"><a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a> 
-                                                    </div>
-                                                    <div class="col-md-11 show-error">
-                                                        <input type="text" name="googleplus" class="form-control" placeholder="venue-id" /> 
-                                                    </div>
-                                                    <div class="col-md-1"><a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a> 
+                                                    <div class="col-md-1"><a data-original-title="twitter" class="social-icon social-icon-color twitter"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="yelpbadge" class="form-control" placeholder="venue-link" /> 
+                                                        <input type="text" name="twitter" class="form-control" placeholder="venue-username" />
                                                     </div>
-                                                    <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a> 
+                                                    <div class="col-md-1"><a data-original-title="googleplus" class="social-icon social-icon-color googleplus"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
-                                                        <input type="text" name="instagram" class="form-control" placeholder="venue-username" /> 
+                                                        <input type="text" name="googleplus" class="form-control" placeholder="venue-id" />
+                                                    </div>
+                                                    <div class="col-md-1"><a data-original-title="yahoo" class="social-icon social-icon-color yahoo"></a>
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
+                                                        <input type="text" name="yelpbadge" class="form-control" placeholder="venue-link" />
+                                                    </div>
+                                                    <div class="col-md-1"><a data-original-title="instagram" class="social-icon social-icon-color instagram"></a>
+                                                    </div>
+                                                    <div class="col-md-11 show-error">
+                                                        <input type="text" name="instagram" class="form-control" placeholder="venue-username" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -252,13 +253,13 @@
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Fixed Proccessing Fee</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                            <input type="text" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default % Proccessing Fee</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                            <input type="text" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -268,13 +269,13 @@
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Fixed Commission</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_fixed_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                            <input type="text" value="0.00" name="default_fixed_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Commission %</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"> 
+                                                            <input type="text" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -287,8 +288,8 @@
                                             <div class="form-group" >
                                                 <div class="show-error" style="padding:20px">
                                                     <textarea name="ticket_info" class="form-control" rows="2"></textarea>
-                                                </div> 
-                                            </div> 
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <label class="control-label">
@@ -297,8 +298,8 @@
                                             <div class="form-group">
                                                 <div class="show-error" style="padding:20px">
                                                     <textarea name="cutoff_text" class="form-control" rows="2"></textarea>
-                                                </div> 
-                                            </div> 
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_location">
@@ -308,7 +309,7 @@
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-8 show-error">
-                                                    <input type="text" name="address" class="form-control" placeholder="000 Main St" /> 
+                                                    <input type="text" name="address" class="form-control" placeholder="000 Main St" />
                                                 </div>
                                             </div>
                                         </div>
@@ -318,19 +319,19 @@
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-3 show-error">
-                                                    <input type="text" name="city" class="form-control" placeholder="Las Vegas" /> 
+                                                    <input type="text" name="city" class="form-control" placeholder="Las Vegas" />
                                                 </div>
                                                 <label class="control-label col-md-1">State
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-1 show-error">
-                                                    <input type="text" name="state" class="form-control" placeholder="NV" /> 
+                                                    <input type="text" name="state" class="form-control" placeholder="NV" />
                                                 </div>
                                                 <label class="control-label col-md-1">Zip
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="text" name="zip" class="form-control" placeholder="00000" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " /> 
+                                                    <input type="text" name="zip" class="form-control" placeholder="00000" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " />
                                                 </div>
                                             </div>
                                         </div>
@@ -342,12 +343,12 @@
                                                     <label class="control-label" style="padding-left:30px">Email for Weekly Sales Reports:
                                                     </label>
                                                     <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="weekly_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" /> 
+                                                        <input type="text" name="weekly_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
                                                     </div>
-                                                    <label class="control-label" style="padding-left:30px">Email for Accounting: 
+                                                    <label class="control-label" style="padding-left:30px">Email for Accounting:
                                                     </label>
                                                     <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" /> 
+                                                        <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -377,46 +378,46 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_stages">
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_stage_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_stage_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_venue_stages" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
-                                        </div>   
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_images">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_image_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_image_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_venue_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
-                                        </div>   
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_banners">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_banner_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_banner_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_venue_banners" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
-                                        </div>   
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_videos">
                                         <div class="btn-group" style="padding-bottom:20px;">
-                                            <button type="button" id="btn_model_video_add" class="btn sbold bg-green"> Add 
+                                            <button type="button" id="btn_model_video_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_venue_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
-                                        </div>   
+                                        </div>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -432,8 +433,8 @@
             </div>
         </div>
     </div>
-    <!-- END UPDATE MODAL--> 
-    <!-- BEGIN SEARCH MODAL--> 
+    <!-- END UPDATE MODAL-->
+    <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:400px !important;">
             <div class="modal-content portlet">
@@ -452,7 +453,7 @@
                                         <option @if($onlyerrors==0) selected @endif value="0">No</option>
                                         <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
                                     </select>
-                                </div>   
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -468,14 +469,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL--> 
-    <!-- BEGIN ADD/REMOVE VENUESTAGESS MODAL--> 
+    <!-- END SEARCH MODAL-->
+    <!-- BEGIN ADD/REMOVE VENUESTAGESS MODAL-->
     <div id="modal_model_venue_stages" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -529,14 +530,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE VENUESTAGES MODAL--> 
-    <!-- BEGIN ADD/REMOVE VENUEIMAGES MODAL--> 
+    <!-- END ADD/REMOVE VENUESTAGES MODAL-->
+    <!-- BEGIN ADD/REMOVE VENUEIMAGES MODAL-->
     <div id="modal_model_venue_images" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -594,14 +595,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE VENUEIMAGES MODAL--> 
-    <!-- BEGIN ADD/REMOVE VENUEBANNERS MODAL--> 
+    <!-- END ADD/REMOVE VENUEIMAGES MODAL-->
+    <!-- BEGIN ADD/REMOVE VENUEBANNERS MODAL-->
     <div id="modal_model_venue_banners" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -657,14 +658,14 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE VENUEBANNERS MODAL--> 
-    <!-- BEGIN ADD/REMOVE VENUEVIDEOS MODAL--> 
+    <!-- END ADD/REMOVE VENUEBANNERS MODAL-->
+    <!-- BEGIN ADD/REMOVE VENUEVIDEOS MODAL-->
     <div id="modal_model_venue_videos" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
@@ -698,7 +699,7 @@
                                     </label>
                                     <div class="col-md-9 show-error">
                                         <textarea name="embed_code" class="form-control" rows="4"></textarea>
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Description</label>
@@ -716,16 +717,16 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <!-- END FORM-->
                 </div>
             </div>
         </div>
     </div>
-    <!-- END ADD/REMOVE VENUEBANNERS MODAL--> 
+    <!-- END ADD/REMOVE VENUEBANNERS MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="/js/admin/venues/index.js" type="text/javascript"></script>

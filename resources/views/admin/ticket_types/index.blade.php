@@ -1,20 +1,21 @@
 @php $page_title='Ticket Types' @endphp
 @extends('layouts.admin')
-@section('title', 'Ticket Types' )
-
-@section('styles') 
+@section('title')
+  {!! $page_title !!}
+@stop
+@section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <style>@php echo $ticket_types_css; @endphp</style>
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
-@section('content') 
-    <!-- BEGIN PAGE HEADER-->   
+@section('content')
+    <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}} 
+    <h1 class="page-title"> {{$page_title}}
         <small> - List, add, edit and remove ticket types.</small>
     </h1>
-    <!-- END PAGE TITLE-->    
+    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -23,23 +24,23 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
-                    <div class="actions">                        
+                    <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
-                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add 
+                            <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
                                 <i class="fa fa-plus"></i>
                             </button>
                             @endif
                             @if(in_array('Edit',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
-                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit 
+                            <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif
-                            <!--<button id="btn_model_remove" class="btn sbold bg-red" disabled="true"> Remove 
+                            <!--<button id="btn_model_remove" class="btn sbold bg-red" disabled="true"> Remove
                                 <i class="fa fa-remove"></i>
                             </button>-->
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['TYPES']['permission_types']))
-                            <button id="btn_model_styles" class="btn sbold bg-purple">Styles 
+                            <button id="btn_model_styles" class="btn sbold bg-purple">Styles
                                 <i class="fa fa-deviantart"></i>
                             </button>
                             @endif
@@ -74,15 +75,15 @@
                                 <td width="38%">{{$t['ticket_type_class']}}</td>
                                 <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$index}}" {{$t['active']}} data-size="mini" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger"></td>
                             </tr>
-                            @endforeach 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <!-- END EXAMPLE TABLE PORTLET-->   
-    <!-- BEGIN UPDATE MODAL--> 
+    <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:350px !important;">
             <div class="modal-content portlet">
@@ -115,9 +116,9 @@
                                             <option value="{{$index}}">{{$s}}</option>
                                             @endforeach
                                         </select>
-                                    </div>  
-                                </div>    
-                            </div> 
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -133,8 +134,8 @@
             </div>
         </div>
     </div>
-    <!-- END UPDATE MODAL--> 
-    <!-- BEGIN STYLE MODAL--> 
+    <!-- END UPDATE MODAL-->
+    <!-- BEGIN STYLE MODAL-->
     <div id="modal_model_style" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
@@ -168,12 +169,12 @@
                                             <option value="{{$index}}">{{$s}}</option>
                                             @endforeach
                                         </select>
-                                    </div>  
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12 show-error">
                                         <button type="button" id="btn-preview" class="btn btn-block">Preview Selected Style</button>
-                                    </div>  
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -194,10 +195,10 @@
                                         <textarea name="ticket_type_file" class="form-control input-block-level" rows="17">
                                             @php echo $ticket_types_css; @endphp
                                         </textarea>
-                                    </div>  
+                                    </div>
                                 </div>
                             </form>
-                        </div> 
+                        </div>
                     </div>
                     <div class="form-actions">
                         <div class="row">
@@ -211,9 +212,9 @@
             </div>
         </div>
     </div>
-    <!-- END STYLES MODAL--> 
+    <!-- END STYLES MODAL-->
 @endsection
 
-@section('scripts') 
+@section('scripts')
 <script src="/js/admin/ticket_types/index.js" type="text/javascript"></script>
 @endsection
