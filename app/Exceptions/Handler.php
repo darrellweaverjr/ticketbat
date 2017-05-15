@@ -25,7 +25,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
         //custom
-        \Illuminate\Routing\RouteCollection::class,
+        \Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class,
     ];
 
     /**
