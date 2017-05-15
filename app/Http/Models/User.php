@@ -130,14 +130,11 @@ class User extends Authenticatable
             {
                 $customer = new Customer;
                 $customer->email = $this->email;
-                $location = new Location;
-                $location->created = $this->created;
-                $location->updated = $this->updated;
+                $location = new Location;                
             }
             else
             {
                 $location = $customer->location;
-                $location->updated = $this->updated;
             }
             //update location
             $location->address = $this->location->address;
@@ -147,6 +144,8 @@ class User extends Authenticatable
             $location->country = $this->location->country;
             $location->lng = $this->location->lng;
             $location->lat = $this->location->lat;
+            $location->created = $this->location->created;
+            $location->updated = $this->location->updated;
             $location->save();
             //update customer
             $customer->location()->associate($location);
