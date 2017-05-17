@@ -108,8 +108,10 @@ class Util extends Model
             $name = strtolower(trim($name));
             //replace white spaces
             $name = preg_replace('/\s+/','-',$name);
-            //remove all not needed characters
-            $slug = preg_replace('/[^a-z0-9-]/','',$name);
+            //replace strange characters for "_"
+            $name = preg_replace('/[^a-z0-9-]/','_',$name);
+            //remove duplicate "_"
+            $slug = preg_replace('/([_])\1+/','$1',$name);
             //if show
             if(!empty($venue_id) && isset($show_id))
                 $slugs = Show::pluck('slug')->toArray();
