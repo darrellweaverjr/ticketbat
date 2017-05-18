@@ -106,58 +106,61 @@ class Util extends Model
         try {
             //lower and trim
             $name = strtolower(trim($name));
-            //replace white spaces
-            $name = preg_replace('/\s+/','-',$name);
-            //replace strange characters for "_"
-            $name = preg_replace('/[^a-z0-9-]/','_',$name);
-            //remove duplicate "_"
-            $slug = preg_replace('/([_])\1+/','$1',$name);
-            //if show
-            if(!empty($venue_id) && isset($show_id))
-                $slugs = Show::pluck('slug')->toArray();
-            else
-                $slugs = Venue::pluck('slug')->toArray();
-            //if it is existing show and the slug it's the same like slug, no change
-            if(!empty($show_id))
+            if(!empty($name))
             {
-                $show = Show::find($show_id);
-                if($show && $show->slug == $slug)
-                    return $slug;
-            }
-            else if(!empty($venue_id))
-            {
-                $venue = Venue::find($venue_id);
-                if($venue && $venue->slug == $slug)
-                    return $slug;
-            }
-            //check if the slug exists
-            while (in_array($slug,$slugs))
-            {
-                $skip = false;
-                //search if show slug
+                $show = (!empty($show_id))? Show::find($show_id) : null;
+                $venue = (!empty($venue_id))? Show::find($venue_id) : null;            
+                //replace white spaces
+                $name = preg_replace('/\s+/','-',$name);
+                //replace strange characters for "_"
+                $name = preg_replace('/[^a-z0-9-]/','_',$name);
+                //remove duplicate "_"
+                $slug = preg_replace('/([_])\1+/','$1',$name);
+                //if show
                 if(!empty($venue_id) && isset($show_id))
+                    $slugs = Show::pluck('slug')->toArray();
+                else
+                    $slugs = Venue::pluck('slug')->toArray();
+                //if it is existing show and the slug it's the same like slug, no change
+                if(!empty($show_id))
                 {
-                    if(Venue::find($venue_id) && isset(Venue::find($venue_id)->slug))
+                    if($show && $show->slug == $slug)
+                        return $slug;
+                }
+                else if(!empty($venue_id))
+                {
+                    if($venue && $venue->slug == $slug)
+                        return $slug;
+                }
+                //check if the slug exists
+                while (in_array($slug,$slugs))
+                {
+                    $skip = false;
+                    //search if show slug
+                    if(!empty($venue_id) && isset($show_id))
                     {
-                        $venue_slug = Venue::find($venue_id)->slug;
-                        if (strpos($slug,$venue_slug) === false) 
+                        if($venue && !empty($venue->slug))
                         {
-                            $slug.='-'.$venue_slug;
-                            $skip = true;
+                            $venue_slug = $venue->slug;
+                            if (strpos($slug,$venue_slug) === false) 
+                            {
+                                $slug.='-'.$venue_slug;
+                                $skip = true;
+                            }
                         }
                     }
+                    //concat with numbers or if it is a venue
+                    if(!$skip)
+                    {
+                        $subslugs = explode('-', $slug);
+                        $last = end($subslugs);
+                        if(is_numeric($last))
+                            $subslugs[count($subslugs)-1] = (int)$last + 1;
+                        else $subslugs[] = 1;
+                        $slug = implode('-',$subslugs);
+                    }
                 }
-                //concat with numbers or if it is a venue
-                if(!$skip)
-                {
-                    $subslugs = explode('-', $slug);
-                    $last = end($subslugs);
-                    if(is_numeric($last))
-                        $subslugs[count($subslugs)-1] = (int)$last + 1;
-                    else $subslugs[] = 1;
-                    $slug = implode('-',$subslugs);
-                }
-            }
+            }            
             return $slug;
         } catch (Exception $ex) {
             return '';
