@@ -6,7 +6,6 @@ Route::group(['prefix' => 'app','middleware' => 'app.security:0','namespace' => 
     Route::post('general_init', 'GeneralController@init');
     Route::post('general_show', 'GeneralController@show');
     Route::post('general_event', 'GeneralController@event');
-    Route::post('general_showtimes', 'GeneralController@showtimes');
     Route::post('general_contact', 'GeneralController@contact');
     //apps config session auth
     Route::post('auth_login', 'AuthController@login');

@@ -152,13 +152,6 @@ class GeneralController extends Controller{
                             ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
                             ->orderBy('s_date')->groupBy('s_date')
                             ->distinct()->take(30)->get(); 
-                    foreach ($showtimes as $st)
-                    {
-                        //get date for only first element, speed issues
-                        $times = $this->showtimes($show->id,$st->s_date);
-                        $st->times = $times;
-                        break;  
-                    }
                     //get videos
                     $videos = DB::table('videos')
                                 ->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
@@ -195,63 +188,36 @@ class GeneralController extends Controller{
     }
     
     /*
-     * return showtime details in json format
-     */
-    public function showtimes($show_id=null,$date=null)
-    {
-        try {
-            $info = Input::all();  
-            if($show_id && $date)
-            {
-                $info['show_id'] = $show_id;
-                $info['date'] = $date;
-            }
-            if(!empty($info['show_id']) && is_numeric($info['show_id']) && !empty($info['date']) && strtotime($info['date'])!=false 
-            && strtotime($info['date']) >= strtotime('today') )
-            {
-                $times = DB::table('show_times')        
-                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                        ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
-                        ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%h:%i %p") AS s_time,
-                                          MIN(tickets.retail_price+tickets.processing_fee) AS price,
-                                          (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE 100 END) AS availables'))
-                        ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$info['show_id'])
-                        ->distinct()->get(); 
-                if($show_id && $date)
-                    return $times;
-                return Util::json(['success'=>true, 'times'=>$times]);
-            }
-            return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
-        } catch (Exception $ex) {
-            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
-        }
-    } 
-    
-    /*
      * return event details in json format
      */
     public function event()
     {
         try {
             $info = Input::all();  
-            if(!empty($info['show_time_id']) && is_numeric($info['show_time_id']))
+            if(!empty($info['show_id']) && is_numeric($info['show_id']) && !empty($info['date']) && strtotime($info['date']))
             {
-                $id = $info['show_time_id'];
-                $showtime = DB::table('show_times')
-                            ->join('shows', 'show_times.show_id', '=' ,'shows.id')
+                $id = $info['show_id'];
+                $event = DB::table('shows')
                             ->join('venues', 'shows.venue_id', '=' ,'venues.id')
                             ->join('stages', 'shows.stage_id', '=' ,'stages.id')
-                            ->select(DB::raw('show_times.id, shows.name, shows.slug, shows.on_sale, stages.image_url AS url,
-                                             shows.amex_only_start_date, shows.amex_only_end_date, shows.amex_only_ticket_types,
-                                             show_times.show_time, show_times.time_alternative, show_times.show_id,
-                                             CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
-                            ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
-                            ->where('show_times.id','=',$id)->first();
-                if($showtime)
+                            ->select(DB::raw('shows.id, shows.name, shows.slug, shows.on_sale, stages.image_url AS url,
+                                             shows.amex_only_start_date, shows.amex_only_end_date, shows.amex_only_ticket_types'))
+                            ->where('shows.id','=',$id)->first();
+                if($event)
                 {
+                    //get times
+                    $times = DB::table('show_times')        
+                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
+                        ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
+                        ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%h:%i %p") AS s_time'))
+                        ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$id)
+                        ->where('show_times.is_active','=',1)
+                        ->whereRaw('NOW() <= (show_times.show_time - INTERVAL shows.cutoff_hours HOUR)')
+                        ->distinct()->get(); 
+                    $event->times = $times;
                     //parse url image
-                    $showtime->url = Image::view_image($showtime->url);
+                    $event->url = Image::view_image($event->url);
                     //get tickets
                     $types = []; 
                     $tickets = DB::table('tickets')
@@ -263,14 +229,14 @@ class GeneralController extends Controller{
                                                  (CASE WHEN (packages.title != "None") THEN packages.title ELSE "" END) AS title,
                                                  (CASE WHEN (packages.title != "None") THEN packages.description ELSE "" END) AS description,
                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE 100 END) AS max_available'))
-                                ->where('tickets.is_active','=',1)->where('shows.id','=',$showtime->show_id)
+                                ->where('tickets.is_active','=',1)->where('shows.id','=',$id)
                                 ->whereNotIn('tickets.id', function($query) use ($id)
                                 {
                                     $query->select(DB::raw('ticket_id'))
                                           ->from('soldout_tickets')
                                           ->where('show_time_id','=',$id);
                                 })
-                                ->having('max_available','>',0)->groupBy('tickets.id')->get(); 
+                                ->having('max_available','>',0)->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get(); 
                     foreach ($tickets as $t)
                     {
                         if(isset($types[$t->ticket_type]))
@@ -279,9 +245,9 @@ class GeneralController extends Controller{
                             $types[$t->ticket_type] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'default'=>$t->is_default,'tickets'=>[$t]];
                     }
                     //asign tickets and return event
-                    $showtime->types = array_values($types);  
-                    return Util::json(['success'=>true, 'showtime'=>$showtime]);
-                } 
+                    $event->types = array_values($types);  
+                    return Util::json(['success'=>true, 'event'=>$event]);
+                }
                 return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']); 
             }
             return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
