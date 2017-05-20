@@ -99,7 +99,8 @@ class Handler extends ExceptionHandler
             Log::info($message);
             Log::debug($message);
          */
-        if (!($exception instanceof AuthenticationException))
+        if (!($exception instanceof AuthenticationException) 
+         && !($exception instanceof NotFoundHttpException))
         {
             Log::error($exception);
             $email = new EmailSG(['TicketBat Admin',env('MAIL_ERROR_FROM')],env('MAIL_ERROR_TO'),env('MAIL_ERROR_SUBJECT'));        
