@@ -19,6 +19,9 @@
         <link href="{{config('app.theme')}}css/login.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/style.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
+        <link rel="shortcut icon" href="favicon.png" /> 
+        <link rel="apple-touch-icon" href="favicon.png"/>
+        <link rel="apple-touch-icon-precomposed" href="favicon.png"/>
     <!-- END HEAD -->
 
     <body class=" login">

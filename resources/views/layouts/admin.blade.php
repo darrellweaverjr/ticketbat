@@ -43,7 +43,9 @@
         <!-- END PAGE LEVEL PLUGINS -->
         
         <!-- END THEME LAYOUT STYLES -->
-        <!--<link rel="shortcut icon" href="favicon.ico" /> -->
+        <link rel="shortcut icon" href="favicon.png" /> 
+        <link rel="apple-touch-icon" href="favicon.png"/>
+        <link rel="apple-touch-icon-precomposed" href="favicon.png"/>
         @yield('styles')
     </head>
     <!-- END HEAD -->
