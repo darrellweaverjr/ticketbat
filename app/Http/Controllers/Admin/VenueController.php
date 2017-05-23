@@ -384,7 +384,7 @@ class VenueController extends Controller{
                 $stage = Stage::find($input['id']);
                 if($stage)
                 {
-                    $dependences = DB::table('shows')->where('stage_id',$stage->id)->count()                            ;
+                    $dependences = DB::table('shows')->where('stage_id',$stage->id)->count();
                     if($dependences)
                         return ['success'=>false,'msg'=>'There was an error deleting the stage.<br>It has some dependencies (shows).'];
                     Image::remove_image($stage->image_url);
@@ -461,7 +461,7 @@ class VenueController extends Controller{
                 $image = Image::find($input['id']);
                 if($image)
                 {
-                    DB::table('venue_images')->where('venue_id',$input['venue_id'])->where('image_id',$image->id)->delete()                            ;
+                    DB::table('venue_images')->where('venue_id',$input['venue_id'])->where('image_id',$image->id)->delete();
                     $image->delete_image_file();
                     $image->delete();
                     return ['success'=>true,'action'=>-1];
@@ -606,7 +606,7 @@ class VenueController extends Controller{
                 $video = Video::find($input['id']);
                 if($video)
                 {
-                    DB::table('venue_videos')->where('venue_id',$input['venue_id'])->where('video_id',$video->id)->delete()                            ;
+                    DB::table('venue_videos')->where('venue_id',$input['venue_id'])->where('video_id',$video->id)->delete();
                     $video->delete();
                     return ['success'=>true,'action'=>-1];
                 }
