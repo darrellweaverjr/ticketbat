@@ -43,9 +43,9 @@
         <!-- END PAGE LEVEL PLUGINS -->
         
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.png" /> 
-        <link rel="apple-touch-icon" href="favicon.png"/>
-        <link rel="apple-touch-icon-precomposed" href="favicon.png"/>
+        <link rel="shortcut icon" href="{{config('app.theme')}}img/favicon.png" /> 
+        <link rel="apple-touch-icon" href="{{config('app.theme')}}img/favicon.png"/>
+        <link rel="apple-touch-icon-precomposed" href="{{config('app.theme')}}img/favicon.png"/>
         @yield('styles')
     </head>
     <!-- END HEAD -->
