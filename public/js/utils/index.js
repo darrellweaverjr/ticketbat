@@ -180,10 +180,11 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                     {
                         if(image_callback)
                         {
-                            if(image_type == 'deals.image_url')
-                                $(image_callback).attr('src','../'+data.file);
-                            else 
-                                $(image_callback).attr('src',data.file);
+                            //if(image_type == 'deals.image_url')
+                                //$(image_callback).attr('src','../'+data.file);
+                            //else 
+                                //$(image_callback).attr('src',data.file);
+                            $(image_callback).attr('src','./'+data.file);
                             $(image_callback).val(data.file);
                             image_callback = null;
                         } 
