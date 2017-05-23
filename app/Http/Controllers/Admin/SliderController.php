@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\Slider;
 use App\Http\Models\Image;
 
@@ -47,8 +48,12 @@ class SliderController extends Controller{
                             $s->image_url = Image::view_image($s->image_url);
                     }
                 }
+                //get list of cities for filter
+                $cities = DB::table('venues')
+                                ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                ->select('locations.city')->distinct()->get();
                 //return view
-                return view('admin.sliders.index',compact('sliders'));
+                return view('admin.sliders.index',compact('sliders','cities'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Sliders Index: '.$ex->getMessage());
@@ -91,6 +96,7 @@ class SliderController extends Controller{
                     $slider->set_image_url($input['image_url']);
                 $slider->slug = $input['slug'];
                 $slider->alt = $input['alt'];
+                $slider->filter = (!empty($input['filter']))? $input['filter'] : null;
                 $slider->save();
                 //return
                 return ['success'=>true,'msg'=>'Slider saved successfully!'];

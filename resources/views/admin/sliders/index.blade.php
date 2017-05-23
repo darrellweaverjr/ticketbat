@@ -53,25 +53,27 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="10%"> Order </th>
-                                <th width="38%"> Image </th>
-                                <th width="25%"> Slug </th>
-                                <th width="25%"> Alt </th>
+                                <th width="10%">Order</th>
+                                <th width="33%">Image</th>
+                                <th width="20%">Slug</th>
+                                <th width="20%">Alt</th>
+                                <th width="15%">Filter</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($sliders as $index=>$s)
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$s->id}}" value="Slider # {{$s->n_order}} - {{$s->alt}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%" style="text-align:center;font-size:30px">{{$s->n_order}}</td>
-                                <td width="38%"><center><b><img alt="- No image -" height="100px" width="400px" src="{{$s->image_url}}"/></b></center></td>
-                                <td width="25%"><a href="{{env('IMAGE_URL_OLDTB_SERVER').$s->slug}}" target="_blank">{{$s->slug}}</a></td>
-                                <td width="25%"><a>{{$s->alt}}</a></td>
+                                <td style="text-align:center;font-size:30px">{{$s->n_order}}</td>
+                                <td><center><b><img alt="- No image -" height="100px" width="400px" src="{{$s->image_url}}"/></b></center></td>
+                                <td><a href="{{env('IMAGE_URL_OLDTB_SERVER').$s->slug}}" target="_blank">{{$s->slug}}</a></td>
+                                <td><a>{{$s->alt}}</a></td>
+                                <td>{{$s->filter}}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -112,6 +114,19 @@
                                     </label>
                                     <div class="col-md-8 show-error">
                                         <input type="text" class="form-control" name="alt" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Filter city
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-8 show-error">
+                                        <select class="form-control" name="filter">
+                                            <option selected value="">- No filter -</option>
+                                            @foreach($cities as $c)
+                                            <option value="{{$c->city}}">{{$c->city}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group" id="subform_sliders">
