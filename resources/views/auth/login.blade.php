@@ -9,11 +9,11 @@
     <head>
         <meta charset="utf-8" />
         <title>{{ config('app.name', 'TicketBat Admin') }} - Login</title>
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' ; child-src 'none';">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
         <link href="{{config('app.theme')}}css/login.min.css" rel="stylesheet" type="text/css" />

@@ -10,6 +10,12 @@
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
+                          img-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
+                          frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
+                          style-src 'self' http://fonts.googleapis.com  'unsafe-inline';
+                          font-src 'self' http://fonts.gstatic.com;
+                          child-src 'none';">
         <title>{{ config('app.name', 'TicketBat Admin') }} - @yield('title')</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
