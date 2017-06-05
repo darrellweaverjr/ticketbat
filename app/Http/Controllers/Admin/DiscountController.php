@@ -157,7 +157,7 @@ class DiscountController extends Controller{
                 }
                 //save discount                
                 $discount->code = $input['code'];
-                $discount->description = $input['description'];
+                $discount->description = strip_tags($input['description']);
                 $discount->discount_type = $input['discount_type'];
                 $discount->discount_scope = $input['discount_scope'];                
                 $discount->start_date = $input['start_date'];

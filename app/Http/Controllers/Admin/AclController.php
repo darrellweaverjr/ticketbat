@@ -108,9 +108,9 @@ class AclController extends Controller{
                     $permission = new Permission;
                 }
                 //save permission
-                $permission->permission = $input['permission'];
-                $permission->code = $input['code'];
-                $permission->description = $input['description'];
+                $permission->permission = strip_tags($input['permission']);
+                $permission->code = strip_tags($input['code']);
+                $permission->description = strip_tags($input['description']);
                 $permission->save();
                 //update intermediate table with user_type_permissions
                 $permission->user_type_permissions()->detach();
@@ -169,8 +169,8 @@ class AclController extends Controller{
                 if(UserType::where('user_type','=',$input['user_type'])->count())
                     return ['success'=>false,'msg'=>'There was an error saving the user type.<br>That name is already in the system.','errors'=>'user_type'];
                 $user_type = new UserType;
-                $user_type->user_type = $input['user_type'];
-                $user_type->description = $input['description'];
+                $user_type->user_type = strip_tags($input['user_type']);
+                $user_type->description = strip_tags($input['description']);
                 $user_type->updated = $current;
                 $user_type->save();
                 //return

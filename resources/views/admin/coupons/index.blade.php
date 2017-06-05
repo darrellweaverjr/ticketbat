@@ -166,7 +166,7 @@
                                                 <label class="control-label col-md-1">Qty(0=&#8734;)
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="text" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||
+                                                    <input type="number" name="quantity" class="form-control" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||
                    event.charCode == 0 "/> </div>
                                             </div>
                                             <div class="form-group">
@@ -191,12 +191,12 @@
                                                 <label class="control-label col-md-1 label_num">% Off
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="text" name="start_num" class="form-control start_num" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/>
+                                                    <input type="number" name="start_num" class="form-control start_num" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/>
                                                 </div>
                                                 <label class="control-label col-md-1 range">Get
                                                 </label>
                                                 <div class="col-md-2 show-error range">
-                                                    <input type="text" name="end_num" class="form-control end_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
+                                                    <input type="number" name="end_num" class="form-control end_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
                                                 </div>
                                             </div>
                                         </div>
@@ -323,17 +323,17 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-6">Fixed commission</label>
                                     <div class="col-md-6 show-error">
-                                        <input type="text" class="form-control" name="fixed_commission" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/>
+                                        <input type="number" class="form-control" name="fixed_commission" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/>
                                     </div>
                                     <label class="control-label col-md-6 label_num">% Off
                                     </label>
                                     <div class="col-md-6 show-error">
-                                        <input type="text" name="start_num" class="form-control start_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/>
+                                        <input type="number" name="start_num" class="form-control start_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46 "/>
                                     </div>
                                     <label class="control-label col-md-6 range">Get
                                     </label>
                                     <div class="col-md-6 show-error range">
-                                        <input type="text" name="end_num" class="form-control end_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
+                                        <input type="number" name="end_num" class="form-control end_num" value="" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
                                     </div>
                                 </div>
                             </div>

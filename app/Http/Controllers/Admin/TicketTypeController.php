@@ -86,6 +86,7 @@ class TicketTypeController extends Controller{
             //active/inactive      
             if($input && (isset($input['ticket_type']) && isset($input['active'])))
             {
+                $input['ticket_type'] = strip_tags($input['ticket_type']);
                 if($input['active'] == 'true')
                 {
                     $success = true;
@@ -157,6 +158,7 @@ class TicketTypeController extends Controller{
             //init
             $input = Input::all(); 
             $ticket_styles = Util::getEnumValues('tickets','ticket_type_class');
+            if(!empty($input['ticket_type_class'])) $input['ticket_type_class'] = strip_tags($input['ticket_type_class']);
             if(isset($input) && isset($input['action']) && isset($input['ticket_type_class']) && $input['action']==1)
             {
                 $ticket_styles[$input['ticket_type_class']] = $input['ticket_type_class'];

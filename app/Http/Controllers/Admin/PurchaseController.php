@@ -229,7 +229,7 @@ class PurchaseController extends Controller{
                 }                    
                 else if(isset($input['note']))
                 {                    
-                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b>'.$input['note'].'&nbsp;';
+                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b>'.strip_tags($input['note']).'&nbsp;';
                     $purchase->note = $purchase->note.$note;
                     $purchase->updated = $current;
                     $purchase->save();
@@ -325,7 +325,7 @@ class PurchaseController extends Controller{
                         foreach ($to as $t)
                         {
                             //send email           
-                            $email = new EmailSG(null, $t->email, $input['email'][2]['value']);
+                            $email = new EmailSG(null, $t->email, strip_tags($input['email'][2]['value']));
                             //$email->cc(env('MAIL_REPORT_CC'));
                             $email->category('Custom');
                             $email->body('custom',['body'=>$input['email'][3]['value']]);

@@ -93,10 +93,10 @@ class SliderController extends Controller{
                 }
                 //save show
                 if(preg_match('/media\/preview/',$input['image_url'])) 
-                    $slider->set_image_url($input['image_url']);
-                $slider->slug = $input['slug'];
-                $slider->alt = $input['alt'];
-                $slider->filter = (!empty($input['filter']))? $input['filter'] : null;
+                    $slider->set_image_url(strip_tags($input['image_url']));
+                $slider->slug = strip_tags($input['slug']);
+                $slider->alt = strip_tags($input['alt']);
+                $slider->filter = (!empty(strip_tags($input['filter'])))? strip_tags($input['filter']) : null;
                 $slider->save();
                 //return
                 return ['success'=>true,'msg'=>'Slider saved successfully!'];
