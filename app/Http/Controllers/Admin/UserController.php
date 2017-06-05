@@ -127,9 +127,9 @@ class UserController extends Controller{
                         $user->set_password();
                 }
                 //save location
-                $location->address = $input['address'];
-                $location->city = $input['city'];
-                $location->state = strtoupper($input['state']);
+                $location->address = strip_tags($input['address']);
+                $location->city = strip_tags($input['city']);
+                $location->state = strip_tags(strtoupper($input['state']));
                 $location->zip = $input['zip'];
                 $location->country = $input['country'];
                 $location->set_lng_lat();
@@ -138,7 +138,7 @@ class UserController extends Controller{
                 $user->location()->associate($location);
                 $user->user_type_id = $input['user_type_id'];
                 $user->email = $input['email'];
-                $user->first_name = $input['first_name'];
+                $user->first_name = strip_tags($input['first_name']);
                 $user->last_name = $input['last_name'];
                 $user->phone = $input['phone'];
                 $user->is_active = $input['is_active'];

@@ -288,11 +288,11 @@
                                                     </div>
                                                     <label class="control-label col-md-3">Cutoff Hours</label>
                                                     <div class="col-md-3">
-                                                        <input type="text" value="1" name="cutoff_hours" style="width:43px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                                        <input type="number" value="1" name="cutoff_hours" style="width:43px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
                                                     <label class="control-label col-md-2">Sequence</label>
                                                     <div class="col-md-4">
-                                                        <input type="text" value="10000" name="sequence" style="width:73px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                                        <input type="number" value="10000" name="sequence" style="width:73px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
                                                 </div>
                                             </div>
@@ -863,31 +863,31 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        <input type="number" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                     </div>
                                     <label class="col-md-5 control-label">Proccessing Fee ($)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        <input type="number" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                     </div>
                                     <label class="col-md-5 control-label">Proccessing Fee (%)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        <input type="number" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                     </div>
                                     <label class="col-md-5 control-label">Commission ($)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        <input type="number" value="0" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                     </div>
                                     <label class="col-md-5 control-label">Commission (%)
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        <input type="number" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                     </div>
                                     <label class="control-label col-md-5">Make default ticket
                                         <span class="required"> * </span>
@@ -907,7 +907,7 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7 show-error">
-                                        <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                        <input type="number" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                     </div>
                                 </div>
                             </div>
@@ -1286,31 +1286,31 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                            <input type="number" value="0" name="retail_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                         </div>
                                         <label class="col-md-5 control-label">Proc.Fee ($)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                            <input type="number" value="0" name="processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                         </div>
                                         <label class="col-md-5 control-label">Proc.Fee (%)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                            <input type="number" value="0" name="percent_pf" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                         </div>
                                         <label class="col-md-5 control-label">Commission ($)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                            <input type="number" value="" name="fixed_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                         </div>
                                         <label class="col-md-5 control-label">Commission (%)
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                            <input type="number" value="0" name="percent_commission" width="100px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                         </div>
                                         <label class="control-label col-md-5">Make default
                                             <span class="required"> * </span>
@@ -1330,7 +1330,7 @@
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-7 show-error">
-                                            <input type="text" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                            <input type="number" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                         </div>
                                     </div>
                                     <div class="form-group show-error">

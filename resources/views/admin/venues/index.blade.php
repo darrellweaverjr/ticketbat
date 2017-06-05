@@ -253,13 +253,13 @@
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Fixed Proccessing Fee</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default % Proccessing Fee</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -269,13 +269,13 @@
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Fixed Commission</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_fixed_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_fixed_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Commission %</label>
                                                         <div class="col-md-6">
-                                                            <input type="text" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -331,7 +331,7 @@
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="text" name="zip" class="form-control" placeholder="00000" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " />
+                                                    <input type="number" name="zip" class="form-control" placeholder="00000" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " />
                                                 </div>
                                             </div>
                                         </div>

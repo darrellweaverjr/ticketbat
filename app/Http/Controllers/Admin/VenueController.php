@@ -215,29 +215,29 @@ class VenueController extends Controller{
                     $location->updated = $current;
                 }
                 //save location
-                $location->address = $input['address'];
-                $location->city = $input['city'];
-                $location->state = strtoupper($input['state']);
+                $location->address = strip_tags($input['address']);
+                $location->city = strip_tags($input['city']);
+                $location->state = strip_tags(strtoupper($input['state']));
                 $location->zip = $input['zip'];
                 $location->set_lng_lat();
                 $location->save();
                 //save venue
                 $venue->location()->associate($location);
-                $venue->name = $input['name'];
-                $venue->slug = $input['slug'];
-                $venue->accounting_email = $input['accounting_email'];
-                $venue->weekly_email = $input['weekly_email'];
+                $venue->name = strip_tags($input['name']);
+                $venue->slug = strip_tags($input['slug']);
+                $venue->accounting_email = strip_tags($input['accounting_email']);
+                $venue->weekly_email = strip_tags($input['weekly_email']);
                 $venue->description = strip_tags($input['description'],'<p><a><br>');
-                $venue->ticket_info = $input['ticket_info'];
+                $venue->ticket_info = strip_tags($input['ticket_info']);
                 $venue->is_featured = $input['is_featured'];
                 $venue->restrictions = $input['restrictions'];
-                $venue->facebook = $input['facebook'];
-                $venue->twitter = $input['twitter'];
-                $venue->googleplus = $input['googleplus'];
-                $venue->yelpbadge = $input['yelpbadge'];
-                $venue->youtube = $input['youtube'];
-                $venue->instagram = $input['instagram'];
-                $venue->cutoff_text = (!empty($input['cutoff_text']))? $input['cutoff_text'] : null;
+                $venue->facebook = strip_tags($input['facebook']);
+                $venue->twitter = strip_tags($input['twitter']);
+                $venue->googleplus = strip_tags($input['googleplus']);
+                $venue->yelpbadge = strip_tags($input['yelpbadge']);
+                $venue->youtube = strip_tags($input['youtube']);
+                $venue->instagram = strip_tags($input['instagram']);
+                $venue->cutoff_text = (!empty(strip_tags($input['cutoff_text'])))? strip_tags($input['cutoff_text']) : null;
                 $venue->daily_sales_emails = $input['daily_sales_emails'];
                 $venue->financial_report_emails = $input['financial_report_emails'];
                 $venue->weekly_sales_emails = $input['weekly_sales_emails'];
@@ -369,8 +369,8 @@ class VenueController extends Controller{
                 {
                     if(preg_match('/media\/preview/',$input['image_url'])) 
                         $stage->set_image_url($input['image_url']);
-                    $stage->name = $input['name'];
-                    $stage->description = $input['description'];
+                    $stage->name = strip_tags($input['name']);
+                    $stage->description = strip_tags($input['description']);
                     $stage->updated = $current;
                     $stage->save();
                     $stage->image_url = Image::view_image($stage->image_url);
@@ -400,9 +400,9 @@ class VenueController extends Controller{
                 $stage->created = $current;
                 $stage->set_image_url($input['image_url']);
                 $stage->audit_user_id = Auth::user()->id;
-                $stage->name = $input['name'];
+                $stage->name = strip_tags($input['name']);
                 $stage->venue_id = $input['venue_id'];
-                $stage->description = $input['description'];
+                $stage->description = strip_tags($input['description']);
                 $stage->updated = $current;
                 $stage->save();
                 if($stage)
@@ -447,7 +447,7 @@ class VenueController extends Controller{
                 if($image)
                 {
                     $image->image_type = $input['image_type'];
-                    $image->caption = ($input['caption']!='')? $input['caption'] : null;
+                    $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
                     $image->updated = $current;
                     $image->save();
                     $image->url = Image::view_image($image->url);
@@ -476,7 +476,7 @@ class VenueController extends Controller{
                 if(preg_match('/media\/preview/',$input['url'])) 
                     $image->set_url($input['url']);
                 $image->image_type = $input['image_type'];
-                $image->caption = ($input['caption']!='')? $input['caption'] : null;
+                $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
                 $image->save();
                 if($image)
                 {
@@ -519,7 +519,7 @@ class VenueController extends Controller{
                 $banner = Banner::find($input['id']);
                 if($banner)
                 {
-                    $banner->url = $input['url'];
+                    $banner->url = strip_tags($input['url']);
                     $banner->type = (isset($input['type']) && count($input['type']))? implode($input['type'],',') : null;
                     $banner->save();
                     $banner->file = Image::view_image($banner->file);
@@ -546,7 +546,7 @@ class VenueController extends Controller{
                 if(preg_match('/media\/preview/',$input['file'])) 
                     $banner->set_file($input['file']);
                 $banner->type = (isset($input['type']) && count($input['type']))? implode($input['type'],',') : null;
-                $banner->url = $input['url'];
+                $banner->url = strip_tags($input['url']);
                 $banner->parent_id = $input['parent_id'];
                 $banner->belongto = 'venue';
                 $banner->save();
@@ -592,8 +592,8 @@ class VenueController extends Controller{
                 if($video)
                 {
                     $video->video_type = $input['video_type'];
-                    $video->embed_code = $input['embed_code'];
-                    $video->description = ($input['description']!='')? $input['description'] : null;
+                    $video->embed_code = strip_tags($input['embed_code'],'<iframe>');
+                    $video->description = (!empty(strip_tags($input['description'])))? strip_tags($input['description']) : null;
                     $video->updated = $current;
                     $video->save();
                     return ['success'=>true,'action'=>0,'video'=>$video];
@@ -618,8 +618,8 @@ class VenueController extends Controller{
                 $video = new Video;
                 $video->created = $current;
                 $video->video_type = $input['video_type'];
-                $video->embed_code = $input['embed_code'];
-                $video->description = ($input['description']!='')? $input['description'] : null;
+                $video->embed_code = strip_tags($input['embed_code'],'<iframe>');
+                $video->description = (!empty(strip_tags($input['description'])))? strip_tags($input['description']) : null;
                 $video->audit_user_id = Auth::user()->id;
                 $video->save();
                 if($video)

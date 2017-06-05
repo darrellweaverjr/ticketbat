@@ -331,32 +331,32 @@ class ShowController extends Controller{
                 $show->venue_id = $input['venue_id'];
                 $show->stage_id = $input['stage_id'];
                 $show->category_id = $input['category_id'];
-                $show->name = $input['name'];
-                $show->slug = $input['slug'];
-                $show->presented_by = $input['presented_by'];
-                $show->sponsor = $input['sponsor'];
+                $show->name = strip_tags($input['name']);
+                $show->slug = strip_tags($input['slug']);
+                $show->presented_by = strip_tags($input['presented_by']);
+                $show->sponsor = strip_tags($input['sponsor']);
                 $show->short_description = strip_tags($input['short_description']);
                 $show->description = strip_tags($input['description'],'<p><a><br>');
-                $show->emails = $input['emails'];
-                $show->accounting_email = $input['accounting_email'];
-                $show->url = $input['url'];
+                $show->emails = strip_tags($input['emails']);
+                $show->accounting_email = strip_tags($input['accounting_email']);
+                $show->url = strip_tags($input['url']);
                 $show->restrictions = $input['restrictions'];
                 $show->is_featured = $input['is_featured'];
                 $show->cutoff_hours = $input['cutoff_hours'];
                 $show->sequence = $input['sequence'];
                 $show->is_active = $input['is_active'];
-                $show->facebook = $input['facebook'];
-                $show->twitter = $input['twitter'];
-                $show->youtube = $input['youtube'];
-                $show->instagram = $input['instagram'];
-                $show->yelpbadge = $input['yelpbadge'];
+                $show->facebook = strip_tags($input['facebook']);
+                $show->twitter = strip_tags($input['twitter']);
+                $show->youtube = strip_tags($input['youtube']);
+                $show->instagram = strip_tags($input['instagram']);
+                $show->yelpbadge = strip_tags($input['yelpbadge']);
                 $show->on_sale = $input['on_sale'];
                 $show->printed_tickets = $input['printed_tickets'];
                 $show->individual_emails = $input['individual_emails'];
                 $show->manifest_emails = $input['manifest_emails'];
                 $show->daily_sales_emails = $input['daily_sales_emails'];
                 $show->financial_report_emails = $input['financial_report_emails'];
-                $show->conversion_code = (empty($input['conversion_code']))? null : $input['conversion_code'];
+                $show->conversion_code = (!empty($input['conversion_code']))? $input['conversion_code'] : null;
                 if(isset($input['amex_only_start_date']) && $input['amex_only_start_date']!='' && isset($input['amex_only_end_date']) && $input['amex_only_end_date']!=''
                         && isset($input['ticket_types']) && count($input['ticket_types']))
                 {
@@ -402,8 +402,8 @@ class ShowController extends Controller{
             //init
             $input = Input::all(); 
             //get all record      
-            if($input && isset($input['name']) && isset($input['venue_id']) && isset($input['show_id']))
-                return Util::generate_slug($input['name'], $input['venue_id'], $input['show_id']);
+            if($input && !empty(strip_tags($input['name'])) && isset($input['venue_id']) && isset($input['show_id']))
+                return Util::generate_slug(strip_tags($input['name']), $input['venue_id'], $input['show_id']);
             return '';
         } catch (Exception $ex) {
             return '';
@@ -1003,7 +1003,7 @@ class ShowController extends Controller{
                             $showtime = new ShowTime;
                             $showtime->show_id = $input['show_id'];
                             $showtime->show_time = $st;
-                            $showtime->time_alternative = $input['time_alternative'];
+                            $showtime->time_alternative = strip_tags($input['time_alternative']);
                             $showtime->is_active = 1;
                             $showtime->created = $current;
                             $showtime->save();
@@ -1197,7 +1197,7 @@ class ShowController extends Controller{
                 if($image)
                 {
                     $image->image_type = $input['image_type'];
-                    $image->caption = ($input['caption']!='')? $input['caption'] : null;
+                    $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
                     $image->updated = $current;
                     $image->save();
                     $image->url = Image::view_image($image->url);
@@ -1226,7 +1226,7 @@ class ShowController extends Controller{
                 if(preg_match('/media\/preview/',$input['url'])) 
                     $image->set_url($input['url']);
                 $image->image_type = $input['image_type'];
-                $image->caption = ($input['caption']!='')? $input['caption'] : null;
+                $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
                 $image->save();
                 if($image)
                 {
@@ -1269,7 +1269,7 @@ class ShowController extends Controller{
                 $banner = Banner::find($input['id']);
                 if($banner)
                 {
-                    $banner->url = $input['url'];
+                    $banner->url = strip_tags($input['url']);
                     $banner->type = (isset($input['type']) && count($input['type']))? implode($input['type'],',') : null;
                     $banner->save();
                     $banner->file = Image::view_image($banner->file);
@@ -1296,7 +1296,7 @@ class ShowController extends Controller{
                 if(preg_match('/media\/preview/',$input['file'])) 
                     $banner->set_file($input['file']);
                 $banner->type = (isset($input['type']) && count($input['type']))? implode($input['type'],',') : null;
-                $banner->url = $input['url'];
+                $banner->url = strip_tags($input['url']);
                 $banner->parent_id = $input['parent_id'];
                 $banner->belongto = 'show';
                 $banner->save();
@@ -1342,8 +1342,8 @@ class ShowController extends Controller{
                 if($video)
                 {
                     $video->video_type = $input['video_type'];
-                    $video->embed_code = $input['embed_code'];
-                    $video->description = ($input['description']!='')? $input['description'] : null;
+                    $video->embed_code = strip_tags($input['embed_code'],'<iframe>');
+                    $video->description = (!empty(strip_tags($input['description'])))? strip_tags($input['description']) : null;
                     $video->updated = $current;
                     $video->save();
                     return ['success'=>true,'action'=>0,'video'=>$video];
@@ -1368,8 +1368,8 @@ class ShowController extends Controller{
                 $video = new Video;
                 $video->created = $current;
                 $video->video_type = $input['video_type'];
-                $video->embed_code = $input['embed_code'];
-                $video->description = ($input['description']!='')? $input['description'] : null;
+                $video->embed_code = strip_tags($input['embed_code'],'<iframe>');
+                $video->description = (!empty(strip_tags($input['description'])))? strip_tags($input['description']) : null;
                 $video->audit_user_id = Auth::user()->id;
                 $video->save();
                 if($video)

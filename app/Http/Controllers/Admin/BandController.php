@@ -113,17 +113,17 @@ class BandController extends Controller{
                 }
                 //save band
                 $band->category()->associate(Category::find($input['category_id']));
-                $band->name = $input['name'];
+                $band->name = strip_tags($input['name']);
                 $band->short_description = strip_tags($input['short_description']);
                 $band->description = strip_tags($input['description'],'<p><a><br>');
-                $band->youtube = $input['youtube'];
-                $band->facebook = $input['facebook'];
-                $band->twitter = $input['twitter'];
-                $band->my_space = $input['my_space'];
-                $band->flickr = $input['flickr'];
-                $band->instagram = $input['instagram'];
-                $band->soundcloud = $input['soundcloud'];
-                $band->website = $input['website'];
+                $band->youtube = strip_tags($input['youtube']);
+                $band->facebook = strip_tags($input['facebook']);
+                $band->twitter = strip_tags($input['twitter']);
+                $band->my_space = strip_tags($input['my_space']);
+                $band->flickr = strip_tags($input['flickr']);
+                $band->instagram = strip_tags($input['instagram']);
+                $band->soundcloud = strip_tags($input['soundcloud']);
+                $band->website = strip_tags($input['website']);
                 if(preg_match('/media\/preview/',$input['image_url'])) 
                     $band->set_image_url($input['image_url']);
                 $band->save();
