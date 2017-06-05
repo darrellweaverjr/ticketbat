@@ -139,7 +139,7 @@ class GeneralController extends Controller{
                         ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
                         ->join('images', 'show_images.image_id', '=' ,'images.id')
                         ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue, shows.restrictions, 
-                                          IF(images.image_type="Header", images.url, "") AS header,
+                                          (CASE WHEN(images.image_type="Header") THEN images.url ELSE "" END) AS header,
                                           locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
                         ->where('show_times.is_active','>',0)->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
