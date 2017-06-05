@@ -202,10 +202,10 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" style="width:75px" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
+                                            <input type="number" style="width:75px" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
                                         </div>
                                         <div class="col-md-4">
-                                            <input type="text" style="width:80px" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
+                                            <input type="number" style="width:80px" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
                                         </div>
                                         <label class="control-label col-md-3">Seat #</label>
                                         <div class="col-md-9 show-error">
