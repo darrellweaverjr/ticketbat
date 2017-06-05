@@ -180,6 +180,7 @@ class GeneralController extends Controller{
                     $show->showtimes = $showtimes;
                     $show->videos = $videos;
                     $show->images = $images;
+                    $show->header = Image::view_image($show->header);
                     return Util::json(['success'=>true, 'show'=>$show]);
                 }
                 return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']);             
