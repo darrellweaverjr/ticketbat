@@ -136,10 +136,7 @@ class GeneralController extends Controller{
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
-                        ->join('images', 'show_images.image_id', '=' ,'images.id')
                         ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue, shows.restrictions, 
-                                          (CASE WHEN(images.image_type="Header") THEN images.url ELSE "" END) AS header,
                                           locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
                         ->where('show_times.is_active','>',0)->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
@@ -167,6 +164,14 @@ class GeneralController extends Controller{
                         $part2 = explode('"',$part1[1]);
                         $v->embed_code = $part2[0];
                     } 
+                    //get header
+                    $header = DB::table('images')
+                                ->join('show_images', 'show_images.image_id', '=' ,'images.id')
+                                ->select('images.url')
+                                ->where('show_images.show_id','=',$show->id)
+                                ->whereIn('images.image_type',['Header'])
+                                ->distinct()->first();
+                    $show->header = Image::view_image($header->url);
                     //get images
                     $images = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=' ,'images.id')
@@ -180,7 +185,6 @@ class GeneralController extends Controller{
                     $show->showtimes = $showtimes;
                     $show->videos = $videos;
                     $show->images = $images;
-                    $show->header = Image::view_image($show->header);
                     return Util::json(['success'=>true, 'show'=>$show]);
                 }
                 return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']);             
