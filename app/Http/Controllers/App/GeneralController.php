@@ -136,8 +136,11 @@ class GeneralController extends Controller{
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue,
-                                          shows.restrictions, locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
+                        ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
+                        ->join('images', 'show_images.image_id', '=' ,'images.id')
+                        ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue, shows.restrictions, 
+                                          IF(images.image_type="Header", images.url, "") AS header,
+                                          locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
                         ->where('show_times.is_active','>',0)->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
                         ->orderBy('shows.name')->groupBy('shows.id')->first(); 
@@ -169,7 +172,7 @@ class GeneralController extends Controller{
                                 ->join('show_images', 'show_images.image_id', '=' ,'images.id')
                                 ->select('images.id','images.url','images.image_type')
                                 ->where('show_images.show_id','=',$show->id)
-                                ->whereIn('images.image_type',['Header','Image'])
+                                ->whereIn('images.image_type',['Image'])
                                 ->distinct()->get();
                     foreach ($images as $i)
                         $i->url = Image::view_image($i->url);
