@@ -1,16 +1,4 @@
-
-
-
 RewriteEngine On
 
 #remove list indexes
 Options -Indexes
-
-#url restrictions
-RewriteCond %{THE_REQUEST} /index.php
-RewriteRule ^ - [R=404,L]
-
-#redirect
-RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
-RewriteCond %{REQUEST_METHOD} ^TRACE 
-RewriteRule .* - [F]
