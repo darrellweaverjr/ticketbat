@@ -23,4 +23,7 @@
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC] 
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?ticketbat.com [NC] 
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?ticketbat.com.*$ [NC] 
+
+RewriteCond %{HTTP_REFERER} !^http://admindev.ticketbat.com [NC] 
+    RewriteCond %{HTTP_REFERER} !^http://admindev.ticketbat.com.*$ [NC] 
     RewriteRule \.(gif|png|txt|psd|eot|svg|ttf|woff|woff2|js|css)$ - [F]
