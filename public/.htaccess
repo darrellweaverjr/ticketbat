@@ -17,3 +17,6 @@
 #   Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost/ [NC] 
+RewriteRule \.(js|css)$ - [F,NC]
