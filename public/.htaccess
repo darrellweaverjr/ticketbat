@@ -18,11 +18,9 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-
-RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost [NC] 
-RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC] 
-
-RewriteCond %{HTTP_REFERER} !^http://admindev.ticketbat.com [NC] 
-RewriteCond %{HTTP_REFERER} !^http://dmindev.ticketbat.com.*$ [NC] 
-
-RewriteRule \.(js|css)$ - [F]
+#   Disable view files in the browser inside folder public, except from this urls
+    RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost [NC] 
+    RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC] 
+    RewriteCond %{HTTP_REFERER} !^http://(www\.)?ticketbat.com [NC] 
+    RewriteCond %{HTTP_REFERER} !^http://(www\.)?ticketbat.com.*$ [NC] 
+    RewriteRule \.(*)$ - [F]
