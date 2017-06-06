@@ -2,3 +2,6 @@ RewriteEngine On
 
 #remove list indexes
 Options -Indexes
+
+#disabled iframe for external address
+Header append X-FRAME-OPTIONS "SAMEORIGIN"

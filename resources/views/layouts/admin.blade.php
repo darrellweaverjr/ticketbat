@@ -15,7 +15,8 @@
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
                           style-src 'self' http://fonts.googleapis.com  'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
-                          child-src 'none';">
+                          child-src 'none';
+                          frame-ancestors 'self';">
         <title>{{ config('app.name', 'TicketBat Admin') }} - @yield('title')</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />

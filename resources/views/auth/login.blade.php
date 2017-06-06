@@ -9,7 +9,7 @@
     <head>
         <meta charset="utf-8" />
         <title>{{ config('app.name', 'TicketBat Admin') }} - Login</title>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' ; child-src 'none';">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' ; child-src 'none'; frame-ancestors 'self';">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
