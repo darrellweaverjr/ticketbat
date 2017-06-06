@@ -20,6 +20,8 @@ class CORS
                             ->header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE')
                             ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With')
                             ->header('Access-Control-Allow-Origin', '*')
-                            ->header('X-Frame-Options', 'SAMEORIGIN');
+                            ->header('X-Frame-Options', 'SAMEORIGIN')
+                            ->header('X-Content-Type-Options', 'nosniff')
+                            ->header('X-XSS-Protection', '1; mode=block');
     }
 }

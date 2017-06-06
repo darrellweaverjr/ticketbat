@@ -46,6 +46,8 @@ class AppSecurity
                         ->header('Access-Control-Allow-Methods', 'POST')
                         ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, X-TOKEN, S-TOKEN, A-TOKEN')
                         ->header('Access-Control-Allow-Origin', '*')
-                        ->header('X-Frame-Options', 'SAMEORIGIN');
+                        ->header('X-Frame-Options', 'SAMEORIGIN')
+                        ->header('X-Content-Type-Options', 'nosniff')
+                        ->header('X-XSS-Protection', '1; mode=block');
     }
 }
