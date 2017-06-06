@@ -23,4 +23,4 @@
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC] 
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?ticketbat.com [NC] 
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?ticketbat.com.*$ [NC] 
-    RewriteRule \.(gif|jpg|php|txt|js|css)$ - [F]
+    RewriteRule \.(gif|jpg|txt|js|css)$ - [F]
