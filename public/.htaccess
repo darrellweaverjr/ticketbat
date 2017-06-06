@@ -21,4 +21,8 @@
 
 RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost [NC] 
 RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC] 
+
+RewriteCond %{HTTP_REFERER} !^http://admindev.ticketbat.com [NC] 
+RewriteCond %{HTTP_REFERER} !^http://dmindev.ticketbat.com.*$ [NC] 
+
 RewriteRule \.(js|css)$ - [F]
