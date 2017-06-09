@@ -171,7 +171,7 @@ class GeneralController extends Controller{
                                 ->where('show_images.show_id','=',$show->id)
                                 ->whereIn('images.image_type',['Header'])
                                 ->distinct()->first();
-                    $show->header = Image::view_image($header->url);
+                    $show->header = ($header)? Image::view_image($header->url) : null;
                     //get images
                     $images = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=' ,'images.id')
