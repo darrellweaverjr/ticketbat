@@ -44,8 +44,6 @@ class ReportSales extends Command
         try {
             $days = $this->argument('days');
             $onlyadmin = $this->argument('onlyadmin');
-            ($days == 1)? $bound = ' = ' : $bound = ' >= ';
-            //$date_report = date("F j, Y", strtotime('yesterday'));
             $date_report = date("F j, Y", strtotime('- '.$days.' day')).' to '.date("F j, Y", strtotime('yesterday'));
             //dd($date_report);
             setlocale(LC_MONETARY, 'en_US');
@@ -66,13 +64,8 @@ class ReportSales extends Command
                         LEFT JOIN shows s ON s.id = st.show_id
                         INNER JOIN venues v ON v.id = s.venue_id
                         LEFT JOIN tickets t ON p.ticket_id = t.id 
-                        WHERE date(p.created) ".$bound." (CURRENT_DATE - INTERVAL ".$days." DAY) AND p.status = 'Active' ";
-            $sqlFuture =" FROM purchases p
-                        LEFT JOIN show_times st ON st.id = p.show_time_id
-                        LEFT JOIN shows s ON s.id = st.show_id
-                        INNER JOIN venues v ON v.id = s.venue_id
-                        LEFT JOIN tickets t ON p.ticket_id = t.id 
-                        WHERE st.show_time > NOW() AND p.status = 'Active' ";
+                        WHERE date(p.created) >= (CURRENT_DATE - INTERVAL ".$days." DAY) AND p.status = 'Active' ";
+            $sqlFuture = " AND st.show_time > NOW() ";
 
             //FUNCTION CALCULATE SUBTOTALS
             function calculate_total($elements)
@@ -140,7 +133,7 @@ class ReportSales extends Command
                             $types[] = (object)['payment_type'=>$t->payment_type,'qty'=>$t->qty,'purchase_count'=>$t->purchase_count,'gross_revenue'=>$t->gross_revenue,'processing_fee'=>$t->processing_fee,'commission'=>$t->commission, 'net'=>$t->net];
                     } 
                     //result array
-                    $future = DB::select($sqlMain.$sqlFuture." GROUP BY st.show_time, v.id, s.id;");
+                    $future = DB::select($sqlMain.$sqlFrom.$sqlFuture." GROUP BY st.show_time, v.id, s.id;");
                     $result = array('elements'=>$elements,'total'=>calculate_total($elements),'future'=>$future,'future_t'=>calculate_total($future),'types'=>calculate_types($types),'name'=>'Totals','email'=>' ','type'=>'venue','date'=>$date_report);
                     array_unshift($data,$result);
                 }
@@ -210,7 +203,7 @@ class ReportSales extends Command
             foreach ($venues as $venue)
             {   
                 $elements = DB::select($sqlMain.$sqlFrom." AND v.id = ? GROUP BY s.id, st.show_time ORDER BY s.name;",array($venue->id));   
-                $future = DB::select($sqlMain.$sqlFuture." AND v.id = ? GROUP BY st.show_time,s.id ORDER BY st.show_time,s.name;",array($venue->id));
+                $future = DB::select($sqlMain.$sqlFrom.$sqlFuture." AND v.id = ? GROUP BY st.show_time,s.id ORDER BY st.show_time,s.name;",array($venue->id));
                 $types = DB::select($sqlTypes.$sqlFrom." AND v.id = ? GROUP BY payment_type;",array($venue->id));       
                 $result = array('elements'=>$elements,'total'=>calculate_total($elements),'future'=>$future,'future_t'=>calculate_total($future),'types'=>calculate_types($types),'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
                 if($venue->email && $venue->v_daily_sales_emails==1)
