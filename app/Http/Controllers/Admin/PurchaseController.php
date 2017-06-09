@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Http\Models\Purchase;
 use App\Http\Models\Venue;
+use App\Http\Models\User;
 use App\Http\Models\Show;
 use App\Http\Models\Ticket;
 use App\Http\Models\ShowTime;
@@ -84,6 +85,12 @@ class PurchaseController extends Controller{
             {
                 //conditions to search
                 $search = [];
+                $status = [];
+                $search['venues'] = [];
+                $search['shows'] = [];
+                $search['payment_types'] = Util::getEnumValues('purchases','payment_type');
+                $search['users'] = User::get(['id','email']);
+                $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search venue
                 if(isset($input) && !empty($input['user_id']))
@@ -138,11 +145,26 @@ class PurchaseController extends Controller{
                     $where[] = [DB::raw('DATE(purchases.created)'),'>=',$search['soldtime_start_date']];
                     $where[] = [DB::raw('DATE(purchases.created)'),'<=',$search['soldtime_end_date']];
                 } 
-                //if user has permission to view
-                $status = [];
-                $search['venues'] = [];
-                $search['shows'] = [];
-                $purchases = [];
+                //search payment types        
+                if(isset($input) && isset($input['payment_type']) && !empty($input['payment_type']))
+                {
+                    $search['payment_type'] = $input['payment_type'];
+                }
+                else
+                {
+                    $search['payment_type'] = array_values($search['payment_types']);
+                }
+                //search user      
+                if(isset($input) && isset($input['payment_type']) && !empty($input['user']))
+                {
+                    $search['user'] = $input['user'];
+                    $where[] = ['purchases.user_id','=',$search['user']];
+                }
+                else
+                {
+                    $data['search']['user'] = '';
+                }
+                //if user has permission to view                
                 if(in_array('View',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                 {
                     if(Auth::user()->user_type->getACLs()['PURCHASES']['permission_scope'] != 'All')
@@ -158,6 +180,7 @@ class PurchaseController extends Controller{
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
+                                                      (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,
                                                       venues.name AS venue_name, customers.first_name, customers.last_name, customers.email, customers.phone,
@@ -169,6 +192,7 @@ class PurchaseController extends Controller{
                                               ->orWhere('shows.audit_user_id','=',Auth::user()->id);
                                     })
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
+                                    ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
                                     ->get();
                         $search['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
@@ -187,12 +211,14 @@ class PurchaseController extends Controller{
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
+                                                      (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,
                                                       venues.name AS venue_name, customers.first_name, customers.last_name, customers.email, customers.phone,
                                                       show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where($where)
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
+                                    ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
                                     ->get();
                         $search['venues'] = Venue::orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);

@@ -84,7 +84,7 @@
                                         <b class="search-title"><a data-toggle="modal" href="#modal_details_{{$p->id}}">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
                                         <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <a>{{$p->id}}</a> Qty: <a>{{$p->quantity}}</a> T.Type: <a>{{$p->ticket_type_type}}</a> Pkg: <a>{{$p->title}}</a>
                                         <br> Ret.Price: <a>${{number_format($p->retail_price,2)}}</a> Fees: <a>${{number_format($p->processing_fee,2)}}</a> Commiss.: <a>${{number_format($p->commission_percent,2)}}</a> Savings: <a>${{number_format($p->savings,2)}}</a>
-                                        @if($previous_color != $color) Method: <a>@if($p->ticket_type=='Consignment'){{$p->ticket_type}}@else{{$p->payment_type}}@endif</a> @if($p->transaction_id)AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a>@endif @endif
+                                        @if($previous_color != $color) Method: <a>{{$p->method}}</a> @if($p->transaction_id)AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a>@endif @endif
                                         <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small>
                                     </div>
                                 </td>
@@ -273,6 +273,32 @@
                                                     <i class="fa fa-remove"></i>
                                                 </button>
                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Payment Type:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group mt-checkbox-inline">
+                                            @foreach($search['payment_types'] as $index=>$p)
+                                            <label class="mt-checkbox">
+                                                <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" value="{{$index}}" />{{$p}}
+                                                <span></span>
+                                            </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">User:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <select class="form-control" name="user" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['users'] as $index=>$u)
+                                                    <option @if(!empty($search['user']) && $u->id==$search['user']) selected @endif value="{{$u->id}}">{{$u->email}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

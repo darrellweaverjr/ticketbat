@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Venue;
 use App\Http\Models\Show;
+use App\Http\Models\User;
+use App\Http\Models\Util;
 
 class DashboardController extends Controller
 {
@@ -40,6 +42,10 @@ class DashboardController extends Controller
     {
         //init
         $data = ['where'=>[],'search'=>[]];
+        $data['search']['venues'] = [];
+        $data['search']['shows'] = [];
+        $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
+        $data['search']['users'] = User::get(['id','email']);
         //search venue
         if(isset($input) && isset($input['venue']))
         {
@@ -90,10 +96,27 @@ class DashboardController extends Controller
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',$data['search']['soldtime_start_date']];
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',$data['search']['soldtime_end_date']];
         }  
+        //search payment types        
+        if(isset($input) && isset($input['payment_type']) && !empty($input['payment_type']))
+        {
+            $data['search']['payment_type'] = $input['payment_type'];
+        }
+        else
+        {
+            $data['search']['payment_type'] = array_values($data['search']['payment_types']);
+        }
+        //search user      
+        if(isset($input) && isset($input['payment_type']) && !empty($input['user']))
+        {
+            $data['search']['user'] = $input['user'];
+            $data['where'][] = ['purchases.user_id','=',$data['search']['user']];
+        }
+        else
+        {
+            $data['search']['user'] = '';
+        }
         //PERMISSIONS
-        //if user has permission to view
-        $data['search']['venues'] = [];
-        $data['search']['shows'] = [];
+        //if user has permission to view        
         if(in_array('View',Auth::user()->user_type->getACLs()['REPORTS']['permission_types']))
         {
             if(Auth::user()->user_type->getACLs()['REPORTS']['permission_scope'] != 'All')
@@ -157,7 +180,9 @@ class DashboardController extends Controller
                                           SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show, 
                                           SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
-                        ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
+                        ->orderBy('purchases.created','DESC')->groupBy('purchases.id')
+                        ->havingRaw('method IN ("'.implode('","',$data['search']['payment_type']).'")')
+                        ->get()->toArray();
             //calculate totals
             $total = array( 'tickets'=>array_sum(array_column($data,'tickets')),
                             'price_paids'=>array_sum(array_column($data,'price_paids')),

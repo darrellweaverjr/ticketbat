@@ -232,6 +232,32 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Payment Type:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group mt-checkbox-inline">
+                                            @foreach($search['payment_types'] as $index=>$p)
+                                            <label class="mt-checkbox">
+                                                <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" value="{{$index}}" />{{$p}}
+                                                <span></span>
+                                            </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">User:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <select class="form-control" name="user" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['users'] as $index=>$u)
+                                                    <option @if(!empty($search['user']) && $u->id==$search['user']) selected @endif value="{{$u->id}}">{{$u->email}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
