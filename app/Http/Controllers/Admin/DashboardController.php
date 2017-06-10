@@ -236,7 +236,8 @@ class DashboardController extends Controller
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
-                    ->orderBy('venues.name','shows.name','discounts.code')->groupBy('purchases.discount_id')->get()->toArray();
+                    ->groupBy('venues.id','shows.id','purchases.discount_id')->orderBy('venues.name','shows.name','discounts.code')
+                    ->get()->toArray();
             //info for the graph 
             $start = date('Y-m-d', strtotime('-1 year'));
             $where[] = ['purchases.created','>=',$start];

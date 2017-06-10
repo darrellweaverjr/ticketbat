@@ -172,7 +172,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" action="/admin/dashboard/trend_pace" id="form_model_search">
+                    <form method="post" action="/admin/dashboard/coupons" id="form_model_search">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
