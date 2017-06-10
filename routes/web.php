@@ -15,6 +15,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('media/preview/{filename}', function ($filename) {return Image::make(storage_path().'/app/tmp/'.$filename)->response();})->middleware('permissions:MEDIA');
     //dashboard
     Route::match(['get','post'], 'dashboard/ticket_sales', 'DashboardController@ticket_sales')->middleware('permissions:REPORTS');
+    Route::match(['get','post'], 'dashboard/coupons', 'DashboardController@coupons')->middleware('permissions:REPORTS');
     Route::match(['get','post'], 'dashboard/chargebacks', 'DashboardController@chargebacks')->middleware('permissions:REPORTS');
     Route::match(['get','post'], 'dashboard/future_liabilities', 'DashboardController@future_liabilities')->middleware('permissions:REPORTS');
     Route::match(['get','post'], 'dashboard/trend_pace', 'DashboardController@trend_pace')->middleware('permissions:REPORTS');

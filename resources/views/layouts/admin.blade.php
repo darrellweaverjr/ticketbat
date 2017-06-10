@@ -161,6 +161,13 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
+                                        <a href="/admin/dashboard/coupons" class="nav-link">
+                                            <i class="icon-wallet"></i>
+                                            <span class="title">Coupons</span>
+                                            
+                                        </a>
+                                    </li>
+                                    <li class="nav-item start open">
                                         <a href="/admin/dashboard/chargebacks" class="nav-link">
                                             <i class="icon-briefcase"></i>
                                             <span class="title">Chargebacks</span>

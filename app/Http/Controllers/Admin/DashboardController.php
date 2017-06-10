@@ -38,7 +38,7 @@ class DashboardController extends Controller
      *
      * @return Method
      */
-    private function search($input)
+    private function search($input,$custom=null)
     {
         //init
         $data = ['where'=>[],'search'=>[]];
@@ -88,8 +88,8 @@ class DashboardController extends Controller
         }
         else
         {
-            $data['search']['soldtime_start_date'] = date('Y-m-d', strtotime('-30 DAY'));
-            $data['search']['soldtime_end_date'] = date('Y-m-d');
+            $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-30 DAY')) : '';
+            $data['search']['soldtime_end_date'] = ($custom!='coupons')? date('Y-m-d') : '';
         }
         if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '')
         {
@@ -195,6 +195,72 @@ class DashboardController extends Controller
             return view('admin.dashboard.ticket_sales',compact('data','total','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Ticket Sales: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Show the coupons report on the dashboard.
+     *
+     * @return view
+     */
+    public function coupons()
+    {
+        try {
+            //init
+            $input = Input::all();
+            $data = $total = $graph = array();
+            //conditions to search
+            $data = $this->search($input,'coupons');
+            $where = $data['where'];
+            $where[] = ['purchases.status','=','Active'];
+            $where[] = ['purchases.discount_id','!=',1];
+            $search = $data['search'];
+            //get all records        
+            $data = DB::table('purchases')
+                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                    ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                    ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
+                    ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name, discounts.code,
+                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
+                                              WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
+                                              AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
+                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
+                                              WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
+                                              AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 7 DAY)),0) AS tickets_seven,
+                                    SUM(purchases.quantity) AS tickets, 
+                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
+                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
+                                    SUM(ROUND(purchases.savings,2)) AS discounts, 
+                                    SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                    SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
+                                    SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
+                    ->where($where)
+                    ->orderBy('venues.name','shows.name','discounts.code')->groupBy('purchases.discount_id')->get()->toArray();
+            //info for the graph 
+            $start = date('Y-m-d', strtotime('-1 year'));
+            $where[] = ['purchases.created','>=',$start];
+            $graph = DB::table('purchases')
+                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased, 
+                                    SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases, SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
+                    ->where($where)
+                    ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
+                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
+            //calculate totals
+            $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
+                            'tickets'=>array_sum(array_column($data,'tickets')),
+                            'price_paids'=>array_sum(array_column($data,'price_paids')),
+                            'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'discounts'=>array_sum(array_column($data,'discounts')),
+                            'fees'=>array_sum(array_column($data,'fees')),
+                            'to_show'=>array_sum(array_column($data,'to_show')),
+                            'commissions'=>array_sum(array_column($data,'commissions')));
+            //return view
+            return view('admin.dashboard.coupons',compact('data','total','graph','search'));
+        } catch (Exception $ex) {
+            throw new Exception('Error Dashboard Coupons: '.$ex->getMessage());
         }
     }
     
