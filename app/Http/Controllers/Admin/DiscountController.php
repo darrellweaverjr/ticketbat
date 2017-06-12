@@ -122,16 +122,16 @@ class DiscountController extends Controller{
             {
                 $current = date('Y-m-d H:i:s');
                 //check type of coupon
-                if($input['multiple']>0)
+                if(!empty($input['multiple']))
                 {
                     $input['start_num']=0;
                     $input['end_num']=null;
                 }
                 else
                 {
-                    if(!($input['start_num']>0))
+                    if(empty($input['start_num']))
                         return ['success'=>false,'msg'=>'You have to set the discount off for this coupon.','errors'=>'start_num'];
-                    if($input['discount_scope']=='N for N')
+                    if($input['discount_type']=='N for N')
                     {
                         if(empty($input['end_num']))
                             return ['success'=>false,'msg'=>'You have to set the end qty range for this coupon.','errors'=>'end_num'];
