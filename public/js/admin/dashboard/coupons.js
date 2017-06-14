@@ -134,46 +134,6 @@ var TableDatatablesButtons = function () {
                 });
             }
         });
-        // charts totals
-        var graph = jQuery.parseJSON($('#trend_pace_json').html());
-        var purchased=[],qty_tickets=[],qty_purchases=[],amount=[];
-        $.each(graph,function(k, v) {
-            purchased.push(v.purchased);
-            qty_tickets.push(parseFloat(v.qty_tickets));
-            qty_purchases.push(parseFloat(v.qty_purchases));
-            amount.push(parseFloat(v.amount));
-        });
-        // chart qty
-	$('#trend_pace_chart_qty').highcharts({
-            chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: '', x: -20 },
-            xAxis: { categories: purchased },
-            yAxis: { title: { text: 'Quantity' },
-                     plotLines: [{ value: 0, width: 1, color: '#808080' }]
-            },
-            tooltip: { valuePrefix: ' ' },
-            series: [{
-                    name: 'Sold Tickets',
-                    data: qty_tickets
-            }, {
-                    name: 'Qty Purchases',
-                    data: qty_purchases
-            }]
-	});
-        //chart money
-        $('#trend_pace_chart_money').highcharts({
-            chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: '', x: -20 },
-            xAxis: { categories: purchased },
-            yAxis: { title: { text: 'Dollars ($)' },
-                     plotLines: [{ value: 0, width: 1, color: '#808080' }]
-            },
-            tooltip: { valuePrefix: '$ ' },
-            series: [{
-                    name: 'Gross Profit',
-                    data: amount
-            }]
-	});
     }
     return {
         //main function to initiate the module

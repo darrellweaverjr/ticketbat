@@ -13,7 +13,7 @@
     <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
-        <small>statistics, charts and reports.</small>
+        <small>statistics, charts and reports (by default the last 7 days).</small>
     </h1>
     <!-- END PAGE TITLE-->
     <!-- END PAGE HEADER-->
@@ -97,23 +97,6 @@
         </div>
     </div>
     <!-- END DASHBOARD STATS 1-->
-    <div class="row">
-       <div style="display:none" id="trend_pace_json">{{$graph}}</div>
-       <div class="col-md-6">
-           <div class="portlet light portlet-fit bordered">
-               <div class="portlet-body">
-                   <div id="trend_pace_chart_qty" style="height:250px;"></div>
-               </div>
-           </div>
-       </div>
-       <div class="col-md-6">
-           <div class="portlet light portlet-fit bordered">
-               <div class="portlet-body">
-                   <div id="trend_pace_chart_money" style="height:250px;"></div>
-               </div>
-           </div>
-       </div>
-   </div>
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">

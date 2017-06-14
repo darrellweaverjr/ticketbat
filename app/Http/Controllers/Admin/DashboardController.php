@@ -88,8 +88,8 @@ class DashboardController extends Controller
         }
         else
         {
-            $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-30 DAY')) : '';
-            $data['search']['soldtime_end_date'] = ($custom!='coupons')? date('Y-m-d') : '';
+            $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-30 DAY')) : date('Y-m-d', strtotime('-7 DAY'));
+            $data['search']['soldtime_end_date'] = date('Y-m-d');
         }
         if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '')
         {
@@ -261,17 +261,6 @@ class DashboardController extends Controller
                     ->where($where)
                     ->groupBy('venues.id','shows.id','purchases.discount_id')->orderBy('venues.name','shows.name','discounts.code')
                     ->get()->toArray();
-            //info for the graph 
-            $start = date('Y-m-d', strtotime('-1 year'));
-            $where[] = ['purchases.created','>=',$start];
-            $graph = DB::table('purchases')
-                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
-                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased, 
-                                    SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases, SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
-                    ->where($where)
-                    ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
-                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
@@ -282,7 +271,7 @@ class DashboardController extends Controller
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //return view
-            return view('admin.dashboard.coupons',compact('data','total','graph','search'));
+            return view('admin.dashboard.coupons',compact('data','total','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Coupons: '.$ex->getMessage());
         }
