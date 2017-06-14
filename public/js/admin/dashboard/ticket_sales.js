@@ -32,7 +32,7 @@ var TableDatatablesButtons = function () {
                     action: function () {
                         $('#modal_model_search').modal('show');
                     }
-                },
+                },                          
                 { 
                     extend: 'print', 
                     text:      'Print <i class="fa fa-print"></i>',
@@ -46,7 +46,7 @@ var TableDatatablesButtons = function () {
                                 'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'<br>'+
                                 'Payment Types: '+$('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).val(); } ).get().join(',')+'<br>'+
                                 'User: '+$('#form_model_search select[name="user"] option:selected').text()+'</div>';
-                        t = t + '<hr>'+$('#tb_summary').html()+'<hr>';                        
+                        t = t + '<hr>'+$('#tb_summary').html();                        
                         $(win.document.body).find('h1').append(t);
                         $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
                     }
@@ -69,6 +69,13 @@ var TableDatatablesButtons = function () {
                     text:      'CSV <i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'CSV',
                     className: 'btn sbold bg-green'
+                },
+                {
+                    text: 'Toggle Total Details <i class="fa fa-list"></i>',
+                    className: 'btn sbold purple',
+                    action: function () {
+                        $('#tb_summary').toggle('display');
+                    }
                 }
             ],
             "order": [
