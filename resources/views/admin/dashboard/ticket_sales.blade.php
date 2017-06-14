@@ -38,7 +38,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees'],2)}}"></span></div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['revenue'],2)}}"></span></div>
                     <div class="desc">Total Revenue
                         @if(Auth::user()->user_type_id != 5)<br>Discounts: $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}"></span>@endif
                     </div>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees'],2)}}"></span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['profit'],2)}}"></span>
                     </div>
                     <div class="desc">
                         @if(Auth::user()->user_type_id != 5) Gross Profit @else TB Retains @endif
@@ -138,14 +138,14 @@
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->created)}}">{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                                 @if(Auth::user()->user_type_id != 5)
                                 <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
                                 @endif
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
-                                <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees,2)}}</b></td>
+                                <td style="text-align:right"><b>$ {{number_format($d->profit,2)}}</b></td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -280,6 +280,52 @@
         </div>
     </div>
     <!-- END SEARCH MODAL-->
+    <!-- BEGIN TOTAL TABLE FOR PRINT-->
+    <div id="tb_summary" class="portlet-body" style="display:none;" >
+        <table width="100% class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>TYPE</th>
+                    <th style='text-align:center'>PURCHASES</th>
+                    <th style='text-align:center'>QTY SOLD</th>
+                    <th style='text-align:right'>TOTAL REVENUE</th>
+                    <th style='text-align:right'>DISCOUNTS</th>
+                    <th style='text-align:right'>TO SHOW</th>
+                    <th style='text-align:right'>COMMISSIONS</th>
+                    <th style='text-align:right'>P.FEES</th>                    
+                    <th style='text-align:right'>GROSS PROFIT</th>
+                  </tr>
+                </tr>
+            </thead>
+            <tbody>
+               @foreach($summary as $k=>$d)
+                <tr @if($k=='Subtotals') style="font-weight:bold" @endif>
+                    <td>{{$k}}</td>
+                    <td style="text-align:center">{{number_format($d['purchases'])}}</td>
+                    <td style="text-align:center">{{number_format($d['tickets'])}}</td>
+                    <td style="text-align:right">$ {{number_format($d['revenue'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['discounts'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['to_show'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['commissions'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['fees'],2)}}</td>                    
+                    <td style="text-align:right">$ {{number_format($d['profit'],2)}}</td>
+                </tr>
+                @endforeach
+                <tr style="font-weight:bold">
+                    <td style="font-weight:bold;">Totals</td>
+                    <td style="text-align:center">{{number_format($total['purchases'])}}</td>
+                    <td style="text-align:center">{{number_format($total['tickets'])}}</td>
+                    <td style="text-align:right">$ {{number_format($total['revenue'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($total['discounts'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($total['to_show'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($total['commissions'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($total['fees'],2)}}</td>                    
+                    <td style="text-align:right">$ {{number_format($total['profit'],2)}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- END TOTAL TABLE FOR PRINT-->
 @endsection
 
 @section('scripts')

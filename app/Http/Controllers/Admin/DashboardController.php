@@ -155,7 +155,7 @@ class DashboardController extends Controller
         try {
             //init
             $input = Input::all();
-            $data = $total = array();
+            $data = $total = $summary = array();
             //conditions to search
             $data = $this->search($input);
             $where = $data['where'];
@@ -172,9 +172,10 @@ class DashboardController extends Controller
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, 
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name,
                                           (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
+                                          COUNT(purchases.id) AS purchases, 
                                           SUM(purchases.quantity) AS tickets, 
-                                          SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
-                                          SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
+                                          SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit, 
+                                          SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue, 
                                           SUM(ROUND(purchases.savings,2)) AS discounts, 
                                           SUM(ROUND(purchases.processing_fee,2)) AS fees, 
                                           SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show, 
@@ -184,15 +185,37 @@ class DashboardController extends Controller
                         ->havingRaw('method IN ("'.implode('","',$data['search']['payment_type']).'")')
                         ->get()->toArray();
             //calculate totals
-            $total = array( 'tickets'=>array_sum(array_column($data,'tickets')),
-                            'price_paids'=>array_sum(array_column($data,'price_paids')),
-                            'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+            function calc_totals($data)
+            {
+                return array( 'purchases'=>array_sum(array_column($data,'purchases')),
+                            'tickets'=>array_sum(array_column($data,'tickets')),
+                            'profit'=>array_sum(array_column($data,'profit')),
+                            'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
+            }
+            $total = calc_totals($data);
+            //calculate summary
+            $subtotals = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
+            foreach ($data as $d)
+            {
+                $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'revenue'=>$d->revenue,'discounts'=>$d->discounts,
+                                            'to_show'=>$d->to_show,'commissions'=>$d->commissions,'fees'=>$d->fees,'profit'=>$d->profit];
+                if(!isset($summary[$d->method]))
+                    $summary[$d->method] = $current;
+                else
+                    $summary[$d->method] = calc_totals([$summary[$d->method],$current]);
+                if($d->method != 'Consignment')
+                    $subtotals = calc_totals([$subtotals,$current]);
+            }
+            $summary['Subtotals'] = $subtotals;
+            $consignments = $summary['Consignment'];
+            unset($summary['Consignment']);
+            $summary['Consignment'] = $consignments;
             //return view
-            return view('admin.dashboard.ticket_sales',compact('data','total','search'));
+            return view('admin.dashboard.ticket_sales',compact('data','total','summary','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Ticket Sales: '.$ex->getMessage());
         }
