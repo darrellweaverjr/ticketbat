@@ -211,9 +211,12 @@ class DashboardController extends Controller
                     $subtotals = calc_totals([$subtotals,$current]);
             }
             $summary['Subtotals'] = $subtotals;
-            $consignments = $summary['Consignment'];
-            unset($summary['Consignment']);
-            $summary['Consignment'] = $consignments;
+            if(isset($summary['Consignment']))
+            {
+                $consignments = $summary['Consignment'];
+                unset($summary['Consignment']);
+                $summary['Consignment'] = $consignments;
+            }
             //return view
             return view('admin.dashboard.ticket_sales',compact('data','total','summary','search'));
         } catch (Exception $ex) {
