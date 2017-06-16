@@ -44,7 +44,7 @@ var TableDatatablesButtons = function () {
                                 'Show: '+$('#form_model_search select[name="show"] option:selected').text()+'<br>'+
                                 'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
                                 'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'<br>'+
-                                'Payment Types: '+$('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).val(); } ).get().join(',')+'<br>'+
+                                'Payment Types: '+$('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).attr('data-value'); } ).get().join(',')+'<br>'+
                                 'User: '+$('#form_model_search select[name="user"] option:selected').text()+'</div>';
                         t = t + '<hr>'+$('#tb_summary').html();                        
                         $(win.document.body).find('h1').append(t);

@@ -106,8 +106,8 @@
             <thead>
                 <tr>
                     <th>TYPE</th>
-                    <th style='text-align:center'>PURCHASES</th>
-                    <th style='text-align:center'>QTY SOLD</th>
+                    <th style='text-align:center'>TRANSACTIONS</th>
+                    <th style='text-align:center'>TICKETS</th>
                     <th style='text-align:right'>TOTAL REVENUE</th>
                     <th style='text-align:right'>DISCOUNTS</th>
                     <th style='text-align:right'>TO SHOW</th>
@@ -119,6 +119,7 @@
             </thead>
             <tbody>
                @foreach($summary as $k=>$d)
+               @php if($k=='None') $k='Comp.' @endphp
                 <tr @if($k=='Subtotals') style="font-weight:bold" @endif>
                     <td>{{$k}}</td>
                     <td style="text-align:center">{{number_format($d['purchases'])}}</td>
@@ -283,8 +284,9 @@
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group mt-checkbox-inline">
                                             @foreach($search['payment_types'] as $index=>$p)
+                                            @php if($p=='None') $p='Comp.' @endphp
                                             <label class="mt-checkbox">
-                                                <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" value="{{$index}}" />{{$p}}
+                                                <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" data-value="{{$p}}" value="{{$index}}" />{{$p}}
                                                 <span></span>
                                             </label>
                                             @endforeach
