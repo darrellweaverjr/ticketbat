@@ -330,8 +330,6 @@ var TableDatatablesManaged = function () {
             var end_html = end.format('MMMM D, YYYY');
             $('#form_model_update [name="start_date"]').val(start.format('YYYY-MM-DD'));
             $('#form_model_update [name="end_date"]').val(end.format('YYYY-MM-DD'));
-            $('#form_model_update [name="effective_start_date"]').val(start.format('YYYY-MM-DD'));
-            $('#form_model_update [name="effective_end_date"]').val(end.format('YYYY-MM-DD'));
             $('#form_model_update select[name="multiple"]').trigger('change');
             $('#tb_ticket').find('button').css('display','none');
             //show modal
