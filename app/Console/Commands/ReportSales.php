@@ -64,7 +64,8 @@ class ReportSales extends Command
                         LEFT JOIN shows s ON s.id = st.show_id
                         INNER JOIN venues v ON v.id = s.venue_id
                         LEFT JOIN tickets t ON p.ticket_id = t.id 
-                        WHERE date(p.created) >= (CURRENT_DATE - INTERVAL ".$days." DAY) AND p.status = 'Active' ";
+                        WHERE p.status = 'Active' ";
+            $sqlPaid = " AND date(p.created) >= (CURRENT_DATE - INTERVAL ".$days." DAY) ";
             $sqlFuture = " AND st.show_time > NOW() ";
 
             //FUNCTION CALCULATE SUBTOTALS
@@ -114,7 +115,7 @@ class ReportSales extends Command
                 return $types;
             }
             //FUNCTION SENDING EMAIL
-            function sendEmailReport($data,$send,$date_report,$sqlMain,$sqlFrom,$sqlFuture)
+            function sendEmailReport($data,$send,$date_report,$sqlMain,$sqlFrom,$sqlPaid,$sqlFuture)
             {
                 $emailx = env('MAIL_REPORT_TO');    
                 $namex = 'Administrator';
@@ -168,13 +169,13 @@ class ReportSales extends Command
                     //SALES REFERRER PDF
                     $format = 'referrer';
                     $pdf_referrer_ = '/tmp/ReportSales_Referrer_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                    $purchases = DB::select($sqlMain.$sqlFrom." GROUP BY referral_url,p.show_time_id, p.ticket_type;");
+                    $purchases = DB::select($sqlMain.$sqlFrom.$sqlPaid." GROUP BY referral_url,p.show_time_id, p.ticket_type;");
                     $manifest_email = View::make('command.report_sales', compact('purchases', 'date_report','format'));
                     PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_referrer_);
 
                     //MANIFES SALES CSV
                     $format = 'csv';
-                    $purchases = DB::select($sqlMain.$sqlFrom." GROUP BY p.show_time_id, p.ticket_type;");
+                    $purchases = DB::select($sqlMain.$sqlFrom.$sqlPaid." GROUP BY p.show_time_id, p.ticket_type;");
                     $manifest_csv = View::make('command.report_sales', compact('purchases' ,'date_report','format'));
                     $csv_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.csv';
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
@@ -197,21 +198,21 @@ class ReportSales extends Command
             $resultArray = array();
 
             //CREATING REPORTS FOR VENUES
-            $venues = (array)DB::select("SELECT v.id, v.name, v.accounting_email as email, v.daily_sales_emails AS v_daily_sales_emails ".$sqlFrom." GROUP BY v.name");
+            $venues = (array)DB::select("SELECT v.id, v.name, v.accounting_email as email, v.daily_sales_emails AS v_daily_sales_emails ".$sqlFrom.$sqlPaid." GROUP BY v.name");
             //create progress bar
             $progressbar = $this->output->createProgressBar(count($venues));
             foreach ($venues as $venue)
             {   
-                $elements = DB::select($sqlMain.$sqlFrom." AND v.id = ? GROUP BY s.id, st.show_time ORDER BY s.name;",array($venue->id));   
+                $elements = DB::select($sqlMain.$sqlFrom.$sqlPaid." AND v.id = ? GROUP BY s.id, st.show_time ORDER BY s.name;",array($venue->id));   
                 $future = DB::select($sqlMain.$sqlFrom.$sqlFuture." AND v.id = ? GROUP BY st.show_time,s.id ORDER BY st.show_time,s.name;",array($venue->id));
-                $types = DB::select($sqlTypes.$sqlFrom." AND v.id = ? GROUP BY payment_type;",array($venue->id));       
+                $types = DB::select($sqlTypes.$sqlFrom.$sqlPaid." AND v.id = ? GROUP BY payment_type;",array($venue->id));       
                 $result = array('elements'=>$elements,'total'=>calculate_total($elements),'future'=>$future,'future_t'=>calculate_total($future),'types'=>calculate_types($types),'name'=>$venue->name, 'email'=>$venue->email, 'type'=>'venue', 'date'=>$date_report);
                 if($venue->email && $venue->v_daily_sales_emails==1)
                 {
                     $dataSend = array();
                     $dataSend[] = $result;
                     if(!$onlyadmin)
-                        sendEmailReport($dataSend,'regular',$date_report,$sqlMain,$sqlFrom,$sqlFuture);
+                        sendEmailReport($dataSend,'regular',$date_report,$sqlMain,$sqlFrom,$sqlPaid,$sqlFuture);
                 }
                 $resultArray[] = $result;                
                 //advance progress bar
@@ -222,7 +223,7 @@ class ReportSales extends Command
             //create progress bar
             $progressbar = $this->output->createProgressBar(1);
             if($onlyadmin)
-                sendEmailReport($resultArray,'admin',$date_report,$sqlMain,$sqlFrom,$sqlFuture);
+                sendEmailReport($resultArray,'admin',$date_report,$sqlMain,$sqlFrom,$sqlPaid,$sqlFuture);
             //advance progress bar
             $progressbar->advance(); 
             //finish progress bar

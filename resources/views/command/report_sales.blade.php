@@ -133,7 +133,7 @@
             @foreach($data as $d)
             <div style="page-break-after:always;">
               <h1>TicketBat.com</h1>
-              <h3>Future Liabilities @if($d['name'] == 'Totals') Total @else For Venue: <i>{{$d['name']}}</i> @endif<br><i>{{$d['date']}}</i></h3>
+              <h3>Future Liabilities @if($d['name'] == 'Totals') Total @else For Venue: <i>{{$d['name']}}</i> @endif<br><i>Starting on {{date('F j, Y')}}</i></h3>
                 <table class="table table-striped table-responsive">
                   <thead>
                   <tr>
