@@ -72,8 +72,7 @@ class DashboardController extends Controller
         }
         else
         {
-            $data['search']['showtime_start_date'] = '';
-            $data['search']['showtime_end_date'] = '';
+            $data['search']['showtime_start_date'] = $data['search']['showtime_end_date'] = '';
         }
         if($data['search']['showtime_start_date'] != '' && $data['search']['showtime_end_date'] != '')
         {
@@ -88,8 +87,15 @@ class DashboardController extends Controller
         }
         else
         {
-            $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-30 DAY')) : date('Y-m-d', strtotime('-7 DAY'));
-            $data['search']['soldtime_end_date'] = date('Y-m-d');
+            if($custom=='future')
+            {
+                $data['search']['soldtime_start_date'] = $data['search']['soldtime_end_date'] = '';           
+            }
+            else
+            {
+                $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-30 DAY')) : date('Y-m-d', strtotime('-7 DAY'));
+                $data['search']['soldtime_end_date'] = date('Y-m-d');
+            }
         }
         if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '')
         {
@@ -332,7 +338,7 @@ class DashboardController extends Controller
             $data = $total = array();
             $current = date('Y-m-d H:i:s');
             //conditions to search
-            $data = $this->search($input);
+            $data = $this->search($input,'future');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $where[] = ['show_times.show_time','>',$current];
