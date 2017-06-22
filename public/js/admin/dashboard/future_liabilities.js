@@ -109,8 +109,7 @@ var TableDatatablesButtons = function () {
         $('#sold_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
                 format: 'YYYY-MM-DD',
-                separator: ' to ',
-                minDate: moment()
+                separator: ' to '
             },
             function (start, end) {
                 $('#form_model_search input[name="soldtime_start_date"]').val(start.format('YYYY-MM-DD'));
