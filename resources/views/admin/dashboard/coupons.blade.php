@@ -113,6 +113,7 @@
                                 <th>Venue</th>
                                 <th>Show</th>
                                 <th style="text-align:center">Code</th>
+                                <th style="text-align:center">Distrib.<br>At</th>
                                 <th style="text-align:center">Sales<br>-7D</th>
                                 <th style="text-align:center">Sales<br>-1D</th>
                                 <th style="text-align:center">Qty Sold<br>(Purch.)</th>
@@ -129,6 +130,7 @@
                                 <td>{{$d->venue_name}}</td>
                                 <td>{{$d->show_name}}</td>
                                 <td style="text-align:center">{{$d->code}}</td>
+                                <td style="text-align:center">{{$d->distributed_at}}</td>
                                 <td style="text-align:center">{{$d->tickets_seven}}</td>
                                 <td style="text-align:center">{{$d->tickets_one}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}} ({{number_format($d->purchases)}})</td>
