@@ -124,7 +124,7 @@ class ShowController extends Controller{
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
                                         })
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured','shows.starting_at',
+                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
@@ -154,7 +154,7 @@ class ShowController extends Controller{
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
                                         })
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured','shows.starting_at',
+                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
@@ -185,7 +185,7 @@ class ShowController extends Controller{
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
                                         })                                     
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured','shows.starting_at',
+                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)
@@ -210,7 +210,7 @@ class ShowController extends Controller{
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
                                         })
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured','shows.starting_at',
+                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url')
                                         ->where($where)

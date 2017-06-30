@@ -178,6 +178,7 @@ class DiscountController extends Controller{
                     $discount->effective_dates = 0;
                 }
                 $discount->coupon_type = $input['coupon_type'];
+                $discount->distributed_at = (!empty($input['distributed_at']))? $input['distributed_at'] : null;
                 $discount->save();
                 //update intermediate table with tickets
                 if(isset($input['tickets']) && $input['tickets'] && count($input['tickets']))

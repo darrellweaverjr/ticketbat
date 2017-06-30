@@ -239,6 +239,14 @@
                                         </div>
                                         <div class="row"><hr>
                                             <div class="form-group">
+                                                <label class="control-label col-md-2">Distributed At:</label>
+                                                <div class="col-md-3 show-error">
+                                                    <input type="text" name="distributed_at" class="form-control" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"><hr>
+                                            <div class="form-group">
                                                 <label class="control-label col-md-2">Description:
                                                     <span class="required"> * </span>
                                                 </label>
