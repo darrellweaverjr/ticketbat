@@ -195,7 +195,7 @@
                                             <div class="col-md-6">
                                                 <label class="control-label">
                                                     <span class="required"> General </span>
-                                                </label><hr>
+                                                </label>
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Name
                                                         <span class="required"> * </span>
@@ -287,19 +287,23 @@
                                                         </div>
                                                     </div>
                                                     <label class="control-label col-md-3">Cutoff Hours</label>
-                                                    <div class="col-md-3">
-                                                        <input type="number" value="1" name="cutoff_hours" style="width:43px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                                    <div class="col-md-9">
+                                                        <input type="number" value="1" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
-                                                    <label class="control-label col-md-2">Sequence</label>
-                                                    <div class="col-md-4">
-                                                        <input type="number" value="10000" name="sequence" style="width:73px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                                    <label class="control-label col-md-3">Sequence</label>
+                                                    <div class="col-md-9">
+                                                        <input type="number" value="10000" name="sequence" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                                    </div>
+                                                    <label class="control-label col-md-3">Starting $</label>
+                                                    <div class="col-md-9">
+                                                        <input type="number" value="" name="starting_at" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">
                                                     <span class="required"> Social Media & Others </span>
-                                                </label><hr>
+                                                </label>
                                                 <div class="form-group">
                                                     <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a>
                                                     </div>
@@ -340,22 +344,20 @@
                                                     <div class="col-md-11 show-error">
                                                         <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" />
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-1">Active</label>
-                                                    <div class="col-md-2">
+                                                    <label class="control-label col-md-9">Active</label>
+                                                    <div class="col-md-3">
                                                         <input type="hidden" name="is_active" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch input-large" name="is_active" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
-                                                    <label class="control-label col-md-2">Featured</label>
-                                                    <div class="col-md-2">
+                                                    <label class="control-label col-md-9">Featured</label>
+                                                    <div class="col-md-3">
                                                         <input type="hidden" name="is_featured" value="0"/>
-                                                        <input type="checkbox" class="make-switch" name="is_featured" data-size="small" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch input-large" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
-                                                    <label class="control-label col-md-2">Print.Tk?</label>
-                                                    <div class="col-md-2">
+                                                    <label class="control-label col-md-9">Available Printed Tickets</label>
+                                                    <div class="col-md-3">
                                                         <input type="hidden" name="printed_tickets" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>
@@ -369,7 +371,7 @@
                                             </div>
                                             <label class="control-label">Description:</label>
                                             <div class="show-error">
-                                                <textarea name="description" class="form-control" rows="5"></textarea>
+                                                <textarea name="description" class="form-control" rows="4"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -459,7 +461,7 @@
                                             <div class="col-md-5">
                                                 <label class="control-label">
                                                     <span class="required">American Express Card Checking</span>
-                                                </label><hr>
+                                                </label>
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Date range:
                                                     </label>
@@ -487,7 +489,7 @@
                                             <div class="col-md-7">
                                                 <label class="control-label">
                                                     <span class="required">Passwords</span>
-                                                </label><hr>
+                                                </label>
                                                 <div class="form-group">
                                                     <div class="btn-group" style="padding-left:20px">
                                                         <button type="button" id="btn_model_password_add" class="btn sbold bg-green"> Add
