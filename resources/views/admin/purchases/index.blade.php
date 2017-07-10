@@ -41,7 +41,7 @@
                             <button id="btn_model_note" class="btn sbold bg-red" disabled="true">Add Note
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <button id="btn_model_move" class="btn sbold bg-purple" disabled="true">Move to Event
+                            <button id="btn_model_edit" class="btn sbold bg-purple" disabled="true">Edit Purchase
                                 <i class="fa fa-arrow-circle-right"></i>
                             </button>
                             @endif
@@ -386,48 +386,185 @@
     </div>
     <!-- END EMAIL MODAL-->
     <!-- BEGIN MOVE MODAL-->
-    <div id="modal_model_move" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:700px !important;">
+    <div id="modal_model_edit" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-purple">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Move to Event</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Purchase</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" id="form_model_move">
+                    <form method="post" id="form_model_edit">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <input type="hidden" name="purchase_id" value="" />
-                        <input type="hidden" name="ticket_id" value="" />
                         <div class="form-body">
                             <div class="row">
-                                <div class="form-group">
-                                    <label class="control-label col-md-7">Select the showtime to move the current purchase:</label>
-                                    <div class="col-md-5 show-error">
-                                        <div class="input-group">
-                                            <select class="form-control" name="show_time_id" required="true">
-                                            </select>
+                                <div class="col-md-6">
+                                    <label class="control-label">
+                                        <span class="required">Current Info</span>
+                                    </label><hr>
+                                    <div class="col-md-6">
+                                        <label class="control-label">
+                                            <span><b>Ticket:</b></span>
+                                        </label>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Type:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="ticket_type" type="text" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Pkge:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="title" type="text" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Rt.Price:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="retail_price" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Fees($):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="processing_fee" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Fees(%):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="percent_pf" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Comm($):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="fixed_commission" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Comm(%):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="percent_commission" type="number" readonly="true"/>
+                                            </div>                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="control-label">
+                                            <span><b>Purchase:</b></span>
+                                        </label>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Qty:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="quantity" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Rt.Price:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="p_retail_price" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">P.Fees:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="p_processing_fee" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Saving:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="savings" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Commis.:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="commission_percent" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">P.Paid:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="price_paid" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">ShowTime:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="show_time" type="text" readonly="true"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="col-md-6">
+                                    <label class="control-label">
+                                        <span class="required">Target Info</span>
+                                    </label><hr>
+                                    <div class="col-md-6">
+                                        <label class="control-label">
+                                            <span><b>Ticket:</b></span>
+                                        </label>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Type:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_ticket_type" type="text" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Pkge:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_title" type="text" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Rt.Price:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_retail_price" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Fees($):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_processing_fee" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Fees(%):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_percent_pf" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Comm($):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_fixed_commission" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Comm(%):</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_percent_commission" type="number" readonly="true"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="control-label">
+                                            <span><b>Purchase:</b></span>
+                                        </label>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Qty:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_quantity" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Rt.Price:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_p_retail_price" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">P.Fees:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_p_processing_fee" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Saving:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_savings" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Commis.:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_commission_percent" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">P.Paid:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_price_paid" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">ShowTime:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_show_time" type="text" readonly="true"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><hr>
                             <div class="row">
-                                <hr><table class="table table-striped table-hover table-bordered" >
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Ticket Type</th>
-                                            <th>Ret.Price</th>
-                                            <th>P.Fee($)</th>
-                                            <th>P.Fee(%)</th>
-                                            <th>Commis.($)</th>
-                                            <th>Commis.(%)</th>
-                                            <th>Max</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tb_purchase_tickets">
-                                    </tbody>
-                                </table>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Move to other date/time:</label>
+                                    <select class="form-control" name="to_show_time_id">
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Change ticket type:</label>
+                                    <select class="form-control" name="to_ticket_id">
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Change quantity of tickets:</label>
+                                    <input class="form-control" name="to_quantity" type="number" step="1" min="1" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">

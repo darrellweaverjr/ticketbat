@@ -13,6 +13,7 @@ use App\Http\Models\User;
 use App\Http\Models\Show;
 use App\Http\Models\Ticket;
 use App\Http\Models\ShowTime;
+use App\Http\Models\Transaction;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Models\Util;
 use App\Mail\EmailSG;
@@ -34,52 +35,78 @@ class PurchaseController extends Controller{
         try {
             //init
             $input = Input::all(); 
-            if(isset($input) && isset($input['action']) && $input['action']==0)
+            if(isset($input) && isset($input['id']))
             {
-                $show = DB::table('show_times')
-                                ->join('purchases', 'purchases.show_time_id', '=', 'show_times.id')
+                $current = DB::table('purchases')
+                                ->join('show_times', 'purchases.show_time_id', '=', 'show_times.id')
                                 ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                                ->select('shows.id')
-                                ->where('purchases.id','=',$input['purchase_id'])->first();
+                                ->join('tickets','purchases.ticket_id','=','tickets.id')
+                                ->join('packages','packages.id','=','tickets.package_id')
+                                ->select('tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_pf','tickets.fixed_commission',
+                                          'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price',
+                                          'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid',
+                                          'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
+                                ->where('purchases.id','=',$input['id'])->first();
                 $showtimes = DB::table('show_times')->select('id','show_time')
-                                ->where('show_id','=',$show->id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s'))
+                                ->where('show_id','=',$current->show_id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s'))
                                 ->orderBy('show_times.show_time')->get();
-                $ticket = DB::table('tickets')
-                                ->join('purchases','purchases.ticket_id','=','tickets.id')
-                                ->select('tickets.*')
-                                ->where('purchases.id','=',$input['purchase_id'])->first();
-                return ['success'=>true,'ticket'=>$ticket,'showtimes'=>$showtimes];
+                $tickets = DB::table('tickets')
+                                ->join('packages','packages.id','=','tickets.package_id')
+                                ->select('tickets.id','tickets.ticket_type','packages.title')
+                                ->where('tickets.show_id','=',$current->show_id)->where('tickets.is_active','=',1)
+                                ->get();
+                return ['success'=>true,'current'=>$current,'tickets'=>$tickets,'showtimes'=>$showtimes];
             }
-            else if(isset($input) && isset($input['action']) && $input['action']==1)
+            else if(isset($input) && isset($input['purchase_id']))
             {
-                $showtime = ShowTime::find($input['show_time_id']);
-                if($showtime)
+                $purchase = Purchase::find($input['purchase_id']);
+                if($purchase)
                 {
-                    $ticket = null;
-                    $contracts = DB::table('show_contracts')->select('data')
-                                ->where('show_id','=',$showtime->show_id)
-                                ->where('effective_date','<=',date('Y-m-d',strtotime($showtime->show_time)))->where('effective_date','>=',date('Y-m-d'))
-                                ->orderBy('effective_date','desc')->get();
-                    foreach ($contracts as $c)
+                    $st_id = (!empty($input['to_show_time_id']))? $input['to_show_time_id'] : $purchase->show_time_id;
+                    $t_id = (!empty($input['to_ticket_id']))? $input['to_ticket_id'] : $purchase->ticket_id;
+                    $qty = (!empty($input['to_quantity']) && $input['to_quantity']>0)? ceil($input['to_quantity']) : $purchase->quantity;                    
+                    $showtime = ShowTime::find($st_id);
+                    $ticket = Ticket::find($t_id);
+                    if($showtime && $ticket && $qty)
                     {
-                        if(!empty($c->data) && Util::isJSON($c->data))
+                        $ticket_o = null;                        
+                        $contracts = DB::table('show_contracts')->select('data')
+                                    ->where('show_id','=',$showtime->show_id)
+                                    ->where('effective_date','<=',date('Y-m-d',strtotime($showtime->show_time)))->where('effective_date','>=',date('Y-m-d'))
+                                    ->orderBy('effective_date','desc')->get();
+                        foreach ($contracts as $c)
                         {
-                            $data = json_decode($c->data);
-                            foreach ($data as $d)
+                            if($ticket_o)
+                                break;
+                            if(!empty($c->data) && Util::isJSON($c->data))
                             {
-                                if($d->ticket_id == $input['ticket_id'])
-                                    return ['success'=>true,'ticket'=>$d];
+                                $data = json_decode($c->data);
+                                foreach ($data as $d)
+                                {
+                                    if($d->ticket_id == $ticket->id)
+                                    {
+                                        $ticket_o = $d;
+                                        break;
+                                    }
+                                }
                             }
                         }
+                        //calculate target result
+                        $target = ['t_ticket_type'=>$ticket->ticket_type,'t_title'=>$ticket->package->title,'t_retail_price'=>$ticket->retail_price,
+                                   't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
+                                   't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
+                                   't_p_retail_price'=>$ticket->retail_price*$qty,
+                                   't_p_processing_fee'=>(!empty($ticket->processing_fee))? $ticket->processing_fee*$qty : $ticket->t_percent_pf/100*$ticket->retail_price*$qty,
+                                   't_savings'=>$purchase->savings/$purchase->quantity*$qty,
+                                   't_commission_percent'=>(!empty($ticket->fixed_commission))? $ticket->fixed_commission*$qty : $ticket->percent_commission/100*$ticket->retail_price*$qty];
+                        $target['t_price_paid'] = $target['t_p_retail_price'] + $target['t_p_processing_fee'] - $target['t_savings'];
+                        return ['success'=>true,'target'=>$target];
                     }
-                    if(!$ticket)
-                        $ticket = Ticket::find($input['ticket_id']);
-                    return ['success'=>true,'ticket'=>$ticket];
+                    else 
+                        return ['success'=>false,'msg'=>'There was an error.<br>That event date/ticket/qty is not longer in the system.'];
                 }
-                else return ['success'=>false,'msg'=>'There was an error.<br>That event date is not longer in the system.'];
-                        
-                
-                return ['success'=>true,'ticket'=>$ticket,'showtimes'=>$showtimes];
+                else
+                    return ['success'=>false,'msg'=>'There was an error.<br>That purchase is not longer in the system.'];
             }
             else
             {
@@ -268,13 +295,45 @@ class PurchaseController extends Controller{
                 $purchase = Purchase::find($input['purchase_id']);
                 if($purchase)
                 {
-                    $showtime_from = ShowTime::find($purchase->show_time_id);
-                    $showtime_to = ShowTime::find($input['show_time_id']);
-                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current))
-                            .'): </b>Change show time date from '.date('m/d/Y g:i a',strtotime($showtime_from->show_time))
-                            .' to '.date('m/d/Y g:i a',strtotime($showtime_to->show_time)).' &nbsp;';
-                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note; 
-                    $purchase->show_time_id = $input['show_time_id'];
+                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
+                    if(!empty($input['to_show_time_id']) && $purchase->show_time_id != $input['to_show_time_id'])
+                    {
+                        $from = ShowTime::find($purchase->show_time_id);
+                        $to = ShowTime::find($input['to_show_time_id']);
+                        $note.= ', date from'.date('m/d/Y g:i a',strtotime($from->show_time)).' to '.date('m/d/Y g:i a',strtotime($to->show_time));
+                        $purchase->show_time_id = $input['to_show_time_id'];
+                    }
+                    if(!empty($input['to_ticket_id']) && $purchase->ticket_id != $input['to_ticket_id'])
+                    {
+                        $from = Ticket::find($purchase->ticket_id);
+                        $to = Ticket::find($input['to_ticket_id']);
+                        $note.= ', ticket from'.$from->ticket_type.' to '.$to->ticket_type;
+                        $purchase->ticket_id = $input['to_ticket_id'];
+                    }
+                    if(!empty($input['to_quantity']) && $purchase->quantity != $input['to_quantity'])
+                    {
+                        $note.= ', qty from'.$purchase->quantity.' to '.$input['to_quantity'];
+                        $purchase->quantity = $input['to_quantity'];
+                    }
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;                     
+                    $purchase->retail_price = $input['t_p_retail_price'];
+                    $purchase->processing_fee = $input['t_p_processing_fee'];
+                    $purchase->savings = $input['t_savings'];
+                    $purchase->commission_percent = $input['t_commission_percent'];
+                    if($purchase->price_paid != $input['t_price_paid'])
+                    {
+                        $note.= ', price paid from'.$purchase->price_paid.' to '.$input['t_price_paid'];
+                        $purchase->price_paid = $input['t_price_paid'];
+                        if($purchase->transaction_id)
+                        {
+                            $transaction = Transaction::find($purchase->transaction_id);
+                            if($transaction)
+                            {
+                                $transaction->amount = $purchase->price_paid;
+                                $transaction->save();
+                            }
+                        }                            
+                    }
                     $purchase->save();
                     return ['success'=>true,'msg'=>'Purchase saved successfully!'];
                 }
@@ -381,6 +440,13 @@ class PurchaseController extends Controller{
     public function tickets($type,$ids)
     {
         try {
+            //init
+            $input = Input::all();
+            //save all record      
+            if($input && isset($input['action']))
+            {
+            
+            }
             //check input values    
             if(in_array($type,['C','S']))
             {

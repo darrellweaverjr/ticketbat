@@ -191,28 +191,32 @@ var TableDatatablesManaged = function () {
             }
         });
         //function show move modal window
-        $('#btn_model_move').on('click', function(ev) {
+        $('#btn_model_edit').on('click', function(ev) {
+            $('#form_model_edit').trigger('reset');
             var set = $('.group-checkable').attr("data-set");
-            var purchase_id = $(set+"[type=checkbox]:checked")[0].id;
+            var id = $(set+"[type=checkbox]:checked")[0].id;
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/purchases', 
-                data: {action:0,purchase_id:purchase_id}, 
+                data: {id:id}, 
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#form_model_move input[name="purchase_id"]:hidden').val(purchase_id);
-                        $('#form_model_move input[name="ticket_id"]:hidden').val(data.ticket.id);
-                        $('#form_model_move select[name="show_time_id"]').append('<option disabled selected value=""></option>');
+                        //fill out current
+                        for(var key in data.current)                                
+                            $('#form_model_edit input[name="'+key+'"]').val(data.current[key]);
+                        //fill out showtimes
+                        $('#form_model_edit select[name="to_show_time_id"]').html('<option selected value=""></option>');                        
                         $.each(data.showtimes,function(k, v) {
-                            var date = moment(v.show_time);
-                            $('#form_model_move select[name="show_time_id"]').append('<option value="'+v.id+'">'+date.format('MM/DD/YYYY @ h:mma')+' - Active</option>');
+                            $('#form_model_edit select[name="to_show_time_id"]').append('<option value="'+v.id+'">'+moment(v.show_time).format('MM/DD/YYYY @ h:mma')+' - Active</option>');
                         });
-                        $('#tb_purchase_tickets').html('<tr><td><b>Current</b></td><td>'+data.ticket.ticket_type+'</td><td>'+data.ticket.retail_price+'</td><td>'+data.ticket.processing_fee+
-                                                         '</td><td>'+data.ticket.percent_pf+'</td><td>'+data.ticket.fixed_commission+'</td><td>'+data.ticket.percent_commission+
-                                                         '</td><td>'+data.ticket.max_tickets+'</td><td>'+data.ticket.is_active+'</td></tr>'); 
-                        $('#modal_model_move').modal('show');
+                        //fill out tickets
+                        $('#form_model_edit select[name="to_ticket_id"]').html('<option value=""></option>');
+                        $.each(data.tickets,function(k, v) {
+                            $('#form_model_edit select[name="to_ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' - '+v.title+'</option>');
+                        });
+                        $('#modal_model_edit').modal('show');
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
@@ -231,78 +235,69 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
-        //on select showtimes date change
-        $('#form_model_move select[name="show_time_id"]').on('change', function(ev) {
-            var show_time_id = $(this).val();
-            var ticket_id = $('#form_model_move input[name="ticket_id"]:hidden').val();
-            if(show_time_id)
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/purchases', 
-                    data: {action:1,show_time_id:show_time_id,ticket_id:ticket_id},
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            $('#tb_purchase_tickets').children('tr:not(:first)').remove();
-                            $('#tb_purchase_tickets').append('<tr><td><b>Target</b></td><td>'+data.ticket.ticket_type+'</td><td>'+data.ticket.retail_price+'</td><td>'+data.ticket.processing_fee+
-                                                            '</td><td>'+data.ticket.percent_pf+'</td><td>'+data.ticket.fixed_commission+'</td><td>'+data.ticket.percent_commission+
-                                                            '</td><td>'+data.ticket.max_tickets+'</td><td>'+data.ticket.is_active+'</td></tr>'); 
-                            $.each($('#tb_purchase_tickets').children('tr:first').children(),function(k, v) {
-                                if(k>0)
-                                {
-                                    var e = $('#tb_purchase_tickets').children('tr:last').children()[k];
-                                    if(e.innerHTML != v.innerHTML)
-                                        e.innerHTML = '<span class="label label-sm sbold label-danger">'+e.innerHTML+'</span>';
-                                }
-                            });
-                        }
-                        else{
-                            $('#modal_model_move').modal('hide');					
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            },function(){
-                                $('#modal_model_move').modal('show');
-                            });
-                        }
-                    },
-                    error: function(){
-                        $('#modal_model_move').modal('hide');	
+        //on change edit field
+        $('#form_model_edit select[name="to_show_time_id"], #form_model_edit select[name="to_ticket_id"], #form_model_edit input[name="to_quantity"]').on('change', function() {
+            var purchase_id = $('#form_model_edit input[name="purchase_id"]:hidden').val();
+            var to_show_time_id = $('#form_model_edit select[name="to_show_time_id"]').val();
+            var to_ticket_id = $('#form_model_edit select[name="to_ticket_id"]').val();
+            var to_quantity = $('#form_model_edit input[name="to_quantity"]').val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/purchases', 
+                data: {purchase_id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_quantity:to_quantity},
+                success: function(data) {
+                    if(data.success) {
+                        //fill out
+                        for(var key in data.target)                                
+                            $('#form_model_edit input[name="'+key+'"]').val(data.target[key]);
+                        //check price
+                        var from_price = parseFloat($('#form_model_edit input[name="price_paid"]').val());
+                        var to_price = parseFloat($('#form_model_edit input[name="t_price_paid"]').val());
+                        if(from_price > to_price)
+                            $('#form_model_edit input[name="t_price_paid"]').css('border-color','green');
+                        else if(from_price < to_price)
+                            $('#form_model_edit input[name="t_price_paid"]').css('border-color','red');
+                        else
+                            $('#form_model_edit input[name="t_price_paid"]').css('border-color','');
+                    }  
+                    else{
+                        $('#modal_model_edit').modal('hide');					
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
+                            text: data.msg,
                             html: true,
                             type: "error"
                         },function(){
-                            $('#modal_model_move').modal('show');
+                            $(this).val('').trigger('change');
+                            $('#modal_model_edit').modal('show');
                         });
                     }
-                }); 
-            }
-            else 
-            {
-                $('#modal_model_move').modal('hide');
-                swal({
-                    title: "<span style='color:red;'>Error!</span>",
-                    text: "You must select a valid showtime!",
-                    html: true,
-                    type: "error"
-                },function(){
-                    $('#modal_model_move').modal('show');
-                });
-            }
+                },
+                error: function(){
+                    $('#modal_model_edit').modal('hide');	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $(this).val('').trigger('change');
+                        $('#modal_model_edit').modal('show');
+                    });
+                }
+            }); 
         });
         //function save
         $('#btn_model_save').on('click', function(ev) {
-            $('#modal_model_move').modal('hide');
-            if($('#form_model_move').valid())
+            var to_show_time_id = $('#form_model_edit select[name="to_show_time_id"]').val();
+            var to_ticket_id = $('#form_model_edit select[name="to_ticket_id"]').val();
+            var to_quantity = $('#form_model_edit input[name="to_quantity"]').val();
+            $('#modal_model_edit').modal('hide');
+            if($('#form_model_edit').valid() && (to_show_time_id || to_ticket_id || to_quantity))
             {
                 swal({
-                    title: "Saving band's information",
+                    title: "Saving purchase's information",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
@@ -311,7 +306,7 @@ var TableDatatablesManaged = function () {
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/admin/purchases/save', 
-                    data: $('#form_model_move').serializeArray(), 
+                    data: $('#form_model_edit').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
                         {
@@ -332,18 +327,18 @@ var TableDatatablesManaged = function () {
                                 html: true,
                                 type: "error"
                             },function(){
-                                $('#modal_model_move').modal('show');
+                                $('#modal_model_edit').modal('show');
                             });
                         }
                     },
                     error: function(){
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the band's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to save the purchase's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
-                            $('#modal_model_move').modal('show');
+                            $('#modal_model_edit').modal('show');
                         });
                     }
                 }); 
@@ -356,7 +351,7 @@ var TableDatatablesManaged = function () {
                     html: true,
                     type: "error"
                 },function(){
-                    $('#modal_model_move').modal('show');
+                    $('#modal_model_edit').modal('show');
                 });
             }        
         });

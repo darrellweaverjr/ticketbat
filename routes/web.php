@@ -93,3 +93,15 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('consignments/save', 'ConsignmentController@save')->middleware('permissions:CONSIGNMENTS');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index')->middleware('permissions:CONSIGNMENTS');
 });
+
+//PRODUCTION ROUTES
+Route::group(['prefix' => 'production','namespace' => 'Production'], function () {
+    //home
+    Route::get('/', function () { return redirect()->route('index'); });
+    Route::get('/home', 'HomeController@index')->name('index');
+    Route::post('home/search', 'HomeController@search');    
+    //general
+    Route::post('general/contact', 'GeneralController@terms');
+    //event
+    Route::get('event/{slug}', 'PurchaseController@tickets')->middleware('permissions:PURCHASES');
+});
