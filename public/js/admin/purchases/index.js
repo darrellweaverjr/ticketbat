@@ -204,8 +204,11 @@ var TableDatatablesManaged = function () {
                     if(data.success) 
                     {
                         //fill out current
-                        for(var key in data.current)                                
+                        for(var key in data.current){
+                            if(key == 'show_time')
+                                data.current[key] = moment(data.current[key]).format('M/D/YY h:mma');
                             $('#form_model_edit input[name="'+key+'"]').val(data.current[key]);
+                        }     
                         //fill out showtimes
                         $('#form_model_edit select[name="to_show_time_id"]').html('<option selected value=""></option>');                        
                         $.each(data.showtimes,function(k, v) {
@@ -249,8 +252,11 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) {
                         //fill out
-                        for(var key in data.target)                                
+                        for(var key in data.target) {
+                            if(key == 't_show_time')
+                                data.target[key] = moment(data.target[key]).format('M/D/YY h:mma');
                             $('#form_model_edit input[name="'+key+'"]').val(data.target[key]);
+                        }   
                         //check price
                         var from_price = parseFloat($('#form_model_edit input[name="price_paid"]').val());
                         var to_price = parseFloat($('#form_model_edit input[name="t_price_paid"]').val());

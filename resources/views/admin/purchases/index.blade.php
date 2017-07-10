@@ -469,7 +469,7 @@
                                             </div>
                                             <label class="control-label col-md-4">ShowTime:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="show_time" type="text" readonly="true"/>
+                                                <input class="form-control" style="font-size:10px" name="show_time" type="text" readonly="true"/>
                                             </div>
                                         </div>
                                     </div>
@@ -544,7 +544,7 @@
                                             </div>
                                             <label class="control-label col-md-4">ShowTime:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="t_show_time" type="text" readonly="true"/>
+                                                <input class="form-control" style="font-size:10px" name="t_show_time" type="text" readonly="true"/>
                                             </div>
                                         </div>
                                     </div>
