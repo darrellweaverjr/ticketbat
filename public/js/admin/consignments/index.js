@@ -535,7 +535,7 @@ var TableDatatablesManaged = function () {
         });  
         //function tickets
         $('#btn_model_tickets').on('click', function(ev) {
-            var qty = $("#tb_model [name=radios]:checked").attr("data-qty");
+            var qty = parseInt($("#tb_model [name=radios]:checked").attr("data-qty"));
             var c = qty;
             var step = 100;
             var range = '';
