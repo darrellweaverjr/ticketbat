@@ -542,7 +542,7 @@ var TableDatatablesManaged = function () {
             while(c > 0)
             {
                 var start = qty-c+1;
-                var end = (c<step)? c : qty-c+step;
+                var end = (c<step)? start+c-1 : qty-c+step;
                 range += '<label class="mt-radio">'+start+' - '+end+'<input value="/'+start+'/'+end+'" name="range_tickets" type="radio"><span></span></label><br>';
                 (c < step)? c = 0 : c -= step;
             }
