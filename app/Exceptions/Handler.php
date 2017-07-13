@@ -8,6 +8,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use App\Mail\EmailSG;
+use App\Http\Models\Util;
 use Illuminate\Support\Facades\Log;
 
 class Handler extends ExceptionHandler
@@ -101,7 +102,7 @@ class Handler extends ExceptionHandler
         {
             Log::error($exception);
             $email = new EmailSG(['TicketBat Admin',env('MAIL_ERROR_FROM')],env('MAIL_ERROR_TO'),env('MAIL_ERROR_SUBJECT'));        
-            $client = 'IP('.Request::getClientIp().') - '.Request::header('User-Agent');           
+            $client = Util::system_info();       
             $user = (Auth::check())? Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.') ' : '-Not logged user-';
             $html = '<b>Client: </b>'.$client.'<br><b> Date: </b>'.date('Y-m-d H:i:s').'<br><b> URL: </b>'.Request::url().'<br><b> User: </b>'.$user
                   . '<br><b>Code: </b>'.$exception->getCode().'<br><b>File: </b>'.$exception->getFile().' <b>Line: </b>'.$exception->getLine().'<br>'

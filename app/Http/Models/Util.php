@@ -5,8 +5,10 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\File;
+
 
 /**
  * Utilities class
@@ -254,6 +256,18 @@ class Util extends Model
             return round($number,2, PHP_ROUND_HALF_UP);
         } catch (Exception $ex) {
             return $number;
+        }
+    }
+    
+    /**
+     * get system info
+     */
+    public static function system_info()
+    {
+        try { 
+            return 'IP('.Request::getClientIp().') - '.Request::header('User-Agent');
+        } catch (Exception $ex) {
+            return '';
         }
     }
 }
