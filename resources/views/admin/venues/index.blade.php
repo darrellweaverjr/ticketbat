@@ -153,6 +153,9 @@
                                     <li class="">
                                         <a href="#tab_model_update_videos" data-toggle="tab" aria-expanded="true"> Videos </a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_ads" data-toggle="tab" aria-expanded="true"> Ads </a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_model_update_general">
@@ -414,6 +417,33 @@
                                         </div>
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_venue_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_ads">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_ads_add" class="btn sbold bg-green"> Add
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Image</th>
+                                                        <th>Type</th>
+                                                        <th>URL</th>
+                                                        <th>Order</th>
+                                                        <th>Price</th>
+                                                        <th>Clicks</th>
+                                                        <th>Start</th>
+                                                        <th>End</th>
+                                                        <th> </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_venue_ads">
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -724,6 +754,100 @@
         </div>
     </div>
     <!-- END ADD/REMOVE VENUEBANNERS MODAL-->
+    <!-- BEGIN ADD/EDIT VENUE ADS MODAL-->
+    <div id="modal_model_venue_ads" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:900px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Ads</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_venue_ads">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="venue_id" value="" />
+                        <input type="hidden" name="id" value="" />
+                        <input type="hidden" name="action" value="1" />
+                        <div class="form-body">
+                            <div class="row" style="padding:10px;">
+                                <div class="form-group col-md-6" id="subform_venue_ads">
+                                    <label class="control-label">Image
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="show-error" >
+                                        <center>
+                                            <input type="hidden" name="image"/>
+                                            <button type="button" id="btn_venue_upload_ads" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <img name="image" alt="- No image -" src="" width="200px" height="200px" />
+                                        </center>
+                                    </div>
+                                </div> 
+                                <div class="form-group col-md-6" style="margin-bottom:60px;">
+                                    <label class="control-label col-md-3">Type
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <select class="form-control" name="type" required="true">
+                                            @foreach($ads_types as $index=>$at)
+                                                <option value="{{$index}}">{{$at}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div> 
+                                    <label class="col-md-3 control-label">Order
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input class="form-control" type="number" value="1" name="order" required="true" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                    </div><br>
+                                    <label class="control-label col-md-3">URL
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input class="form-control" type="url" name="url" required="true">
+                                       <i><small>If the URL link is in Ticketbat set this like: "/event/my-slug". Otherwise put the whole URL: "http://venue.com/mylink".</small></i>
+                                    </div>                               
+                                    <label class="col-md-3 control-label">Price
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input class="form-control" type="number" value="0.00" name="price" required="true" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
+                                    <label class="col-md-3 control-label">Clicks
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input class="form-control" type="number" value="0" name="clicks" required="true" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                    </div>
+                                    <label class="control-label col-md-3">Date range:
+                                    </label>
+                                    <div class="input-group col-md-9" id="ads_date">
+                                        <input type="text" class="form-control" name="start_date" readonly="true" value="{{date('Y-m-d H:i')}}" required="true" style="font-size:11px!important;">
+                                        <span class="input-group-addon"> to </span>
+                                        <input type="text" class="form-control" name="end_date" readonly="true" value="{{date('Y-m-d H:i',strtotime('+29 day'))}}" required="true" style="font-size:11px!important;">
+                                        <span class="input-group-btn">
+                                            <button class="btn default date-range-toggle" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_venue_ads').trigger('reset')">Cancel</button>
+                                    <button type="button" id="submit_model_venue_ads" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/EDIT VENUE ADS MODAL-->
 @endsection
 
 @section('scripts')

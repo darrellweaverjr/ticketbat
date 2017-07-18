@@ -140,6 +140,7 @@ var TableDatatablesManaged = function () {
         var fullReset = function(){
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
+            $('#tb_venue_ads').empty();
         };
         //function add
         $('#btn_model_add').on('click', function(ev) {
@@ -152,6 +153,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_images"]').parent().css('display','none');
             $('a[href="#tab_model_update_banners"]').parent().css('display','none');
             $('a[href="#tab_model_update_videos"]').parent().css('display','none');
+            $('a[href="#tab_model_update_ads"]').parent().css('display','none');
             $("#form_model_update").trigger('reset');
             $('#modal_model_update').modal('show');
         });
@@ -166,6 +168,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_images"]').parent().css('display','block');
             $('a[href="#tab_model_update_banners"]').parent().css('display','block');
             $('a[href="#tab_model_update_videos"]').parent().css('display','block');
+            $('a[href="#tab_model_update_ads"]').parent().css('display','block');
             $('#modal_model_update_title').html('Edit Venue');
             //fill out defaults
             $('#form_model_update [name="id"]').val(data.venue.id).change();
@@ -230,6 +233,13 @@ var TableDatatablesManaged = function () {
                 });
                 $('#grid_venue_videos').cubeportfolio('appendItems', html);
                 $('#grid_venue_videos').trigger('resize.cbp');
+            }            
+            //fill out ads
+            if(data.ads && data.ads.length)
+            {
+                $.each(data.ads,function(k, v) {
+                    $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img src="'+v.image+'"></td><td>'+v.type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                });
             }
             //show modal
             $('#modal_model_update').modal('show');
@@ -396,7 +406,7 @@ var TableDatatablesManaged = function () {
                 } 
             });            
         });     
-        //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD BEGIN
+        //function with venue_stages  *****************************************************************************************************   VENUE STAGES BEGIN
         // init images
         $('#grid_venue_stages').cubeportfolio({
             layoutMode: 'grid',
@@ -600,7 +610,7 @@ var TableDatatablesManaged = function () {
         $('#btn_venue_upload_stages').on('click', function(ev) {
             FormImageUpload('stages.image_url','#modal_model_venue_stages','#form_model_venue_stages [name="image_url"]');       
         }); 
-        //function with venue_stages  *****************************************************************************************************   VENUE PASSWORD END
+        //function with venue_stages  *****************************************************************************************************   VENUE STAGES END
         //function with venue_images  *****************************************************************************************************   VENUE IMAGES BEGIN
         // init images
         $('#grid_venue_images').cubeportfolio({
@@ -871,7 +881,7 @@ var TableDatatablesManaged = function () {
         //edit
         $(document).on('click', '#grid_venue_banners a.edit', function(){
             var id = $(this).attr('rel');
-            $('#form_model_venue_banners').trigger('reset');
+            $('#form_model_venue_banners').trigger('reset');            
             $('#form_model_venue_banners input[name="id"]:hidden').val(id).trigger('change');
             $('#form_model_venue_banners input[name="action"]:hidden').val('0').trigger('change');
             $('#form_model_venue_banners input[name="file"]:hidden').val('').trigger('change');
@@ -885,6 +895,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        //banners
                         $('#form_model_venue_banners [name="url"]').val(data.banner.url);
                         if(data.banner.type && data.banner.type!='')
                         {
@@ -1234,14 +1245,222 @@ var TableDatatablesManaged = function () {
                 });
             }
         });
-        //function with venue_videos  *****************************************************************************************************   SHOW VIDEOS END
-       
+        //function with venue_videos  *****************************************************************************************************   VENUE VIDEOS END
+        //function with venue_ads  *******************************************************************************************************    VENUE ADS BEGIN
+        $('#ads_date').daterangepicker({
+                opens: (App.isRTL() ? 'left' : 'right'),
+                format: 'YYYY-MM-DD HH:mm',
+                separator: ' to ',
+                startDate: moment(),
+                endDate: moment().add('days', 29),
+                minDate: moment()
+            },
+            function (start, end) {
+                $('#ads_date input[name="start_date"]').val(start.format('YYYY-MM-DD HH:mm'));
+                $('#ads_date input[name="end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
+            }
+        );  
+        $('#form_model_venue_ads select[name="type"]').on('change',function(e){
+            var type = $(this).val();
+            var width = height = '200px';
+            if(type=='Horizontal') {
+                width = '400px';
+                height = '100px';
+            }
+            else if(type=='Vertical') {
+                width = '100px';
+                height = '250px';
+            }
+            $('#form_model_venue_ads img[name="image"]').css('width',width).css('height',height);
+        });
+        $('#btn_model_ads_add').on('click', function(ev) {
+            $('#form_model_venue_ads input[name="id"]:hidden').val('');
+            $('#form_model_venue_ads').trigger('reset');
+            $('#form_model_venue_ads [name="type"]').trigger('change');
+            $('#form_model_venue_ads img[name="image"]').attr('src','');
+            $('#form_model_venue_ads input[name="venue_id"]:hidden').val($('#modal_model_update input[name="id"]').val());
+            $('#form_model_venue_ads input[name="action"]:hidden').val(1);
+            $('#modal_model_venue_ads').modal('show');
+        });
+        $('#tb_venue_ads').on('click', 'input[type="button"]', function(e){            
+            var row = $(this).closest('tr');
+            //edit
+            if($(this).hasClass('edit')) 
+            {
+                $('#form_model_venue_ads input[name="id"]:hidden').val('');
+                $('#form_model_venue_ads').trigger('reset');
+                $('#form_model_venue_ads [name="type"]').trigger('change');
+                $('#form_model_venue_ads img[name="image"]').attr('src','');
+                $('#form_model_venue_ads input[name="action"]:hidden').val(0);
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/venues/ads', 
+                    data: {ads_id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#form_model_venue_ads').trigger('reset');
+                            $('#form_model_venue_ads input[name="id"]:hidden').val(data.ads.id);
+                            $('#form_model_venue_ads input[name="venue_id"]:hidden').val(data.ads.venue_id);
+                            //fill out ad
+                            for(var key in data.ads)
+                                $('#form_model_venue_ads [name="'+key+'"]').val(data.ads[key]);
+                            $('#form_model_venue_ads img[name="image"]').attr('src',data.ads.image);
+                            $('#modal_model_venue_ads').modal('show');
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the Ad's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                });
+            }
+            //remove
+            else if($(this).hasClass('delete')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/venues/ads', 
+                    data: {action:-1,id:row.prop('class')}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            row.remove();
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to remove the Ad!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                });
+            }
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Invalid Option",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
+        });
+        //function submit venue_ads
+        $('#submit_model_venue_ads').on('click', function(ev) {
+            $('#modal_model_venue_ads').modal('hide');
+            if($('#form_model_venue_ads').valid() || true)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/venues/ads', 
+                    data: $('#form_model_venue_ads').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#tb_venue_ads').empty();
+                            $.each(data.ads,function(k, v) {
+                                $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img src="'+v.image+'"></td><td>'+v.type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            });             
+                        }
+                        else{
+			    $('#modal_model_update').modal('hide');						
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_venue_ads').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the Ad's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_venue_ads').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                $('#modal_model_update').modal('hide');	   	
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must fill out correctly the form",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_venue_ads').modal('show');
+                });
+            }    
+        });
+        //function load form to upload image
+        $('#btn_venue_upload_ads').on('click', function(ev) {
+            var type = $('#form_model_venue_ads [name="type"]').val().toLowerCase();
+            FormImageUpload('ads.'+type,'#modal_model_venue_ads','#form_model_venue_ads [name="image"]');       
+        }); 
+        //function with venue_ads   *******************************************************************************************************   VENUE ADS END
+        
         //init functions
         check_models(); 
         $('#form_model_update [name="default_processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_update [name="default_percent_pfee"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
         $('#form_model_update [name="default_fixed_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_update [name="default_percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
+        
+        $('#form_model_venue_ads [name="order"]').TouchSpin({ initval:1,min:1,step:1,decimals:0,max:10,prefix:'#' });
+        $('#form_model_venue_ads [name="price"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
+        $('#form_model_venue_ads [name="clicks"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000,prefix:'*' });
         
     }
     return {

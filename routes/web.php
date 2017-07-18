@@ -35,6 +35,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'venues/banners', 'VenueController@banners')->middleware('permissions:VENUES');
     Route::match(['get','post'], 'venues/videos', 'VenueController@videos')->middleware('permissions:VENUES');
     Route::match(['get','post'], 'venues/stages', 'VenueController@stages')->middleware('permissions:VENUES');
+    Route::match(['get','post'], 'venues/ads', 'VenueController@ads')->middleware('permissions:VENUES');
     Route::post('venues/slug', 'VenueController@slug')->middleware('permissions:VENUES');
     Route::post('venues/save', 'VenueController@save')->middleware('permissions:VENUES');
     Route::post('venues/remove', 'VenueController@remove')->middleware('permissions:VENUES');
@@ -95,13 +96,15 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 });
 
 //PRODUCTION ROUTES
+/*
 Route::group(['prefix' => 'production','namespace' => 'Production'], function () {
     //home
     Route::get('/', function () { return redirect()->route('index'); });
     Route::get('/home', 'HomeController@index')->name('index');
     Route::post('home/search', 'HomeController@search');    
     //general
-    Route::post('general/contact', 'GeneralController@terms');
+    Route::post('general/contact', 'GeneralController@contact');
     //event
     Route::get('event/{slug}', 'PurchaseController@tickets')->middleware('permissions:PURCHASES');
 });
+ */

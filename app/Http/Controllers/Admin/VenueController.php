@@ -134,9 +134,10 @@ class VenueController extends Controller{
                     $image_types = Util::getEnumValues('images','image_type');
                     $banner_types = Util::getEnumValues('banners','type');
                     $video_types = Util::getEnumValues('videos','video_type');
+                    $ads_types = Util::getEnumValues('venue_ads','type');
                 }
                 //return view
-                return view('admin.venues.index',compact('venues','restrictions','banner_types','image_types','video_types','onlyerrors'));
+                return view('admin.venues.index',compact('venues','restrictions','banner_types','image_types','video_types','ads_types','onlyerrors'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Venues Index: '.$ex->getMessage());
@@ -174,7 +175,13 @@ class VenueController extends Controller{
                     $b->file = Image::view_image($b->file);
                 $videos = DB::table('videos')->join('venue_videos', 'venue_videos.video_id', '=' ,'videos.id')
                                 ->select('videos.*')->where('venue_videos.venue_id','=',$venue->id)->distinct()->get();
-                return ['success'=>true,'venue'=>$venue,'stages'=>$stages,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+                $ads = DB::table('venue_ads')
+                                ->select('*')->where('venue_id','=',$venue->id)
+                                ->orderBy('type')->orderBy('order')
+                                ->distinct()->get();
+                foreach ($ads as $a)
+                    $a->image = Image::view_image($a->image);
+                return ['success'=>true,'venue'=>$venue,'stages'=>$stages,'images'=>$images,'banners'=>$banners,'videos'=>$videos,'ads'=>$ads];
             }
         } catch (Exception $ex) {
             throw new Exception('Error Venues Get: '.$ex->getMessage());
@@ -641,6 +648,115 @@ class VenueController extends Controller{
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error VenueVideos Index: '.$ex->getMessage());
+        }
+    } 
+    /**
+     * Get, Edit, Remove ads for Venues
+     *
+     * @return view
+     */
+    public function ads()
+    {
+        try {   
+            //init
+            $input = Input::all();
+            $current = date('Y-m-d H:i:s');
+            function validate($input)
+            {
+                if(empty($input['image']) || empty($input['price']) || empty($input['url']))
+                    return ['success'=>false,'msg'=>'There was an error with the Ads.<br>You must fill out correctly the form.'];
+                $ads = DB::table('venue_ads')->select('venue_ads.*')
+                                             ->where('venue_ads.venue_id',$input['venue_id'])
+                                             ->where('venue_ads.type',$input['type'])
+                                             ->orderBy('venue_ads.order')->get();
+                if(empty($input['order']) || empty($ads) || $input['order']>count($ads) || $input['order']<1)
+                    $input['order'] = count($ads)+1;
+                else
+                {
+                    $index = 1;
+                    foreach($ads as $a)
+                    {
+                        if($index==$input['order'])
+                            $index++;
+                        DB::table('venue_ads')->where('id',$a->id)->update(['order'=>$index]);
+                        $index++;
+                    }
+                }
+            }   
+            function getAllAds($venue)
+            {
+                $ads = DB::table('venue_ads')
+                                ->select('*')->where('venue_id','=',$venue)
+                                ->orderBy('type')->orderBy('order')
+                                ->distinct()->get();
+                foreach ($ads as $a)
+                    $a->image = Image::view_image($a->image);
+                return $ads;
+            }
+            //update
+            if(isset($input) && isset($input['action']) && $input['action']==0)
+            {
+                $ads = DB::table('venue_ads')->select('venue_ads.*')->where('venue_ads.id',$input['id'])->first();
+                if($ads)
+                {
+                    validate($input);
+                    if(preg_match('/media\/preview/',$input['image'])) 
+                    {
+                        if(!(empty($ads->image)))
+                            Image::remove_image($ads->image);
+                        $input['image'] = Image::stablish_image('ads',$input['image']);
+                    }
+                    DB::table('venue_ads')->where('id',$ads->id)->update(
+                        ['image'=>$input['image'],'url'=>$input['url'],'type'=>$input['type'],'order'=>$input['order'],
+                         'price'=>$input['price'],'clicks'=>$input['clicks'],'start_date'=>$input['start_date'],'end_date'=>$input['end_date'],'updated'=>$current]
+                    );
+                    return ['success'=>true,'ads'=>getAllAds($ads->venue_id)];
+                }
+                return ['success'=>false,'msg'=>'There was an error updating the Ads.<br>The server could not retrieve the data.'];
+            }
+            //remove
+            else if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                $ads = DB::table('venue_ads')->select('venue_ads.id','venue_ads.image')->where('venue_ads.id',$input['id'])->first();
+                if($ads)
+                {
+                    Image::remove_image($ads->image);
+                    DB::table('venue_ads')->where('venue_ads.id',$ads->id)->delete();
+                    return ['success'=>true];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the Ads.<br>The server could not retrieve the data.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && $input['action']==1)
+            {
+                validate($input);
+                if(preg_match('/media\/preview/',$input['image']))
+                    $input['image'] = Image::stablish_image('ads',$input['image']);
+                else
+                    return ['success'=>false,'msg'=>'There was an error.<br>You have to insert the image for the Ad.'];                
+                $id = DB::table('venue_ads')->insertGetId(
+                    ['venue_id'=>$input['venue_id'],'image'=>$input['image'],'url'=>$input['url'],'type'=>$input['type'],'order'=>$input['order'],
+                     'price'=>$input['price'],'clicks'=>$input['clicks'],'start_date'=>$input['start_date'],'end_date'=>$input['end_date'],'updated'=>$current]
+                );
+                if($id)
+                    return ['success'=>true,'ads'=>getAllAds($input['venue_id'])];
+                return ['success'=>false,'msg'=>'There was an error adding the Ad.<br>The server could not retrieve the data.'];
+            }
+            //get
+            else if(isset($input) && isset($input['ads_id']))
+            {
+                $ads = DB::table('venue_ads')->select('venue_ads.*')->where('venue_ads.id',$input['ads_id'])->first();
+                if($ads)
+                {   
+                    $ads->image = Image::view_image($ads->image);
+                    return ['success'=>true,'ads'=>$ads];
+                }  
+                return ['success'=>false,'msg'=>'There was an error getting the Ad.<br>The server could not retrieve the data.'];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error VenueAds Index: '.$ex->getMessage());
         }
     } 
     
