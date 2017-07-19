@@ -48,9 +48,10 @@ var TableDatatablesButtons = function () {
                         $.each($('#totals .details').clone(),function(k, v) {
                             t = t + '<th valign="top" style="text-align:right" width="16.5%">'+v.innerHTML+'</th>';
                         });
-                        t = t + '</tr></thead></table><hr>';                        
+                        t = t + '</tr></thead></table><hr>';     
                         $(win.document.body).find('h1').append(t);
                         $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
+                        $(win.document.body).append($('#tb_descriptions').html());
                     }
                 },
                 { 
@@ -71,6 +72,13 @@ var TableDatatablesButtons = function () {
                     text:      'CSV <i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'CSV',
                     className: 'btn sbold bg-green'
+                },
+                {
+                    text: 'Toggle Descriptions <i class="fa fa-list"></i>',
+                    className: 'btn sbold purple',
+                    action: function () {
+                        $('#tb_descriptions').toggle('display');
+                    }
                 }
             ],
             "order": [

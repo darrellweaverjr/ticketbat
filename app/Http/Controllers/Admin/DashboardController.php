@@ -254,7 +254,7 @@ class DashboardController extends Controller
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name, discounts.code,
-                                    discounts.distributed_at,
+                                    discounts.distributed_at, discounts.description,
                                     COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
                                               WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
                                               AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
@@ -280,8 +280,13 @@ class DashboardController extends Controller
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
+            //descriptions
+            $descriptions = [];
+            foreach ($data as $d)
+                if(!isset($descriptions[$d->code]))
+                    $descriptions[$d->code] = $d->description;
             //return view
-            return view('admin.dashboard.coupons',compact('data','total','search'));
+            return view('admin.dashboard.coupons',compact('data','total','descriptions','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Coupons: '.$ex->getMessage());
         }

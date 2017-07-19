@@ -97,6 +97,20 @@
         </div>
     </div>
     <!-- END DASHBOARD STATS 1-->
+    <!-- BEGIN DESCRIPTION TABLE FOR PRINT-->
+    <div id="tb_descriptions" class="portlet-body" style="display:none;" >
+        <table width="100% class="table table-striped table-bordered table-hover">
+            <tbody>
+                @foreach($descriptions as $k=>$d)
+                <tr>
+                    <td><b>{{$k}}*</b></td>                  
+                    <td> => {{$d}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table><hr>
+    </div>
+    <!-- END DESCRIPTION TABLE FOR PRINT-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
