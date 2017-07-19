@@ -661,28 +661,42 @@ class VenueController extends Controller{
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
+            $image_folder_s3 = 'images';
             function validate($input)
             {
                 if(empty($input['image']) || empty($input['price']) || empty($input['url']))
                     return ['success'=>false,'msg'=>'There was an error with the Ads.<br>You must fill out correctly the form.'];
+            }   
+            function calcPosition($input)
+            {
                 $ads = DB::table('venue_ads')->select('venue_ads.*')
                                              ->where('venue_ads.venue_id',$input['venue_id'])
                                              ->where('venue_ads.type',$input['type'])
                                              ->orderBy('venue_ads.order')->get();
-                if(empty($input['order']) || empty($ads) || $input['order']>count($ads) || $input['order']<1)
-                    $input['order'] = count($ads)+1;
-                else
+                $qty = count($ads);
+                if(empty($input['order']) || empty($ads) || $input['order']<1  || $input['order']>$qty)
                 {
-                    $index = 1;
-                    foreach($ads as $a)
-                    {
-                        if($index==$input['order'])
-                            $index++;
-                        DB::table('venue_ads')->where('id',$a->id)->update(['order'=>$index]);
-                        $index++;
-                    }
+                    if(!empty($input['id']))
+                        $input['order'] = (!$qty)? 1 : $qty;
+                    else
+                        $input['order'] = $qty+1;
                 }
-            }   
+                $position = 1;
+                foreach($ads as $a)
+                {
+                    if($position==$input['order'])
+                        $position++;
+                    if((!empty($input['id']) && $input['id'] != $a->id) || empty($input['id']))
+                    {
+                        if($a->order!=$position)
+                            DB::table('venue_ads')->where('id',$a->id)->update(['order'=>$position]); 
+                        $position++;
+                    }
+                }                
+                if($input['order']>$position)
+                    $input['order'] = $position;
+                return $input['order'];
+            }
             function getAllAds($venue)
             {
                 $ads = DB::table('venue_ads')
@@ -700,11 +714,12 @@ class VenueController extends Controller{
                 if($ads)
                 {
                     validate($input);
+                    $input['order'] = calcPosition($input);
                     if(preg_match('/media\/preview/',$input['image'])) 
                     {
                         if(!(empty($ads->image)))
                             Image::remove_image($ads->image);
-                        $input['image'] = Image::stablish_image('ads',$input['image']);
+                        $input['image'] = Image::stablish_image($image_folder_s3,$input['image']);
                     }
                     DB::table('venue_ads')->where('id',$ads->id)->update(
                         ['image'=>$input['image'],'url'=>$input['url'],'type'=>$input['type'],'order'=>$input['order'],
@@ -717,12 +732,17 @@ class VenueController extends Controller{
             //remove
             else if(isset($input) && isset($input['action']) && $input['action']==-1)
             {
-                $ads = DB::table('venue_ads')->select('venue_ads.id','venue_ads.image')->where('venue_ads.id',$input['id'])->first();
+                $ads = DB::table('venue_ads')->select('venue_ads.*')->where('venue_ads.id',$input['id'])->first();
                 if($ads)
                 {
+                    $input = (array)$ads;                    
                     Image::remove_image($ads->image);
                     DB::table('venue_ads')->where('venue_ads.id',$ads->id)->delete();
-                    return ['success'=>true];
+                    //change order for others
+                    $input['id']=null;
+                    $input['order']=1000;
+                    calcPosition($input);
+                    return ['success'=>true,'ads'=>getAllAds($input['venue_id'])];
                 }
                 return ['success'=>false,'msg'=>'There was an error deleting the Ads.<br>The server could not retrieve the data.'];
             }
@@ -730,8 +750,9 @@ class VenueController extends Controller{
             else if(isset($input) && isset($input['action']) && $input['action']==1)
             {
                 validate($input);
+                $input['order'] = calcPosition($input);
                 if(preg_match('/media\/preview/',$input['image']))
-                    $input['image'] = Image::stablish_image('ads',$input['image']);
+                    $input['image'] = Image::stablish_image($image_folder_s3,$input['image']);
                 else
                     return ['success'=>false,'msg'=>'There was an error.<br>You have to insert the image for the Ad.'];                
                 $id = DB::table('venue_ads')->insertGetId(

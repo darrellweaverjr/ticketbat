@@ -52,20 +52,20 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                 var fixHeight = 120;
 		break; 
         case 'ads.regular': 
-                var fixWidth = 120;
-                var fixHeight = 120;
+                var fixWidth = 300;
+                var fixHeight = 250;
 		break; 
         case 'ads.horizontal': 
-                var fixWidth = 120;
-                var fixHeight = 120;
+                var fixWidth = 728;
+                var fixHeight = 90;
 		break; 
         case 'ads.vertical': 
-                var fixWidth = 120;
-                var fixHeight = 120;
+                var fixWidth = 160;
+                var fixHeight = 600;
 		break; 
 	default:
-                var fixWidth = 120;
-                var fixHeight = 120;
+                var fixWidth = 600;
+                var fixHeight = 600;
     }
     //reset form on event function
     function reset_form()
