@@ -49,9 +49,8 @@ var TableDatatablesButtons = function () {
                             t = t + '<th valign="top" style="text-align:right" width="16.5%">'+v.innerHTML+'</th>';
                         });
                         t = t + '</tr></thead></table><hr>';     
-                        $(win.document.body).find('h1').append(t);
+                        $(win.document.body).find('h1').append(t + $('#tb_descriptions').html());
                         $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
-                        $(win.document.body).append($('#tb_descriptions').html());
                     }
                 },
                 { 
