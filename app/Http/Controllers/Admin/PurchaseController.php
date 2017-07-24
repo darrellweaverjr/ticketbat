@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Http\Models\Purchase;
 use App\Http\Models\Venue;
+use App\Http\Models\Discount;
 use App\Http\Models\User;
 use App\Http\Models\Show;
 use App\Http\Models\Ticket;
@@ -42,9 +43,10 @@ class PurchaseController extends Controller{
                                 ->join('shows', 'shows.id', '=', 'show_times.show_id')
                                 ->join('tickets','purchases.ticket_id','=','tickets.id')
                                 ->join('packages','packages.id','=','tickets.package_id')
+                                ->join('discounts','discounts.id','=','purchases.discount_id')
                                 ->select('tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_pf','tickets.fixed_commission',
-                                          'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price',
-                                          'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid',
+                                          'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price', 'tickets.is_active',
+                                          'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid','discounts.code',
                                           'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
                                 ->where('purchases.id','=',$input['id'])->first();
                 $showtimes = DB::table('show_times')->select('id','show_time')
@@ -55,7 +57,13 @@ class PurchaseController extends Controller{
                                 ->select('tickets.id','tickets.ticket_type','packages.title')
                                 ->where('tickets.show_id','=',$current->show_id)->where('tickets.is_active','=',1)
                                 ->get();
-                return ['success'=>true,'current'=>$current,'tickets'=>$tickets,'showtimes'=>$showtimes];
+                $discounts = DB::table('discounts')
+                                ->join('discount_tickets', 'discounts.id', '=', 'discount_tickets.discount_id')
+                                ->join('purchases','purchases.ticket_id','=','discount_tickets.ticket_id')
+                                ->select('discounts.id','discounts.code','discounts.description')
+                                ->where('purchases.id','=',$current->purchase_id)
+                                ->orderBy('discounts.code')->get();
+                return ['success'=>true,'current'=>$current,'tickets'=>$tickets,'showtimes'=>$showtimes,'discounts'=>$discounts];
             }
             else if(isset($input) && isset($input['purchase_id']))
             {
@@ -64,9 +72,11 @@ class PurchaseController extends Controller{
                 {
                     $st_id = (!empty($input['to_show_time_id']))? $input['to_show_time_id'] : $purchase->show_time_id;
                     $t_id = (!empty($input['to_ticket_id']))? $input['to_ticket_id'] : $purchase->ticket_id;
+                    $d_id = (!empty($input['to_discount_id']))? $input['to_discount_id'] : $purchase->discount_id;
                     $qty = (!empty($input['to_quantity']) && $input['to_quantity']>0)? ceil($input['to_quantity']) : $purchase->quantity;                    
                     $showtime = ShowTime::find($st_id);
                     $ticket = Ticket::find($t_id);
+                    $discount = Discount::find($d_id);
                     if($showtime && $ticket && $qty)
                     {
                         $ticket_o = null;                        
@@ -93,12 +103,15 @@ class PurchaseController extends Controller{
                         }
                         //calculate target result
                         $target = ['t_ticket_type'=>$ticket->ticket_type,'t_title'=>$ticket->package->title,'t_retail_price'=>$ticket->retail_price,
+                                   't_is_active'=>$ticket->is_active,'t_code'=>$discount->code,
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
                                    't_p_retail_price'=>$ticket->retail_price*$qty,
                                    't_p_processing_fee'=>(!empty($ticket->processing_fee))? $ticket->processing_fee*$qty : $ticket->t_percent_pf/100*$ticket->retail_price*$qty,
-                                   't_savings'=>$purchase->savings/$purchase->quantity*$qty,
                                    't_commission_percent'=>(!empty($ticket->fixed_commission))? $ticket->fixed_commission*$qty : $ticket->percent_commission/100*$ticket->retail_price*$qty];
+                        //calculate savings result
+                        $target['t_savings'] = $discount->calculate_savings($qty,$target['t_p_retail_price'] + $target['t_p_processing_fee']);
+                        //calculate total result
                         $target['t_price_paid'] = $target['t_p_retail_price'] + $target['t_p_processing_fee'] - $target['t_savings'];
                         return ['success'=>true,'target'=>$target];
                     }
@@ -309,6 +322,13 @@ class PurchaseController extends Controller{
                         $to = Ticket::find($input['to_ticket_id']);
                         $note.= ', ticket from'.$from->ticket_type.' to '.$to->ticket_type;
                         $purchase->ticket_id = $input['to_ticket_id'];
+                    }
+                    if(!empty($input['to_discount_id']) && $purchase->discount_id != $input['to_discount_id'])
+                    {
+                        $from = Discount::find($purchase->discount_id);
+                        $to = Discount::find($input['to_discount_id']);
+                        $note.= ', coupon from'.$from->code.' to '.$to->code;
+                        $purchase->discount_id = $input['discount_id'];
                     }
                     if(!empty($input['to_quantity']) && $purchase->quantity != $input['to_quantity'])
                     {

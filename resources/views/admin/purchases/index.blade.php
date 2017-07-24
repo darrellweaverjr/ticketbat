@@ -435,7 +435,11 @@
                                             <label class="control-label col-md-4">Comm(%):</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" name="percent_commission" type="number" readonly="true"/>
-                                            </div>                                            
+                                            </div>       
+                                            <label class="control-label col-md-4">Active:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="is_active" type="text" readonly="true"/>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -470,6 +474,10 @@
                                             <label class="control-label col-md-4">ShowTime:</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" style="font-size:10px" name="show_time" type="text" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Coupon:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="code" type="text" readonly="true"/>
                                             </div>
                                         </div>
                                     </div>
@@ -511,6 +519,10 @@
                                             <div class="col-md-8">
                                                 <input class="form-control" name="t_percent_commission" type="number" readonly="true"/>
                                             </div>
+                                            <label class="control-label col-md-4">Active:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_is_active" type="text" readonly="true"/>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -546,22 +558,31 @@
                                             <div class="col-md-8">
                                                 <input class="form-control" style="font-size:10px" name="t_show_time" type="text" readonly="true"/>
                                             </div>
+                                            <label class="control-label col-md-4">Coupon:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_code" type="text" readonly="true"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div><hr>
                             <div class="row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label class="control-label">Move to other date/time:</label>
                                     <select class="form-control" name="to_show_time_id">
                                     </select>
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label class="control-label">Change ticket type:</label>
                                     <select class="form-control" name="to_ticket_id">
                                     </select>
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
+                                    <label class="control-label">Apply Coupon:</label>
+                                    <select class="form-control" name="to_discount_id">
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
                                     <label class="control-label">Change quantity of tickets:</label>
                                     <input class="form-control" name="to_quantity" type="number" step="1" min="1" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
                                 </div>

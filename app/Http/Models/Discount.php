@@ -53,4 +53,42 @@ class Discount extends Model
     {
         return $this->belongsToMany('App\Http\Models\User','user_discounts','discount_id','user_id');
     }
+    /**
+     * The user_discounts that belong to the discount.
+     */
+    public function calculate_savings($qty,$cost,$start_num=null,$end_num=null)
+    {
+        $savings = 0;
+        $start_num = ($start_num)? $start_num : $this->start_num;
+        $end_num = ($end_num)? $end_num : $this->end_num;
+        switch($this->discount_type)
+        {
+            case 'Percent':
+                    $savings = Util::round($cost * $start_num / 100);
+                    break;
+            case 'Dollar':
+                    $savings = ($this->discount_scope=='Total')? $start_num : $start_num * $qty;
+                    break;
+            case 'N for N':
+                    $maxFreeSets = floor($qty / $start_num);
+                    $free = $total = 0;
+                    while ($maxFreeSets > 0) 
+                    {
+                        $a = 0;
+                        while ($a < $start_num && $total < $qty) {
+                            $total++; $a++;
+                        }
+                        $b = 0;
+                        while ($b < $end_num && $total < $qty) {
+                            $free++; $total++; $b++;
+                        }
+                        $maxFreeSets--;
+                    }
+                    $savings = Util::round($cost / $qty * $free);
+                    break;
+            default:  
+                    break;
+        }
+        return $savings;
+    }
 }

@@ -193,6 +193,7 @@ var TableDatatablesManaged = function () {
         //function show move modal window
         $('#btn_model_edit').on('click', function(ev) {
             $('#form_model_edit').trigger('reset');
+            $('#form_model_edit input[name="t_price_paid"]').css('border-color','');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             jQuery.ajax({
@@ -219,6 +220,11 @@ var TableDatatablesManaged = function () {
                         $.each(data.tickets,function(k, v) {
                             $('#form_model_edit select[name="to_ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' - '+v.title+'</option>');
                         });
+                        //fill out discounts
+                        $('#form_model_edit select[name="to_discount_id"]').html('<option value=""></option>');
+                        $.each(data.discounts,function(k, v) {
+                            $('#form_model_edit select[name="to_discount_id"]').append('<option value="'+v.id+'">'+v.code+' - '+v.description+'</option>');
+                        });
                         $('#modal_model_edit').modal('show');
                     }
                     else swal({
@@ -239,16 +245,17 @@ var TableDatatablesManaged = function () {
             });
         });
         //on change edit field
-        $('#form_model_edit select[name="to_show_time_id"], #form_model_edit select[name="to_ticket_id"], #form_model_edit input[name="to_quantity"]').on('change', function() {
+        $('#form_model_edit select[name="to_show_time_id"], #form_model_edit select[name="to_ticket_id"], #form_model_edit select[name="to_discount_id"], #form_model_edit input[name="to_quantity"]').on('change', function() {
             var purchase_id = $('#form_model_edit input[name="purchase_id"]:hidden').val();
             var to_show_time_id = $('#form_model_edit select[name="to_show_time_id"]').val();
             var to_ticket_id = $('#form_model_edit select[name="to_ticket_id"]').val();
+            var to_discount_id = $('#form_model_edit select[name="to_discount_id"]').val();
             var to_quantity = $('#form_model_edit input[name="to_quantity"]').val();
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/purchases', 
-                data: {purchase_id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_quantity:to_quantity},
+                data: {purchase_id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_discount_id:to_discount_id,to_quantity:to_quantity},
                 success: function(data) {
                     if(data.success) {
                         //fill out

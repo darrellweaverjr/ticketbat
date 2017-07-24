@@ -128,34 +128,8 @@ class Shoppingcart extends Model
                             {
                                 if($dt['ticket_id'] == $i->ticket_id)
                                 {
-                                    switch($coupon['discount_type'])
-                                    {
-                                        case 'Percent':
-                                                $s = Util::round($i->total_cost * $dt['start_num'] / 100);
-                                                break;
-                                        case 'Dollar':
-                                                $s = ($coupon['discount_scope']=='Total')? $dt['start_num'] : $dt['start_num'] * $i->number_of_items;
-                                                break;
-                                        case 'N for N':
-                                                $maxFreeSets = floor($i->number_of_items / $dt['start_num']);
-                                                $free = $total = 0;
-                                                while ($maxFreeSets > 0) 
-                                                {
-                                                    $a = 0;
-                                                    while ($a < $dt['start_num'] && $total < $i->number_of_items) {
-                                                        $total++; $a++;
-                                                    }
-                                                    $b = 0;
-                                                    while ($b < $dt['end_num'] && $total < $i->number_of_items) {
-                                                        $free++; $total++; $b++;
-                                                    }
-                                                    $maxFreeSets--;
-                                                }
-                                                $s = Util::round($i->total_cost / $i->number_of_items * $free);
-                                                break;
-                                        default:  
-                                                break;
-                                    }
+                                    $couponObj = Discount::find($coupon['id']);
+                                    $s = $couponObj->calculate_savings($i->number_of_items,$i->total_cost,$dt['start_num'],$dt['end_num']);
                                     //write savings or suming
                                     if(($coupon['discount_scope']=='Total' && $coupon['discount_type']=='Dollar'))
                                     {
