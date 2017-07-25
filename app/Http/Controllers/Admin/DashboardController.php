@@ -121,6 +121,16 @@ class DashboardController extends Controller
         {
             $data['search']['user'] = '';
         }
+        //search printing
+        if(isset($input) && isset($input['mirror_period']) && !empty($input['mirror_period']) && is_numeric($input['mirror_period']))
+            $data['search']['mirror_period'] = $input['mirror_period'];
+        else
+            $data['search']['mirror_period'] = 0;
+        
+        if(isset($input) && isset($input['replace_chart']) && !empty($input['replace_chart']))
+            $data['search']['replace_chart'] = 1;
+        else
+            $data['search']['replace_chart'] = 0;
         //PERMISSIONS
         //if user has permission to view        
         if(in_array('View',Auth::user()->user_type->getACLs()['REPORTS']['permission_types']))
@@ -188,7 +198,7 @@ class DashboardController extends Controller
                                           SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')
-                        ->havingRaw('method IN ("'.implode('","',$data['search']['payment_type']).'")')
+                        ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
                         ->get()->toArray();
             //calculate totals
             function calc_totals($data)
@@ -203,28 +213,97 @@ class DashboardController extends Controller
                             'commissions'=>array_sum(array_column($data,'commissions')));
             }
             $total = calc_totals($data);
-            //calculate summary
-            $subtotals = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
-            foreach ($data as $d)
+            //clear date sold for comparisons
+            function clear_date_sold($where)
             {
-                $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'revenue'=>$d->revenue,'discounts'=>$d->discounts,
-                                            'to_show'=>$d->to_show,'commissions'=>$d->commissions,'fees'=>$d->fees,'profit'=>$d->profit];
-                if(!isset($summary[$d->method]))
-                    $summary[$d->method] = $current;
-                else
-                    $summary[$d->method] = calc_totals([$summary[$d->method],$current]);
-                if($d->method != 'Consignment')
-                    $subtotals = calc_totals([$subtotals,$current]);
+                return array_filter($where, function($value){
+                    if (strstr($value[0], 'purchases.created') !== false)
+                       return false;
+                    return true;
+                });
             }
-            $summary['Subtotals'] = $subtotals;
-            if(isset($summary['Consignment']))
+            //calculate summary table according to period
+            function cal_summary($period,$where,$search)
             {
-                $consignments = $summary['Consignment'];
-                unset($summary['Consignment']);
-                $summary['Consignment'] = $consignments;
+                $title = '';
+                if(!empty($period))
+                {
+                    if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
+                    {
+                        //calculate date range according to period
+                        $start_date = strtotime($search['soldtime_start_date']);
+                        $end_date = strtotime($search['soldtime_end_date']);
+                        $diff_days = (floor(($end_date-$start_date) / (60*60*24)) + 1) * $period;
+                        $start_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$start_date));
+                        $end_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$end_date));
+                        //remove previous date comparison
+                        $where = clear_date_sold($where);
+                        //set up new date period
+                        $where[] = [DB::raw('DATE(purchases.created)'),'>=',$start_date];
+                        $where[] = [DB::raw('DATE(purchases.created)'),'<=',$end_date];
+                        $title = 'Period <i>'.$start_date.' to '.$end_date.'</i>';
+                    }
+                    else return ['title'=>$title,'table'=>[]];
+                } 
+                else $title = 'Current <i>'.$search['soldtime_start_date'].' to '.$search['soldtime_end_date'].'</i>';
+                
+                $summary_table = [];
+                $subtotals = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
+                $consignment = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
+                $summary_info = DB::table('purchases')
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                            ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                            ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
+                            ->select(DB::raw('(CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
+                                              COUNT(purchases.id) AS purchases, 
+                                              SUM(purchases.quantity) AS tickets, 
+                                              SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit, 
+                                              SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue, 
+                                              SUM(ROUND(purchases.savings,2)) AS discounts, 
+                                              SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                              SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show, 
+                                              SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
+                            ->where($where)
+                            ->orderBy('method')->groupBy('method')
+                            ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
+                            ->get()->toArray();            
+                foreach ($summary_info as $d)
+                {
+                    $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'revenue'=>$d->revenue,'discounts'=>$d->discounts,
+                                                'to_show'=>$d->to_show,'commissions'=>$d->commissions,'fees'=>$d->fees,'profit'=>$d->profit];
+                    if($d->method == 'Consignment')
+                        $consignment = calc_totals([$consignment,$current]);
+                    else
+                    {
+                        $summary_table[$d->method] = $current;
+                        $subtotals = calc_totals([$subtotals,$current]);
+                    }
+                }
+                $summary_table['Subtotals'] = $subtotals;
+                $summary_table['Consignment'] = $consignment;
+                $summary_table['Totals'] = calc_totals([$consignment,$subtotals]);
+                return ['title'=>$title,'table'=>$summary_table];
             }
+            for ($i=0;$i<=$search['mirror_period'];$i++)
+                $summary[] = cal_summary($i,$where,$search);
+            //remove conditios of date for the graph, to show 1 year ago
+            $where = clear_date_sold($where);
+            $start = date('Y-m-d', strtotime('-1 year'));
+            $where[] = ['purchases.created','>=',$start];
+            //info for the graph
+            $graph = DB::table('purchases')
+                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased, 
+                                    SUM(purchases.quantity) AS qty, SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
+                    ->where($where)
+                    ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
+                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
             //return view
-            return view('admin.dashboard.ticket_sales',compact('data','total','summary','search'));
+            return view('admin.dashboard.ticket_sales',compact('data','total','graph','summary','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Ticket Sales: '.$ex->getMessage());
         }

@@ -40,15 +40,23 @@ var TableDatatablesButtons = function () {
                     className: 'btn sbold yellow',
                     orientation: 'landscape',
                     customize: function ( win ) {
+                        var graph = ($('#form_model_search input[name="replace_chart"]:checked').length)? 'Yes' : 'No';
                         var t = '<hr><div style="font-size:14px;">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
                                 'Show: '+$('#form_model_search select[name="show"] option:selected').text()+'<br>'+
                                 'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
                                 'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'<br>'+
                                 'Payment Types: '+$('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).attr('data-value'); } ).get().join(',')+'<br>'+
-                                'User: '+$('#form_model_search select[name="user"] option:selected').text()+'</div>';
-                        t = t + '<hr>'+$('#tb_summary').html();                        
+                                'User: '+$('#form_model_search select[name="user"] option:selected').text()+'<br>'+
+                                'Qty of mirror period: '+$('#form_model_search input[name="mirror_period"]').val()+'<br>'+
+                                'Show Graph instead of Table: '+graph+'</div>';
+                        t = t + '<hr>'+$('#tb_summary').html(); 
+                        if(graph=='Yes')
+                        {
+                            t = t + '<hr>'+$('#ticket_sales_chart_sales').addClass('compact').html(); 
+                            $(win.document.body).find('table').addClass('compact').css('display','none');
+                        } 
                         $(win.document.body).find('h1').append(t);
-                        $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
+                        $(win.document.body).find('table').addClass('compact').css('font-size','9pt');                            
                     }
                 },
                 { 
@@ -142,8 +150,35 @@ var TableDatatablesButtons = function () {
                 });
             }
         });
+        
+        // charts totals
+        var graph = $('#ticket_sales_chart_sales').data('info');
+        var purchased=[],qty=[],amount=[];
+        $.each(graph,function(k, v) {
+            purchased.push(v.purchased);
+            qty.push(parseFloat(v.qty));
+            amount.push(parseFloat(v.amount));
+        });
+        // chart sales
+	$('#ticket_sales_chart_sales').highcharts({
+            chart : { style: { fontFamily: 'Open Sans' } },
+            title: { text: '', x: -20 },
+            xAxis: { categories: purchased },
+            yAxis: { title: { text: 'Quantity' },
+                     plotLines: [{ value: 0, width: 1, color: '#808080' }]
+            },
+            tooltip: { valuePrefix: ' ' },
+            series: [{
+                    name: 'Sold Tickets',
+                    data: qty
+            }, {
+                    name: 'Gross Profit',
+                    data: amount
+            }]
+	});
+        
+        $('input[name="mirror_period"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:10 });
     }
-
     return {
         //main function to initiate the module
         init: function () {

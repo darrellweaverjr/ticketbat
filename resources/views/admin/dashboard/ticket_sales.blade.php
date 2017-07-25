@@ -100,8 +100,19 @@
         </div>
     </div>
     <!-- END DASHBOARD STATS 1-->
+    <div class="row">
+       <div class="col-md-12">
+           <div class="portlet light portlet-fit bordered">
+               <div class="portlet-body">
+                   <div id="ticket_sales_chart_sales" data-info="{{$graph}}" style="height:250px;"></div>
+               </div>
+           </div>
+       </div>
+   </div>
     <!-- BEGIN TOTAL TABLE FOR PRINT-->
     <div id="tb_summary" class="portlet-body" style="display:none;" >
+        @foreach($summary as $summ)
+        <h5>@php echo $summ['title'] @endphp</h5>
         <table width="100% class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
@@ -118,9 +129,9 @@
                 </tr>
             </thead>
             <tbody>
-               @foreach($summary as $k=>$d)
+               @foreach($summ['table'] as $k=>$d)
                @php if($k=='None') $k='Comp.' @endphp
-                <tr @if($k=='Subtotals') style="font-weight:bold" @endif>
+                <tr @if($k=='Subtotals' || $k=='Totals') style="font-weight:bold" @endif>
                     <td>{{$k}}</td>
                     <td style="text-align:center">{{number_format($d['purchases'])}}</td>
                     <td style="text-align:center">{{number_format($d['tickets'])}}</td>
@@ -132,19 +143,9 @@
                     <td style="text-align:right">$ {{number_format($d['profit'],2)}}</td>
                 </tr>
                 @endforeach
-                <tr style="font-weight:bold">
-                    <td style="font-weight:bold;">Totals</td>
-                    <td style="text-align:center">{{number_format($total['purchases'])}}</td>
-                    <td style="text-align:center">{{number_format($total['tickets'])}}</td>
-                    <td style="text-align:right">$ {{number_format($total['revenue'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($total['discounts'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($total['to_show'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($total['commissions'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($total['fees'],2)}}</td>                    
-                    <td style="text-align:right">$ {{number_format($total['profit'],2)}}</td>
-                </tr>
             </tbody>
-        </table><hr>
+        </table>
+        @endforeach<hr>
     </div>
     <!-- END TOTAL TABLE FOR PRINT-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
@@ -307,6 +308,28 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <hr><label class="control-label">
+                                    <span class="required">Printing</span>
+                                </label><br>
+                                <div class="form-group">
+                                    <label class="control-label col-md-8"> Mirror prior sold date period (qty mirrors):</label>
+                                    <div class="col-md-4 show-error"> 
+                                        <div class="input-group">
+                                            <input type="text" name="mirror_period" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " @if(!empty($search['mirror_period'])) value="{{$search['mirror_period']}}" @else value="0" @endif />
+                                        </div>
+                                    </div>
+                                    <label class="control-label col-md-8"> Replace sales table by chart:</label>
+                                    <div class="col-md-4 show-error"> 
+                                        <div class="input-group mt-checkbox-single">
+                                            <label class="mt-checkbox">
+                                                <input type="checkbox" @if(!empty($search['replace_chart'])) checked="true" @endif name="replace_chart" value="1" />
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
@@ -332,5 +355,7 @@
 
 @section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/ticket_sales.js" type="text/javascript"></script>
 @endsection

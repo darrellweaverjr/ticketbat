@@ -135,8 +135,8 @@ var TableDatatablesButtons = function () {
             }
         });
         // charts totals
-        var graph_url = jQuery.parseJSON($('#referral_url_json').html());
-        var graph_show = jQuery.parseJSON($('#referral_show_json').html());
+        var graph_url = $('#referral_chart_url').data('info');
+        var graph_show = $('#referral_chart_show').data('info');
         var referral_url=[],referral_show=[];
         $.each(graph_url,function(k, v) {
             referral_url.push({"url":v.referral_url,"value":v.amount});

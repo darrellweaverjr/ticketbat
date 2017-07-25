@@ -104,19 +104,17 @@
     </div>
     <!-- END DASHBOARD STATS 1-->
     <div class="row">
-       <div style="display:none" id="referral_url_json">{{$graph['url']}}</div>
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
                <div class="portlet-body responsive">
-                   <div id="referral_chart_url" class="chart" style="height:250px;"></div>
+                   <div id="referral_chart_url"  data-info="{{$graph['url']}}" class="chart" style="height:250px;"></div>
                </div>
            </div>
-       </div><div style="display:none" id="referral_show_json">{{$graph['show']}}</div>
-
+       </div>
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
                <div class="portlet-body responsive">
-                   <div id="referral_chart_show" class="chart" style="height:250px;"></div>
+                   <div id="referral_chart_show"  data-info="{{$graph['show']}}" class="chart" style="height:250px;"></div>
                </div>
            </div>
        </div>

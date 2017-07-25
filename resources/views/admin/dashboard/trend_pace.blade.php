@@ -104,11 +104,10 @@
     </div>
     <!-- END DASHBOARD STATS 1-->
     <div class="row">
-       <div style="display:none" id="trend_pace_json">{{$graph}}</div>
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
                <div class="portlet-body">
-                   <div id="trend_pace_chart_qty" style="height:250px;"></div>
+                   <div id="trend_pace_chart_qty"  data-info="{{$graph}}" style="height:250px;"></div>
                </div>
            </div>
        </div>

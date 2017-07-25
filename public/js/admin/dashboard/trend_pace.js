@@ -135,7 +135,7 @@ var TableDatatablesButtons = function () {
             }
         });
         // charts totals
-        var graph = jQuery.parseJSON($('#trend_pace_json').html());
+        var graph = $('#trend_pace_chart_qty').data('info');
         var purchased=[],qty_tickets=[],qty_purchases=[],amount=[];
         $.each(graph,function(k, v) {
             purchased.push(v.purchased);
