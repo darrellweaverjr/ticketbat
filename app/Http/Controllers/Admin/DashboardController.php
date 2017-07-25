@@ -233,9 +233,26 @@ class DashboardController extends Controller
                         //calculate date range according to period
                         $start_date = strtotime($search['soldtime_start_date']);
                         $end_date = strtotime($search['soldtime_end_date']);
-                        $diff_days = (floor(($end_date-$start_date) / (60*60*24)) + 1) * $period;
-                        $start_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$start_date));
-                        $end_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$end_date));
+                        $diff_days = floor(($end_date-$start_date) / (60*60*24));
+                        //if full month
+                        if(  date('Y-m-d',strtotime('first day of this month',$start_date)) == $search['soldtime_start_date']
+                          && date('Y-m-d',strtotime('last day of this month',$start_date)) == $search['soldtime_end_date'] )
+                        {
+                            $start_date = date('Y-m-d',strtotime('first day of this month '.$period.' months ago',$start_date));
+                            $end_date = date('Y-m-d',strtotime('last day of this month '.$period.' months ago',$end_date));
+                        }
+                        else if(  date('Y-m-d',strtotime('first day of this year',$start_date)) == $search['soldtime_start_date']
+                          && date('Y-m-d',strtotime('last day of this year',$start_date)) == $search['soldtime_end_date'] )
+                        {
+                            $start_date = date('Y-m-d',strtotime('first day of this year '.$period.' years ago',$start_date));
+                            $end_date = date('Y-m-d',strtotime('last day of this year '.$period.' years ago',$end_date));
+                        }
+                        else
+                        {
+                            $diff_days = ($diff_days + 1) * $period;
+                            $start_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$start_date));
+                            $end_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$end_date));
+                        }
                         //remove previous date comparison
                         $where = clear_date_sold($where);
                         //set up new date period
