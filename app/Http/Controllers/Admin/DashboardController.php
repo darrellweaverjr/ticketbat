@@ -242,7 +242,7 @@ class DashboardController extends Controller
                             $end_date = date('Y-m-d',strtotime('last day of this month '.$period.' months ago',$end_date));
                         }
                         else if(  date('Y-m-d',strtotime('first day of this year',$start_date)) == $search['soldtime_start_date']
-                          && date('Y-m-d',strtotime('last day of this year',$start_date)) == $search['soldtime_end_date'] )
+                          && date('Y-m-d',strtotime('last day of this year',$end_date)) == $search['soldtime_end_date'] )
                         {
                             $start_date = date('Y-m-d',strtotime('first day of this year '.$period.' years ago',$start_date));
                             $end_date = date('Y-m-d',strtotime('last day of this year '.$period.' years ago',$end_date));
