@@ -1,0 +1,2 @@
+ALTER TABLE `purchases` 
+CHANGE COLUMN `note` `note` TINYTEXT NULL DEFAULT NULL ;
