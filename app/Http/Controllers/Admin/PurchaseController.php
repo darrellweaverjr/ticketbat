@@ -77,7 +77,7 @@ class PurchaseController extends Controller{
                     $showtime = ShowTime::find($st_id);
                     $ticket = Ticket::find($t_id);
                     $discount = Discount::find($d_id);
-                    if($showtime && $ticket && $qty)
+                    if($showtime && $ticket && $qty && $discount)
                     {
                         $ticket_o = null;                        
                         $contracts = DB::table('show_contracts')->select('data')
@@ -107,10 +107,14 @@ class PurchaseController extends Controller{
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
                                    't_p_retail_price'=>$ticket->retail_price*$qty,
-                                   't_p_processing_fee'=>(!empty($ticket->processing_fee))? $ticket->processing_fee*$qty : $ticket->t_percent_pf/100*$ticket->retail_price*$qty,
-                                   't_commission_percent'=>(!empty($ticket->fixed_commission))? $ticket->fixed_commission*$qty : $ticket->percent_commission/100*$ticket->retail_price*$qty];
+                                   't_p_processing_fee'=>(!empty($ticket->processing_fee))? $ticket->processing_fee*$qty : $ticket->t_percent_pf/100*$ticket->retail_price*$qty];
                         //calculate savings result
                         $target['t_savings'] = $discount->calculate_savings($qty,$target['t_p_retail_price'] + $target['t_p_processing_fee']);
+                        //calculate commission result
+                        $c = DB::table('discount_tickets')->select('fixed_commission')
+                                    ->where('discount_id','=',$discount->id)->where('ticket_id','=',$ticket->id)->first();
+                        $fixed_commission = (!empty($c->fixed_commission))? $c->fixed_commission : $ticket->fixed_commission;
+                        $target['t_commission_percent'] = (!empty($fixed_commission))? $fixed_commission*$qty : $ticket->percent_commission/100*$ticket->retail_price*$qty;
                         //calculate total result
                         $target['t_price_paid'] = $target['t_p_retail_price'] + $target['t_p_processing_fee'] - $target['t_savings'];
                         return ['success'=>true,'target'=>$target];
