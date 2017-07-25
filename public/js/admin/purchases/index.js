@@ -193,7 +193,7 @@ var TableDatatablesManaged = function () {
         //function show move modal window
         $('#btn_model_edit').on('click', function(ev) {
             $('#form_model_edit').trigger('reset');
-            $('#form_model_edit input[name="t_price_paid"]').css('border-color','');
+            $('#form_model_edit input').css('border-color','').css('background','').css('font-weight','normal');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             jQuery.ajax({

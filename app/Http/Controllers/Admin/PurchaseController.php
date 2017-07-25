@@ -58,10 +58,11 @@ class PurchaseController extends Controller{
                                 ->where('tickets.show_id','=',$current->show_id)->where('tickets.is_active','=',1)
                                 ->get();
                 $discounts = DB::table('discounts')
-                                ->join('discount_tickets', 'discounts.id', '=', 'discount_tickets.discount_id')
-                                ->join('purchases','purchases.ticket_id','=','discount_tickets.ticket_id')
+                                ->leftJoin('discount_tickets', 'discounts.id', '=', 'discount_tickets.discount_id')
+                                ->leftJoin('purchases','purchases.ticket_id','=','discount_tickets.ticket_id')
                                 ->select('discounts.id','discounts.code','discounts.description')
                                 ->where('purchases.id','=',$current->purchase_id)
+                                ->orWhere('discounts.id','=',1)
                                 ->orderBy('discounts.code')->get();
                 return ['success'=>true,'current'=>$current,'tickets'=>$tickets,'showtimes'=>$showtimes,'discounts'=>$discounts];
             }
@@ -312,12 +313,12 @@ class PurchaseController extends Controller{
                 $purchase = Purchase::find($input['purchase_id']);
                 if($purchase)
                 {
-                    $note = '&nbsp;<b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
+                    $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
                     if(!empty($input['to_show_time_id']) && $purchase->show_time_id != $input['to_show_time_id'])
                     {
                         $from = ShowTime::find($purchase->show_time_id);
                         $to = ShowTime::find($input['to_show_time_id']);
-                        $note.= ', date from'.date('m/d/Y g:i a',strtotime($from->show_time)).' to '.date('m/d/Y g:i a',strtotime($to->show_time));
+                        $note.= ', date from '.date('m/d/Y g:i a',strtotime($from->show_time)).' to '.date('m/d/Y g:i a',strtotime($to->show_time));
                         $purchase->show_time_id = $input['to_show_time_id'];
                     }
                     if(!empty($input['to_ticket_id']) && $purchase->ticket_id != $input['to_ticket_id'])
@@ -331,12 +332,12 @@ class PurchaseController extends Controller{
                     {
                         $from = Discount::find($purchase->discount_id);
                         $to = Discount::find($input['to_discount_id']);
-                        $note.= ', coupon from'.$from->code.' to '.$to->code;
+                        $note.= ', coupon from '.$from->code.' to '.$to->code;
                         $purchase->discount_id = $input['to_discount_id'];
                     }
                     if(!empty($input['to_quantity']) && $purchase->quantity != $input['to_quantity'])
                     {
-                        $note.= ', qty from'.$purchase->quantity.' to '.$input['to_quantity'];
+                        $note.= ', qty from '.$purchase->quantity.' to '.$input['to_quantity'];
                         $purchase->quantity = $input['to_quantity'];
                     }
                     $purchase->note = ($purchase->note)? $purchase->note.$note : $note;                     
@@ -346,7 +347,7 @@ class PurchaseController extends Controller{
                     $purchase->commission_percent = $input['t_commission_percent'];
                     if($purchase->price_paid != $input['t_price_paid'])
                     {
-                        $note.= ', price paid from'.$purchase->price_paid.' to '.$input['t_price_paid'];
+                        $note.= ', price paid from '.$purchase->price_paid.' to '.$input['t_price_paid'];
                         $purchase->price_paid = $input['t_price_paid'];
                         if($purchase->transaction_id)
                         {
