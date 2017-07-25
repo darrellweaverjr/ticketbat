@@ -332,7 +332,7 @@ class PurchaseController extends Controller{
                         $from = Discount::find($purchase->discount_id);
                         $to = Discount::find($input['to_discount_id']);
                         $note.= ', coupon from'.$from->code.' to '.$to->code;
-                        $purchase->discount_id = $input['discount_id'];
+                        $purchase->discount_id = $input['to_discount_id'];
                     }
                     if(!empty($input['to_quantity']) && $purchase->quantity != $input['to_quantity'])
                     {
