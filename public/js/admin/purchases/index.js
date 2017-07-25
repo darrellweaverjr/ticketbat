@@ -258,21 +258,38 @@ var TableDatatablesManaged = function () {
                 data: {purchase_id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_discount_id:to_discount_id,to_quantity:to_quantity},
                 success: function(data) {
                     if(data.success) {
+                        //remove style
+                        $('#form_model_edit input').css('border-color','').css('background','').css('font-weight','normal');
                         //fill out
                         for(var key in data.target) {
                             if(key == 't_show_time')
                                 data.target[key] = moment(data.target[key]).format('M/D/YY h:mma');
                             $('#form_model_edit input[name="'+key+'"]').val(data.target[key]);
-                        }   
+                        } 
+                        //hightlight changes
+                        if(parseFloat($('#form_model_edit input[name="t_quantity"]').val()) != parseFloat($('#form_model_edit input[name="quantity"]').val()))
+                            $('#form_model_edit input[name="t_quantity"]').css('border-color','blue');
+                        if(parseFloat($('#form_model_edit input[name="t_p_retail_price"]').val()) != parseFloat($('#form_model_edit input[name="p_retail_price"]').val()))
+                            $('#form_model_edit input[name="t_p_retail_price"]').css('border-color','blue');
+                        if(parseFloat($('#form_model_edit input[name="t_p_processing_fee"]').val()) != parseFloat($('#form_model_edit input[name="p_processing_fee"]').val()))
+                            $('#form_model_edit input[name="t_p_processing_fee"]').css('border-color','blue');
+                        if(parseFloat($('#form_model_edit input[name="t_savings"]').val()) != parseFloat($('#form_model_edit input[name="savings"]').val()))
+                            $('#form_model_edit input[name="t_savings"]').css('border-color','blue');
+                        if(parseFloat($('#form_model_edit input[name="t_commission_percent"]').val()) != parseFloat($('#form_model_edit input[name="commission_percent"]').val()))
+                            $('#form_model_edit input[name="t_commission_percent"]').css('border-color','blue');
+                        if(parseFloat($('#form_model_edit input[name="t_price_paid"]').val()) != parseFloat($('#form_model_edit input[name="price_paid"]').val()))
+                            $('#form_model_edit input[name="t_price_paid"]').css('border-color','blue');
+                        if($('#form_model_edit input[name="t_show_time"]').val() != $('#form_model_edit input[name="show_time"]').val())
+                            $('#form_model_edit input[name="t_show_time"]').css('border-color','blue');
+                        if($('#form_model_edit input[name="t_code"]').val() != $('#form_model_edit input[name="code"]').val())
+                            $('#form_model_edit input[name="t_code"]').css('border-color','blue');
                         //check price
                         var from_price = parseFloat($('#form_model_edit input[name="price_paid"]').val());
                         var to_price = parseFloat($('#form_model_edit input[name="t_price_paid"]').val());
                         if(from_price > to_price)
-                            $('#form_model_edit input[name="t_price_paid"]').css('border-color','green');
+                            $('#form_model_edit input[name="t_price_paid"]').css('background','#C9F9C4').css('font-weight','bold');
                         else if(from_price < to_price)
-                            $('#form_model_edit input[name="t_price_paid"]').css('border-color','red');
-                        else
-                            $('#form_model_edit input[name="t_price_paid"]').css('border-color','');
+                            $('#form_model_edit input[name="t_price_paid"]').css('background','#F7D9D8').css('font-weight','bold');
                     }  
                     else{
                         $('#modal_model_edit').modal('hide');					

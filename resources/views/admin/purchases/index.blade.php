@@ -532,27 +532,27 @@
                                         <div class="form-group">
                                             <label class="control-label col-md-4">Qty:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="t_quantity" type="number" readonly="true"/>
+                                                <input class="form-control" name="t_quantity" type="text" readonly="true"/>
                                             </div>
                                             <label class="control-label col-md-4">Rt.Price:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="t_p_retail_price" type="number" readonly="true"/>
+                                                <input class="form-control" name="t_p_retail_price" type="text" readonly="true"/>
                                             </div>
                                             <label class="control-label col-md-4">P.Fees:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="t_p_processing_fee" type="number" readonly="true"/>
+                                                <input class="form-control" name="t_p_processing_fee" type="text" readonly="true"/>
                                             </div>
                                             <label class="control-label col-md-4">Saving:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="t_savings" type="number" readonly="true"/>
+                                                <input class="form-control" name="t_savings" type="text" readonly="true"/>
                                             </div>
                                             <label class="control-label col-md-4">Commis.:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="t_commission_percent" type="number" readonly="true"/>
+                                                <input class="form-control" name="t_commission_percent" type="text" readonly="true"/>
                                             </div>
                                             <label class="control-label col-md-4">P.Paid:</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="t_price_paid" type="number" readonly="true"/>
+                                                <input class="form-control" name="t_price_paid" type="text" readonly="true"/>
                                             </div>
                                             <label class="control-label col-md-4">ShowTime:</label>
                                             <div class="col-md-8">
