@@ -258,11 +258,11 @@ class DashboardController extends Controller
                         //set up new date period
                         $where[] = [DB::raw('DATE(purchases.created)'),'>=',$start_date];
                         $where[] = [DB::raw('DATE(purchases.created)'),'<=',$end_date];
-                        $title = 'Period <i>'.$start_date.' to '.$end_date.'</i>';
+                        $title = 'Period <i>'.date('m/d/Y',strtotime($start_date)).' to '.date('m/d/Y',strtotime($end_date)).'</i>';
                     }
                     else return ['title'=>$title,'table'=>[]];
                 } 
-                else $title = 'Current <i>'.$search['soldtime_start_date'].' to '.$search['soldtime_end_date'].'</i>';
+                else $title = 'Current <i>'.date('m/d/Y',strtotime($search['soldtime_start_date'])).' to '.date('m/d/Y',strtotime($search['soldtime_end_date'])).'</i>';
                 
                 $summary_table = [];
                 $subtotals = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
