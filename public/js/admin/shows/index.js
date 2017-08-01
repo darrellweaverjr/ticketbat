@@ -1363,7 +1363,12 @@ var TableDatatablesManaged = function () {
         {
             var maintitle = ' ';
             var color = 'gray';
-            var date = new Date(event.show_time);
+            var y = event.show_time.substr(0,4);
+            var m = event.show_time.substr(5,2)-1;
+            var d = event.show_time.substr(8,2);
+            var h = event.show_time.substr(11,2);
+            var i = event.show_time.substr(14,2);
+            var date = new Date(y,m,d,h,i);
             var allday = false;
             if(event.is_active == 0) 
             {
