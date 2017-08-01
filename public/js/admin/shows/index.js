@@ -1317,7 +1317,7 @@ var TableDatatablesManaged = function () {
                         {
                             $('#form_model_show_times_toggle').trigger('reset');
                             $('#form_model_show_times_toggle input[name="id"]:hidden').val(event.id).trigger('change');
-                            $('#form_model_show_times_toggle .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.showtime.is_active)? true : false, true);
+                            $('#form_model_show_times_toggle .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.showtime.is_active>0)? true : false, true);
                             $.each(data.tickets,function(k, t) {
                                 $('#form_model_show_times_toggle :checkbox[value="'+t+'"]').prop('checked',true);   
                             });
