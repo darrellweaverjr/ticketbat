@@ -237,13 +237,15 @@ class Purchase extends Model
                         $totals['retail_price']+=$receipt['purchase']->retail_price;
                         $totals['discount']+=$receipt['purchase']->savings;
                         //show on top if change date
-                        if($change)
-                        {
+                        if($change=='CANCELED')
+                            $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
+                        else if($change=='ACTIVED')
+                            $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVED</b></h1>' ;
+                        else if($change)
                             $top = 'Your purchase of '.$receipt['purchase']->quantity.' '.$receipt['purchase']->ticket_type_type.' ticket(s) for '.
                                    $receipt['purchase']->show_name.' on '.date('l, F jS - g:i A',strtotime($change)).
                                    ' has been changed to '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).
                                    '.<br>Your updated receipt and tickets are attached.' ;
-                        }
                     }
                 }
                 //table on email to show all totals
