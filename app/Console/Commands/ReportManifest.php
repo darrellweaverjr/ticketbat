@@ -75,15 +75,18 @@ class ReportManifest extends Command
                     default:break;
                 }            
                 //get dates
-                $dates = DB::select("SELECT st.id, st.show_time, s.emails, s.name, count(p.id) as num_purchases, sum(p.quantity) as num_people, now() as date_now, s.manifest_emails AS s_manifest_emails ".$anotherSelect." 
+                $dates = DB::select("SELECT st.id, st.show_time, s.emails, s.name, now() as date_now, s.manifest_emails AS s_manifest_emails, 
+                                            COUNT( IF(p.status='Active',p.id,NULL) ) AS num_purchases,
+                                            SUM( IF(p.status='Active',p.quantity,0) ) AS num_people
+                                            ".$anotherSelect."
                                     FROM show_times st
                                     INNER JOIN shows s ON s.id = st.show_id
-                                    INNER JOIN purchases p ON p.show_time_id = st.id AND p.status = 'Active' ".$datesCondition);
+                                    INNER JOIN purchases p ON p.show_time_id = st.id ".$datesCondition);
                 foreach($dates as $date)
                 {
                     //get purchases    
                     $purchases = DB::select("SELECT s.name AS event_name, st.show_time, CONCAT(c.last_name, ', ', c.first_name) AS customer_name, l.address, c.phone, c.email,
-                        p.quantity, d.code, p.ticket_type as description, p.price_paid as amount, p.customer_id, p.id, p.created
+                        p.quantity, d.code, p.ticket_type as description, p.price_paid as amount, p.customer_id, p.id, p.created, IF(p.status='Active','Active','Canceled') AS p_status
                         FROM purchases p
                         INNER JOIN show_times st ON st.id = p.show_time_id
                         INNER JOIN shows s ON s.id = st.show_id

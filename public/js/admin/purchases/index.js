@@ -100,11 +100,9 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_search').prop("disabled",false);
         } 
-       
-        //function on status select
-        $('#tb_model select[name="status"]').on('change', function(ev) {
-            var id = $(this).attr('ref');
-            var status = $(this).val();
+        //function to change status to purchase
+        function change_status(id,status)
+        {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -113,6 +111,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        $('#tb_model select[name="status"]').data('status',status);
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
                             text: data.msg,
@@ -138,6 +137,46 @@ var TableDatatablesManaged = function () {
                     });
                 }
             });
+        }
+        //function on status select
+        $('#tb_model select[name="status"]').on('change', function(ev) {
+            var id = $(this).attr('ref');
+            var old_status = $(this).data('status');
+            var status = $(this).val();
+            if(status=='Active' || old_status=='Active')
+            {
+                var status_msg = (status=='Active')? 'active' :'canceled';
+                swal({
+                    title: "Are you sure to change the status from <b>"+old_status+"</b> to <b>"+status+"</b>?",
+                    text: "An email will be sent to both the customer and venue stating this purchase is "+status_msg,
+                    type: "warning",
+                    html:true,
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, do it!",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                  function(isConfirm) {
+                    if (isConfirm) {
+                        if(id)
+                            change_status(id,status);
+                        else
+                        {
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "Please, you must select the purchase first.",
+                                html: true,
+                                type: "error"
+                            });
+                        }
+                    } else {
+                        $(this).val(old_status);
+                    }
+                });
+            }
+            else
+                change_status(id,status);
         });
         //function search
         $('#btn_model_search').on('click', function(ev) {

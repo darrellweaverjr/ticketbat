@@ -293,9 +293,20 @@ class PurchaseController extends Controller{
                 $purchase = Purchase::find($input['id']);
                 if(isset($input['status']))
                 {
+                    //update status
+                    $old_status = $purchase->status;
                     $purchase->status = $input['status'];
                     $purchase->updated = $current;
                     $purchase->save();
+                    //re-send email if change form active to any inactive and viceversa
+                    if($input['status']=='Active' || $old_status=='Active')
+                    {
+                        $receipt = $purchase->get_receipt();
+                        $status = ($input['status']=='Active')? 'ACTIVED' : 'CANCELED';
+                        $sent = Purchase::email_receipts($status.': TicketBat Purchase',[$receipt],'receipt',$status,true);
+                        if(!$sent)
+                            return ['success'=>false,'msg'=>'The purchase changed the status.<br>But the email could not be sent to the customer and the venue.'];
+                    }
                     return ['success'=>true,'msg'=>'Purchase saved successfully!'];
                 }                    
                 else if(isset($input['note']))
