@@ -239,7 +239,7 @@ class Purchase extends Model
                         //show on top if change date
                         if($change=='CANCELED')
                             $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
-                        else if($change=='ACTIVED')
+                        else if($change=='ACTIVATED')
                             $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVED</b></h1>' ;
                         else if($change)
                             $top = 'Your purchase of '.$receipt['purchase']->quantity.' '.$receipt['purchase']->ticket_type_type.' ticket(s) for '.
@@ -277,11 +277,11 @@ class Purchase extends Model
                 
                 //send copy to event promotor if available option
                 if($promotor_copy)
-                {                    
+                {                      
                     $p = $receipts[0]['purchase'];
                     if($p->s_individual_emails == 1 && !empty($p->emails))
                     {
-                        $email = new EmailSG(null, $customer->email , $subject.' (BO Receipt)');
+                        $email = new EmailSG(null, $p->emails , $subject.' (BO Receipt)');
                         $email->category('Receipts');
                         $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
                         //check type of email to send

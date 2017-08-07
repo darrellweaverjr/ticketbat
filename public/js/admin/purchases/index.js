@@ -139,7 +139,7 @@ var TableDatatablesManaged = function () {
             });
         }
         //function on status select
-        $('#tb_model select[name="status"]').on('change', function(ev) {
+        $(document).on('change', '#tb_model select[name="status"]', function(ev){
             var id = $(this).attr('ref');
             var old_status = $(this).data('status');
             var status = $(this).val();
