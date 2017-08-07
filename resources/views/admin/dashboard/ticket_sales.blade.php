@@ -10,7 +10,7 @@
 
 @section('content')
     <h1 class="page-title"> {{$page_title}}
-        <small>statistics and reports (by default the last 30 days).</small>
+        <small>statistics and reports (by default the last 7 days).</small>
     </h1>
     <!-- END PAGE TITLE-->
     <!-- END PAGE HEADER-->

@@ -93,7 +93,7 @@ class DashboardController extends Controller
             }
             else
             {
-                $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-30 DAY')) : date('Y-m-d', strtotime('-7 DAY'));
+                $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-7 DAY')) : date('Y-m-d', strtotime('-7 DAY'));
                 $data['search']['soldtime_end_date'] = date('Y-m-d');
             }
         }
@@ -314,7 +314,7 @@ class DashboardController extends Controller
             $graph = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased, 
+                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased, 
                                     SUM(purchases.quantity) AS qty, SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
                     ->where($where)
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))

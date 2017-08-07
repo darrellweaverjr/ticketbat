@@ -182,7 +182,7 @@ class PurchaseController extends Controller{
                 }
                 else
                 {
-                    $search['soldtime_start_date'] = date('Y-m-d', strtotime('-30 DAY'));
+                    $search['soldtime_start_date'] = date('Y-m-d', strtotime('-7 DAY'));
                     $search['soldtime_end_date'] = date('Y-m-d');
                 }
                 if($search['soldtime_start_date'] != '' && $search['soldtime_end_date'] != '')

@@ -13,7 +13,7 @@
     <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
-        <small> - List, re-send email, view tickets and change status (Only for admin purposes. By default the last 30 days.)</small>
+        <small> - List, re-send email, view tickets and change status (Only for admin purposes. By default the last 7 days.)</small>
     </h1>
     <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
