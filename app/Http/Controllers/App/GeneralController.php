@@ -16,7 +16,6 @@ use App\Http\Models\Util;
  */
 class GeneralController extends Controller{
     
-    
     /*
      * return arrays of all init values in json format
      */
@@ -27,7 +26,17 @@ class GeneralController extends Controller{
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
-    }    
+    }  
+    
+    /*
+     * return cutoff_date for checking the showtime
+     */
+    public function cutoff_date($mindate=0)
+    {
+        if($mindate)
+            return date('Y-m-d H:i', strtotime('today midnight'));
+        return date('Y-m-d H:i', strtotime('tomorrow +4 hour'));
+    }  
     
     /*
      * return arrays of all countries 
@@ -80,7 +89,9 @@ class GeneralController extends Controller{
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
+                        //->where('show_times.show_time','>',\Carbon\Carbon::now())
+                        ->whereDate('show_times.show_time','>', $this->cutoff_date(1))
+                        ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                         ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
@@ -109,7 +120,9 @@ class GeneralController extends Controller{
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select('venues.id','venues.name','images.url','locations.city')
                         ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
-                        ->where('show_times.is_active','>',0)->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
+                        ->where('show_times.is_active','>',0)
+                        //->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
+                        ->whereDate('show_times.show_time','<', $this->cutoff_date())
                         ->where('images.image_type','=','Logo')->where('tickets.is_active','>',0)
                         ->whereNotNull('images.url')
                         ->orderBy('venues.name')->groupBy('venues.id')
@@ -139,7 +152,9 @@ class GeneralController extends Controller{
                         ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue, shows.restrictions, 
                                           locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
-                        ->where('show_times.is_active','>',0)->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
+                        ->where('show_times.is_active','>',0)
+                        //->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
+                        ->whereDate('show_times.show_time','<', $this->cutoff_date())
                         ->orderBy('shows.name')->groupBy('shows.id')->first(); 
                 if($show)
                 {
@@ -148,7 +163,9 @@ class GeneralController extends Controller{
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                             ->select(DB::raw('DATE_FORMAT(show_times.show_time,"%Y-%m-%d") AS s_date'))
-                            ->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')->where('shows.id','=',$show->id)
+                            //->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
+                            ->whereDate('show_times.show_time','<', $this->cutoff_date())
+                            ->where('shows.id','=',$show->id)
                             ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
                             ->orderBy('s_date')->groupBy('s_date')
                             ->distinct()->take(30)->get(); 
@@ -221,7 +238,8 @@ class GeneralController extends Controller{
                         ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%h:%i %p") AS s_time'))
                         ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$id)
                         ->where('show_times.is_active','=',1)
-                        ->whereRaw('NOW() <= (show_times.show_time - INTERVAL shows.cutoff_hours HOUR)')
+                        //->whereRaw('NOW() <= (show_times.show_time - INTERVAL shows.cutoff_hours HOUR)')
+                        ->whereDate('show_times.show_time','<', $this->cutoff_date())
                         ->distinct()->get(); 
                     $event->times = $times;
                     //parse url image
