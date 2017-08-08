@@ -145,7 +145,7 @@
                 @endforeach
             </tbody>
         </table>
-        @endforeach<hr>
+        @endforeach
     </div>
     <!-- BEGIN COUPONS TABLE FOR PRINT-->
     <div id="tb_coupon" class="portlet-body" style="display:none;" >
@@ -208,7 +208,7 @@
                     <td style="text-align:right"><b>$ {{number_format($coupons['total']['commissions']+$coupons['total']['fees'],2)}}</b></td>
                 </tr>
             </tfoot>
-        </table><hr>
+        </table>
         @endif
     </div>
     <!-- END TOTAL TABLE FOR PRINT-->
