@@ -147,6 +147,70 @@
         </table>
         @endforeach<hr>
     </div>
+    <!-- BEGIN COUPONS TABLE FOR PRINT-->
+    <div id="tb_coupon" class="portlet-body" style="display:none;" >
+        @if(!empty($coupons))
+        <h5>Coupons Report</h5>
+        <table width="100% class="table table-striped table-bordered table-hover">
+            <tbody>
+                @foreach($coupons['descriptions'] as $k=>$d)
+                <tr>
+                    <td><b>{{$k}}*</b></td>                  
+                    <td> => {{$d}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <table width="100% class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Venue</th>
+                    <th>Show</th>
+                    <th style="text-align:center">Code</th>
+                    <th style="text-align:center">Distrib.<br>At</th>
+                    <th style="text-align:center">Sales<br>-7D</th>
+                    <th style="text-align:center">Sales<br>-1D</th>
+                    <th style="text-align:center">Qty Sold<br>(Purch.)</th>
+                    <th style="text-align:center">Total<br>Revenue</th>
+                    <th style="text-align:center">To<br>Show</th>
+                    <th style="text-align:center">Comm.</th>
+                    <th style="text-align:center">P.Fees</th>
+                    <th style="text-align:center">Gross<br>Profit</th>
+                  </tr>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($coupons['data'] as $d)
+                <tr>
+                    <td>{{$d->venue_name}}</td>
+                    <td>{{$d->show_name}}</td>
+                    <td style="text-align:center">{{$d->code}}</td>
+                    <td style="text-align:center">{{$d->distributed_at}}</td>
+                    <td style="text-align:center">{{$d->tickets_seven}}</td>
+                    <td style="text-align:center">{{$d->tickets_one}}</td>
+                    <td style="text-align:center">{{number_format($d->tickets)}} ({{number_format($d->purchases)}})</td>
+                    <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
+                    <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees,2)}}</b></td>
+                </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:bold;border-top:1px solid #000;">
+                    <td colspan="6">TOTALS</td>
+                    <td style="text-align:center">{{number_format($coupons['total']['tickets'])}} ({{number_format($coupons['total']['purchases'])}})</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['retail_prices']-$coupons['total']['discounts']+$coupons['total']['fees'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['to_show'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['commissions'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['fees'],2)}}</td>
+                    <td style="text-align:right"><b>$ {{number_format($coupons['total']['commissions']+$coupons['total']['fees'],2)}}</b></td>
+                </tr>
+            </tfoot>
+        </table><hr>
+        @endif
+    </div>
     <!-- END TOTAL TABLE FOR PRINT-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
@@ -324,6 +388,15 @@
                                         <div class="input-group mt-checkbox-single">
                                             <label class="mt-checkbox">
                                                 <input type="checkbox" @if(!empty($search['replace_chart'])) checked="true" @endif name="replace_chart" value="1" />
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <label class="control-label col-md-8"> Include Coupon's Report:</label>
+                                    <div class="col-md-4 show-error"> 
+                                        <div class="input-group mt-checkbox-single">
+                                            <label class="mt-checkbox">
+                                                <input type="checkbox" @if(!empty($search['coupon_report'])) checked="true" @endif name="coupon_report" value="1" />
                                                 <span></span>
                                             </label>
                                         </div>

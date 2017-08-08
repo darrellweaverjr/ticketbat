@@ -41,20 +41,24 @@ var TableDatatablesButtons = function () {
                     orientation: 'landscape',
                     customize: function ( win ) {
                         var graph = ($('#form_model_search input[name="replace_chart"]:checked').length)? 'Yes' : 'No';
-                        var t = '<hr><div style="font-size:14px;">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
+                        var coupons = ($('#form_model_search input[name="coupon_report"]:checked').length)? 'Yes' : 'No';
+                        var t = '<hr><div style="font-size:14px;"><div class="col-md-6">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
                                 'Show: '+$('#form_model_search select[name="show"] option:selected').text()+'<br>'+
                                 'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
                                 'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'<br>'+
                                 'Payment Types: '+$('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).attr('data-value'); } ).get().join(',')+'<br>'+
-                                'User: '+$('#form_model_search select[name="user"] option:selected').text()+'<br>'+
+                                '</div><div class="col-md-6">User: '+$('#form_model_search select[name="user"] option:selected').text()+'<br>'+
                                 'Qty of mirror period: '+$('#form_model_search input[name="mirror_period"]').val()+'<br>'+
-                                'Show Graph instead of Table: '+graph+'</div>';
+                                'Show Graph instead of Table: '+graph+'<br>'+
+                                'Show Coupon\'s Report: '+coupons+'</div>';
                         t = t + '<hr>'+$('#tb_summary').html(); 
                         if(graph=='Yes')
                         {
                             t = t + '<hr>'+$('#ticket_sales_chart_sales').addClass('compact').html(); 
                             $(win.document.body).find('table').addClass('compact').css('display','none');
                         } 
+                        if(coupons=='Yes')
+                            t = t + '<hr>'+$('#tb_coupon').addClass('compact').html(); 
                         $(win.document.body).find('h1').append(t);
                         $(win.document.body).find('table').addClass('compact').css('font-size','9pt');                            
                     }
@@ -83,6 +87,7 @@ var TableDatatablesButtons = function () {
                     className: 'btn sbold purple',
                     action: function () {
                         $('#tb_summary').toggle('display');
+                        $('#tb_coupon').toggle('display');
                     }
                 }
             ],

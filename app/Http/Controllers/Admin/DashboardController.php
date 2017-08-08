@@ -131,6 +131,11 @@ class DashboardController extends Controller
             $data['search']['replace_chart'] = 1;
         else
             $data['search']['replace_chart'] = 0;
+        
+        if(isset($input) && isset($input['coupon_report']) && !empty($input['coupon_report']))
+            $data['search']['coupon_report'] = 1;
+        else
+            $data['search']['coupon_report'] = 0;
         //PERMISSIONS
         //if user has permission to view        
         if(in_array('View',Auth::user()->user_type->getACLs()['REPORTS']['permission_types']))
@@ -171,12 +176,15 @@ class DashboardController extends Controller
         try {
             //init
             $input = Input::all();
-            $data = $total = $summary = array();
+            $data = $total = $summary = $coupons = array();
             //conditions to search
             $data = $this->search($input);
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
+            //coupon's report
+            if(!empty($search['coupon_report']))
+                $coupons = $this->coupons($data);
             //get all records        
             $data = DB::table('purchases')
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
@@ -318,9 +326,9 @@ class DashboardController extends Controller
                                     SUM(purchases.quantity) AS qty, SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
                     ->where($where)
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
-                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
+                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();            
             //return view
-            return view('admin.dashboard.ticket_sales',compact('data','total','graph','summary','search'));
+            return view('admin.dashboard.ticket_sales',compact('data','total','graph','summary','coupons','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Ticket Sales: '.$ex->getMessage());
         }
@@ -331,14 +339,14 @@ class DashboardController extends Controller
      *
      * @return view
      */
-    public function coupons()
+    public function coupons($info=null)
     {
         try {
             //init
             $input = Input::all();
             $data = $total = $graph = array();
             //conditions to search
-            $data = $this->search($input,'coupons');
+            $data = (!empty($info))? $info : $this->search($input,'coupons');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $where[] = ['purchases.discount_id','!=',1];
@@ -382,6 +390,8 @@ class DashboardController extends Controller
                 if(!isset($descriptions[$d->code]))
                     $descriptions[$d->code] = $d->description;
             //return view
+            if(!empty($info))
+                return compact('data','total','descriptions');
             return view('admin.dashboard.coupons',compact('data','total','descriptions','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Coupons: '.$ex->getMessage());
