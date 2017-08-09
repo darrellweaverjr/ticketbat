@@ -33,7 +33,7 @@ class GeneralController extends Controller{
      */
     public function cutoff_date()
     {
-        return 'DATE_FORMAT(show_times.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00") > NOW()';
+        return 'DATE_FORMAT(show_times.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00")';
     }  
     
     /*
@@ -87,7 +87,7 @@ class GeneralController extends Controller{
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where(DB::raw($this->cutoff_date()))
+                        ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                         ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
@@ -118,7 +118,7 @@ class GeneralController extends Controller{
                         ->select('venues.id','venues.name','images.url','locations.city')
                         ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where('show_times.is_active','>',0)
-                        ->where(DB::raw($this->cutoff_date()))
+                        ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('images.image_type','=','Logo')->where('tickets.is_active','>',0)
                         ->whereNotNull('images.url')
                         ->orderBy('venues.name')->groupBy('venues.id')
@@ -149,7 +149,7 @@ class GeneralController extends Controller{
                                           locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
                         ->where('show_times.is_active','>',0)
-                        ->where(DB::raw($this->cutoff_date()))
+                        ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->orderBy('shows.name')->groupBy('shows.id')->first(); 
                 if($show)
                 {
@@ -158,7 +158,7 @@ class GeneralController extends Controller{
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                             ->select(DB::raw('DATE_FORMAT(show_times.show_time,"%Y-%m-%d") AS s_date'))
-                            ->where(DB::raw($this->cutoff_date()))
+                            ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                             ->where('shows.id','=',$show->id)
                             ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
                             ->orderBy('s_date')->groupBy('s_date')
@@ -232,7 +232,7 @@ class GeneralController extends Controller{
                         ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%h:%i %p") AS s_time'))
                         ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$id)
                         ->where('show_times.is_active','=',1)
-                        ->where(DB::raw($this->cutoff_date()))
+                        ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->distinct()->get(); 
                     $event->times = $times;
                     //parse url image
