@@ -33,7 +33,7 @@ class GeneralController extends Controller{
      */
     public function cutoff_date()
     {
-        return 'DATE_FORMAT(st.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00") > NOW()';
+        return 'DATE_FORMAT(show_times.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00") > NOW()';
     }  
     
     /*

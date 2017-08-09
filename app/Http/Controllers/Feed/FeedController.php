@@ -19,7 +19,7 @@ class FeedController extends Controller{
     public function events($venue_id)
     {
         $events = [];
-        $cutoff_date = 'DATE_FORMAT(st.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00") > NOW()';
+        $cutoff_date = 'DATE_FORMAT(show_times.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00") > NOW()';
         if(!empty($venue_id) && is_numeric($venue_id))
         {
             $events = DB::table('shows')
