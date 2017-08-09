@@ -30,7 +30,7 @@ class FeedController extends Controller{
                     ->select(DB::raw('shows.id, shows.name, images.url, shows.short_description, COALESCE(show_times.slug, shows.ext_slug, CONCAT("'.env('IMAGE_URL_OLDTB_SERVER').'/event/",shows.slug)) AS slug, MIN(tickets.retail_price) AS price, MIN(show_times.show_time) AS show_time'))
                     ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('show_times.is_active','=',1)
                     ->where('images.image_type','=','Logo')
-                    ->where(DB::raw($this->cutoff_date()))
+                    ->where(DB::raw($cutoff_date))
                     ->where('shows.venue_id','=',$venue_id)
                     ->orderBy('show_times.show_time','ASC')->groupBy('shows.id')
                     ->distinct()->get(); 
