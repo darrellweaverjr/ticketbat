@@ -31,11 +31,9 @@ class GeneralController extends Controller{
     /*
      * return cutoff_date for checking the showtime
      */
-    public function cutoff_date($mindate=0)
+    public function cutoff_date()
     {
-        if($mindate)
-            return date('Y-m-d H:i', strtotime('today midnight'));
-        return date('Y-m-d H:i', strtotime('tomorrow +4 hour'));
+        return date('Y-m-d H:i', strtotime('yesterdat +20 hour'));
     }  
     
     /*
@@ -90,7 +88,7 @@ class GeneralController extends Controller{
                         ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         //->where('show_times.show_time','>',\Carbon\Carbon::now())
-                        ->whereDate('show_times.show_time','>', $this->cutoff_date(1))
+                        ->whereDate('show_times.show_time','>', $this->cutoff_date())
                         ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                         ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
@@ -122,7 +120,7 @@ class GeneralController extends Controller{
                         ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where('show_times.is_active','>',0)
                         //->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
-                        ->whereDate('show_times.show_time','<', $this->cutoff_date())
+                        ->whereDate('show_times.show_time','>', $this->cutoff_date())
                         ->where('images.image_type','=','Logo')->where('tickets.is_active','>',0)
                         ->whereNotNull('images.url')
                         ->orderBy('venues.name')->groupBy('venues.id')
@@ -154,7 +152,7 @@ class GeneralController extends Controller{
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
                         ->where('show_times.is_active','>',0)
                         //->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
-                        ->whereDate('show_times.show_time','<', $this->cutoff_date())
+                        ->whereDate('show_times.show_time','>', $this->cutoff_date())
                         ->orderBy('shows.name')->groupBy('shows.id')->first(); 
                 if($show)
                 {
@@ -164,7 +162,7 @@ class GeneralController extends Controller{
                             ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                             ->select(DB::raw('DATE_FORMAT(show_times.show_time,"%Y-%m-%d") AS s_date'))
                             //->whereRaw('NOW() < show_times.show_time - INTERVAL shows.cutoff_hours HOUR')
-                            ->whereDate('show_times.show_time','<', $this->cutoff_date())
+                            ->whereDate('show_times.show_time','>', $this->cutoff_date())
                             ->where('shows.id','=',$show->id)
                             ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
                             ->orderBy('s_date')->groupBy('s_date')
@@ -239,7 +237,7 @@ class GeneralController extends Controller{
                         ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$id)
                         ->where('show_times.is_active','=',1)
                         //->whereRaw('NOW() <= (show_times.show_time - INTERVAL shows.cutoff_hours HOUR)')
-                        ->whereDate('show_times.show_time','<', $this->cutoff_date())
+                        ->whereDate('show_times.show_time','>', $this->cutoff_date())
                         ->distinct()->get(); 
                     $event->times = $times;
                     //parse url image
