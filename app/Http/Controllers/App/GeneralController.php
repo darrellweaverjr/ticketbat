@@ -33,7 +33,7 @@ class GeneralController extends Controller{
      */
     public function cutoff_date()
     {
-        return date('Y-m-d H:i', strtotime('yesterdat +20 hour'));
+        return date('Y-m-d H:i', strtotime('yesterday +20 hour'));
     }  
     
     /*
