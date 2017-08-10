@@ -24,6 +24,13 @@ class Category extends Model
      */
     public $timestamps = false;
     /**
+     * Get the parent category.
+     */
+    public function parent()
+    {
+        return $this->belongsTo('App\Http\Models\Category', 'parent_id');
+    }
+    /**
      * Get the children category.
      */
     public function children()
