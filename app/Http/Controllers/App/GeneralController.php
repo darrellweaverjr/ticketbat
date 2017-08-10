@@ -216,6 +216,7 @@ class GeneralController extends Controller{
             if(!empty($info['show_id']) && is_numeric($info['show_id']) && !empty($info['date']) && strtotime($info['date']))
             {
                 $id = $info['show_id'];
+                $info['date'] = date('Y-m-d',strtotime($info['date']));
                 $event = DB::table('shows')
                             ->join('venues', 'shows.venue_id', '=' ,'venues.id')
                             ->join('stages', 'shows.stage_id', '=' ,'stages.id')
@@ -229,9 +230,9 @@ class GeneralController extends Controller{
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
-                        ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%h:%i %p") AS s_time'))
+                        ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%H:%i") AS s_time'))
                         ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$id)
-                        ->where('show_times.is_active','=',1)
+                        ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->distinct()->get(); 
                     $event->times = $times;
