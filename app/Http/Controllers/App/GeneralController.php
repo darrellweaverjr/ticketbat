@@ -157,7 +157,7 @@ class GeneralController extends Controller{
                     $showtimes = DB::table('show_times')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                            ->select(DB::raw('DATE_FORMAT(show_times.show_time,"%Y-%m-%d") AS s_date'))
+                            ->select(DB::raw('DATE_FORMAT(show_times.show_time,"%m/%d/%Y") AS s_date'))
                             ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                             ->where('shows.id','=',$show->id)
                             ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
@@ -219,8 +219,8 @@ class GeneralController extends Controller{
                 $event = DB::table('shows')
                             ->join('venues', 'shows.venue_id', '=' ,'venues.id')
                             ->join('stages', 'shows.stage_id', '=' ,'stages.id')
-                            ->select(DB::raw('shows.id, shows.name, shows.slug, shows.on_sale, stages.image_url AS url,
-                                             shows.amex_only_start_date, shows.amex_only_end_date, shows.amex_only_ticket_types'))
+                            ->select(DB::raw('shows.id, shows.name, shows.slug, DATE_FORMAT(shows.on_sale,"%m/%d/%Y %H:%i:%s") AS on_sale, stages.image_url AS url,
+                                             DATE_FORMAT(shows.amex_only_start_date,"%m/%d/%Y %H:%i:%s") AS amex_only_start_date, DATE_FORMAT(shows.amex_only_end_date,"%m/%d/%Y %H:%i:%s") AS amex_only_end_date, shows.amex_only_ticket_types'))
                             ->where('shows.id','=',$id)->first();
                 if($event)
                 {

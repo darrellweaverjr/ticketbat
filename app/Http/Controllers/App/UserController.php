@@ -37,9 +37,9 @@ class UserController extends Controller{
                             ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                             ->join('packages', 'packages.id', '=', 'tickets.package_id')
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                            ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, purchases.user_id, purchases.created,
+                            ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, purchases.user_id, DATE_FORMAT(purchases.created,"%m/%d/%Y %H:%i:s") AS created,
                                               IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, NULL AS tickets,
-                                              venues.name AS venue_name, show_times.show_time, shows.name AS show_name, packages.title'))
+                                              venues.name AS venue_name, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:s") AS show_time, shows.name AS show_name, packages.title'))
                             ->where('purchases.status','=','Active')->where('purchases.user_id','=',$info['user_id'])
                             ->orderBy('purchases.created','DESC')
                             ->get();
@@ -137,10 +137,12 @@ class UserController extends Controller{
             $events = [];
             if(!empty($info['show_id']) && is_numeric($info['show_id']))
             {
-                $events = ShowTime::where('show_id',$info['show_id'])
+                $events = DB::table('show_times')
+                                    ->select(DB::raw('show_times.id, show_times.show_id, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time'))
+                                    ->where('show_id',$info['show_id'])
                                     ->where('show_time','<=',date('Y-m-d H:i:s',strtotime(' + '.$this->check_tickets_hours_before.' hours')))
                                     ->where('show_time','>=',date('Y-m-d H:i:s',strtotime(' - '.$this->check_tickets_hours_after.' hours')))
-                                    ->get(['id','show_time','show_id']);
+                                    ->get();
             }
             return Util::json(['success'=>true, 'events'=>$events]);
         } catch (Exception $ex) {
@@ -201,7 +203,7 @@ class UserController extends Controller{
                             ->join('venues', 'venues.id', '=', 'shows.venue_id')
                             ->join('customers', 'customers.id', '=', 'purchases.customer_id')
                             ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
-                            ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, show_times.show_time, 
+                            ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, 
                                               packages.title, shows.name AS show_name, shows.restrictions, venues.name AS venue_name,
                                               customers.first_name, customers.last_name, IF(ticket_number.id IS NULL, 0, 1) as section'))
                             ->where('purchases.id','=',$purchase_id)->where('show_times.id','=',$show_time_id)->groupBy('purchases.id')->first();
