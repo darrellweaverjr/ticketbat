@@ -52,7 +52,7 @@ class Shoppingcart extends Model
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
                             ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id,
-                                              shoppingcart.product_type, shoppingcart.cost_per_product, show_times.show_time, shoppingcart.number_of_items, shoppingcart.item_id,
+                                              shoppingcart.product_type, shoppingcart.cost_per_product, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, shoppingcart.number_of_items, shoppingcart.item_id,
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent,
                                               (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon,
                                               (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event,
