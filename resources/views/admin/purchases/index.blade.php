@@ -302,6 +302,19 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Customer:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <select class="form-control" name="customer" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['customers'] as $index=>$c)
+                                                    <option @if(!empty($search['customer']) && $c->id==$search['customer']) selected @endif value="{{$c->id}}">{{$c->email}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">

@@ -11,6 +11,7 @@ use App\Http\Models\Purchase;
 use App\Http\Models\Venue;
 use App\Http\Models\Discount;
 use App\Http\Models\User;
+use App\Http\Models\Customer;
 use App\Http\Models\Show;
 use App\Http\Models\Ticket;
 use App\Http\Models\ShowTime;
@@ -135,9 +136,10 @@ class PurchaseController extends Controller{
                 $search['shows'] = [];
                 $search['payment_types'] = Util::getEnumValues('purchases','payment_type');
                 $search['users'] = User::get(['id','email']);
+                $search['customers'] = Customer::get(['id','email']);
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
-                //search venue
+                //search user
                 if(isset($input) && !empty($input['user_id']))
                     $where[] = ['purchases.user_id','=',$input['user_id']];
                 //search venue
@@ -200,15 +202,21 @@ class PurchaseController extends Controller{
                     $search['payment_type'] = array_values($search['payment_types']);
                 }
                 //search user      
-                if(isset($input) && isset($input['payment_type']) && !empty($input['user']))
+                if(isset($input) && !empty($input['user']))
                 {
                     $search['user'] = $input['user'];
                     $where[] = ['purchases.user_id','=',$search['user']];
                 }
                 else
-                {
                     $data['search']['user'] = '';
+                //search customer      
+                if(isset($input) && !empty($input['customer']))
+                {
+                    $search['customer'] = $input['customer'];
+                    $where[] = ['purchases.customer_id','=',$search['customer']];
                 }
+                else
+                    $data['search']['customer'] = '';
                 //if user has permission to view                
                 if(in_array('View',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                 {
