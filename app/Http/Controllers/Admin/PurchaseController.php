@@ -318,7 +318,7 @@ class PurchaseController extends Controller{
                         if(!$sent)
                             return ['success'=>false,'msg'=>'The purchase changed the status.<br>But the email could not be sent to the customer and the venue.'];
                     }
-                    return ['success'=>true,'msg'=>'Purchase saved successfully!'];
+                    return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
                 }                    
                 else if(isset($input['note']))
                 {                    

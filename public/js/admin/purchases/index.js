@@ -112,6 +112,7 @@ var TableDatatablesManaged = function () {
                     if(data.success) 
                     {
                         $('#tb_model select[name="status"]').data('status',status);
+                        $('#note_'+id).html(data.note);
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
                             text: data.msg,
