@@ -304,6 +304,9 @@ class PurchaseController extends Controller{
                     //update status
                     $old_status = $purchase->status;
                     $purchase->status = $input['status'];
+                    $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
+                    $note.= ' status from '.$old_status.' to '.$input['status'];
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
                     $purchase->updated = $current;
                     $purchase->save();
                     //re-send email if change form active to any inactive and viceversa
