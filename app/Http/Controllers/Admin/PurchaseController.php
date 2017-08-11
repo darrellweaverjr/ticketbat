@@ -135,8 +135,8 @@ class PurchaseController extends Controller{
                 $search['venues'] = [];
                 $search['shows'] = [];
                 $search['payment_types'] = Util::getEnumValues('purchases','payment_type');
-                $search['users'] = User::get(['id','email']);
-                $search['customers'] = Customer::get(['id','email']);
+                $search['users'] = User::orderBy('email')->get(['id','email']);
+                $search['customers'] = Customer::orderBy('email')->get(['id','email']);
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search user
