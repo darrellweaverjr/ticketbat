@@ -230,7 +230,7 @@ class GeneralController extends Controller{
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
-                        ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%H:%i") AS s_time'))
+                        ->select(DB::raw('show_times.id, DATE_FORMAT(show_times.show_time,"%l:%i%p") AS s_time'))
                         ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$id)
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
