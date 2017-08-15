@@ -195,6 +195,19 @@ class EmailSG {
             throw new Exception('Error adding template EmailSG: '.$ex->getMessage());
         }        
     }
+    
+    public function section($sections) {
+        try {
+            if (is_array($sections)) {               
+                foreach ($sections as $k=>$e) {
+                    $this->mail->addSection(':'.$k, $e);
+                }
+            } else
+                return false;
+        } catch (Exception $ex) {
+            throw new Exception('Error adding section EmailSG: '.$ex->getMessage());
+        }        
+    }
 
     public function body($type, $body) {
         try {
