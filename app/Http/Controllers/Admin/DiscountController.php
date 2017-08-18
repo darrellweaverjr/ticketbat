@@ -51,7 +51,8 @@ class DiscountController extends Controller{
                     {
                         $discounts = DB::table('discounts')
                                 ->leftJoin('purchases', 'purchases.discount_id', '=', 'discounts.id')
-                                ->select(DB::raw('discounts.id,discounts.code,discounts.description,discounts.discount_type,discounts.discount_scope,discounts.coupon_type, 
+                                ->select(DB::raw('discounts.id,discounts.code,discounts.description,discounts.discount_type,discounts.discount_scope,discounts.coupon_type,
+                                                  IF(discounts.start_date<=NOW() && discounts.end_date>=NOW(),1,0) AS active,
                                                   COUNT(purchases.id) AS purchases'))
                                 ->where('discounts.audit_user_id','=',Auth::user()->id)
                                 ->groupBy('discounts.id')
@@ -79,6 +80,7 @@ class DiscountController extends Controller{
                         $discounts = DB::table('discounts')
                                 ->leftJoin('purchases', 'purchases.discount_id', '=', 'discounts.id')
                                 ->select(DB::raw('discounts.id,discounts.code,discounts.description,discounts.discount_type,discounts.discount_scope,discounts.coupon_type, 
+                                                  IF(discounts.start_date<=NOW() && discounts.end_date>=NOW(),1,0) AS active,
                                                   COUNT(purchases.id) AS purchases'))
                                 ->groupBy('discounts.id')
                                 ->orderBy('discounts.code')

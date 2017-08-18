@@ -63,7 +63,7 @@
                         </thead>
                         <tbody>
                             @foreach($discounts as $index=>$d)
-                            <tr>
+                            <tr @if(!$d->active) class="danger" @endif>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$d->id}}" value="{{$d->code}}" />
