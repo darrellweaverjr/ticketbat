@@ -52,7 +52,7 @@ class AuthController extends Controller{
         try {
             $info = Input::all();
             $current = date('Y-m-d H:i:s');
-            if(!empty($info['email']) && !empty($info['password']) && !empty($info['first_name']) && !empty($info['last_name']) && !empty($info['phone']) 
+            if(!empty($info['email']) && !empty($info['password']) && !empty($info['first_name']) && !empty($info['last_name']) /*&& !empty($info['phone'])*/ 
             && !empty($info['address']) && !empty($info['city']) && !empty($info['region']) && !empty($info['country']) && !empty($info['zip']))
             {
                 //check password
@@ -62,6 +62,8 @@ class AuthController extends Controller{
                 $user = User::where('email','=',$info['email'])->first();
                 if($user)
                     return ['success'=>false, 'msg'=>'That email is already in the system.'];
+                //check phone
+                $info['phone'] = (!empty($info['phone']))? preg_replace('/[^0-9]/','',$info['phone']) : null;
                 //save location
                 $location = new Location;
                 $location->created = $current;                
@@ -81,7 +83,7 @@ class AuthController extends Controller{
                 $user->location()->associate($location);
                 $user->first_name = $info['first_name'];
                 $user->last_name = $info['last_name'];
-                $user->phone = (!empty($info['phone']))? $info['phone'] : null;
+                $user->phone = $info['phone'];
                 $user->slug = $info['password'];
                 $user->set_password($info['password']);
                 $user->save();
