@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Util;
 use App\Http\Models\User;
+use App\Http\Models\Location;
 
 /**
  * Manage auth options
@@ -76,13 +77,14 @@ class AuthController extends Controller{
                 $location->save();
                 //save user
                 $user = new User;
-                $user->created = $current;
+                $user->updated = $current;
                 $user->user_type_id = 2;
                 $user->is_active = 1;
                 $user->force_password_reset = 0;
                 $user->location()->associate($location);
                 $user->first_name = $info['first_name'];
                 $user->last_name = $info['last_name'];
+                $user->email = $info['email'];
                 $user->phone = $info['phone'];
                 $user->slug = $info['password'];
                 $user->set_password($info['password']);

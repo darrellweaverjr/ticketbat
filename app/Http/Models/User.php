@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Mail\EmailSG;
 
 /**
  * Users class
