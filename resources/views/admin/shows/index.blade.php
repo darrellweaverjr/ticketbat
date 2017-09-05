@@ -453,6 +453,10 @@
                                                 <div class="show-error">
                                                     <textarea name="conversion_code" class="form-control" placeholder="<script>Place here the Conversion Code. For the Thank You Page</script>" rows="5"></textarea>
                                                 </div>
+                                                <label class="control-label">UA CC:</label>
+                                                <div class="show-error">
+                                                    <input type="text" name="ua_conversion_code" class="form-control" placeholder="53779511-1"/>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
