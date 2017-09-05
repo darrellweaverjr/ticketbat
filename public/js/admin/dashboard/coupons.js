@@ -81,7 +81,7 @@ var TableDatatablesButtons = function () {
                 }
             ],
             "order": [
-                [0, 'asc']
+                [6, 'desc']
             ],
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
