@@ -377,7 +377,7 @@ class DashboardController extends Controller
                         $query->where('purchases.status','=','Active')
                               ->orWhereNull('purchases.id');
                     })
-                    ->groupBy('venues.id','shows.id','discounts.id')->orderBy('tickets','DESC')->orderBy('discounts.code','ASC');
+                    ->groupBy('venues.id','shows.id','discounts.id')->orderBy('tickets','DESC')->orderBy('discounts.code','ASC')->orderBy('show_name','ASC');
             //conditions            
             if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
             {
