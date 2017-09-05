@@ -97,7 +97,7 @@ class DashboardController extends Controller
                 $data['search']['soldtime_end_date'] = date('Y-m-d');
             }
         }
-        if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '')
+        if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '' && $custom!='coupons')
         {
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',$data['search']['soldtime_start_date']];
             $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',$data['search']['soldtime_end_date']];
@@ -348,17 +348,17 @@ class DashboardController extends Controller
             //conditions to search
             $data = (!empty($info))? $info : $this->search($input,'coupons');
             $where = $data['where'];
-            $where[] = ['purchases.status','=','Active'];
-            $where[] = ['purchases.discount_id','!=',1];
+            $where[] = ['discounts.id','!=',1];
             $search = $data['search'];
             //get all records        
-            $data = DB::table('purchases')
-                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
-                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                    ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                    ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name, discounts.code,
-                                    discounts.distributed_at, discounts.description,
+            $data = DB::table('discounts')
+                    ->leftJoin('purchases', 'discounts.id', '=' ,'purchases.discount_id')
+                    ->leftJoin('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                    ->leftJoin('shows', 'shows.id', '=' ,'show_times.show_id')
+                    ->leftJoin('venues', 'venues.id', '=' ,'shows.venue_id')
+                    ->select(DB::raw('COALESCE(shows.name,"-") AS show_name, COUNT(purchases.id) AS purchases, 
+                                    COALESCE(venues.name,"-") AS venue_name, discounts.code,
+                                    discounts.distributed_at, discounts.description,discounts.start_date,discounts.end_date, purchases.id,
                                     COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
                                               WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
                                               AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
@@ -373,8 +373,26 @@ class DashboardController extends Controller
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
-                    ->groupBy('venues.id','shows.id','purchases.discount_id')->orderBy('venues.name','shows.name','discounts.code')
-                    ->get()->toArray();
+                    ->where(function($query) use ($search) {
+                        $query->where('purchases.status','=','Active')
+                              ->orWhereNull('purchases.id');
+                    })
+                    ->groupBy('venues.id','shows.id','discounts.id')->orderBy('venues.name','shows.name','discounts.code');
+            //conditions            
+            if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
+            {
+                $data->where(DB::raw('DATE(discounts.end_date)'),'>=',$search['soldtime_start_date']);
+                $data->where(function($query) use ($search) {
+                    $query->where(DB::raw('DATE(purchases.created)'),'>=',$search['soldtime_start_date'])
+                          ->orWhereNull('purchases.id');
+                });
+                $data->where(DB::raw('DATE(discounts.start_date)'),'<=',$search['soldtime_end_date']);
+                $data->where(function($query) use ($search) {
+                    $query->where(DB::raw('DATE(purchases.created)'),'<=',$search['soldtime_end_date'])
+                          ->orWhereNull('purchases.id');
+                });
+            }
+            $data = $data->get()->toArray();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
