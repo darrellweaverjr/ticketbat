@@ -294,9 +294,9 @@ $('#submit_model_update_profile').on('click', function(ev) {
 });
 //*****************************************************************************************
 //function impersonate
-var impersonate = function()
-{
+$('#impersonate_menu').on('click', function(ev) {
     $('#impersonate_link').html('');
+    $('#modal_model_impersonate').modal('hide');
     if($('#impersonate_user_type').is(':empty') || $('#modal_model_impersonate select[name="user_id"]').has('option').length <= 1)
     {
         jQuery.ajax({
@@ -341,7 +341,7 @@ var impersonate = function()
     }
     else
         $('#modal_model_impersonate').modal('show');
-};
+});
 
 $('#impersonate_user_type').on('click', 'input[type="checkbox"]', function(e){
     $('#modal_model_impersonate select[name="user_id"] option').css('display','none');

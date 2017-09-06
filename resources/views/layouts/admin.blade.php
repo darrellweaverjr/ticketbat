@@ -95,7 +95,7 @@
                                     </li>
                                     @if(Auth::user()->user_type_id == 1)
                                     <li>
-                                        <a href="javascript:impersonate();">
+                                        <a id="impersonate_menu">
                                             <i class="icon-rocket"></i> Impersonate
                                         </a>
                                     </li>
