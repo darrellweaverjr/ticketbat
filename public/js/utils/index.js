@@ -299,6 +299,12 @@ $('#impersonate_menu').on('click', function(ev) {
     $('#modal_model_impersonate').modal('hide');
     if($('#impersonate_user_type').is(':empty') || $('#modal_model_impersonate select[name="user_id"]').has('option').length <= 1)
     {
+        swal({
+            title: "Searching users to impersonate",
+            text: "Please, wait.",
+            type: "info",
+            showConfirmButton: false
+        });
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
@@ -317,6 +323,7 @@ $('#impersonate_menu').on('click', function(ev) {
                     $.each(data.users,function(k, v) {
                         $('#modal_model_impersonate select[name="user_id"]').append('<option value="'+v.id+'" rel="'+v.user_type+'">'+v.name+' ['+v.email+']'+' ('+v.user_type+')'+'</option>');
                     });
+                    swal.close();
                     //show modal
                     $('#modal_model_impersonate').modal('show');
                 }
