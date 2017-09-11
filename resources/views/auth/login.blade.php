@@ -27,8 +27,7 @@
     <body class=" login">
         <!-- BEGIN LOGO -->
         <div class="logo">
-            <a href="index.html">
-                <img src="{{config('app.theme')}}img/logo-big.png" alt="" /> </a>
+            <a href="/login"><img src="{{config('app.theme')}}img/logo-big.png" alt="" /></a>
         </div>
         <!-- END LOGO -->
         <!-- BEGIN LOGIN -->
