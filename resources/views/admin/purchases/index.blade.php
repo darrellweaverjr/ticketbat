@@ -82,9 +82,9 @@
                                 <td class="search-item clearfix" width="47%">
                                     <div class="search-content" >
                                         <b class="search-title"><a data-toggle="modal" href="#modal_details_{{$p->id}}">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
-                                        <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <a>{{$p->id}}</a> Qty: <a>{{$p->quantity}}</a> T.Type: <a>{{$p->ticket_type_type}}</a> Pkg: <a>{{$p->title}}</a>
-                                        <br> Ret.Price: <a>${{number_format($p->retail_price,2)}}</a> Fees: <a>${{number_format($p->processing_fee,2)}}</a> Commiss.: <a>${{number_format($p->commission_percent,2)}}</a> Savings: <a>${{number_format($p->savings,2)}}</a>
-                                        @if($previous_color != $color) Method: <a>{{$p->method}}</a> @if($p->transaction_id)AuthCode: <a>{{$p->authcode}}</a> RefNum: <a>{{$p->refnum}}</a>@endif @endif
+                                        <br><small><i>Email: <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a> ID: <b>{{$p->id}}</b> Qty: <b>{{$p->quantity}}</b> T.Type: <b>{{$p->ticket_type_type}}</b> Pkg: <b>{{$p->title}}</b>
+                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b> Fees: <b>${{number_format($p->processing_fee,2)}}</b> Commiss.: <b>${{number_format($p->commission_percent,2)}}</b> Savings: <b>${{number_format($p->savings,2)}}</b>
+                                        @if($previous_color != $color) Method: <b>{{$p->method}}</b> @if($p->transaction_id)AuthCode: <b>{{$p->authcode}}</b> RefNum: <b>{{$p->refnum}}</b>@endif @endif
                                         <br><b>NOTE: </b><span id="note_{{$p->id}}">@php echo $p->note @endphp<span></i></small>
                                     </div>
                                 </td>

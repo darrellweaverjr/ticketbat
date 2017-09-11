@@ -51,14 +51,15 @@
                                 <td width="17%"> <b class="uppercase"><a href="mailto:{{$c->email}}" target="_top">{{$c->name}}</a></b>
                                     <p><small><i>
                                         @if($c->email)Email: <a href="mailto:{{$c->email}}" target="_top">{{$c->email}}</a> <br>@endif
-                                        @if($c->phone)Phone: <a> {{$c->phone}} </a><br>@endif
+                                        @if($c->phone)Phone: <b>{{$c->phone}}</b><br>@endif
                                     </i></small></p>
                                 <td width="75%">
                                     <p><small><i>
-                                        @if($c->show_name)Show: <a>{{$c->show_name}}</a> @if($c->show_time) - Date/Time: <a> {{date('l, F jS, Y h:i A',strtotime($c->show_time))}} </a> @endif <br>@endif
-                                        @if($c->system_info)System: <a> {{$c->system_info}} </a>@endif
+                                        @if($c->show_name)Show: <b>{{$c->show_name}}</b> @if($c->show_time) - Date/Time: <b>{{date('l, F jS, Y h:i A',strtotime($c->show_time))}}</b> @endif <br>@endif
+                                        @if($c->system_info)System: <b>{{$c->system_info}}</b>@endif
                                     </i></small></p>
-                                    <i>{{$c->message}}</i> </td>
+                                    <p>{{$c->message}}</p> 
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

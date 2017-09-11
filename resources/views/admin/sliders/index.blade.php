@@ -72,7 +72,7 @@
                                 <td style="text-align:center;font-size:30px">{{$s->n_order}}</td>
                                 <td><center><b><img alt="- No image -" height="100px" width="400px" src="{{$s->image_url}}"/></b></center></td>
                                 <td><a href="{{env('IMAGE_URL_OLDTB_SERVER').$s->slug}}" target="_blank">{{$s->slug}}</a></td>
-                                <td><a>{{$s->alt}}</a></td>
+                                <td>{{$s->alt}}</td>
                                 <td>{{$s->filter}}</td>
                             </tr>
                             @endforeach
