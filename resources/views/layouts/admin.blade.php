@@ -235,6 +235,14 @@
                                 </a>
                             </li>
                             @endif
+                            @if(array_key_exists('CATEGORIES', Auth::user()->user_type->getACLs()))
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/categories')===false)) active @endif">
+                                <a href="/admin/categories" class="nav-link nav-toggle">
+                                    <i class="icon-trophy"></i>
+                                    <span class="title">Categories</span>
+                                </a>
+                            </li>
+                            @endif
                             @if(array_key_exists('COUPONS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/coupons')===false)) active @endif">
                                 <a href="/admin/coupons" class="nav-link nav-toggle">
