@@ -82,6 +82,74 @@ class Purchase extends Model
     /**
      * Get the purchase receipt info.
      */
+    public function share_tickets($shared=[])
+    {
+        try {
+            $current = date('Y-m-d H:i:s');
+            $qty_shared = 0;
+            $ticket_number = [];
+            foreach ($shared as $s)
+            {
+                if($qty_shared < $this->quantity)
+                {
+                    //check qty
+                    if($s['qty']>$this->quantity-$qty_shared)
+                        $s['qty'] = $this->quantity-$qty_shared;
+                    //set up customer
+                    $customer = Customer::where('email',$s['email'])->first();
+                    if(!$customer)
+                    {
+                        $user = User::where('email',$s['email'])->first();
+                        $customer = new Customer;
+                        $location = new Location;
+                        $location->created = $current;
+                        $location->updated = $current;
+                        $location->address = ($user)? $user->location()->address : 'Unknown';
+                        $location->city = ($user)? $user->location()->city : 'Unknown';
+                        $location->state = ($user)? $user->location()->state : 'NA';
+                        $location->zip = ($user)? $user->location()->zip : null;
+                        $location->country = ($user)? $user->location()->country : 'US';
+                        $location->lng = ($user)? $user->location()->lng : null;
+                        $location->lat = ($user)? $user->location()->lat : null;
+                        $location->save();
+                        //save customer
+                        $customer->location()->associate($location);
+                        $customer->first_name = trim(strip_tags($s['first_name']));
+                        $customer->last_name = (!empty($s['last_name']))? trim(strip_tags($s['last_name'])) : ($user)? $user->last_name : null;
+                        $customer->email = trim(strip_tags($s['email']));
+                        $customer->phone = ($user)? $user->phone : null;
+                        $customer->created = $current;
+                        $customer->updated = $current;
+                        $customer->save();
+                    }
+                    //create tickets number
+                    $tickets = implode(',', range($qty_shared+1,$s['qty']));
+                    $comment = (!empty(trim(strip_tags($s['comment']))))? trim(strip_tags($s['comment'])) : null;
+                    //save and update qty
+                    $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=>$customer->id, 'tickets'=>$tickets, 'comment'=>$comment];
+                    $qty_shared+=$s['qty'];
+                }
+            }
+            //if missing tickets to share put them to the customer
+            if($qty_shared<$this->quantity)
+            {
+                $tickets = implode(',', range($qty_shared+1,$s['qty']));
+                $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=> $this->customer_id, 'tickets'=>$tickets, 'comment'=>null];
+            }
+            //save if there is values to save
+            if(count($ticket_number))
+            {
+                DB::table('ticket_number')->where('purchases_id', $this->id)->delete();
+                DB::table('ticket_number')->insert($ticket_number);
+            }
+            return true;
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+    /**
+     * Get the purchase receipt info.
+     */
     public function get_receipt()
     {
         //get purchase info mix  
