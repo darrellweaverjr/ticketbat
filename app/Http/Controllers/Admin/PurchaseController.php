@@ -140,6 +140,8 @@ class PurchaseController extends Controller{
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search user
+                if(!empty($user_id) && is_numeric($user_id))
+                    $input['user_id'] = $user_id;
                 if(isset($input) && !empty($input['user_id']))
                     $where[] = ['purchases.user_id','=',$input['user_id']];
                 //search venue
@@ -230,7 +232,7 @@ class PurchaseController extends Controller{
                 {
                     if(Auth::user()->user_type->getACLs()['PURCHASES']['permission_scope'] != 'All')
                     {
-                        if(!count($input)) $purchases = []; else
+                        if(count($input)) 
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
@@ -262,7 +264,7 @@ class PurchaseController extends Controller{
                     }//all
                     else
                     {
-                        if(!count($input)) $purchases = []; else
+                        if(count($input)) 
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
@@ -288,7 +290,8 @@ class PurchaseController extends Controller{
                     }   
                     $status = Util::getEnumValues('purchases','status');
                 }
-                return view('admin.purchases.index',compact('purchases','status','search'));
+                $modal = (count($input))? 0 : 1;
+                return view('admin.purchases.index',compact('purchases','status','search','modal'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Index: '.$ex->getMessage());

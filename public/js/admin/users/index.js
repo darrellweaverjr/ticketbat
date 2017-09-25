@@ -104,7 +104,12 @@ var TableDatatablesManaged = function () {
                 $('#btn_model_purchases').prop("disabled",true);
             }
             $('#btn_model_add').prop("disabled",false);
+            $('#btn_model_search').prop("disabled",false);
         } 
+        //function search
+        $('#btn_model_search').on('click', function(ev) {
+            $('#modal_model_search').modal('show');
+        });
         //function full reset form
         var fullReset = function(){
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
@@ -321,20 +326,10 @@ var TableDatatablesManaged = function () {
         $('#btn_model_purchases').on('click', function(ev) {
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            var myWindow = window.open('','_blank');
-            myWindow.document.write('<form method="post" id="purchases" action="/admin/purchases" target="_self">\n\
-                    <input type="hidden" name="_token" value="'+$('meta[name="csrf-token"]').attr('content')+'">\n\
-                    <input type="hidden" name="venue" value="">\n\
-                    <input type="hidden" name="user_id" value="'+id+'">\n\
-                    <input type="hidden" name="show" value="">\n\
-                    <input type="hidden" name="showtime_start_date" value="">\n\
-                    <input type="hidden" name="showtime_end_date" value="">\n\
-                    <input type="hidden" name="soldtime_start_date" value="">\n\
-                    <input type="hidden" name="soldtime_end_date" value="">\n\
-               </form><script>document.getElementById("purchases").submit();</script>');
+            window.open('/admin/purchases?user_id='+id,'_blank');
         });
         //init functions
-        check_models();        
+        check_models();   
     }
     return {
         //main function to initiate the module

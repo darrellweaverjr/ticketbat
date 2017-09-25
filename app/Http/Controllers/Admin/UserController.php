@@ -54,15 +54,65 @@ class UserController extends Controller{
                 $venues = [];
                 $countries = [];
                 $users = [];
+                $search = [];
+                $where = [['users.id','>',0]];
+                //search first_name
+                if(isset($input) && isset($input['first_name']))
+                {
+                    $search['first_name'] = $input['first_name'];
+                    if($search['first_name'] != '')
+                        $where[] = ['users.first_name','like','%'.$input['first_name'].'%'];
+                }
+                else
+                    $search['first_name'] = '';
+                //search last_name
+                if(isset($input) && isset($input['last_name']))
+                {
+                    $search['last_name'] = $input['last_name'];
+                    if($search['last_name'] != '')
+                        $where[] = ['users.last_name','like','%'.$input['last_name'].'%'];
+                }
+                else
+                    $search['last_name'] = '';                
+                //search email
+                if(isset($input) && isset($input['email']))
+                {
+                    $search['email'] = $input['email'];
+                    if($search['email'] != '')
+                        $where[] = ['users.email','like','%'.$input['email'].'%'];
+                }
+                else
+                    $search['email'] = '';
+                //search role
+                if(isset($input) && !empty($input['user_type_id']))
+                {
+                    $search['user_type_id'] = $input['user_type_id'];
+                    $where[] = ['users.user_type_id','=',$search['user_type_id']];
+                }
+                else
+                    $search['user_type_id'] = 0;
+               //search status
+                if(isset($input) && !empty($input['is_active']))
+                {
+                    $search['is_active'] = $input['is_active'];
+                    if($search['is_active'] > 0)
+                        $where[] = ['users.is_active','>',0];
+                    else
+                        $where[] = ['users.is_active','=',0];
+                }
+                else
+                    $search['is_active'] = 0;
                 //if user has permission to view
                 if(in_array('View',Auth::user()->user_type->getACLs()['USERS']['permission_types']))
                 {
                     if(Auth::user()->user_type->getACLs()['USERS']['permission_scope'] != 'All')
                     {
                         //get audit user records        
+                        if(count($input)) 
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
                                 ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
+                                ->where($where)
                                 ->where('users.audit_user_id','=',Auth::user()->id)
                                 ->orderBy('users.last_name')
                                 ->get();
@@ -70,9 +120,11 @@ class UserController extends Controller{
                     else 
                     {
                         //get all records        
+                        if(count($input)) 
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
                                 ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
+                                ->where($where)
                                 ->orderBy('users.last_name')
                                 ->get();
                     }  
@@ -83,7 +135,8 @@ class UserController extends Controller{
                     $countries = Country::orderBy('code')->get(['code','name']);
                 }
                 //return view
-                return view('admin.users.index',compact('users','user_types','discounts','venues','countries'));
+                $modal = (count($input))? 0 : 1;
+                return view('admin.users.index',compact('users','user_types','discounts','venues','countries','search','modal'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Users Index: '.$ex->getMessage());

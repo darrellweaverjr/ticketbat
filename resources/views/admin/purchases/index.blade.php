@@ -27,9 +27,6 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
-                            <button id="btn_model_refresh" class="btn sbold bg-blue">Refresh
-                                <i class="fa fa-refresh"></i>
-                            </button>
                             <button id="btn_model_search" class="btn sbold grey-salsa">Search
                                 <i class="fa fa-search"></i>
                             </button>
@@ -203,7 +200,7 @@
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN SEARCH MODAL-->
-    <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+    <div id="modal_model_search" class="modal @if(!empty($modal)) show @else fade @endif" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
@@ -331,7 +328,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').modal('hide');">Cancel</button>
                                     <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
                                                                                                     title: 'Searching information',
                                                                                                     text: 'Please, wait.',

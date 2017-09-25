@@ -25,6 +25,9 @@
                     </div>
                     <div class="actions">
                         <div class="btn-group">
+                            <button id="btn_model_search" class="btn sbold grey-salsa">Search
+                                <i class="fa fa-search"></i>
+                            </button>
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['USERS']['permission_types']))
                             <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
                                 <i class="fa fa-plus"></i>
@@ -90,6 +93,90 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN SEARCH MODAL-->
+    <div id="modal_model_search" class="modal @if(!empty($modal)) show @else fade @endif" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:470px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="/admin/users" id="form_model_search">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">First Name:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <input type="text" name="first_name" class="form-control input-large" value="{{$search['first_name']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Last Name:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <input type="text" name="last_name" class="form-control input-large" value="{{$search['last_name']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Email:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <input type="text" name="email" class="form-control input-large" value="{{$search['email']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Role:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <select class="form-control input-large" name="user_type_id">
+                                                <option @if(empty($search['user_type_id'])) selected @endif value="0">All</option>
+                                                @foreach($user_types as $index=>$t)
+                                                <option @if($t->id==$search['user_type_id']) selected @endif value="{{$t->id}}">{{$t->user_type}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Status:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <select class="form-control  input-large" name="is_active">
+                                                <option @if(empty($search['is_active'])) selected @endif value="0">All</option>
+                                                <option @if($search['is_active']==-1) selected @endif value="-1">Inactive</option>
+                                                <option @if($search['is_active']==1) selected @endif value="1">Active</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
+                                                                                                    title: 'Searching information',
+                                                                                                    text: 'Please, wait.',
+                                                                                                    type: 'info',
+                                                                                                    showConfirmButton: false
+                                                                                                });" >Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SEARCH MODAL-->
     <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:1000px !important;">
@@ -276,4 +363,9 @@
 
 @section('scripts')
 <script src="/js/admin/users/index.js" type="text/javascript"></script>
+@if(!empty($modal))
+<script type="text/javascript">
+$('#modal_model_search').modal('show');
+</script>
+@endif
 @endsection

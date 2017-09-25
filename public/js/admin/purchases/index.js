@@ -99,7 +99,6 @@ var TableDatatablesManaged = function () {
                 $('button[id*="btn_model_"]').prop("disabled",true);
             }
             $('#btn_model_search').prop("disabled",false);
-            $('#btn_model_refresh').prop("disabled",false);
         } 
         //function to change status to purchase
         function change_status(id,status)
@@ -179,10 +178,6 @@ var TableDatatablesManaged = function () {
             }
             else
                 change_status(id,status);
-        });
-        //function refresh
-        $('#btn_model_refresh').on('click', function(ev) {
-            $('#form_model_search').submit();
         });
         //function search
         $('#btn_model_search').on('click', function(ev) {

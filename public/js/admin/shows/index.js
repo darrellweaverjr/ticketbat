@@ -1198,7 +1198,7 @@ var TableDatatablesManaged = function () {
                             if(data.bands && data.bands.length)
                             {
                                 $.each(data.bands,function(k, v) {
-                                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                //$('#tb_show_bands').append('<tr class="'+v.show_id+'*'+v.band_id+'*'+v.n_order+'"><td>'+v.n_order+'</td><td>'+v.name+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                               
                                 });
                             }
                         }    
@@ -1458,16 +1458,7 @@ var TableDatatablesManaged = function () {
         //open purchases pagen on click when purchase no available
         $(document).on('click', 'a.link-purchases', function(e){
             e.preventDefault();
-            var myWindow = window.open('','_blank');
-            myWindow.document.write('<form method="post" id="purchases" action="/admin/purchases" target="_self">\n\
-                    <input type="hidden" name="_token" value="'+$('meta[name="csrf-token"]').attr('content')+'">\n\
-                    <input type="hidden" name="venue" value="">\n\
-                    <input type="hidden" name="show" value="'+$(this).attr('href')+'">\n\
-                    <input type="hidden" name="showtime_start_date" value="'+$(this).attr('rel')+'">\n\
-                    <input type="hidden" name="showtime_end_date" value="'+$(this).attr('rel')+'">\n\
-                    <input type="hidden" name="soldtime_start_date" value="">\n\
-                    <input type="hidden" name="soldtime_end_date" value="">\n\
-               </form><script>document.getElementById("purchases").submit();</script>');
+            window.open('/admin/purchases?show='+$(this).attr('href')+'?showtime_start_date='+$(this).attr('rel')+'?showtime_end_date='+$(this).attr('rel'),'_blank');
         });
         $('#available_show_times').on('click', function(ev) {
             $('#tb_show_times').empty();
