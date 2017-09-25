@@ -208,7 +208,7 @@ class PurchaseController extends Controller{
                     $where[] = ['purchases.user_id','=',$search['user']];
                 }
                 else
-                    $data['search']['user'] = '';
+                    $search['user'] = '';
                 //search customer      
                 if(isset($input) && !empty($input['customer']))
                 {
@@ -216,12 +216,21 @@ class PurchaseController extends Controller{
                     $where[] = ['purchases.customer_id','=',$search['customer']];
                 }
                 else
-                    $data['search']['customer'] = '';
+                    $search['customer'] = '';
+                //search order id      
+                if(isset($input) && !empty($input['order_id']) && is_numeric($input['order_id']))
+                {
+                    $search['order_id'] = $input['order_id'];
+                    $where[] = ['purchases.id','=',$search['order_id']];
+                }
+                else
+                    $search['order_id'] = ''; 
                 //if user has permission to view                
                 if(in_array('View',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                 {
                     if(Auth::user()->user_type->getACLs()['PURCHASES']['permission_scope'] != 'All')
                     {
+                        if(!count($input)) $purchases = []; else
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
@@ -253,6 +262,7 @@ class PurchaseController extends Controller{
                     }//all
                     else
                     {
+                        if(!count($input)) $purchases = []; else
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')

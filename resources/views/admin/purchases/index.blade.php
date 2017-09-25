@@ -27,6 +27,9 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
+                            <button id="btn_model_refresh" class="btn sbold bg-blue">Refresh
+                                <i class="fa fa-refresh"></i>
+                            </button>
                             <button id="btn_model_search" class="btn sbold grey-salsa">Search
                                 <i class="fa fa-search"></i>
                             </button>
@@ -312,6 +315,14 @@
                                                     <option @if(!empty($search['customer']) && $c->id==$search['customer']) selected @endif value="{{$c->id}}">{{$c->email}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Order id:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" />
                                         </div>
                                     </div>
                                 </div>
