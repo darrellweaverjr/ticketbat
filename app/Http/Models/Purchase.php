@@ -115,7 +115,7 @@ class Purchase extends Model
                         //save customer
                         $customer->location()->associate($location);
                         $customer->first_name = trim(strip_tags($s['first_name']));
-                        $customer->last_name = (!empty($s['last_name']))? trim(strip_tags($s['last_name'])) : ($user)? $user->last_name : null;
+                        $customer->last_name = (!empty($s['last_name']))? trim(strip_tags($s['last_name'])) : (($user)? $user->last_name : null);
                         $customer->email = trim(strip_tags($s['email']));
                         $customer->phone = ($user)? $user->phone : null;
                         $customer->created = $current;
@@ -123,17 +123,16 @@ class Purchase extends Model
                         $customer->save();
                     }
                     //create tickets number
-                    $tickets = implode(',', range($qty_shared+1,$s['qty']));
-                    $comment = (!empty(trim(strip_tags($s['comment']))))? trim(strip_tags($s['comment'])) : null;
-                    //save and update qty
-                    $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=>$customer->id, 'tickets'=>$tickets, 'comment'=>$comment];
+                    $tickets = implode(',', range($qty_shared+1,$qty_shared+$s['qty']));
                     $qty_shared+=$s['qty'];
+                    $comment = (!empty(trim(strip_tags($s['comment']))))? trim(strip_tags($s['comment'])) : null;
+                    $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=>$customer->id, 'tickets'=>$tickets, 'comment'=>$comment];
                 }
             }
             //if missing tickets to share put them to the customer
             if($qty_shared<$this->quantity)
             {
-                $tickets = implode(',', range($qty_shared+1,$s['qty']));
+                $tickets = implode(',', range($qty_shared+1,$this->quantity));
                 $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=> $this->customer_id, 'tickets'=>$tickets, 'comment'=>null];
             }
             //save if there is values to save
@@ -290,7 +289,7 @@ class Purchase extends Model
                     PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
                     $pdf_tickets[] = $pdfUrlT;
                     
-                    if($type != 'reminder')
+                    if($type_email != 'reminder')
                     {  
                         //row on email to each purchase
                         $rows_html.='<tr>'
@@ -330,7 +329,7 @@ class Purchase extends Model
                 $email->category('Receipts');
                 $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
                 //check type of email to send
-                if($type === 'reminder')
+                if($type_email === 'reminder')
                 {
                     $email->body('reminder',['purchase'=>$purchases,'customer'=>$customer]);
                     $email->template('330de7c4-3d1c-47b5-9f48-ca376cbbea99');
@@ -353,7 +352,7 @@ class Purchase extends Model
                         $email->category('Receipts');
                         $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
                         //check type of email to send
-                        if($type === 'reminder')
+                        if($type_email === 'reminder')
                         {
                             $email->body('reminder',['purchase'=>$purchases,'customer'=>$customer]);
                             $email->template('330de7c4-3d1c-47b5-9f48-ca376cbbea99');
