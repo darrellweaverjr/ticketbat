@@ -55,5 +55,6 @@ class Kernel extends HttpKernel
         'permissions' => \App\Http\Middleware\Permissions::class,
         'cors' => \App\Http\Middleware\CORS::class,
         'app.security' => \App\Http\Middleware\AppSecurity::class,
+        'productioncheck' => \App\Http\Middleware\ProductionCheck::class,
     ];
 }
