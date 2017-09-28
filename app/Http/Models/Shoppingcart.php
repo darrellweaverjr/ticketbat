@@ -358,4 +358,27 @@ class Shoppingcart extends Model
             return ['success'=>false, 'msg'=>'The system could not remove the tickets!'];
         }
     }
+    /**
+     * Get qty items to the shoppingcart.
+     */
+    public static function qty_items($s_token=null)
+    {
+        if(empty($s_token))
+            $s_token = Util::s_token (false, true);
+        $items = Shoppingcart::where('session_id','=',$s_token)->get();
+        foreach ($items as $i)
+        {
+            if(!empty($i->options) && Util::isJSON($i->options))
+            {
+                $option = json_decode($i->options,true);
+                if(!empty($option['consignments']))
+                {
+                    $consignment = Consignment::find($option['consignments']);
+                    if(!($consignment && Auth::check() && Auth::user()->id==$consignment->seller_id))
+                        Shoppingcart::where('id','=',$i->id)->delete();
+                }
+            }
+        }
+        return Shoppingcart::where('session_id','=',$s_token)->count();
+    }
 }
