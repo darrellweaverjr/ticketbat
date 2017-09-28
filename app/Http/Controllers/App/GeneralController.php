@@ -22,7 +22,7 @@ class GeneralController extends Controller{
     public function init()
     {
         try {   
-            return Util::json(['success'=>true,'countries'=>$this->countries(),'cities'=>$this->cities(),'shows'=>$this->shows(),'venues'=>$this->venues(),'s_token'=>uniqid()]);
+            return Util::json(['success'=>true,'countries'=>$this->countries(),'cities'=>$this->cities(),'shows'=>$this->shows(),'venues'=>$this->venues(),'s_token'=> Util::s_token(true)]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }

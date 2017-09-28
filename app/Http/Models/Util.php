@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\File;
 
 
@@ -269,5 +270,29 @@ class Util extends Model
         } catch (Exception $ex) {
             return '';
         }
+    }
+    
+    /**
+     * generate uniq session_id
+     */
+    public static function s_token($for_app=false,$insert_session=false,$store_token=null)
+    {
+        if(!empty($store_token))
+        {
+            $s_token = $store_token;
+            Session::put('s_token', $s_token);
+        } 
+        else
+        {
+            $s_token = Session::get('s_token',null);
+            if(empty($s_token))
+            {
+                $prefix = ($for_app)? 'app_' : 'web_';
+                $s_token = uniqid($prefix).mt_rand (10,99);
+                if($insert_session)
+                    Session::put('s_token', $s_token);
+            }
+        }
+        return $s_token;
     }
 }
