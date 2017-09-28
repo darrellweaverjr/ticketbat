@@ -5,6 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Shoppingcart class
@@ -255,13 +256,25 @@ class Shoppingcart extends Model
     /**
      * Add items to the shoppingcart.
      */
-    public static function add($show_time_id,$ticket_id,$qty,$s_token)
+    public static function add($show_time_id,$ticket_id,$qty,$s_token,$seat_id=null)
     {
         try {
             //get pricing first
-            $ticket = DB::table('tickets')
-                        ->select('id','retail_price','processing_fee','ticket_type','max_tickets')
+            if(empty($seat_id))
+            {
+                $ticket = DB::table('tickets')
+                        ->select(DB::raw('id AS ticket_id, retail_price, processing_fee, ticket_type'))
                         ->where('id','=',$ticket_id)->where('is_active','>',0)->first();
+            }
+            else
+            {
+                $ticket = DB::table('seats')
+                        ->join('tickets', 'seats.ticket_id', '=' ,'tickets.id')
+                        ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat,
+                                          COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                          COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee'))
+                        ->where('seats.id','=',$seat_id)->where('seats.status','=','Created')->first();
+            }
             if(!$ticket)
                 return ['success'=>false, 'msg'=>'That ticket is not longer available!'];
             //get valid showtime
@@ -269,7 +282,7 @@ class Shoppingcart extends Model
             if(!$show_time)
                 return ['success'=>false, 'msg'=>'That event is not longer available!'];
             //continue if valid
-            $item = Shoppingcart::where('item_id','=',$show_time->id)->where('ticket_id','=',$ticket->id)->where('session_id','=',$s_token)->first();
+            $item = (!empty($seat_id))? null : Shoppingcart::where('item_id','=',$show_time->id)->where('ticket_id','=',$ticket->ticket_id)->where('session_id','=',$s_token)->first();
             if($item)
             {
                 $item->number_of_items += $qty;
@@ -279,20 +292,35 @@ class Shoppingcart extends Model
             else
             {
                 $i = Shoppingcart::where('session_id','=',$s_token)->first();
+                //save item into shoppingcart
                 $item = new Shoppingcart;
                 $item->item_id = $show_time->id;
-                $item->ticket_id = $ticket->id;
+                $item->ticket_id = $ticket->ticket_id;
                 $item->session_id = $s_token;
+                $item->user_id = (Auth::check())? Auth::user()->id : Session::get('guest_email',null);
                 $item->number_of_items = $qty;
-                $item->product_type = $ticket->ticket_type;
                 $item->cost_per_product = $ticket->retail_price;
                 $item->total_cost = Util::round(($item->cost_per_product+$ticket->processing_fee)*$item->number_of_items);
-                $item->coupon = ($i)? $i->coupon : null;
+                $item->coupon = ($i && !empty($i->coupon))? $i->coupon : Session::get('coupon',null);
                 $item->status = 0;
-                $item->options = json_encode([]);
                 $item->timestamp = date('Y-m-d H:i:s');
+                if(!empty($seat_id))
+                {
+                    $item->item_name = $ticket->seat;
+                    $item->product_type = $ticket->ticket_type.' - Seat: '.$ticket->seat;
+                    $item->options = json_encode(['consignments'=>$ticket->consignment_id,'seats'=>$ticket->seat_id]);
+                }
+                else
+                {
+                    $item->item_name = null;
+                    $item->product_type = $ticket->ticket_type;
+                    $item->options = json_encode([]);
+                }
                 $item->save();
             }
+            //overwrite default values for all items into shoppingcart
+            Shoppingcart::where('session_id','=',$s_token)->update(['user_id'=>$item->user_id,'coupon'=>$item->coupon]);
+            //return
             return ['success'=>true, 'msg'=>'Tickets added successfully!'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'The system could not add the tickets!'];
