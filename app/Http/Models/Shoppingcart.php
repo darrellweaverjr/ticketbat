@@ -4,6 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Shoppingcart class
@@ -249,6 +250,84 @@ class Shoppingcart extends Model
             }
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    /**
+     * Add items to the shoppingcart.
+     */
+    public static function add($show_time_id,$ticket_id,$qty,$s_token)
+    {
+        try {
+            //get pricing first
+            $ticket = DB::table('tickets')
+                        ->select('id','retail_price','processing_fee','ticket_type','max_tickets')
+                        ->where('id','=',$ticket_id)->where('is_active','>',0)->first();
+            if(!$ticket)
+                return ['success'=>false, 'msg'=>'That ticket is not longer available!'];
+            //get valid showtime
+            $show_time = ShowTime::where('id','=',$show_time_id)->where('is_active','>',0)->first();
+            if(!$show_time)
+                return ['success'=>false, 'msg'=>'That event is not longer available!'];
+            //continue if valid
+            $item = Shoppingcart::where('item_id','=',$show_time->id)->where('ticket_id','=',$ticket->id)->where('session_id','=',$s_token)->first();
+            if($item)
+            {
+                $item->number_of_items += $qty;
+                $item->total_cost = round($item->cost_per_product*$item->number_of_items,2, PHP_ROUND_HALF_UP);
+                $item->save();
+            }
+            else
+            {
+                $i = Shoppingcart::where('session_id','=',$s_token)->first();
+                $item = new Shoppingcart;
+                $item->item_id = $show_time->id;
+                $item->ticket_id = $ticket->id;
+                $item->session_id = $s_token;
+                $item->number_of_items = $qty;
+                $item->product_type = $ticket->ticket_type;
+                $item->cost_per_product = $ticket->retail_price;
+                $item->total_cost = Util::round(($item->cost_per_product+$ticket->processing_fee)*$item->number_of_items);
+                $item->coupon = ($i)? $i->coupon : null;
+                $item->status = 0;
+                $item->options = json_encode([]);
+                $item->timestamp = date('Y-m-d H:i:s');
+                $item->save();
+            }
+            return ['success'=>true, 'msg'=>'Tickets added successfully!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'The system could not add the tickets!'];
+        }
+    }
+    /**
+     * Update qty items to the shoppingcart.
+     */
+    public static function update($shoppingcart_id,$qty,$s_token)
+    {
+        try {
+            //get item to update
+            $item = Shoppingcart::where('id','=',$shoppingcart_id)->where('session_id','=',$s_token)->first();
+            if($item)
+            {
+                $item->number_of_items = $qty;
+                $item->total_cost = Util::round(($item->cost_per_product+$item->ticket->processing_fee)*$item->number_of_items);
+                $item->save();
+                return ['success'=>true, 'msg'=>'Tickets updated successfully!'];
+            }
+            return ['success'=>false, 'msg'=>'That ticket is not longer available!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'The system could not update the tickets!'];
+        }
+    }
+    /**
+     * Remove items to the shoppingcart.
+     */
+    public static function remove($shoppingcart_id,$s_token)
+    {
+        try {
+            Shoppingcart::where('id','=',$shoppingcart_id)->where('session_id','=',$s_token)->delete();
+            return ['success'=>true, 'msg'=>'Tickets removed successfully!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'The system could not remove the tickets!'];
         }
     }
 }
