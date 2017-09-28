@@ -41,7 +41,7 @@ class ShoppingCartController extends Controller{
             $info = Input::all();
             if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']) && !empty($info['s_token']))
             {
-                $success = Shoppingcart::add($info['show_time_id'], $info['ticket_id'], $info['qty'], $info['s_token']);
+                $success = Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $info['s_token']);
                 return Util::json($success);
             }
             return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
@@ -59,7 +59,7 @@ class ShoppingCartController extends Controller{
             $info = Input::all();
             if(!empty($info['shoppingcart_id']) && !empty($info['qty']) && !empty($info['s_token']))
             {
-                $success = Shoppingcart::update($info['shoppingcart_id'], $info['qty'], $info['s_token']);
+                $success = Shoppingcart::update_item($info['shoppingcart_id'], $info['qty'], $info['s_token']);
                 if($success['success'])
                 {
                     $totals = Shoppingcart::calculate_session($info['s_token']);
@@ -85,7 +85,7 @@ class ShoppingCartController extends Controller{
             if(!empty($info['shoppingcart_id']) && !empty($info['s_token']))
             {
                 //find and remove item
-                $success = Shoppingcart::remove($info['shoppingcart_id'], $info['s_token']);
+                $success = Shoppingcart::remove_item($info['shoppingcart_id'], $info['s_token']);
                 if($success['success'])
                 {
                     $totals = Shoppingcart::calculate_session($info['s_token']);

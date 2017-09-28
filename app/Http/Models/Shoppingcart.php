@@ -53,7 +53,7 @@ class Shoppingcart extends Model
                             ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
-                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id,
+                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id, shoppingcart.options,
                                               shoppingcart.product_type, shoppingcart.cost_per_product, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, shoppingcart.number_of_items, shoppingcart.item_id,
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent,
                                               (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon,
@@ -78,14 +78,14 @@ class Shoppingcart extends Model
                     $i->number_of_items = $i->available_qty;
                     $i->processing_fee = $fee*$i->number_of_items;
                     $i->total_cost = ($i->cost_per_product+$fee)*$i->number_of_items;
-                    Shoppingcart::where('id','=',$i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost]);
+                    Shoppingcart::where('id', $i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost]);
                 }
                 else
                     $i->unavailable = 1;
             }
             //if there is unavailable item remove it
             if($i->unavailable > 0)
-                Shoppingcart::where('id','=',$i->id)->delete();
+                Shoppingcart::where('id', $i->id)->delete();
         }
         //return
         return $items;
@@ -196,7 +196,7 @@ class Shoppingcart extends Model
             //check if add or remove coupon code
             if(empty($code) || $code=='0000')
             {
-                $response = DB::table('shoppingcart')->where('session_id','=',$session_id)->update(['coupon'=>null]);
+                $response = Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>null]);
                 if($response || $response >= 0)
                     return ['success'=>true];
                 return ['success'=>false,'msg'=>'There was an error trying to remove the coupon.'];
@@ -240,7 +240,7 @@ class Shoppingcart extends Model
                                                   COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num, 
                                                   COALESCE(discount_tickets.end_num,discounts.end_num,null) AS end_num'))
                                 ->where('discounts.id',$coupon->id)->get();
-                        $response = DB::table('shoppingcart')->where('session_id','=',$session_id)->update(['coupon'=>json_encode($coupon,true)]);
+                        $response = Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>json_encode($coupon,true)]);
                         if($response || $response >= 0)
                             return ['success'=>true];
                         return ['success'=>false,'msg'=>'There was an error trying to add the coupon.'];
@@ -256,7 +256,7 @@ class Shoppingcart extends Model
     /**
      * Add items to the shoppingcart.
      */
-    public static function add($show_time_id,$ticket_id,$qty,$s_token,$seat_id=null)
+    public static function add_item($show_time_id,$ticket_id,$qty,$s_token,$seat_id=null)
     {
         try {
             //get pricing first
@@ -270,7 +270,7 @@ class Shoppingcart extends Model
             {
                 $ticket = DB::table('seats')
                         ->join('tickets', 'seats.ticket_id', '=' ,'tickets.id')
-                        ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat,
+                        ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat, tickets.ticket_type,
                                           COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
                                           COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee'))
                         ->where('seats.id','=',$seat_id)->where('seats.status','=','Created')->first();
@@ -329,7 +329,7 @@ class Shoppingcart extends Model
     /**
      * Update qty items to the shoppingcart.
      */
-    public static function update($shoppingcart_id,$qty,$s_token)
+    public static function update_item($shoppingcart_id,$qty,$s_token)
     {
         try {
             //get item to update
@@ -349,7 +349,7 @@ class Shoppingcart extends Model
     /**
      * Remove items to the shoppingcart.
      */
-    public static function remove($shoppingcart_id,$s_token)
+    public static function remove_item($shoppingcart_id,$s_token)
     {
         try {
             Shoppingcart::where('id','=',$shoppingcart_id)->where('session_id','=',$s_token)->delete();
