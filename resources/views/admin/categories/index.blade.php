@@ -68,7 +68,7 @@
                                             </label>
                                         </td>
                                         <td width="88%">{{$c->name}}</td>
-                                        <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$c->id}}" @if($c->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
+                                        <td width="10%">{{$c->disabled}}<input type="checkbox" class="make-switch" name="active" value="{{$c->id}}" @if($c->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
                                     </tr>
                                     @foreach ($c->children()->get() as $children)
                                         <tr>
@@ -79,7 +79,7 @@
                                                 </label>
                                             </td>
                                             <td width="88%"><span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>{{$children->name}}</td>
-                                            <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$children->id}}" @if($children->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
+                                            <td width="10%">{{$children->disabled}}<input type="checkbox" class="make-switch" name="active" value="{{$children->id}}" @if($children->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
                                         </tr>
                                         @foreach ($children->children()->get() as $niece)
                                             <tr>
@@ -90,7 +90,7 @@
                                                     </label>
                                                 </td>
                                                 <td width="88%"><span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>{{$niece->name}}</td>
-                                                <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$niece->id}}" @if($niece->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
+                                                <td width="10%">{{$niece->disabled}}<input type="checkbox" class="make-switch" name="active" value="{{$niece->id}}" @if($niece->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
                                             </tr>
                                         @endforeach
                                     @endforeach
