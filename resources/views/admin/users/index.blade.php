@@ -94,7 +94,7 @@
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN SEARCH MODAL-->
-    <div id="modal_model_search" class="modal @if(!empty($modal)) show @else fade @endif" tabindex="1" data-backdrop="static" data-keyboard="false">
+    <div id="modal_model_search" class="modal fade" data-modal="{{$modal}}" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
@@ -363,9 +363,4 @@
 
 @section('scripts')
 <script src="/js/admin/users/index.js" type="text/javascript"></script>
-@if(!empty($modal))
-<script type="text/javascript">
-$('#modal_model_search').modal('show');
-</script>
-@endif
 @endsection

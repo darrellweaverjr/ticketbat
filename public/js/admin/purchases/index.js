@@ -655,6 +655,9 @@ var TableDatatablesManaged = function () {
         //init functions
         $('#form_model_email [name="body"]').summernote({height:150});
         check_models(); 
+        //function autoshow modal search
+        if(parseInt($('#modal_model_search').data('modal')) > 0)
+            $('#modal_model_search').modal('show');
     }
     return {
         //main function to initiate the module
