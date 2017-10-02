@@ -90,7 +90,7 @@
                                                     </label>
                                                 </td>
                                                 <td width="88%"><span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>{{$niece->name}}</td>
-                                                <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$niece->id}}" @if(!empty($nieve->disabled)) checked @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
+                                                <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$niece->id}}" @if(!empty($niece->disabled)) checked @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
                                             </tr>
                                         @endforeach
                                     @endforeach
