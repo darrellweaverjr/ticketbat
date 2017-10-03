@@ -100,15 +100,34 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 });
 
 //PRODUCTION ROUTES
-/*
 Route::group(['prefix' => 'production','namespace' => 'Production'], function () {
+    //general
+    Route::post('general/contact', 'GeneralController@contact');    
+    Route::post('general/country', 'GeneralController@country');
+    Route::post('general/region', 'GeneralController@region');
+    //user
+    Route::post('user/login', 'UserController@login');
+    Route::post('user/logout', 'UserController@logout');
+    Route::post('user/register', 'UserController@register');
+    Route::post('user/recover_password', 'UserController@recover_password');
+    Route::post('user/reset_password', 'UserController@reset_password');
+    //user purchase
+    Route::post('user/purchases/share', 'UserPurchaseController@share')->middleware('productioncheck');
+    Route::get('user/purchases/receipts/{id}', 'UserPurchaseController@receipts')->middleware('productioncheck');
+    Route::get('user/purchases/tickets/{id}', 'UserPurchaseController@tickets')->middleware('productioncheck');
+    Route::match(['get','post'], 'user/purchases', 'UserPurchaseController@index')->middleware('productioncheck');
+    //user consignment
+    Route::post('user/consignments/save', 'UserConsignmentController@save')->middleware('productioncheck');
+    Route::match(['get','post'], 'user/consignments', 'UserConsignmentController@index')->middleware('productioncheck');
+    //shoppingcart
+    Route::post('shoppingcart/count', 'ShoppingcartController@count');
+    Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
+    Route::match(['get','post'], 'shoppingcart', 'ShoppingcartController@index');
     //home
     Route::get('/', function () { return redirect()->route('index'); });
     Route::get('/home', 'HomeController@index')->name('index');
-    Route::post('home/search', 'HomeController@search');    
-    //general
-    Route::post('general/contact', 'GeneralController@contact');
+    Route::post('home/search', 'HomeController@search');
     //event
-    Route::get('event/{slug}', 'PurchaseController@tickets')->middleware('permissions:PURCHASES');
+    Route::get('events/{slug}', 'EventController@event');
+    Route::match(['get','post'], 'events', 'EventController@index');
 });
- */
