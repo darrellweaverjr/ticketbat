@@ -140,10 +140,12 @@ class PurchaseController extends Controller{
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search user
-                if(!empty($user_id) && is_numeric($user_id))
-                    $input['user_id'] = $user_id;
-                if(isset($input) && !empty($input['user_id']))
-                    $where[] = ['purchases.user_id','=',$input['user_id']];
+                if(isset($input) && !isset($input['user']))
+                {
+                    $search['user'] = $input['user'];
+                    if($search['user'] != '')
+                        $where[] = ['purchases.user_id','=',$input['user']];
+                }
                 //search venue
                 if(isset($input) && isset($input['venue']))
                 {
