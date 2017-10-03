@@ -11,7 +11,7 @@
 @section('content')
 
 <div class="page-content" style="margin:40px!important;">     
-@if(empty($consignments))
+@if(empty($consignments) || !count($consignments))
 <div>       
     <h1>There are no consignments to list</h1>
 </div>

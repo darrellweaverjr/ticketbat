@@ -11,7 +11,7 @@
 @section('content')
 
 <div class="page-content" style="margin:40px!important;">     
-@if(empty($purchases))
+@if(empty($purchases) || !count($purchases))
 <div>       
     <h1>There are no purchases to list</h1>
 </div>
