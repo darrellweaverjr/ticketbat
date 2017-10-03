@@ -65,6 +65,7 @@ var Logout = function () {
 var ShoppingcartQtyItems = function () {    
     var initQty = function () {
         //function to autoload qty of items into session cart
+        var time = $('#timerClock').data('countdown');
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
@@ -76,17 +77,22 @@ var ShoppingcartQtyItems = function () {
                     if(data.qty_items>0)
                         Countdown.init();
                     else
-                        Countdown.close();
+                    {
+                        if(time!='')
+                            Countdown.close();
+                    }
                 }
                 else
                 {
                     $('#shoppingcart_qty_items').html(0);
-                    Countdown.close();
+                    if(time!='')
+                        Countdown.close();
                 } 
             },
             error: function(){
                 $('#shoppingcart_qty_items').html(0);
-                Countdown.close();
+                if(time!='')
+                    Countdown.close();
             }
         }); 
     }
