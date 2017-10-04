@@ -56,6 +56,7 @@
                         <tbody>
                             @php $previous_show_time_id = '0' @endphp
                             @foreach($manifests as $index=>$m)
+                                @php $color = substr(dechex(crc32($m->show_time_id.date('mdYgi',strtotime($m->show_time)))),0,6) @endphp
                             <tr>
                                 <td width="2%">
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
@@ -63,7 +64,7 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" style="background-color:#{{substr(dechex(crc32($m->show_time_id.date('mdYgi',strtotime($m->show_time)))),0,6)}}"></td>
+                                <td width="1%" style="background-color:#{{$color}};border-top:thick solid @if($previous_show_time_id==$m->show_time_id) #{{$color}} @else #ffffff @endif !important;"></td>
                                 <td width="20%">
                                     @if($previous_show_time_id != $m->show_time_id)
                                     <center>

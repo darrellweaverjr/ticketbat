@@ -78,7 +78,7 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" style="background-color:#{{$color}}"></td>
+                                <td width="1%" style="background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;"></td>
                                 <td class="search-item clearfix" width="47%">
                                     <div class="search-content" >
                                         <b class="search-title"><a data-toggle="modal" href="#modal_details_{{$p->id}}">@if($p->card_holder) {{$p->card_holder}} @else {{$p->first_name}} {{$p->last_name}} @endif</a></b>
