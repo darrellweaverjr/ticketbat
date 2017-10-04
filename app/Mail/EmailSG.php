@@ -16,42 +16,74 @@ class EmailSG {
     protected $mail;
     protected $sendGrid;
 
-    public function __construct($from, $to, $subject) {
+    //builder1 regular email
+    public function __construct($from, $to, $subject, $data=null) {
         try {
             //init
             $this->sendGrid = new \SendGrid(env('MAIL_SENDGRID_API_KEY'));
-            $this->mail = new SendGrid\Mail();
-            $this->mail->addPersonalization(new SendGrid\Personalization());
             //from
-            if (isset($from)) {
-                if (is_array($from)) {
-                    $e = new SendGrid\Email($from[0], $from[1]);
-                    $this->mail->setFrom($e);
-                } else {
-                    $e = new SendGrid\Email(null, $from);
-                    $this->mail->setFrom($e);
-                }
-            } else {
-                $e = new SendGrid\Email(env('MAIL_FROM_NAME'), env('MAIL_FROM'));
-                $this->mail->setFrom($e);
+            if (isset($from)) 
+            {
+                if (is_array($from)) 
+                    $_from = new SendGrid\Email($from[0], $from[1]);
+                else 
+                    $_from = new SendGrid\Email(null, $from);
             }
+            else    
+                $_from = new SendGrid\Email(env('MAIL_FROM_NAME'), env('MAIL_FROM'));
             //to
+            $_personalizations = [];
             if (isset($to)) {
                 if (is_string($to)) {
                     $to = explode(",", $to);
                 }
-                if (is_array($to) && count($to) > 0) {
-                    foreach ($to as $t) {
-                        $this->filter($t);
+                if (is_array($to) && count($to) > 0) 
+                {
+                    //check if there is individual email
+                    if(empty($data))
+                    {
+                        $personalization = new SendGrid\Personalization();
+                        foreach ($to as $p => $t) 
+                        {
+                            $mail = $this->filter($t);
+                            if($mail)
+                                $personalization->addTo($mail);
+                        }
+                        $_personalizations[] = $personalization;
                     }
+                    //check if there is multiple email batch list
+                    else
+                    {
+                        foreach ($to as $p => $t) 
+                        {
+                            $mail = $this->filter($t);
+                            if($mail)
+                            {
+                                $personalization = new SendGrid\Personalization();
+                                $personalization->addTo($mail);
+                                foreach ($data as $k => $v)
+                                    $personalization->addSubstitution(':'.$k, strval($v[$p]));
+                                $_personalizations[] = $personalization;
+                            }
+                        }
+                    }                    
                 } else
                     return false;
             } else
                 return false;
+            if(!count($_personalizations))
+                return false;
+            else
+                $_to = $_personalizations[0]->getTos()[0];
             //subject
             if (isset($subject)) {
-                $this->mail->setSubject($subject);
+                $_subject = $subject;
             }
+            else $_subject = '';
+            //configure object mail
+            $this->mail = new SendGrid\Mail($_from, $_subject, $_to, new SendGrid\Content('text/html','<html><body></body></html>'));
+            foreach ($_personalizations as $index=>$p)
+                $this->mail->personalization[$index] = $p;
         } catch (Exception $ex) {
             throw new Exception('Error creating EmailSG: '.$ex->getMessage());
         }
