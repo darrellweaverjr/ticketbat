@@ -89,7 +89,7 @@ class EmailSG {
         }
     }
 
-    public function filter($e, $placed = 'to') {
+    public function filter($e) {
         try {
             $email = null;
             if (!filter_var($e, FILTER_VALIDATE_EMAIL) === false) {
@@ -102,23 +102,8 @@ class EmailSG {
                 } else {
                     $email = new SendGrid\Email(null, $e);
                 }
-                if ($email) {
-                    switch ($placed) {
-                        case 'bcc':
-                            $this->mail->personalization[0]->addBcc($email);
-                            break;
-                        case 'cc':
-                            $this->mail->personalization[0]->addCc($email);
-                            break;
-                        default:
-                            $this->mail->personalization[0]->addTo($email);
-                            break;
-                    }
-                    return true;
-                } else
-                    return false;
-            } else
-                return false;
+            } 
+            return $email;
         } catch (Exception $ex) {
             throw new Exception('Error filtering emails EmailSG: '.$ex->getMessage());
         }
