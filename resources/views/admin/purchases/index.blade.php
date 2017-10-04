@@ -389,6 +389,14 @@
                                         <textarea class="form-control" name="body" rows="10" required="true"></textarea>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">Template
+                                        <span><small>(optional)</small></span>
+                                    </label>
+                                    <div class="col-md-10 show-error">
+                                        <input class="form-control" name="template" type="text" required="true"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">

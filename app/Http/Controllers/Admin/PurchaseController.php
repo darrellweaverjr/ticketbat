@@ -476,7 +476,10 @@ class PurchaseController extends Controller{
                             //$email->cc(env('MAIL_REPORT_CC'));
                             $email->category('Custom');
                             $email->body('custom',['body'=>$input['email'][3]['value']]);
-                            $email->template('46388c48-5397-440d-8f67-48f82db301f7');
+                            if(!empty($input['email'][4]['value']))
+                                $email->template($input['email'][4]['value']);
+                            else
+                                $email->template('46388c48-5397-440d-8f67-48f82db301f7');
                             $response = $email->send();
                             if(!$response)
                                 $msg = (empty($msg))? $t->email : ', '.$t->email;
