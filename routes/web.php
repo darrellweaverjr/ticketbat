@@ -128,6 +128,5 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::get('/home', 'HomeController@index')->name('index');
     Route::post('home/search', 'HomeController@search');
     //event
-    Route::get('events/{slug}', 'EventController@event');
-    Route::match(['get','post'], 'events', 'EventController@index');
+    Route::match(['get','post'], 'events/{slug}', 'EventController@index');
 });

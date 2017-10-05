@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="portlet-body portlet-body flip-scroll">
+                <div class="portlet-body flip-scroll">
                     <table class="table table-striped table-bordered table-hover table-header-fixed table-scrollable table-condensed flip-content" id="tb_consignments">
                         <thead class="flip-content">
                             <tr>

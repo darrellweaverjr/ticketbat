@@ -19,20 +19,7 @@ class EventController extends Controller
      *
      * @return Method
      */
-    public function index()
-    {
-        try {
-            
-        } catch (Exception $ex) {
-            throw new Exception('Error Production Event Index: '.$ex->getMessage());
-        }
-    }
-    /**
-     * Get event.
-     *
-     * @return Method
-     */
-    public function event($slug)
+    public function index($slug)
     {
         try {
             if(empty($slug))
@@ -43,8 +30,9 @@ class EventController extends Controller
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
                         ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url, 
                                           shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram,
-                                          venues.name as location_name, shows.name, locations.*,shows.presented_by, shows.sponsor, 
-                                          shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id'))
+                                          venues.name as venue, shows.name, locations.*,shows.presented_by, shows.sponsor, 
+                                          shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id,
+                                          IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
                         ->where('shows.slug', $slug)->first();
             if(!$event)
@@ -94,10 +82,27 @@ class EventController extends Controller
                                 ->where('show_bands.show_id',$event->show_id)->orderBy('show_bands.n_order')->get();
             foreach ($event->bands as $b)
                 $b->image_url = Image::view_image($b->image_url);
+            //get showtimes
+            $event->showtimes = DB::table('show_times')
+                                ->join('shows', 'show_times.show_id', '=', 'shows.id')
+                                ->select(DB::raw('show_times.id, show_times.time_alternative,
+                                                 DATE_FORMAT(show_times.show_time,"%d/%m/%Y %H:%i") AS show_time,
+                                                 DATE_FORMAT(show_times.show_time,"%W") AS show_day,
+                                                 DATE_FORMAT(show_times.show_time,"%M %D") AS show_date,
+                                                 DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,
+                                                 show_times.slug AS ext_slug_st, shows.ext_slug AS ext_slug,
+                                                 IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR) AND NOW()<show_times.show_time, 1, 0) as presale'))
+                                ->where('show_times.show_id',$event->show_id)->where('show_times.is_active','>',0)
+                                ->whereRaw(DB::raw('show_times.show_time > NOW()'))
+                                ->where(function($query) {
+                                    if(Auth::check() && Auth::user()->user_type_id!=1)
+                                        $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
+                                })
+                                ->orderBy('show_times.show_time')->get();
             //return view
-            return view('production.events.event',compact('event'));
+            return view('production.events.index',compact('event'));
         } catch (Exception $ex) {
-            throw new Exception('Error Production Event Event: '.$ex->getMessage());
+            throw new Exception('Error Production Event Index: '.$ex->getMessage());
         }
     }
        

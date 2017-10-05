@@ -1,4 +1,4 @@
-@php $page_title='Home' @endphp
+@php $page_title='Show Tickets' @endphp
 @extends('layouts.production')
 @section('title')
   {!! $page_title !!}
@@ -124,7 +124,7 @@
     </div>
     <!-- END SEARCH BAR-->
     <!-- BEGIN SHOWS GRID-->
-    <div class="portfolio-content body_grid text-center">        
+    <div class="portfolio-content body_grid color-panel text-center">        
         <div id="myShows" class="cbp text-center">
             @foreach($shows as $index=>$s)
             <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/events/{{$s->slug}}">
