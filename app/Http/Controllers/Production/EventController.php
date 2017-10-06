@@ -62,6 +62,7 @@ class EventController extends Controller
                                 ->where('show_images.show_id',$event->show_id)->where('images.image_type','=','Image')->get();
             foreach ($event->images as $i)
                 $i->url = Image::view_image($i->url);
+            //$event->images = $event->images->toArray();
             //get banners
             $event->banners = DB::table('banners')
                                 ->select(DB::raw('banners.id, banners.url, banners.file'))
@@ -73,7 +74,13 @@ class EventController extends Controller
             $event->videos = DB::table('videos')
                                 ->join('show_videos', 'show_videos.video_id', '=', 'videos.id')
                                 ->select(DB::raw('videos.id, videos.embed_code, videos.description'))
-                                ->where('show_videos.show_id',$event->show_id)->where('videos.video_type','=','Video')->get();
+                                ->where('show_videos.show_id',$event->show_id)/*->where('videos.video_type','=','Video')*/->get();
+            foreach ($event->videos as $v)
+            {
+                $part1 = explode('src="',$v->embed_code);
+                $part2 = explode('"',$part1[1]);
+                $v->embed_code = $part2[0];
+            } 
             //get bands
             $event->bands = DB::table('bands')
                                 ->join('categories', 'bands.category_id', '=', 'categories.id')
