@@ -47,11 +47,11 @@
     </head>
     <!-- END HEAD -->
 
-    <body class="page-header-fixed page-content-white">
+    <body class="page-header-fixed" style="background-color:black!important">
             <!-- BEGIN HEADER -->
-            <div class="page-header navbar navbar-inverse navbar-fixed-top">
+            <div class="page-header navbar navbar-inverse navbar-fixed-top" style="background-color:black!important">
                 <!-- BEGIN HEADER INNER -->
-                <div class="page-header-inner container-fluid">
+                <div class="page-header-inner container-fluid fixed-panel">
                     <!-- BEGIN LOGO -->
                     <div class="page-logo">
                         <a href="{{route('index')}}" title="Go to home page">
@@ -142,14 +142,14 @@
             </div>
             <!-- END HEADER -->
             <!-- BEGIN CONTAINER -->
-            <div class="page-container">
+            <div class="page-container page-content-white">
                 <!-- BEGIN CONTENT -->
                 @yield('content')
                 <!-- END CONTENT -->
             </div>
             <!-- END CONTAINER -->
             <!-- BEGIN FOOTER -->
-            <div class="page-footer" style="background: black !important;">
+            <div class="page-footer fixed-panel">
                 <div class="page-footer-inner">
                     <a class="menu_foot" data-toggle="modal" href="#modal_privacy" title="Watch out our privacy policy">Privacy</a> &nbsp;|&nbsp;
                     <a class="menu_foot" data-toggle="modal" href="#modal_terms" title="Check our terms of use">Terms</a> &nbsp;|&nbsp;
