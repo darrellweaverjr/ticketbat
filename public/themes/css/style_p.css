@@ -91,6 +91,9 @@
 .color-panel {
     background: whitesmoke;  
 }
+.fc-time{
+   display : none;
+}
 
 /* TIMER */
 #timerClock {

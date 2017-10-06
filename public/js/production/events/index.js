@@ -50,10 +50,7 @@ var AppCalendar = function() {
             if (!jQuery().fullCalendar) {
                 return;
             }
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
+            //size of calendar
             if ($('#cal_model').parents(".portlet").width() <= 720) {
                 $('#cal_model').addClass("mobile");
             } else {
@@ -66,18 +63,22 @@ var AppCalendar = function() {
                 defaultView: 'month', // change default view with available options from http://arshaw.com/fullcalendar/docs/views/Available_Views/ 
                 slotMinutes: 15,
                 editable: false,
-                droppable: false
+                droppable: false,
+                backgroundColor: '#ffffff',
+                eventRender: function (event, element) {
+                    element.find('.fc-title').html(event.title);
+                }
             });
-            var showtimes = $('a[href="#showtimes_calendar"]').data('times');
-            $.each(showtimes,function(k, v) {
+            //fillout events
+            $('#showtimes_calendar span.hidden').each(function() {
                 $('#cal_model').fullCalendar('renderEvent', {
-                    id:v.id,
-                    title: v.show_time,
-                    start: v.show_time,
-                    end: v.show_time,
-                    backgroundColor: App.getBrandColor('blue'),
+                    id: $(this).data('id'),
+                    title: '<center><b>'+$(this).data('hour')+' <i class="fa fa-arrow-circle-right"></i></b></center>',
+                    start: $(this).data('showtime'),
+                    //end: $(this).data('showtime'),
+                    backgroundColor: 'bg-blue',
                     allDay: false,
-                    url: 'http://google.com/'
+                    url: $('#cal_model').data('slug')+'/'+$(this).data('id')
                 }, true); 
             });
             //render calendar when showtimes tab is clicked
@@ -87,9 +88,7 @@ var AppCalendar = function() {
                  },1);
             });
         }
-
     };
-
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {

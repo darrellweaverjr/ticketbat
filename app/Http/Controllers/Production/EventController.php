@@ -86,7 +86,7 @@ class EventController extends Controller
             $event->showtimes = DB::table('show_times')
                                 ->join('shows', 'show_times.show_id', '=', 'shows.id')
                                 ->select(DB::raw('show_times.id, show_times.time_alternative,
-                                                 DATE_FORMAT(show_times.show_time,"%d/%m/%Y %H:%i") AS show_time,
+                                                 DATE_FORMAT(show_times.show_time,"%Y/%m/%d %H:%i") AS show_time,
                                                  DATE_FORMAT(show_times.show_time,"%W") AS show_day,
                                                  DATE_FORMAT(show_times.show_time,"%M %D") AS show_date,
                                                  DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,

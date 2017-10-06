@@ -77,8 +77,8 @@
 </div>
 <!-- END NAME BAR-->
 <div class="page-content color-panel">  
-    <!-- BEGIN TEXT -->
-    <div class="row margin-bottom-40 fixed-panel">
+    <!-- BEGIN DESCRIPTION AND CALENDAR -->
+    <div class="row fixed-panel">
         <div class="col-lg-6">
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
@@ -104,7 +104,7 @@
                 <p class="margin-top-20">{!! $event->description !!}</p>
                 <!-- END DESCRIPTION -->
                 <!-- BEGIN BANDS -->
-                <div class="timeline" style="margin:5px">
+                <div class="timeline" style="margin:5px;padding-bottom:10px">
                     @foreach($event->bands as $b)
                     <!-- BAND ITEM -->
                     <div class="timeline-item">
@@ -153,7 +153,7 @@
                                     <a href="#showtimes_list" data-toggle="tab"><i class="fa fa-list icon-list"></i></a>
                                 </li>
                                 <li>
-                                    <a href="#showtimes_calendar" data-times="{{json_encode($event->showtimes)}}" data-toggle="tab"><i class="fa fa-calendar icon-calendar"></i></a>
+                                    <a href="#showtimes_calendar" data-toggle="tab"><i class="fa fa-calendar icon-calendar"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -164,144 +164,81 @@
                     <b>RESTRICTIONS:</b> {{preg_replace('~\D~','',$event->restrictions)}} years of age or older to attend the event.
                 </div>
                 @endif
-                    <div class="tab-content">
-                        <!-- SHOW TIMES AS LIST -->
-                        <div class="tab-pane active" id="showtimes_list" >   
-                            <div class="portlet-body light portlet-fit" style="margin-top:-30px;">
-                                <table class="table table-hover table-responsive" id="tb_model">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Date</th>
-                                            <th>Time</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($event->showtimes as $index=>$st)
-                                        <tr>
-                                            <td>{{$st->show_day}}</td>
-                                            <td>{{$st->show_date}}</td>
-                                            <td>{{$st->show_hour}}</td>
-                                            <td><center><a class="btn btn-outline btn-success">BUY TICKETS <i class="fa fa-arrow-circle-right"></i></a></center></td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                <div class="tab-content">
+                    <!-- SHOW TIMES AS LIST -->
+                    <div class="tab-pane active" id="showtimes_list" style="margin:5px;padding-bottom:10px">   
+                        <div class="portlet-body light portlet-fit" style="margin-top:-30px;">
+                            <table class="table table-hover table-responsive" id="tb_model">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($event->showtimes as $st)
+                                    <tr>
+                                        <td>{{$st->show_day}}</td>
+                                        <td>{{$st->show_date}}</td>
+                                        <td>{{$st->show_hour}}</td>
+                                        <td><center><a href="{{url()->current()}}/{{$st->id}}" style="color:white!important" class="btn bg-blue">BUY TICKETS <i class="fa fa-arrow-circle-right"></i></a></center></td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- SHOW TIMES AS CALENDAR -->
-                        <div class="tab-pane" id="showtimes_calendar">
-                            <div class="portlet-body light portlet-fit calendar" >
-                                <div id="cal_model" class="has-toolbar"> </div>
-                            </div>
+                    </div>
+                    <!-- SHOW TIMES AS CALENDAR -->
+                    <div class="tab-pane" id="showtimes_calendar" style="margin:5px;padding-bottom:10px">
+                        <div class="portlet-body light portlet-fit calendar">
+                            <div id="cal_model" class="has-toolbar" data-slug="{{url()->current()}}"> </div>
                         </div>
-                    </div>                               
-                
+                        @foreach($event->showtimes as $st)
+                        <span class="hidden" data-id="{{$st->id}}" data-showtime="{{$st->show_time}}" data-alternative="{{$st->time_alternative}}" data-presale="{{$st->presale}}" data-hour="{{$st->show_hour}}"><span>
+                        @endforeach
+                    </div>
+                </div>  
             </div>
         </div>
     </div>
-    <!-- END TEXT -->
-    
-    
-    
-    
-    <!-- BEGIN TEXT -->
-    <div class="row margin-bottom-40 fixed-panel">
+    <!-- END DESCRIPTION AND CALENDAR -->
+    <!-- BEGIN VIDEOS -->
+    <div class="row fixed-panel" style="padding:15px">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
-                <i class="fa fa-check icon-calendar"></i> Bands
+                <i class="fa fa-youtube-play"></i> Videos
             </h4>  
-            
             <!-- END DESCRIPTION -->
-            <!-- BEGIN BANDS -->
-            
-            <!-- ENDS BANDS -->
+            <!-- BEGIN VIDEOS -->
+            @foreach($event->videos as $v)
+                {!!$v->embed_code!!}
+            @endforeach
+            <!-- ENDS VIDEOS -->
         </div>
     </div>
-    <!-- END TEXT -->
+    <!-- END VIDEOS -->
     
-    
-    
-    
-    <!-- BEGIN BODY GRID-->
-    <div class="portfolio-content body_grid text-center">        
-        <div id="myEvent" class="cbp text-center">
-            
-            <div class="cbp-item event_section">
-                <div class="cbp-caption">
-                    <div class="cbp-caption-defaultWrap">
-                        <h1>Event Details:</h1><hr>
-                        <div class="modal-social-btns">
-                            <a class="social-icon social-icon-color twitter" href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank"></a>
-                            <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/share?url={{url()->current()}}" target="_blank"></a>
-                            <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank"></a>
-                        </div>
-                    </div>
-                    <div class="cbp-caption-activeWrap">
-                        <div class="cbp-l-caption-alignCenter">
-                            <div class="cbp-l-caption-body">
-                                <span class="cbp-l-caption-buttonLeft btn green">aaaaaaaaaaaaaaaaa</span>
-                                <span class="cbp-l-caption-buttonLeft btn red">Next on <b>{{date('m/d/y')}}</b></span>
-                                <a href="" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="aaaaaaa<br>aaaaaaa"><i class="icon-size-fullscreen"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="cbp-item event_section">
-                <div class="cbp-caption">
-                    <div class="cbp-caption-defaultWrap">
-                        <img src="http://ticketbat.s3-website-us-west-2.amazonaws.com/images/mjlive-header.jpg1" alt="No Image Preview"> </div>
-                    <div class="cbp-caption-activeWrap">
-                        <div class="cbp-l-caption-alignCenter">
-                            <div class="cbp-l-caption-body">
-                                <span class="cbp-l-caption-buttonLeft btn green">aaaaaaaaaaaaaaaaa</span>
-                                <span class="cbp-l-caption-buttonLeft btn red">Next on <b>{{date('m/d/y')}}</b></span>
-                                <a href="" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="aaaaaaa<br>aaaaaaa"><i class="icon-size-fullscreen"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="cbp-item event_section">
-                <div class="cbp-caption">
-                    <div class="cbp-caption-defaultWrap">
-                        <img src="http://ticketbat.s3-website-us-west-2.amazonaws.com/images/mjlive-header.jpg1" alt="No Image Preview"> </div>
-                    <div class="cbp-caption-activeWrap">
-                        <div class="cbp-l-caption-alignCenter">
-                            <div class="cbp-l-caption-body">
-                                <span class="cbp-l-caption-buttonLeft btn green">aaaaaaaaaaaaaaaaa</span>
-                                <span class="cbp-l-caption-buttonLeft btn red">Next on <b>{{date('m/d/y')}}</b></span>
-                                <a href="" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="aaaaaaa<br>aaaaaaa"><i class="icon-size-fullscreen"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="cbp-item event_section">
-                <div class="cbp-caption">
-                    <div class="cbp-caption-defaultWrap">
-                        <img src="http://ticketbat.s3-website-us-west-2.amazonaws.com/images/mjlive-header.jpg1" alt="No Image Preview"> </div>
-                    <div class="cbp-caption-activeWrap">
-                        <div class="cbp-l-caption-alignCenter">
-                            <div class="cbp-l-caption-body">
-                                <span class="cbp-l-caption-buttonLeft btn green">aaaaaaaaaaaaaaaaa</span>
-                                <span class="cbp-l-caption-buttonLeft btn red">Next on <b>{{date('m/d/y')}}</b></span>
-                                <a href="" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="aaaaaaa<br>aaaaaaa"><i class="icon-size-fullscreen"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+    <!-- BEGIN GALLERY -->
+    <div class="row fixed-panel" style="padding:15px">
+        <div class="portlet light about-text">
+            <!-- BEGIN DESCRIPTION -->
+            <h4>
+                <i class="fa fa-youtube-play"></i> Videos
+            </h4>  
+            <!-- END DESCRIPTION -->
+            <!-- BEGIN GALLERY -->
+            @foreach($event->images as $i)
+                {!!$i->url!!}
+            @endforeach
+            <!-- ENDS GALLERY -->
         </div>
-    </div>    
-    <!-- END BODY GRID-->
+    </div>
+    <!-- END GALLERY -->
+    
+    
 </div>
 @endsection
 
