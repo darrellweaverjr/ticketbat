@@ -87,11 +87,60 @@ var AppCalendar = function() {
                      $('#cal_model').fullCalendar('render'); 
                  },1);
             });
+            //gallery carousel
+            $('.carousel[data-type="multi"] .item').each(function(){
+                var next = $(this).next();
+                if (!next.length) {
+                  next = $(this).siblings(':first');
+                }
+                next.children(':first-child').clone().appendTo($(this));
+
+                for (var i=0;i<2;i++) {
+                  next=next.next();
+                  if (!next.length) {
+                      next = $(this).siblings(':first');
+                      }
+
+                  next.children(':first-child').clone().appendTo($(this));
+                }
+              });
         }
     };
+}();
+//*****************************************************************************************
+var MapsGoogle = function () {
+
+    var mapMarker = function () {        
+        var lat = $('#event_gmap').data('lat');
+        var lng = $('#event_gmap').data('lng');        
+        var address = $('#event_gmap').data('address');  
+        var venue = $('#event_gmap').data('venue');  
+        var map = new GMaps({
+            div: '#event_gmap',
+            lat: lat,
+            lng: lng
+        });        
+        map.addMarker({
+            lat: lat,
+            lng: lng,
+            title: venue,
+            infoWindow: {
+                content: '<span style="color:#000"><b>'+venue+'</b><br>'+address+'</span>'
+            }
+        });        
+        map.setZoom(14);
+    }
+    return {
+        //main function to initiate map samples
+        init: function () {
+            mapMarker();
+        }
+    };
+
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
     AppCalendar.init(); 
+    MapsGoogle.init(); 
 });

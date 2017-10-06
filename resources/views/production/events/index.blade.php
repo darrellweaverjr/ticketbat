@@ -7,7 +7,7 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/fullcalendar.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
-        <link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -205,39 +205,70 @@
     </div>
     <!-- END DESCRIPTION AND CALENDAR -->
     <!-- BEGIN VIDEOS -->
+    @if(count($event->videos))
     <div class="row fixed-panel" style="padding:15px">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
                 <i class="fa fa-youtube-play"></i> Videos
             </h4>  
-            <!-- END DESCRIPTION -->
-            <!-- BEGIN VIDEOS -->
             @foreach($event->videos as $v)
-                {!!$v->embed_code!!}
+            <p class="text-center">
+                <iframe src="{!!$v->embed_code!!}" width="100%" height="600px" frameborder="0"></iframe>
+                {!!$v->description!!}<hr>
+            </p>
             @endforeach
-            <!-- ENDS VIDEOS -->
         </div>
     </div>
+    @endif
     <!-- END VIDEOS -->
-    
     <!-- BEGIN GALLERY -->
-    <div class="row fixed-panel" style="padding:15px">
+    @if(count($event->images))
+    <div class="row fixed-panel" style="padding:15px;margin-top:-20px">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
-                <i class="fa fa-youtube-play"></i> Videos
+                <i class="fa fa-image"></i> Gallery
             </h4>  
             <!-- END DESCRIPTION -->
             <!-- BEGIN GALLERY -->
-            @foreach($event->images as $i)
-                {!!$i->url!!}
-            @endforeach
+            <div id="gallery_view" class="carousel slide" data-ride="carousel" data-type="multi" data-interval="3000" style="height:200px;">
+                <ol class="carousel-indicators">
+                    @foreach($event->images as $index=>$i)
+                    <li data-target="#gallery_view" data-slide-to="{{$index}}" @if(!$index) class="active" @endif ></li>
+                    @endforeach
+                </ol>
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox">
+                    @foreach($event->images as $index=>$i)
+                    <div class="item @if(!$index) active @endif" >
+                        <div class="col-md-3 col-sm-6 col-xs-12"><img  width="200px" height="150px" style="margin:auto" src="{{$i->url}}" alt="{{$i->url}}"></div>
+                    </div>
+                    @endforeach
+                </div>
+                <!-- Left and right controls -->
+                <a class="left carousel-control" href="#gallery_view" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#gallery_view" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
             <!-- ENDS GALLERY -->
         </div>
     </div>
+    @endif
     <!-- END GALLERY -->
-    
+    <!-- BEGIN MAPS -->
+    <div id="event_gmap" class="row gmaps" 
+                 data-lat="{{$event->lat}}" 
+                 data-lng="{{$event->lng}}"
+                 data-address="{{$event->address}}<br>{{$event->city}}, {{$event->state}}, {{$event->country}} {{$event->zip}}"
+                 data-venue="{{$event->venue}}"
+                 ></div>
+    <!-- END MAPS -->    
     
 </div>
 @endsection
@@ -246,5 +277,7 @@
 <script src="{{config('app.theme')}}js/fullcalendar.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyC7sODsH3uUz_lBbYH16eOCJU9igquCjzI" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/gmaps.min.js" type="text/javascript"></script>
 <script src="/js/production/events/index.js" type="text/javascript"></script>
 @endsection

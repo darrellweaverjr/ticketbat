@@ -30,7 +30,7 @@ class EventController extends Controller
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
                         ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url, 
                                           shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram,
-                                          venues.name as venue, shows.name, locations.*,shows.presented_by, shows.sponsor, 
+                                          venues.name as venue, shows.name, locations.*, shows.presented_by, shows.sponsor, 
                                           shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id,
                                           IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
