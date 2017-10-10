@@ -596,7 +596,7 @@ var TableDatatablesManaged = function () {
             {
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
-                    text: "The form is not valid!<br>Please check the information again.",
+                    text: "The form is not valid!<br>Please check the information again in tabs: General, Sponsorship and Reports.",
                     html: true,
                     type: "error"
                 },function(){

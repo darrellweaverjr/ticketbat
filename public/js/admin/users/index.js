@@ -252,7 +252,7 @@ var TableDatatablesManaged = function () {
             {
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
-                    text: "The form is not valid!<br>Please check the information again.",
+                    text: "The form is not valid!<br>Please check the information again in tab 'General'.",
                     html: true,
                     type: "error"
                 },function(){
