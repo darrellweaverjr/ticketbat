@@ -791,6 +791,7 @@ var TableDatatablesManaged = function () {
         //function submit show_passwords
         $('#submit_model_show_passwords').on('click', function(ev) {
             $('#modal_model_show_passwords').modal('hide');
+            $('#modal_model_update').modal('hide');
             if($('#form_model_show_passwords').valid() && $('#form_model_show_passwords [name="ticket_types[]"]:checked').length)
             {
                 jQuery.ajax({
@@ -801,6 +802,13 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             var v = data.password;
                             //update row
                             if($('#tb_show_passwords').find('tr[class="'+v.id+'"]').length)
@@ -808,9 +816,10 @@ var TableDatatablesManaged = function () {
                             //add row
                             else
                                 $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                            //show modal
+                            $('#modal_model_update').modal('show');
                         }
-                        else{
-                            $('#modal_model_update').modal('hide');						
+                        else{					
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -822,8 +831,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
+                    error: function(){  	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
@@ -837,8 +845,7 @@ var TableDatatablesManaged = function () {
                 }); 
             }
             else 
-            {
-                $('#modal_model_update').modal('hide');	   	
+            {	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form",
@@ -1015,6 +1022,7 @@ var TableDatatablesManaged = function () {
         //function submit show_tickets
         $('#submit_model_show_tickets').on('click', function(ev) {
             $('#modal_model_show_tickets').modal('hide');
+            $('#modal_model_update').modal('hide');
             if($('#form_model_show_tickets').valid())
             {
                 jQuery.ajax({
@@ -1025,6 +1033,13 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             $('#tb_show_tickets').empty();
                             $.each(data.tickets,function(k, v) {
                                 //default style
@@ -1042,10 +1057,11 @@ var TableDatatablesManaged = function () {
                                 //commission$
                                 if(!v.fixed_commission) v.fixed_commission = '0.00';
                                 $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
-                            });               
+                            });   
+                            //show modal
+                            $('#modal_model_update').modal('show');
                         }
-                        else{
-			    $('#modal_model_update').modal('hide');						
+                        else{					
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1057,8 +1073,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
+                    error: function(){	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the ticket's information!<br>The request could not be sent to the server.",
@@ -1072,8 +1087,7 @@ var TableDatatablesManaged = function () {
                 }); 
             }
             else 
-            {
-                $('#modal_model_update').modal('hide');	   	
+            {	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form'",
@@ -1244,6 +1258,7 @@ var TableDatatablesManaged = function () {
         //function submit show_bands
         $('#submit_model_show_bands').on('click', function(ev) {
             $('#modal_model_show_bands').modal('hide');
+            $('#modal_model_update').modal('hide');
             if($('#form_model_show_bands').valid())
             {
                 var show_id = $('#form_model_update input[name="id"]:hidden').val();
@@ -1255,9 +1270,18 @@ var TableDatatablesManaged = function () {
                     data: {action:1,show_id:show_id,band_id:band_id}, 
                     success: function(data) {
                         if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             tableBands.row.add( [ data.band.n_order,data.band.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw(); 
-                        else{
-			    $('#modal_model_update').modal('hide');						
+                            $('#modal_model_update').modal('show');
+                        }                            
+                        else{						
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1269,8 +1293,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
+                    error: function(){ 	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the password's information!<br>The request could not be sent to the server.",
@@ -1284,8 +1307,7 @@ var TableDatatablesManaged = function () {
                 }); 
             }
             else
-            {
-                $('#modal_model_update').modal('hide');	   	
+            {	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form",
@@ -1409,6 +1431,7 @@ var TableDatatablesManaged = function () {
         //function submit show_times toggle
         $('#submit_model_show_times_toggle').on('click', function(ev) {
             $('#modal_model_show_times_toggle').modal('hide');
+            $('#modal_model_update').modal('hide');	
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -1417,12 +1440,20 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        swal({
+                            title: "<span style='color:green;'>Saved!</span>",
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
                         calendarShowTimes.fullCalendar('removeEvents', data.showtime.id);
                         fn_show_times(data.showtime); 
+                        //show modal
+                        $('#modal_model_update').modal('show');
                     }
                     else
-                    {
-                        $('#modal_model_update').modal('hide');						
+                    {					
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -1434,8 +1465,7 @@ var TableDatatablesManaged = function () {
                         });
                     }
                 },
-                error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                error: function(){	   	
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to save the showtime's information!<br>The request could not be sent to the server.",
@@ -2013,6 +2043,7 @@ var TableDatatablesManaged = function () {
         //function submit show_contracts
         $('#submit_model_show_contracts').on('click', function(ev) {
             $('#modal_model_show_contracts').modal('hide');
+            $('#modal_model_update').modal('hide');
             if($('#form_model_show_contracts').valid())
             {
                 jQuery.ajax({
@@ -2026,6 +2057,13 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             if(!data.contract.data)
                                 data.contract.data = '<span class="label label-sm sbold label-warning">Nothing to run</span>';
                             else
@@ -2033,9 +2071,10 @@ var TableDatatablesManaged = function () {
                             var updated = moment(data.contract.updated);
                             var effective_date = moment(data.contract.effective_date);
                             $('#tb_show_contracts').prepend('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+data.contract.data+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+data.contract.id+'" class="btn sbold bg-red delete"></td></tr>');
+                            //show modal
+                            $('#modal_model_update').modal('show');
                         }
-                        else{
-			    $('#modal_model_update').modal('hide');						
+                        else{					
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -2047,8 +2086,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
+                    error: function(){ 	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the contract's information!<br>The request could not be sent to the server.",
@@ -2063,7 +2101,6 @@ var TableDatatablesManaged = function () {
             }
             else 
             {
-                $('#modal_model_update').modal('hide');	   	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form'",
@@ -2216,6 +2253,7 @@ var TableDatatablesManaged = function () {
         //function submit images
         $('#submit_model_show_images').on('click', function(ev) {
             $('#modal_model_show_images').modal('hide');
+            $('#modal_model_update').modal('hide');
             if($('#form_model_show_images [name="action"]').val()=='0' || ($('#form_model_show_images [name="action"]').val()=='1' && $('#form_model_show_images [name="url"]').attr('src')!=''))
             {
                 jQuery.ajax({
@@ -2226,6 +2264,13 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             //delete or update
                             if(data.action <= 0)
                             {
@@ -2239,9 +2284,10 @@ var TableDatatablesManaged = function () {
                                 $('#grid_show_images').cubeportfolio('appendItems', html);
                                 $('#grid_show_images').trigger('resize.cbp');
                             }
+                            //show modal
+                            $('#modal_model_update').modal('show');
                         }
-                        else{
-			    $('#modal_model_update').modal('hide');						
+                        else{						
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -2253,8 +2299,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
+                    error: function(){	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the image's information!<br>The request could not be sent to the server.",
@@ -2269,7 +2314,6 @@ var TableDatatablesManaged = function () {
             }
             else 
             {
-                $('#modal_model_update').modal('hide');	   	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
@@ -2436,6 +2480,7 @@ var TableDatatablesManaged = function () {
         //function submit banners
         $('#submit_model_show_banners').on('click', function(ev) {
             $('#modal_model_show_banners').modal('hide');
+            $('#modal_model_update').modal('hide');
             if($('#form_model_show_banners [name="action"]').val()=='0' || ($('#form_model_show_banners [name="action"]').val()=='1' && $('#form_model_show_banners [name="file"]').attr('src')!=''))
             {
                 jQuery.ajax({
@@ -2446,6 +2491,13 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             //delete or update
                             if(data.action <= 0)
                             {
@@ -2459,9 +2511,10 @@ var TableDatatablesManaged = function () {
                                 $('#grid_show_banners').cubeportfolio('appendItems', html);
                                 $('#grid_show_banners').trigger('resize.cbp');
                             }
+                            //show modal
+                            $('#modal_model_update').modal('show');
                         }
-                        else{
-			    $('#modal_model_update').modal('hide');						
+                        else{					
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -2473,8 +2526,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
+                    error: function(){  	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the banner's information!<br>The request could not be sent to the server.",
@@ -2489,7 +2541,6 @@ var TableDatatablesManaged = function () {
             }
             else 
             {
-                $('#modal_model_update').modal('hide');	   	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
@@ -2641,6 +2692,7 @@ var TableDatatablesManaged = function () {
         //function submit videos
         $('#submit_model_show_videos').on('click', function(ev) {
             $('#modal_model_show_videos').modal('hide');
+            $('#modal_model_update').modal('hide');
             if($('#form_model_show_videos [name="action"]').val()=='0' || ($('#form_model_show_videos [name="action"]').val()=='1' && $('#form_model_show_videos [name="file"]').attr('src')!=''))
             {
                 jQuery.ajax({
@@ -2651,6 +2703,13 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
                             //delete or update
                             if(data.action <= 0)
                             {
@@ -2664,9 +2723,10 @@ var TableDatatablesManaged = function () {
                                 $('#grid_show_videos').cubeportfolio('appendItems', html);
                                 //$('#grid_show_videos').trigger('resize.cbp');
                             }
+                            //show odal
+                            $('#modal_model_update').modal('show');
                         }
-                        else{
-			    $('#modal_model_update').modal('hide');						
+                        else{					
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -2678,8 +2738,7 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     },
-                    error: function(){
-			$('#modal_model_update').modal('hide');	   	
+                    error: function(){	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the video's information!<br>The request could not be sent to the server.",
@@ -2693,8 +2752,7 @@ var TableDatatablesManaged = function () {
                 }); 
             }
             else 
-            {
-                $('#modal_model_update').modal('hide');	   	
+            {	
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
