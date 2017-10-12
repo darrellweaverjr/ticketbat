@@ -292,6 +292,7 @@ class ConsignmentController extends Controller{
                                                                        COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
                                                                        COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
                                                      ->where('tickets.id','=',$purchase_seat->ticket_id)->first();
+                                             $comm = (!empty($t->fixed_commission))? $t->fixed_commission : $t->percent_commission*$t->retail_price/100 ;
                                              if($oldStatus == 'Voided' && $purchase_seat->status != $oldStatus)
                                              {
                                                  $purchase = Purchase::find($purchase_seat->purchase_id);
@@ -301,6 +302,7 @@ class ConsignmentController extends Controller{
                                                      $purchase->increment('retail_price',$t->retail_price);
                                                      $purchase->increment('processing_fee',$t->processing_fee);
                                                      $purchase->increment('price_paid',$t->retail_price+$t->processing_fee);
+                                                     $purchase->increment('percent_commission',$comm);
                                                  }
                                              }
                                              else if($oldStatus != 'Voided' && $purchase_seat->status == 'Voided')
@@ -312,6 +314,7 @@ class ConsignmentController extends Controller{
                                                      $purchase->decrement('retail_price',$t->retail_price);
                                                      $purchase->decrement('processing_fee',$t->processing_fee);
                                                      $purchase->decrement('price_paid',$t->retail_price+$t->processing_fee);
+                                                     $purchase->decrement('percent_commission',$comm);
                                                  }
                                              }
                                          }
@@ -409,16 +412,19 @@ class ConsignmentController extends Controller{
                                                               COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
                                                               COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
                                             ->where('seats.id','=',$s)->first();
+                                    $comm = (!empty($purchase_seat->fixed_commission))? $purchase_seat->fixed_commission : $purchase_seat->percent_commission*$purchase_seat->retail_price/100 ;
                                     //decrement old
                                     $purchaseFrom->decrement('quantity',1);
                                     $purchaseFrom->decrement('retail_price',$purchase_seat->retail_price);
                                     $purchaseFrom->decrement('processing_fee',$purchase_seat->processing_fee);
                                     $purchaseFrom->decrement('price_paid',$purchase_seat->retail_price+$purchase_seat->processing_fee);
+                                    $purchaseFrom->decrement('percent_commission',$comm);
                                     //increment new
                                     $purchaseTo->increment('quantity',1);
                                     $purchaseTo->increment('retail_price',$purchase_seat->retail_price);
                                     $purchaseTo->increment('processing_fee',$purchase_seat->processing_fee);
-                                    $purchaseTo->decrement('price_paid',$purchase_seat->retail_price+$purchase_seat->processing_fee);
+                                    $purchaseTo->increment('price_paid',$purchase_seat->retail_price+$purchase_seat->processing_fee);
+                                    $purchaseTo->increment('percent_commission',$comm);
                                 }
                                 DB::table('seats')->where('id',$s)->update($updates);
                             }   
