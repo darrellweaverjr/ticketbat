@@ -112,5 +112,55 @@ class EventController extends Controller
             throw new Exception('Error Production Event Index: '.$ex->getMessage());
         }
     }
+    
+    /**
+     * Show the default method for the buy page.
+     *
+     * @return Method
+     */
+    public function buy($slug,$product)
+    {
+        try {
+            if(empty($slug) || empty($product))
+                return redirect()->route('index');
+            //get all records
+            $event = DB::table('shows')
+                        ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                        ->join('stages', 'stages.venue_id', '=', 'venues.id')
+                        ->join('show_times', 'show_times.show_id', '=', 'shows.id')
+                        ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, 
+                                          venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%Y/%m/%d %H:%i") AS show_time, 
+                                          show_times.time_alternative, shows.amex_only_start_date, shows.amex_only_end_date, shows.amex_only_ticket_types,
+                                          shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
+                        ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
+                        ->where('shows.slug', $slug)->where('show_times.id', $product)->where('show_times.is_active','>',0)
+                        ->whereRaw(DB::raw('show_times.show_time > NOW()'))
+                        ->where(function($query) {
+                            if(Auth::check() && Auth::user()->user_type_id!=1)
+                                $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
+                        })
+                        ->first();
+            if(!$event)
+                return redirect()->route('index');
+            $event->image_url = Image::view_image($event->image_url);
+            //get tickets types
+            $event->tickets = DB::table('tickets')
+                                ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                                ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
+                                                  tickets.retail_price,
+                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$event->show_time_id.')) ELSE -1 END) AS max_available'))
+                                ->where('tickets.show_id',$event->show_id)->where('tickets.is_active','>',0)
+                                ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = '.$event->show_time_id.')'))
+                                ->where(function($query) use ($event) {
+                                    $query->where('tickets.max_tickets', '<=', 0)
+                                    ->orWhereRaw('tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$event->show_time_id.')','>',0);
+                                })
+                                ->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get();
+            //return view
+            return view('production.events.buy',compact('event'));
+        } catch (Exception $ex) {
+            throw new Exception('Error Production Buy Index: '.$ex->getMessage());
+        }
+    }
        
 }
