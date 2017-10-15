@@ -129,7 +129,7 @@ class EventController extends Controller
                         ->join('stages', 'stages.venue_id', '=', 'venues.id')
                         ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                         ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, 
-                                          venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%Y/%m/%d %H:%i") AS show_time, 
+                                          venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time, 
                                           show_times.time_alternative, shows.amex_only_start_date, shows.amex_only_end_date, shows.amex_only_ticket_types,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
@@ -144,11 +144,12 @@ class EventController extends Controller
                 return redirect()->route('index');
             $event->image_url = Image::view_image($event->image_url);
             //get tickets types
-            $event->tickets = DB::table('tickets')
+            $event->tickets = [];
+            $tickets = DB::table('tickets')
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                   tickets.retail_price,
-                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$event->show_time_id.')) ELSE -1 END) AS max_available'))
+                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$event->show_time_id.')) ELSE 20 END) AS max_available'))
                                 ->where('tickets.show_id',$event->show_id)->where('tickets.is_active','>',0)
                                 ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = '.$event->show_time_id.')'))
                                 ->where(function($query) use ($event) {
@@ -156,6 +157,14 @@ class EventController extends Controller
                                     ->orWhereRaw('tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$event->show_time_id.')','>',0);
                                 })
                                 ->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get();
+            foreach ($tickets as $t)
+            {
+                $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
+                if(isset($event->tickets[$t->ticket_type]))
+                    $event->tickets[$id]['tickets'][] = $t;
+                else 
+                    $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class, 'tickets'=>[$t]];
+            }
             //return view
             return view('production.events.buy',compact('event'));
         } catch (Exception $ex) {

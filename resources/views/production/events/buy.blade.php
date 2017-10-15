@@ -5,53 +5,113 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="{{config('app.theme')}}css/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-<link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
-<link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="{{env('IMAGE_URL_AMAZON_SERVER')}}/styles/ticket_types.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
 @section('content')
 
-
+<!-- BEGIN NAME BAR-->
+<div class="row widget-row">
+    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the event">                
+        <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">{{$event->name}}
+        </div>
+    </div>
+</div>
 <!-- END NAME BAR-->
-<div class="page-content color-panel">  
+<!-- END NAME BAR-->
+<div class="page-content color-panel " style="padding-top: 30px"> 
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
         <div class="col-lg-6">
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
                 <h4>
-                    <i class="fa fa-check icon-info"></i> Event details
-                    
-                </h4>  
-                <p class="margin-top-20">sdfsdfsd</p>
-                <!-- END DESCRIPTION -->
-                <!-- BEGIN BANDS -->
-                <div class="timeline" style="margin:5px;padding-bottom:10px">
-                    @foreach($event->tickets as $t)
-                    <!-- BAND ITEM -->
-                    
-                    <!-- END BAND ITEM -->
-                    @endforeach
-                </div>
-                <!-- ENDS BANDS -->
+                    <i class="fa fa-image"></i> Stage
+                    <div class="actions pull-right">
+                        <div class="btn-group">
+                            <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank">
+                                        <i class="social-icon social-icon-color twitter"></i> Twitter
+                                    </a></li>
+                                <li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">
+                                        <i class="social-icon social-icon-color googleplus"></i> Google+
+                                    </a></li>
+                                <li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">
+                                        <i class="social-icon social-icon-color facebook"></i> Facebook
+                                    </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </h4> 
+                <p class="margin-top-20">
+                    <center>
+                        <h5>{{$event->show_time}}</h5><hr>
+                        <img src="{{$event->image_url}}" />
+                    </center><br>
+                </p>
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="portlet light about-text">
-                <!-- BEGIN DESCRIPTION -->
-                <h4>
-                    <i class="fa fa-check icon-calendar"></i> Show times
-                </h4> 
-                <div class="timeline" style="margin:5px;padding-bottom:10px">
-                    @foreach($event->tickets as $t)
-                    <!-- BAND ITEM -->
-                    {!! $t->ticket_type !!}
-                    <!-- END BAND ITEM -->
-                    @endforeach
-                </div> 
-            </div>
+            <form method="post" id="form_model_update" class="form-horizontal">
+                <input name="show_time_id" type="hidden" value="{{$event->show_time_id}}"/>
+                <div class="portlet light about-text">
+                    <!-- BEGIN DESCRIPTION -->
+                    <h4>
+                        <i class="fa fa-ticket"></i> Tickets
+                    </h4> 
+                    <div class="portlet-body">
+                        <div class="panel-group accordion" id="tickets_accordion">
+                            <!-- BEGIN TICKETS -->
+                            @php $selected = true @endphp
+                            @foreach($event->tickets as $index=>$t)
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title {{$t['class']}}">
+                                        <a class="accordion-toggle accordion-toggle-styled @if(!$selected) collapsed @endif" data-toggle="collapse" data-parent="#tickets_accordion" href="#collapse_{{$index}}"> <b>{{$t['type']}}</b> </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse_{{$index}}" class="panel-collapse @if($selected) in @else collapse @endif">
+                                    <div class="panel-body">
+                                        <div class="mt-radio-list">
+                                            @foreach($t['tickets'] as $tt)
+                                            <label class="mt-radio mt-radio-outline">
+                                                <input type="radio" name="ticket_id" @if($selected) class="default_radio" @endif data-price="{{$tt->retail_price}}" data-max="{{$tt->max_available}}" value="{{$tt->ticket_id}}" > 
+                                                    ${{$tt->retail_price}} @if($tt->title!='None')- {{$tt->title}} @endif
+                                                <span></span>
+                                            </label>
+                                            @php $selected = false @endphp
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                        
+                            @endforeach
+                        </div>
+                    </div>
+                    <p style="margin-top: 50px">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">QTY</label>
+                                <select class="form-control col-md-3" name="qty" data-price="" style="width:65px"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 text-right">TOTAL</label>
+                                <label id="totals" class="control-label col-md-6 text-center" style="font-size:22px">$ 0.00</label>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+                <div class="portlet light about-text">
+                    <!-- BEGIN DESCRIPTION -->
+                    <div style="margin-top: 130px">
+                        <input type="button" class="btn btn-danger btn-block btn-lg uppercase" value="Add to cart"/>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <!-- END DESCRIPTION AND CALENDAR -->
