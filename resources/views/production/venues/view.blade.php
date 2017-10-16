@@ -59,16 +59,17 @@
             <!-- END DESCRIPTION -->
         </div>
     </div>
+    @if(count($venue->events))
     <div class="row fixed-panel">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
                 <i class="fa fa-globe icon-globe"></i> Events
             </h4> 
-            <!-- BEGIN BANDS -->
+            <!-- BEGIN EVENTS -->
             <div class="timeline" style="margin:5px;padding-bottom:10px;">
                 @foreach($venue->events as $e)
-                <!-- BAND ITEM -->
+                <!-- EVENT ITEM -->
                 <div class="timeline-item">
                     <div class="timeline-badge">
                         <img class="timeline-badge-userpic" src="{{$e->url}}"> </div>
@@ -100,12 +101,13 @@
                         </div>
                     </div>
                 </div>
-                <!-- END BAND ITEM -->
+                <!-- END EVENT ITEM -->
                 @endforeach
             </div>
-            <!-- ENDS BANDS -->
+            <!-- ENDS EVENTS -->
         </div>
     </div>
+    @endif
     <!-- END DESCRIPTION AND CALENDAR -->
     <!-- BEGIN MAPS -->
     <div id="event_gmap" class="row gmaps" 
