@@ -30,7 +30,7 @@ var FunctionsManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/events/add', 
+                url: '/production/shoppingcart/add', 
                 data: $('#form_model_update').serializeArray(), 
                 success: function(data) {
                     if(data.success) 

@@ -1,13 +1,10 @@
-@php $page_title=$event->name.' at '.$event->venue @endphp
+@php $page_title=$venue->name @endphp
 @extends('layouts.production')
 @section('title')
   {!! $page_title !!}
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="{{config('app.theme')}}css/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-<link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
-<link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -15,20 +12,20 @@
 
 <!-- BEGIN TOP HEADER -->
 <div class="row">
-    <img style="margin:auto;max-height:422px" src="{{$event->header->url}}" alt="{{$event->header->caption}}">
+    <img style="margin:auto;max-height:422px" src="{{$venue->header->url}}" alt="{{$venue->header->caption}}">
 </div>
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
 <div class="row widget-row">
-    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the event">                
-        <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">{{$event->name}}
+    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the venue">                
+        <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">{{$venue->name}}
             <p style="margin-top:-25px">
-                @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
-                @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
-                @if(!empty($event->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$event->facebook}}" target="_blank"></a> @endif
-                @if(!empty($event->yelpbadge)) <a class="social-icon social-icon-color yahoo " href="http://yelp.com/biz/{{$event->yelpbadge}}" target="_blank"></a> @endif
-                @if(!empty($event->instagram)) <a class="social-icon social-icon-color instagram" href="http://instagram.com/{{$event->instagram}}" target="_blank"></a> @endif
-                @if(!empty($event->youtube)) <a class="social-icon social-icon-color youtube" href="http://www.youtube.com/user/{{$event->youtube}}" target="_blank"></a> @endif
+                @if(!empty($venue->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$venue->twitter}}" target="_blank"></a> @endif
+                @if(!empty($venue->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$venue->googleplus}}" target="_blank"></a> @endif
+                @if(!empty($venue->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$venue->facebook}}" target="_blank"></a> @endif
+                @if(!empty($venue->yelpbadge)) <a class="social-icon social-icon-color yahoo " href="http://yelp.com/biz/{{$venue->yelpbadge}}" target="_blank"></a> @endif
+                @if(!empty($venue->instagram)) <a class="social-icon social-icon-color instagram" href="http://instagram.com/{{$venue->instagram}}" target="_blank"></a> @endif
+                @if(!empty($venue->youtube)) <a class="social-icon social-icon-color youtube" href="http://www.youtube.com/user/{{$venue->youtube}}" target="_blank"></a> @endif
             </p>
         </div>
     </div>
@@ -41,12 +38,12 @@
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
                 <h4>
-                    <i class="fa fa-check icon-info"></i> Event details
+                    <i class="fa fa-check icon-info"></i> Venue details
                     <div class="actions pull-right">
                         <div class="btn-group">
                             <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank">
+                                <li><a href="https://twitter.com/intent/tweet?text={{$venue->name}} {{url()->current()}}" target="_blank">
                                         <i class="social-icon social-icon-color twitter"></i> Twitter
                                     </a></li>
                                 <li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">
@@ -59,8 +56,16 @@
                         </div>
                     </div>
                 </h4>  
-                <p class="margin-top-20">{!! $event->description !!}</p>
+                <p class="margin-top-20">{!! $venue->description !!}</p>
                 <!-- END DESCRIPTION -->
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="portlet light about-text">
+                <!-- BEGIN DESCRIPTION -->
+                <h4>
+                    <i class="fa fa-check icon-calendar"></i> Events
+                </h4> 
                 <!-- BEGIN BANDS -->
                 <div class="timeline" style="margin:5px;padding-bottom:10px">
                     @foreach($event->bands as $b)
@@ -97,67 +102,6 @@
                     @endforeach
                 </div>
                 <!-- ENDS BANDS -->
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="portlet light about-text">
-                <!-- BEGIN DESCRIPTION -->
-                <h4>
-                    <i class="fa fa-check icon-calendar"></i> Show times
-                    <div class="actions pull-right">
-                        <div class="btn-group">
-                            <ul class="nav nav-tabs">
-                                <li @if(count($event->showtimes)<8) class="active" @endif>
-                                    <a href="#showtimes_list" data-toggle="tab"><i class="fa fa-list icon-list"></i></a>
-                                </li>
-                                <li @if(count($event->showtimes)>7) class="active" @endif>
-                                    <a href="#showtimes_calendar" data-toggle="tab"><i class="fa fa-calendar icon-calendar"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </h4> 
-                @if($event->restrictions!="None")
-                <div class="margin-top-20 alert alert-danger" style="margin:5px">
-                    <b>RESTRICTIONS:</b> {{preg_replace('~\D~','',$event->restrictions)}} years of age or older to attend the event.
-                </div>
-                @endif
-                <div class="tab-content">
-                    <!-- SHOW TIMES AS LIST -->
-                    <div class="tab-pane @if(count($event->showtimes)<8) active @endif" id="showtimes_list" style="margin:5px;padding-bottom:10px">   
-                        <div class="portlet-body light portlet-fit" style="margin-top:-30px;">
-                            <table class="table table-hover table-responsive" id="tb_model">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($event->showtimes as $st)
-                                    <tr>
-                                        <td>{{$st->show_day}}</td>
-                                        <td>{{$st->show_date}}</td>
-                                        <td>{{$st->show_hour}}</td>
-                                        <td><center><a href="{{url()->current()}}/{{$st->id}}" style="color:white!important" class="btn bg-blue">BUY TICKETS <i class="fa fa-arrow-circle-right"></i></a></center></td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- SHOW TIMES AS CALENDAR -->
-                    <div class="tab-pane @if(count($event->showtimes)>7) active @endif" id="showtimes_calendar" style="margin:5px;padding-bottom:10px">
-                        <div class="portlet-body light portlet-fit calendar">
-                            <div id="cal_model" class="has-toolbar" data-slug="{{url()->current()}}"> </div>
-                        </div>
-                        @foreach($event->showtimes as $st)
-                        <span class="hidden" data-id="{{$st->id}}" data-showtime="{{$st->show_time}}" data-alternative="{{$st->time_alternative}}" data-presale="{{$st->presale}}" data-hour="{{$st->show_hour}}"><span>
-                        @endforeach
-                    </div>
-                </div>  
             </div>
         </div>
     </div>
@@ -237,5 +181,5 @@
 <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyC7sODsH3uUz_lBbYH16eOCJU9igquCjzI" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/gmaps.min.js" type="text/javascript"></script>
-<script src="/js/production/events/index.js" type="text/javascript"></script>
+<script src="/js/production/venues/view.js" type="text/javascript"></script>
 @endsection

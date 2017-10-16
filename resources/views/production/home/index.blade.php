@@ -129,8 +129,8 @@
             @foreach($shows as $index=>$s)
             <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/events/{{$s->slug}}">
                 <div class="cbp-caption">
-                    <div class="cbp-caption-defaultWrap">
-                        <img src="{{$s->url}}" alt="{{$s->name}}"> </div>
+                    <a class="cbp-caption-defaultWrap">
+                        <img src="{{$s->url}}" alt="{{$s->name}}"> </a>
                     <div class="cbp-caption-activeWrap">
                         <div class="cbp-l-caption-alignCenter">
                             <div class="cbp-l-caption-body">
@@ -143,7 +143,7 @@
                 </div>
                 <div class="btn green uppercase show_section_btnbuy">Tickets @if($s->starting_at)<br><b style="text-decoration:line-through;color:#d43f3a">${{$s->price}}</b><br><b style="color:blue">${{$s->starting_at}}</b>@endif</div>
                 <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
-                <div class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b>On {{date('F j, Y @ h:i A', strtotime($s->show_time))}}<br>in {{$s->venue}}</b></div>
+                <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b>On {{date('F j, Y @ h:i A', strtotime($s->show_time))}}<br>in {{$s->venue}}</b></a>
             </div>
             @endforeach
         </div>

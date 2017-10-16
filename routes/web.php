@@ -120,6 +120,7 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::post('user/consignments/save', 'UserConsignmentController@save')->middleware('productioncheck');
     Route::match(['get','post'], 'user/consignments', 'UserConsignmentController@index')->middleware('productioncheck');
     //shoppingcart
+    Route::post('shoppingcart/add', 'ShoppingcartController@add');
     Route::post('shoppingcart/count', 'ShoppingcartController@count');
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
     Route::match(['get','post'], 'shoppingcart', 'ShoppingcartController@index');
@@ -128,7 +129,9 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::get('/home', 'HomeController@index')->name('index');
     Route::post('home/search', 'HomeController@search');
     //event
-    Route::post( 'events/add', 'ShoppingcartController@add');
     Route::match(['get','post'], 'events/{slug}/{product}', 'EventController@buy');
     Route::match(['get','post'], 'events/{slug}', 'EventController@index');
+    //venues
+    Route::match(['get','post'], 'venues/{slug}', 'VenueController@view');
+    Route::match(['get','post'], 'venues', 'VenueController@index');
 });

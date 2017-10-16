@@ -71,12 +71,12 @@
                     <!-- BEGIN HORIZANTAL MENU -->
                     <div class="collapse navbar-collapse" style="background:#000">
                         <ul class="nav navbar-nav">         
-                            <li>
-                                <a  href="javascript:;" class="menu_nav" title="View our venues">
+                            <li @if(preg_match('/\/venues/',url()->current())) class="active" @endif>
+                                <a href="/production/venues" class="menu_nav" title="View our venues">
                                     <i class="icon-pointer"></i> Venues 
                                 </a>                                
                             </li>
-                            <li>
+                            <li @if(preg_match('/\/merchandise/',url()->current())) class="active" @endif>
                                 <a  href="javascript:;" class="menu_nav" title="View our merchandises in our venues">
                                     <i class="icon-bag"></i> Merchandise 
                                 </a>                                
@@ -95,7 +95,7 @@
                                 </a>
                             </li>
                             @else
-                            <li class="dropdown">
+                            <li class="dropdown @if(preg_match('/\/user/',url()->current())) active @endif">
                                 <a href="#" class="dropdown-toggle menu_nav" data-toggle="dropdown" title="View your user's options">
                                     <i class="icon-user"></i><span class="username"> {{Auth::user()->first_name}} </span>
                                     <i class="fa fa-angle-down"></i>
@@ -121,7 +121,7 @@
                                 </ul>
                             </li>
                             @endif
-                            <li class="dropdown-notification">
+                            <li class="dropdown-notification @if(preg_match('/\/shoppingcart/',url()->current())) active @endif">
                                 <a href="#" class="menu_nav" title="View/pay you items in the shopping cart">
                                     <i class="icon-basket"></i> Shopping Cart <span class="badge badge-danger"><b id="shoppingcart_qty_items" style="font-size:14px">Loading</b></span>
                                 </a>

@@ -19,13 +19,11 @@
     </div>
 </div>
 <!-- END NAME BAR-->
-<!-- END NAME BAR-->
 <div class="page-content color-panel " style="padding-top: 30px"> 
-    <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
         <div class="col-lg-6">
             <div class="portlet light about-text">
-                <!-- BEGIN DESCRIPTION -->
+                <!-- BEGIN STAGE -->
                 <h4>
                     <i class="fa fa-image"></i> Stage
                     <div class="actions pull-right">
@@ -51,13 +49,13 @@
                         <img src="{{$event->image_url}}" />
                     </center><br>
                 </p>
+                <!-- END STAGE -->
             </div>
         </div>
         <div class="col-lg-6">
             <form method="post" id="form_model_update" class="form-horizontal">
                 <input name="show_time_id" type="hidden" value="{{$event->show_time_id}}"/>
                 <div class="portlet light about-text">
-                    <!-- BEGIN DESCRIPTION -->
                     <h4>
                         <i class="fa fa-ticket"></i> Tickets
                     </h4> 
@@ -88,8 +86,10 @@
                                 </div>
                             </div>                        
                             @endforeach
+                            <!-- END TICKETS -->
                         </div>
                     </div>
+                    <!-- BEGIN TOTALS -->
                     <p style="margin-top: 50px">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -104,22 +104,26 @@
                             </div>
                         </div>
                     </p>
+                    <!-- END TOTALS -->
                 </div>
+                <!-- BEGIN ADD TO -->
                 <div class="portlet light about-text">
                     <!-- BEGIN DESCRIPTION -->
                     <div style="margin-top: 130px">
-                        <input type="button" id="btn_add_shoppingcart" class="btn btn-danger btn-block btn-lg uppercase" value="Add to cart"/>
+                        <a id="btn_add_shoppingcart" class="btn btn-danger btn-block btn-lg uppercase"><i class="fa fa-plus-square"></i> Add to cart</a>
                     </div>
                 </div>
+                <!-- END ADD TO -->
+                <!-- BEGIN SHORTCUT FORM -->
                 <div class="portlet light about-text" id="continue_buy_checkout_msg" style="display:none">
-                    <!-- BEGIN DESCRIPTION -->
                     <div class="col-md-6">
-                        <input type="button" class="btn btn-info btn-block btn-lg uppercase" value="Continue shopping"/>
+                        <a href="/production/home" class="btn btn-info btn-block btn-lg uppercase"><i class="fa fa-suitcase"></i> Continue shopping </a>
                     </div>
                     <div class="col-md-6">
-                        <input type="button" class="btn btn-success btn-block btn-lg uppercase" value="Checkout"/>
+                        <a href="/production/shoppingcart" class="btn btn-success btn-block btn-lg uppercase"><i class="fa fa-shopping-cart"></i> Checkout </a>
                     </div>
                 </div>
+                <!-- END SHORTCUT FORM -->
             </form>
         </div>
     </div>
