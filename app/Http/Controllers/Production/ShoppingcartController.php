@@ -75,6 +75,23 @@ class ShoppingcartController extends Controller
         return ['success'=>true];
     }
       
-    
+    /*
+     * add items to the cart
+     */
+    public function add()
+    {
+        try {
+            $info = Input::all();
+            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            {
+                $s_token = Util::s_token(false, true);
+                $success = Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $s_token);
+                return Util::json($success);
+            }
+            return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
+        } catch (Exception $ex) {
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+        }
+    }  
     
 }

@@ -108,7 +108,16 @@
                 <div class="portlet light about-text">
                     <!-- BEGIN DESCRIPTION -->
                     <div style="margin-top: 130px">
-                        <input type="button" class="btn btn-danger btn-block btn-lg uppercase" value="Add to cart"/>
+                        <input type="button" id="btn_add_shoppingcart" class="btn btn-danger btn-block btn-lg uppercase" value="Add to cart"/>
+                    </div>
+                </div>
+                <div class="portlet light about-text" id="continue_buy_checkout_msg" style="display:none">
+                    <!-- BEGIN DESCRIPTION -->
+                    <div class="col-md-6">
+                        <input type="button" class="btn btn-info btn-block btn-lg uppercase" value="Continue shopping"/>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="button" class="btn btn-success btn-block btn-lg uppercase" value="Checkout"/>
                     </div>
                 </div>
             </form>

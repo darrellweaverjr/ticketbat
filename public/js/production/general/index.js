@@ -75,7 +75,10 @@ var ShoppingcartQtyItems = function () {
                 {
                     $('#shoppingcart_qty_items').html(data.qty_items);
                     if(data.qty_items>0)
+                    {
                         Countdown.init();
+                        $('#continue_buy_checkout_msg').css('display','block');
+                    }
                     else
                     {
                         if(time!='')

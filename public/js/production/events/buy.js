@@ -25,6 +25,45 @@ var FunctionsManaged = function () {
                 $('#form_model_update select[name="qty"]').append('<option value="'+i+'">'+i+'</option>');
             $('#form_model_update select[name="qty"]').val(1).trigger('change');
         }
+        //add item to the shoppingcart
+        $('#btn_add_shoppingcart').on('click', function(ev) {
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/production/events/add', 
+                data: $('#form_model_update').serializeArray(), 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        ShoppingcartQtyItems.init();
+                        swal({
+                            title: "<span style='color:green;'>Added to the cart!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                    }
+                    else{
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to add the ticket(s) to the cart.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            }); 
+        });
         //autoselect first one
         $('#form_model_update input:radio.default_radio').attr('checked',true).trigger('change');
         update_price();
