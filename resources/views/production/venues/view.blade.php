@@ -77,7 +77,7 @@
                         <div class="timeline-body-arrow"> </div>
                         <div class="timeline-body-head">
                             <div class="timeline-body-head-caption">
-                                <a href="javascript:;" class="timeline-body-title font-blue-madison">{{$e->name}}</a>
+                                <a href="/production/events/{{$e->slug}}" class="timeline-body-title font-blue-madison">{{$e->name}}</a>
                                 <span class="timeline-body-time font-grey-cascade">({{$e->category}})</span>
                             </div>
                             <div class="timeline-body-head-actions">
