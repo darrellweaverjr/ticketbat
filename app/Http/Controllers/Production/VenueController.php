@@ -57,7 +57,7 @@ class VenueController extends Controller
             //get all records
             $venue = DB::table('venues')
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
-                        ->select(DB::raw('venues.id as venue_id, venues.slug, venues.description, venues.name as venue,
+                        ->select(DB::raw('venues.id as venue_id, venues.slug, venues.description, venues.name,
                                           venues.facebook, venues.twitter, venues.googleplus, venues.yelpbadge, venues.youtube, venues.instagram,
                                           locations.*, IF(venues.restrictions!="None",venues.restrictions,"") AS restrictions'))
                         ->where('venues.is_featured','>',0)->where('venues.slug', $slug)->first();
@@ -69,6 +69,28 @@ class VenueController extends Controller
                                 ->select(DB::raw('images.url, images.caption'))
                                 ->where('venue_images.venue_id',$venue->venue_id)->where('images.image_type','=','Header')->first();
             $venue->header->url = Image::view_image($venue->header->url);
+            //get events
+            $venue->events = DB::table('shows')
+                        ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
+                        ->join('images', 'show_images.image_id', '=' ,'images.id')
+                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                        ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
+                        ->join('categories', 'shows.category_id', '=' ,'categories.id')
+                        ->select(DB::raw('shows.id AS show_id, shows.name, images.url, locations.city, categories.name AS category,
+                                          venues.name AS venue, show_times.show_time, shows.slug, show_times.time_alternative, shows.description,
+                                          MIN(tickets.retail_price+tickets.processing_fee) AS price, shows.starting_at'))    
+                        ->where('shows.venue_id',$venue->venue_id)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where('images.image_type','=','Logo')->where('show_times.is_active','=',1)
+                        ->where('show_times.show_time','>',\Carbon\Carbon::now())
+                        ->whereNotNull('images.url')
+                        ->orderBy('shows.name','ASC')->orderBy('show_times.show_time','ASC')
+                        ->groupBy('shows.id')
+                        ->distinct()->get();
+            foreach ($venue->events as $s)
+                if(!empty($s->url))
+                    $s->url = Image::view_image($s->url);
             //return view
             return view('production.venues.view',compact('venue'));
         } catch (Exception $ex) {

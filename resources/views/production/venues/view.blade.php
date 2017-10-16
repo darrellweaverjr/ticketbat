@@ -34,141 +34,85 @@
 <div class="page-content color-panel">  
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
-        <div class="col-lg-6">
-            <div class="portlet light about-text">
-                <!-- BEGIN DESCRIPTION -->
-                <h4>
-                    <i class="fa fa-check icon-info"></i> Venue details
-                    <div class="actions pull-right">
-                        <div class="btn-group">
-                            <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="https://twitter.com/intent/tweet?text={{$venue->name}} {{url()->current()}}" target="_blank">
-                                        <i class="social-icon social-icon-color twitter"></i> Twitter
-                                    </a></li>
-                                <li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">
-                                        <i class="social-icon social-icon-color googleplus"></i> Google+
-                                    </a></li>
-                                <li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">
-                                        <i class="social-icon social-icon-color facebook"></i> Facebook
-                                    </a></li>
-                            </ul>
-                        </div>
+        <div class="portlet light about-text">
+            <!-- BEGIN DESCRIPTION -->
+            <h4>
+                <i class="fa fa-check icon-info"></i> Venue details
+                <div class="actions pull-right">
+                    <div class="btn-group">
+                        <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="https://twitter.com/intent/tweet?text={{$venue->name}} {{url()->current()}}" target="_blank">
+                                    <i class="social-icon social-icon-color twitter"></i> Twitter
+                                </a></li>
+                            <li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">
+                                    <i class="social-icon social-icon-color googleplus"></i> Google+
+                                </a></li>
+                            <li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">
+                                    <i class="social-icon social-icon-color facebook"></i> Facebook
+                                </a></li>
+                        </ul>
                     </div>
-                </h4>  
-                <p class="margin-top-20">{!! $venue->description !!}</p>
-                <!-- END DESCRIPTION -->
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="portlet light about-text">
-                <!-- BEGIN DESCRIPTION -->
-                <h4>
-                    <i class="fa fa-check icon-calendar"></i> Events
-                </h4> 
-                <!-- BEGIN BANDS -->
-                <div class="timeline" style="margin:5px;padding-bottom:10px">
-                    @foreach($event->bands as $b)
-                    <!-- BAND ITEM -->
-                    <div class="timeline-item">
-                        <div class="timeline-badge">
-                            <img class="timeline-badge-userpic" src="{{$b->image_url}}"> </div>
-                        <div class="timeline-body">
-                            <div class="timeline-body-arrow"> </div>
-                            <div class="timeline-body-head">
-                                <div class="timeline-body-head-caption">
-                                    <a href="javascript:;" class="timeline-body-title font-blue-madison">{{$b->name}}</a>
-                                    <span class="timeline-body-time font-grey-cascade">({{$b->category}})</span>
-                                </div>
-                                <div class="timeline-body-head-actions">
-                                    <div class="btn-group">
-                                        @if(!empty($b->website)) <a class="social-icon social-icon-color rss" href="{{$b->website}}" target="_blank"></a> @endif
-                                        @if(!empty($b->twitter)) <a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a> @endif
-                                        @if(!empty($b->my_space)) <a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a> @endif
-                                        @if(!empty($b->facebook)) <a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a> @endif
-                                        @if(!empty($b->flickr)) <a class="social-icon social-icon-color flickr" href="{{$b->flickr}}" target="_blank"></a> @endif
-                                        @if(!empty($b->instagram)) <a class="social-icon social-icon-color instagram" href="{{$b->instagram}}" target="_blank"></a> @endif
-                                        @if(!empty($b->youtube)) <a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a> @endif
-                                        @if(!empty($b->soundcloud)) <a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a> @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="timeline-body-content">
-                                <span class="font-grey-cascade">{!! $b->short_description !!}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END BAND ITEM -->
-                    @endforeach
                 </div>
-                <!-- ENDS BANDS -->
+            </h4>  
+            <p class="margin-top-20" style="padding-bottom:20px">{!! $venue->description !!}</p>
+            <!-- END DESCRIPTION -->
+        </div>
+    </div>
+    <div class="row fixed-panel">
+        <div class="portlet light about-text">
+            <!-- BEGIN DESCRIPTION -->
+            <h4>
+                <i class="fa fa-globe icon-globe"></i> Events
+            </h4> 
+            <!-- BEGIN BANDS -->
+            <div class="timeline" style="margin:5px;padding-bottom:10px;">
+                @foreach($venue->events as $e)
+                <!-- BAND ITEM -->
+                <div class="timeline-item">
+                    <div class="timeline-badge">
+                        <img class="timeline-badge-userpic" src="{{$e->url}}"> </div>
+                    <div class="timeline-body">
+                        <div class="timeline-body-arrow"> </div>
+                        <div class="timeline-body-head">
+                            <div class="timeline-body-head-caption">
+                                <a href="javascript:;" class="timeline-body-title font-blue-madison">{{$e->name}}</a>
+                                <span class="timeline-body-time font-grey-cascade">({{$e->category}})</span>
+                            </div>
+                            <div class="timeline-body-head-actions">
+                                <div class="btn-group">
+                                    @if(!empty($e->website)) <a class="social-icon social-icon-color rss" href="{{$e->website}}" target="_blank"></a> @endif
+                                    @if(!empty($e->twitter)) <a class="social-icon social-icon-color twitter" href="{{$e->twitter}}" target="_blank"></a> @endif
+                                    @if(!empty($e->my_space)) <a class="social-icon social-icon-color myspace" href="{{$e->my_space}}" target="_blank"></a> @endif
+                                    @if(!empty($e->facebook)) <a class="social-icon social-icon-color facebook" href="{{$e->facebook}}" target="_blank"></a> @endif
+                                    @if(!empty($e->flickr)) <a class="social-icon social-icon-color flickr" href="{{$e->flickr}}" target="_blank"></a> @endif
+                                    @if(!empty($e->instagram)) <a class="social-icon social-icon-color instagram" href="{{$e->instagram}}" target="_blank"></a> @endif
+                                    @if(!empty($e->youtube)) <a class="social-icon social-icon-color youtube" href="{{$e->youtube}}" target="_blank"></a> @endif
+                                    @if(!empty($e->soundcloud)) <a class="social-icon social-icon-color jolicloud" href="{{$e->soundcloud}}" target="_blank"></a> @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-body-content">
+                            <span class="font-grey-cascade">{!! $e->description !!}</span><hr>
+                            <span class="col-md-4"><i class="fa fa-calendar icon-calendar"></i> {{date('F j, Y @ h:i A', strtotime($e->show_time))}}</span>
+                            <span class="col-md-4"><i class="fa fa-ticket icon-tag"></i>@if(!empty($e->starting_at)) ${{$e->starting_at}} @else ${{$e->price}} @endif</span>
+                            <span class="col-md-4"><a href="/production/events/{{$e->slug}}" style="color:white!important" class="btn bg-blue">SEE TICKETS <i class="fa fa-arrow-circle-right"></i></a></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- END BAND ITEM -->
+                @endforeach
             </div>
+            <!-- ENDS BANDS -->
         </div>
     </div>
     <!-- END DESCRIPTION AND CALENDAR -->
-    <!-- BEGIN VIDEOS -->
-    @if(count($event->videos))
-    <div class="row fixed-panel" style="padding:15px">
-        <div class="portlet light about-text">
-            <!-- BEGIN DESCRIPTION -->
-            <h4>
-                <i class="fa fa-youtube-play"></i> Videos
-            </h4>  
-            @foreach($event->videos as $v)
-            <p class="text-center">
-                <iframe src="{!!$v->embed_code!!}" width="100%" height="600px" frameborder="0"></iframe>
-                {!!$v->description!!}<hr>
-            </p>
-            @endforeach
-        </div>
-    </div>
-    @endif
-    <!-- END VIDEOS -->
-    <!-- BEGIN GALLERY -->
-    @if(count($event->images))
-    <div class="row fixed-panel" style="padding:15px;margin-top:-20px">
-        <div class="portlet light about-text">
-            <!-- BEGIN DESCRIPTION -->
-            <h4>
-                <i class="fa fa-image"></i> Gallery
-            </h4>  
-            <!-- END DESCRIPTION -->
-            <!-- BEGIN GALLERY -->
-            <div id="gallery_view" class="carousel slide" data-ride="carousel" data-type="multi" data-interval="3000" style="height:200px;">
-                <ol class="carousel-indicators">
-                    @foreach($event->images as $index=>$i)
-                    <li data-target="#gallery_view" data-slide-to="{{$index}}" @if(!$index) class="active" @endif ></li>
-                    @endforeach
-                </ol>
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner" role="listbox">
-                    @foreach($event->images as $index=>$i)
-                    <div class="item @if(!$index) active @endif" >
-                        <div class="col-md-3 col-sm-6 col-xs-12"><img  width="200px" height="150px" style="margin:auto" src="{{$i->url}}" alt="{{$i->url}}"></div>
-                    </div>
-                    @endforeach
-                </div>
-                <!-- Left and right controls -->
-                <a class="left carousel-control" href="#gallery_view" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="right carousel-control" href="#gallery_view" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
-            <!-- ENDS GALLERY -->
-        </div>
-    </div>
-    @endif
-    <!-- END GALLERY -->
     <!-- BEGIN MAPS -->
     <div id="event_gmap" class="row gmaps" 
-                 data-lat="{{$event->lat}}" 
-                 data-lng="{{$event->lng}}"
-                 data-address="{{$event->address}}<br>{{$event->city}}, {{$event->state}}, {{$event->country}} {{$event->zip}}"
-                 data-venue="{{$event->venue}}"
+                 data-lat="{{$venue->lat}}" 
+                 data-lng="{{$venue->lng}}"
+                 data-address="{{$venue->address}}<br>{{$venue->city}}, {{$venue->state}}, {{$venue->country}} {{$venue->zip}}"
+                 data-venue="{{$venue->name}}"
                  ></div>
     <!-- END MAPS -->    
     
@@ -176,9 +120,6 @@
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/fullcalendar.min.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyC7sODsH3uUz_lBbYH16eOCJU9igquCjzI" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/gmaps.min.js" type="text/javascript"></script>
 <script src="/js/production/venues/view.js" type="text/javascript"></script>
