@@ -14,12 +14,8 @@
 @section('content')
 
 <!-- BEGIN TOP HEADER -->
-<div class="top_header" >
-    <div class="carousel-inner">
-        <div class="item active" >
-            <img style="margin:auto" src="{{$event->header->url}}" alt="{{$event->header->caption}}">
-        </div>
-    </div>
+<div class="row">
+    <img style="margin:auto;max-height:422px" src="{{$event->header->url}}" alt="{{$event->header->caption}}">
 </div>
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->

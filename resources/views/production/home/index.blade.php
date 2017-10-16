@@ -130,7 +130,7 @@
             <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/events/{{$s->slug}}">
                 <div class="cbp-caption">
                     <div class="cbp-caption-defaultWrap">
-                        <img src="{{$s->url}}" alt="No Image Preview"> </div>
+                        <img src="{{$s->url}}" alt="{{$s->name}}"> </div>
                     <div class="cbp-caption-activeWrap">
                         <div class="cbp-l-caption-alignCenter">
                             <div class="cbp-l-caption-body">
