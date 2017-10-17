@@ -151,13 +151,21 @@
                     <!-- SHOW TIMES AS CALENDAR -->
                     <div class="tab-pane @if(count($event->showtimes)>7) active @endif" id="showtimes_calendar" style="margin:5px;padding-bottom:10px">
                         <div class="portlet-body light portlet-fit calendar">
-                            <div id="cal_model" class="has-toolbar" data-slug="{{url()->current()}}"> </div>
+                            <div id="cal_model" class="has-toolbar"> </div>
                         </div>
-                        @foreach($event->showtimes as $st)
-                        <span class="hidden" data-id="{{$st->id}}" data-showtime="{{$st->show_time}}" data-alternative="{{$st->time_alternative}}" data-presale="{{$st->presale}}" data-hour="{{$st->show_hour}}"><span>
-                        @endforeach
                     </div>
                 </div>  
+                <!-- BEGIN PRESENTED BY -->
+                <p class="uppercase text-center" style="margin-top: 30px">
+                    <div class="col-md-3">
+                        @if(!empty($event->sponsor_logo_id))<img class="timeline-badge-userpic" src="{{$event->sponsor_logo_id}}">@endif
+                    </div>
+                    <div class="col-md-9">
+                        @if(!empty($event->presented_by))<label class="control-label">PRESENTED BY: <b>{{$event->presented_by}}</b></label><br>@endif
+                        @if(!empty($event->sponsor))<label class="control-label">SPONSOR: <b>{{$event->sponsor}}</b></label>@endif
+                    </div>
+                </p>
+                <!-- END PRESENTED BY -->
             </div>
         </div>
     </div>
@@ -238,4 +246,18 @@
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyC7sODsH3uUz_lBbYH16eOCJU9igquCjzI" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/gmaps.min.js" type="text/javascript"></script>
 <script src="/js/production/events/index.js" type="text/javascript"></script>
+<script type="text/javascript">
+var calendarEvents = [];
+@foreach($event->showtimes as $st)
+    calendarEvents.push( {
+        id: '{{$st->id}}',
+        title: '<center><b>{{$st->show_hour}} <i class="fa fa-arrow-circle-right"></i></b></center>',
+        start: '{{$st->show_time}}',
+        backgroundColor: 'bg-blue',
+        allDay: false,
+        url: '{{url()->current()}}/{{$st->id}}'
+    }); 
+@endforeach 
+AppCalendar.init(calendarEvents);
+</script>
 @endsection

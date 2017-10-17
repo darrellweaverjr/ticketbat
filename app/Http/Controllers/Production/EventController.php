@@ -37,6 +37,8 @@ class EventController extends Controller
                         ->where('shows.slug', $slug)->first();
             if(!$event)
                 return redirect()->route('index');
+            //format sponsor pic
+            $event->sponsor_logo_id = Image::view_image($event->sponsor_logo_id);
             //get header
             $event->header = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=', 'images.id')

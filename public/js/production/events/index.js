@@ -42,11 +42,11 @@ var AppCalendar = function() {
 
     return {
         //main function to initiate the module
-        init: function() {
-            this.initCalendar();
+        init: function(calendarEvents) {
+            this.initCalendar(calendarEvents);
         },
 
-        initCalendar: function() {
+        initCalendar: function(calendarEvents) {
             if (!jQuery().fullCalendar) {
                 return;
             }
@@ -64,23 +64,12 @@ var AppCalendar = function() {
                 slotMinutes: 15,
                 editable: false,
                 droppable: false,
-                backgroundColor: '#ffffff',
+                events: calendarEvents,
                 eventRender: function (event, element) {
                     element.find('.fc-title').html(event.title);
                 }
             });
-            //fillout events
-            $('#showtimes_calendar span.hidden').each(function() {
-                $('#cal_model').fullCalendar('renderEvent', {
-                    id: $(this).data('id'),
-                    title: '<center><b>'+$(this).data('hour')+' <i class="fa fa-arrow-circle-right"></i></b></center>',
-                    start: $(this).data('showtime'),
-                    //end: $(this).data('showtime'),
-                    backgroundColor: 'bg-blue',
-                    allDay: false,
-                    url: $('#cal_model').data('slug')+'/'+$(this).data('id')
-                }, true); 
-            });
+            $('#cal_model').fullCalendar('render'); 
             //render calendar when showtimes tab is clicked
             $('a[href="#showtimes_calendar"]').on('click', function(ev) {
                 window.setTimeout(function(){
@@ -141,6 +130,6 @@ var MapsGoogle = function () {
 //*****************************************************************************************
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
-    AppCalendar.init(); 
+    //AppCalendar.init(); 
     MapsGoogle.init(); 
 });
