@@ -42,11 +42,11 @@ var AppCalendar = function() {
 
     return {
         //main function to initiate the module
-        init: function(calendarEvents) {
-            this.initCalendar(calendarEvents);
+        init: function() {
+            this.initCalendar();
         },
 
-        initCalendar: function(calendarEvents) {
+        initCalendar: function() {
             if (!jQuery().fullCalendar) {
                 return;
             }
@@ -56,6 +56,20 @@ var AppCalendar = function() {
             } else {
                 $('#cal_model').removeClass("mobile");
             }
+            //fill out events
+            var calendarEvents = [];
+            var events = $('#cal_model').data('info');
+            var slug = $('#cal_model').data('slug');
+            $.each(events,function(k, v) {
+                calendarEvents.push( {
+                    id: v.id,
+                    title: '<center><b>'+v.show_hour+' <i class="fa fa-arrow-circle-right"></i></b></center>',
+                    start: v.show_time,
+                    backgroundColor: 'bg-blue',
+                    allDay: false,
+                    url: slug+'/'+v.id
+                }); 
+            });
             //predefined events
             $('#cal_model').fullCalendar('destroy'); // destroy the calendar
             $('#cal_model').fullCalendar({ //re-initialize the calendar
@@ -70,12 +84,6 @@ var AppCalendar = function() {
                 }
             });
             $('#cal_model').fullCalendar('render'); 
-            //render calendar when showtimes tab is clicked
-            $('a[href="#showtimes_calendar"]').on('click', function(ev) {
-                window.setTimeout(function(){
-                     $('#cal_model').fullCalendar('render'); 
-                 },1);
-            });
             //gallery carousel
             $('.carousel[data-type="multi"] .item').each(function(){
                 var next = $(this).next();
@@ -130,6 +138,6 @@ var MapsGoogle = function () {
 //*****************************************************************************************
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
-    //AppCalendar.init(); 
+    AppCalendar.init(); 
     MapsGoogle.init(); 
 });
