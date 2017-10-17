@@ -127,7 +127,7 @@
     <div class="portfolio-content body_grid color-panel text-center">        
         <div id="myShows" class="cbp text-center">
             @foreach($shows as $index=>$s)
-            <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/events/{{$s->slug}}">
+            <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/event/{{$s->slug}}">
                 <div class="cbp-caption">
                     <a class="cbp-caption-defaultWrap">
                         <img src="{{$s->url}}" alt="{{$s->name}}"> </a>

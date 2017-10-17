@@ -97,7 +97,7 @@
                             <span class="font-grey-cascade">{!! $e->description !!}</span><hr>
                             <span class="col-md-4"><i class="fa fa-calendar icon-calendar btn btn-info"></i> {{date('F j, Y @ h:i A', strtotime($e->show_time))}}</span>
                             <span class="col-md-4"><i class="fa fa-ticket icon-tag btn btn-info"></i>@if(!empty($e->starting_at)) ${{$e->starting_at}} @else ${{$e->price}} @endif</span>
-                            <span class="col-md-4"><a href="/production/events/{{$e->slug}}" style="color:white!important" class="btn bg-blue">SEE TICKETS <i class="fa fa-arrow-circle-right"></i></a></span>
+                            <span class="col-md-4"><a href="/production/event/{{$e->slug}}" style="color:white!important" class="btn bg-blue">SEE TICKETS <i class="fa fa-arrow-circle-right"></i></a></span>
                         </div>
                     </div>
                 </div>

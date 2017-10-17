@@ -126,13 +126,14 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::match(['get','post'], 'shoppingcart', 'ShoppingcartController@index');
     //home
     Route::get('/', function () { return redirect()->route('index'); });
+    Route::get('/events', function () { return redirect()->route('index'); });
     Route::get('/home', 'HomeController@index')->name('index');
     Route::post('home/search', 'HomeController@search');
     //event
-    Route::match(['get','post'], 'events/{slug}/{product}', 'EventController@buy');
-    Route::match(['get','post'], 'events/{slug}', 'EventController@index');
+    Route::match(['get','post'], 'event/{slug}/{product}', 'EventController@buy');
+    Route::match(['get','post'], 'event/{slug}', 'EventController@index');
     //venues
-    Route::match(['get','post'], 'venues/{slug}', 'VenueController@view');
+    Route::match(['get','post'], 'venue/{slug}', 'VenueController@view');
     Route::match(['get','post'], 'venues', 'VenueController@index');
     //merchandise
     Route::match(['get','post'], 'merchandises', 'GeneralController@merchandises');

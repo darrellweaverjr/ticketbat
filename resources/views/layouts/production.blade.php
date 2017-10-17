@@ -10,7 +10,7 @@
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta http-equiv="Content-Security-Policy" content="@if(!preg_match('/\/events/',url()->current())) default-src 'self' http://maps.google.com;  @endif
+        <meta http-equiv="Content-Security-Policy" content="default-src * ; 
                           img-src * data:'unsafe-inline' 'self' blob: http://admindev.ticketbat.com {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
                           style-src 'self' http://fonts.googleapis.com 'unsafe-inline';
