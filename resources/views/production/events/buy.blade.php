@@ -72,6 +72,11 @@
                                 </div>
                                 <div id="collapse_{{$index}}" class="panel-collapse @if($selected) in @else collapse @endif">
                                     <div class="panel-body">
+                                        @if(!empty($t['amex_only']))
+                                        <div class="alert alert-danger display-block">
+                                            <center>These tickets can only purchased with an American Express Card.</center>
+                                        </div>
+                                        @endif
                                         <div class="mt-radio-list">
                                             @foreach($t['tickets'] as $tt)
                                             <label class="mt-radio mt-radio-outline">

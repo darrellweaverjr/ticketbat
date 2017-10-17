@@ -132,7 +132,8 @@ class EventController extends Controller
                         ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                         ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, 
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time, 
-                                          show_times.time_alternative, shows.amex_only_start_date, shows.amex_only_end_date, shows.amex_only_ticket_types,
+                                          show_times.time_alternative, shows.amex_only_ticket_types,
+                                          CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
                         ->where('shows.slug', $slug)->where('show_times.id', $product)->where('show_times.is_active','>',0)
@@ -144,7 +145,9 @@ class EventController extends Controller
                         ->first();
             if(!$event)
                 return redirect()->route('index');
+            //formats
             $event->image_url = Image::view_image($event->image_url);
+            $event->amex_only_ticket_types = (!empty($event->amex_only_ticket_types))? explode(',', $event->amex_only_ticket_types) : [];
             //get tickets types
             $event->tickets = [];
             $tickets = DB::table('tickets')
@@ -162,10 +165,11 @@ class EventController extends Controller
             foreach ($tickets as $t)
             {
                 $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
-                if(isset($event->tickets[$t->ticket_type]))
+                $amex_only = ($event->amex_only>0 && in_array($t->ticket_type, $event->amex_only_ticket_types))? 1 : 0;
+                if(isset($event->tickets[$id]))
                     $event->tickets[$id]['tickets'][] = $t;
                 else 
-                    $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class, 'tickets'=>[$t]];
+                    $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'tickets'=>[$t]];
             }
             //return view
             return view('production.events.buy',compact('event'));
