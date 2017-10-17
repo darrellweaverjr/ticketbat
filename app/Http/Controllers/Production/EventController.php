@@ -148,6 +148,11 @@ class EventController extends Controller
             //formats
             $event->image_url = Image::view_image($event->image_url);
             $event->amex_only_ticket_types = (!empty($event->amex_only_ticket_types))? explode(',', $event->amex_only_ticket_types) : [];
+            //passwords
+            $passwords = DB::table('show_passwords')
+                                ->select(DB::raw('show_passwords.ticket_types'))
+                                ->whereRaw(DB::raw('NOW()>show_passwords.start_date'))->whereRaw(DB::raw('NOW()<show_passwords.end_date'))
+                                ->where('show_passwords.show_id',$event->show_id)->groupBy('show_passwords.id')->orderBy('show_passwords.id','DESC')->get();
             //get tickets types
             $event->tickets = [];
             $tickets = DB::table('tickets')
@@ -166,10 +171,19 @@ class EventController extends Controller
             {
                 $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
                 $amex_only = ($event->amex_only>0 && in_array($t->ticket_type, $event->amex_only_ticket_types))? 1 : 0;
+                $pass = 0;
+                foreach ($passwords as $p)
+                {
+                    if(in_array($t->ticket_type, explode(',',$p->ticket_types)))
+                    {
+                        $pass = 1; 
+                        break;
+                    }
+                }
                 if(isset($event->tickets[$id]))
                     $event->tickets[$id]['tickets'][] = $t;
                 else 
-                    $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'tickets'=>[$t]];
+                    $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'password'=>$pass,'tickets'=>[$t]];
             }
             //return view
             return view('production.events.buy',compact('event'));

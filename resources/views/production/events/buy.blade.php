@@ -55,6 +55,7 @@
         <div class="col-lg-6">
             <form method="post" id="form_model_update" class="form-horizontal">
                 <input name="show_time_id" type="hidden" value="{{$event->show_time_id}}"/>
+                <input name="password" type="hidden" value=""/>
                 <div class="portlet light about-text">
                     <h4>
                         <i class="fa fa-ticket"></i> Tickets
@@ -74,13 +75,13 @@
                                     <div class="panel-body">
                                         @if(!empty($t['amex_only']))
                                         <div class="alert alert-danger display-block">
-                                            <center>These tickets can only purchased with an American Express Card.</center>
+                                            <center>These tickets can only purchased with an American Express Card:</center>
                                         </div>
                                         @endif
                                         <div class="mt-radio-list">
                                             @foreach($t['tickets'] as $tt)
                                             <label class="mt-radio mt-radio-outline">
-                                                <input type="radio" name="ticket_id" @if($selected) class="default_radio" @endif data-price="{{$tt->retail_price}}" data-max="{{$tt->max_available}}" value="{{$tt->ticket_id}}" > 
+                                                <input type="radio" name="ticket_id" @if($selected) class="default_radio" @endif data-pass="{{$t['password']}}" data-price="{{$tt->retail_price}}" data-max="{{$tt->max_available}}" value="{{$tt->ticket_id}}" > 
                                                     ${{$tt->retail_price}} @if($tt->title!='None')- {{$tt->title}} @endif
                                                 <span></span>
                                             </label>

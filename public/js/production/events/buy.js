@@ -27,6 +27,35 @@ var FunctionsManaged = function () {
         }
         //add item to the shoppingcart
         $('#btn_add_shoppingcart').on('click', function(ev) {
+            $('#form_model_update input[name="password"]').val('');
+            var e = $('#form_model_update input[name="ticket_id"]:checked');
+            if(parseInt(e.data('pass'))>0)
+            {
+                swal({
+                    title: "Please enter the password for the event",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    inputPlaceholder: "Password"
+                }, function (inputUserType) {
+                    if (inputUserType === false) return false;
+                    if ($.trim(inputUserType) === "") {
+                      swal.showInputError("You need to write something!");
+                      return false;
+                    }
+                    else
+                    {
+                        $('#form_model_update input[name="password"]').val(inputUserType);
+                        add_item();
+                    }
+                });
+            }
+            else
+                add_item();
+        });
+        //submit value
+        function add_item()
+        {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -63,7 +92,7 @@ var FunctionsManaged = function () {
                     });
                 }
             }); 
-        });
+        }
         //autoselect first one
         $('#form_model_update input:radio.default_radio').attr('checked',true).trigger('change');
         update_price();

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Production;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Ticket;
 use App\Http\Models\Util;
 
 class ShoppingcartController extends Controller
@@ -84,6 +86,31 @@ class ShoppingcartController extends Controller
             $info = Input::all();
             if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
             {
+                //check password
+                $passwords = DB::table('show_passwords')
+                                ->join('show_times', 'show_times.show_id', '=', 'show_passwords.show_id')
+                                ->select(DB::raw('show_passwords.ticket_types, show_passwords.password'))
+                                ->whereRaw(DB::raw('NOW()>show_passwords.start_date'))->whereRaw(DB::raw('NOW()<show_passwords.end_date'))
+                                ->where('show_times.id',$info['show_time_id'])->groupBy('show_passwords.id')->orderBy('show_passwords.id','DESC')->get();
+                $ticket = Ticket::find($info['ticket_id']);
+                if($ticket && count($passwords))
+                {
+                    $pass = [];
+                    foreach ($passwords as $p)
+                    {
+                        if(in_array($ticket->ticket_type, explode(',',$p->ticket_types)))
+                            $pass[] = $p->password; 
+                    }
+                    //check password
+                    if(count($pass))
+                    {
+                        if(empty($info['password']))
+                            return Util::json(['success'=>false, 'msg'=>'You must enter a password for the event!']);
+                        if(!in_array($info['password'], $pass))
+                            return Util::json(['success'=>false, 'msg'=>'The password is not valid for the event!']);   
+                    }
+                }
+                //continue adding
                 $s_token = Util::s_token(false, true);
                 $success = Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $s_token);
                 return Util::json($success);
