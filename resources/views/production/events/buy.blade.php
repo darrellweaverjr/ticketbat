@@ -45,7 +45,7 @@
                 </h4> 
                 <p class="margin-top-20">
                     <center>
-                        <h5>{{$event->show_time}}</h5><hr>
+                        <h4>{{$event->show_time}}</h4><hr>
                         <img src="{{$event->image_url}}" />
                     </center><br>
                 </p>
@@ -82,7 +82,11 @@
                                             @foreach($t['tickets'] as $tt)
                                             <label class="mt-radio mt-radio-outline">
                                                 <input type="radio" name="ticket_id" @if($selected) class="default_radio" @endif data-pass="{{$t['password']}}" data-price="{{$tt->retail_price}}" data-max="{{$tt->max_available}}" value="{{$tt->ticket_id}}" > 
+                                                    @if($tt->retail_price>0)
                                                     ${{$tt->retail_price}} @if($tt->title!='None')- {{$tt->title}} @endif
+                                                    @else
+                                                    <b class="label label-sm sbold label-success">FREE  @if($tt->title!='None')- {{$tt->title}} @endif</b>
+                                                    @endif
                                                 <span></span>
                                             </label>
                                             @php $selected = false @endphp

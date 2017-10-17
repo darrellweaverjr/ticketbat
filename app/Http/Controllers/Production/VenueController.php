@@ -80,7 +80,7 @@ class VenueController extends Controller
                         ->join('categories', 'shows.category_id', '=' ,'categories.id')
                         ->select(DB::raw('shows.id AS show_id, shows.name, images.url, locations.city, categories.name AS category,
                                           venues.name AS venue, show_times.show_time, shows.slug, show_times.time_alternative, shows.description,
-                                          MIN(tickets.retail_price+tickets.processing_fee) AS price, shows.starting_at'))    
+                                          IF(shows.starting_at,shows.starting_at,MIN(tickets.retail_price+tickets.processing_fee)) AS price'))    
                         ->where('shows.venue_id',$venue->venue_id)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where('images.image_type','=','Logo')->where('show_times.is_active','=',1)
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())

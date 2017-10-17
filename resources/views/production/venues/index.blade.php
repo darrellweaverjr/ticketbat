@@ -34,7 +34,6 @@
                     </div>
                     <p style="height:100px" class="text-center"><small>{!! str_limit($v->description, $limit = 200, $end = '...') !!}</small></p>
                 </div>
-
                 @endforeach
             </div>
         </div>    
