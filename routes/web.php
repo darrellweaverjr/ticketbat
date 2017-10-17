@@ -134,4 +134,6 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     //venues
     Route::match(['get','post'], 'venues/{slug}', 'VenueController@view');
     Route::match(['get','post'], 'venues', 'VenueController@index');
+    //merchandise
+    Route::match(['get','post'], 'merchandises', 'GeneralController@merchandises');
 });

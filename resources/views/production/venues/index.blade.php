@@ -16,7 +16,7 @@
         <!-- BEGIN SHOWS GRID-->
         @foreach($venues as $index=>$vv)
         <h1>{{$vv['city']}}</h1>
-        <div class="portfolio-content body_grid color-panel text-center" >        
+        <div class="portfolio-content body_grid color-panel text-center" style="padding:50px;">        
             <div class="cbp text-center myVenues">
                 @foreach($vv['venues'] as $v)
                 <div class="cbp-item show_section filtered" data-id="{{$v->venue_id}}" data-search="{{$v->name}}" data-href="/production/venues/{{$v->slug}}">

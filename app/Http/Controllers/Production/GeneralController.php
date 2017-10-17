@@ -61,5 +61,20 @@ class GeneralController extends Controller
             throw new Exception('Error Production General region: '.$ex->getMessage());
         }
     }
+    
+    /**
+     * Get merchandise page.
+     *
+     * @return Method
+     */
+    public function merchandises()
+    {
+        try {
+            //return view
+            return view('production.merchandises.index');
+        } catch (Exception $ex) {
+            throw new Exception('Error Production General merchandises: '.$ex->getMessage());
+        }
+    }
        
 }

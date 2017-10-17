@@ -77,8 +77,8 @@
                                 </a>                                
                             </li>
                             <li @if(preg_match('/\/merchandise/',url()->current())) class="active" @endif>
-                                <a  href="javascript:;" class="menu_nav" title="View our merchandises in our venues">
-                                    <i class="icon-bag"></i> Merchandise 
+                                <a  href="/production/merchandises" class="menu_nav" title="View our merchandises in our venues">
+                                    <i class="icon-bag"></i> Merchandise
                                 </a>                                
                             </li>
                         </ul>
