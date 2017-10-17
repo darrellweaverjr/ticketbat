@@ -105,7 +105,7 @@ class Transaction extends Model
                 $tran->signature  = $payment['UMsignature'];
             }
             //process
-            $success = $tran->Process();
+            $success = ($tran->Process() && $tran->result=='Approved');
             //hide credit card number  
             unset($tran->card); 
             $payment['card'] = substr($payment['card'], -4); 
