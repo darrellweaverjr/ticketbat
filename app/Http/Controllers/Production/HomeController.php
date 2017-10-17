@@ -126,7 +126,8 @@ class HomeController extends Controller
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->select('shows.id')    
+                        ->select(DB::raw('shows.id, DATE_FORMAT(show_times.show_time,"%m/%d/%Y") AS date_next_on,
+                                          DATE_FORMAT(show_times.show_time,"%M %d, %Y @ %h:%i %p") AS date_venue_on, show_times.time_alternative'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
@@ -135,10 +136,10 @@ class HomeController extends Controller
                             return $shows->where('locations.city','LIKE',$input['city']);
                         })
                         ->when(!empty($input['start_date']) && strtotime($input['start_date']), function($shows) use ($input){
-                            return $shows->where('show_times.show_time','>=',$input['start_time']);
+                            return $shows->where('show_times.show_time','>=',$input['start_date']);
                         })
-                        ->when(!empty($input['end_time']) && strtotime($input['end_time']), function($shows) use ($input){
-                            return $shows->where('show_times.show_time','<=',$input['end_time']);
+                        ->when(!empty($input['end_date']) && strtotime($input['end_date']), function($shows) use ($input){
+                            return $shows->where('show_times.show_time','<=',$input['end_date']);
                         })
                         ->when(!empty($input['category']) && is_array($input['category']), function($shows) use ($input){
                             return $shows->whereIn('shows.category_id',$input['category']);
@@ -146,7 +147,7 @@ class HomeController extends Controller
                     //custom
                         ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
-                        ->distinct()->get()->implode('id',',');
+                        ->distinct()->get();
             //return view
             return ['success'=>true,'shows'=>$shows];
            

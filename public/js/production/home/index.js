@@ -34,8 +34,8 @@ var PortfolioManaged = function () {
                 'All': [moment(), moment().add('year',1).endOf('month')],
                 'Today': [moment(), moment()],
                 'Tomorrow': [moment().add('days',1), moment().add('days', 1)],
-                'Next 7 Days': [moment().add('days',6), moment()],
-                'Next 30 Days': [moment().add('days',29), moment()],
+                'Next 7 Days': [moment(), moment().add('days',6)],
+                'Next 30 Days': [moment(), moment().add('days',29)],
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Next Month': [moment().add('month',1).startOf('month'), moment().add('month', 1).endOf('month')]
             },
@@ -75,8 +75,8 @@ var PortfolioManaged = function () {
         function filter_search(){
             var city = $('#myFilter select[name="filter_city"] option:selected').val();
             var category = $('#myFilter select[name="filter_category"] option:selected').val();
-            var start_date = $('#myFilter input[name="start_date"]').val();
-            var end_date = $('#myFilter input[name="end_date"]').val();
+            var start_date = $('#myFilter input[name="filter_start_date"]').val();
+            var end_date = $('#myFilter input[name="filter_end_date"]').val();
             if(!(city=='' && category=='' && start_date=='' && end_date==''))
             {
                 jQuery.ajax({
@@ -89,9 +89,20 @@ var PortfolioManaged = function () {
                         {
                             $('#myShows .cbp-item').removeClass('hidden filtered').addClass('hidden'); 
                             if(data.shows.length){
-                                $('#myShows .cbp-item').filter(function() {
-                                    return data.shows.indexOf($(this).data('id')) > -1;
-                                }).removeClass('hidden').addClass('filtered');
+                                $.each(data.shows,function(k, v) {
+                                    var sh = $('#myShows').find('.cbp-item[data-id="'+v.id+'"]');
+                                    if(v.time_alternative && v.time_alternative.length>0)
+                                    {
+                                        sh.find('.date_next_on').html(v.time_alternative);
+                                        sh.find('.date_venue_on').html(v.time_alternative);
+                                    }
+                                    else
+                                    {
+                                        sh.find('.date_next_on').html(v.date_next_on);
+                                        sh.find('.date_venue_on').html('ON '+v.date_venue_on);
+                                    }
+                                    sh.removeClass('hidden').addClass('filtered');
+                                });
                                 filter_name();
                             }else{
                                 swal({
@@ -114,7 +125,7 @@ var PortfolioManaged = function () {
                             html: true,
                             type: "error"
                         });
-                        location.reload();
+                        //location.reload();
                     }
                 });
             }
