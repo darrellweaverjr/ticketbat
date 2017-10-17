@@ -22,6 +22,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
+        <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -205,6 +206,7 @@
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>
+        <script src="/js/production/general/analytics.js" type="text/javascript"></script>
         <script src="/js/production/general/contact.js" type="text/javascript"></script>
         <script src="/js/production/user/login.js" type="text/javascript"></script>
         <script src="/js/production/user/register.js" type="text/javascript"></script>
