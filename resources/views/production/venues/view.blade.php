@@ -12,7 +12,7 @@
 
 <!-- BEGIN TOP HEADER -->
 <div class="row">
-    <img style="margin:auto;max-height:422px" src="{{$venue->header->url}}" alt="{{$venue->header->caption}}">
+    <center><img style="margin:auto;max-height:422px" src="{{$venue->header->url}}" alt="{{$venue->header->caption}}"></center>
 </div>
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->

@@ -20,11 +20,28 @@ class ShoppingcartController extends Controller
      */
     public function index()
     {
-        $guest_email = Session::get('guest_email',null);
-        if(!Auth::check() && empty($guest_email))
-            return $this->credentials();
-        //return view
-        return view('production.shoppingcart.index');
+        try {
+            //init
+            $input = Input::all();
+            if(!empty($input['session']))
+            {
+                $items = Shoppingcart::where('session_id',$input['session'])->count();
+                if($items>0)
+                {
+                    
+                }
+                else
+                    return view('production.shoppingcart.recover_error');
+            }
+            
+            $guest_email = Session::get('guest_email',null);
+            if(!Auth::check() && empty($guest_email))
+                return $this->credentials();
+            //return view
+            return view('production.shoppingcart.index');
+        } catch (Exception $ex) {
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+        }
     }
     
     /**
