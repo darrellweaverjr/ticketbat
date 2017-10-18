@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use App\Http\Models\Slider;
 use App\Http\Models\Image;
-use App\Http\Models\Category;
-use App\Http\Models\Show;
+use App\Http\Models\Shoppingcart;
 use App\Http\Models\Util;
 
 class EventController extends Controller
@@ -123,6 +120,7 @@ class EventController extends Controller
     public function buy($slug,$product)
     {
         try {
+            $qty_tickets_sell = 20;
             if(empty($slug) || empty($product))
                 return redirect()->route('index');
             //get all records
@@ -153,13 +151,17 @@ class EventController extends Controller
                                 ->select(DB::raw('show_passwords.ticket_types'))
                                 ->whereRaw(DB::raw('NOW()>show_passwords.start_date'))->whereRaw(DB::raw('NOW()<show_passwords.end_date'))
                                 ->where('show_passwords.show_id',$event->show_id)->groupBy('show_passwords.id')->orderBy('show_passwords.id','DESC')->get();
+            //get tickets/coupon in shoppingcart and session
+            $s_token = Util::s_token(false, true);
+            $coupon = array_merge( Shoppingcart::tickets_coupon($s_token) , Util::tickets_coupon() );
+            $has_coupon = 0;
             //get tickets types
             $event->tickets = [];
             $tickets = DB::table('tickets')
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                   tickets.retail_price,
-                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$event->show_time_id.')) ELSE 20 END) AS max_available'))
+                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$event->show_time_id.')) ELSE '.$qty_tickets_sell.' END) AS max_available'))
                                 ->where('tickets.show_id',$event->show_id)->where('tickets.is_active','>',0)
                                 ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = '.$event->show_time_id.')'))
                                 ->where(function($query) use ($event) {
@@ -169,8 +171,14 @@ class EventController extends Controller
                                 ->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get();
             foreach ($tickets as $t)
             {
+                //max available
+                if($t->max_available > $qty_tickets_sell)
+                    $t->max_available = $qty_tickets_sell;
+                //id
                 $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
+                //amex
                 $amex_only = ($event->amex_only>0 && in_array($t->ticket_type, $event->amex_only_ticket_types))? 1 : 0;
+                //password
                 $pass = 0;
                 foreach ($passwords as $p)
                 {
@@ -180,13 +188,22 @@ class EventController extends Controller
                         break;
                     }
                 }
+                //tickets/coupon
+                if(in_array($t->ticket_id, $coupon))
+                {
+                    $t->coupon = 1;
+                    $has_coupon = 1;
+                }
+                else
+                    $t->coupon = 0;
+                //fill out tickets
                 if(isset($event->tickets[$id]))
                     $event->tickets[$id]['tickets'][] = $t;
                 else 
                     $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'password'=>$pass,'tickets'=>[$t]];
             }
             //return view
-            return view('production.events.buy',compact('event'));
+            return view('production.events.buy',compact('event','has_coupon'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Buy Index: '.$ex->getMessage());
         }

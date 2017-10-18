@@ -92,6 +92,9 @@
                                                     @if($tt->max_available<20)
                                                     <b class="label label-sm sbold label-danger">Only {{$tt->max_available}} ticket(s) left!</b>
                                                     @endif
+                                                    @if($tt->coupon>0)
+                                                    <b class="label label-sm sbold label-warning" style="color:black"><i class="icon-trophy theme-font"></i> Applies discount</b>
+                                                    @endif
                                                 <span></span>
                                             </label>
                                             @php $selected = false @endphp
@@ -126,6 +129,16 @@
                 <div class="portlet light about-text">
                     <!-- BEGIN DESCRIPTION -->
                     <div style="margin-top: 130px">
+                        @if($has_coupon>0)
+                        <div class="mt-element-ribbon" style="max-height:100px">
+                            <div class="ribbon ribbon-right ribbon-clip ribbon-shadow ribbon-round ribbon-border-dash-hor ribbon-color-warning uppercase">
+                                <div class="ribbon-sub ribbon-clip ribbon-right"></div><i class="icon-trophy theme-font"></i> Congratulations! 
+                            </div>
+                            <p class="ribbon-content text-center">
+                                You have a coupon!<br>Add a ticket to your cart and go to the check out page to see your total price.
+                            </p>
+                        </div>
+                        @endif
                         <a id="btn_add_shoppingcart" class="btn btn-danger btn-block btn-lg uppercase"><i class="fa fa-plus-square"></i> Add to cart</a>
                     </div>
                 </div>
