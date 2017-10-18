@@ -80,16 +80,22 @@
                                         @endif
                                         <div class="mt-radio-list">
                                             @foreach($t['tickets'] as $tt)
+                                            @if($tt->max_available>0)
                                             <label class="mt-radio mt-radio-outline">
                                                 <input type="radio" name="ticket_id" @if($selected) class="default_radio" @endif data-pass="{{$t['password']}}" data-price="{{$tt->retail_price}}" data-max="{{$tt->max_available}}" value="{{$tt->ticket_id}}" > 
                                                     @if($tt->retail_price>0)
-                                                    ${{$tt->retail_price}} @if($tt->title!='None')- {{$tt->title}} @endif
+                                                    ${{$tt->retail_price}}
                                                     @else
-                                                    <b class="label label-sm sbold label-success">FREE  @if($tt->title!='None')- {{$tt->title}} @endif</b>
+                                                    <b class="label label-sm sbold label-success">FREE</b>
+                                                    @endif
+                                                    @if($tt->title!='None')- {{$tt->title}} @endif
+                                                    @if($tt->max_available<20)
+                                                    <b class="label label-sm sbold label-danger">Only {{$tt->max_available}} ticket(s) left!</b>
                                                     @endif
                                                 <span></span>
                                             </label>
                                             @php $selected = false @endphp
+                                            @endif
                                             @endforeach
                                         </div>
                                     </div>
