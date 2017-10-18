@@ -22,7 +22,7 @@
 <div class="row widget-row">
     <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the event">                
         <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">{{$event->name}}
-            <p style="margin-top:-25px">
+            <p style="margin-top:-25px;max-height:30px">
                 @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
                 @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
                 @if(!empty($event->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$event->facebook}}" target="_blank"></a> @endif

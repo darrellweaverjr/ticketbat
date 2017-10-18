@@ -19,7 +19,7 @@
 <div class="row widget-row">
     <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the venue">                
         <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">{{$venue->name}}
-            <p style="margin-top:-25px">
+            <p style="margin-top:-25px;max-height:30px">
                 @if(!empty($venue->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$venue->twitter}}" target="_blank"></a> @endif
                 @if(!empty($venue->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$venue->googleplus}}" target="_blank"></a> @endif
                 @if(!empty($venue->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$venue->facebook}}" target="_blank"></a> @endif
@@ -67,13 +67,13 @@
                 <i class="fa fa-globe icon-globe"></i> Events
             </h4> 
             <!-- BEGIN EVENTS -->
-            <div class="timeline" style="margin:5px;padding-bottom:10px;">
+            <div class="timeline" style="margin:10px;padding-bottom:10px;">
                 @foreach($venue->events as $e)
                 <!-- EVENT ITEM -->
                 <div class="timeline-item">
                     <div class="timeline-badge">
-                        <img class="timeline-badge-userpic" src="{{$e->url}}"> </div>
-                    <div class="timeline-body">
+                        <img height="150px" width="150px" src="{{$e->url}}"> </div>
+                    <div class="timeline-body" style="margin-left:170px">
                         <div class="timeline-body-arrow"> </div>
                         <div class="timeline-body-head">
                             <div class="timeline-body-head-caption">
