@@ -40,7 +40,7 @@
         <div class="col-lg-6">
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
-                <h4>
+                <h4 title="Click on the time to view event's details.">
                     <i class="fa fa-check icon-info"></i> Event details
                     <div class="actions pull-right">
                         <div class="btn-group">
@@ -59,10 +59,13 @@
                         </div>
                     </div>
                 </h4>  
-                <p class="margin-top-20">{!! $event->description !!}</p>
+                <p class="margin-top-20" title="Description of the event.">
+                    {!! $event->description !!}
+                </p>
                 <!-- END DESCRIPTION -->
+                @if(count($event->bands))
                 <!-- BEGIN BANDS -->
-                <div class="timeline" style="margin:5px;padding-bottom:10px">
+                <div class="timeline" style="margin:5px;padding-bottom:10px" title="Bands to assist to.">
                     @foreach($event->bands as $b)
                     <!-- BAND ITEM -->
                     <div class="timeline-item">
@@ -97,13 +100,15 @@
                     @endforeach
                 </div>
                 <!-- ENDS BANDS -->
+                @endif
             </div>
         </div>
         <div class="col-lg-6">
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
-                <h4>
+                <h4 title="Click on the time to view ticket's details.">
                     <i class="fa fa-check icon-calendar"></i> Show times
+                    @if(count($event->showtimes))
                     <div class="actions pull-right">
                         <div class="btn-group">
                             <ul class="nav nav-tabs">
@@ -116,12 +121,14 @@
                             </ul>
                         </div>
                     </div>
+                    @endif
                 </h4> 
                 @if($event->restrictions!="None")
-                <div class="margin-top-20 alert alert-danger" style="margin:5px">
+                <div class="margin-top-20 alert alert-danger" style="margin:5px" title="Restrictions of the event.">
                     <b>RESTRICTIONS:</b> {{preg_replace('~\D~','',$event->restrictions)}} years of age or older to attend the event.
                 </div>
                 @endif
+                @if(count($event->showtimes))
                 <div class="tab-content">
                     <!-- SHOW TIMES AS LIST -->
                     <div class="tab-pane @if(count($event->showtimes)<8) active @endif" id="showtimes_list" style="margin:5px;padding-bottom:10px">   
@@ -141,7 +148,9 @@
                                         <td>{{$st->show_day}}</td>
                                         <td>{{$st->show_date}}</td>
                                         <td>{{$st->show_hour}}</td>
-                                        <td><center><a href="{{url()->current()}}/{{$st->id}}" style="color:white!important" class="btn bg-blue">BUY TICKETS <i class="fa fa-arrow-circle-right"></i></a></center></td>
+                                        <td><center><a @if($st->ext_slug) href="{{$st->ext_slug}}" @else href="{{url()->current()}}/{{$st->id}}" @endif style="color:white!important" class="btn bg-blue">
+                                            BUY TICKETS <i class="fa fa-arrow-circle-right"></i>
+                                        </a></center></td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -155,6 +164,13 @@
                         </div>
                     </div>
                 </div>  
+                @else
+                 <!-- BEGIN CUTOFF TEXT -->
+                <p class="uppercase text-center" style="padding-bottom:20px">
+                    {!! $event->cutoff_text !!}
+                </p>
+                <!-- END CUTOFF TEXT -->
+                @endif
                 <!-- BEGIN PRESENTED BY -->
                 <p class="uppercase text-center" style="margin-top: 30px">
                     <div class="col-md-3">
@@ -172,7 +188,7 @@
     <!-- END DESCRIPTION AND CALENDAR -->
     <!-- BEGIN VIDEOS -->
     @if(count($event->videos))
-    <div class="row fixed-panel" style="padding:15px">
+    <div class="row fixed-panel" style="padding:15px" title="Videos of the event.">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
@@ -190,7 +206,7 @@
     <!-- END VIDEOS -->
     <!-- BEGIN GALLERY -->
     @if(count($event->images))
-    <div class="row fixed-panel" style="padding:15px;margin-top:-20px">
+    <div class="row fixed-panel" style="padding:15px;margin-top:-20px" title="Images of the event.">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
@@ -228,7 +244,7 @@
     @endif
     <!-- END GALLERY -->
     <!-- BEGIN MAPS -->
-    <div id="event_gmap" class="row gmaps" 
+    <div id="event_gmap" class="row gmaps" title="Location of the venue."
                  data-lat="{{$event->lat}}" 
                  data-lng="{{$event->lng}}"
                  data-address="{{$event->address}}<br>{{$event->city}}, {{$event->state}}, {{$event->country}} {{$event->zip}}"

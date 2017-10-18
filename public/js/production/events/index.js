@@ -67,7 +67,7 @@ var AppCalendar = function() {
                     start: v.show_time,
                     backgroundColor: 'bg-blue',
                     allDay: false,
-                    url: slug+'/'+v.id
+                    url: (v.ext_slug)? v.ext_slug : slug+'/'+v.id
                 }); 
             });
             //predefined events
@@ -84,6 +84,12 @@ var AppCalendar = function() {
                 }
             });
             $('#cal_model').fullCalendar('render'); 
+            //render calendar when showtimes tab is clicked
+            $('#showtimes_calendar').on('click', function(ev) {
+                window.setTimeout(function(){
+                    $('#cal_model').fullCalendar('render'); 
+                },1);
+            });
             //gallery carousel
             $('.carousel[data-type="multi"] .item').each(function(){
                 var next = $(this).next();

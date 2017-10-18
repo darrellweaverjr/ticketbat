@@ -99,7 +99,7 @@ class EventController extends Controller
                                                  DATE_FORMAT(show_times.show_time,"%W") AS show_day,
                                                  DATE_FORMAT(show_times.show_time,"%M %D") AS show_date,
                                                  DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,
-                                                 show_times.slug AS ext_slug_st, shows.ext_slug AS ext_slug,
+                                                 IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
                                                  IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR) AND NOW()<show_times.show_time, 1, 0) as presale'))
                                 ->where('show_times.show_id',$event->show_id)->where('show_times.is_active','>',0)
                                 ->whereRaw(DB::raw('show_times.show_time > NOW()'))
