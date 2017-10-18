@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\User;
 use App\Http\Models\Ticket;
 use App\Http\Models\Util;
 
@@ -23,22 +24,68 @@ class ShoppingcartController extends Controller
         try {
             //init
             $input = Input::all();
+            $email_guest = Session::get('email_guest', NULL); 
             if(!empty($input['session']))
             {
-                $items = Shoppingcart::where('session_id',$input['session'])->count();
-                if($items>0)
+                //if exists elements into session
+                $item = Shoppingcart::where('session_id',$input['session'])->first(['user_id']);
+                if($item)
                 {
-                    
+                    if(Auth::check())
+                    {
+                        if(Auth::user()->id!=$item->user_id && Auth::user()->email!=$item->user_id)
+                            return view('production.shoppingcart.recover_error');
+                        else
+                            Shoppingcart::where('session_id',$input['session'])->update(['user_id'=>Auth::user()->id]);
+                    }
+                    else 
+                    {
+                        if(!empty($item->user_id))
+                        {
+                            if(filter_var($item->user_id, FILTER_VALIDATE_EMAIL))
+                            {
+                                Session::set('email_guest', $item->user_id);
+                                $email_guest = $item->user_id;
+                            }
+                            else 
+                            {
+                                $user = User::find($item->user_id);
+                                if($user)
+                                {
+                                    Session::set('email_guest', $user->email);
+                                    $email_guest = $user->email;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if($email_guest && filter_var($email_guest, FILTER_VALIDATE_EMAIL))
+                            {
+                                Shoppingcart::where('session_id',$input['session'])->update(['user_id'=>$email_guest]);
+                            }
+                            else 
+                            {
+                                Session::forget('email_guest'); 
+                                $email_guest = null;
+                            }
+                        }
+                    }
+                    //set up the token to the new one
+                    Util::s_token(false,true,$input['session']);
                 }
                 else
                     return view('production.shoppingcart.recover_error');
             }
-            
-            $guest_email = Session::get('guest_email',null);
+            //if auth or guest continue
             if(!Auth::check() && empty($guest_email))
                 return $this->credentials();
-            //return view
-            return view('production.shoppingcart.index');
+            else
+            {
+                $s_token = Util::s_token(false,true);
+
+                //return view
+                return view('production.shoppingcart.index');
+            }
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
