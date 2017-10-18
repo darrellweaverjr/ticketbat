@@ -111,6 +111,7 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::post('user/register', 'UserController@register');
     Route::post('user/recover_password', 'UserController@recover_password');
     Route::post('user/reset_password', 'UserController@reset_password');
+    Route::post('user/guest', 'UserController@guest');
     //user purchase
     Route::post('user/purchases/share', 'UserPurchaseController@share')->middleware('productioncheck');
     Route::get('user/purchases/receipts/{id}', 'UserPurchaseController@receipts')->middleware('productioncheck');

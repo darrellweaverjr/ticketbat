@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Ticket;
 use App\Http\Models\Util;
@@ -19,7 +20,22 @@ class ShoppingcartController extends Controller
      */
     public function index()
     {
-        return ['success'=>true,'qty_items'=> Shoppingcart::qty_items()];
+        $guest_email = Session::get('guest_email',null);
+        if(!Auth::check() && empty($guest_email))
+            return $this->credentials();
+        //return view
+        return view('production.shoppingcart.index');
+    }
+    
+    /**
+     * Prompt for login or guest email on go to viewcart.
+     *
+     * @return Method
+     */
+    public function credentials()
+    {
+        //return view
+        return view('production.shoppingcart.credentials');
     }
     
     /**

@@ -79,7 +79,7 @@
                                 </a>                                
                             </li>
                             <li @if(preg_match('/\/merchandise/',url()->current())) class="active" @endif>
-                                <a  href="/production/merchandises" class="menu_nav" title="View our merchandises in our venues">
+                                <a href="/production/merchandises" class="menu_nav" title="View our merchandises in our venues">
                                     <i class="icon-bag"></i> Merchandise
                                 </a>                                
                             </li>
@@ -124,7 +124,7 @@
                             </li>
                             @endif
                             <li class="dropdown-notification @if(preg_match('/\/shoppingcart/',url()->current())) active @endif">
-                                <a href="#" class="menu_nav" title="View/pay you items in the shopping cart">
+                                <a href="/production/shoppingcart" class="menu_nav" title="View/pay you items in the shopping cart">
                                     <i class="icon-basket"></i> Shopping Cart <span class="badge badge-danger"><b id="shoppingcart_qty_items" style="font-size:14px">Loading</b></span>
                                 </a>
                             </li>

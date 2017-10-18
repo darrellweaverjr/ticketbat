@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use App\Http\Models\User;
@@ -168,6 +169,28 @@ class UserController extends Controller
             return ['success'=>false,'msg'=>'Please, enter a valid credentials'];
         } catch (Exception $ex) {
             throw new Exception('Error Production User reset_password: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Login user as guest.
+     *
+     * @return Method
+     */
+    public function guest()
+    {
+        try {
+            //init
+            $input = Input::all(); 
+            if(isset($input) && !empty($input['username']) && filter_var($input['username'], FILTER_VALIDATE_EMAIL))
+            {
+                Session::put('guest_email', $input['username']);
+                if(!empty(Session::get('guest_email',null)))
+                    return ['success'=>true,'msg'=>'Email accepted successfully!'];
+                return ['success'=>false,'msg'=>'The system could not set the email as guest!'];
+            }
+            return ['success'=>false,'msg'=>'Please, enter a valid email address'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Production User Logout: '.$ex->getMessage());
         }
     }
        

@@ -10,7 +10,7 @@
 
 @section('content')
 
-<div class="page-content" style="margin:40px!important;">     
+<div class="page-content color-panel" style="margin:40px!important;min-height:600px">     
 @if(empty($purchases) || !count($purchases))
 <div>       
     <h1>There are no purchases to list</h1>
