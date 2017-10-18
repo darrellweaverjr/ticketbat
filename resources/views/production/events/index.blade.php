@@ -21,7 +21,9 @@
 <!-- BEGIN NAME BAR-->
 <div class="row widget-row">
     <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the event">                
-        <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">{{$event->name}}
+        <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">
+            @if(!empty($event->presented_by))<div style="font-size:14px;margin-bottom:-70px">{{$event->presented_by}} PRESENTS</div><br>@endif
+            {{$event->name}}
             <p style="margin-top:-25px;max-height:30px">
                 @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
                 @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
