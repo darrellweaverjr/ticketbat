@@ -295,4 +295,27 @@ class Util extends Model
         }
         return $s_token;
     }
+    /**
+     * Get tickets that coupon applies in session.
+     */
+    public static function tickets_coupon()
+    {
+        try {
+            $tickets = [];
+            $coupon = Session::get('coupon',null);
+            if(!empty($coupon) && Util::isJSON($coupon))
+            {
+                $coup = json_decode($coupon,true);
+                if(!empty($coup['tickets']))
+                {
+                    foreach ($coup['tickets'] as $dt)
+                        if(!in_array($dt['ticket_id'], $tickets))
+                            $tickets[] = $dt['ticket_id'];
+                }
+            }
+            return $tickets;
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
 }

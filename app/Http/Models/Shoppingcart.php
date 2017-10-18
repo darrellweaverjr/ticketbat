@@ -254,6 +254,32 @@ class Shoppingcart extends Model
         }
     }
     /**
+     * Get tickets that coupon applies in shoppingcart.
+     */
+    public static function tickets_coupon($session_id)
+    {
+        try {
+            $tickets = [];
+            $coupon = Shoppingcart::where('session_id','=',$session_id)->get(['coupon']);
+            foreach ($coupon as $c)
+            {
+                if(!empty($c->coupon) && Util::isJSON($c->coupon))
+                {
+                    $coup = json_decode($c->coupon,true);
+                    if(!empty($coup['tickets']))
+                    {
+                        foreach ($coup['tickets'] as $dt)
+                            if(!in_array($dt['ticket_id'], $tickets))
+                                $tickets[] = $dt['ticket_id'];
+                    }
+                }
+            }
+            return $tickets;
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    /**
      * Add items to the shoppingcart.
      */
     public static function add_item($show_time_id,$ticket_id,$qty,$s_token,$seat_id=null)
