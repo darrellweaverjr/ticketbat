@@ -21,8 +21,16 @@ var FunctionsGuest = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#form_login_guest').trigger('reset');
-                            location.reload();
+                            swal({
+                                title: "<span style='color:green;'>Accepted!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            },function(){
+                                location.reload();
+                            });
                         }
                         else{
                             swal({
@@ -68,8 +76,16 @@ var FunctionsGuest = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#form_guest_login').trigger('reset');
-                            location.reload();
+                            swal({
+                                title: "<span style='color:green;'>Accepted!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            },function(){
+                                location.reload();
+                            });
                         }
                         else{
                             swal({

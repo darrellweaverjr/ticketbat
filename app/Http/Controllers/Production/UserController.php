@@ -50,7 +50,10 @@ class UserController extends Controller
     {
         try {
             if(Auth::check())
+            {
                 Auth::logout();
+                Session::forget('email_guest');
+            }
             return ['success'=>true,'msg'=>'User logout successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Production User Logout: '.$ex->getMessage());
@@ -183,8 +186,8 @@ class UserController extends Controller
             $input = Input::all(); 
             if(isset($input) && !empty($input['username']) && filter_var($input['username'], FILTER_VALIDATE_EMAIL))
             {
-                Session::put('guest_email', $input['username']);
-                if(!empty(Session::get('guest_email',null)))
+                Session::put('email_guest', $input['username']);
+                if(!empty(Session::get('email_guest',null)))
                     return ['success'=>true,'msg'=>'Email accepted successfully!'];
                 return ['success'=>false,'msg'=>'The system could not set the email as guest!'];
             }

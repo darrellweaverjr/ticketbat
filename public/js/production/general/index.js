@@ -188,27 +188,33 @@ var Countdown = function () {
                 {
                     swal({
                         title: "Information",
-                        text: "The countdown has been reset. You have "+$('#timerClock').data('countdown')+" minutes more to make the payment.",
+                        text: "The countdown has been reset.<br>You have "+$('#timerClock').data('countdown')+" minutes more to make the payment.",
+                        html:true,
                         type: "info",
+                        timer: 3000,
                         showConfirmButton: false
+                    },function(){
+                        window.location.href = '/production/shoppingcart';
                     });
-                    //window.location.href = '/shoppingcart/viewcart';
                 }
                 else
                 {
-                    swal({
-                        title: "Information",
-                        text: "The items in your shopping cart have been deleted. You will now be redirected to the home page.",
-                        type: "info",
-                        showConfirmButton: false
-                    });
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '/production/shoppingcart/countdown', 
                         data: {status:-2}, 
                         success: function(data) {
-                            //window.location.href = '/'; 
+                            swal({
+                                title: "Information",
+                                text: "The items in your shopping cart have been deleted.<br>You will now be redirected to the home page.",
+                                html:true,
+                                type: "info",
+                                timer: 3000,
+                                showConfirmButton: false
+                            },function(){
+                                window.location.href = '/production/home';
+                            });
                         }
                     }); 
                 }

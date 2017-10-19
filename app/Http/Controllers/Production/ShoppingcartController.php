@@ -30,20 +30,21 @@ class ShoppingcartController extends Controller
             }
             //if auth or guest continue
             $email_guest = Session::get('email_guest', NULL); 
-            if(!Auth::check() && empty($guest_email))
+            if(!Auth::check() && empty($email_guest))
                 return $this->credentials();
             else
             {
                 $s_token = Util::s_token(false,true);
-                $shoppingcart = Shoppingcart::calculate_session($s_token);
-                if($shoppingcart['success'] && $shoppingcart['quantity']>0)
+                $cart = Shoppingcart::calculate_session($s_token);
+                if($cart['success'] && $cart['quantity']>0)
                 {
-                    
+                    //seller
+                    $cart['seller'] = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
+                    //return view
+                    return view('production.shoppingcart.index',compact('cart'));
                 }
                 else
                     return view('production.shoppingcart.empty');
-                //return view
-                return view('production.shoppingcart.index');
             }
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
