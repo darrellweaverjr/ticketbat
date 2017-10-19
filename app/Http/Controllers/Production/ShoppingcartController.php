@@ -24,71 +24,77 @@ class ShoppingcartController extends Controller
         try {
             //init
             $input = Input::all();
-            $email_guest = Session::get('email_guest', NULL); 
             if(!empty($input['session']))
             {
-                //if exists elements into session
-                $item = Shoppingcart::where('session_id',$input['session'])->first(['user_id']);
-                if($item)
-                {
-                    if(Auth::check())
-                    {
-                        if(Auth::user()->id!=$item->user_id && Auth::user()->email!=$item->user_id)
-                            return view('production.shoppingcart.recover_error');
-                        else
-                            Shoppingcart::where('session_id',$input['session'])->update(['user_id'=>Auth::user()->id]);
-                    }
-                    else 
-                    {
-                        if(!empty($item->user_id))
-                        {
-                            if(filter_var($item->user_id, FILTER_VALIDATE_EMAIL))
-                            {
-                                Session::set('email_guest', $item->user_id);
-                                $email_guest = $item->user_id;
-                            }
-                            else 
-                            {
-                                $user = User::find($item->user_id);
-                                if($user)
-                                {
-                                    Session::set('email_guest', $user->email);
-                                    $email_guest = $user->email;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if($email_guest && filter_var($email_guest, FILTER_VALIDATE_EMAIL))
-                            {
-                                Shoppingcart::where('session_id',$input['session'])->update(['user_id'=>$email_guest]);
-                            }
-                            else 
-                            {
-                                Session::forget('email_guest'); 
-                                $email_guest = null;
-                            }
-                        }
-                    }
-                    //set up the token to the new one
-                    Util::s_token(false,true,$input['session']);
-                }
-                else
-                    return view('production.shoppingcart.recover_error');
+                $this->recover($input['session']);
             }
             //if auth or guest continue
+            $email_guest = Session::get('email_guest', NULL); 
             if(!Auth::check() && empty($guest_email))
                 return $this->credentials();
             else
             {
                 $s_token = Util::s_token(false,true);
-
+                $shoppingcart = Shoppingcart::calculate_session($s_token);
+                if($shoppingcart['success'] && $shoppingcart['quantity']>0)
+                {
+                    
+                }
+                else
+                    return view('production.shoppingcart.empty');
                 //return view
                 return view('production.shoppingcart.index');
             }
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
+    }
+    
+    /**
+     * Recover previous session.
+     *
+     * @return Method
+     */
+    public function recover($s_token)
+    {
+        //if exists elements into session
+        $item = Shoppingcart::where('session_id',$s_token)->first(['user_id']);
+        if($item)
+        {
+            if(Auth::check())
+            {
+                if(Auth::user()->id!=$item->user_id && Auth::user()->email!=$item->user_id)
+                    return view('production.shoppingcart.recover_error');
+                else
+                    Shoppingcart::where('session_id',$s_token)->update(['user_id'=>Auth::user()->id]);
+            }
+            else 
+            {
+                if(!empty($item->user_id))
+                {
+                    if(filter_var($item->user_id, FILTER_VALIDATE_EMAIL))
+                        Session::set('email_guest', $item->user_id);
+                    else 
+                    {
+                        $user = User::find($item->user_id);
+                        if($user)
+                            Session::set('email_guest', $user->email);
+                    }
+                }
+                else
+                {
+                    $email_guest = Session::get('email_guest', NULL); 
+                    if($email_guest && filter_var($email_guest, FILTER_VALIDATE_EMAIL))
+                        Shoppingcart::where('session_id',$s_token)->update(['user_id'=>$email_guest]);
+                    else 
+                        Session::forget('email_guest'); 
+                }
+            }
+            //set up the token to the new one
+            Util::s_token(false,true,$s_token);
+        }
+        else
+            return view('production.shoppingcart.recover_error');
     }
     
     /**
