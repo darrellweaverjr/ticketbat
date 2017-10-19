@@ -40,6 +40,8 @@ class ShoppingcartController extends Controller
                 {
                     //seller
                     $cart['seller'] = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
+                    //default email
+                    $cart['email'] = (Auth::check())? Auth::user()->email : ((!empty($email_guest))? $email_guest : '');
                     //return view
                     return view('production.shoppingcart.index',compact('cart'));
                 }

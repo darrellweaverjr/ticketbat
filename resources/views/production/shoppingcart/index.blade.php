@@ -132,6 +132,7 @@
                             <div class="tab-pane fade active in" id="tab_card">
                                 <p> 
                                     pay with card
+                                    <a data-toggle="modal" href="#modal_cvv">cvv.</a>
                                     <div class="row">
                                         <div class="form-group">
                                             <label class="control-label col-sm-3 text-right">Phone:</label>
@@ -170,10 +171,20 @@
                         <p class="margin-top-20">
                             <div class="row">
                                 <div class="form-group">
+                                    <label class="control-label col-sm-3 text-right">Customer:
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-sm-9 show-error">
+                                        <div class="input-group">
+                                            <input type="text" name="customer" class="form-control input-large" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-sm-3 text-right">Phone:</label>
                                     <div class="col-sm-9 show-error">
                                         <div class="input-group">
-                                            <input type="text" name="first_name" class="form-control input-large" value="" />
+                                            <input type="text" name="phone" class="form-control input-large" value="" />
                                         </div>
                                     </div>
                                 </div>
@@ -183,7 +194,7 @@
                                     </label>
                                     <div class="col-sm-9 show-error">
                                         <div class="input-group">
-                                            <input type="email" name="email" class="form-control input-large" value="" />
+                                            <input type="email" name="email" class="form-control input-large" value="{{$cart['email']}}" />
                                         </div>
                                     </div>
                                 </div>
@@ -195,7 +206,7 @@
                                 <label class="mt-checkbox"><input type="checkbox" checked="true" name="NEWSLETTER" value="1" />
                                     SIGN UP FOR OUR NEWSLETTER
                                 <span></span></label><br>
-                                <center><a id="btn_process" class="btn btn-primary btn-lg uppercase">Process payment <i class="fa fa-arrow-circle-right"></i></a></center>
+                                <center><button type="submit" id="btn_process" disabled="true" class="btn btn-primary btn-lg uppercase">Process payment <i class="fa fa-arrow-circle-right"></i></button></center>
                             </div>
                         </p>
                     </div>
@@ -209,6 +220,9 @@
 <!-- BEGIN TERMS AND CONDITIONS MODAL -->
 @includeIf('production.shoppingcart.terms')
 <!-- END TERMS AND CONDITIONS MODAL -->
+<!-- BEGIN CVV MODAL -->
+@includeIf('production.shoppingcart.cvv')
+<!-- END CVV MODAL -->
 
 @endsection
 
