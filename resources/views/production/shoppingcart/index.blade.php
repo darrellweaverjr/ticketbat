@@ -108,39 +108,96 @@
             </h4>  
             <div class="portlet light bordered">
                 <div class="portlet-body">
-                    @if($cart['seller'])
+                    @if($cart['seller'] && $cart['total']>0)
                     <ul class="nav nav-pills nav-justified">
                         <li class="active">
-                            <a href="#tab_card" data-toggle="tab"> ENTER CARD </a>
-                        </li>
-                        
-                        <li>
-                            <a href="#tab_swipe" data-toggle="tab"> SWIPE CARD </a>
+                            <a href="#tab_card" data-toggle="tab">ENTER CARD</a>
                         </li>
                         <li>
-                            <a href="#tab_cash" data-toggle="tab"> ENTER CASH </a>
+                            <a href="#tab_swipe" data-toggle="tab">SWIPE CARD</a>
+                        </li>
+                        <li>
+                            <a href="#tab_cash" data-toggle="tab">ENTER CASH</a>
                         </li>
                     </ul>
                     @endif
                     <div class="tab-content">
-                        <div class="tab-pane fade active in" id="tab_card">
-                            <p> Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
-                                retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate
-                                nisi qui. </p>
+                        @if(!($cart['total']>0))
+                        <div class="tab-pane fade active in" id="tab_skip">
+                            <p> 
+                                skip payment
+                            </p>
                         </div>
-                        @if($cart['seller'])
-                        <div class="tab-pane fade" id="tab_swipe">
-                            <p> Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table
-                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar
-                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art
-                                party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park. </p>
-                        </div>
-                        <div class="tab-pane fade" id="tab_cash">
-                            <p> Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone
-                                skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel
-                                fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr. </p>
-                        </div>
+                        @else
+                            <div class="tab-pane fade active in" id="tab_card">
+                                <p> 
+                                    pay with card
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 text-right">Phone:</label>
+                                            <div class="col-sm-9 show-error">
+                                                <div class="input-group">
+                                                    <input type="text" name="first_name" class="form-control input-large" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 text-right">Email (for receipt):
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-sm-9 show-error">
+                                                <div class="input-group">
+                                                    <input type="email" name="email" class="form-control input-large" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </p>
+                            </div>
+                            @if($cart['seller'])
+                            <div class="tab-pane fade" id="tab_swipe">
+                                <p>
+                                    swipe card
+                                </p>
+                            </div>
+                            <div class="tab-pane fade" id="tab_cash">
+                                <p>
+                                    pay cash
+                                </p>
+                            </div>
+                            @endif
                         @endif
+                        <p class="margin-top-20">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 text-right">Phone:</label>
+                                    <div class="col-sm-9 show-error">
+                                        <div class="input-group">
+                                            <input type="text" name="first_name" class="form-control input-large" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 text-right">Email (for receipt):
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-sm-9 show-error">
+                                        <div class="input-group">
+                                            <input type="email" name="email" class="form-control input-large" value="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding:20px">
+                                <hr><label class="mt-checkbox"><input type="checkbox" name="terms" value="1" />
+                                    I ACCEPT THE TERMS AND CONDITIONS. <a data-toggle="modal" href="#modal_terms_conditions">CLICK HERE TO VIEW TERMS AND CONDITIONS.</a>
+                                <span></span></label><br>
+                                <label class="mt-checkbox"><input type="checkbox" checked="true" name="NEWSLETTER" value="1" />
+                                    SIGN UP FOR OUR NEWSLETTER
+                                <span></span></label><br>
+                                <center><a id="btn_process" class="btn btn-primary btn-lg uppercase">Process payment <i class="fa fa-arrow-circle-right"></i></a></center>
+                            </div>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -148,6 +205,11 @@
     </div>
     <!-- END PAYMENT -->
 </div>
+
+<!-- BEGIN TERMS AND CONDITIONS MODAL -->
+@includeIf('production.shoppingcart.terms')
+<!-- END TERMS AND CONDITIONS MODAL -->
+
 @endsection
 
 @section('scripts')

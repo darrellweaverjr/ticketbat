@@ -27,7 +27,10 @@ class UserController extends Controller
                 if (Auth::attempt(['email' => $input['username'], 'password' => md5($input['password'])])) 
                 {
                     if(Auth::user()->is_active>0)
+                    {
+                        Session::forget('email_guest');
                         return ['success'=>true,'msg'=>'User logged successfully!'];
+                    }  
                     else
                     {
                         Auth::logout();
