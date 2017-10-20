@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Country;
+use App\Http\Models\Region;
 use App\Http\Models\User;
 use App\Http\Models\Ticket;
 use App\Http\Models\Util;
@@ -42,6 +44,9 @@ class ShoppingcartController extends Controller
                     $cart['seller'] = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
                     //default email
                     $cart['email'] = (Auth::check())? Auth::user()->email : ((!empty($email_guest))? $email_guest : '');
+                    //default enum
+                    $cart['countries'] = Country::get(['code','name']);  
+                    $cart['regions'] = Region::where('country','US')->get(['code','name']); 
                     //return view
                     return view('production.shoppingcart.index',compact('cart'));
                 }

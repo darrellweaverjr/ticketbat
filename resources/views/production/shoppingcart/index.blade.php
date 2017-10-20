@@ -47,13 +47,13 @@
                                 <b class="label label-sm sbold label-success">{{$i->product_type}}</b> for <a href="/production/event/{{$i->slug}}/{{$i->show_time_id}}">{{$i->name}}</a><br>
                                 On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}}
                             </td>
-                            <td style="max-width:100px">
-                                <input type="number" data-qty="{{$i->number_of_items}}" value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif name="qty[{{$i->id}}]" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
+                            <td>
+                                <input type="number" data-qty="{{$i->number_of_items}}" value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
                             </td>
                             <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>
                             <td style="text-align:right">${{number_format($i->processing_fee,2)}}</td>
-                            <td><center><a data-toggle="modal" href="#modal_share_tickets" class="btn btn-info"><i class="fa fa-share icon-share"></i></a></center></td>
+                            <td><center><button type="button" data-qty="{{$i->number_of_items}}" class="btn btn-info"><i class="fa fa-share icon-share"></i></button></center></td>
                             <td><center><button type="button" class="btn btn-danger"><i class="fa fa-remove icon-ban"></i></button></center></td>
                         </tr>
                         @endforeach
@@ -142,7 +142,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="cardholder">
                                         </div>
                                     </div>
                                     <div class="form-group" style="margin-top:30px!important">
@@ -225,19 +225,19 @@
                                         </label>
                                         <div class="col-sm-3 show-error">
                                             <select class="form-control" name="country" placeholder="United States" style="min-width:135px">
-                                                @for ($y = date('Y'); $y <= date('Y')+20; $y++)
-                                                    <option value="{{$y}}">{{$y}}</option>
-                                                @endfor
+                                                @foreach( $cart['countries'] as $c)
+                                                    <option @if($c->code=='US') selected @endif value="{{$c->code}}">{{$c->name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                         <label class="control-label col-sm-2 text-right">State/region:
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="country" placeholder="United States" style="min-width:135px">
-                                                @for ($y = date('Y'); $y <= date('Y')+20; $y++)
-                                                    <option value="{{$y}}">{{$y}}</option>
-                                                @endfor
+                                            <select class="form-control" name="state" placeholder="Nevada" style="min-width:135px">
+                                                @foreach( $cart['regions'] as $r)
+                                                    <option value="{{$r->code}}">{{$r->name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -245,9 +245,26 @@
                             </div>
                             @if($cart['seller'])
                             <div class="tab-pane fade" id="tab_swipe">
-                                <p>
-                                    swipe card
-                                </p>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3 text-right">Customer:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-8 show-error">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="cardholder">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="card" value="">
+                                    <input type="hidden" name="exp_month" value="0">
+                                    <input type="hidden" name="exp_year" value="0">
+                                    <input type="hidden" name="UMcardpresent" value=true>
+                                    <input type="hidden" name="UMmagstripe" value="">
+                                    <input type="hidden" name="UMdukpt" value="">
+                                    <input type="hidden" name="UMtermtype" value="POS">
+                                    <input type="hidden" name="UMmagsupport" value="yes">
+                                    <input type="hidden" name="UMcontactless" value="no">
+                                    <input type="hidden" name="UMsignature" value="">
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="tab_cash">
                                 <p>
@@ -264,7 +281,7 @@
                             </div>
                             <div class="row form-group">
                                 <label class="control-label col-sm-3 text-right">Email (for receipt):
-                                    <span class="required"> * </span>
+                                    <i class="required"> required</i>
                                 </label>
                                 <div class="col-sm-8 show-error">
                                     <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}">
@@ -293,6 +310,9 @@
 <!-- BEGIN CVV MODAL -->
 @includeIf('production.shoppingcart.cvv')
 <!-- END CVV MODAL -->
+<!-- BEGIN SWIPE CARD MODAL -->
+@includeIf('production.shoppingcart.swipe')
+<!-- END SWIPE CARD MODAL -->
 <!-- BEGIN SHARE TICKETS MODAL -->
 @includeIf('production.general.share_tickets')
 <!-- END SHARE TICKETS MODAL -->
