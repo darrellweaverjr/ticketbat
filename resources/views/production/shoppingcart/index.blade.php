@@ -53,7 +53,7 @@
                             <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>
                             <td style="text-align:right">${{number_format($i->processing_fee,2)}}</td>
-                            <td><center><a href="button" class="btn btn-info"><i class="fa fa-share icon-share"></i></a></center></td>
+                            <td><center><a data-toggle="modal" href="#modal_share_tickets" class="btn btn-info"><i class="fa fa-share icon-share"></i></a></center></td>
                             <td><center><button type="button" class="btn btn-danger"><i class="fa fa-remove icon-ban"></i></button></center></td>
                         </tr>
                         @endforeach
@@ -119,7 +119,7 @@
                         <li>
                             <a href="#tab_cash" data-toggle="tab">ENTER CASH</a>
                         </li>
-                    </ul>
+                    </ul><hr>
                     @endif
                     <div class="tab-content">
                         @if(!($cart['total']>0))
@@ -130,30 +130,118 @@
                         </div>
                         @else
                             <div class="tab-pane fade active in" id="tab_card">
-                                <p> 
-                                    pay with card
-                                    <a data-toggle="modal" href="#modal_cvv">cvv.</a>
-                                    <div class="row">
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 text-right">Phone:</label>
-                                            <div class="col-sm-9 show-error">
-                                                <div class="input-group">
-                                                    <input type="text" name="first_name" class="form-control input-large" value="" />
-                                                </div>
-                                            </div>
+                                <div class="row">
+                                    <div class="form-group text-center">
+                                        <img src="{{config('app.theme')}}img/card/cc-icon-mastercard.png">
+                                        <img src="{{config('app.theme')}}img/card/cc-icon-visa.png">
+                                        <img src="{{config('app.theme')}}img/card/cc-icon-discover.png">
+                                        <img src="{{config('app.theme')}}img/card/cc-icon-american-express.png">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3 text-right">Customer:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-8 show-error">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
                                         </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 text-right">Email (for receipt):
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-sm-9 show-error">
-                                                <div class="input-group">
-                                                    <input type="email" name="email" class="form-control input-large" value="" />
-                                                </div>
+                                    </div>
+                                    <div class="form-group" style="margin-top:30px!important">
+                                        <label class="control-label col-sm-3 text-right">Card number:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <input type="number" class="form-control" placeholder="#### #### #### ####" name="card" style="min-width:170px">
+                                        </div>
+                                        <label class="control-label col-sm-2 text-right">CVV:
+                                            <i class="required"> required</i> 
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" placeholder="####" name="cvv" style="min-width:75px">
+                                                <span class="input-group-btn">
+                                                    <a class="btn btn-info" data-toggle="modal" href="#modal_cvv"><i class="fa fa-question icon-question"></i> What is it?</a>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-                                </p>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3 text-right">Exp month:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <select class="form-control" name="exp_month" placeholder="M" style="min-width:145px">
+                                                <option value="" disabled="true" selected="true">- Select month -</option>
+                                                <option value="1">1 (January)</option>
+                                                <option value="2">2 (February)</option>
+                                                <option value="3">3 (March)</option>
+                                                <option value="4">4 (April)</option>
+                                                <option value="5">5 (May)</option>
+                                                <option value="6">6 (June)</option>
+                                                <option value="7">7 (July)</option>
+                                                <option value="8">8 (August)</option>
+                                                <option value="9">9 (September)</option>
+                                                <option value="10">10 (October)</option>
+                                                <option value="11">11 (November)</option>
+                                                <option value="12">12 (December)</option>
+                                            </select>
+                                        </div>
+                                        <label class="control-label col-sm-2 text-right">Exp year:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <select class="form-control" name="exp_year" placeholder="YYYY" style="min-width:135px">
+                                                <option value="" disabled="true" selected="true">- Select year -</option>
+                                                @for ($y = date('Y'); $y <= date('Y')+20; $y++)
+                                                    <option value="{{$y}}">{{$y}}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3 text-right">Address:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-8 show-error">
+                                            <input type="text" class="form-control" placeholder="0000 Main St." name="address">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3 text-right">City:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <input type="text" class="form-control" placeholder="Las Vegas" name="city">
+                                        </div>
+                                        <label class="control-label col-sm-2 text-right">Zip:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3 text-right">Country:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <select class="form-control" name="country" placeholder="United States" style="min-width:135px">
+                                                @for ($y = date('Y'); $y <= date('Y')+20; $y++)
+                                                    <option value="{{$y}}">{{$y}}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                        <label class="control-label col-sm-2 text-right">State/region:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <select class="form-control" name="country" placeholder="United States" style="min-width:135px">
+                                                @for ($y = date('Y'); $y <= date('Y')+20; $y++)
+                                                    <option value="{{$y}}">{{$y}}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             @if($cart['seller'])
                             <div class="tab-pane fade" id="tab_swipe">
@@ -168,35 +256,18 @@
                             </div>
                             @endif
                         @endif
-                        <p class="margin-top-20">
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="control-label col-sm-3 text-right">Customer:
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-sm-9 show-error">
-                                        <div class="input-group">
-                                            <input type="text" name="customer" class="form-control input-large" value="" />
-                                        </div>
-                                    </div>
+                            <div class="row form-group">
+                                <label class="control-label col-sm-3 text-right">Phone:</label>
+                                <div class="col-sm-8 show-error">
+                                    <input type="text" class="form-control" placeholder="### ### ####" name="phone">
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label col-sm-3 text-right">Phone:</label>
-                                    <div class="col-sm-9 show-error">
-                                        <div class="input-group">
-                                            <input type="text" name="phone" class="form-control input-large" value="" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-sm-3 text-right">Email (for receipt):
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-sm-9 show-error">
-                                        <div class="input-group">
-                                            <input type="email" name="email" class="form-control input-large" value="{{$cart['email']}}" />
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="control-label col-sm-3 text-right">Email (for receipt):
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-sm-8 show-error">
+                                    <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}">
                                 </div>
                             </div>
                             <div class="row" style="padding:20px">
@@ -208,7 +279,6 @@
                                 <span></span></label><br>
                                 <center><button type="submit" id="btn_process" disabled="true" class="btn btn-primary btn-lg uppercase">Process payment <i class="fa fa-arrow-circle-right"></i></button></center>
                             </div>
-                        </p>
                     </div>
                 </div>
             </div>
@@ -223,6 +293,9 @@
 <!-- BEGIN CVV MODAL -->
 @includeIf('production.shoppingcart.cvv')
 <!-- END CVV MODAL -->
+<!-- BEGIN SHARE TICKETS MODAL -->
+@includeIf('production.general.share_tickets')
+<!-- END SHARE TICKETS MODAL -->
 
 @endsection
 
@@ -230,5 +303,6 @@
 <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
+<script src="/js/production/general/share_tickets.js" type="text/javascript"></script>
 <script src="/js/production/shoppingcart/index.js" type="text/javascript"></script>
 @endsection
