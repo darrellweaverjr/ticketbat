@@ -111,14 +111,14 @@ var SwipeCardFunctions = function () {
         $('#modal_swipe_card input[name="stripe_card"]').blur(function (e) {
             e.preventDefault();
             $('#modal_swipe_card').modal('hide');
-            $('#tab_swipe input[name="cardholder"]').focus();
+            $('#tab_swipe input[name="customer"]').focus();
         }).keyup(function (e) {
             if($(this).val().substr($(this).val().length-1)=="?") 
             {
                 if(valid_swipe_credit_card($(this).val()))
                 {
                     $('#modal_swipe_card').modal('hide');
-                    $('#tab_swipe input[name="cardholder"]').focus();
+                    $('#tab_swipe input[name="customer"]').focus();
                 }
             }
         });
@@ -143,7 +143,7 @@ var SwipeCardFunctions = function () {
                 var month = exp_date.substring(2, 4);
                 var year = exp_date.substring(0, 2);
                 $('#tab_swipe input[name="UMmagstripe"]').val(card_data);
-                $('#tab_swipe input[name="cardholder"]').val(first_name + ' ' + last_name);
+                $('#tab_swipe input[name="customer"]').val(first_name + ' ' + last_name);
                 $('#tab_swipe input[name="card"]').val(card_number);
                 $('#tab_swipe input[name="exp_month"]').val(month);
                 $('#tab_swipe input[name="exp_year"]').val(year);

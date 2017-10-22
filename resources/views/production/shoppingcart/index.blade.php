@@ -137,15 +137,15 @@
                                         <img src="{{config('app.theme')}}img/card/cc-icon-discover.png">
                                         <img src="{{config('app.theme')}}img/card/cc-icon-american-express.png">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom:25px">
                                         <label class="control-label col-sm-3 text-right">Customer:
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="cardholder">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
                                         </div>
                                     </div>
-                                    <div class="form-group" style="margin-top:30px!important">
+                                    <div class="form-group" style="padding-bottom:25px">
                                         <label class="control-label col-sm-3 text-right">Card number:
                                             <i class="required"> required</i>
                                         </label>
@@ -164,7 +164,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom:25px">
                                         <label class="control-label col-sm-3 text-right">Exp month:
                                             <i class="required"> required</i>
                                         </label>
@@ -197,7 +197,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom:25px">
                                         <label class="control-label col-sm-3 text-right">Address:
                                             <i class="required"> required</i>
                                         </label>
@@ -205,7 +205,7 @@
                                             <input type="text" class="form-control" placeholder="0000 Main St." name="address">
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom:25px">
                                         <label class="control-label col-sm-3 text-right">City:
                                             <i class="required"> required</i>
                                         </label>
@@ -219,7 +219,7 @@
                                             <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px">
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom:25px">
                                         <label class="control-label col-sm-3 text-right">Country:
                                             <i class="required"> required</i>
                                         </label>
@@ -246,12 +246,12 @@
                             @if($cart['seller'])
                             <div class="tab-pane fade" id="tab_swipe">
                                 <div class="row">
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom:25px">
                                         <label class="control-label col-sm-3 text-right">Customer:
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="cardholder">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
                                         </div>
                                     </div>
                                     <input type="hidden" name="card" value="">
@@ -267,9 +267,81 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab_cash">
-                                <p>
-                                    pay cash
-                                </p>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-1 text-right">$100 x</label>
+                                        <div class="col-sm-1 show-error">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x100" style="min-width:70px">
+                                        </div>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" value="0.00" name="x100x" disabled="true">
+                                        </div>
+                                        
+                                        <label class="control-label col-sm-1 text-right">$50 x</label>
+                                        <div class="col-sm-1 show-error">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x50" style="min-width:70px">
+                                        </div>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" value="0.00" name="x50x" disabled="true">
+                                        </div>
+                                        
+                                        <label class="control-label col-sm-1 text-right">$20 x</label>
+                                        <div class="col-sm-1 show-error">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x20" style="min-width:70px">
+                                        </div>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" value="0.00" name="x20x" disabled="true">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-1 text-right">$10 x</label>
+                                        <div class="col-sm-1 show-error">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x10" style="min-width:70px">
+                                        </div>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" value="0.00" name="x10x" disabled="true">
+                                        </div>
+                                        
+                                        <label class="control-label col-sm-1 text-right">$5 x</label>
+                                        <div class="col-sm-1 show-error">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x5" style="min-width:70px">
+                                        </div>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" value="0.00" name="x5x" disabled="true">
+                                        </div>
+                                        
+                                        <label class="control-label col-sm-1 text-right">$1 x</label>
+                                        <div class="col-sm-1 show-error">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x1" style="min-width:70px">
+                                        </div>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" value="0.00" name="x1x" disabled="true">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="padding-bottom:100px">
+                                        <label class="control-label col-sm-1 text-right">Change</label>
+                                        <div class="col-sm-1 show-error">
+                                            <input type="number" class="form-control" min="0" max="99" step="1" value="00" name="x00" style="min-width:70px">
+                                        </div>
+                                        <div class="col-sm-2 show-error"></div>
+                                        <label class="control-label col-sm-2 text-right" id="collect_text">Collect</label>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" style="color:red;font-size:20px" value="-{{number_format($cart['total'],2)}}" name="xpending" disabled="true">
+                                        </div>
+                                        <label class="control-label col-sm-2 text-right">Total</label>
+                                        <div class="col-sm-2 show-error">
+                                            <input type="number" class="form-control" style="color:blue;font-size:20px" value="0.00" name="xtotal" disabled="true">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="padding-bottom:25px">
+                                        <label class="control-label col-sm-3 text-right">Customer:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-8 show-error">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             @endif
                         @endif
