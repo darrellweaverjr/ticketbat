@@ -53,7 +53,7 @@
                             <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>
                             <td style="text-align:right">${{number_format($i->processing_fee,2)}}</td>
-                            <td><center><button type="button" data-qty="{{$i->number_of_items}}" class="btn btn-info"><i class="fa fa-share icon-share"></i></button></center></td>
+                            <td><center><button type="button" data-id="{{$i->id}}" data-qty="{{$i->number_of_items}}" class="btn btn-info"><i class="fa fa-share icon-share"></i></button></center></td>
                             <td><center><button type="button" class="btn btn-danger"><i class="fa fa-remove icon-ban"></i></button></center></td>
                         </tr>
                         @endforeach
@@ -63,7 +63,7 @@
             <div class="row portlet-body light portlet-fit" style="margin-top:-30px;padding:10px">
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="coupon_code" placeholder="" name="coupon">
+                        <input type="text" class="form-control" id="coupon_code" placeholder="Write here your code" name="coupon">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-primary" id="add_coupon_code">Add coupon</button>
                         </span>
@@ -131,6 +131,7 @@
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
                                     <input type="hidden" name="newsletter" value="1">
+                                    <div class="share_tickets_subform hidden"></div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Customer:
                                             <i class="required"> required</i>
@@ -173,6 +174,7 @@
                                         </div>
                                         <div class="alert alert-warning display-hide" id="div_show_errors"></div>
                                         <input type="hidden" name="newsletter" value="1">
+                                        <div class="share_tickets_subform hidden"></div>
                                         <div class="form-group">
                                             <label class="control-label col-sm-3 text-right">Customer:
                                                 <i class="required"> required</i>
@@ -304,6 +306,7 @@
                                             <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                         </div>
                                         <input type="hidden" name="newsletter" value="1">
+                                        <div class="share_tickets_subform hidden"></div>
                                         <div class="form-group">
                                             <label class="control-label col-sm-3 text-right">Customer:
                                                 <i class="required"> required</i>
@@ -415,6 +418,7 @@
                                             </div>
                                         </div>
                                         <input type="hidden" name="newsletter" value="1">
+                                        <div class="share_tickets_subform hidden"></div>
                                         <div class="form-group">
                                             <label class="control-label col-sm-3 text-right">Customer:
                                                 <i class="required"> required</i>

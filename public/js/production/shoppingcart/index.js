@@ -4,7 +4,8 @@ var ShareFunctions = function () {
         
         //load share tickets
         $('#tb_items tr > td:nth-child(6) button').on('click', function(ev) {
-            var qty = parseInt($(this).data('qty'));            
+            var qty = parseInt($(this).data('qty'));   
+            var idx = $(this).data('id');
             //load values for x form
             var data;            
             //ShareTicketsFunctions.load(data,qty); 
@@ -50,6 +51,14 @@ var PurchaseFunctions = function () {
         //remove item
         $('#tb_items tr > td:last-child button').on('click', function(ev) {
             alert('removed');
+        });
+        //update qty items
+        $('#tb_items tr > td:nth-child(2) input').on('change', function(ev) {
+            alert('changed');
+        });
+        //update coupon
+        $('#add_coupon_code').on('click', function(ev) {
+            alert('coupon');
         });
         //on change country select
         $('select[name="country"]').on('change', function(ev) {
@@ -667,6 +676,31 @@ var CashValidation = function () {
         //main function to initiate the module
         init: function () {
             handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
+var UpdateShoppingcartFunctions = function () {
+    
+    var initFunctions = function (event, action, value) {
+        
+        switch(event)
+        {
+            case 'coupon':
+                break;
+            case 'quantity':
+                break;
+            case 'remove':
+                break;
+            case 'regular':
+                break;
+        }
+        
+    }
+    return {
+        //main function to initiate the module
+        init: function (event, action, value) {
+            initFunctions(event, action, value);        
         }
     };
 }();
