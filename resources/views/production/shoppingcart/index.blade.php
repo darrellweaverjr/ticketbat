@@ -74,7 +74,7 @@
                     <h4><label class="label label-default bold">Subtotal: </label><label id="cost_subtotal" class="font-blue-madison">$ {{number_format($cart['retail_price'],2)}}</label></h4>
                     <h4><label class="label label-info bold">Processing fee: </label><label id="cost_fees" class="font-blue-madison">$ {{number_format($cart['processing_fee'],2)}}</label></h4>
                     <h4><label class="label label-success bold">Savings: </label><label id="cost_savings" class="font-blue-madison">$ {{number_format($cart['savings'],2)}}</label></h4>
-                    <h4><label class="label label-primary bold">Grand total: </label><label id="cost_total" class="font-blue-madison">$ {{number_format($cart['total'],2)}}</label></h4>
+                    <h4><label class="label label-primary bold">Grand total: </label><label id="cost_total" data-total="{{$cart['total']}}" class="font-blue-madison">$ {{number_format($cart['total'],2)}}</label></h4>
                 </div>
             </div>
         </div>
@@ -271,66 +271,66 @@
                                     <div class="form-group">
                                         <label class="control-label col-sm-1 text-right">$100 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x100" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="100" value="0" name="x100" style="min-width:70px">
                                         </div>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" value="0.00" name="x100x" disabled="true">
+                                            <input type="number" class="form-control" data-bill="100" value="0.00" name="r100" disabled="true">
                                         </div>
                                         
                                         <label class="control-label col-sm-1 text-right">$50 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x50" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="50" value="0" name="x50" style="min-width:70px">
                                         </div>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" value="0.00" name="x50x" disabled="true">
+                                            <input type="number" class="form-control" data-bill="50" value="0.00" name="r50" disabled="true">
                                         </div>
                                         
                                         <label class="control-label col-sm-1 text-right">$20 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x20" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="20" value="0" name="x20" style="min-width:70px">
                                         </div>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" value="0.00" name="x20x" disabled="true">
+                                            <input type="number" class="form-control" data-bill="20" value="0.00" name="r20" disabled="true">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-1 text-right">$10 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x10" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="10" value="0" name="x10" style="min-width:70px">
                                         </div>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" value="0.00" name="x10x" disabled="true">
+                                            <input type="number" class="form-control" data-bill="10" value="0.00" name="r10" disabled="true">
                                         </div>
                                         
                                         <label class="control-label col-sm-1 text-right">$5 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x5" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="5" value="0" name="x5" style="min-width:70px">
                                         </div>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" value="0.00" name="x5x" disabled="true">
+                                            <input type="number" class="form-control" data-bill="5" value="0.00" name="r5" disabled="true">
                                         </div>
                                         
                                         <label class="control-label col-sm-1 text-right">$1 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" value="0" name="x1" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="1" value="0" name="x1" style="min-width:70px">
                                         </div>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" value="0.00" name="x1x" disabled="true">
+                                            <input type="number" class="form-control" data-bill="1" value="0.00" name="r1" disabled="true">
                                         </div>
                                     </div>
                                     <div class="form-group" style="padding-bottom:100px">
                                         <label class="control-label col-sm-1 text-right">Change</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="99" step="1" value="00" name="x00" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="99" step="1" value="00" name="change" style="min-width:70px">
                                         </div>
                                         <div class="col-sm-2 show-error"></div>
                                         <label class="control-label col-sm-2 text-right" id="collect_text">Collect</label>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" style="color:red;font-size:20px" value="-{{number_format($cart['total'],2)}}" name="xpending" disabled="true">
+                                            <input type="number" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{number_format($cart['total'],2)}}" value="-{{number_format($cart['total'],2)}}" name="pending" disabled="true">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">Total</label>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" style="color:blue;font-size:20px" value="0.00" name="xtotal" disabled="true">
+                                            <input type="number" class="form-control" style="color:blue;font-size:20px;font-weight:bold" value="0.00" name="subtotal" disabled="true">
                                         </div>
                                     </div>
                                     <div class="form-group" style="padding-bottom:25px">
