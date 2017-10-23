@@ -47,12 +47,10 @@ var ShareFunctions = function () {
 var PurchaseFunctions = function () {
     
     var initFunctions = function () {
-        
         //remove item
         $('#tb_items tr > td:last-child button').on('click', function(ev) {
             alert('removed');
         });
-        
         //on change country select
         $('select[name="country"]').on('change', function(ev) {
             var country_code = $(this).val();
@@ -80,6 +78,112 @@ var PurchaseFunctions = function () {
                     });
                 }
             }); 
+        });
+        
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            initFunctions();        
+        }
+    };
+}();
+//*****************************************************************************************
+var SubmitFunctions = function () {
+    
+    var initFunctions = function () {
+        //on accept newsletter
+        $('#accept_newsletter').bind('click','change', function(e){
+            if( $(this).is(':checked') )
+                $('#tabs_payment').find('input[name="newsletter"]').val(1);
+            else
+                $('#tabs_payment').find('input[name="newsletter"]').val(0);
+        });
+        //function disabled submit
+        function disabled_submit()
+        {
+            $('#form_cash div.desglose input[name^="x"]').attr('disabled',false);
+            $('#form_cash div.desglose input[name="change"]').attr('disabled',false);
+            $('#form_cash div.desglose input[name="pending"]').attr('disabled',false);
+            $('#form_cash div.desglose input[name="subtotal"]').attr('disabled',false);
+            //submit
+            $('#btn_process').prop('disabled',true);
+        }
+        //on change bill
+        $('a[href^="#tab_"]').on('click', function(ev) {
+            $('#accept_terms').prop('checked', false);
+            
+        });
+        //on input or select change, disable submit to re-check values
+        $('#tabs_payment input, #tabs_payment select').on('change', function(e){
+            var form_id = $('#tabs_payment').find('.tab-pane.active').find('form').attr('id');
+            if(!$('#'+form_id).valid())
+            {
+                $('#accept_terms').prop('checked', false);
+                disabled_submit();
+            }
+        });
+        //on accept terms
+        $('#accept_terms').bind('click','change', function(e){
+            var proceed = false;
+            var form_id = $('#tabs_payment').find('.tab-pane.active').find('form').attr('id');
+            $('#div_show_errors').css('display','none');
+            $('#'+form_id+' .alert-danger').css('display','none');
+            if( $(this).is(':checked') )
+            {
+                if( $('#'+form_id).valid() )
+                {
+                    switch(form_id)
+                    {
+                        case 'form_skip':
+                            proceed = true;
+                            break;
+                        case 'form_card':
+                            var amex_only = $('#form_card input[name="card"]').data('amex');
+                            if( amex_only>0 )
+                                var exp_card =/^3[47][0-9]{13}$/;
+                            else 
+                                var exp_card =/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/;
+                            if(!exp_card.test(card))
+                            {
+                                if(amex_only>0)
+                                    $('#div_show_errors').html('You must enter a valid Amerian Express credit card');
+                                else
+                                    $('#div_show_errors').html('You must enter a valid credit card');
+                                $('#div_show_errors').css('display','block');
+                            }
+                            else
+                                proceed = true;
+                            break;
+                        case 'form_swipe':
+                            proceed = true;
+                            break;
+                        case 'form_cash':
+                            $('#form_cash div.desglose input').attr('disabled',true);
+                            proceed = true;
+                            break;
+                    }
+                }
+                //uncheck btn
+                if(proceed)
+                {
+                    $('#btn_process').prop('disabled',false);
+                }
+                else
+                {
+                    $('#btn_process').prop('disabled',true);
+                    e.preventDefault();
+                }
+            }    
+            else
+                disabled_submit();
+        });
+        //on submit
+        $('#btn_process').click( function(){
+            var form_id = $('#tabs_payment').find('.tab-pane.active').find('form').attr('id');
+            if( $('#'+form_id).valid() )
+                //$('#'+form_id)[0].submit();
+                alert('Form submited');
         });
         
     }
@@ -164,11 +268,10 @@ var SwipeCardFunctions = function () {
     };
 }();
 //*****************************************************************************************
-//*****************************************************************************************
 var CashFunctions = function () {
     
     var initFunctions = function () {
-        
+        //function to calculate cash
         function calculate_cash()
         {
             var subtotal = 0;
@@ -188,10 +291,8 @@ var CashFunctions = function () {
             {
                 $('#collect_text').html('Change');
                 $('#tab_cash input[name="pending"]').css('color','green');
-            }
-                
+            } 
         }
-        
         //on change bill
         $('#tab_cash input[name^="x"]').bind('change','click', function(ev) {
             var bill = parseFloat($(this).val()).toFixed();
@@ -208,7 +309,6 @@ var CashFunctions = function () {
             });
             calculate_cash();
         });
-        
         //on change change
         $('#tab_cash input[name="change"]').bind('change','click', function(ev) {
             var change = parseFloat($(this).val()).toFixed();
@@ -228,9 +328,357 @@ var CashFunctions = function () {
     };
 }();
 //*****************************************************************************************
+var SkipValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation: 
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_skip');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    email: {
+                        minlength: 8,
+                        maxlength: 200,
+                        email: true,
+                        required: true
+                    },
+                    customer: {
+                        minlength: 2,
+                        maxlength: 100,
+                        required: true
+                    },
+                    phone: {
+                        minlength: 10,
+                        maxlength: 10,
+                        digits: true,
+                        required: false
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
+var CardValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation: 
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_card');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    email: {
+                        minlength: 8,
+                        maxlength: 200,
+                        email: true,
+                        required: true
+                    },
+                    customer: {
+                        minlength: 2,
+                        maxlength: 100,
+                        required: true
+                    },
+                    phone: {
+                        minlength: 10,
+                        maxlength: 10,
+                        digits: true,
+                        required: false
+                    },
+                    card: {
+                        minlength: 16,
+                        maxlength: 16,
+                        creditcard: true,
+                        digits: true,
+                        required: true
+                    },
+                    cvv: {
+                        minlength: 3,
+                        maxlength: 4,
+                        digits: true,
+                        required: true
+                    },
+                    exp_month: {
+                        range: [1,12],
+                        digits: true,
+                        required: true
+                    },
+                    exp_year: {
+                        digits: true,
+                        required: true
+                    },
+                    address: {
+                        minlength: 5,
+                        maxlength: 200,
+                        required: true
+                    },
+                    city: {
+                        minlength: 2,
+                        maxlength: 100,
+                        required: true
+                    },
+                    zip: {
+                        minlength: 5,
+                        maxlength: 5,
+                        digits: true,
+                        range: [10000, 99999],
+                        required: true
+                    },
+                    country: {
+                        required: true
+                    },
+                    state: {
+                        required: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
+var SwipeValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation: 
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_swipe');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    email: {
+                        minlength: 8,
+                        maxlength: 200,
+                        email: true,
+                        required: true
+                    },
+                    customer: {
+                        minlength: 2,
+                        maxlength: 100,
+                        required: true
+                    },
+                    phone: {
+                        minlength: 10,
+                        maxlength: 10,
+                        digits: true,
+                        required: false
+                    },
+                    card: {
+                        minlength: 16,
+                        maxlength: 16,
+                        creditcard: true,
+                        digits: true,
+                        required: true
+                    },
+                    exp_month: {
+                        range: [1,12],
+                        digits: true,
+                        required: true
+                    },
+                    exp_year: {
+                        minlength: 4,
+                        maxlength: 4,
+                        digits: true,
+                        required: true
+                    },
+                    UMmagstripe: {
+                        required: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
+var CashValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation: 
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_cash');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    email: {
+                        minlength: 8,
+                        maxlength: 200,
+                        email: true,
+                        required: true
+                    },
+                    customer: {
+                        minlength: 2,
+                        maxlength: 100,
+                        required: true
+                    },
+                    phone: {
+                        minlength: 10,
+                        maxlength: 10,
+                        digits: true,
+                        required: false
+                    },
+                    pending: {
+                        min: 0,
+                        number: true,
+                        required: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
 jQuery(document).ready(function() {
     ShareFunctions.init();
     SwipeCardFunctions.init();
     PurchaseFunctions.init();
     CashFunctions.init();
+    SkipValidation.init();
+    CardValidation.init();
+    SwipeValidation.init();
+    CashValidation.init();
+    SubmitFunctions.init();
 });

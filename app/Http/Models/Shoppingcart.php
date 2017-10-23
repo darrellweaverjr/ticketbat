@@ -56,9 +56,9 @@ class Shoppingcart extends Model
                             ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id, shoppingcart.options,
                                               shoppingcart.product_type, shoppingcart.cost_per_product, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, shoppingcart.number_of_items, shoppingcart.item_id,
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent, shows.slug, show_times.id AS show_time_id,
-                                              (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon,
-                                              (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event,
-                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, 
+                                              (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
+                                              (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date,
+                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date,
                                               (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty'))
                             ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
                             ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
@@ -100,6 +100,7 @@ class Shoppingcart extends Model
             $saveAllApplied = false;
             $coupon = $coupon_description = null; 
             $restrictions = [];
+            $amex_only = 0;
             //get all items
             $items = Shoppingcart::items_session($session_id);
             if(count($items))
@@ -110,6 +111,18 @@ class Shoppingcart extends Model
                 //loop for all items to calculate
                 foreach ($items as $i)
                 {
+                    //get amex only for pay
+                    if($amex_only!=1)
+                    {
+                        if(!empty($i->amex_only_start_date) && !empty($i->amex_only_end_date) && !empty($i->amex_only_ticket_types))
+                        {
+                            $s_d = strtotime($i->amex_only_start_date);
+                            $e_d = strtotime($i->amex_only_end_date);
+                            $t_t = explode(',',$i->amex_only_ticket_types);
+                            if($s_d && $e_d && $s_d<strtotime('now') && $e_d>strtotime('now') && in_array($i->product_type, $t_t))
+                                $amex_only = 1;
+                        }
+                    }
                     //get restrictions
                     if($i->restrictions!='None')
                         $restrictions[$i->name] = $i->restrictions;
@@ -183,7 +196,7 @@ class Shoppingcart extends Model
             }
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),
-                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions];
+                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only];
            
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];

@@ -170,6 +170,21 @@ class ShoppingcartController extends Controller
         }
         return ['success'=>true];
     }
+    
+    /**
+     * process items in the shoppingcart.
+     *
+     * @return Method
+     */
+    public function process()
+    {
+        try {
+            //init
+            $input = Input::all();
+        } catch (Exception $ex) {
+            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+        }
+    }
       
     /*
      * add items to the cart
