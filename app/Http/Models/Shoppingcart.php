@@ -53,7 +53,7 @@ class Shoppingcart extends Model
                             ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
-                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id, shoppingcart.options,
+                            ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id, shoppingcart.options, shows.printed_tickets,
                                               shoppingcart.product_type, shoppingcart.cost_per_product, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, shoppingcart.number_of_items, shoppingcart.item_id,
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent, shows.slug, show_times.id AS show_time_id,
                                               (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
@@ -101,6 +101,7 @@ class Shoppingcart extends Model
             $coupon = $coupon_description = null; 
             $restrictions = [];
             $amex_only = 0;
+            $printed_tickets = ['details'=>0,'shows'=>[],'select'=>0];
             //get all items
             $items = Shoppingcart::items_session($session_id);
             if(count($items))
@@ -111,6 +112,9 @@ class Shoppingcart extends Model
                 //loop for all items to calculate
                 foreach ($items as $i)
                 {
+                    //printed tickets
+                    if($i->printed_tickets>0)
+                        $printed_tickets['shows'][] = $i->name;
                     //get amex only for pay
                     if($amex_only!=1)
                     {
@@ -194,9 +198,14 @@ class Shoppingcart extends Model
                 $coupon_description = $coupon['description'];
                 $coupon = $coupon['code'];
             }
+            //printed tickets
+            $printed_tickets['select'] = Session::get('printed_tickets',0);
+            $total -= $printed_tickets['select'];
+            $printed_tickets['details'] = count($items)-count($printed_tickets['shows']);
+            //return
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,
-                    'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),
-                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only];
+                    'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
+                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
            
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];

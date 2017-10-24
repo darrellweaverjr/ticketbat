@@ -73,13 +73,46 @@
                 <div class="col-md-6 text-right" style="padding-right:20px;">
                     <h4><label class="label label-default bold">Subtotal: </label><label id="cost_subtotal" class="font-blue-madison">$ {{number_format($cart['retail_price'],2)}}</label></h4>
                     <h4><label class="label label-info bold">Processing fee: </label><label id="cost_fees" class="font-blue-madison">$ {{number_format($cart['processing_fee'],2)}}</label></h4>
-                    <h4><label class="label label-success bold">Savings: </label><label id="cost_savings" class="font-blue-madison">$ {{number_format($cart['savings'],2)}}</label></h4>
+                    <h4 @if(empty($cart['savings'])) class="hidden" @endif><label class="label label-success bold">Savings: </label><label id="cost_savings" class="font-blue-madison">$ {{number_format($cart['savings'],2)}}</label></h4>
+                    <h4 @if(empty($cart['printed'])) class="hidden" @endif><label class="label label-warning bold">Printed tickets: </label><label id="cost_printed" class="font-blue-madison">$ {{number_format($cart['printed'],2)}}</label></h4>
                     <h4><label class="label label-primary bold">Grand total: </label><label id="cost_total" data-total="{{$cart['total']}}" class="font-blue-madison">$ {{number_format($cart['total'],2)}}</label></h4>
                 </div>
             </div>
         </div>
     </div>
     <!-- END ITEMS -->
+<!--     BEGIN PRINTED TICKETS -->
+    @if(count($cart['printed_tickets']['shows']))
+    <div class="row fixed-panel">
+        <div class="portlet light about-text">
+            <!-- BEGIN DESCRIPTION -->
+            <h4 title="Restrictions for the event(s).">
+                <i class="fa fa-print icon-printer"></i> Ticket options
+            </h4>  
+            @if( $cart['printed_tickets']['details'] > 0 )
+            <p class="margin-top-20">
+            All tickets for @if(count($cart['printed_tickets']['shows'])>1) these shows @else this show @endif will be mailed if you pick a printed ticket option:<br>
+            @foreach($cart['printed_tickets']['shows'] as $s)
+                <b style="color:#32c5d2">{{$s}}</b><br>
+            @endforeach
+            Other shows are only available as eTickets and will not be shipped if you choose a printed option.
+            </p>
+            @endif
+            <div class="portlet-body light portlet-fit" style="padding:10px">
+                <select class="form-control" name="printed_tickets">
+                    <option value="0" @if(empty($cart['printed_tickets']['select'])) selected @endif>&diams; eTickets - (No charge. Print your tickets at home or show your tickets from your mobile phone.)</option>
+                    <option value="NULL" disabled>&diams; Printed Tickets - ($7.50 to $30.00 charge.) Select from below:</option>
+                    <option value="20" @if($cart['printed_tickets']['select']==20) selected @endif>&emsp; &#8594; 2 Business Day (Evening) $20.00</option>
+                    <option value="21" @if($cart['printed_tickets']['select']==21) selected @endif>&emsp; &#8594; 2 Business Day (Morning) $21.00</option>
+                    <option value="17" @if($cart['printed_tickets']['select']==17) selected @endif>&emsp; &#8594; 3 Business Day (Evening) $17.00</option>
+                    <option value="30" @if($cart['printed_tickets']['select']==30) selected @endif>&emsp; &#8594; Saturday Delivery $30.00 (By noon, order must be placed before Wednesday)</option>
+                    <option value="7.5" @if($cart['printed_tickets']['select']==7.5) selected @endif>&emsp; &#8594; Standard Mail - $7.50</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    @endif
+    <!-- END PRINTED TICKETS -->
     <!-- BEGIN RESTRICTIONS -->
     @if(count($cart['restrictions']))
     <div class="row fixed-panel">

@@ -133,7 +133,6 @@ class ShoppingcartController extends Controller
     public function countdown()
     {
         //init
-        Session::forget('countdown');
         $init = '20:00';
         $input = Input::all();
         if(isset($input['status']))

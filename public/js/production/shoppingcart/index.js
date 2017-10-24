@@ -692,6 +692,8 @@ var UpdateShoppingcartFunctions = function () {
                 break;
             case 'remove':
                 break;
+            case 'printed':
+                break;
             case 'regular':
                 break;
         }
