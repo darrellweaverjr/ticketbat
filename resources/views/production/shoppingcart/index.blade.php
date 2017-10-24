@@ -21,7 +21,7 @@
             <h4 title="Items in the shopping cart.">
                 <i class="fa fa-list icon-list"></i> Shoppingcart 
                 <div class="actions pull-right">
-                    <label>You currently have <b>{{$cart['quantity']}}</b> @if($cart['quantity']>1) items @else item @endif</label>
+                    <label>You currently have <b>{{count($cart['items'])}}</b> @if(count($cart['items'])>1) items @else item @endif</label>
                 </div>
             </h4>  
             <p class="margin-top-20">
@@ -86,7 +86,7 @@
     <div class="row fixed-panel">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
-            <h4 title="Restrictions for the event(s).">
+            <h4 title="Printed options for selected tickets.">
                 <i class="fa fa-print icon-printer"></i> Ticket options
             </h4>  
             @if( $cart['printed_tickets']['details'] > 0 )
