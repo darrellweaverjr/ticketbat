@@ -202,8 +202,9 @@ class Shoppingcart extends Model
             $printed_tickets['select'] = Session::get('printed_tickets',0);
             $total += $printed_tickets['select'];
             $printed_tickets['details'] = count($items)-count($printed_tickets['shows']);
+            $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
             //return
-            return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,
+            return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
                     'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
            

@@ -39,8 +39,6 @@ class ShoppingcartController extends Controller
                 $cart = $this->items();
                 if( !empty($cart) )
                 {
-                    //seller
-                    $cart['seller'] = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
                     //default email
                     $cart['email'] = (Auth::check())? Auth::user()->email : ((!empty($email_guest))? $email_guest : '');
                     //default enum

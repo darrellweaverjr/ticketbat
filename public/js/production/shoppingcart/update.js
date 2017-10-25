@@ -90,6 +90,7 @@ var UpdateShoppingcartFunctions = function () {
             $('#form_card input[name="card"]').data('amex',cart.amex_only);
             $('#form_cash input[name="pending"]').data('pending',cart.total);
             $('#form_cash input[name="pending"]').val(cart.total*-1);
+            CashFunctions.calculate();
             //update items in list
             var items_qty = (cart.items.length>1)? 'items' : 'item';
             $('#count_items').html('You currently have <b>'+cart.items.length+'</b> '+items_qty);
