@@ -13,7 +13,7 @@
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com; 
                           img-src * data:'unsafe-inline' 'self' blob: http://admindev.ticketbat.com {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
-                          style-src 'self' http://fonts.googleapis.com 'unsafe-inline';
+                          style-src 'self' {{env('IMAGE_URL_AMAZON_SERVER')}} http://fonts.googleapis.com 'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
                           child-src 'none';
                           script-src 'self' https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com;
