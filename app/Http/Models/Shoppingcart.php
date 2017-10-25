@@ -392,6 +392,32 @@ class Shoppingcart extends Model
             $item = Shoppingcart::where('id','=',$shoppingcart_id)->where('session_id','=',$s_token)->first();
             if($item)
             {
+                //check if the share tickets has more than new value
+                $new_gifts = [];
+                if($item->number_of_items > $qty && !empty($item->gifts) && Util::isJSON($item->gifts))
+                {
+                    $new_qty = $qty;
+                    $gifts = json_decode($item->gifts,true);
+                    foreach ($gifts as $g)
+                    {
+                        if($new_qty>0)
+                        {
+                            if($g['qty']<=$new_qty)
+                            {
+                                $new_gifts[] = $g;
+                                $new_qty -= $g['qty'];
+                            }
+                            else
+                            {
+                                $g['qty']=$new_qty;
+                                $new_gifts[] = $g;
+                                $new_qty=0;
+                            }
+                        }
+                    }
+                }
+                //asign new qty
+                $item->gifts = (count($new_gifts))? json_encode($new_gifts,true) : null;
                 $item->number_of_items = $qty;
                 $item->total_cost = Util::round(($item->cost_per_product+$item->ticket->processing_fee)*$item->number_of_items);
                 $item->save();

@@ -253,11 +253,20 @@ class ShoppingcartController extends Controller
     {
         try {
             $info = Input::all();
-            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            if(!empty($info['id']) && !empty($info['qty']))
             {
-                
+                $s_token = Util::s_token(false,true);
+                $success = Shoppingcart::update_item($info['id'], $info['qty'], $s_token);
+                if($success['success'])
+                {
+                    $cart = $this->items();
+                    if( !empty($cart) )
+                        return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
+                    return ['success'=>false, 'msg'=>'There are no items in the shopping cart!']; 
+                }
+                return $success;
             }
-            return ['success'=>false, 'msg'=>'Invalid option!'];
+            return ['success'=>false, 'msg'=>'You must enter a valid quantity for the item!'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
@@ -270,11 +279,21 @@ class ShoppingcartController extends Controller
     {
         try {
             $info = Input::all();
-            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            if(!empty($info['id']))
             {
-                
+                //find and remove item
+                $s_token = Util::s_token(false,true);
+                $success = Shoppingcart::remove_item($info['id'], $s_token);
+                if($success['success'])
+                {
+                    $cart = $this->items();
+                    if( !empty($cart) )
+                        return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
+                    return ['success'=>true, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
+                }
+                return $success;
             }
-            return ['success'=>false, 'msg'=>'Invalid option!'];
+            return ['success'=>false, 'msg'=>'You must select a valid item to remove!'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
