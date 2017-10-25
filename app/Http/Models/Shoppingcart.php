@@ -129,7 +129,7 @@ class Shoppingcart extends Model
                     }
                     //get restrictions
                     if($i->restrictions!='None')
-                        $restrictions[$i->name] = $i->restrictions;
+                        $restrictions[$i->name] = preg_replace('/[^0-9]/','',$i->restrictions);
                     //calculate totals for availables items only
                     if(!$i->unavailable)
                     {
