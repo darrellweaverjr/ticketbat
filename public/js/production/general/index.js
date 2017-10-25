@@ -173,7 +173,6 @@ var Countdown = function () {
         {
             swal({
                 title: "You have run out of time for checkout.<br>Would you like to continue?",
-                //text: "You have run out of time for checkout, would you like to continue?",
                 html: true,
                 type: "warning",
                 showCancelButton: true,
@@ -186,15 +185,23 @@ var Countdown = function () {
               function(isConfirm) {
                 if (isConfirm) 
                 {
-                    swal({
-                        title: "Information",
-                        text: "The countdown has been reset.<br>You have "+$('#timerClock').data('countdown')+" minutes more to make the payment.",
-                        html:true,
-                        type: "info",
-                        timer: 3000,
-                        showConfirmButton: false
-                    },function(){
-                        window.location.href = '/production/shoppingcart';
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/production/shoppingcart/countdown', 
+                        data: {status:1}, 
+                        success: function(data) {
+                            swal({
+                                title: "Information",
+                                text: "The countdown has been reset.<br>You have more time to make the payment.",
+                                html:true,
+                                type: "info",
+                                timer: 3000,
+                                showConfirmButton: false
+                            },function(){
+                                window.location.href = '/production/shoppingcart';
+                            });
+                        }
                     });
                 }
                 else

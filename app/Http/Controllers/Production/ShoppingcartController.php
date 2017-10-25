@@ -140,6 +140,7 @@ class ShoppingcartController extends Controller
             switch ($input['status'])
             {
                 case 1:
+                    Session::forget('countdown');
                     Session::put('countdown', $init);
                     return ['success'=>true,'init'=>$init];
                     break;
