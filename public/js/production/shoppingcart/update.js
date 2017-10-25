@@ -2,14 +2,16 @@ var UpdateShoppingcartFunctions = function () {
     
     var initFunctions = function (cart) {
         
+        ShoppingcartQtyItems.init();
         if(cart && cart.success && cart.items.length>0)
         {
             //update totals
-            $('#cost_subtotal').val('$ '+cart.retail_price);
-            $('#cost_fees').val('$ '+cart.processing_fee);
-            $('#cost_savings').val('$ '+cart.savings);
-            $('#cost_printed').val('$ '+cart.printed);
-            $('#cost_total').val('$ '+cart.total);
+            $('#cost_subtotal').html('$ '+parseFloat(cart.retail_price).toFixed(2));
+            $('#cost_fees').html('$ '+parseFloat(cart.processing_fee).toFixed(2));
+            $('#cost_savings').html('$ '+parseFloat(cart.savings).toFixed(2));
+            $('#cost_printed').html('$ '+parseFloat(cart.printed).toFixed(2));
+            $('#cost_total').html('$ '+parseFloat(cart.total).toFixed(2));
+            $('#cost_total').data('total',parseFloat(cart.total).toFixed(2));
             //hide empty savings
             if(cart.savings>0)
                 $('#cost_savings').closest('h4').removeClass('hidden');
@@ -76,6 +78,8 @@ var UpdateShoppingcartFunctions = function () {
             $('#form_cash input[name="pending"]').data('pending',cart.total);
             $('#form_cash input[name="pending"]').val(cart.total*-1);
             //update items in list
+            var items_qty = (cart.items.length>1)? 'items' : 'item';
+            $('#count_items').html('You currently have <b>'+cart.items.length+'</b> '+items_qty);
             $.each(cart.items,function(k, v) {
                 var row = $('#tb_items tr[id="'+v.id+'"]');
                 row.data('qty',v.number_of_items);
@@ -83,10 +87,10 @@ var UpdateShoppingcartFunctions = function () {
                 if(v.available_qty<0)
                     row.find('td:nth-child(2) input').prop('max',1000);
                 else
-                    row.find('td:nth-child(2) input').prop('max',v.available_qty));
-                row.find('td:nth-child(3)').html('$'+((v.cost_per_product).toFixed(2)));
-                row.find('td:nth-child(4)').html('$'+((v.cost_per_product*v.number_of_items).toFixed(2)));
-                row.find('td:nth-child(5)').html('$'+((v.processing_fee).toFixed(2)));
+                    row.find('td:nth-child(2) input').prop('max',v.available_qty);
+                row.find('td:nth-child(3)').html('$'+((parseFloat(v.cost_per_product)).toFixed(2)));
+                row.find('td:nth-child(4)').html('$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2)));
+                row.find('td:nth-child(5)').html('$'+((parseFloat(v.processing_fee)).toFixed(2)));
             });
         }
         else

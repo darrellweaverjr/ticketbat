@@ -73,6 +73,7 @@ var FunctionsManaged = function () {
                             type: "success",
                             showConfirmButton: false
                         });
+                        Countdown.reset();
                     }
                     else{
                         swal({

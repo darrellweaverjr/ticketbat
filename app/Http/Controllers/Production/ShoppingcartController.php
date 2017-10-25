@@ -335,7 +335,7 @@ class ShoppingcartController extends Controller
                 Session::put('printed_tickets', $info['option']);
                 $cart = $this->items();
                 if( !empty($cart) )
-                    return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
+                    return ['success'=>true, 'cart'=>$cart];
                 return ['success'=>false, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
             }
             return ['success'=>false, 'msg'=>'You must select a valid option!'];

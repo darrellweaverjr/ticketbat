@@ -200,7 +200,7 @@ class Shoppingcart extends Model
             }
             //printed tickets
             $printed_tickets['select'] = Session::get('printed_tickets',0);
-            $total -= $printed_tickets['select'];
+            $total += $printed_tickets['select'];
             $printed_tickets['details'] = count($items)-count($printed_tickets['shows']);
             //return
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,

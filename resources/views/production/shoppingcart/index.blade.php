@@ -21,7 +21,7 @@
             <h4 title="Items in the shopping cart.">
                 <i class="fa fa-list icon-list"></i> Shoppingcart 
                 <div class="actions pull-right">
-                    <label>You currently have <b>{{count($cart['items'])}}</b> @if(count($cart['items'])>1) items @else item @endif</label>
+                    <label id="count_items">You currently have <b>{{count($cart['items'])}}</b> @if(count($cart['items'])>1) items @else item @endif</label>
                 </div>
             </h4>  
             <p class="margin-top-20">
