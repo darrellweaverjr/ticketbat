@@ -286,12 +286,39 @@ class ShoppingcartController extends Controller
     public function share()
     {
         try {
-            $info = Input::all();
-            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            //init
+            $input = Input::all(); 
+            if(isset($input) && !empty($input['id']))
             {
-                
+                $shoppingcart = Shoppingcart::find($input['id']);
+                if($shoppingcart)
+                {
+                    $tickets = [];
+                    if(!empty($shoppingcart->gifts) && Util::isJSON($shoppingcart->gifts))
+                        $tickets = json_decode($shoppingcart->gifts,true);
+                    return ['success'=>true,'tickets'=>$tickets];
+                }
+                return ['success'=>false,'msg'=> 'You cannot share tickets for this item.'];
             }
-            return ['success'=>false, 'msg'=>'Invalid option!'];
+            else
+            {
+                $shared = [];
+                if(!empty($input['email']) && !empty($input['first_name']) && !empty($input['last_name']) && !empty($input['qty']))
+                {
+                    $indexes = array_keys($input['email']);
+                    foreach ($indexes as $id=>$i)
+                        $shared[] = ['id'=>$id+1,'first_name'=>$input['first_name'][$i],'last_name'=>$input['last_name'][$i],'email'=>$input['email'][$i],
+                                     'comment'=>(!empty($input['comment'][$i]))? $input['comment'][$i] : '','qty'=>$input['qty'][$i]];
+                }
+                $shoppingcart = Shoppingcart::find($input['purchases_id']);
+                if($shoppingcart)
+                {
+                    $shoppingcart->gifts = json_encode($shared,true);
+                    $shoppingcart->save();
+                    return ['success'=>true,'msg'=> 'Tickets shared successfully!'];
+                } 
+                return ['success'=>false,'msg'=> 'There was an error sharing the tickets.<br>Please contact us.'];
+            }
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }

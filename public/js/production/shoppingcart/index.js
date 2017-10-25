@@ -15,7 +15,7 @@ var ShareFunctions = function () {
                     if(data.success) 
                     {
                         $('#form_share_tickets input[name="purchases_id"]').val(shoppingcart_id);
-                        ShareTicketsFunctions.load(data,qty); 
+                        ShareTicketsFunctions.load(data,qty,1); 
                         $('#modal_share_tickets').modal('show');
                     }
                     else{
