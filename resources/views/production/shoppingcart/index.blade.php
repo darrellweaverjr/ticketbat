@@ -48,29 +48,36 @@
                                 On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}}
                             </td>
                             <td>
-                                <input type="number" data-qty="{{$i->number_of_items}}" value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
+                                <input type="number" data-id="{{$i->id}}" data-qty="{{$i->number_of_items}}" value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
                             </td>
                             <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>
                             <td style="text-align:right">${{number_format($i->processing_fee,2)}}</td>
                             <td><center><button type="button" data-id="{{$i->id}}" data-qty="{{$i->number_of_items}}" class="btn btn-info"><i class="fa fa-share icon-share"></i></button></center></td>
-                            <td><center><button type="button" class="btn btn-danger"><i class="fa fa-remove icon-ban"></i></button></center></td>
+                            <td><center><button type="button" data-id="{{$i->id}}" class="btn btn-danger"><i class="fa fa-remove icon-ban"></i></button></center></td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table><hr>
             </div>
             <div class="row portlet-body light portlet-fit" style="margin-top:-30px;padding:10px">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="coupon_code" placeholder="Write here your code" name="coupon">
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-primary" id="add_coupon_code">Add coupon</button>
-                        </span>
-                    </div>
+                <div class="col-md-5">
+                     <!-- BEGIN FORM-->
+                    <form method="post" id="form_coupon" class="form-horizontal">
+                        <div class="alert alert-danger display-hide">
+                            Incorrect/Invalid Coupon: That coupon is not valid for you items.
+                        </div>
+                        <div id="coupon_msg" class="alert alert-success display-hide"></div>
+                        <div class="input-group show-error">
+                            <input type="text" class="form-control" placeholder="Write here your code" name="coupon">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" id="add_coupon_code">Add coupon</button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
                 <div class="col-md-2"></div>
-                <div class="col-md-6 text-right" style="padding-right:20px;">
+                <div class="col-md-5 text-right" style="padding-right:20px;">
                     <h4><label class="label label-default bold">Subtotal: </label><label id="cost_subtotal" class="font-blue-madison">$ {{number_format($cart['retail_price'],2)}}</label></h4>
                     <h4><label class="label label-info bold">Processing fee: </label><label id="cost_fees" class="font-blue-madison">$ {{number_format($cart['processing_fee'],2)}}</label></h4>
                     <h4 @if(empty($cart['savings'])) class="hidden" @endif><label class="label label-success bold">Savings: </label><label id="cost_savings" class="font-blue-madison">$ {{number_format($cart['savings'],2)}}</label></h4>

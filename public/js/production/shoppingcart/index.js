@@ -50,15 +50,101 @@ var PurchaseFunctions = function () {
     var initFunctions = function () {
         //remove item
         $('#tb_items tr > td:last-child button').on('click', function(ev) {
-            alert('removed');
+            var id = $(this).data('id');
+            var row = $(this).closest('tr');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/production/shoppingcart/update', 
+                data: { id: id, removed: 1 }, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        row.remove();
+                        UpdateShoppingcartFunctions.init( data.cart );
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to remove the item. Please, try later",
+                        html: true,
+                        type: "error",
+                        showConfirmButton: true
+                    });
+                }
+            });
         });
         //update qty items
         $('#tb_items tr > td:nth-child(2) input').on('change', function(ev) {
-            alert('changed');
+            var id = $(this).data('id');
+            var qty = parseInt($(this).val());
+            var qty_ = parseInt($(this).data('qty'));
+            var min = parseInt($(this).attr('min'));
+            var max = parseInt($(this).attr('max'));
+            if(qty<min || qty>max)
+                $(this).val(qty_);
+            else if(qty != qty_)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/production/shoppingcart/update', 
+                    data: { id: id, qty: qty }, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            UpdateShoppingcartFunctions.init( data.cart );
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to change the quantity of tickets. Please, try later",
+                            html: true,
+                            type: "error",
+                            showConfirmButton: true
+                        });
+                    }
+                }); 
+            }
         });
-        //update coupon
+        //add coupon
         $('#add_coupon_code').on('click', function(ev) {
-            alert('coupon');
+            if( $('#form_coupon').valid() )
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/production/shoppingcart/update', 
+                    data: $('#form_coupon').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#coupon_msg').html(data.msg);
+                            $('.alert-success', $('#form_coupon') ).show();
+                            UpdateShoppingcartFunctions.init( data.cart );
+                        }
+                        else
+                        {
+                            $('#coupon_msg').html(data.msg);
+                            var validator = $( "#form_coupon" ).validate();
+                            validator.showErrors({
+                              "coupon": "Incorrect/Invalid Coupon: That coupon is not valid for you items."
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to load the coupon. Please, try later",
+                            html: true,
+                            type: "error",
+                            showConfirmButton: true
+                        });
+                    }
+                }); 
+            }
         });
         //on change country select
         $('select[name="country"]').on('change', function(ev) {
@@ -680,29 +766,73 @@ var CashValidation = function () {
     };
 }();
 //*****************************************************************************************
+var CouponValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation: 
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_coupon');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    coupon: {
+                        minlength: 2,
+                        maxlength: 50,
+                        required: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
 var UpdateShoppingcartFunctions = function () {
     
-    var initFunctions = function (event, action, value) {
+    var initFunctions = function (cart) {
         
-        switch(event)
-        {
-            case 'coupon':
-                break;
-            case 'quantity':
-                break;
-            case 'remove':
-                break;
-            case 'printed':
-                break;
-            case 'regular':
-                break;
-        }
+        
         
     }
     return {
         //main function to initiate the module
-        init: function (event, action, value) {
-            initFunctions(event, action, value);        
+        init: function (cart) {
+            initFunctions(cart);        
         }
     };
 }();
@@ -716,5 +846,6 @@ jQuery(document).ready(function() {
     CardValidation.init();
     SwipeValidation.init();
     CashValidation.init();
+    CouponValidation.init();
     SubmitFunctions.init();
 });
