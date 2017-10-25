@@ -5,11 +5,37 @@ var ShareFunctions = function () {
         //load share tickets
         $('#tb_items tr > td:nth-child(6) button').on('click', function(ev) {
             var qty = parseInt($(this).data('qty'));   
-            var idx = $(this).data('id');
-            //load values for x form
-            var data;            
-            //ShareTicketsFunctions.load(data,qty); 
-            $('#modal_share_tickets').modal('show');
+            var shoppingcart_id = $(this).data('id');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/production/shoppingcart/share', 
+                data: { id: shoppingcart_id }, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#form_share_tickets input[name="purchases_id"]').val(shoppingcart_id);
+                        ShareTicketsFunctions.load(data,qty); 
+                        $('#modal_share_tickets').modal('show');
+                    }
+                    else{
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to load the shared tickets.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            }); 
         });
         
         //function save
@@ -24,16 +50,46 @@ var ShareFunctions = function () {
                     type: "info",
                     showConfirmButton: false
                 });
-                swal({
-                    title: "<span style='color:green;'>Saved!</span>",
-                    //text: data.msg,
-                    text: 'tickets saved', 
-                    html: true,
-                    timer: 1500,
-                    type: "success",
-                    showConfirmButton: false
-                });
-            }  
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/production/shoppingcart/share', 
+                    data: $('#form_share_tickets').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_share_tickets').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to create the user.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_share_tickets').modal('show');
+                        });
+                    }
+                }); 
+            }
         });
         
     }
