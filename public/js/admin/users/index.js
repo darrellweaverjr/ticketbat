@@ -324,9 +324,15 @@ var TableDatatablesManaged = function () {
         });       
         //open purchases pagen on click to see client's purchases
         $('#btn_model_purchases').on('click', function(ev) {
+            swal({
+                title: "Loading user's purchases",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            window.open('/admin/purchases?user='+id+'&soldtime_start_date=&soldtime_end_date=','_blank');
+            window.open('/admin/purchases?user='+id+'&soldtime_start_date=&soldtime_end_date=','_self');
         });
         //init functions
         check_models();   
