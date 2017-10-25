@@ -55,8 +55,8 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/update', 
-                data: { id: id, removed: 1 }, 
+                url: '/production/shoppingcart/remove', 
+                data: { id: id }, 
                 success: function(data) {
                     if(data.success) 
                     {
@@ -116,7 +116,7 @@ var PurchaseFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/shoppingcart/update', 
+                    url: '/production/shoppingcart/coupon', 
                     data: $('#form_coupon').serializeArray(), 
                     success: function(data) {
                         if(data.success) 

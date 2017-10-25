@@ -122,6 +122,10 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::match(['get','post'], 'user/consignments', 'UserConsignmentController@index')->middleware('productioncheck');
     //shoppingcart
     Route::post('shoppingcart/add', 'ShoppingcartController@add');
+    Route::post('shoppingcart/update', 'ShoppingcartController@update');
+    Route::post('shoppingcart/remove', 'ShoppingcartController@remove');
+    Route::post('shoppingcart/coupon', 'ShoppingcartController@coupon');
+    Route::post('shoppingcart/share', 'ShoppingcartController@share');
     Route::post('shoppingcart/count', 'ShoppingcartController@count');
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
     Route::post('shoppingcart/process', 'ShoppingcartController@process');

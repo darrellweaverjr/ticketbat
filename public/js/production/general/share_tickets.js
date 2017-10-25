@@ -1,16 +1,17 @@
 var ShareTicketsFunctions = function () {   
         
-    var loadFunctions = function (data,qty) {
+    var loadFunctions = function (data,qty,cart) {
         //fill out table
         var availables = qty;
         $('#tb_shared_tickets_body').empty();
         $.each(data.tickets,function(k, v) {
-            var qty_t = v.tickets.split(','); availables -= qty_t.length;
+            var qty_t = (cart>0)? v.qty : v.tickets.split(',').length; 
+            availables -= qty_t;
             var row_first_name = '<td><input type="text" name="first_name['+v.id+']" class="form-control" value="'+v.first_name+'"></td>';
             var row_last_name = '<td><input type="text" name="last_name['+v.id+']" class="form-control" value="'+v.last_name+'"></td>';
             var row_email = '<td><input type="text" name="email['+v.id+']" class="form-control" value="'+v.email+'"></td>';
             var row_qty = '<td><select class="form-control" name="qty['+v.id+']">';
-            for (i = qty_t.length; i > 0; i--) 
+            for (i = qty_t; i > 0; i--) 
                 row_qty += '<option value="'+i+'">'+i+'</option>';
             row_qty += '</select></td>';
             var row_comment = '<td><input type="text" name="comment['+v.id+']" class="form-control" value="'+v.comment+'"></td>';
@@ -139,8 +140,8 @@ var ShareTicketsFunctions = function () {
         init: function () {
             initFunctions();        
         },
-        load: function (data,qty) {
-            loadFunctions(data,qty);        
+        load: function (data,qty,cart=0) {
+            loadFunctions(data,qty,cart);        
         },
         check: function () {
             return checkFunctions();        

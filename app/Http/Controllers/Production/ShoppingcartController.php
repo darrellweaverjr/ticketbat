@@ -54,7 +54,7 @@ class ShoppingcartController extends Controller
                     return view('production.shoppingcart.empty');
             }
         } catch (Exception $ex) {
-            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
     
@@ -181,7 +181,7 @@ class ShoppingcartController extends Controller
             //init
             $input = Input::all();
         } catch (Exception $ex) {
-            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
       
@@ -213,19 +213,86 @@ class ShoppingcartController extends Controller
                     if(count($pass))
                     {
                         if(empty($info['password']))
-                            return Util::json(['success'=>false, 'msg'=>'You must enter a password for the event!']);
+                            return ['success'=>false, 'msg'=>'You must enter a password for the event!'];
                         if(!in_array($info['password'], $pass))
-                            return Util::json(['success'=>false, 'msg'=>'The password is not valid for the event!']);   
+                            return ['success'=>false, 'msg'=>'The password is not valid for the event!'];   
                     }
                 }
                 //continue adding
                 $s_token = Util::s_token(false, true);
-                $success = Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $s_token);
-                return Util::json($success);
+                return Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $s_token);
             }
-            return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
+            return ['success'=>false, 'msg'=>'You must fill out correctly the form!'];
         } catch (Exception $ex) {
-            return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }  
+    
+    /*
+     * update items in the cart
+     */
+    public function update()
+    {
+        try {
+            $info = Input::all();
+            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            {
+                
+            }
+            return ['success'=>false, 'msg'=>'Invalid option!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }  
+    
+    /*
+     * remove items in the cart
+     */
+    public function remove()
+    {
+        try {
+            $info = Input::all();
+            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            {
+                
+            }
+            return ['success'=>false, 'msg'=>'Invalid option!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }  
+    
+    /*
+     * add coupon in the cart
+     */
+    public function coupon()
+    {
+        try {
+            $info = Input::all();
+            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            {
+                
+            }
+            return ['success'=>false, 'msg'=>'Invalid option!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }  
+    
+    /*
+     * share tickets in the cart
+     */
+    public function share()
+    {
+        try {
+            $info = Input::all();
+            if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['qty']))
+            {
+                
+            }
+            return ['success'=>false, 'msg'=>'Invalid option!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }  
     
