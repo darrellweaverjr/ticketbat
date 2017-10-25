@@ -103,6 +103,12 @@ var TableDatatablesManaged = function () {
         //function to change status to purchase
         function change_status(id,status)
         {
+            swal({
+                title: "Changing purchase's status",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -161,7 +167,9 @@ var TableDatatablesManaged = function () {
                   function(isConfirm) {
                     if (isConfirm) {
                         if(id)
+                        {
                             change_status(id,status);
+                        }
                         else
                         {
                             swal({
