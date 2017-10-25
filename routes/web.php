@@ -129,8 +129,9 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::post('shoppingcart/printed', 'ShoppingcartController@printed');
     Route::post('shoppingcart/count', 'ShoppingcartController@count');
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
-    Route::post('shoppingcart/process', 'ShoppingcartController@process');
     Route::match(['get','post'], 'shoppingcart', 'ShoppingcartController@index');
+    //purchase
+    Route::post('purchase/buy', 'PurchaseController@buy');
     //home
     Route::get('/', function () { return redirect()->route('index'); });
     Route::get('/events', function () { return redirect()->route('index'); });

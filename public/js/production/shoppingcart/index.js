@@ -288,8 +288,11 @@ var SubmitFunctions = function () {
         $('#btn_process').click( function(){
             var form_id = $('#tabs_payment').find('.tab-pane.active').find('form').attr('id');
             if( $('#'+form_id).valid() )
+            {
+                $('#btn_process').addClass('hidden');
+                $('#btn_loading').removeClass('hidden');
                 //$('#'+form_id)[0].submit();
-                alert('Form submited');
+            }  
         });
         
     }

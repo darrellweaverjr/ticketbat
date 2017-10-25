@@ -164,10 +164,11 @@
                         <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">
                             <div class="row"> 
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_skip" class="form-horizontal" action="/production/shoppingcart/process">
+                                <form method="post" id="form_skip" class="form-horizontal" action="/production/purchase/buy">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
+                                    <input type="hidden" name="method" value="skip">
                                     <input type="hidden" name="newsletter" value="1">
                                     <div class="share_tickets_subform hidden"></div>
                                     <div class="form-group">
@@ -205,11 +206,12 @@
                                     <img id="icon-ax" src="{{config('app.theme')}}img/card/cc-icon-american-express.png">
                                 </div>
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_card" class="form-horizontal" action="/production/shoppingcart/process">
+                                <form method="post" id="form_card" class="form-horizontal" action="/production/purchase/buy">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
                                     <div class="alert alert-warning display-hide" id="div_show_errors"></div>
+                                    <input type="hidden" name="method" value="card">
                                     <input type="hidden" name="newsletter" value="1">
                                     <div class="share_tickets_subform hidden"></div>
                                     <div class="form-group">
@@ -338,10 +340,11 @@
                         <div class="tab-pane fade @if(!($cart['total']>0)) hidden @endif" id="tab_swipe">
                             <div class="row">
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_swipe" class="form-horizontal" action="/production/shoppingcart/process">
+                                <form method="post" id="form_swipe" class="form-horizontal" action="/production/purchase/buy">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
+                                    <input type="hidden" name="method" value="swipe">
                                     <input type="hidden" name="newsletter" value="1">
                                     <div class="share_tickets_subform hidden"></div>
                                     <div class="form-group">
@@ -385,7 +388,7 @@
                         <div class="tab-pane fade @if(!($cart['total']>0)) hidden @endif" id="tab_cash">
                             <div class="row">
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_cash" class="form-horizontal" action="/production/shoppingcart/process">
+                                <form method="post" id="form_cash" class="form-horizontal" action="/production/purchase/buy">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some errors. Please check below. 
                                     </div>
@@ -454,6 +457,7 @@
                                             <input type="number" class="form-control" style="color:blue;font-size:20px;font-weight:bold" value="0.00" name="subtotal" readOnly="true">
                                         </div>
                                     </div>
+                                    <input type="hidden" name="method" value="cash">
                                     <input type="hidden" name="newsletter" value="1">
                                     <div class="share_tickets_subform hidden"></div>
                                     <div class="form-group">
@@ -490,7 +494,10 @@
                             <label class="mt-checkbox"><input type="checkbox" checked="true" id="accept_newsletter" value="1"/>
                                 SIGN UP FOR OUR NEWSLETTER
                             <span></span></label><br>
-                            <center><button type="button" id="btn_process" disabled="true" class="btn btn-primary btn-lg uppercase">Process payment <i class="fa fa-arrow-circle-right"></i></button></center>
+                            <center>
+                                <button type="button" id="btn_process" disabled="true" class="btn btn-primary btn-lg uppercase">Process payment <i class="fa fa-arrow-circle-right"></i></button>
+                                <button type="button" id="btn_loading" disabled="true" class="btn btn-primary btn-lg uppercase hidden">Please wait. Processing your items <i class="fa fa-refresh"></i></button>
+                            </center>
                         </div>
                     </div>
                 </div>
