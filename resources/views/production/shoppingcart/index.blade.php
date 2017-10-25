@@ -19,13 +19,16 @@
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Items in the shopping cart.">
-                <i class="fa fa-list icon-list"></i> Shoppingcart 
+                <i class="fa fa-list icon-list"></i> Shopping cart 
                 <div class="actions pull-right">
                     <label id="count_items">You currently have <b>{{count($cart['items'])}}</b> @if(count($cart['items'])>1) items @else item @endif</label>
                 </div>
             </h4>  
             <p class="margin-top-20">
-                <center><b class="label label-sm sbold label-info">If you are attending this show with other people and would like to email them their ticket, please click on "Share Tickets"</b></center>
+            <center><b style="color:#578ebe">
+                    If you are attending this show with other people and would like to email them their ticket, please click on the
+                    <button type="button" class="btn btn-info"><i class="fa fa-share icon-share"></i></button> button.
+            </b></center>
             </p>
             <div class="portlet-body light portlet-fit" style="margin-top:-30px;padding:10px">
                 <table class="table table-hover table-responsive table-condensed table-header-fixed" id="tb_items">
@@ -126,7 +129,7 @@
             </h4>  
             <p class="margin-top-20" id="restrictions_panel">
                 @foreach($cart['restrictions'] as $show=>$age)
-                <b style="color:#32c5d2">{{$show}}</b> requires to be {{$age}} years of age or older to attend the event.<br>
+                <b style="color:#32c5d2">{{$show}}</b> requires attendees to be {{$age}} years of age or older.<br>
                 @endforeach
             </p>
             <div class="portlet-body light portlet-fit" style="margin-top:-30px;padding:10px">
@@ -196,10 +199,10 @@
                         <div class="tab-pane fade active in @if(!($cart['total']>0)) hidden @endif" id="tab_card">
                             <div class="row">
                                 <div class="form-group text-center">
-                                    <img src="{{config('app.theme')}}img/card/cc-icon-mastercard.png">
-                                    <img src="{{config('app.theme')}}img/card/cc-icon-visa.png">
-                                    <img src="{{config('app.theme')}}img/card/cc-icon-discover.png">
-                                    <img src="{{config('app.theme')}}img/card/cc-icon-american-express.png">
+                                    <img id="icon-mc" class="@if($cart['amex_only']>0) hidden @endif" src="{{config('app.theme')}}img/card/cc-icon-mastercard.png">
+                                    <img id="icon-vs" class="@if($cart['amex_only']>0) hidden @endif" src="{{config('app.theme')}}img/card/cc-icon-visa.png">
+                                    <img id="icon-dc" class="@if($cart['amex_only']>0) hidden @endif" src="{{config('app.theme')}}img/card/cc-icon-discover.png">
+                                    <img id="icon-ax" src="{{config('app.theme')}}img/card/cc-icon-american-express.png">
                                 </div>
                                 <!-- BEGIN FORM-->
                                 <form method="post" id="form_card" class="form-horizontal" action="/production/shoppingcart/process">

@@ -379,7 +379,7 @@ class ShoppingcartController extends Controller
                 {
                     $shoppingcart->gifts = json_encode($shared,true);
                     $shoppingcart->save();
-                    return ['success'=>true,'msg'=> 'Tickets shared successfully!'];
+                    return ['success'=>true,'msg'=> 'After your purchase is complete these tickets will be shared.'];
                 } 
                 return ['success'=>false,'msg'=> 'There was an error sharing the tickets.<br>Please contact us.'];
             }

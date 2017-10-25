@@ -27,7 +27,7 @@ var UpdateShoppingcartFunctions = function () {
             {
                 $('#restrictions_panel').empty();
                 $.each(data.restrictions,function(k, v) {
-                    $('#restrictions_panel').append('<b style="color:#32c5d2">'+k+'</b> requires to be '+v+' years of age or older to attend the event.<br>');
+                    $('#restrictions_panel').append('<b style="color:#32c5d2">'+k+'</b> requires attendees to be '+v+' years of age or older.<br>');
                 });
             }
             else
@@ -72,6 +72,19 @@ var UpdateShoppingcartFunctions = function () {
                 $('#tab_card').addClass('hidden');
                 $('#tab_swipe').addClass('hidden');
                 $('#tab_cash').addClass('hidden');
+            }
+            //update icons for card
+            if(cart.amex_only>0)
+            {
+                $('#icon-mc').addClass('hidden');
+                $('#icon-vs').addClass('hidden');
+                $('#icon-dc').addClass('hidden');
+            }
+            else
+            {
+                $('#icon-mc').removeClass('hidden');
+                $('#icon-vs').removeClass('hidden');
+                $('#icon-dc').removeClass('hidden');
             }
             //update others
             $('#form_card input[name="card"]').data('amex',cart.amex_only);
