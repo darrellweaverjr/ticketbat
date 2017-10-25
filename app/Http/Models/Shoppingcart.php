@@ -224,7 +224,7 @@ class Shoppingcart extends Model
             {
                 $response = Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>null]);
                 if($response || $response >= 0)
-                    return ['success'=>true];
+                    return ['success'=>true, 'msg'=>'Coupon removed successfully!'];
                 return ['success'=>false,'msg'=>'There was an error trying to remove the coupon.'];
             } 
             else
@@ -237,7 +237,7 @@ class Shoppingcart extends Model
                             ->select('shoppingcart.id')
                             ->where('discounts.code','=',$code)->where('shoppingcart.session_id','=',$session_id)
                             ->whereRaw('DATE(show_times.show_time) BETWEEN DATE(discounts.start_date) AND DATE(discounts.end_date)')
-                            ->where('discounts.coupon_type','=','Normal')
+                            ->whereIn('discounts.coupon_type', ['Normal','Admin'])
                             ->where(function($query) use ($current)
                             {
                                 $query->whereNull('discounts.effective_start_date')
@@ -254,11 +254,15 @@ class Shoppingcart extends Model
                     $coupon = DB::table('discounts')
                             ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
                             ->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
-                            ->select(DB::raw('discounts.id, discounts.code, discounts.description, discounts.start_num,
+                            ->select(DB::raw('discounts.id, discounts.code, discounts.description, discounts.start_num, discounts.coupon_type,
                                               discounts.discount_type, discounts.discount_scope, discounts.end_num'))
                             ->where('discounts.code',$code)->groupBy('discounts.id')->first();
                     if($coupon)
                     {
+                        //check if coupon is for admin only
+                        if($coupon->coupon_type=='Admin' && (!Auth::check() || Auth::user()->user_type_id!=1))
+                            return ['success'=>false, 'msg'=>'You are now allowed to use this coupon.'];
+                        //continue loading coupon
                         $coupon->tickets = DB::table('discount_tickets')
                                 ->join('discounts', 'discount_tickets.discount_id', '=' ,'discounts.id')
                                 ->select(DB::raw('discount_tickets.ticket_id, 
@@ -268,8 +272,8 @@ class Shoppingcart extends Model
                                 ->where('discounts.id',$coupon->id)->get();
                         $response = Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>json_encode($coupon,true)]);
                         if($response || $response >= 0)
-                            return ['success'=>true];
-                        return ['success'=>false,'msg'=>'There was an error trying to add the coupon.'];
+                            return ['success'=>true, 'msg'=> Discount::find($coupon->id)->full_description() ];
+                        return ['success'=>false, 'msg'=>'There was an error trying to add the coupon.'];
                     }
                     return ['success'=>false, 'msg'=>'That coupon is not valid!'];
                 }

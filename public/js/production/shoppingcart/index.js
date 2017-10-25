@@ -177,17 +177,15 @@ var PurchaseFunctions = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#coupon_msg').html(data.msg);
-                            $('.alert-success', $('#form_coupon') ).show();
+                            $('.alert-danger', $('#form_coupon') ).hide();
+                            $('.alert-success', $('#form_coupon') ).html('Coupon accepted: '+data.msg).show();
                             UpdateShoppingcartFunctions.init( data.cart );
                         }
                         else
                         {
-                            $('#coupon_msg').html(data.msg);
-                            var validator = $( "#form_coupon" ).validate();
-                            validator.showErrors({
-                              "coupon": "Incorrect/Invalid Coupon: That coupon is not valid for you items."
-                            });
+                            var error = 'Incorrect/Invalid Coupon: That coupon is not valid for you items.';
+                            $('.alert-danger', $('#form_coupon') ).html(data.msg).show();
+                            $('.alert-success', $('#form_coupon') ).hide();
                         }
                     },
                     error: function(){
@@ -223,6 +221,46 @@ var PurchaseFunctions = function () {
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to get the regions for that country. Please, select the first one",
+                        html: true,
+                        type: "error",
+                        showConfirmButton: true
+                    });
+                }
+            }); 
+        });
+        //on change ticket printed options select
+        $('select[name="printed_tickets"]').on('change', function(ev) {
+            var printed_option = $(this).val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/production/shoppingcart/printed', 
+                data: { option: printed_option }, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Updated!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                        UpdateShoppingcartFunctions.init( data.cart );
+                    }
+                    else
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to set the ticket options. Please, select the first one.",
                         html: true,
                         type: "error",
                         showConfirmButton: true

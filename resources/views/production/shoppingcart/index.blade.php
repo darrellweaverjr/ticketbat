@@ -64,10 +64,8 @@
                 <div class="col-md-5">
                      <!-- BEGIN FORM-->
                     <form method="post" id="form_coupon" class="form-horizontal">
-                        <div class="alert alert-danger display-hide">
-                            Incorrect/Invalid Coupon: That coupon is not valid for you items.
-                        </div>
-                        <div id="coupon_msg" class="alert alert-success display-hide"></div>
+                        <div class="alert alert-danger display-hide">Incorrect/Invalid Coupon: That coupon is not valid for you items.</div>
+                        <div class="alert alert-success display-hide"></div>
                         <div class="input-group show-error">
                             <input type="text" class="form-control" placeholder="Write here your code" name="coupon">
                             <span class="input-group-btn">

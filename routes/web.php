@@ -126,6 +126,7 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::post('shoppingcart/remove', 'ShoppingcartController@remove');
     Route::post('shoppingcart/coupon', 'ShoppingcartController@coupon');
     Route::post('shoppingcart/share', 'ShoppingcartController@share');
+    Route::post('shoppingcart/printed', 'ShoppingcartController@printed');
     Route::post('shoppingcart/count', 'ShoppingcartController@count');
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
     Route::post('shoppingcart/process', 'ShoppingcartController@process');

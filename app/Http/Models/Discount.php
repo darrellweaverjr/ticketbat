@@ -91,4 +91,32 @@ class Discount extends Model
         }
         return $savings;
     }
+    /**
+     * The full description that belong to the discount.
+     */
+    public function full_description()
+    {
+        $details = null;
+        if($this->discount_scope=='Total')
+            $sufix = ' the total amount of purchase.';
+        else
+            $sufix = ' every purchased item associated with this coupon.';
+        //calc description
+        switch ($this->discount_type)
+        {
+            case 'Dollar':
+                $details = 'discount of $'. $this->start_num. ' on'.$sufix;
+                break;
+            case 'Percent':
+                $details = 'discount of '. $this->start_num. '% on'.$sufix;
+                break;
+            case 'N for N':
+                $details = 'discount of: Buy '. $this->start_num.' Get '.$this->end_num. ' for free (applies only for items associated with this coupon).';
+                break;
+        }
+        //return
+        if(empty($details))
+            return $this->description;
+        return $details;
+    }
 }
