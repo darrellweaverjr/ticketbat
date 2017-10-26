@@ -21,10 +21,6 @@ class PurchaseController extends Controller
     public function buy()
     {
         try {
-            
-            return $this->complete(1, 1);
-            
-            
             //init
             $info = Input::all();  
             $current = date('Y-m-d H:i:s');
@@ -144,16 +140,8 @@ class PurchaseController extends Controller
             }
             if(!count($purchase['ids']))
                 return ['success'=>false, 'msg'=>'The system could not save your purchases correctly!<br>Please contact us.'];
-            //send receipts
-            $receipts=[];
-            foreach ($purchase['ids'] as $id)
-            {
-                $p = Purchase::find($id);
-                if($p)  $receipts[] = $p->get_receipt();
-            }
-            $sent = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
             //show complete page
-            $this->complete($purchase, $sent);
+            return $this->complete($purchase,$client['send_welcome_email']);
         } catch (Exception $ex) {
             $html  = '<b>Exception:<b><br>'. strval($ex).'<br>';
             $email = new EmailSG(null,env('MAIL_ADMIN','debug@ticketbat.com'),'TicketBat Web - Sell Error');
@@ -213,14 +201,16 @@ class PurchaseController extends Controller
             $user->save();
             //send email welcome
             if($send_welcome_email)
-                $user->welcome_email(true);
+                $send_welcome_email = $user->welcome_email(true);
+            else
+                $send_welcome_email = null;
             //erase temp pass
             $user->set_slug();
             //get customer
             $customer_id = $user->update_customer();
             if(!$customer_id)
-                return ['success'=>false, 'msg'=>'There is an error setting up the customer information.'];
-            return ['success'=>true, 'user_id'=>$user->id, 'customer_id'=>$customer_id];
+                return ['success'=>false, 'send_welcome_email'=>$send_welcome_email, 'msg'=>'There is an error setting up the customer information.'];
+            return ['success'=>true, 'send_welcome_email'=>$send_welcome_email, 'user_id'=>$user->id, 'customer_id'=>$customer_id];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error setting up the customer information!'];
         }
@@ -297,10 +287,28 @@ class PurchaseController extends Controller
     /*
      * complete the purchase showing receipts pag
      */                          
-    public function complete($purchases, $sent)
+    public function complete($purchases, $send_welcome_email)
     {
         try {
-            return view('production.shoppingcart.complete');
+            //send receipts
+            $receipts=[];
+            $purchased=[];
+            $sent_to = null;
+            foreach ($purchases['ids'] as $id)
+            {
+                $p = Purchase::find($id);
+                if($p)
+                {
+                    if(empty($sent_to))
+                        $sent_to = $p->customer->email;
+                    $receipts[] = $p->get_receipt();
+                    $purchased[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'schedule'=>date('l, F j, Y @ g:i A', strtotime($p->show_time->show_time)),
+                                    'slug'=>$p->ticket->show->slug,'show_time_id'=>$p->show_time->id];
+                }
+            }
+            $sent_receipts = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
+            $purchases = implode('-', $purchases['ids']);
+            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email'));
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }

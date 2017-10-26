@@ -37,7 +37,7 @@
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
-                <i class="fa fa-check icon-info"></i> Venue details
+                <i class="fa fa-check icon-info"></i> Venue Details
                 <div class="actions pull-right">
                     <div class="btn-group">
                         <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>

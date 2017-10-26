@@ -332,6 +332,8 @@ var CashValidation = function () {
                     error.hide();
                     form[0].submit(); // submit the form
                 }
+            }).showErrors({
+                "pending": "You must collect at least the quantity required here to proceed."
             });
     }
     return {

@@ -26,7 +26,7 @@
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
                                 <div class="cbp-l-caption-body">
-                                    <span class="cbp-l-caption-buttonLeft btn red">View events</span>
+                                    <span class="cbp-l-caption-buttonLeft btn red">View Events</span>
                                     <a href="{{$v->url}}" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="{{$v->name}}<br>"><i class="icon-size-fullscreen"></i></a>
                                 </div>
                             </div>

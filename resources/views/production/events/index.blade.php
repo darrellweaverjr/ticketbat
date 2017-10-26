@@ -43,7 +43,7 @@
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
                 <h4 title="Click on the time to view event's details.">
-                    <i class="fa fa-check icon-info"></i> Event details
+                    <i class="fa fa-check icon-info"></i> Event Details
                     <div class="actions pull-right">
                         <div class="btn-group">
                             <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>
@@ -109,7 +109,7 @@
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
                 <h4 title="Click on the time to view ticket's details.">
-                    <i class="fa fa-check icon-calendar"></i> Show times
+                    <i class="fa fa-check icon-calendar"></i> Show Times
                     @if(count($event->showtimes))
                     <div class="actions pull-right">
                         <div class="btn-group">

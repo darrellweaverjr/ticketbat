@@ -19,7 +19,7 @@
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Items in the shopping cart.">
-                <i class="fa fa-list icon-list"></i> Shopping cart 
+                <i class="fa fa-list icon-list"></i> Shopping Cart 
                 <div class="actions pull-right">
                     <label id="count_items">You currently have <b>{{count($cart['items'])}}</b> @if(count($cart['items'])>1) items @else item @endif</label>
                 </div>
@@ -453,7 +453,7 @@
                                         <div class="col-sm-2 show-error"></div>
                                         <label class="control-label col-sm-2 text-right" id="collect_text">Collect</label>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{number_format($cart['total'],2)}}" value="-{{number_format($cart['total'],2)}}" name="pending" readOnly="true">
+                                            <input type="number" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{$cart['total']}}" value="-{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">Total</label>
                                         <div class="col-sm-2 show-error">
