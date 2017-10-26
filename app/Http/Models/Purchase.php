@@ -90,43 +90,46 @@ class Purchase extends Model
             $ticket_number = [];
             foreach ($shared as $s)
             {
-                if($qty_shared < $this->quantity)
+                if($s['email'] != $this->customer()->email)
                 {
-                    //check qty
-                    if($s['qty']>$this->quantity-$qty_shared)
-                        $s['qty'] = $this->quantity-$qty_shared;
-                    //set up customer
-                    $customer = Customer::where('email',$s['email'])->first();
-                    if(!$customer)
+                    if($qty_shared < $this->quantity)
                     {
-                        $user = User::where('email',$s['email'])->first();
-                        $customer = new Customer;
-                        $location = new Location;
-                        $location->created = $current;
-                        $location->updated = $current;
-                        $location->address = ($user)? $user->location()->address : 'Unknown';
-                        $location->city = ($user)? $user->location()->city : 'Unknown';
-                        $location->state = ($user)? $user->location()->state : 'NA';
-                        $location->zip = ($user)? $user->location()->zip : null;
-                        $location->country = ($user)? $user->location()->country : 'US';
-                        $location->lng = ($user)? $user->location()->lng : null;
-                        $location->lat = ($user)? $user->location()->lat : null;
-                        $location->save();
-                        //save customer
-                        $customer->location()->associate($location);
-                        $customer->first_name = trim(strip_tags($s['first_name']));
-                        $customer->last_name = (!empty($s['last_name']))? trim(strip_tags($s['last_name'])) : (($user)? $user->last_name : null);
-                        $customer->email = trim(strip_tags($s['email']));
-                        $customer->phone = ($user)? $user->phone : null;
-                        $customer->created = $current;
-                        $customer->updated = $current;
-                        $customer->save();
+                        //check qty
+                        if($s['qty']>$this->quantity-$qty_shared)
+                            $s['qty'] = $this->quantity-$qty_shared;
+                        //set up customer
+                        $customer = Customer::where('email',$s['email'])->first();
+                        if(!$customer)
+                        {
+                            $user = User::where('email',$s['email'])->first();
+                            $customer = new Customer;
+                            $location = new Location;
+                            $location->created = $current;
+                            $location->updated = $current;
+                            $location->address = ($user)? $user->location()->address : 'Unknown';
+                            $location->city = ($user)? $user->location()->city : 'Unknown';
+                            $location->state = ($user)? $user->location()->state : 'NA';
+                            $location->zip = ($user)? $user->location()->zip : null;
+                            $location->country = ($user)? $user->location()->country : 'US';
+                            $location->lng = ($user)? $user->location()->lng : null;
+                            $location->lat = ($user)? $user->location()->lat : null;
+                            $location->save();
+                            //save customer
+                            $customer->location()->associate($location);
+                            $customer->first_name = trim(strip_tags($s['first_name']));
+                            $customer->last_name = (!empty($s['last_name']))? trim(strip_tags($s['last_name'])) : (($user)? $user->last_name : null);
+                            $customer->email = trim(strip_tags($s['email']));
+                            $customer->phone = ($user)? $user->phone : null;
+                            $customer->created = $current;
+                            $customer->updated = $current;
+                            $customer->save();
+                        }
+                        //create tickets number
+                        $tickets = implode(',', range($qty_shared+1,$qty_shared+$s['qty']));
+                        $qty_shared+=$s['qty'];
+                        $comment = (!empty(trim(strip_tags($s['comment']))))? trim(strip_tags($s['comment'])) : null;
+                        $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=>$customer->id, 'tickets'=>$tickets, 'comment'=>$comment];
                     }
-                    //create tickets number
-                    $tickets = implode(',', range($qty_shared+1,$qty_shared+$s['qty']));
-                    $qty_shared+=$s['qty'];
-                    $comment = (!empty(trim(strip_tags($s['comment']))))? trim(strip_tags($s['comment'])) : null;
-                    $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=>$customer->id, 'tickets'=>$tickets, 'comment'=>$comment];
                 }
             }
             //if missing tickets to share put them to the customer

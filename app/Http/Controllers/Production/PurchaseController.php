@@ -27,22 +27,95 @@ class PurchaseController extends Controller
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
             {
-                
+                //checking the email
+                $info['email'] = trim(strtolower($info['email']));
+                if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
+                    return ['success'=>false, 'msg'=>'Enter a valid email address.'];
+                //check the correct name
+                $info['customer'] = explode(' ',trim($info['customer']),2);
+                $info['first_name'] = $info['customer'][0];
+                $info['last_name'] = $info['customer'][1];    
             }
             else
                 return ['success'=>false, 'msg'=>'Fill the form out correctly!'];
+            //get all items in shoppingcart
+            $shoppingcart = Shoppingcart::calculate_session($s_token,true);
+            if(!$shoppingcart['success'])
+                return $shoppingcart;
+            if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
+                return ['success'=>false, 'msg'=>'There are no items to buy in the Shopping Cart.'];
+            //remove unavailable items from shopingcart
+            foreach($shoppingcart['items'] as $key=>$item)
+                if($item->unavailable)
+                    unset($shoppingcart['items'][$key]);
+            //set up customer
+            $client = $this->customer_set($info, $current);
+            if(!$client['success'])
+                return $client; 
             //check payment method
             if(!empty($info['method']))
             {
                 switch ($info['method'])
                 {
-                    case 'skip':
-                        break;
                     case 'card':
-                        break;
+                        if($shoppingcart['total']>0) 
+                        {
+                            if(empty($info['card']) || empty($info['exp_month']) || empty($info['exp_year']) || empty($info['cvv']))
+                                return ['success'=>false, 'msg'=>'There is no payment method for your item(s).'];
+                            if(strtotime(date('m/Y')) > strtotime($info['exp_month'].'/'.$info['exp_year']))
+                                return ['success'=>false, 'msg'=>'The card is expired.'];
+                            if(empty($info['address']) || empty($info['city']) || empty($info['zip']) || empty($info['country']) || empty($info['state']))
+                                return ['success'=>false, 'msg'=>'You must enter your address, city and zip code.'];
+                        }
+                        else
+                            return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
+                        //make transaction continue and do not break
                     case 'swipe':
+                        if($info['method']=='swipe') //check to skip en case of card
+                        {
+                            if($shoppingcart['total']>0) 
+                            {
+                                if(empty($info['UMmagstripe']) || empty($info['customer']) || empty($info['card']) || empty($info['exp_month']) || empty($info['exp_year']))
+                                    return ['success'=>false, 'msg'=>'You must swipe a valid card.'];
+                                if(strtotime(date('m/Y')) > strtotime($info['exp_month'].'/'.$info['exp_year']))
+                                    return ['success'=>false, 'msg'=>'The card is expired.'];
+                            }
+                            else
+                                return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
+                        }
+                        //make transaction for card and swipe
+                        $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
+                        //remove hide credit card number
+                        $info['card'] = '...'.substr($info['card'], -4); 
+                        if(!$transaction['success'])
+                            return $transaction;
+                        $shoppingcart['transaction_id'] = $transaction['transaction_id'];
+                        $shoppingcart['payment_type'] = 'Credit';
                         break;
                     case 'cash':
+                        Session::forget('change');
+                        if($shoppingcart['total']>0) 
+                        {
+                            $paid = 0;
+                            if(!empty($info['x100'])) $paid += $info['x100']*100;
+                            if(!empty($info['x50'])) $paid += $info['x50']*50;
+                            if(!empty($info['x20'])) $paid += $info['x20']*20;
+                            if(!empty($info['x10'])) $paid += $info['x10']*10;
+                            if(!empty($info['x5'])) $paid += $info['x5']*5;
+                            if(!empty($info['x1'])) $paid += $info['x1'];
+                            if(!empty($info['change'])) $paid += $info['change']/100;
+                            if($paid < $shoppingcart['total'])
+                                return ['success'=>false, 'msg'=>'There is still money to collect.'];
+                            Session::put('change',$paid-$shoppingcart['total']);
+                        }
+                        else
+                            return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
+                        $shoppingcart['payment_type'] = 'Cash';
+                        break;
+                    case 'skip':
+                        if($shoppingcart['total']>0) 
+                            return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
+                        $shoppingcart['payment_type'] = 'None';
                         break;
                     default:
                         return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
@@ -50,80 +123,33 @@ class PurchaseController extends Controller
             }
             else
                 return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
-            
-            
-            
-            ////////////////
-            if(!empty($info['cardholder']) && !empty($info['address']) && !empty($info['city']) && !empty($info['email']) 
-            && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['x_token']) && !empty($info['s_token']))
+            //save purchase
+            $purchase = $this->purchase_save($s_token,$client,$shoppingcart,$current);
+            if(!$purchase['success'])
+                return $purchase;
+            if(count($purchase['errors']))
             {
-                //checking the email
-                $info['email'] = trim(strtolower($info['email']));
-                if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
-                    return ['success'=>false, 'msg'=>'Enter a valid email address.'];
-                //check the correct name
-                $info['cardholder'] = explode(' ',trim($info['cardholder']),2);
-                $info['first_name'] = $info['cardholder'][0];
-                $info['last_name'] = $info['cardholder'][1];    
-                //get all items in shoppingcart
-                $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
-                if(!$shoppingcart['success'])
-                    return Util::json($shoppingcart);
-                if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
-                    return Util::json(['success'=>false, 'msg'=>'There are no items to buy in the Shopping Cart.']);
-                //remove unavailable items from shopingcart
-                foreach($shoppingcart['items'] as $key=>$item)
-                    if($item->unavailable)
-                        unset($shoppingcart['items'][$key]);
-                //check if it has to pay for the items or there are free
-                if($shoppingcart['total']>0)    
-                    if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
-                        return Util::json(['success'=>false, 'msg'=>'There is no payment method for your items.']);
-                //set up customer
-                $client = $this->customer_set($info, $current);
-                if(!$client['success'])
-                    return Util::json($client);                
-                //check payment type, if not free tickets
-                if($shoppingcart['total']>0)
-                {
-                    //make transaction
-                    $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
-                    //remove hide credit card number
-                    $info['card'] = '...'.substr($info['card'], -4); 
-                    if(!$transaction['success'])
-                        return Util::json($transaction);
-                    $shoppingcart['transaction_id'] = $transaction['transaction_id'];
-                    $shoppingcart['payment_type'] = 'Credit';
-                }
-                //save purchase
-                $purchase = $this->purchase_save($info['x_token'],$client,$shoppingcart,$current);
-                if(!$purchase['success'])
-                        return Util::json($purchase);
-                if(count($purchase['errors']))
-                {
-                    $html = '<b>Customer:<b><br>'.json_encode($info,true).'<br><br>';
-                    $html.= '<b>Items:<b><br>'.json_encode($shoppingcart,true).'<br><br>';
-                    $html.= '<b>Purchases ID success:<b><br>'.implode(',',$purchase['ids']).'<br><br>';
-                    $html.= '<b>ShoppingCart ID error:<b><br>'.implode(',',$purchase['errors']).'<br><br>';
-                    $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App - Purchase Error');
-                    $email->html($html);
-                    $email->send();
-                }
-                if(!count($purchase['ids']))
-                    return Util::json(['success'=>false, 'msg'=>'The system could not save your purchases correctly!<br>Please contact us.']);
-                //send receipts
-                $receipts=[];
-                foreach ($purchase['ids'] as $id)
-                {
-                    $p = Purchase::find($id);
-                    if($p)  $receipts[] = $p->get_receipt();
-                }
-                $sent = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
-                if($sent)
-                    return Util::json(['success'=>true, 'msg'=>'We sent you a receipt by email.<br>You can also see the purchases and the tickets in Profile -> My Purchases.']);
-                return Util::json(['success'=>true, 'msg'=>'We could not send you a receipt by email.<br>You can see the purchases and the tickets int Profile -> My Purchases.']);
+                $html = '<b>Customer:<b><br>'.json_encode($info,true).'<br><br>';
+                $html.= '<b>Items:<b><br>'.json_encode($shoppingcart,true).'<br><br>';
+                $html.= '<b>Purchases ID success:<b><br>'.implode(',',$purchase['ids']).'<br><br>';
+                $html.= '<b>ShoppingCart ID error:<b><br>'.implode(',',$purchase['errors']).'<br><br>';
+                $email = new EmailSG(null,env('MAIL_ADMIN','debug@ticketbat.com'),'TicketBat Web - Purchase Error');
+                $email->html($html);
+                $email->send();
             }
-            return Util::json(['success'=>false, 'msg'=>'Fill the form out correctly!']);
+            if(!count($purchase['ids']))
+                return ['success'=>false, 'msg'=>'The system could not save your purchases correctly!<br>Please contact us.'];
+            //send receipts
+            $receipts=[];
+            foreach ($purchase['ids'] as $id)
+            {
+                $p = Purchase::find($id);
+                if($p)  $receipts[] = $p->get_receipt();
+            }
+            $sent = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
+            if($sent)
+                return ['success'=>true, 'msg'=>'We sent you a receipt by email.<br>You can also see the purchases and the tickets in Profile -> My Purchases.'];
+            return ['success'=>true, 'msg'=>'We could not send you a receipt by email.<br>You can see the purchases and the tickets int Profile -> My Purchases.'];
         } catch (Exception $ex) {
             $html  = '<b>Exception:<b><br>'. strval($ex).'<br>';
             $email = new EmailSG(null,env('MAIL_ADMIN','debug@ticketbat.com'),'TicketBat Web - Sell Error');
@@ -159,12 +185,21 @@ class PurchaseController extends Controller
             else
                 $location = $user->location;
             //save location
-            $location->address = $info['address'];
-            $location->city = $info['city'];
-            $location->state = strtoupper($info['region']);
-            $location->zip = $info['zip'];
-            $location->country = $info['country'];
-            $location->set_lng_lat();
+            if(!empty($info['address']) && !empty($info['city']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['country']))
+            {
+                $location->address = $info['address'];
+                $location->city = $info['city'];
+                $location->state = strtoupper($info['region']);
+                $location->zip = $info['zip'];
+                $location->country = $info['country'];
+                $location->set_lng_lat();
+            }
+            else
+            {
+                $location->address =  $location->city = 'Unknown';
+                $location->state = 'NA';
+                $location->country = 'US';
+            }
             $location->save();
             //save user
             $user->location()->associate($location);
@@ -207,7 +242,7 @@ class PurchaseController extends Controller
                 $purchase->ticket_id = $i->ticket_id;
                 $purchase->show_time_id = $i->item_id;
                 $purchase->session_id = $x_token;
-                $purchase->referrer_url = 'http://app.ticketbat.com';
+                $purchase->referrer_url = substr(strval( url()->current() ),0,499);
                 $purchase->quantity = $i->number_of_items;
                 $purchase->savings = $i->savings;
                 $purchase->status = 'Active';
@@ -221,13 +256,30 @@ class PurchaseController extends Controller
                 $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;  
                 if($purchase->save())
                 {
-                    //remove item from shoppingcart
-                    Shoppingcart::where('id','=',$i->id)->delete();
-                    //create tickets, no gifts
-                    $tickets = implode(range(1,$purchase->quantity));
-                    DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
                     //get id for receipts
                     $purchase_ids[] = $purchase->id;
+                    //get shoppingcart 
+                    $sc = Shoppingcart::find($i->id);
+                    if($sc)
+                    {
+                        if(!empty($cs->gifts) && Util::isJSON($cs->gifts))
+                        {
+                            $shared = [];
+                            $indexes = json_decode($cs->gifts,true);
+                            foreach ($indexes as $i)
+                                $shared[] = ['first_name'=>$i['first_name'],'last_name'=>$i['last_name'],'email'=>$i['email'],
+                                             'comment'=>(!empty($i['comment']))? $i['comment'] : null,'qty'=>$i['qty']];
+                            $purchase->share_tickets($shared);
+                        }
+                        else
+                        {
+                            //create tickets, no gifts
+                            $tickets = implode(range(1,$purchase->quantity));
+                            DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                        }
+                        //remove item from shoppingcart
+                        $sc->delete();
+                    }
                 }
                 else
                     $errors_ids[] = $i->id;
