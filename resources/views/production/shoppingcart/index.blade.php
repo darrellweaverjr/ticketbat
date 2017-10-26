@@ -211,7 +211,7 @@
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
-                                    <div class="alert alert-warning display-hide" id="div_show_errors"></div>
+                                    <div class="alert alert-warning display-hide"></div>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="method" value="card">
                                     <input type="hidden" name="newsletter" value="1">
@@ -248,7 +248,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="exp_month" placeholder="M" style="min-width:145px">
+                                            <select class="form-control" name="month" placeholder="M" style="min-width:145px">
                                                 <option value="" disabled="true" selected="true">- Select month -</option>
                                                 <option value="1">1 (January)</option>
                                                 <option value="2">2 (February)</option>
@@ -268,7 +268,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="exp_year" placeholder="YYYY" style="min-width:135px">
+                                            <select class="form-control" name="year" placeholder="YYYY" style="min-width:135px">
                                                 <option value="" disabled="true" selected="true">- Select year -</option>
                                                 @for ($y = date('Y'); $y <= date('Y')+20; $y++)
                                                     <option value="{{$y}}">{{$y}}</option>
@@ -374,8 +374,8 @@
                                     </div>
                                     <div class="hidden">
                                         <input type="hidden" name="card" value="">
-                                        <input type="hidden" name="exp_month" value="0">
-                                        <input type="hidden" name="exp_year" value="0">
+                                        <input type="hidden" name="month" value="0">
+                                        <input type="hidden" name="year" value="0">
                                         <input type="hidden" name="UMcardpresent" value=true>
                                         <input type="hidden" name="UMmagstripe" value="">
                                         <input type="hidden" name="UMdukpt" value="">

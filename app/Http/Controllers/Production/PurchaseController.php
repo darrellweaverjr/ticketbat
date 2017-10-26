@@ -24,7 +24,7 @@ class PurchaseController extends Controller
             //init
             $info = Input::all();  
             $current = date('Y-m-d H:i:s');
-            $s_token = Util::s_token(false,true);
+            $info['s_token'] = Util::s_token(false,true);
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
             {
@@ -40,7 +40,7 @@ class PurchaseController extends Controller
             else
                 return ['success'=>false, 'msg'=>'Fill the form out correctly!'];
             //get all items in shoppingcart
-            $shoppingcart = Shoppingcart::calculate_session($s_token,true);
+            $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
             if(!$shoppingcart['success'])
                 return $shoppingcart;
             if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
@@ -61,9 +61,9 @@ class PurchaseController extends Controller
                     case 'card':
                         if($shoppingcart['total']>0) 
                         {
-                            if(empty($info['card']) || empty($info['exp_month']) || empty($info['exp_year']) || empty($info['cvv']))
+                            if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
                                 return ['success'=>false, 'msg'=>'There is no payment method for your item(s).'];
-                            if(strtotime(date('m/Y')) > strtotime($info['exp_month'].'/'.$info['exp_year']))
+                            if(strtotime(date('m/Y')) > strtotime($info['month'].'/'.$info['year']))
                                 return ['success'=>false, 'msg'=>'The card is expired.'];
                             if(empty($info['address']) || empty($info['city']) || empty($info['zip']) || empty($info['country']) || empty($info['state']))
                                 return ['success'=>false, 'msg'=>'You must enter your address, city and zip code.'];
@@ -76,9 +76,9 @@ class PurchaseController extends Controller
                         {
                             if($shoppingcart['total']>0) 
                             {
-                                if(empty($info['UMmagstripe']) || empty($info['customer']) || empty($info['card']) || empty($info['exp_month']) || empty($info['exp_year']))
+                                if(empty($info['UMmagstripe']) || empty($info['customer']) || empty($info['card']) || empty($info['month']) || empty($info['year']))
                                     return ['success'=>false, 'msg'=>'You must swipe a valid card.'];
-                                if(strtotime(date('m/Y')) > strtotime($info['exp_month'].'/'.$info['exp_year']))
+                                if(strtotime(date('m/Y')) > strtotime($info['month'].'/'.$info['year']))
                                     return ['success'=>false, 'msg'=>'The card is expired.'];
                             }
                             else
@@ -125,7 +125,7 @@ class PurchaseController extends Controller
             else
                 return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
             //save purchase
-            $purchase = $this->purchase_save($s_token,$client,$shoppingcart,$current);
+            $purchase = $this->purchase_save($info['s_token'],$client,$shoppingcart,$current);
             if(!$purchase['success'])
                 return $purchase;
             if(count($purchase['errors']))

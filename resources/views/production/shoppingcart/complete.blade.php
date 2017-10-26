@@ -20,7 +20,7 @@
                 <i class="fa fa-thumbs-up"></i> Thank you for purchasing tickets on TicketBat.com! 
             </h4>  
             <p class="margin-top-20">
-            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/receipts/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
+            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
                 @if(isset($send_welcome_email))
                     @if($send_welcome_email)
                     <div class="alert alert-success" style="margin:20px">
@@ -61,8 +61,9 @@
             </h4>  
             <p class="margin-top-20">
                 @foreach($purchased as $p)
-                <i style="padding-left:10px" class="fa fa-ticket"></i> <strong> {{$p['qty']}}</strong> @if($p['qty']>1) tickets @else ticket @endif for <strong>{{$p['event']}}</strong> on <strong>{{$p['schedule']}}</strong><hr>
+                <i style="padding-left:10px" class="fa fa-ticket"></i> <strong> {{$p['qty']}}</strong> @if($p['qty']>1) tickets @else ticket @endif for <strong>{{$p['event']}}</strong> on <strong>{{$p['schedule']}}</strong><br>
                 @endforeach
+                <br>
             </p>
         </div>
     </div>

@@ -52,8 +52,8 @@ var SwipeCardFunctions = function () {
                 $('#tab_swipe input[name="UMmagstripe"]').val(card_data);
                 $('#tab_swipe input[name="customer"]').val(first_name + ' ' + last_name);
                 $('#tab_swipe input[name="card"]').val(card_number);
-                $('#tab_swipe input[name="exp_month"]').val(month);
-                $('#tab_swipe input[name="exp_year"]').val(year);
+                $('#tab_swipe input[name="month"]').val(month);
+                $('#tab_swipe input[name="year"]').val(year);
                 return true;
             }
             else {

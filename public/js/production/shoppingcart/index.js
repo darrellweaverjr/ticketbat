@@ -220,7 +220,7 @@ var SubmitFunctions = function () {
         });
         //on input or select change, disable submit to re-check values
         $('#tabs_payment input, #tabs_payment select').on('change', function(e){
-            var form_id = $('#tabs_payment').find('.tab-pane.active').find('form').attr('id');
+            var form_id = $('#tabs_payment').find('.tab-pane.active:not(.hidden)').find('form').attr('id');
             if(!$('#'+form_id).valid())
             {
                 $('#accept_terms').prop('checked', false);
@@ -230,9 +230,8 @@ var SubmitFunctions = function () {
         //on accept terms
         $('#accept_terms').bind('click','change', function(e){
             var proceed = false;
-            var form_id = $('#tabs_payment').find('.tab-pane.active').find('form').attr('id');
-            $('#div_show_errors').css('display','none');
-            $('#'+form_id+' .alert-danger').css('display','none');
+            var form_id = $('#tabs_payment').find('.tab-pane.active:not(.hidden)').find('form').attr('id');
+            $('.alert-warning', $('#'+form_id) ).hide();
             if( $(this).is(':checked') )
             {
                 if( $('#'+form_id).valid() )
@@ -248,13 +247,12 @@ var SubmitFunctions = function () {
                                 var exp_card =/^3[47][0-9]{13}$/;
                             else 
                                 var exp_card =/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/;
-                            if(!exp_card.test(card))
+                            if(!exp_card.test( $('#form_card input[name="card"]').val() ))
                             {
                                 if(amex_only>0)
-                                    $('#div_show_errors').html('You must enter a valid Amerian Express credit card');
+                                    $('.alert-warning', $('#'+form_id) ).html('You must enter a valid Amerian Express credit card').show();
                                 else
-                                    $('#div_show_errors').html('You must enter a valid credit card');
-                                $('#div_show_errors').css('display','block');
+                                    $('.alert-warning', $('#'+form_id) ).html('You must enter a valid credit card').show();
                             }
                             else
                                 proceed = true;
@@ -285,7 +283,7 @@ var SubmitFunctions = function () {
         });
         //on submit
         $('#btn_process').click( function(){
-            var form_id = $('#tabs_payment').find('.tab-pane.active').find('form').attr('id');
+            var form_id = $('#tabs_payment').find('.tab-pane.active:not(.hidden)').find('form').attr('id');
             if( $('#'+form_id).valid() )
             {
                 $('#btn_process').addClass('hidden');

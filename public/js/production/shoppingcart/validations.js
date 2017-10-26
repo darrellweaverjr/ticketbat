@@ -111,12 +111,12 @@ var CardValidation = function () {
                         digits: true,
                         required: true
                     },
-                    exp_month: {
+                    month: {
                         range: [1,12],
                         digits: true,
                         required: true
                     },
-                    exp_year: {
+                    year: {
                         digits: true,
                         required: true
                     },
@@ -218,12 +218,12 @@ var SwipeValidation = function () {
                         digits: true,
                         required: true
                     },
-                    exp_month: {
+                    month: {
                         range: [1,12],
                         digits: true,
                         required: true
                     },
-                    exp_year: {
+                    year: {
                         minlength: 4,
                         maxlength: 4,
                         digits: true,
