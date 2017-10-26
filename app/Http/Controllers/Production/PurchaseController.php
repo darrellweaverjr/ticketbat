@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use App\Http\Models\Shoppingcart;
@@ -20,6 +21,10 @@ class PurchaseController extends Controller
     public function buy()
     {
         try {
+            
+            return $this->complete(1, 1);
+            
+            
             //init
             $info = Input::all();  
             $current = date('Y-m-d H:i:s');
@@ -147,9 +152,8 @@ class PurchaseController extends Controller
                 if($p)  $receipts[] = $p->get_receipt();
             }
             $sent = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
-            if($sent)
-                return ['success'=>true, 'msg'=>'We sent you a receipt by email.<br>You can also see the purchases and the tickets in Profile -> My Purchases.'];
-            return ['success'=>true, 'msg'=>'We could not send you a receipt by email.<br>You can see the purchases and the tickets int Profile -> My Purchases.'];
+            //show complete page
+            $this->complete($purchase, $sent);
         } catch (Exception $ex) {
             $html  = '<b>Exception:<b><br>'. strval($ex).'<br>';
             $email = new EmailSG(null,env('MAIL_ADMIN','debug@ticketbat.com'),'TicketBat Web - Sell Error');
@@ -289,5 +293,17 @@ class PurchaseController extends Controller
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     } 
+    
+    /*
+     * complete the purchase showing receipts pag
+     */                          
+    public function complete($purchases, $sent)
+    {
+        try {
+            return view('production.shoppingcart.complete');
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
        
 }

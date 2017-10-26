@@ -131,7 +131,7 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
     Route::match(['get','post'], 'shoppingcart', 'ShoppingcartController@index');
     //purchase
-    Route::post('purchase/buy', 'PurchaseController@buy');
+    Route::post('purchase/complete', 'PurchaseController@buy');
     //home
     Route::get('/', function () { return redirect()->route('index'); });
     Route::get('/events', function () { return redirect()->route('index'); });

@@ -208,10 +208,8 @@ var SubmitFunctions = function () {
         //function disabled submit
         function disabled_submit()
         {
-            $('#form_cash div.desglose input[name^="x"]').attr('disabled',false);
-            $('#form_cash div.desglose input[name="change"]').attr('disabled',false);
-            $('#form_cash div.desglose input[name="pending"]').attr('disabled',false);
-            $('#form_cash div.desglose input[name="subtotal"]').attr('disabled',false);
+            $('#form_cash div.desglose input[name^="x"]').attr('readonly',false);
+            $('#form_cash div.desglose input[name="change"]').attr('readonly',false);
             //submit
             $('#btn_process').prop('disabled',true);
         }
@@ -265,7 +263,8 @@ var SubmitFunctions = function () {
                             proceed = true;
                             break;
                         case 'form_cash':
-                            $('#form_cash div.desglose input').attr('disabled',true);
+                            $('#form_cash div.desglose input[name^="x"]').attr('readonly',true);
+                            $('#form_cash div.desglose input[name="change"]').attr('readonly',true);
                             proceed = true;
                             break;
                     }
@@ -291,7 +290,7 @@ var SubmitFunctions = function () {
             {
                 $('#btn_process').addClass('hidden');
                 $('#btn_loading').removeClass('hidden');
-                //$('#'+form_id)[0].submit();
+                $('#'+form_id)[0].submit();
             }  
         });
         
