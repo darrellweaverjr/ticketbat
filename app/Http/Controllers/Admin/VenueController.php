@@ -135,9 +135,10 @@ class VenueController extends Controller{
                     $banner_types = Util::getEnumValues('banners','type');
                     $video_types = Util::getEnumValues('videos','video_type');
                     $ads_types = Util::getEnumValues('venue_ads','type');
+                    $ticket_types = Util::getEnumValues('tickets','ticket_type');
                 }
                 //return view
-                return view('admin.venues.index',compact('venues','restrictions','banner_types','image_types','video_types','ads_types','onlyerrors'));
+                return view('admin.venues.index',compact('venues','restrictions','ticket_types','banner_types','image_types','video_types','ads_types','onlyerrors'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Venues Index: '.$ex->getMessage());
@@ -170,6 +171,13 @@ class VenueController extends Controller{
                                 ->select('images.*')->where('venue_images.venue_id','=',$venue->id)->distinct()->get();
                 foreach ($images as $i)
                     $i->url = Image::view_image($i->url);
+                $stage_images = DB::table('images')
+                                ->join('stage_image_ticket_type', 'stage_image_ticket_type.image_id', '=' ,'images.id')
+                                ->join('stages', 'stages.id', '=' ,'stage_image_ticket_type.stage_id')
+                                ->join('venues', 'venues.id', '=' ,'stages.venue_id')
+                                ->select(DB::raw('images.*,stage_image_ticket_type.*,stages.name'))->where('venues.id','=',$venue->id)->distinct()->get();
+                foreach ($stage_images as $i)
+                    $i->url = Image::view_image($i->url);
                 $banners = Banner::where('parent_id','=',$venue->id)->where('belongto','=','venue')->distinct()->get();
                 foreach ($banners as $b)
                     $b->file = Image::view_image($b->file);
@@ -181,7 +189,7 @@ class VenueController extends Controller{
                                 ->distinct()->get();
                 foreach ($ads as $a)
                     $a->image = Image::view_image($a->image);
-                return ['success'=>true,'venue'=>$venue,'stages'=>$stages,'images'=>$images,'banners'=>$banners,'videos'=>$videos,'ads'=>$ads];
+                return ['success'=>true,'venue'=>$venue,'stages'=>$stages,'stage_images'=>$stage_images,'images'=>$images,'banners'=>$banners,'videos'=>$videos,'ads'=>$ads];
             }
         } catch (Exception $ex) {
             throw new Exception('Error Venues Get: '.$ex->getMessage());
@@ -503,6 +511,64 @@ class VenueController extends Controller{
                     return ['success'=>true,'image'=>$image];
                 }  
                 return ['success'=>false,'msg'=>'There was an error getting the image.<br>The server could not retrieve the data.'];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error VenueImages Index: '.$ex->getMessage());
+        }
+    } 
+    /**
+     * Get, Edit, Remove images for Venues
+     *
+     * @return view
+     */
+    public function stage_images()
+    {
+        try {   
+            //init
+            $input = Input::all();
+            $current = date('Y-m-d H:i:s');
+            //remove
+            if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                $image = Image::find($input['id']);
+                if($image)
+                {
+                    DB::table('stage_image_ticket_type')->where('image_id',$image->id)->delete();
+                    $image->delete_image_file();
+                    $image->delete();
+                    return ['success'=>true,'action'=>-1];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the image.<br>The server could not retrieve the data.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && $input['action']==1)
+            {
+                $exists = DB::table('stage_image_ticket_type')->where('stage_id',$input['stage_id'])->where('ticket_type',$input['ticket_type'])->count();
+                if($exists<1)
+                {
+                    $image = new Image;
+                    $image->created = $current;
+                    if(preg_match('/media\/preview/',$input['url'])) 
+                        $image->set_url($input['url']);
+                    $image->image_type = $input['image_type'];
+                    $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
+                    $image->save();
+                    if($image)
+                    {
+                        DB::table('stage_image_ticket_type')->insert(['ticket_type'=>$input['ticket_type'],'stage_id'=>$input['stage_id'],'image_id'=>$image->id]);
+                        $image->url = Image::view_image($image->url);
+                        $stage_images = DB::table('images')
+                                ->join('stage_image_ticket_type', 'stage_image_ticket_type.image_id', '=' ,'images.id')
+                                ->join('stages', 'stages.id', '=' ,'stage_image_ticket_type.stage_id')
+                                ->join('venues', 'venues.id', '=' ,'stages.venue_id')
+                                ->select(DB::raw('images.*,stage_image_ticket_type.*,stages.name'))->where('images.id','=',$image->id)->distinct()->first();
+                        return ['success'=>true,'action'=>1,'stage_images'=>$stage_images];
+                    } 
+                    return ['success'=>false,'msg'=>'There was an error adding the image.<br>The server could not retrieve the data.'];
+                }
+                return ['success'=>false,'msg'=>'There was an error adding the image.<br>There is already a ticket type image for that stage.'];
             }
             else
                 return ['success'=>false,'msg'=>'Invalid Option.'];

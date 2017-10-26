@@ -35,6 +35,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'venues/banners', 'VenueController@banners')->middleware('permissions:VENUES');
     Route::match(['get','post'], 'venues/videos', 'VenueController@videos')->middleware('permissions:VENUES');
     Route::match(['get','post'], 'venues/stages', 'VenueController@stages')->middleware('permissions:VENUES');
+    Route::match(['get','post'], 'venues/stage_images', 'VenueController@stage_images')->middleware('permissions:VENUES');
     Route::match(['get','post'], 'venues/ads', 'VenueController@ads')->middleware('permissions:VENUES');
     Route::post('venues/slug', 'VenueController@slug')->middleware('permissions:VENUES');
     Route::post('venues/save', 'VenueController@save')->middleware('permissions:VENUES');

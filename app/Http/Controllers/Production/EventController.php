@@ -61,7 +61,6 @@ class EventController extends Controller
                                 ->where('show_images.show_id',$event->show_id)->where('images.image_type','=','Image')->get();
             foreach ($event->images as $i)
                 $i->url = Image::view_image($i->url);
-            //$event->images = $event->images->toArray();
             //get banners
             $event->banners = DB::table('banners')
                                 ->select(DB::raw('banners.id, banners.url, banners.file'))

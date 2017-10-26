@@ -145,6 +145,9 @@
                                         <a href="#tab_model_update_stages" data-toggle="tab" aria-expanded="true"> Stages </a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_stage_images" data-toggle="tab" aria-expanded="true"> Stages Images </a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_images" data-toggle="tab" aria-expanded="true"> Images </a>
                                     </li>
                                     <li class="">
@@ -389,6 +392,16 @@
                                             <div id="grid_venue_stages" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>
                                     </div>
+                                    <div class="tab-pane" id="tab_model_update_stage_images">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_stage_images_add" class="btn sbold bg-green"> Add
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row" style="max-height:600px !important;overflow-y: auto;">
+                                            <div id="grid_venue_stage_images" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
+                                        </div>
+                                    </div>
                                     <div class="tab-pane" id="tab_model_update_images">
                                         <div class="btn-group" style="padding-bottom:20px;">
                                             <button type="button" id="btn_model_image_add" class="btn sbold bg-green"> Add
@@ -567,6 +580,92 @@
         </div>
     </div>
     <!-- END ADD/REMOVE VENUESTAGES MODAL-->
+    <!-- BEGIN ADD/REMOVE STAGEIMAGES MODAL-->
+    <div id="modal_model_venue_stage_images" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Stage Images</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_venue_stage_images">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="id" value="" />
+                        <input type="hidden" name="stage_id" value="" />
+                        <input type="hidden" name="action" value="" />
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Stage
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <select class="form-control" name="stage_id">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Ticket Type
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <select class="form-control" name="ticket_type">
+                                            @foreach($ticket_types as $index=>$tt)
+                                                <option value="{{$index}}">{{$tt}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Image Type
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <select class="form-control" name="image_type">
+                                            @foreach($image_types as $index=>$it)
+                                                <option value="{{$index}}">{{$it}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Caption
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error">
+                                        <input type="text" class="form-control" name="caption" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="subform_venue_stage_images">
+                                    <label class="control-label col-md-3">Image
+                                        <span class="required"> * </span>
+                                    </label>
+                                    <div class="col-md-9 show-error" >
+                                        <center>
+                                            <input type="hidden" name="url"/>
+                                            <button type="button" id="btn_venue_upload_stage_images" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                            <img name="url" alt="- No image -" src="" width="323px" height="270px" />
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="submit_model_venue_stage_images" class="btn sbold grey-salsa">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END ADD/REMOVE STAGEIMAGES MODAL-->
     <!-- BEGIN ADD/REMOVE VENUEIMAGES MODAL-->
     <div id="modal_model_venue_images" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:500px !important;">
