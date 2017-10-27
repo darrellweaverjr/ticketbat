@@ -161,12 +161,19 @@
                     </ul><hr>
                     @endif
                     <div class="tab-content" id="tabs_payment">
-                        @if($errors->any())
-                        <div class="alert alert-danger" id="msgx">
+                        
+                        @if (session('status'))
+                            <div class="alert alert-success">
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                        
+                        
+                        @if(session('errorsx'))
+                        <h4>{{session('errorsx')}}</h4>
+                        <div class="alert alert-danger">
                             <button class="close" data-close="alert"></button>
-                            @foreach ($errors->all() as $error)
-                                {{ htmlentities($error) }}<br>
-                            @endforeach
+                            
                         </div>
                         @endif
                         <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">

@@ -28,10 +28,6 @@ class PurchaseController extends Controller
             $info = Input::all();  
             $current = date('Y-m-d H:i:s');
             $info['s_token'] = Util::s_token(false,true);
-            
-            
-            return redirect()->back()->withErrors([$info['s_token']])->withInput();
-            
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
             {
@@ -102,8 +98,12 @@ class PurchaseController extends Controller
                         $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
                         //remove hide credit card number
                         $info['card'] = '...'.substr($info['card'], -4); 
+                        return redirect()->back()->with('status', ['Profile updated!']);
+                        return back()->with('errorsx','ccccccccccccccccvvbvcbvcbvc');
                         if(!$transaction['success'])
+                            
                             return redirect()->back()->withErrors([$transaction['msg']])->withInput();
+                        
                         $shoppingcart['transaction_id'] = $transaction['transaction_id'];
                         $shoppingcart['payment_type'] = 'Credit';
                         break;
@@ -140,7 +140,6 @@ class PurchaseController extends Controller
             }
             else
                 return redirect()->back()->withErrors(['Incorrect payment method! Please, contact us.'])->withInput();
-            dd('aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
             //save purchase
             $purchase = $this->purchase_save($info['s_token'],$client,$shoppingcart,$current);
             if(!$purchase['success'])

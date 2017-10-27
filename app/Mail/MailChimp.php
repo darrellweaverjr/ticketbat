@@ -11,21 +11,19 @@ use App\Exceptions\Handler;
  */
 class MailChimp {
 
-    public $mailchimp;
-    public $listId = 'df5575b6c2';
-
-    public function __construct(\Mailchimp $mailchimp)
+    public function __construct()
     {
-        $this->mailchimp = $mailchimp;
+        
     }
     
     public static function subscribe($email)
     {
         try {
-            if(filter_var($info['email'], FILTER_VALIDATE_EMAIL))
+            if(filter_var($email, FILTER_VALIDATE_EMAIL))
             {
-                $this->mailchimp->lists->subscribe(
-                    $this->listId,
+                $mailchimp = new \Mailchimp;
+                $mailchimp->lists->subscribe(
+                    'df5575b6c2',
                     ['email' => $email]
                 );
                 return true;

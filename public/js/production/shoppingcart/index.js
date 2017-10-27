@@ -186,9 +186,6 @@ var PurchaseFunctions = function () {
                 }
             }); 
         });
-        //show errors
-        if ( $( "#msgx" ).length )
-            $(document).animate({scrollTop:$('#msgx').offset().top}, 500);
         
     }
     return {
