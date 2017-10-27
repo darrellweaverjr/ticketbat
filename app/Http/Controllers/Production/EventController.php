@@ -129,7 +129,7 @@ class EventController extends Controller
                         ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                         ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, 
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time, 
-                                          show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id,
+                                          show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id, stages.ticket_order,
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
@@ -207,6 +207,22 @@ class EventController extends Controller
                     $event->tickets[$id]['tickets'][] = $t;
                 else 
                     $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'password'=>$pass,'tickets'=>[$t]];
+            }
+            //order the ticket types according to the stage order
+            if(!empty($event->ticket_order))
+            {
+                $ticket_order = explode(',',$event->ticket_order);
+                $new_order = [];
+                foreach ($ticket_order as $o)
+                {
+                    $id = preg_replace("/[^A-Za-z0-9]/", '_', $o);
+                    if(!empty($event->tickets[$id]))
+                    {
+                        $new_order[$id] = $event->tickets[$id];
+                        unset($event->tickets[$id]);
+                    }
+                }
+                $event->tickets = array_merge($new_order,$event->tickets); 
             }
             //return view
             return view('production.events.buy',compact('event','has_coupon'));
