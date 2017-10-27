@@ -44,12 +44,12 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                 var fixHeight = 372;
 		break;   
         case 'stages.image_url': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 518;
+                var fixHeight = 512;
 		break; 
         case 'stages.url': 
-                var fixWidth = 600;
-                var fixHeight = 600;
+                var fixWidth = 518;
+                var fixHeight = 512;
 		break; 
         case 'deals.image_url': 
                 var fixWidth = 120;

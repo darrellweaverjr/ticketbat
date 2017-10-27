@@ -161,6 +161,11 @@
                     </ul><hr>
                     @endif
                     <div class="tab-content" id="tabs_payment">
+                        @if($errors->any())
+                        <div class="alert alert-danger">
+                            <button class="close" data-close="alert"></button> {{ $errors->first() }} 
+                        </div>
+                        @endif
                         <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">
                             <div class="row"> 
                                 <!-- BEGIN FORM-->
@@ -177,13 +182,13 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -221,7 +226,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -248,7 +253,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="month" placeholder="M" style="min-width:145px">
+                                            <select class="form-control" name="month" placeholder="M" style="min-width:145px" value="{{old('month')}}">
                                                 <option value="" disabled="true" selected="true">- Select month -</option>
                                                 <option value="1">1 (January)</option>
                                                 <option value="2">2 (February)</option>
@@ -268,7 +273,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="year" placeholder="YYYY" style="min-width:135px">
+                                            <select class="form-control" name="year" placeholder="YYYY" style="min-width:135px" value="{{old('year')}}">
                                                 <option value="" disabled="true" selected="true">- Select year -</option>
                                                 @for ($y = date('Y'); $y <= date('Y')+20; $y++)
                                                     <option value="{{$y}}">{{$y}}</option>
@@ -281,7 +286,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="0000 Main St." name="address">
+                                            <input type="text" class="form-control" placeholder="0000 Main St." name="address" value="{{old('address')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -289,13 +294,13 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <input type="text" class="form-control" placeholder="Las Vegas" name="city">
+                                            <input type="text" class="form-control" placeholder="Las Vegas" name="city" value="{{old('city')}}">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">Zip:
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px">
+                                            <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px" value="{{old('zip')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -303,7 +308,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="country" placeholder="United States" style="min-width:135px">
+                                            <select class="form-control" name="country" placeholder="United States" style="min-width:135px" value="{{old('country')}}">
                                                 @foreach( $cart['countries'] as $c)
                                                     <option @if($c->code=='US') selected @endif value="{{$c->code}}">{{$c->name}}</option>
                                                 @endforeach
@@ -313,7 +318,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="state" placeholder="Nevada" style="min-width:135px">
+                                            <select class="form-control" name="state" placeholder="Nevada" style="min-width:135px" value="{{old('state')}}">
                                                 @foreach( $cart['regions'] as $r)
                                                     <option value="{{$r->code}}">{{$r->name}}</option>
                                                 @endforeach
@@ -323,7 +328,7 @@
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -361,7 +366,7 @@
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -398,7 +403,7 @@
                                     <div class="form-group desglose" style="padding-right:15px">
                                         <label class="control-label col-sm-1 text-right">$100 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="100" value="0" name="x100" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="100" value="0" name="x100" style="min-width:70px" value="{{old('x100')}}">
                                         </div>
                                         <div class="col-sm-2 show-error">
                                             <input type="number" class="form-control" data-bill="100" value="0.00" name="r100" disabled="true">
@@ -406,7 +411,7 @@
 
                                         <label class="control-label col-sm-1 text-right">$50 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="50" value="0" name="x50" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="50" value="0" name="x50" style="min-width:70px" value="{{old('x50')}}">
                                         </div>
                                         <div class="col-sm-2 show-error">
                                             <input type="number" class="form-control" data-bill="50" value="0.00" name="r50" disabled="true">
@@ -414,7 +419,7 @@
 
                                         <label class="control-label col-sm-1 text-right">$20 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="20" value="0" name="x20" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="20" value="0" name="x20" style="min-width:70px" value="{{old('x20')}}">
                                         </div>
                                         <div class="col-sm-2 show-error">
                                             <input type="number" class="form-control" data-bill="20" value="0.00" name="r20" disabled="true">
@@ -423,7 +428,7 @@
                                     <div class="form-group desglose" style="padding-right:15px">
                                         <label class="control-label col-sm-1 text-right">$10 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="10" value="0" name="x10" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="10" value="0" name="x10" style="min-width:70px" value="{{old('x10')}}">
                                         </div>
                                         <div class="col-sm-2 show-error">
                                             <input type="number" class="form-control" data-bill="10" value="0.00" name="r10" disabled="true">
@@ -431,7 +436,7 @@
 
                                         <label class="control-label col-sm-1 text-right">$5 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="5" value="0" name="x5" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="5" value="0" name="x5" style="min-width:70px" value="{{old('x5')}}">
                                         </div>
                                         <div class="col-sm-2 show-error">
                                             <input type="number" class="form-control" data-bill="5" value="0.00" name="r5" disabled="true">
@@ -439,7 +444,7 @@
 
                                         <label class="control-label col-sm-1 text-right">$1 x</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="1" value="0" name="x1" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="1" value="0" name="x1" style="min-width:70px" value="{{old('x1')}}">
                                         </div>
                                         <div class="col-sm-2 show-error">
                                             <input type="number" class="form-control" data-bill="1" value="0.00" name="r1" disabled="true">
@@ -448,16 +453,16 @@
                                     <div class="form-group desglose" style="padding-right:15px">
                                         <label class="control-label col-sm-1 text-right">Change</label>
                                         <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="99" step="1" value="00" name="change" style="min-width:70px">
+                                            <input type="number" class="form-control" min="0" max="99" step="1" value="00" name="change" style="min-width:70px" value="{{old('change')}}">
                                         </div>
                                         <div class="col-sm-2 show-error"></div>
                                         <label class="control-label col-sm-2 text-right" id="collect_text">Collect</label>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{$cart['total']}}" value="-{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true">
+                                            <input type="number" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{$cart['total']}}" value="-{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true" value="{{old('pending')}}">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">Total</label>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" style="color:blue;font-size:20px;font-weight:bold" value="0.00" name="subtotal" readOnly="true">
+                                            <input type="number" class="form-control" style="color:blue;font-size:20px;font-weight:bold" value="0.00" name="subtotal" readOnly="true" value="{{old('subtotal')}}">
                                         </div>
                                     </div>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -469,13 +474,13 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
                                         </div>
                                     </div>
                                     <div class="form-group">

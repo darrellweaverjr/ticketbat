@@ -12,7 +12,11 @@ var FunctionsManaged = function () {
                 if(v.ticket_type == ticket_type)
                     image_default = v.url;
             });
+            var width = $('#stage_images').width();
+            var height = $('#stage_images').height();
             $('#stage_images').attr('src',image_default);
+            $('#stage_images').width(width);
+            $('#stage_images').height(height);
         }
         //on click check images for ticket types
         $('#tickets_accordion a.accordion-toggle').on('click',function(){
@@ -114,8 +118,6 @@ var FunctionsManaged = function () {
         update_stage_images( $('#tickets_accordion a.accordion-toggle')[0] );
         $('#form_model_update input:radio.default_radio').attr('checked',true).trigger('change');
         update_price();
-                                
-        
     }
     return {
         //main function to initiate the module
