@@ -521,7 +521,7 @@
     <!-- END SEARCH MODAL-->
     <!-- BEGIN ADD/REMOVE VENUESTAGESS MODAL-->
     <div id="modal_model_venue_stages" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:500px !important;">
+        <div class="modal-dialog" style="width:900px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Stage</center></h4>
@@ -535,34 +535,152 @@
                         <input type="hidden" name="action" value="" />
                         <div class="form-body">
                             <div class="row">
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Name
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9 show-error">
-                                        <input type="text" class="form-control" name="name" value=""/>
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Name
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-9 show-error">
+                                            <input type="text" class="form-control" name="name" value=""/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Description
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-9 show-error">
+                                            <textarea name="description" class="form-control" rows="5"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="subform_venue_stages">
+                                        <label class="control-label col-md-3">Image
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-9 show-error" >
+                                            <center>
+                                                <input type="hidden" name="image_url"/>
+                                                <button type="button" id="btn_venue_upload_stages" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                                <img name="image_url" alt="- No image -" src="" width="323px" height="270px" />
+                                            </center>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Description
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9 show-error">
-                                        <textarea name="description" class="form-control" rows="5"></textarea>
+                                <div class="col-md-5">
+                                    <label class="control-label">
+                                        <span class="required"> Ticket types order at the stage:</span>
+                                    </label><hr>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">1st</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[1]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">2nd</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[2]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">3rd</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[3]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">4th</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[4]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">5th</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[5]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">6th</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[6]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">7th</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[7]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">8th</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[8]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">9th</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[9]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">10th</label>
+                                        <div class="col-md-9 show-error">
+                                            <select class="form-control" name="ticket_type[10]">
+                                                <option value="">- Select -</option>
+                                                @foreach($ticket_types as $index=>$tt)
+                                                    <option value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group" id="subform_venue_stages">
-                                    <label class="control-label col-md-3">Image
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9 show-error" >
-                                        <center>
-                                            <input type="hidden" name="image_url"/>
-                                            <button type="button" id="btn_venue_upload_stages" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
-                                            <img name="image_url" alt="- No image -" src="" width="323px" height="270px" />
-                                        </center>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                         <div class="form-actions">

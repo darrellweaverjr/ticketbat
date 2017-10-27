@@ -495,6 +495,12 @@ var TableDatatablesManaged = function () {
                         $('#form_model_venue_stages [name="description"]').val(data.stage.description);
                         $('#form_model_venue_stages [name="image_url"]:hidden').val(data.stage.image_url);
                         $('#form_model_venue_stages img[name="image_url"]').attr('src',data.stage.image_url);
+                        if(data.stage.ticket_order && data.stage.ticket_order.length)
+                        {
+                            $.each(data.stage.ticket_order,function(k, v) {
+                                $('#form_model_venue_stages select[name="ticket_type['+parseInt(k+1)+']"]').val(v);
+                            }); 
+                        }
                         $('#modal_model_venue_stages').modal('show');
                     }
                     else

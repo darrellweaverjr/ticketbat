@@ -386,6 +386,19 @@ class VenueController extends Controller{
                         $stage->set_image_url($input['image_url']);
                     $stage->name = strip_tags($input['name']);
                     $stage->description = strip_tags($input['description']);
+                    if(!empty($input['ticket_type']) && count($input['ticket_type']))
+                    {
+                        $ticket_type = [];
+                        foreach ($input['ticket_type'] as $tt)
+                            if(!empty($tt))
+                                $ticket_type[] = $tt;
+                        if(count($ticket_type))
+                            $stage->ticket_order = implode (',', $ticket_type);
+                        else
+                            $stage->ticket_order = null;
+                    }
+                    else
+                        $stage->ticket_order = null;
                     $stage->updated = $current;
                     $stage->save();
                     $stage->image_url = Image::view_image($stage->image_url);
@@ -418,6 +431,15 @@ class VenueController extends Controller{
                 $stage->name = strip_tags($input['name']);
                 $stage->venue_id = $input['venue_id'];
                 $stage->description = strip_tags($input['description']);
+                if(!empty($input['ticket_type']) && count($input['ticket_type']))
+                {
+                    $ticket_type = [];
+                    foreach ($input['ticket_type'] as $tt)
+                        if(!empty($tt))
+                            $ticket_type[] = $tt;
+                    if(count($ticket_type))
+                        $stage->ticket_order = implode (',', $ticket_type);
+                }
                 $stage->updated = $current;
                 $stage->save();
                 if($stage)
@@ -434,6 +456,10 @@ class VenueController extends Controller{
                 if($stage)
                 {   
                     $stage->image_url = Image::view_image($stage->image_url);
+                    if(!empty($stage->ticket_order))
+                        $stage->ticket_order = explode(',', $stage->ticket_order);
+                    else
+                        $stage->ticket_order = [];
                     return ['success'=>true,'stage'=>$stage];
                 }  
                 return ['success'=>false,'msg'=>'There was an error getting the stage.<br>The server could not retrieve the data.'];
