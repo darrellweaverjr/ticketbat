@@ -26,8 +26,8 @@ class PurchaseController extends Controller
             $current = date('Y-m-d H:i:s');
             $info['s_token'] = Util::s_token(false,true);
             
-            $errors = ['Fill the form out correctly!'];
-            return redirect()->back()->withErrors($errors)->withInput();
+            //$errors = ['Fill the form out correctly!'];
+            //return redirect()->back()->withErrors($errors)->withInput();
             
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
