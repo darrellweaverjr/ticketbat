@@ -45,7 +45,6 @@
                 </h4> 
                 <p class="margin-top-20">
                     <center>
-                        <h4>{{$event->show_time}}</h4><hr>
                         <img id="stage_images" src="{{$event->image_url}}" data-default="{{$event->image_url}}" data-types='{{json_encode($event->stage_images,true)}}'/>
                     </center><br>
                 </p>
@@ -61,6 +60,7 @@
                         <i class="fa fa-ticket"></i> Tickets
                     </h4> 
                     <div class="portlet-body">
+                        <center><h4>{{$event->show_time}}</h4></center>
                         <div class="panel-group accordion" id="tickets_accordion">
                             <!-- BEGIN TICKETS -->
                             @php $selected = true @endphp
@@ -72,7 +72,7 @@
                                     </h4>
                                 </div>
                                 <div id="collapse_{{$index}}" class="panel-collapse @if($selected) in @else collapse @endif">
-                                    <div class="panel-body">
+                                    <div class="panel-body" style="margin-bottom: -20px">
                                         @if(!empty($t['amex_only']))
                                         <div class="alert alert-danger display-block">
                                             <center>These tickets can only purchased with an American Express Card:</center>

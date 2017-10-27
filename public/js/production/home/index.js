@@ -147,7 +147,20 @@ var PortfolioManaged = function () {
             }
             else
                 $('#myShows .cbp-item.filtered').removeClass('hidden');
-        }        
+            check_images();
+        }
+        //check for broken images to change
+        function check_images(){
+            $('#myShows img').each(function(){
+                if($(this).height() <= 40) {
+                    $(this).attr('src', $('#myShows').data('broken'));
+                }
+            });
+        }
+        //check images on load
+        $(window).load(function(){
+            check_images();
+        });
     }
     return {
         //main function to initiate the module

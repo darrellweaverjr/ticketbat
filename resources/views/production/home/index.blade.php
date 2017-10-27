@@ -125,7 +125,7 @@
     <!-- END SEARCH BAR-->
     <!-- BEGIN SHOWS GRID-->
     <div class="portfolio-content body_grid color-panel text-center">        
-        <div id="myShows" class="cbp text-center">
+        <div id="myShows" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
             @foreach($shows as $index=>$s)
             <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/event/{{$s->slug}}">
                 <div class="cbp-caption">
