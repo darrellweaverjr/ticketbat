@@ -2,6 +2,22 @@ var FunctionsManaged = function () {
     
     var initFunctions = function () {
         
+        //update stage images
+        function update_stage_images(e)
+        {
+            var ticket_type = $(e).data('type');
+            var image_default = $('#stage_images').data('default');
+            var image_types = $('#stage_images').data('types');
+            $.each(image_types,function(k,v){
+                if(v.ticket_type == ticket_type)
+                    image_default = v.url;
+            });
+            $('#stage_images').attr('src',image_default);
+        }
+        //on click check images for ticket types
+        $('#tickets_accordion a.accordion-toggle').on('click',function(){
+            update_stage_images($(this));
+        });
         //update ticket on select 
         $('#form_model_update input[name="ticket_id"]').bind('click','change',function(){
             update_price();
@@ -95,6 +111,7 @@ var FunctionsManaged = function () {
             }); 
         }
         //autoselect first one
+        update_stage_images( $('#tickets_accordion a.accordion-toggle')[0] );
         $('#form_model_update input:radio.default_radio').attr('checked',true).trigger('change');
         update_price();
                                 

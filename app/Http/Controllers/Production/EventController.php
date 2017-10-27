@@ -129,7 +129,7 @@ class EventController extends Controller
                         ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                         ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, 
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time, 
-                                          show_times.time_alternative, shows.amex_only_ticket_types,
+                                          show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id,
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
@@ -145,6 +145,13 @@ class EventController extends Controller
             //formats
             $event->image_url = Image::view_image($event->image_url);
             $event->amex_only_ticket_types = (!empty($event->amex_only_ticket_types))? explode(',', $event->amex_only_ticket_types) : [];
+            //get stage images
+            $event->stage_images = DB::table('images')
+                                ->join('stage_image_ticket_type', 'stage_image_ticket_type.image_id', '=', 'images.id')
+                                ->select(DB::raw('images.url, stage_image_ticket_type.ticket_type'))
+                                ->where('stage_image_ticket_type.stage_id',$event->stage_id)->get();
+            foreach ($event->stage_images as $i)
+                $i->url = Image::view_image($i->url);
             //passwords
             $passwords = DB::table('show_passwords')
                                 ->select(DB::raw('show_passwords.ticket_types'))

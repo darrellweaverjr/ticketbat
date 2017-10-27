@@ -46,7 +46,7 @@
                 <p class="margin-top-20">
                     <center>
                         <h4>{{$event->show_time}}</h4><hr>
-                        <img src="{{$event->image_url}}" />
+                        <img id="stage_images" src="{{$event->image_url}}" data-default="{{$event->image_url}}" data-types='{{json_encode($event->stage_images,true)}}'/>
                     </center><br>
                 </p>
                 <!-- END STAGE -->
@@ -68,7 +68,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title {{$t['class']}}">
-                                        <a class="accordion-toggle accordion-toggle-styled @if(!$selected) collapsed @endif" data-toggle="collapse" data-parent="#tickets_accordion" href="#collapse_{{$index}}"> <b>{{$t['type']}}</b> </a>
+                                        <a class="accordion-toggle accordion-toggle-styled @if(!$selected) collapsed @endif" data-type="{{$t['type']}}" data-toggle="collapse" data-parent="#tickets_accordion" href="#collapse_{{$index}}"> <b>{{$t['type']}}</b> </a>
                                     </h4>
                                 </div>
                                 <div id="collapse_{{$index}}" class="panel-collapse @if($selected) in @else collapse @endif">
