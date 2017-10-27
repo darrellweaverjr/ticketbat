@@ -162,8 +162,11 @@
                     @endif
                     <div class="tab-content" id="tabs_payment">
                         @if($errors->any())
-                        <div class="alert alert-danger">
-                            <button class="close" data-close="alert"></button> {{ $errors->first() }} 
+                        <div class="alert alert-danger" id="msgx">
+                            <button class="close" data-close="alert"></button>
+                            @foreach ($errors->all() as $error)
+                                {{ htmlentities($error) }}<br>
+                            @endforeach
                         </div>
                         @endif
                         <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">

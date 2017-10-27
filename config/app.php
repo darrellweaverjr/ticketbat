@@ -174,6 +174,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Skovmand\Mailchimp\MailchimpServiceProvider::class,
 
         /*
          * Package Service Providers...
