@@ -28,11 +28,15 @@ class MailChimp {
                     $this->listId,
                     ['email' => $email]
                 );
+                return true;
             }
+            return false;
             //return redirect()->back()->with('success','Email Subscribed successfully');
         } catch (\Mailchimp_List_AlreadySubscribed $e) {
+            return false;
             //return redirect()->back()->with('error','Email is Already Subscribed');
         } catch (\Mailchimp_Error $e) {
+            return false;
             //return redirect()->back()->with('error','Error from MailChimp');
         }
 

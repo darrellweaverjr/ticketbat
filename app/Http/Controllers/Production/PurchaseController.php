@@ -12,8 +12,9 @@ use App\Http\Models\Transaction;
 use App\Http\Models\Purchase;
 use App\Http\Models\Util;
 use App\Http\Models\Location;
-use App\Http\Models\Customer;
 use App\Http\Models\User;
+use App\Mail\EmailSG;
+use App\Mail\MailChimp;
 
 class PurchaseController extends Controller
 {
@@ -38,7 +39,12 @@ class PurchaseController extends Controller
                 $info['email'] = trim(strtolower($info['email']));
                 if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
                     return redirect()->back()->withErrors(['Enter a valid email address.'])->withInput();
+                //added to mailchimp
+                if(!empty($info['newsletter']))
+                    MailChimp::subscribe($info['email']);
                 //check the correct name
+                if(strpos(trim($info['customer']), ' ') === false)
+                    return redirect()->back()->withErrors(['You must enter your full name.'])->withInput();
                 $info['customer'] = explode(' ',trim($info['customer']),2);
                 $info['first_name'] = $info['customer'][0];
                 $info['last_name'] = $info['customer'][1];    

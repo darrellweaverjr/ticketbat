@@ -2,9 +2,6 @@ var PurchaseFunctions = function () {
     
     var initFunctions = function () {
         
-        if ( $( "#msgx" ).length )
-            $(document).animate({scrollTop:$('#msgx').offset().top}, 500);
-        
         //remove item
         $('#tb_items tr > td:last-child button').on('click', function(ev) {
             var row = $(this).closest('tr');
@@ -189,6 +186,9 @@ var PurchaseFunctions = function () {
                 }
             }); 
         });
+        //show errors
+        if ( $( "#msgx" ).length )
+            $(document).animate({scrollTop:$('#msgx').offset().top}, 500);
         
     }
     return {
