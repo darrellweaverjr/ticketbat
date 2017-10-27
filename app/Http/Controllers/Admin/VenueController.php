@@ -558,12 +558,12 @@ class VenueController extends Controller{
                     if($image)
                     {
                         DB::table('stage_image_ticket_type')->insert(['ticket_type'=>$input['ticket_type'],'stage_id'=>$input['stage_id'],'image_id'=>$image->id]);
-                        $image->url = Image::view_image($image->url);
                         $stage_images = DB::table('images')
                                 ->join('stage_image_ticket_type', 'stage_image_ticket_type.image_id', '=' ,'images.id')
                                 ->join('stages', 'stages.id', '=' ,'stage_image_ticket_type.stage_id')
                                 ->join('venues', 'venues.id', '=' ,'stages.venue_id')
                                 ->select(DB::raw('images.*,stage_image_ticket_type.*,stages.name'))->where('images.id','=',$image->id)->distinct()->first();
+                        $stage_images->url = Image::view_image($stage_images->url);
                         return ['success'=>true,'action'=>1,'stage_images'=>$stage_images];
                     } 
                     return ['success'=>false,'msg'=>'There was an error adding the image.<br>The server could not retrieve the data.'];
