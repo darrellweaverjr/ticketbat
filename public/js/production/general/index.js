@@ -196,7 +196,7 @@ var Countdown = function () {
                                 text: "The countdown has been reset.<br>You have more time to make the payment.",
                                 html:true,
                                 type: "info",
-                                timer: 3000,
+                                timer: 2000,
                                 showConfirmButton: false
                             },function(){
                                 window.location.href = '/production/shoppingcart';
@@ -217,7 +217,7 @@ var Countdown = function () {
                                 text: "The items in your shopping cart have been deleted.<br>You will now be redirected to the home page.",
                                 html:true,
                                 type: "info",
-                                timer: 3000,
+                                timer: 2000,
                                 showConfirmButton: false
                             },function(){
                                 window.location.href = '/production/home';

@@ -96,14 +96,10 @@ class PurchaseController extends Controller
                         }
                         //make transaction for card and swipe
                         $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
+                        if(!$transaction['success'])
+                            return redirect()->back()->withErrors([$transaction['msg']])->withInput();
                         //remove hide credit card number
                         $info['card'] = '...'.substr($info['card'], -4); 
-                        return redirect()->back()->with('status', ['Profile updated!']);
-                        return back()->with('errorsx','ccccccccccccccccvvbvcbvcbvc');
-                        if(!$transaction['success'])
-                            
-                            return redirect()->back()->withErrors([$transaction['msg']])->withInput();
-                        
                         $shoppingcart['transaction_id'] = $transaction['transaction_id'];
                         $shoppingcart['payment_type'] = 'Credit';
                         break;

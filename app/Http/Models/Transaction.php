@@ -57,7 +57,7 @@ class Transaction extends Model
             //init params
             $tran=new umTransaction();
             $tran->testmode=env('USAEPAY_TEST',1); 
-            if($tran->testmode)
+            if($tran->testmode>0)
             {
                 $tran->key="_5n4fazc17ya1luc3euqVSj648zOs0D8"; 
                 $tran->usesandbox=true;
