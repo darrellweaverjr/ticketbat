@@ -16,13 +16,17 @@
                           style-src 'self' {{env('IMAGE_URL_AMAZON_SERVER')}} http://fonts.googleapis.com 'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
                           child-src 'none';
-                          script-src 'self' https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com;
+                          script-src 'self' https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js http://www.google-analytics.com/analytics.js;
                           frame-ancestors 'self';">
         <title>@yield('title') - TicketBat</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
+        <meta @if(!empty($ua_conversion_code)) content="{{$ua_conversion_code}}" @else content="" @endif name="ua-conversion_code" />
+        <meta @if(!empty($analytics)) content="{{$analytics}}" @else content="" @endif name="analytics" />
+        <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
+        <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -216,6 +220,12 @@
         <script type="text/javascript">$('#modal_reset_password').modal('show');</script>
         @endif
         @yield('scripts')
+        
+        @if(!empty($conversion_code))
+        @foreach($conversion_code as $cc)
+            echo $cc
+        @endforeach
+        @endif
     </body>
 
 </html>
