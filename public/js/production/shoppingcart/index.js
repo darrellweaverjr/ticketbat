@@ -187,6 +187,27 @@ var PurchaseFunctions = function () {
             }); 
         });
         
+        //functio to update shoppingcart 
+        function update_shoppingcart()
+        {
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/production/shoppingcart/items', 
+                success: function(data) {
+                    if(data) 
+                        UpdateShoppingcartFunctions.init( data );
+                    else
+                        location.reload(); 
+                },
+                error: function(){
+                    location.reload(); 
+                }
+            });
+        }
+        //update shoppingcart each minute
+        setTimeout(update_shoppingcart(), 60000); 
+        
     }
     return {
         //main function to initiate the module
