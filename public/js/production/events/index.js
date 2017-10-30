@@ -60,6 +60,7 @@ var AppCalendar = function() {
             var calendarEvents = [];
             var events = $('#cal_model').data('info');
             var slug = $('#cal_model').data('slug');
+            var go_to_date = (events && events.length>0)? events[0].show_time : new Date();
             $.each(events,function(k, v) {
                 calendarEvents.push( {
                     id: v.id,
@@ -84,10 +85,12 @@ var AppCalendar = function() {
                 }
             });
             $('#cal_model').fullCalendar('render'); 
+            $('#cal_model').fullCalendar('gotoDate', go_to_date);
             //render calendar when showtimes tab is clicked
             $('#showtimes_calendar').on('click', function(ev) {
                 window.setTimeout(function(){
                     $('#cal_model').fullCalendar('render'); 
+                    $('#cal_model').fullCalendar('gotoDate', go_to_date);
                 },1);
             });
             //gallery carousel
