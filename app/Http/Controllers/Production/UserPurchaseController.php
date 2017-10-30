@@ -32,8 +32,9 @@ class UserPurchaseController extends Controller
                                           IF(show_times.show_time>NOW(),1,0) AS passed,
                                           show_times.show_time, purchases.created, purchases.quantity, purchases.price_paid'))
                         ->where('purchases.user_id', Auth::user()->id)->orderBy('purchases.created','DESC')->get();
+            $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
             //return view
-            return view('production.user.purchases',compact('purchases'));
+            return view('production.user.purchases',compact('purchases','seller'));
         } catch (Exception $ex) {
             throw new Exception('Error Production User Purchases: '.$ex->getMessage());
         }
@@ -68,12 +69,17 @@ class UserPurchaseController extends Controller
         try {
             if(!in_array($type,['C','S']) || ($type=='S' && !(Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))))
                 return redirect()->route('index');
+            $format = 'pdf';
+            //paper size
+            $paper = ($type=='C')? 'a4' : [0, 0, 396, 144];
             //get tickets
-            $tickets = Purchase::find($id)->get_receipt()['tickets'];
-            $format = 'pdf'; 
+            $tickets = [];
+            $ids = explode('-', $id);
+            foreach ($ids as $i)
+                $tickets = array_merge($tickets, Purchase::find($i)->get_receipt()['tickets'] );
             //create pdf tickets
             $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format')); 
-            return PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Purchase Tickets #'.$id.'.pdf');
+            return PDF::loadHTML($pdf_receipt->render())->setPaper($paper, 'portrait')->setWarnings(false)->download('TicketBat Purchase Tickets #'.$id.'.pdf');
         } catch (Exception $ex) {
             return redirect()->route('index');
         }
