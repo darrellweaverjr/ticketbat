@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Production;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Util;
@@ -28,12 +30,27 @@ class EventController extends Controller
                         ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url, 
                                           shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram,
                                           venues.name as venue, shows.name, locations.*, shows.presented_by, shows.sponsor, 
-                                          shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id,
+                                          shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id, shows.ua_conversion_code,
                                           IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
                         ->where('shows.slug', $slug)->first();
             if(!$event)
                 return redirect()->route('index');
+            //funnel
+            $input = Input::all();  
+            if(!empty($input['funnel']) && in_array($input['funnel'], [0,1]))
+            {
+                Session::put('funnel', $input['funnel']);
+                Session::put('slug', $event->slug.'?funnel='.$input['funnel']);
+                if(!empty($event->ua_conversion_code))
+                    Session::put('ua_code', $event->ua_conversion_code);
+            }
+            else
+            {
+                Session::forget('funnel');
+                Session::forget('slug');
+                Session::forget('ua_code');
+            }
             //format sponsor pic
             $event->sponsor_logo_id = Image::view_image($event->sponsor_logo_id);
             //get header
