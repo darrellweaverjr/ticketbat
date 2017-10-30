@@ -24,25 +24,25 @@
                 <i style="padding-left:10px" class="fa fa-ticket"></i> <strong> {{$p['qty']}}</strong> @if($p['qty']>1) tickets @else ticket @endif for <strong>{{$p['event']}}</strong> on <strong>{{$p['schedule']}}</strong><br>
                 @endforeach
             <hr>
-            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
+            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
                 @if(isset($send_welcome_email))
                     @if($send_welcome_email)
                     <div class="alert alert-success" style="margin:20px">
-                        A welcome email has been sent to <strong>{{$sent_to}}</strong>. Please check your spam / junk folder for our emails.
+                        A welcome email has been sent to <strong>{{$sent_to['email']}}</strong>. Please check your spam / junk folder for our emails.
                     </div>
                     @else
                     <div class="alert alert-danger" style="margin:20px">
-                        A welcome email could not be sent to <strong>{{$sent_to}}</strong>. <button type="button" class="btn btn-danger" id="resend_welcome" >Click here to re-send <i class="fa fa-send"></i></button>
+                        A welcome email could not be sent to <strong>{{$sent_to['email']}}</strong>. <button type="button" class="btn btn-danger" data-id="{{$sent_to['id']}}" id="resend_welcome" >Click here to re-send <i class="fa fa-send"></i></button>
                     </div>
                     @endif
                 @endif
                 @if($sent_receipts)
                 <div class="alert alert-success" style="margin:20px">
-                    A receipt has been sent to <strong>{{$sent_to}}</strong>. Please check your spam / junk folder for our emails.
+                    A receipt has been sent to <strong>{{$sent_to['email']}}</strong>. Please check your spam / junk folder for our emails.
                 </div>
                 @else
                 <div class="alert alert-danger" style="margin:20px">
-                    The receipt could not be sent to <strong>{{$sent_to}}</strong>. <button type="button" class="btn btn-danger" id="resend_receipts" >Click here to re-send <i class="fa fa-send"></i></button>
+                    The receipt could not be sent to <strong>{{$sent_to['email']}}</strong>. <button type="button" class="btn btn-danger" data-purchases="{{$purchases['ids']}}" id="resend_receipts" >Click here to re-send <i class="fa fa-send"></i></button>
                 </div>
                 @endif
                 <hr>

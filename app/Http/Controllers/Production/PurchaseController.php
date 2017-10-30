@@ -305,24 +305,78 @@ class PurchaseController extends Controller
         $sent_to = null;
         try {
             //send receipts
+            $data = $this->receipts($purchases);
+            //get data
+            $receipts = $data['receipts'];
+            $purchased = $data['purchased'];
+            $sent_to = $data['sent_to'];
+            $sent_receipts = $data['sent_receipts'];
+            Session::forget('change');
+            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email'));
+        } catch (Exception $ex) {
+            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email'));
+        }
+    }
+    
+    /*
+     * resend receipts
+     */                          
+    public function receipts($purchases=null)
+    {
+        $receipts=[];
+        $purchased=[];
+        $purchases=[];
+        $sent_to = null;
+        $sent_receipts = false;
+        $input = Input::all(); 
+        try {
+            //load input 
+            if(empty($purchases) && !empty($input['purchases']))
+                $purchases['ids'] = explode(',', $input['purchases']);
+            //send receipts
             foreach ($purchases['ids'] as $id)
             {
                 $p = Purchase::find($id);
                 if($p)
                 {
+                    $purchases[] = $id;
                     if(empty($sent_to))
-                        $sent_to = $p->customer->email;
+                        $sent_to = ['id'=>$p->user_id, 'email'=>$p->customer->email];
                     $receipts[] = $p->get_receipt();
                     $purchased[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'schedule'=>date('l, F j, Y @ g:i A', strtotime($p->show_time->show_time)),
                                     'slug'=>$p->ticket->show->slug,'show_time_id'=>$p->show_time->id];
                 }
             }
+            //sent email
             $sent_receipts = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
-            $purchases = implode('-', $purchases['ids']);
-            Session::forget('change');
-            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email'));
+            return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'purchases'=>$purchases, 'sent_to'=>$sent_to, 'sent_receipts'=>$sent_receipts];
         } catch (Exception $ex) {
-            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email'));
+            return ['success'=>false, 'receipts'=>$receipts, 'purchased'=>$purchased, 'purchases'=>$purchases, 'sent_to'=>$sent_to, 'sent_receipts'=>$sent_receipts];
+        }
+    }
+    
+    /*
+     * resend welcome email
+     */                          
+    public function welcome()
+    {
+        try {
+            //init
+            $input = Input::all(); 
+            if(!empty($input['user_id']))
+            {
+                $p = Purchase::find($user_id);
+                if($p)
+                {
+                    if($p->welcome_email(true))
+                        return ['success'=>true, 'msg'=>'Email sent successfully!'];
+                    return ['success'=>false, 'msg'=>'The system could not sent the email!'];
+                }
+                return ['success'=>false, 'msg'=>'The system could not sent the email to that client!'];
+            }
+            return ['success'=>false, 'msg'=>'The system could not sent the email to the client!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
        
