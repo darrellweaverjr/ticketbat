@@ -210,7 +210,7 @@
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>
-        <script src="/js/production/general/analytics.js" type="text/javascript"></script>
+<!--        <script src="/js/production/general/analytics.js" type="text/javascript"></script>-->
         <script src="/js/production/general/contact.js" type="text/javascript"></script>
         <script src="/js/production/user/login.js" type="text/javascript"></script>
         <script src="/js/production/user/register.js" type="text/javascript"></script>
