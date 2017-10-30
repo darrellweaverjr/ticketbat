@@ -62,7 +62,7 @@
                     </div>
                 </h4>  
                 <p class="margin-top-20" title="Description of the event.">
-                    {!! $event->description !!}
+                    {!! $event->description !!}<br><br>
                 </p>
                 <!-- END DESCRIPTION -->
                 @if(count($event->bands))
