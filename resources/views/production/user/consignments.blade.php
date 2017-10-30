@@ -10,14 +10,14 @@
 
 @section('content')
 
-<div class="page-content color-panel" style="margin:40px!important;min-height:600px">     
+<div class="page-content color-panel" style="min-height:600px">     
 @if(empty($consignments) || !count($consignments))
 <div>       
-    <h1>There are no consignments to list</h1>
+    <center><br><h1>There are no consignments to list</h1></center>
 </div>
 @else
     <!-- BEGIN TABLE-->
-    <div class="row">
+    <div class="row fixed-panel">
         <div class="col-md-12">
             <div class="portlet box green">
                 <div class="portlet-title">
