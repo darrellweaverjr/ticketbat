@@ -128,6 +128,7 @@ Route::group(['prefix' => 'production','namespace' => 'Production'], function ()
     Route::post('shoppingcart/coupon', 'ShoppingcartController@coupon');
     Route::post('shoppingcart/share', 'ShoppingcartController@share');
     Route::post('shoppingcart/printed', 'ShoppingcartController@printed');
+    Route::post('shoppingcart/items', 'ShoppingcartController@items');
     Route::post('shoppingcart/count', 'ShoppingcartController@count');
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
     Route::match(['get','post'], 'shoppingcart', 'ShoppingcartController@index');
