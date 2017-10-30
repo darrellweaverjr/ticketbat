@@ -17,8 +17,8 @@ var Analytics = function () {
         
         //load values from content header
         var ua_code = $('meta[name="ua-code"]').attr('content');
-        var ua_conversion_code = $('meta[name="ua-conversion_code"]').attr('content');
-        var analytics = $('meta[name="analytics"]').attr('content');
+        var ua_conversion_code = jQuery.parseJSON( $('meta[name="ua-conversion_code"]').attr('content') );
+        var analytics = jQuery.parseJSON( $('meta[name="analytics"]').attr('content') );
         var transaction = $('meta[name="transaction"]').attr('content');
         var totals = $('meta[name="totals"]').attr('content');
         

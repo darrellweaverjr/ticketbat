@@ -305,7 +305,7 @@ class PurchaseController extends Controller
         $purchased=[];
         $sent_to = null;
         $purchases = null;
-        $send_welcome_email = null;
+        $send_welcome_email = 0;
         $sent_receipts = false;
         $analytics = [];
         $totals = 0;
@@ -318,6 +318,7 @@ class PurchaseController extends Controller
             $input = Input::all(); 
             if(!empty($input['purchases']) && isset($input['send_welcome_email']))
             {
+                $purchases = $input['purchases'];
                 $send_welcome_email = $input['send_welcome_email'];
                 //send receipts
                 $data = $this->receipts($purchases);
@@ -326,11 +327,11 @@ class PurchaseController extends Controller
                 $purchased = $data['purchased'];
                 $sent_to = $data['sent_to'];
                 $sent_receipts = $data['sent_receipts'];
-                $analytics = $data['analytics'];
+                $analytics = json_encode($data['analytics'],true);
                 $transaction = $data['transaction'];
                 $totals = $data['totals'];
                 $conversion_code = $data['conversion_code'];
-                $ua_conversion_code = $data['ua_conversion_code'];
+                $ua_conversion_code = json_encode($data['ua_conversion_code'],true);
                 Session::forget('change');
             }
         } catch (Exception $ex) {
@@ -375,7 +376,6 @@ class PurchaseController extends Controller
                     //load if only resubmit dont need this
                     if(!empty($purchasex))
                     {
-                        $purchases[] = $id;
                         if(empty($sent_to))
                             $sent_to = ['id'=>$p->user_id, 'email'=>$p->customer->email];
                         $purchased[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'schedule'=>date('l, F j, Y @ g:i A', strtotime($p->show_time->show_time)),
@@ -400,13 +400,11 @@ class PurchaseController extends Controller
             }
             //sent email
             $sent_receipts = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
-            //format purchases id
-            $purchases = implode(',', $purchases);
         } catch (Exception $ex) {
             
         } finally {
             if(!empty($purchasex))
-                return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'purchases'=>$purchases, 'sent_to'=>$sent_to, 
+                return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 
                         'sent_receipts'=>$sent_receipts, 'analytics'=>$analytics, 'totals'=>$totals, 'transaction'=>$transaction,
                         'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code];
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];
