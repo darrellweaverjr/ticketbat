@@ -169,7 +169,7 @@
                         <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">
                             <div class="row"> 
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_skip" class="form-horizontal" action="/production/purchase/complete">
+                                <form method="post" id="form_skip" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
@@ -212,7 +212,7 @@
                                     <img id="icon-ax" src="{{config('app.theme')}}img/card/cc-icon-american-express.png">
                                 </div>
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_card" class="form-horizontal" action="/production/purchase/complete">
+                                <form method="post" id="form_card" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
@@ -347,7 +347,7 @@
                         <div class="tab-pane fade @if(!($cart['total']>0)) hidden @endif" id="tab_swipe">
                             <div class="row">
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_swipe" class="form-horizontal" action="/production/purchase/complete">
+                                <form method="post" id="form_swipe" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
                                     </div>
@@ -396,7 +396,7 @@
                         <div class="tab-pane fade @if(!($cart['total']>0)) hidden @endif" id="tab_cash">
                             <div class="row">
                                 <!-- BEGIN FORM-->
-                                <form method="post" id="form_cash" class="form-horizontal" action="/production/purchase/complete">
+                                <form method="post" id="form_cash" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some errors. Please check below. 
                                     </div>
@@ -514,6 +514,13 @@
         </div>
     </div>
     <!-- END PAYMENT -->
+    <!-- BEGIN FORM COMPLETE-->
+    <form method="post" id="form_complete" action="/production/purchase/complete" class="hidden">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="purchases" value="">
+        <input type="hidden" name="send_welcome_email" value="">
+    </form>
+    <!-- END FORM COMPLETE-->
 </div>
 
 <!-- BEGIN TERMS AND CONDITIONS MODAL -->

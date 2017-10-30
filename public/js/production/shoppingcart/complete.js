@@ -75,7 +75,7 @@ var CompleteFunctions = function () {
                 error: function(){
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to re-send the welcome email. Please, contact us.",
+                        text: "There was an error trying to re-send the receipts by email. Please, contact us.",
                         html: true,
                         type: "error",
                         showConfirmButton: true

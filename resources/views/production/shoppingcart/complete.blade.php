@@ -27,30 +27,30 @@
             @if($seller>0)
             <center>
                 <h4>Print tickets as:</h4><br>
-                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/production/user/purchases/tickets/C/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> Standard Printer</a>
-                <a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/S/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> BOCA Ticket Printer</a>
+                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/production/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Standard Printer</a>
+                <a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> BOCA Ticket Printer</a>
             </center>
             @else
-            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/C/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
+            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
             @endif    
-                @if(isset($send_welcome_email))
-                    @if($send_welcome_email)
+                @if(!empty($send_welcome_email))
+                    @if($send_welcome_email>0)
                     <div class="alert alert-success" style="margin:20px">
-                        A welcome email has been sent to <strong>{{$sent_to['email']}}</strong>. Please check your spam / junk folder for our emails.
+                        A welcome email has been sent to @if(empty($sent_to['email'])) the client @else <strong>{{$sent_to['email']}}</strong>@endif. Please check your spam / junk folder for our emails.
                     </div>
                     @else
                     <div class="alert alert-danger" style="margin:20px">
-                        A welcome email could not be sent to <strong>{{$sent_to['email']}}</strong>. <button type="button" class="btn btn-danger" data-id="{{$sent_to['id']}}" id="resend_welcome" >Click here to re-send <i class="fa fa-send"></i></button>
+                        A welcome email could not be sent to @if(empty($sent_to['email'])) the client @else <strong>{{$sent_to['email']}}</strong>@endif. <button type="button" class="btn btn-danger" data-id="{{$sent_to['id']}}" id="resend_welcome" >Click here to re-send <i class="fa fa-send"></i></button>
                     </div>
                     @endif
                 @endif
                 @if($sent_receipts)
                 <div class="alert alert-success" style="margin:20px">
-                    A receipt has been sent to <strong>{{$sent_to['email']}}</strong>. Please check your spam / junk folder for our emails.
+                    A receipt has been sent to @if(empty($sent_to['email'])) the client @else <strong>{{$sent_to['email']}}</strong>@endif. Please check your spam / junk folder for our emails.
                 </div>
                 @else
                 <div class="alert alert-danger" style="margin:20px">
-                    The receipt could not be sent to <strong>{{$sent_to['email']}}</strong>. <button type="button" class="btn btn-danger" data-purchases="{{$purchases['ids']}}" id="resend_receipts" >Click here to re-send <i class="fa fa-send"></i></button>
+                    The receipt could not be sent to @if(empty($sent_to['email'])) the client @else <strong>{{$sent_to['email']}}</strong>@endif. <button type="button" class="btn btn-danger" data-purchases="{{$purchases}}" id="resend_receipts" >Click here to re-send <i class="fa fa-send"></i></button>
                 </div>
                 @endif
                 <hr>

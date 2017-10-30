@@ -289,7 +289,62 @@ var SubmitFunctions = function () {
             {
                 $('#btn_process').addClass('hidden');
                 $('#btn_loading').removeClass('hidden');
-                $('#'+form_id)[0].submit();
+                swal({
+                    title: "Processing your item(s)",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/production/purchase/process', 
+                    data: $('#'+form_id).serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>"+data.msg+"</span>",
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            },function(){
+                                $('#form_complete input[name="purchases"]').val(data.purchases);
+                                $('#form_complete input[name="send_welcome_email"]').val(data.send_welcome_email);
+                                $('#form_complete')[0].submit();
+                            });
+                        }
+                        else
+                        {
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#btn_loading').addClass('hidden');
+                                $('#btn_process').removeClass('hidden');
+                                $('#accept_terms').prop('checked', false);
+                                disabled_submit();
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to process the item(s). Please, contact us.",
+                            html: true,
+                            type: "error",
+                            showConfirmButton: true
+                        },function(){
+                            $('#btn_loading').addClass('hidden');
+                            $('#btn_process').removeClass('hidden');
+                            $('#accept_terms').prop('checked', false);
+                            disabled_submit();
+                        });
+                    }
+                });
             }  
         });
         

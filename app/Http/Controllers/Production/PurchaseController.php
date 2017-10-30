@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Response;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Transaction;
 use App\Http\Models\Purchase;
@@ -21,7 +22,7 @@ class PurchaseController extends Controller
     /*
      * buy all items in the cart
      */
-    public function buy()
+    public function process()
     {
         try {
             //init
@@ -34,25 +35,25 @@ class PurchaseController extends Controller
                 //checking the email
                 $info['email'] = trim(strtolower($info['email']));
                 if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
-                    return redirect()->back()->withErrors(['Enter a valid email address.'])->withInput();
+                    return ['success'=>false, 'msg'=>'Enter a valid email address.'];
                 //added to mailchimp
                 if(!empty($info['newsletter']))
                     MailChimp::subscribe($info['email']);
                 //check the correct name
                 if(strpos(trim($info['customer']), ' ') === false)
-                    return redirect()->back()->withErrors(['You must enter your full name.'])->withInput();
+                    return ['success'=>false, 'msg'=>'You must enter your full name.'];
                 $info['customer'] = explode(' ',trim($info['customer']),2);
                 $info['first_name'] = $info['customer'][0];
                 $info['last_name'] = $info['customer'][1];    
             }
             else
-                return redirect()->back()->withErrors(['Fill the form out correctly!'])->withInput();
+                return ['success'=>false, 'msg'=>'Fill the form out correctly!'];
             //get all items in shoppingcart
             $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
             if(!$shoppingcart['success'])
-                return redirect()->back()->withErrors([$shoppingcart['msg']])->withInput();
+                return ['success'=>false, 'msg'=>$shoppingcart['msg']];
             if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
-                return redirect()->back()->withErrors(['There are no items to buy in the Shopping Cart.'])->withInput();
+                return ['success'=>false, 'msg'=>'There are no items to buy in the Shopping Cart.'];
             //remove unavailable items from shopingcart
             foreach($shoppingcart['items'] as $key=>$item)
                 if($item->unavailable)
@@ -60,7 +61,7 @@ class PurchaseController extends Controller
             //set up customer
             $client = $this->customer_set($info, $current);
             if(!$client['success'])
-                return redirect()->back()->withErrors([$client['msg']])->withInput();
+                return ['success'=>false, 'msg'=>$client['msg']];
             //check payment method
             if(!empty($info['method']))
             {
@@ -70,34 +71,34 @@ class PurchaseController extends Controller
                         if($shoppingcart['total']>0) 
                         {
                             if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
-                                return redirect()->back()->withErrors(['There is no payment method for your item(s).'])->withInput();
+                                return ['success'=>false, 'msg'=>'There is no payment method for your item(s).'];
                             if(strtotime(date('m/Y')) > strtotime($info['month'].'/'.$info['year']))
-                                return redirect()->back()->withErrors(['The card is expired.'])->withInput();
+                                return ['success'=>false, 'msg'=>'The card is expired.'];
                             if(empty($info['address']) || empty($info['city']) || empty($info['zip']) || empty($info['country']) || empty($info['state']))
-                                return redirect()->back()->withErrors(['You must enter your address, city and zip code.'])->withInput();
+                                return ['success'=>false, 'msg'=>'You must enter your address, city and zip code.'];
                         }
                         else
-                            return redirect()->back()->withErrors(['Incorrect payment method! Please, contact us.'])->withInput();
+                            return ['success'=>false, 'msg'=>'Incorrect payment method! Please, contact us.'];
                         //make transaction continue and do not break
                     case 'swipe':
                         if($info['method']=='swipe') //check to skip en case of card
                         {
                             if(!(Auth::check() && in_array(Auth::user()->user_type_id, [1,7])))
-                                return redirect()->back()->withErrors(['You are now allow to perfom this operation.'])->withInput();
+                                return ['success'=>false, 'msg'=>'You are now allow to perfom this operation.'];
                             if($shoppingcart['total']>0) 
                             {
                                 if(empty($info['UMmagstripe']) || empty($info['customer']) || empty($info['card']) || empty($info['month']) || empty($info['year']))
-                                    return redirect()->back()->withErrors(['You must swipe a valid card.'])->withInput();
+                                    return ['success'=>false, 'msg'=>'You must swipe a valid card.'];
                                 if(strtotime(date('m/Y')) > strtotime($info['month'].'/'.$info['year']))
-                                    return redirect()->back()->withErrors(['The card is expired.'])->withInput();
+                                    return ['success'=>false, 'msg'=>'The card is expired.'];
                             }
                             else
-                                return redirect()->back()->withErrors(['Incorrect payment method!<br>Please, contact us.'])->withInput();
+                                return ['success'=>false, 'msg'=>'Incorrect payment method!<br>Please, contact us.'];
                         }
                         //make transaction for card and swipe
                         $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
                         if(!$transaction['success'])
-                            return redirect()->back()->withErrors([$transaction['msg']])->withInput();
+                            return ['success'=>false, 'msg'=>$transaction['msg']];
                         //remove hide credit card number
                         $info['card'] = '...'.substr($info['card'], -4); 
                         $shoppingcart['transaction_id'] = $transaction['transaction_id'];
@@ -105,7 +106,7 @@ class PurchaseController extends Controller
                         break;
                     case 'cash':
                         if(!(Auth::check() && in_array(Auth::user()->user_type_id, [1,7])))
-                            return redirect()->back()->withErrors(['You are now allow to perfom this operation.'])->withInput();
+                            return ['success'=>false, 'msg'=>'You are now allow to perfom this operation.'];
                         Session::forget('change');
                         if($shoppingcart['total']>0) 
                         {
@@ -118,28 +119,28 @@ class PurchaseController extends Controller
                             if(!empty($info['x1'])) $paid += $info['x1'];
                             if(!empty($info['change'])) $paid += $info['change']/100;
                             if($paid < $shoppingcart['total'])
-                                return redirect()->back()->withErrors(['There is still money to collect.'])->withInput();
+                                return ['success'=>false, 'msg'=>'There is still money to collect.'];
                             Session::put('change',$paid-$shoppingcart['total']);
                         }
                         else
-                            return redirect()->back()->withErrors(['Incorrect payment method! Please, contact us.'])->withInput();
+                            return ['success'=>false, 'msg'=>'Incorrect payment method! Please, contact us.'];
                         $shoppingcart['payment_type'] = 'Cash';
                         break;
                     case 'skip':
                         if($shoppingcart['total']>0) 
-                            return redirect()->back()->withErrors(['Incorrect payment method! Please, contact us.'])->withInput();
+                            return ['success'=>false, 'msg'=>'Incorrect payment method! Please, contact us.'];
                         $shoppingcart['payment_type'] = 'None';
                         break;
                     default:
-                        return redirect()->back()->withErrors(['Incorrect payment method! Please, contact us.'])->withInput();
+                        return ['success'=>false, 'msg'=>'Incorrect payment method! Please, contact us.'];
                 }
             }
             else
-                return redirect()->back()->withErrors(['Incorrect payment method! Please, contact us.'])->withInput();
+                return ['success'=>false, 'msg'=>'Incorrect payment method! Please, contact us.'];
             //save purchase
             $purchase = $this->purchase_save($info['s_token'],$client,$shoppingcart,$current);
             if(!$purchase['success'])
-                return redirect()->back()->withErrors([$purchase['msg']])->withInput();
+                return ['success'=>false, 'msg'=>$purchase['msg']];
             if(count($purchase['errors']))
             {
                 $html = '<b>Customer:<b><br>'.json_encode($info,true).'<br><br>';
@@ -151,9 +152,9 @@ class PurchaseController extends Controller
                 $email->send();
             }
             if(!count($purchase['ids']))
-                return redirect()->back()->withErrors(['The system could not save your purchases correctly! Please, contact us.'])->withInput();
-            //show complete page
-            return $this->complete($purchase,$client['send_welcome_email']);
+                return ['success'=>false, 'msg'=>'The system could not save your purchases correctly! Please, contact us.'];
+            //return
+            return ['success'=>true,'purchases'=>implode('-',$purchase['ids']),'send_welcome_email'=>$client['send_welcome_email'],'msg'=>'Item(s) processed successfully.'];
         } catch (Exception $ex) {
             $html  = '<b>Exception:<b><br>'. strval($ex).'<br>';
             $email = new EmailSG(null,env('MAIL_ADMIN','debug@ticketbat.com'),'TicketBat Web - Sell Error');
@@ -212,9 +213,9 @@ class PurchaseController extends Controller
             $user->save();
             //send email welcome
             if($send_welcome_email)
-                $send_welcome_email = $user->welcome_email(true);
+                $send_welcome_email = ($user->welcome_email(true))? 1 : -1;
             else
-                $send_welcome_email = null;
+                $send_welcome_email = 0;
             //erase temp pass
             $user->set_slug();
             //get customer
@@ -298,26 +299,41 @@ class PurchaseController extends Controller
     /*
      * complete the purchase showing receipts pag
      */                          
-    public function complete($purchases, $send_welcome_email)
+    public function complete()
     {
         $receipts=[];
         $purchased=[];
         $sent_to = null;
+        $purchases = null;
+        $send_welcome_email = null;
+        $sent_receipts = false;
         $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
         try {
-            //send receipts
-            $data = $this->receipts($purchases);
-            //get data
-            if(is_array($purchases['ids']))
-                $purchases['ids'] = implode (',', $purchases['ids']);
-            $receipts = $data['receipts'];
-            $purchased = $data['purchased'];
-            $sent_to = $data['sent_to'];
-            $sent_receipts = $data['sent_receipts'];
-            Session::forget('change');
-            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller'));
+            //init
+            $input = Input::all(); 
+            if(!empty($input['purchases']) && isset($input['send_welcome_email']))
+            {
+                $send_welcome_email = $input['send_welcome_email'];
+                //send receipts
+                $data = $this->receipts($purchases);
+                //get data
+                $receipts = $data['receipts'];
+                $purchased = $data['purchased'];
+                $sent_to = $data['sent_to'];
+                $sent_receipts = $data['sent_receipts'];
+                Session::forget('change');
+            }
         } catch (Exception $ex) {
-            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller'));
+            
+        } finally {
+            //return
+            return response() 
+                        ->view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller'))
+                        ->withHeaders([
+                            'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
+                            'Pragma' => 'no-cache',
+                            'Expires' => 'Sun, 02 Jan 1990 00:00:00 GMT',
+                        ]); 
         }
     }
     
@@ -332,11 +348,10 @@ class PurchaseController extends Controller
         $sent_receipts = false;
         $input = Input::all(); 
         //load input 
-        if(empty($purchases) && !empty($input['purchases']))
-            $purchases['ids'] = explode(',', $input['purchases']);
+        $purchases = (empty($purchases) && !empty($input['purchases']))? explode(',', $input['purchases']) : explode(',', $purchases);
         try {
             //send receipts
-            foreach ($purchases['ids'] as $id)
+            foreach ($purchases as $id)
             {
                 $p = Purchase::find($id);
                 if($p)
@@ -351,6 +366,8 @@ class PurchaseController extends Controller
             }
             //sent email
             $sent_receipts = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
+            //format purchases id
+            $purchases = implode(',', $purchases);
             return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'purchases'=>$purchases, 'sent_to'=>$sent_to, 'sent_receipts'=>$sent_receipts];
         } catch (Exception $ex) {
             return ['success'=>false, 'receipts'=>$receipts, 'purchased'=>$purchased, 'purchases'=>$purchases, 'sent_to'=>$sent_to, 'sent_receipts'=>$sent_receipts];
