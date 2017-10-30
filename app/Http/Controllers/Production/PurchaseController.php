@@ -303,18 +303,21 @@ class PurchaseController extends Controller
         $receipts=[];
         $purchased=[];
         $sent_to = null;
+        $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
         try {
             //send receipts
             $data = $this->receipts($purchases);
             //get data
+            if(is_array($purchases['ids']))
+                $purchases['ids'] = implode (',', $purchases['ids']);
             $receipts = $data['receipts'];
             $purchased = $data['purchased'];
             $sent_to = $data['sent_to'];
             $sent_receipts = $data['sent_receipts'];
             Session::forget('change');
-            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email'));
+            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller'));
         } catch (Exception $ex) {
-            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email'));
+            return view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller'));
         }
     }
     
@@ -325,14 +328,13 @@ class PurchaseController extends Controller
     {
         $receipts=[];
         $purchased=[];
-        $purchases=[];
         $sent_to = null;
         $sent_receipts = false;
         $input = Input::all(); 
+        //load input 
+        if(empty($purchases) && !empty($input['purchases']))
+            $purchases['ids'] = explode(',', $input['purchases']);
         try {
-            //load input 
-            if(empty($purchases) && !empty($input['purchases']))
-                $purchases['ids'] = explode(',', $input['purchases']);
             //send receipts
             foreach ($purchases['ids'] as $id)
             {
