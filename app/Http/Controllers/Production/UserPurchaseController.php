@@ -63,12 +63,14 @@ class UserPurchaseController extends Controller
      *
      * @return Method
      */
-    public function tickets($id)
+    public function tickets($type,$id)
     {
         try {
+            if(!in_array($type,['C','S']) || ($type=='S' && !(Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))))
+                return redirect()->route('index');
             //get tickets
             $tickets = Purchase::find($id)->get_receipt()['tickets'];
-            $format = 'pdf'; $type = 'C';
+            $format = 'pdf'; 
             //create pdf tickets
             $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format')); 
             return PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Purchase Tickets #'.$id.'.pdf');

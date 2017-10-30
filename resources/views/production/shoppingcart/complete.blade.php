@@ -27,11 +27,11 @@
             @if($seller>0)
             <center>
                 <h4>Print tickets as:</h4><br>
-                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/production/user/purchases/tickets/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> Standard Printer</a>
-                <a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> BOCA Ticket Printer</a>
+                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/production/user/purchases/tickets/C/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> Standard Printer</a>
+                <a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/S/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> BOCA Ticket Printer</a>
             </center>
             @else
-            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
+            <center><a class="btn btn-danger btn-lg uppercase" href="/production/user/purchases/tickets/C/{{$purchases['ids']}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
             @endif    
                 @if(isset($send_welcome_email))
                     @if($send_welcome_email)

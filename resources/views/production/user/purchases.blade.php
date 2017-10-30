@@ -71,7 +71,7 @@
                                 <td>-</td>
                                 <td>-</td>
                                 @else
-                                <td><a href="/production/user/purchases/tickets/{{$p->id}}" target="_blank" class="btn btn-lg bg-green btn-outline"><i class="icon-printer"></i></a></td>
+                                <td><a href="/production/user/purchases/tickets/C/{{$p->id}}" target="_blank" class="btn btn-lg bg-green btn-outline"><i class="icon-printer"></i></a></td>
                                 <td><button type="button" class="btn btn-lg bg-green btn-outline btn_share_tickets" data-id="{{$p->id}}" data-qty="{{$p->quantity}}"><i class="icon-share"></i></button></td>
                                 @endif
                             </tr>
