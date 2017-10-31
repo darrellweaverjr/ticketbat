@@ -72,12 +72,15 @@
                 <!-- EVENT ITEM -->
                 <div class="timeline-item">
                     <div class="timeline-badge">
-                        <img height="150px" width="150px" src="{{$e->url}}"> </div>
+                        <a href="/production/event/{{$e->slug}}">
+                            <img height="150px" width="150px" src="{{$e->url}}">
+                        </a>
+                    </div>
                     <div class="timeline-body" style="margin-left:170px">
                         <div class="timeline-body-arrow"> </div>
                         <div class="timeline-body-head">
                             <div class="timeline-body-head-caption">
-                                <a href="/production/events/{{$e->slug}}" class="timeline-body-title font-blue-madison">{{$e->name}}</a>
+                                <a href="/production/event/{{$e->slug}}" class="timeline-body-title font-blue-madison">{{$e->name}}</a>
                                 <span class="timeline-body-time font-grey-cascade">({{$e->category}})</span>
                             </div>
                             <div class="timeline-body-head-actions">
@@ -95,8 +98,8 @@
                         </div>
                         <div class="timeline-body-content">
                             <span class="font-grey-cascade">{!! $e->description !!}</span><hr>
-                            <span class="col-md-4"><i class="fa fa-calendar icon-calendar btn btn-info"></i> {{date('F j, Y @ h:i A', strtotime($e->show_time))}}</span>
-                            <span class="col-md-4"><i class="fa fa-ticket icon-tag btn btn-info"></i>@if($e->price>0) ${{$e->price}} @else <b class="label label-sm sbold label-success">FREE</b> @endif</span>
+                            <span class="col-md-4"><i class="fa fa-calendar icon-calendar"></i> {{date('F j, Y @ h:i A', strtotime($e->show_time))}}</span>
+                            <span class="col-md-4"><i class="fa fa-ticket icon-tag"></i>@if($e->price>0) ${{$e->price}} @else <b class="label label-sm sbold label-success">FREE</b> @endif</span>
                             <span class="col-md-4"><a href="/production/event/{{$e->slug}}" style="color:white!important" class="btn bg-blue">SEE TICKETS <i class="fa fa-arrow-circle-right"></i></a></span>
                         </div>
                     </div>
