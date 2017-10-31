@@ -23,8 +23,8 @@
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
-        <meta @if(!empty($ua_conversion_code)) content="{{$ua_conversion_code}}" @else content="" @endif name="ua-conversion_code" />
-        <meta @if(!empty($analytics)) content="{{$analytics}}" @else content="" @endif name="analytics" />
+        <meta @if(!empty($ua_conversion_code)) content="{{$ua_conversion_code}}" @else content="[]" @endif name="ua-conversion_code" />
+        <meta @if(!empty($analytics)) content="{{$analytics}}" @else content="[]" @endif name="analytics" />
         <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
         <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
@@ -210,7 +210,7 @@
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>
-<!--        <script src="/js/production/general/analytics.js" type="text/javascript"></script>-->
+        <script src="/js/production/general/analytics.js" type="text/javascript"></script>
         <script src="/js/production/general/contact.js" type="text/javascript"></script>
         <script src="/js/production/user/login.js" type="text/javascript"></script>
         <script src="/js/production/user/register.js" type="text/javascript"></script>
