@@ -79,11 +79,11 @@
                 </div>
                 <div class="col-md-2"></div>
                 <div class="col-md-5 text-right" style="padding-right:20px;">
-                    <h4><label class="label label-default bold">Subtotal: </label><label id="cost_subtotal" class="font-blue-madison">$ {{number_format($cart['retail_price'],2)}}</label></h4>
-                    <h4><label class="label label-info bold">Processing fee: </label><label id="cost_fees" class="font-blue-madison">$ {{number_format($cart['processing_fee'],2)}}</label></h4>
-                    <h4 @if(empty($cart['savings'])) class="hidden" @endif><label class="label label-success bold">Savings: </label><label id="cost_savings" class="font-blue-madison">$ {{number_format($cart['savings'],2)}}</label></h4>
-                    <h4 @if(empty($cart['printed'])) class="hidden" @endif><label class="label label-warning bold">Printed tickets: </label><label id="cost_printed" class="font-blue-madison">$ {{number_format($cart['printed'],2)}}</label></h4>
-                    <h4><label class="label label-primary bold">Grand total: </label><label id="cost_total" data-total="{{$cart['total']}}" class="font-blue-madison">$ {{number_format($cart['total'],2)}}</label></h4>
+                    <h4><label class="label label-default bold">Subtotal: </label><label id="cost_subtotal" class="font-blue-madison sbold">$ {{number_format($cart['retail_price'],2)}}</label></h4>
+                    <h4><label class="label label-info bold">Processing fee: </label><label id="cost_fees" class="font-blue-madison sbold">$ {{number_format($cart['processing_fee'],2)}}</label></h4>
+                    <h4 @if(empty($cart['savings'])) class="hidden" @endif><label class="label label-success bold">Savings: </label><label id="cost_savings" class="font-blue-madison sbold">$ {{number_format($cart['savings'],2)}}</label></h4>
+                    <h4 @if(empty($cart['printed'])) class="hidden" @endif><label class="label label-warning bold">Printed tickets: </label><label id="cost_printed" class="font-blue-madison sbold">$ {{number_format($cart['printed'],2)}}</label></h4>
+                    <h4><label class="label label-primary bold">Grand total: </label><label id="cost_total" data-total="{{$cart['total']}}" class="font-blue-madison bold">$ {{number_format($cart['total'],2)}}</label></h4>
                 </div>
             </div>
         </div>

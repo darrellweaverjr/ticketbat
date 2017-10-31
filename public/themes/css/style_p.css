@@ -1,3 +1,8 @@
+/* Remove horizontal scroll */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
 /* General */
 .logo-default {
     margin-top: 1px !important;;
