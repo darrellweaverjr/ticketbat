@@ -265,6 +265,8 @@ var SubmitFunctions = function () {
                             break;
                         case 'form_card':
                             var amex_only = $('#form_card input[name="card"]').data('amex');
+                            var year = parseInt($('#form_card select[name="year"]').val());
+                            var month = parseInt($('#form_card select[name="month"]').val())-1;
                             if( amex_only>0 )
                                 var exp_card =/^3[47][0-9]{13}$/;
                             else 
@@ -272,9 +274,13 @@ var SubmitFunctions = function () {
                             if(!exp_card.test( $('#form_card input[name="card"]').val() ))
                             {
                                 if(amex_only>0)
-                                    $('.alert-warning', $('#'+form_id) ).html('You must enter a valid Amerian Express credit card').show();
+                                    $('.alert-warning', $('#form_card') ).html('You must enter a valid Amerian Express credit card').show();
                                 else
-                                    $('.alert-warning', $('#'+form_id) ).html('You must enter a valid credit card').show();
+                                    $('.alert-warning', $('#form_card') ).html('You must enter a valid credit card').show();
+                            }
+                            else if(new Date() > new Date(year,month,1))
+                            {
+                                $('.alert-warning', $('#form_card') ).html('The credit card has expire. Please, check the month and year or try a different one.').show();
                             }
                             else
                                 proceed = true;

@@ -250,15 +250,15 @@
                                         <div class="col-sm-3 show-error">
                                             <select class="form-control" name="month" placeholder="M" style="min-width:145px" value="{{old('month')}}">
                                                 <option value="" disabled="true" selected="true">- Select month -</option>
-                                                <option value="1">1 (January)</option>
-                                                <option value="2">2 (February)</option>
-                                                <option value="3">3 (March)</option>
-                                                <option value="4">4 (April)</option>
-                                                <option value="5">5 (May)</option>
-                                                <option value="6">6 (June)</option>
-                                                <option value="7">7 (July)</option>
-                                                <option value="8">8 (August)</option>
-                                                <option value="9">9 (September)</option>
+                                                <option value="01">1 (January)</option>
+                                                <option value="02">2 (February)</option>
+                                                <option value="03">3 (March)</option>
+                                                <option value="04">4 (April)</option>
+                                                <option value="05">5 (May)</option>
+                                                <option value="06">6 (June)</option>
+                                                <option value="07">7 (July)</option>
+                                                <option value="08">8 (August)</option>
+                                                <option value="09">9 (September)</option>
                                                 <option value="10">10 (October)</option>
                                                 <option value="11">11 (November)</option>
                                                 <option value="12">12 (December)</option>
