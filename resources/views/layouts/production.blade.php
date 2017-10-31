@@ -206,7 +206,7 @@
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="{{config('app.theme')}}js/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
-<!--        <script src="{{config('app.theme')}}js/additional-methods.min.js" type="text/javascript"></script>-->
+        <script src="{{config('app.theme')}}js/additional-methods.min.js" type="text/javascript"></script>
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>

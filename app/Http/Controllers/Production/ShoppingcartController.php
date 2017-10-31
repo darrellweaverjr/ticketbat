@@ -31,16 +31,16 @@ class ShoppingcartController extends Controller
                 $this->recover($input['session']);
             }
             //if auth or guest continue
-            $email_guest = Session::get('email_guest', NULL); 
+            $email_guest = Session::get('email_guest', ''); 
             if(!Auth::check() && empty($email_guest))
-                return $this->credentials();
+                return view('production.shoppingcart.credentials');
             else
             {
                 $cart = $this->items();
                 if( !empty($cart) )
                 {
                     //default email
-                    $cart['email'] = (Auth::check())? Auth::user()->email : ((!empty($email_guest))? $email_guest : '');
+                    $cart['email'] = (Auth::check())? Auth::user()->email : $email_guest;
                     //default enum
                     $cart['countries'] = Country::get(['code','name']);  
                     $cart['regions'] = Region::where('country','US')->get(['code','name']); 
@@ -116,17 +116,6 @@ class ShoppingcartController extends Controller
         }
         else
             return view('production.shoppingcart.recover_error');
-    }
-    
-    /**
-     * Prompt for login or guest email on go to viewcart.
-     *
-     * @return Method
-     */
-    public function credentials()
-    {
-        //return view
-        return view('production.shoppingcart.credentials');
     }
     
     /**

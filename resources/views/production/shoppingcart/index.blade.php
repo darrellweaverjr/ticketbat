@@ -27,7 +27,7 @@
             <p class="margin-top-20">
             <center><b style="color:#578ebe">
                     If you are attending this show with other people and would like to email them their ticket, please click on the
-                    <button type="button" class="btn btn-info"><i class="fa fa-share icon-share"></i></button> button.
+                    <button type="button" class="btn btn-info"><i class="fa fa-share icon-share"></i></button> button below.
             </b></center>
             </p>
             <div class="portlet-body light portlet-fit" style="margin-top:-30px;padding:10px">
@@ -161,11 +161,6 @@
                     </ul><hr>
                     @endif
                     <div class="tab-content" id="tabs_payment">
-                        @if($errors->any())
-                        <div class="alert alert-danger">
-                            {{ $errors->first() }}
-                        </div>
-                        @endif
                         <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">
                             <div class="row"> 
                                 <!-- BEGIN FORM-->
@@ -343,8 +338,7 @@
                                 <!-- END FORM-->
                             </div>
                         </div>
-                        @if($cart['seller'])
-                        <div class="tab-pane fade @if(!($cart['total']>0)) hidden @endif" id="tab_swipe">
+                        <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) hidden @endif" id="tab_swipe">
                             <div class="row">
                                 <!-- BEGIN FORM-->
                                 <form method="post" id="form_swipe" class="form-horizontal">
@@ -393,7 +387,7 @@
                                 <!-- END FORM-->
                             </div>
                         </div>
-                        <div class="tab-pane fade @if(!($cart['total']>0)) hidden @endif" id="tab_cash">
+                        <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) hidden @endif" id="tab_cash">
                             <div class="row">
                                 <!-- BEGIN FORM-->
                                 <form method="post" id="form_cash" class="form-horizontal">
@@ -495,7 +489,6 @@
                                 <!-- END FORM-->
                             </div>
                         </div>
-                        @endif
                         <div class="row" style="padding:20px">
                             <hr><label class="mt-checkbox"><input type="checkbox" id="accept_terms" value="1"/>
                                 I ACCEPT THE TERMS AND CONDITIONS. <a data-toggle="modal" href="#modal_terms_conditions">CLICK HERE TO VIEW TERMS AND CONDITIONS.</a>
@@ -541,7 +534,6 @@
 @section('scripts')
 <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="/js/production/shoppingcart/update.js" type="text/javascript"></script>
 <script src="/js/production/general/share_tickets.js" type="text/javascript"></script>
 <script src="/js/production/shoppingcart/share_tickets.js" type="text/javascript"></script>
