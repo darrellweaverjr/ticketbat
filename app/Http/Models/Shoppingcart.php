@@ -236,7 +236,6 @@ class Shoppingcart extends Model
                 //forced to add a coupon
                 if(!empty($force))
                 {
-                    $session_id = Util::s_token(false,true);
                     //get coupon
                     $coupon = DB::table('discounts')
                             ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Session;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Util;
 
 class ValidateRequest
 {
@@ -20,7 +21,10 @@ class ValidateRequest
     {
         //checking if coupon into session
         if(!empty($request->coup))
-            Shoppingcart::apply_coupon(null, $request->coup, true);
+        {
+            $session_id = Util::s_token(false,true);
+            Shoppingcart::apply_coupon($session_id, $request->coup, true);
+        }  
         return $next($request);
     }
 }
