@@ -216,7 +216,7 @@ class Shoppingcart extends Model
     /**
      * Applies coupon for the shoppingcart.
      */
-    public static function apply_coupon($session_id,$code)
+    public static function apply_coupon($session_id,$code,$force=null)
     {
         try {
             $current = date('Y-m-d');
@@ -225,33 +225,19 @@ class Shoppingcart extends Model
             {
                 $response = Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>null]);
                 if($response || $response >= 0)
+                {
+                    Session::forget('coup');
                     return ['success'=>true, 'msg'=>'Coupon removed successfully!'];
+                } 
                 return ['success'=>false,'msg'=>'There was an error trying to remove the coupon.'];
             } 
             else
             {
-                //items to apply
-                $items = DB::table('shoppingcart')
-                            ->join('discount_tickets', 'discount_tickets.ticket_id', '=' ,'shoppingcart.ticket_id')
-                            ->join('discounts', 'discounts.id', '=' ,'discount_tickets.discount_id')
-                            ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
-                            ->select('shoppingcart.id')
-                            ->where('discounts.code','=',$code)->where('shoppingcart.session_id','=',$session_id)
-                            ->whereRaw('DATE(show_times.show_time) BETWEEN DATE(discounts.start_date) AND DATE(discounts.end_date)')
-                            ->whereIn('discounts.coupon_type', ['Normal','Admin'])
-                            ->where(function($query) use ($current)
-                            {
-                                $query->whereNull('discounts.effective_start_date')
-                                      ->orWhereDate('discounts.effective_start_date','<=',$current);
-                            })
-                            ->where(function($query) use ($current)
-                            {
-                                $query->whereNull('discounts.effective_end_date')
-                                      ->orWhereDate('discounts.effective_end_date','>=',$current);
-                            })
-                            ->count();
-                if($items)
-                {   
+                //forced to add a coupon
+                if(!empty($force))
+                {
+                    $session_id = Util::s_token(false,true);
+                    //get coupon
                     $coupon = DB::table('discounts')
                             ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
                             ->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
@@ -262,7 +248,11 @@ class Shoppingcart extends Model
                     {
                         //check if coupon is for admin only
                         if($coupon->coupon_type=='Admin' && (!Auth::check() || Auth::user()->user_type_id!=1))
-                            return ['success'=>false, 'msg'=>'You are now allowed to use this coupon.'];
+                        {
+                            Session::forget('coup');
+                            Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>null]);
+                            return ['success'=>false];
+                        }
                         //continue loading coupon
                         $coupon->tickets = DB::table('discount_tickets')
                                 ->join('discounts', 'discount_tickets.discount_id', '=' ,'discounts.id')
@@ -271,14 +261,101 @@ class Shoppingcart extends Model
                                                   COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num, 
                                                   COALESCE(discount_tickets.end_num,discounts.end_num,null) AS end_num'))
                                 ->where('discounts.id',$coupon->id)->get();
-                        $response = Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>json_encode($coupon,true)]);
-                        if($response || $response >= 0)
-                            return ['success'=>true, 'msg'=> Discount::find($coupon->id)->full_description() ];
-                        return ['success'=>false, 'msg'=>'There was an error trying to add the coupon.'];
+                        //object value into session
+                        $coup = json_encode($coupon,true);
+                        Session::put('coup', $coup);
+                        //added to shoppingcart if there is values
+                        $items = DB::table('shoppingcart')
+                                ->join('discount_tickets', 'discount_tickets.ticket_id', '=' ,'shoppingcart.ticket_id')
+                                ->join('discounts', 'discounts.id', '=' ,'discount_tickets.discount_id')
+                                ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
+                                ->select('shoppingcart.id')
+                                ->where('discounts.code','=',$code)->where('shoppingcart.session_id','=',$session_id)
+                                ->whereRaw('DATE(show_times.show_time) BETWEEN DATE(discounts.start_date) AND DATE(discounts.end_date)')
+                                ->whereIn('discounts.coupon_type', ['Normal','Admin'])
+                                ->where(function($query) use ($current)
+                                {
+                                    $query->whereNull('discounts.effective_start_date')
+                                          ->orWhereDate('discounts.effective_start_date','<=',$current);
+                                })
+                                ->where(function($query) use ($current)
+                                {
+                                    $query->whereNull('discounts.effective_end_date')
+                                          ->orWhereDate('discounts.effective_end_date','>=',$current);
+                                })
+                                ->count();
+                        if($items)
+                            Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>$coup]);
+                        return ['success'=>true];
                     }
-                    return ['success'=>false, 'msg'=>'That coupon is not valid!'];
+                    else 
+                    {
+                        Session::forget('coup');
+                        Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>null]);
+                        return ['success'=>false];
+                    }
                 }
-                return ['success'=>false, 'msg'=>'That coupon is not valid for your items!'];
+                else
+                {
+                    //items to apply
+                    $items = DB::table('shoppingcart')
+                                ->join('discount_tickets', 'discount_tickets.ticket_id', '=' ,'shoppingcart.ticket_id')
+                                ->join('discounts', 'discounts.id', '=' ,'discount_tickets.discount_id')
+                                ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
+                                ->select('shoppingcart.id')
+                                ->where('discounts.code','=',$code)->where('shoppingcart.session_id','=',$session_id)
+                                ->whereRaw('DATE(show_times.show_time) BETWEEN DATE(discounts.start_date) AND DATE(discounts.end_date)')
+                                ->whereIn('discounts.coupon_type', ['Normal','Admin'])
+                                ->where(function($query) use ($current)
+                                {
+                                    $query->whereNull('discounts.effective_start_date')
+                                          ->orWhereDate('discounts.effective_start_date','<=',$current);
+                                })
+                                ->where(function($query) use ($current)
+                                {
+                                    $query->whereNull('discounts.effective_end_date')
+                                          ->orWhereDate('discounts.effective_end_date','>=',$current);
+                                })
+                                ->count();
+                    if($items)
+                    {   
+                        $coupon = DB::table('discounts')
+                                ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
+                                ->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
+                                ->select(DB::raw('discounts.id, discounts.code, discounts.description, discounts.start_num, discounts.coupon_type,
+                                                  discounts.discount_type, discounts.discount_scope, discounts.end_num'))
+                                ->where('discounts.code',$code)->groupBy('discounts.id')->first();
+                        if($coupon)
+                        {
+                            //check if coupon is for admin only
+                            if($coupon->coupon_type=='Admin' && (!Auth::check() || Auth::user()->user_type_id!=1))
+                                return ['success'=>false, 'msg'=>'You are now allowed to use this coupon.'];
+                            //continue loading coupon
+                            $coupon->tickets = DB::table('discount_tickets')
+                                    ->join('discounts', 'discount_tickets.discount_id', '=' ,'discounts.id')
+                                    ->select(DB::raw('discount_tickets.ticket_id, 
+                                                      COALESCE(discount_tickets.fixed_commission,null) AS fixed_commission,
+                                                      COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num, 
+                                                      COALESCE(discount_tickets.end_num,discounts.end_num,null) AS end_num'))
+                                    ->where('discounts.id',$coupon->id)->get();
+                            $couponx = json_encode($coupon,true);
+                            $response = Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>$couponx]);
+                            if($response || $response >= 0)
+                            {
+                                $coup = Session::get('coup', null);
+                                if(!empty($coup))
+                                {
+                                    if(json_decode($coup, true)['code'] != $coupon->code)
+                                        Session::forget('coup');
+                                }
+                                return ['success'=>true, 'msg'=> Discount::find($coupon->id)->full_description() ];
+                            }  
+                            return ['success'=>false, 'msg'=>'There was an error trying to add the coupon.'];
+                        }
+                        return ['success'=>false, 'msg'=>'That coupon is not valid!'];
+                    }
+                    return ['success'=>false, 'msg'=>'That coupon is not valid for your items!'];
+                }
             }
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
@@ -340,15 +417,16 @@ class Shoppingcart extends Model
                 return ['success'=>false, 'msg'=>'That event is not longer available!'];
             //continue if valid
             $item = (!empty($seat_id))? null : Shoppingcart::where('item_id','=',$show_time->id)->where('ticket_id','=',$ticket->ticket_id)->where('session_id','=',$s_token)->first();
+            $i = Shoppingcart::where('session_id','=',$s_token)->first();
             if($item)
             {
                 $item->number_of_items += $qty;
                 $item->total_cost = round($item->cost_per_product*$item->number_of_items,2, PHP_ROUND_HALF_UP);
+                $item->coupon = ($i && !empty($i->coupon))? $i->coupon : Session::get('coup',null);
                 $item->save();
             }
             else
             {
-                $i = Shoppingcart::where('session_id','=',$s_token)->first();
                 //save item into shoppingcart
                 $item = new Shoppingcart;
                 $item->item_id = $show_time->id;
@@ -358,7 +436,7 @@ class Shoppingcart extends Model
                 $item->number_of_items = $qty;
                 $item->cost_per_product = $ticket->retail_price;
                 $item->total_cost = Util::round(($item->cost_per_product+$ticket->processing_fee)*$item->number_of_items);
-                $item->coupon = ($i && !empty($i->coupon))? $i->coupon : Session::get('coupon',null);
+                $item->coupon = ($i && !empty($i->coupon))? $i->coupon : Session::get('coup',null);
                 $item->status = 0;
                 $item->timestamp = date('Y-m-d H:i:s');
                 if(!empty($seat_id))

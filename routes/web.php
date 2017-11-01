@@ -101,7 +101,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 });
 
 //PRODUCTION ROUTES
-Route::group(['prefix' => 'production','namespace' => 'Production'], function () {
+Route::group(['prefix' => 'production','middleware' => 'check','namespace' => 'Production'], function () {
     //general
     Route::post('general/contact', 'GeneralController@contact');    
     Route::post('general/country', 'GeneralController@country');

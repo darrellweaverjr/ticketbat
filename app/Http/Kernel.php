@@ -56,5 +56,6 @@ class Kernel extends HttpKernel
         'cors' => \App\Http\Middleware\CORS::class,
         'app.security' => \App\Http\Middleware\AppSecurity::class,
         'productioncheck' => \App\Http\Middleware\ProductionCheck::class,
+        'check' => \App\Http\Middleware\ValidateRequest::class,
     ];
 }

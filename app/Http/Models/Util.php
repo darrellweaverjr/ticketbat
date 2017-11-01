@@ -302,7 +302,7 @@ class Util extends Model
     {
         try {
             $tickets = [];
-            $coupon = Session::get('coupon',null);
+            $coupon = Session::get('coup',null);
             if(!empty($coupon) && Util::isJSON($coupon))
             {
                 $coup = json_decode($coupon,true);
