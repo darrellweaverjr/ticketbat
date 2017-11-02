@@ -369,13 +369,13 @@ class PurchaseController extends Controller
         $input = Input::all(); 
         //load input 
         $purchases = (empty($purchasex) && !empty($input['purchases']))? explode(',', $input['purchases']) : explode(',', $purchasex);
-        try {
+        try {   
             //send receipts
             foreach ($purchases as $id)
             {
                 $p = Purchase::find($id);
                 if($p)
-                {
+                {   
                     $receipts[] = $p->get_receipt();
                     //load if only resubmit dont need this
                     if(!empty($purchasex))
@@ -408,8 +408,8 @@ class PurchaseController extends Controller
                                     ->where('banners.type','like','%Thank you Page%')->get()->toArray();
                         foreach ($banner as $b)
                             $b->file = Image::view_image($b->file);
-                        $banners = array_merge($banners,$banner);   
-                    }
+                        $banners = array_merge($banners,$banner); 
+                    } 
                 }
             }
             //sent email

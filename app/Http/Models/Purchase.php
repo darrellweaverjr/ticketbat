@@ -234,14 +234,15 @@ class Purchase extends Model
             }
         }
         //get banners from shows, if not then banners from venues
+        $use = ['show_id'=>$this->ticket->show_id, 'venue_id'=>$this->ticket->show->venue_id];
         $banners = DB::table('banners')
                             ->select(DB::raw('banners.id, banners.url, banners.file'))
-                            ->where(function($query) use ($this) {
-                                $query->whereRaw('banners.parent_id = '.$this->ticket->show_id.' AND banners.belongto="show" ')
-                                      ->orWhereRaw('banners.parent_id = '.$this->ticket->show->venue_id.' AND banners.belongto="venue" ');
+                            ->where(function($query) use ($use) {
+                                $query->whereRaw('banners.parent_id = '.$use['show_id'].' AND banners.belongto="show" ')
+                                      ->orWhereRaw('banners.parent_id = '.$use['venue_id'].' AND banners.belongto="venue" ');
                             })
                             ->where('banners.type','like','%Receipt Email%')->get();
-        foreach ($banner as $b)
+        foreach ($banners as $b)
             $b->file = Image::view_image($b->file);
         //return data
         return ['purchase' => $purchase, 'customer' => $customer, 'tickets' => $tickets, 'banners'=> $banners];
@@ -258,7 +259,7 @@ class Purchase extends Model
                 $rows_html = $totals_html = '';
                 $pdf_receipts = $pdf_tickets = $purchases = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
-                $top='';
+                $top = $banners = '';
                 //set customer
                 $customer = $receipts[0]['customer'];
                 //loop receipts
@@ -318,9 +319,9 @@ class Purchase extends Model
                 $totals_html.='<tr> <td align="right" style="color:#1F9F0B;"><b>GRAND TOTAL</b>:</td> <td align="right" style="color:#1F9F0B;">$ '.number_format($totals['total'],2).'</td> </tr>';
                 
                 //banners
-                $banners = '';
-                foreach ($receipt['banners'] as $b)
-                    $banners .= '<div><a href="'.$b->url.'"><img src="'.$b->file.'"/></a></div>';
+                if(!empty($receipt['banners']))
+                    foreach ($receipt['banners'] as $b)
+                        $banners .= '<div><a href="'.$b->url.'"><img src="'.$b->file.'"/></a></div>';
                 
                 //send email           
                 $email = new EmailSG(null, $customer->email , $subject);
