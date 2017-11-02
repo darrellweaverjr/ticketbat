@@ -235,23 +235,14 @@ class Purchase extends Model
         }
         //get banners from shows, if not then banners from venues
         $banners = DB::table('banners')
-                            ->join('show_times', 'show_times.show_id', '=' ,'banners.parent_id')
-                            ->join('purchases', 'purchases.show_time_id', '=' ,'show_times.id')
-                            ->select('banners.*')
-                            ->where('banners.belongto', '=', 'show')
-                            ->where('purchases.id', '=', $this->id)
-                            ->where('banners.type', 'like', '%Thank you Page%')
-                            ->distinct()->get();
-        if(!$banners->count())
-            $banners = DB::table('banners')
-                            ->join('shows', 'shows.venue_id', '=' ,'banners.parent_id')
-                            ->join('show_times', 'show_times.show_id', '=' ,'shows.id')
-                            ->join('purchases', 'purchases.show_time_id', '=' ,'show_times.id')
-                            ->select('banners.*')
-                            ->where('banners.belongto', '=', 'venue')
-                            ->where('purchases.id', '=', $this->id)
-                            ->where('banners.type', 'like', '%Thank you Page%')
-                            ->distinct()->get();
+                            ->select(DB::raw('banners.id, banners.url, banners.file'))
+                            ->where(function($query) use ($this) {
+                                $query->whereRaw('banners.parent_id = '.$this->ticket->show_id.' AND banners.belongto="show" ')
+                                      ->orWhereRaw('banners.parent_id = '.$this->ticket->show->venue_id.' AND banners.belongto="venue" ');
+                            })
+                            ->where('banners.type','like','%Receipt Email%')->get();
+        foreach ($banner as $b)
+            $b->file = Image::view_image($b->file);
         //return data
         return ['purchase' => $purchase, 'customer' => $customer, 'tickets' => $tickets, 'banners'=> $banners];
     }
@@ -326,6 +317,11 @@ class Purchase extends Model
                     $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
                 $totals_html.='<tr> <td align="right" style="color:#1F9F0B;"><b>GRAND TOTAL</b>:</td> <td align="right" style="color:#1F9F0B;">$ '.number_format($totals['total'],2).'</td> </tr>';
                 
+                //banners
+                $banners = '';
+                foreach ($receipt['banners'] as $b)
+                    $banners .= '<div><a href="'.$b->url.'"><img src="'.$b->file.'"/></a></div>';
+                
                 //send email           
                 $email = new EmailSG(null, $customer->email , $subject);
                 //$email->cc(env('MAIL_REPORT_CC'));
@@ -340,7 +336,7 @@ class Purchase extends Model
                 else
                 {
                     //info to send by email content
-                    $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>'','top'=>$top]);
+                    $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>$banners,'top'=>$top]);
                     $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
                 }
                 $response = $email->send();
@@ -363,7 +359,7 @@ class Purchase extends Model
                         else
                         {
                             //info to send by email content
-                            $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>'','top'=>$top]);
+                            $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>$banners,'top'=>$top]);
                             $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
                         }
                         $email->send();
