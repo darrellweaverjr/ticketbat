@@ -93,6 +93,58 @@ var CompleteFunctions = function () {
     };
 }();
 //*****************************************************************************************
+var GalleryImages = function () {
+
+    var initGallery = function () {        
+        //banners carousel
+        $('#myBanners').cubeportfolio({
+            layoutMode: 'slider',
+            defaultFilter: '*',
+            animationType: 'fadeOut', // quicksand
+            gapHorizontal: 30,
+            gapVertical: 30,
+            mediaQueries: [{ width: 320, cols: 1 }],
+            gridAdjustment: 'responsive', 
+            caption: 'opacity', 
+            displayType: 'default', 
+            displayTypeSpeed: 1,
+            auto:true,
+            autoTimeout: 1500,
+            drag:true,
+            showNavigation: false,
+            showPagination: false,
+            rewindNav: true
+        });
+        //gallery carousel
+        /*$('#myGallery').cubeportfolio({
+            layoutMode: 'slider',
+            defaultFilter: '*',
+            animationType: 'fadeOut', // quicksand
+            gapHorizontal: 30,
+            gapVertical: 30,
+            gridAdjustment: 'responsive', 
+            mediaQueries: [{ width: 1440, cols: 5 },{ width: 1024, cols: 4 },{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
+            caption: 'overlayBottomAlong', 
+            displayType: 'default', 
+            displayTypeSpeed: 1,
+            auto:true,
+            autoTimeout: 2000,
+            drag:true,
+            showNavigation: true,
+            showPagination: false,
+            rewindNav: true
+        });*/
+    }
+    return {
+        //main function to initiate map samples
+        init: function () {
+            initGallery();
+        }
+    };
+
+}();
+//*****************************************************************************************
 jQuery(document).ready(function() {
     CompleteFunctions.init();
+    GalleryImages.init(); 
 });

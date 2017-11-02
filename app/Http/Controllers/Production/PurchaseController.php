@@ -14,6 +14,7 @@ use App\Http\Models\Purchase;
 use App\Http\Models\Util;
 use App\Http\Models\Location;
 use App\Http\Models\User;
+use App\Http\Models\Image;
 use App\Mail\EmailSG;
 use App\Mail\MailChimp;
 
@@ -312,6 +313,7 @@ class PurchaseController extends Controller
         $transaction = 0;
         $conversion_code = [];
         $ua_conversion_code = [];
+        $banners = [];
         $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
         try {
             //init
@@ -332,6 +334,7 @@ class PurchaseController extends Controller
                 $totals = $data['totals'];
                 $conversion_code = $data['conversion_code'];
                 $ua_conversion_code = json_encode($data['ua_conversion_code'],true);
+                $banners = $data['banners'];
                 Session::forget('change');
             }
         } catch (Exception $ex) {
@@ -339,7 +342,7 @@ class PurchaseController extends Controller
         } finally {
             //return
             return response() 
-                        ->view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller','analytics','totals','transaction','conversion_code','ua_conversion_code'))
+                        ->view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller','analytics','totals','transaction','conversion_code','ua_conversion_code','banners'))
                         ->withHeaders([
                             'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
                             'Pragma' => 'no-cache',
@@ -362,6 +365,7 @@ class PurchaseController extends Controller
         $analytics = [];
         $conversion_code = [];
         $ua_conversion_code = [];
+        $banners = [];
         $input = Input::all(); 
         //load input 
         $purchases = (empty($purchasex) && !empty($input['purchases']))? explode(',', $input['purchases']) : explode(',', $purchasex);
@@ -394,7 +398,17 @@ class PurchaseController extends Controller
                             else
                                 $ua_conversion_code[$p->ticket->show->id] = ['ua'=>$p->ticket->show->ua_conversion_code, 'total'=>$p->price_paid];
                         }
-                            
+                        //get banners
+                        $banner = DB::table('banners')
+                                    ->select(DB::raw('banners.id, banners.url, banners.file'))
+                                    ->where(function($query) use ($p) {
+                                        $query->whereRaw('banners.parent_id = '.$p->ticket->show_id.' AND banners.belongto="show" ')
+                                              ->orWhereRaw('banners.parent_id = '.$p->ticket->show->venue_id.' AND banners.belongto="venue" ');
+                                    })
+                                    ->where('banners.type','like','%Thank you Page%')->get()->toArray();
+                        foreach ($banner as $b)
+                            $b->file = Image::view_image($b->file);
+                        $banners = array_merge($banners,$banner);   
                     }
                 }
             }
@@ -404,7 +418,7 @@ class PurchaseController extends Controller
             
         } finally {
             if(!empty($purchasex))
-                return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 
+                return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,
                         'sent_receipts'=>$sent_receipts, 'analytics'=>$analytics, 'totals'=>$totals, 'transaction'=>$transaction,
                         'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code];
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];
