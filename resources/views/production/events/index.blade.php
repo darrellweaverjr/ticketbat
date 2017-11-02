@@ -38,6 +38,38 @@
 </div>
 <!-- END NAME BAR-->
 <div class="page-content color-panel">  
+    <!-- BEGIN BANNERS -->
+    @if(count($event->banners))
+    <div class="row fixed-panel" >
+        <div class="portlet light about-text">
+            <!-- BEGIN BANNER -->
+            <div class="portfolio-content color-panel"> 
+                <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
+                    @foreach($event->banners as $index=>$i)
+                    <div class="cbp-item show_section1" style="margin-right:20px">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <a href="{{$i->url}}" target="_blank"><img src="{{$i->file}}" alt="{{$i->url}}"></a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                    @foreach($event->banners as $index=>$i)
+                    <div class="cbp-item show_section1" style="margin-right:20px">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <a href="{{$i->url}}" target="_blank"><img src="{{$i->file}}" alt="{{$i->url}}"></a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <!-- ENDS BANNER -->
+        </div>
+    </div>
+    @endif
+    <!-- END BANNERS -->      
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
         <div class="col-lg-6">
@@ -227,7 +259,7 @@
                             <div class="cbp-caption-activeWrap">
                                 <div class="cbp-l-caption-alignCenter">
                                     <div class="cbp-l-caption-body">
-                                        <a href="{{$i->url}}" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="Images of {{$event->name}}."><i class="icon-size-fullscreen"></i></a>
+                                        <a href="{{$i->url}}" class="cbp-lightbox btn btn-lg yellow" data-title="Images of {{$event->name}}."><i class="icon-size-fullscreen"></i></a>
                                     </div>
                                 </div>
                             </div>

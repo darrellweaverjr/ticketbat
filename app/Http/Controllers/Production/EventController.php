@@ -81,7 +81,10 @@ class EventController extends Controller
             //get banners
             $event->banners = DB::table('banners')
                                 ->select(DB::raw('banners.id, banners.url, banners.file'))
-                                ->where('banners.parent_id',$event->show_id)->where('banners.belongto','=','shows')
+                                ->where(function($query) use ($event) {
+                                    $query->whereRaw('banners.parent_id = '.$event->show_id.' AND banners.belongto="show" ')
+                                          ->orWhereRaw('banners.parent_id = '.$event->venue_id.' AND banners.belongto="venue" ');
+                                })
                                 ->where('banners.type','like','%Show Page%')->get();
             foreach ($event->banners as $b)
                 $b->file = Image::view_image($b->file);

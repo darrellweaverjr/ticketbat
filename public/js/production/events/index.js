@@ -101,6 +101,24 @@ var AppCalendar = function() {
 var GalleryImages = function () {
 
     var initGallery = function () {        
+        //banners carousel
+        $('#myBanners').cubeportfolio({
+            layoutMode: 'slider',
+            defaultFilter: '*',
+            animationType: 'fadeOut', // quicksand
+            gapHorizontal: 30,
+            gapVertical: 30,
+            gridAdjustment: 'responsive', 
+            caption: 'opacity', 
+            displayType: 'default', 
+            displayTypeSpeed: 1,
+            auto:true,
+            autoTimeout: 2000,
+            drag:true,
+            showNavigation: false,
+            showPagination: false,
+            rewindNav: true
+        });
         //gallery carousel
         $('#myGallery').cubeportfolio({
             layoutMode: 'slider',
