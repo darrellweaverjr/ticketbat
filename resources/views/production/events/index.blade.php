@@ -8,6 +8,7 @@
 <link href="{{config('app.theme')}}css/fullcalendar.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -216,35 +217,30 @@
             </h4>  
             <!-- END DESCRIPTION -->
             <!-- BEGIN GALLERY -->
-            <div id="gallery_view" class="carousel slide" data-ride="carousel" data-type="multi" data-interval="3000" style="height:200px;">
-                <ol class="carousel-indicators">
+            <div class="portfolio-content color-panel" style="padding:20px;background-color: white;"> 
+                <div id="myGallery" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
                     @foreach($event->images as $index=>$i)
-                    <li data-target="#gallery_view" data-slide-to="{{$index}}" @if(!$index) class="active" @endif ></li>
-                    @endforeach
-                </ol>
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner" role="listbox">
-                    @foreach($event->images as $index=>$i)
-                    <div class="item @if(!$index) active @endif" >
-                        <div class="col-md-3 col-sm-6 col-xs-12"><img  width="200px" height="150px" style="margin:auto" src="{{$i->url}}" alt="{{$i->url}}"></div>
+                    <div class="cbp-item show_section1" style="margin-right:20px">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <img src="{{$i->url}}" alt="{{$i->url}}"> </div>
+                            <div class="cbp-caption-activeWrap">
+                                <div class="cbp-l-caption-alignCenter">
+                                    <div class="cbp-l-caption-body">
+                                        <a href="{{$i->url}}" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="Images of {{$event->name}}."><i class="icon-size-fullscreen"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     @endforeach
                 </div>
-                <!-- Left and right controls -->
-                <a class="left carousel-control" href="#gallery_view" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="right carousel-control" href="#gallery_view" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                    <span class="sr-only">Next</span>
-                </a>
             </div>
             <!-- ENDS GALLERY -->
         </div>
     </div>
     @endif
-    <!-- END GALLERY -->
+    <!-- END GALLERY -->    
     <!-- BEGIN MAPS -->
     <div id="event_gmap" class="row gmaps" title="Location of the venue."
                  data-lat="{{$event->lat}}" 
@@ -261,6 +257,7 @@
 <script src="{{config('app.theme')}}js/fullcalendar.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyC7sODsH3uUz_lBbYH16eOCJU9igquCjzI" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/gmaps.min.js" type="text/javascript"></script>
 <script src="/js/production/events/index.js" type="text/javascript"></script>

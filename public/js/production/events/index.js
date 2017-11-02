@@ -93,25 +93,41 @@ var AppCalendar = function() {
                     $('#cal_model').fullCalendar('gotoDate', go_to_date);
                 },1);
             });
-            //gallery carousel
-            $('.carousel[data-type="multi"] .item').each(function(){
-                var next = $(this).next();
-                if (!next.length) {
-                  next = $(this).siblings(':first');
-                }
-                next.children(':first-child').clone().appendTo($(this));
-
-                for (var i=0;i<2;i++) {
-                  next=next.next();
-                  if (!next.length) {
-                      next = $(this).siblings(':first');
-                      }
-
-                  next.children(':first-child').clone().appendTo($(this));
-                }
-              });
+            
         }
     };
+}();
+//*****************************************************************************************
+var GalleryImages = function () {
+
+    var initGallery = function () {        
+        //gallery carousel
+        $('#myGallery').cubeportfolio({
+            layoutMode: 'slider',
+            defaultFilter: '*',
+            animationType: 'fadeOut', // quicksand
+            gapHorizontal: 30,
+            gapVertical: 30,
+            gridAdjustment: 'responsive', 
+            mediaQueries: [{ width: 1440, cols: 5 },{ width: 1024, cols: 4 },{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
+            caption: 'overlayBottomAlong', 
+            displayType: 'default', 
+            displayTypeSpeed: 1,
+            auto:true,
+            autoTimeout: 2000,
+            drag:true,
+            showNavigation: true,
+            showPagination: false,
+            rewindNav: true
+        });
+    }
+    return {
+        //main function to initiate map samples
+        init: function () {
+            initGallery();
+        }
+    };
+
 }();
 //*****************************************************************************************
 var MapsGoogle = function () {
@@ -148,5 +164,6 @@ var MapsGoogle = function () {
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
     AppCalendar.init(); 
+    GalleryImages.init(); 
     MapsGoogle.init(); 
 });
