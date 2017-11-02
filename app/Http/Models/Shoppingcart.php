@@ -57,8 +57,8 @@ class Shoppingcart extends Model
                                               shoppingcart.product_type, shoppingcart.cost_per_product, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, shoppingcart.number_of_items, shoppingcart.item_id,
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent, shows.slug, show_times.id AS show_time_id,
                                               (tickets.processing_fee*shoppingcart.number_of_items) AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
-                                              (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date,
-                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date,
+                                              (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date, shows.id AS show_id,
+                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date, shows.venue_id,
                                               (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty'))
                             ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
                             ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
@@ -99,7 +99,7 @@ class Shoppingcart extends Model
             $price = $qty = $fee = $save = $saveAll = $total = 0;
             $saveAllApplied = false;
             $coupon = $coupon_description = null; 
-            $restrictions = [];
+            $restrictions = $banners = [];
             $amex_only = 0;
             $printed_tickets = ['details'=>0,'shows'=>[],'select'=>0];
             //get all items
@@ -130,6 +130,17 @@ class Shoppingcart extends Model
                     //get restrictions
                     if($i->restrictions!='None')
                         $restrictions[$i->name] = preg_replace('/[^0-9]/','',$i->restrictions);
+                    //get banners
+                    $banner = DB::table('banners')
+                                ->select(DB::raw('banners.id, banners.url, banners.file'))
+                                ->where(function($query) use ($i) {
+                                    $query->whereRaw('banners.parent_id = '.$i->show_id.' AND banners.belongto="show" ')
+                                          ->orWhereRaw('banners.parent_id = '.$i->venue_id.' AND banners.belongto="venue" ');
+                                })
+                                ->where('banners.type','like','%Cart Page%')->get()->toArray();
+                    foreach ($banner as $b)
+                        $b->file = Image::view_image($b->file);
+                    $banners = array_merge($banners,$banner);
                     //calculate totals for availables items only
                     if(!$i->unavailable)
                     {
@@ -204,7 +215,7 @@ class Shoppingcart extends Model
             $printed_tickets['details'] = count($items)-count($printed_tickets['shows']);
             $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
             //return
-            return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,
+            return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,'banners'=>$banners,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
                     'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
            

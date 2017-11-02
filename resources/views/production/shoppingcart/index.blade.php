@@ -7,6 +7,7 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -138,6 +139,29 @@
     </div>
     @endif
     <!-- END RESTRICTIONS -->
+    <!-- BEGIN BANNERS -->
+    @if(count($cart['banners']))
+    <div class="row fixed-panel" >
+        <div class="portlet light about-text">
+            <!-- BEGIN BANNER -->
+            <div class="portfolio-content color-panel"> 
+                <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
+                    @foreach($cart['banners'] as $index=>$i)
+                    <div class="cbp-item show_section1" style="margin-right:20px">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <a href="{{$i->url}}" target="_blank"><img src="{{$i->file}}" alt="{{$i->url}}"></a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <!-- ENDS BANNER -->
+        </div>
+    </div>
+    @endif
+    <!-- END BANNERS -->
     <!-- BEGIN PAYMENT -->
     <div class="row fixed-panel">
         <div class="portlet light about-text">
@@ -534,6 +558,7 @@
 @section('scripts')
 <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="/js/production/shoppingcart/update.js" type="text/javascript"></script>
 <script src="/js/production/general/share_tickets.js" type="text/javascript"></script>
 <script src="/js/production/shoppingcart/share_tickets.js" type="text/javascript"></script>
