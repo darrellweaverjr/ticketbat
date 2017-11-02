@@ -40,22 +40,13 @@
 <div class="page-content color-panel">  
     <!-- BEGIN BANNERS -->
     @if(count($event->banners))
-    <div class="row fixed-panel" >
-        <div class="portlet light about-text">
+    <div class="row fixed-panel">
+        <div class="portlet light about-text"style="margin-left:15px;margin-right:15px">
             <!-- BEGIN BANNER -->
-            <div class="portfolio-content color-panel"> 
+            <div class="portfolio-content color-panel" > 
                 <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
                     @foreach($event->banners as $index=>$i)
-                    <div class="cbp-item show_section1" style="margin-right:20px">
-                        <div class="cbp-caption">
-                            <div class="cbp-caption-defaultWrap">
-                                <a href="{{$i->url}}" target="_blank"><img src="{{$i->file}}" alt="{{$i->url}}"></a>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                    @foreach($event->banners as $index=>$i)
-                    <div class="cbp-item show_section1" style="margin-right:20px">
+                    <div class="cbp-item show_section1">
                         <div class="cbp-caption">
                             <div class="cbp-caption-defaultWrap">
                                 <a href="{{$i->url}}" target="_blank"><img src="{{$i->file}}" alt="{{$i->url}}"></a>
