@@ -143,7 +143,7 @@
                 <!-- END FORM-->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn bg-info btn-outline">Shopping cart</button>
+                <a href="/production/shoppingcart" class="btn bg-info btn-outline">Shopping cart</a>
                 <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
                 <button type="button" id="btn_update_consignment" class="btn bg-green btn-outline" title="Check the consignment tickets.">Purchase</button>
             </div>

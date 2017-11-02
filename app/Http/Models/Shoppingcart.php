@@ -86,6 +86,19 @@ class Shoppingcart extends Model
             //if there is unavailable item remove it
             if($i->unavailable > 0)
                 Shoppingcart::where('id', $i->id)->delete();
+            else
+            {
+                //get seats for consignments
+                if(!empty($i->options) && Util::isJSON($i->options))
+                {
+                    $opt = json_decode($i->options,true);
+                    if(!empty($opt['consignments']) && !empty($opt['seats']))
+                    {
+                        $i->consignment = $opt['consignments'];
+                        $i->seat = $opt['seats'];
+                    }
+                }
+            }
         }
         //return
         return $items;

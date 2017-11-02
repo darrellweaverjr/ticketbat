@@ -40,7 +40,9 @@
                             <th style="text-align:right">Price each</th>
                             <th style="text-align:right">Subtotal</th>
                             <th style="text-align:right">Fees</th>
+                            @if(!empty($cart['items']) && empty($cart['items'][0]->consignment))
                             <th><center>Share</center></th>
+                            @endif
                             <th><center>Remove</center></th>
                         </tr>
                     </thead>
@@ -52,12 +54,14 @@
                                 On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}}
                             </td>
                             <td>
-                                <input type="number" value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
+                                <input type="number" @if(!empty($i->consignment)) disabled="true" @endif value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
                             </td>
                             <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>
                             <td style="text-align:right">${{number_format($i->processing_fee,2)}}</td>
+                            @if(empty($i->consignment))
                             <td><center><button type="button" class="btn btn-info"><i class="fa fa-share icon-share"></i></button></center></td>
+                            @endif
                             <td><center><button type="button" class="btn btn-danger"><i class="fa fa-remove icon-ban"></i></button></center></td>
                         </tr>
                         @endforeach
