@@ -15,6 +15,7 @@ use App\Http\Models\Util;
 use App\Http\Models\Location;
 use App\Http\Models\User;
 use App\Http\Models\Image;
+use App\Http\Models\Seat;
 use App\Mail\EmailSG;
 use App\Mail\MailChimp;
 
@@ -269,20 +270,33 @@ class PurchaseController extends Controller
                     $sc = Shoppingcart::find($i->id);
                     if($sc)
                     {
-                        if(!empty($cs->gifts) && Util::isJSON($cs->gifts))
+                        if(!empty($i->consignment) && !empty($i->seat))
                         {
-                            $shared = [];
-                            $indexes = json_decode($cs->gifts,true);
-                            foreach ($indexes as $i)
-                                $shared[] = ['first_name'=>$i['first_name'],'last_name'=>$i['last_name'],'email'=>$i['email'],
-                                             'comment'=>(!empty($i['comment']))? $i['comment'] : null,'qty'=>$i['qty']];
-                            $purchase->share_tickets($shared);
+                            $seat = Seat::find($i->seat);
+                            if($seat)
+                            {
+                                $seat->purchase_id = $purchase->id;
+                                $seat->status = 'Sold';
+                                $seat->save();
+                            }
                         }
                         else
                         {
-                            //create tickets, no gifts
-                            $tickets = implode(range(1,$purchase->quantity));
-                            DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                            if(!empty($cs->gifts) && Util::isJSON($cs->gifts))
+                            {
+                                $shared = [];
+                                $indexes = json_decode($cs->gifts,true);
+                                foreach ($indexes as $i)
+                                    $shared[] = ['first_name'=>$i['first_name'],'last_name'=>$i['last_name'],'email'=>$i['email'],
+                                                 'comment'=>(!empty($i['comment']))? $i['comment'] : null,'qty'=>$i['qty']];
+                                $purchase->share_tickets($shared);
+                            }
+                            else
+                            {
+                                //create tickets, no gifts
+                                $tickets = implode(range(1,$purchase->quantity));
+                                DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                            }
                         }
                         //remove item from shoppingcart
                         $sc->delete();
