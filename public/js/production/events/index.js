@@ -86,8 +86,9 @@ var AppCalendar = function() {
             });
             $('#cal_model').fullCalendar('render'); 
             $('#cal_model').fullCalendar('gotoDate', go_to_date);
+            
             //render calendar when showtimes tab is clicked
-            $('#showtimes_calendar').on('click', function(ev) {
+            $('a[href="#showtimes_calendar"]').on('click', function(ev) {
                 window.setTimeout(function(){
                     $('#cal_model').fullCalendar('render'); 
                     $('#cal_model').fullCalendar('gotoDate', go_to_date);

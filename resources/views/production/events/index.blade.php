@@ -139,10 +139,10 @@
                         <div class="btn-group">
                             <ul class="nav nav-tabs">
                                 <li @if(count($event->showtimes)<8) class="active" @endif>
-                                    <a href="#showtimes_list" data-toggle="tab"><i class="fa fa-list icon-list"></i></a>
+                                     <a href="#showtimes_list" class="btn-info" data-toggle="tab"><i class="fa fa-list icon-list"></i></a>
                                 </li>
                                 <li @if(count($event->showtimes)>7) class="active" @endif>
-                                    <a href="#showtimes_calendar" data-toggle="tab"><i class="fa fa-calendar icon-calendar"></i></a>
+                                    <a href="#showtimes_calendar" class="btn-info" data-toggle="tab"><i class="fa fa-calendar icon-calendar"></i></a>
                                 </li>
                             </ul>
                         </div>
