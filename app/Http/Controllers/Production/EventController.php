@@ -244,6 +244,17 @@ class EventController extends Controller
                 }
                 $event->tickets = array_merge($new_order,$event->tickets); 
             }
+            //checkings for sale
+            if($event->for_sale)
+            {
+                if(!empty($event->on_sale) && strtotime($event->on_sale)!=false)
+                {
+                    if(strtotime($event->on_sale) > strtotime('now'))
+                        $event->for_sale = 0;
+                }
+                if(empty($event->tickets))
+                    $event->for_sale = 0;
+            }
             //return view
             return view('production.events.buy',compact('event','has_coupon'));
         } catch (Exception $ex) {

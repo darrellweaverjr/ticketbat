@@ -61,6 +61,11 @@
                     </h4> 
                     <div class="portlet-body">
                         <center><h4>{{$event->show_time}}</h4></center>
+                        @if(empty($event->for_sale))
+                        <div class="bg-red bg-font-red">
+                            <hr><center><h1>Tickets are currently not for sale</h1></center><br>
+                        </div>
+                        @else
                         <div class="panel-group accordion" id="tickets_accordion">
                             <!-- BEGIN TICKETS -->
                             @php $selected = true @endphp
@@ -107,7 +112,9 @@
                             @endforeach
                             <!-- END TICKETS -->
                         </div>
+                        @endif
                     </div>
+                    @if(!empty($event->for_sale))
                     <!-- BEGIN TOTALS -->
                     <p style="margin-top: 50px">
                         <div class="col-md-6">
@@ -124,7 +131,9 @@
                         </div>
                     </p>
                     <!-- END TOTALS -->
+                    @endif
                 </div>
+                @if(!empty($event->for_sale))
                 <!-- BEGIN ADD TO -->
                 <div class="portlet light about-text">
                     <!-- BEGIN DESCRIPTION -->
@@ -143,6 +152,7 @@
                     </div>
                 </div>
                 <!-- END ADD TO -->
+                @endif
                 <!-- BEGIN SHORTCUT FORM -->
                 <div class="portlet light about-text" id="continue_buy_checkout_msg" style="display:none">
                     <div class="col-md-6">
