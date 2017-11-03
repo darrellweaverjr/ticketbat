@@ -205,13 +205,13 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -219,7 +219,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}">
+                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}" autocomplete="on">
                                         </div>
                                     </div>
                                 </form>
@@ -249,7 +249,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -257,14 +257,14 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <input type="number" class="form-control" placeholder="#### #### #### ####" name="card" data-amex="{{$cart['amex_only']}}" style="min-width:170px">
+                                            <input type="number" class="form-control" placeholder="#### #### #### ####" name="card" data-amex="{{$cart['amex_only']}}" style="min-width:170px" autocomplete="on">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">CVV:
                                             <i class="required"> required</i> 
                                         </label>
                                         <div class="col-sm-3 show-error">
                                             <div class="input-group">
-                                                <input type="number" class="form-control" placeholder="####" name="cvv" style="min-width:75px">
+                                                <input type="number" class="form-control" placeholder="####" name="cvv" style="min-width:75px" autocomplete="off">
                                                 <span class="input-group-btn">
                                                     <a class="btn btn-info" data-toggle="modal" href="#modal_cvv"><i class="fa fa-question icon-question"></i> What is it?</a>
                                                 </span>
@@ -276,7 +276,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="month" placeholder="M" style="min-width:145px" value="{{old('month')}}">
+                                            <select class="form-control" name="month" placeholder="M" style="min-width:145px" value="{{old('month')}}" autocomplete="on">
                                                 <option value="" disabled="true" selected="true">- Select month -</option>
                                                 <option value="01">1 (January)</option>
                                                 <option value="02">2 (February)</option>
@@ -296,7 +296,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="year" placeholder="YYYY" style="min-width:135px" value="{{old('year')}}">
+                                            <select class="form-control" name="year" placeholder="YYYY" style="min-width:135px" value="{{old('year')}}" autocomplete="on">
                                                 <option value="" disabled="true" selected="true">- Select year -</option>
                                                 @for ($y = date('Y'); $y <= date('Y')+20; $y++)
                                                     <option value="{{$y}}">{{$y}}</option>
@@ -309,7 +309,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="0000 Main St." name="address" value="{{old('address')}}">
+                                            <input type="text" class="form-control" placeholder="0000 Main St." name="address" value="{{old('address')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -317,13 +317,13 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <input type="text" class="form-control" placeholder="Las Vegas" name="city" value="{{old('city')}}">
+                                            <input type="text" class="form-control" placeholder="Las Vegas" name="city" value="{{old('city')}}" autocomplete="on">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">Zip:
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px" value="{{old('zip')}}">
+                                            <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px" value="{{old('zip')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -331,7 +331,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="country" placeholder="United States" style="min-width:135px" value="{{old('country')}}">
+                                            <select class="form-control" name="country" placeholder="United States" style="min-width:135px" value="{{old('country')}}" autocomplete="on">
                                                 @foreach( $cart['countries'] as $c)
                                                     <option @if($c->code=='US') selected @endif value="{{$c->code}}">{{$c->name}}</option>
                                                 @endforeach
@@ -341,7 +341,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <select class="form-control" name="state" placeholder="Nevada" style="min-width:135px" value="{{old('state')}}">
+                                            <select class="form-control" name="state" placeholder="Nevada" style="min-width:135px" value="{{old('state')}}" autocomplete="on">
                                                 @foreach( $cart['regions'] as $r)
                                                     <option value="{{$r->code}}">{{$r->name}}</option>
                                                 @endforeach
@@ -351,7 +351,7 @@
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -359,7 +359,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}">
+                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}" autocomplete="on">
                                         </div>
                                     </div>
                                 </form>
@@ -382,13 +382,13 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -396,7 +396,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}">
+                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="hidden">
@@ -496,13 +496,13 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Phone:</label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}">
+                                            <input type="text" class="form-control" placeholder="### ### ####" name="phone" value="{{old('phone')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -510,7 +510,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}">
+                                            <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}" autocomplete="on">
                                         </div>
                                     </div>
                                 </form>

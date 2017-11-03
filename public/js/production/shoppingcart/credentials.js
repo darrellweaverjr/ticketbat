@@ -56,7 +56,6 @@ var FunctionsGuest = function () {
                 }); 
             }  
         });
-        
         //function guest
         $('#btn_guest_login').on('click', function(ev) {
             if($('#form_guest_login').valid())
@@ -111,7 +110,17 @@ var FunctionsGuest = function () {
                 }); 
             }  
         });
-        
+        //on enter submit forms
+        $('#form_guest_login input').keypress(function(e) {
+            if(e.which == 13) {
+                $('#btn_guest_login').click();
+            }
+        });
+        $('#form_login_guest input').keypress(function(e) {
+            if(e.which == 13) {
+                $('#btn_login_guest').click();
+            }
+        });
         //autoload form
         $('#modal_login_guest').modal('show');
     }
