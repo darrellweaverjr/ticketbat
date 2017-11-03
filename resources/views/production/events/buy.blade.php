@@ -45,7 +45,7 @@
                 </h4> 
                 <p class="margin-top-20">
                     <center>
-                        <img id="stage_images" src="{{$event->image_url}}" data-default="{{$event->image_url}}" data-types='{{json_encode($event->stage_images,true)}}'/>
+                        <img id="stage_images" style="width:93%" src="{{$event->image_url}}" data-default="{{$event->image_url}}" data-types='{{json_encode($event->stage_images,true)}}'/>
                     </center><br>
                 </p>
                 <!-- END STAGE -->

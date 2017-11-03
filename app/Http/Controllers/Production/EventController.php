@@ -145,7 +145,7 @@ class EventController extends Controller
             //get all records
             $event = DB::table('shows')
                         ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                        ->join('stages', 'stages.venue_id', '=', 'venues.id')
+                        ->join('stages', 'stages.id', '=', 'shows.stage_id')
                         ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                         ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, 
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time, 
