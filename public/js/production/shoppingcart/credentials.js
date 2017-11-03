@@ -113,12 +113,12 @@ var FunctionsGuest = function () {
         //on enter submit forms
         $('#form_guest_login input').keypress(function(e) {
             if(e.which == 13) {
-                $('#btn_guest_login').click();
+                $('#btn_guest_login').focus().click();
             }
         });
         $('#form_login_guest input').keypress(function(e) {
             if(e.which == 13) {
-                $('#btn_login_guest').click();
+                $('#btn_login_guest').focus().click();
             }
         });
         //autoload form
