@@ -32,7 +32,7 @@ class FeedController extends Controller{
                     ->where('images.image_type','=','Logo')
                     ->where(DB::raw($cutoff_date),'>', \Carbon\Carbon::now())
                     ->where('shows.venue_id','=',$venue_id)
-                    ->orderBy('show_times.show_time','ASC')->groupBy('shows.id')
+                    ->orderBy('show_times.show_time','ASC')->groupBy('show_times.id')
                     ->distinct()->get(); 
         }       
         foreach ($events as $e)
