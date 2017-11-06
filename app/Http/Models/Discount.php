@@ -94,13 +94,28 @@ class Discount extends Model
     /**
      * The full description that belong to the discount.
      */
-    public function full_description()
+    public function full_description($items=null)
     {
         $details = null;
         if($this->discount_scope=='Total')
             $sufix = ' the total amount of purchase.';
         else
+        {
             $sufix = ' every purchased item associated with this coupon.';
+            if(!empty($items)) 
+            {
+                foreach ($items as $k=>$i)
+                {
+                    if(count($items)==1)
+                        $sufix.= ' "'.$i->name.' '.$i->product_type.'" ';
+                    else if($k+1 == count($items))
+                        $sufix.= ' and "'.$i->name.' '.$i->product_type.'" ';
+                    else
+                        $sufix.= ', "'.$i->name.' '.$i->product_type.'" ';
+                }
+                $sufix.= ' tickets.';
+            }
+        }
         //calc description
         switch ($this->discount_type)
         {
@@ -111,7 +126,7 @@ class Discount extends Model
                 $details = 'discount of '. $this->start_num. '% on'.$sufix;
                 break;
             case 'N for N':
-                $details = 'discount of: Buy '. $this->start_num.' Get '.$this->end_num. ' for free (applies only for items associated with this coupon).';
+                $details = 'discount of: Buy '. $this->start_num.' Get '.$this->end_num. ' for free on'.$sufix;
                 break;
         }
         //return

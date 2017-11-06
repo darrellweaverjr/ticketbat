@@ -325,7 +325,8 @@ class Shoppingcart extends Model
                                 ->join('discount_tickets', 'discount_tickets.ticket_id', '=' ,'shoppingcart.ticket_id')
                                 ->join('discounts', 'discounts.id', '=' ,'discount_tickets.discount_id')
                                 ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
-                                ->select('shoppingcart.id')
+                                ->join('shows', 'show_times.show_id', '=' ,'shows.id')
+                                ->select('shoppingcart.id','shows.name','shoppingcart.product_type')
                                 ->where('discounts.code','=',$code)->where('shoppingcart.session_id','=',$session_id)
                                 ->whereRaw('DATE(show_times.show_time) BETWEEN DATE(discounts.start_date) AND DATE(discounts.end_date)')
                                 ->whereIn('discounts.coupon_type', ['Normal','Admin'])
@@ -339,8 +340,8 @@ class Shoppingcart extends Model
                                     $query->whereNull('discounts.effective_end_date')
                                           ->orWhereDate('discounts.effective_end_date','>=',$current);
                                 })
-                                ->count();
-                    if($items)
+                                ->get();
+                    if(count($items))
                     {   
                         $coupon = DB::table('discounts')
                                 ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
@@ -371,7 +372,7 @@ class Shoppingcart extends Model
                                     if(json_decode($coup, true)['code'] != $coupon->code)
                                         Session::forget('coup');
                                 }
-                                return ['success'=>true, 'msg'=> Discount::find($coupon->id)->full_description() ];
+                                return ['success'=>true, 'msg'=> Discount::find($coupon->id)->full_description($items) ];
                             }  
                             return ['success'=>false, 'msg'=>'There was an error trying to add the coupon.'];
                         }
