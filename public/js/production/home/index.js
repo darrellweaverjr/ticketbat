@@ -149,19 +149,28 @@ var PortfolioManaged = function () {
                 }
             });
         }
-        //check images on load
+        //check images on load and check the location
         $(window).load(function(){
             check_images();
+            
         });
+        //autoselect city
+        $.getJSON("http://freegeoip.net/json/", function (response) {
+            $('#myFilter select[name="filter_city"]').find('option[data-state="'+response.region_code+'"][data-country="'+response.country_code+'"]').attr('selected','selected').trigger('change');
+        });
+        //$('.cbp').css('height','10000px!important');
+        //$('#myShows').height(10000);
+        //$('#myShows .cbp-wrapper-outer').height(10000);
+        //$('#myShows .cbp-wrapper').height(10000);
     }
     return {
         //main function to initiate the module
         init: function () {
-            initPortfolio();        
+            initPortfolio();  
         }
     };
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    PortfolioManaged.init();
+    PortfolioManaged.init();    
 });

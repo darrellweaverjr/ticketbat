@@ -70,7 +70,7 @@
                             <select class="form-control" name="filter_city">
                                 <option selected value="">All</option>
                                 @foreach($cities as $index=>$c)
-                                <option value="{{$c->city}}">{{$c->city}}</option>
+                                <option data-country="{{$c->country}}" data-state="{{$c->state}}" value="{{$c->city}}">{{$c->city}}</option>
                                 @endforeach
                              </select>
                         </span>
@@ -124,28 +124,30 @@
     </div>
     <!-- END SEARCH BAR-->
     <!-- BEGIN SHOWS GRID-->
-    <div class="portfolio-content body_grid color-panel text-center">        
-        <div id="myShows" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
-            @foreach($shows as $index=>$s)
-            <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/event/{{$s->slug}}">
-                <div class="cbp-caption">
-                    <a class="cbp-caption-defaultWrap">
-                        <img src="{{$s->url}}" alt="{{$s->name}}"> </a>
-                    <div class="cbp-caption-activeWrap">
-                        <div class="cbp-l-caption-alignCenter">
-                            <div class="cbp-l-caption-body">
-                                <span class="cbp-l-caption-buttonLeft btn green">@if($s->time_alternative) {{$s->time_alternative}} @else From <b>@if($s->starting_at) ${{$s->starting_at}} @else ${{$s->price}} @endif</b> @endif</span>
-                                <span class="cbp-l-caption-buttonLeft btn red">Next on <b class="date_next_on">{{date('m/d/y', strtotime($s->show_time))}}</b></span>
-                                <a href="{{$s->url}}" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="{{$s->name}}<br>{{$s->venue}}"><i class="icon-size-fullscreen"></i></a>
+    <div class="row">    
+        <div class="portfolio-content body_grid color-panel text-center "> 
+            <div id="myShows" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
+                @foreach($shows as $index=>$s)
+                <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/event/{{$s->slug}}">
+                    <div class="cbp-caption">
+                        <a class="cbp-caption-defaultWrap">
+                            <img src="{{$s->url}}" alt="{{$s->name}}"> </a>
+                        <div class="cbp-caption-activeWrap">
+                            <div class="cbp-l-caption-alignCenter">
+                                <div class="cbp-l-caption-body">
+                                    <span class="cbp-l-caption-buttonLeft btn green">@if($s->time_alternative) {{$s->time_alternative}} @else From <b>@if($s->starting_at) ${{$s->starting_at}} @else ${{$s->price}} @endif</b> @endif</span>
+                                    <span class="cbp-l-caption-buttonLeft btn red">Next on <b class="date_next_on">{{date('m/d/y', strtotime($s->show_time))}}</b></span>
+                                    <a href="{{$s->url}}" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="{{$s->name}}<br>{{$s->venue}}"><i class="icon-size-fullscreen"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="btn green uppercase show_section_btnbuy">Tickets @if($s->starting_at)<br><b style="text-decoration:line-through;color:#d43f3a">${{$s->price}}</b><br><b style="color:blue">${{$s->starting_at}}</b>@endif</div>
+                    <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
+                    <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">On {{date('F j, Y @ h:i A', strtotime($s->show_time))}}</b><br><b>in {{$s->venue}}</b></a>
                 </div>
-                <div class="btn green uppercase show_section_btnbuy">Tickets @if($s->starting_at)<br><b style="text-decoration:line-through;color:#d43f3a">${{$s->price}}</b><br><b style="color:blue">${{$s->starting_at}}</b>@endif</div>
-                <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
-                <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">On {{date('F j, Y @ h:i A', strtotime($s->show_time))}}</b><br><b>in {{$s->venue}}</b></a>
+                @endforeach
             </div>
-            @endforeach
         </div>
     </div>    
     <!-- END SHOWS GRID-->

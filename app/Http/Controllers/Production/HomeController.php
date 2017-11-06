@@ -75,7 +75,7 @@ class HomeController extends Controller
                         ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
                         ->join('images', 'venue_images.image_id', '=' ,'images.id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                        ->select('locations.city')
+                        ->select('locations.city','locations.state','locations.country')
                         ->where('venues.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->whereNotNull('images.url')
                         ->orderBy('locations.city')->groupBy('locations.city')
