@@ -594,9 +594,14 @@ var TableDatatablesManaged = function () {
             } 
             else
             {
+                var tabs = $('#form_model_update .has-error').closest('.tab-pane');
+                var names = [];
+                $.each(tabs,function(k, v) {
+                    names.push( $('a[href="#'+v.id+'"]').html() );
+                });
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
-                    text: "The form is not valid!<br>Please check the information again in tabs: General, Sponsorship and Reports.",
+                    text: "The form is not valid!<br>Please check the information again in tab(s): "+names.join(', '),
                     html: true,
                     type: "error"
                 },function(){
