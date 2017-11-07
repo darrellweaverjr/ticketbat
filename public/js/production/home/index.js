@@ -144,13 +144,8 @@ var PortfolioManaged = function () {
         //check for broken images to change
         function check_images(){
             $('#myShows .cbp-item.filtered:not(.hidden) img').each(function(){
-                var image = new Image();
-                image.src = $(this).attr('src');
-                if(!image.complete)
+                if((typeof this.naturalWidth != "undefined" && this.naturalWidth == 0 ) || this.readyState == 'uninitialized' ) 
                     $(this).attr('src', $('#myShows').data('broken'));
-                /*if($(this).height() <= 40) {
-                    $(this).attr('src', $('#myShows').data('broken'));
-                }*/
             });
         }
         //check images on load and check the location
