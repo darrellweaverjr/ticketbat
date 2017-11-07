@@ -37,35 +37,35 @@ class DashboardController extends Controller
         {
             $permits = Auth::user()->user_type->getACLs();
             if(!empty($permits['REPORTS']))
-                return redirect('dashboard/ticket_sales');
+                return redirect('/admin/dashboard/ticket_sales');
             if(!empty($permits['USERS']))
-                return redirect('users');
+                return redirect('/admin/users');
             if(!empty($permits['BANDS']))
-                return redirect('bands');
+                return redirect('/admin/bands');
             if(!empty($permits['VENUES']))
-                return redirect('venues');
+                return redirect('/admin/venues');
             if(!empty($permits['SHOWS']))
-                return redirect('shows');
+                return redirect('/admin/shows');
             if(!empty($permits['TYPES']))
-                return redirect('ticket_types');
+                return redirect('/admin/ticket_types');
             if(!empty($permits['CATEGORIES']))
-                return redirect('categories');
+                return redirect('/admin/categories');
             if(!empty($permits['COUPONS']))
-                return redirect('coupons');
+                return redirect('/admin/coupons');
             if(!empty($permits['PACKAGES']))
-                return redirect('packages');
+                return redirect('/admin/packages');
             if(!empty($permits['ACLS']))
-                return redirect('acls');
+                return redirect('/admin/acls');
             if(!empty($permits['MANIFESTS']))
-                return redirect('manifests');
+                return redirect('/admin/manifests');
             if(!empty($permits['CONTACTS']))
-                return redirect('contacts');
+                return redirect('/admin/contacts');
             if(!empty($permits['PURCHASES']))
-                return redirect('purchases');
+                return redirect('/admin/purchases');
             if(!empty($permits['SLIDERS']))
-                return redirect('sliders');
+                return redirect('/admin/sliders');
             if(!empty($permits['CONSIGNMENTS']))
-                return redirect('consignments');
+                return redirect('/admin/consignments');
         }
         return redirect()->route('logout');
     }
