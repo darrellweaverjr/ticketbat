@@ -3,16 +3,11 @@
 namespace App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Slider;
 use App\Http\Models\Image;
 use App\Http\Models\Category;
-use App\Http\Models\Country;
-use App\Http\Models\Region;
-use App\Http\Models\Show;
-use App\Http\Models\Util;
 
 class HomeController extends Controller
 {

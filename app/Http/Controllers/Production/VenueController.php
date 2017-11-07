@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Production;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Image;
-use App\Http\Models\Venue;
-use App\Http\Models\Util;
 
 class VenueController extends Controller
 {

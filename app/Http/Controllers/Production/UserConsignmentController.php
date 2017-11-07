@@ -71,6 +71,10 @@ class UserConsignmentController extends Controller
             }
             else
             {
+                //redirect to login in case of no permission
+                if(!in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
+                    return redirect()->route('index');
+                //continue
                 $current = date('Y-m-d H:i:s');
                 //conditions to search
                 $where = [['users.id','=',Auth::user()->id]];

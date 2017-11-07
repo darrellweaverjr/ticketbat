@@ -115,10 +115,12 @@
                                         <a href="/production/user/purchases" title="List your purchases">
                                         <i class="icon-basket"></i>&nbsp;&nbsp;&nbsp;My Purchases</a>
                                     </li>
+                                    @if(in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                                     <li>
                                         <a href="/production/user/consignments" title="View your consignment tickets">
                                         <i class="icon-tag"></i>&nbsp;&nbsp;&nbsp;My Consignments</a>
                                     </li>
+                                    @endif
                                     <li>                                    
                                     <li>
                                         <a id="btn_logout" title="Log out session">

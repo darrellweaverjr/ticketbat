@@ -32,7 +32,7 @@ class UserPurchaseController extends Controller
                                           IF(show_times.show_time>NOW(),1,0) AS passed,
                                           show_times.show_time, purchases.created, purchases.quantity, purchases.price_paid'))
                         ->where('purchases.user_id', Auth::user()->id)->orderBy('purchases.created','DESC')->get();
-            $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
+            $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
             //return view
             return view('production.user.purchases',compact('purchases','seller'));
         } catch (Exception $ex) {
@@ -67,7 +67,7 @@ class UserPurchaseController extends Controller
     public function tickets($type,$id)
     {
         try {
-            if(!in_array($type,['C','S']) || ($type=='S' && !(Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))))
+            if(!in_array($type,['C','S']) || ($type=='S' && !(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))))
                 return redirect()->route('index');
             $format = 'pdf';
             //paper size

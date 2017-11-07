@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Http\Response;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Transaction;
 use App\Http\Models\Purchase;
@@ -85,7 +84,7 @@ class PurchaseController extends Controller
                     case 'swipe':
                         if($info['method']=='swipe') //check to skip en case of card
                         {
-                            if(!(Auth::check() && in_array(Auth::user()->user_type_id, [1,7])))
+                            if(!(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE')))))
                                 return ['success'=>false, 'msg'=>'You are now allow to perfom this operation.'];
                             if($shoppingcart['total']>0) 
                             {
@@ -107,7 +106,7 @@ class PurchaseController extends Controller
                         $shoppingcart['payment_type'] = 'Credit';
                         break;
                     case 'cash':
-                        if(!(Auth::check() && in_array(Auth::user()->user_type_id, [1,7])))
+                        if(!(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE')))))
                             return ['success'=>false, 'msg'=>'You are now allow to perfom this operation.'];
                         Session::forget('change');
                         if($shoppingcart['total']>0) 
@@ -328,7 +327,7 @@ class PurchaseController extends Controller
         $conversion_code = [];
         $ua_conversion_code = [];
         $banners = [];
-        $seller = (Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))? 1 : 0;
+        $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
         try {
             //init
             $input = Input::all(); 

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use App\Http\Models\Country;
 use App\Http\Models\Region;
-use App\Http\Models\Contact;
 
 class GeneralController extends Controller
 {

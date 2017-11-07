@@ -120,7 +120,7 @@ class EventController extends Controller
                                 ->where('show_times.show_id',$event->show_id)->where('show_times.is_active','>',0)
                                 ->whereRaw(DB::raw('show_times.show_time > NOW()'))
                                 ->where(function($query) {
-                                    if(Auth::check() && Auth::user()->user_type_id!=1)
+                                    if(Auth::check() && !in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                                         $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
                                 })
                                 ->orderBy('show_times.show_time')->get();
@@ -156,7 +156,7 @@ class EventController extends Controller
                         ->where('shows.slug', $slug)->where('show_times.id', $product)->where('show_times.is_active','>',0)
                         ->whereRaw(DB::raw('show_times.show_time > NOW()'))
                         ->where(function($query) {
-                            if(Auth::check() && Auth::user()->user_type_id!=1)
+                            if(Auth::check() && !in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                                 $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
                         })
                         ->first();
