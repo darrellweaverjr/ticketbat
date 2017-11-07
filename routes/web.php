@@ -3,7 +3,7 @@
 //GENERAL ROUTES
 Auth::routes();
 Route::get('/', function () { return redirect()->route('home'); });
-Route::get('/home', function () { return redirect()->route('home'); });
+Route::get('/admin', function () { return redirect()->route('home'); });
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 //ADMIN ROUTES
 Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin'], function () {
@@ -102,6 +102,11 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 
 //PRODUCTION ROUTES
 Route::group(['prefix' => 'production','middleware' => 'check','namespace' => 'Production'], function () {
+    //home
+    Route::get('/', function () { return redirect()->route('index'); });
+    Route::get('/events', function () { return redirect()->route('index'); });
+    Route::get('/home', 'HomeController@index')->name('index');
+    Route::post('home/search', 'HomeController@search');
     //general
     Route::post('general/contact', 'GeneralController@contact');    
     Route::post('general/country', 'GeneralController@country');
@@ -137,11 +142,6 @@ Route::group(['prefix' => 'production','middleware' => 'check','namespace' => 'P
     Route::post('purchase/complete', 'PurchaseController@complete');
     Route::post('purchase/welcome', 'PurchaseController@welcome');
     Route::post('purchase/receipts', 'PurchaseController@receipts');
-    //home
-    Route::get('/', function () { return redirect()->route('index'); });
-    Route::get('/events', function () { return redirect()->route('index'); });
-    Route::get('/home', 'HomeController@index')->name('index');
-    Route::post('home/search', 'HomeController@search');
     //event
     Route::match(['get','post'], 'event/{slug}/{product}', 'EventController@buy');
     Route::match(['get','post'], 'event/{slug}', 'EventController@index');

@@ -30,7 +30,44 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return $this->ticket_sales();
+        //load first and default module depending of permission, logout if none or not valid user
+        if(Auth::check() 
+            && in_array(Auth::user()->user_type_id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))) 
+            && !empty(Auth::user()->user_type->getACLs()) )
+        {
+            $permits = Auth::user()->user_type->getACLs();
+            if(!empty($permits['REPORTS']))
+                return redirect('dashboard/ticket_sales');
+            if(!empty($permits['USERS']))
+                return redirect('users');
+            if(!empty($permits['BANDS']))
+                return redirect('bands');
+            if(!empty($permits['VENUES']))
+                return redirect('venues');
+            if(!empty($permits['SHOWS']))
+                return redirect('shows');
+            if(!empty($permits['TYPES']))
+                return redirect('ticket_types');
+            if(!empty($permits['CATEGORIES']))
+                return redirect('categories');
+            if(!empty($permits['COUPONS']))
+                return redirect('coupons');
+            if(!empty($permits['PACKAGES']))
+                return redirect('packages');
+            if(!empty($permits['ACLS']))
+                return redirect('acls');
+            if(!empty($permits['MANIFESTS']))
+                return redirect('manifests');
+            if(!empty($permits['CONTACTS']))
+                return redirect('contacts');
+            if(!empty($permits['PURCHASES']))
+                return redirect('purchases');
+            if(!empty($permits['SLIDERS']))
+                return redirect('sliders');
+            if(!empty($permits['CONSIGNMENTS']))
+                return redirect('consignments');
+        }
+        return redirect()->route('logout');
     }
     
     /**
