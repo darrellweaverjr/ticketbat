@@ -144,8 +144,11 @@ var PortfolioManaged = function () {
         //check for broken images to change
         function check_images(){
             $('#myShows .cbp-item.filtered:not(.hidden) img').each(function(){
-                if((typeof this.naturalWidth != "undefined" && this.naturalWidth == 0 ) || this.readyState == 'uninitialized' ) 
+                if((typeof this.naturalWidth != "undefined" && this.naturalWidth < 1 ) || this.readyState == 'uninitialized' || this.naturalWidth == "undefined" ) 
+                {
+                    //$(this).attr('src', this.naturalWidth);
                     $(this).attr('src', $('#myShows').data('broken'));
+                }
             });
         }
         //check images on load and check the location
