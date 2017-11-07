@@ -179,10 +179,10 @@
                                             </li>
                                             <li class="">
                                                 <a href="#tab_model_update_videos" data-toggle="tab">Videos</a>
-                                            </li><!--
-                                            <li class="">
-                                                <a href="#tab_model_update_reviews" data-toggle="tab"> Reviews </a>
                                             </li>
+                                            <li class="">
+                                                <a href="#tab_model_update_reviews" data-toggle="tab">Reviews</a>
+                                            </li><!--
                                             <li class="">
                                                 <a href="#tab_model_update_awards" data-toggle="tab"> Awards </a>
                                             </li>-->
@@ -667,10 +667,28 @@
                                         <div class="row" style="max-height:600px !important;overflow-y: auto;">
                                             <div id="grid_show_videos" class="cbp" style="min-height: 2000px; width:950px !important;"></div>
                                         </div>
-                                    </div><!--
-                                    <div class="tab-pane" id="tab_model_update_reviews">
-                                        <h1>Not Implemented!</h1>
                                     </div>
+                                    <div class="tab-pane" id="tab_model_update_reviews">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_review_refresh" class="btn sbold bg-green"> Refresh
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th> Posted </th>
+                                                        <th> Review </th>
+                                                        <th> Status </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_show_reviews">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!--
                                     <div class="tab-pane" id="tab_model_update_awards">
                                         <h1>Not Implemented!</h1>
                                     </div>-->

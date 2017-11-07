@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'shows/images', 'ShowController@images')->middleware('permissions:SHOWS');
     Route::match(['get','post'], 'shows/banners', 'ShowController@banners')->middleware('permissions:SHOWS');
     Route::match(['get','post'], 'shows/videos', 'ShowController@videos')->middleware('permissions:SHOWS');
+    Route::post('shows/reviews', 'ShowController@reviews')->middleware('permissions:SHOWS');
     Route::post('shows/slug', 'ShowController@slug')->middleware('permissions:SHOWS');
     Route::post('shows/save', 'ShowController@save')->middleware('permissions:SHOWS');
     Route::post('shows/remove', 'ShowController@remove')->middleware('permissions:SHOWS');
