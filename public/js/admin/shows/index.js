@@ -2770,76 +2770,8 @@ var TableDatatablesManaged = function () {
         });
         //function with show_videos  *****************************************************************************************************   SHOW VIDEOS END
         //function with show_reviews  *************************************************************************************************   SHOW REVIEWS BEGIN
-        //on select ticket
-        $('#form_model_show_contracts select[name="ticket_id"]').on('change', function(ev) {
-            $('#btn_show_contracts_ticket_add').prop('disabled',true); 
-            var ticket_id = $(this).val();
-            if(ticket_id)
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/shows/contracts', 
-                    data: {ticket_id:ticket_id},
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            for(var key in data.ticket)
-                            {
-                                //fill out
-                                var e = $('#form_model_show_contracts [name="'+key+'"]');
-                                if(e.is('input:checkbox'))
-                                    $('#form_model_show_contracts .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.ticket[key])? true : false, true);
-                                else
-                                    e.val(data.ticket[key]);
-                            }
-                            $('#btn_show_contracts_ticket_add').prop('disabled',false);
-                        }
-                        else{
-                            $('#modal_model_show_contracts').modal('hide');
-			    $('#modal_model_update').modal('hide');						
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            },function(){
-                                $('#modal_model_update').modal('show');
-                                $('#modal_model_show_contracts').modal('show');
-                            });
-                        }
-                    },
-                    error: function(){
-                        $('#modal_model_show_contracts').modal('hide');
-			$('#modal_model_update').modal('hide');	   	
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
-                            html: true,
-                            type: "error"
-                        },function(){
-                            $('#modal_model_update').modal('show');
-                            $('#modal_model_show_contracts').modal('show');
-                        });
-                    }
-                }); 
-            }
-            else 
-            {
-                $('#modal_model_show_contracts').modal('hide');
-                $('#modal_model_update').modal('hide');	   	
-                swal({
-                    title: "<span style='color:red;'>Error!</span>",
-                    text: "You must select a valid ticket!",
-                    html: true,
-                    type: "error"
-                },function(){
-                    $('#modal_model_update').modal('show');
-                    $('#modal_model_show_contracts').modal('show');
-                });
-            }
-        });
-        //function submit show_contracts
+        
+        //function refresh show_reviews
         $('#btn_model_review_refresh').on('click', function(ev) {
             $('#tb_show_reviews').empty();
             var show_id = $('#form_model_update input[name="id"]').val()
