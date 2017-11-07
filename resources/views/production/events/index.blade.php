@@ -96,7 +96,7 @@
                     <!-- BAND ITEM -->
                     <div class="timeline-item">
                         <div class="timeline-badge">
-                            <img class="timeline-badge-userpic" src="{{$b->image_url}}"> </div>
+                            <img height="90px" width="90px" src="{{$b->image_url}}"> </div>
                         <div class="timeline-body">
                             <div class="timeline-body-arrow"> </div>
                             <div class="timeline-body-head">
