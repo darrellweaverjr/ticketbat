@@ -86,14 +86,14 @@
                     </div>
                 </h4>
                 <div style="text-align:center;padding-top:10px">
-                    <input id="show_id" type="hidden" value="{{$event->id}}"/>
+                    <input id="show_id" type="hidden" value="{{$event->show_id}}"/>
                     <div class="form-inline has-warning">
                         @php $rating = $event->reviews['rating'] @endphp
                         @for($i=0;$i<5;$i++)
                         <label class="fa fa-star {{($rating>$i && $rating<$i+1)? 'fa-star-half-full' : ( ($rating>$i)? '' : 'fa-star-o' )}}"></label>
                         @endfor
-                        <a> ({{$event->reviews['posts']}} @if($event->reviews['posts']<2) review @else reviews @endif) </a>
-                        <a class="btn btn-outline sbold dark btn-sm" data-toggle="modal" title="You must log in to write a review for this event." @if(!Auth::check()) href="#modal_login" @else href="#modal_write_review" @endif>
+                        <a href="#review_panel"> (<b id="posts_reviews">{{$event->reviews['posts']}}</b> @if($event->reviews['posts']<2) review @else reviews @endif) </a>
+                        <a class="btn btn-outline sbold dark btn-sm" data-toggle="modal" title="You must log in to write a review for this event." @if(!Auth::check()) href="#modal_login" @else href="#modal_write_reviewx" @endif>
                             <i class="icon-pencil"></i> Write a review
                         </a>
                     </div>
@@ -102,6 +102,27 @@
                     {!! $event->description !!}<br><br>
                 </p>
                 <!-- END DESCRIPTION -->
+                
+                @if(count($event->reviews['comments']))
+                <!-- BEGIN: Comments -->
+                <div id="review_panel" class="mt-comments" style="margin:5px;padding-bottom:10px" title="Reviews.">
+                    @foreach($event->reviews['comments'] as $c)
+                    <div class="mt-comment">
+                        <div class="mt-comment-img">
+                            <img src="{{config('app.theme')}}img/avatar.png"> </div>
+                        <div class="mt-comment-body">
+                            <div class="mt-comment-info">
+                                <span class="mt-comment-author">{{$c->name}}</span>
+                                <span class="mt-comment-date">{{date('M d,Y@g:iA',strtotime($c->created))}}</span>
+                            </div>
+                            <div class="mt-comment-text">{!! $c->review !!}</div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                <!-- END: Comments -->
+                @endif
+                
                 @if(count($event->bands))
                 <!-- BEGIN BANDS -->
                 <div class="timeline" style="margin:5px;padding-bottom:10px" title="Bands to assist to.">

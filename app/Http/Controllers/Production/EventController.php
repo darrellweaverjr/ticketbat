@@ -132,6 +132,10 @@ class EventController extends Controller
                 $event->reviews = ['posts'=>$reviews->posts,'rating'=>$reviews->rating];
             else
                 $event->reviews = ['posts'=>0,'rating'=>0];
+            $event->reviews['comments'] = DB::table('show_reviews')
+                                ->join('users', 'show_reviews.user_id', '=', 'users.id')
+                                ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name, show_reviews.review, show_reviews.created'))
+                                ->where('show_reviews.show_id',$event->show_id)->where('show_reviews.status','Approved')->get();
             //return view
             return view('production.events.index',compact('event'));
         } catch (Exception $ex) {
@@ -289,9 +293,10 @@ class EventController extends Controller
                     'rating'=>$input['rating'],
                     'review'=>$input['review'],
                     'created'=>$current,
-                    'updated'=>$current,
+                    'updated'=>$current
                 ]);
-                return ['success'=>true,'msg'=> 'Review posted successfully!'];
+                $posts = DB::table('show_reviews')->where('show_id',$input['show_id'])->groupBy('show_id')->count();
+                return ['success'=>true,'posts'=>$posts,'msg'=> 'Review posted successfully!'];
             }
             return ['success'=>false,'msg'=> 'You must fill out the form correctly.'];
         } catch (Exception $ex) {

@@ -184,6 +184,15 @@ var MapsGoogle = function () {
 var RatingStars = function () {
 
     var rating = function () {
+        
+        //modal review on open
+        $('a[href="#modal_write_reviewx"]').on('click', function(e) {
+            e.preventDefault();
+            $('#form_write_review a.rating-star').find('i').removeClass('fa-star-o').addClass('fa-star-o');
+            $('#form_write_review input[name="rating"]').val(0);
+            $('#form_write_review')[0].reset();
+            $('#modal_write_review').modal('show');
+        });
         //star on click
         $('#form_write_review a.rating-star').on('click', function(ev) {
             var star = $(this).data('star');
@@ -228,6 +237,7 @@ var RatingStars = function () {
                         success: function(data) {
                             if(data.success)
                             {
+                                $('#posts_reviews').html(data.posts);
                                 swal({
                                     title: "<span style='color:green;'>Posted!</span>",
                                     text: data.msg,
@@ -235,8 +245,6 @@ var RatingStars = function () {
                                     timer: 1500,
                                     type: "success",
                                     showConfirmButton: false
-                                },function(){
-                                    //location.reload();
                                 });
                             }
                             else{
