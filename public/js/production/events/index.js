@@ -1,7 +1,7 @@
 var TableDatatablesManaged = function () {
-    
+
     var initTable = function () {
-        
+
         var table = $('#tb_model');
         // begin first table
         table.dataTable({
@@ -17,15 +17,15 @@ var TableDatatablesManaged = function () {
                     "first": "First"
                 }
             },
-            "bStateSave": false, 
-            "pageLength": 7,            
+            "bStateSave": false,
+            "pageLength": 7,
             "pagingType": "bootstrap_full_number",
             "info" : false,
             "lengthChange": false,
             "searching": false,
             "ordering": false
         });
-        
+
     }
     return {
         //main function to initiate the module
@@ -33,7 +33,7 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable();        
+            initTable();
         }
     };
 }();
@@ -69,13 +69,13 @@ var AppCalendar = function() {
                     backgroundColor: 'bg-blue',
                     allDay: false,
                     url: (v.ext_slug)? v.ext_slug : slug+'/'+v.id
-                }); 
+                });
             });
             //predefined events
             $('#cal_model').fullCalendar('destroy'); // destroy the calendar
             $('#cal_model').fullCalendar({ //re-initialize the calendar
                 header: { left: 'title', center: '', right: 'prev,next, agendaDay, agendaWeek, month, today' },
-                defaultView: 'month', // change default view with available options from http://arshaw.com/fullcalendar/docs/views/Available_Views/ 
+                defaultView: 'month', // change default view with available options from http://arshaw.com/fullcalendar/docs/views/Available_Views/
                 slotMinutes: 15,
                 editable: false,
                 droppable: false,
@@ -84,24 +84,24 @@ var AppCalendar = function() {
                     element.find('.fc-title').html(event.title);
                 }
             });
-            $('#cal_model').fullCalendar('render'); 
+            $('#cal_model').fullCalendar('render');
             $('#cal_model').fullCalendar('gotoDate', go_to_date);
-            
+
             //render calendar when showtimes tab is clicked
             $('a[href="#showtimes_calendar"]').on('click', function(ev) {
                 window.setTimeout(function(){
-                    $('#cal_model').fullCalendar('render'); 
+                    $('#cal_model').fullCalendar('render');
                     $('#cal_model').fullCalendar('gotoDate', go_to_date);
                 },1);
             });
-            
+
         }
     };
 }();
 //*****************************************************************************************
 var GalleryImages = function () {
 
-    var initGallery = function () {        
+    var initGallery = function () {
         //banners carousel
         $('#myBanners').cubeportfolio({
             layoutMode: 'slider',
@@ -110,9 +110,9 @@ var GalleryImages = function () {
             gapHorizontal: 30,
             gapVertical: 30,
             mediaQueries: [{ width: 320, cols: 1 }],
-            gridAdjustment: 'responsive', 
-            caption: 'opacity', 
-            displayType: 'default', 
+            gridAdjustment: 'responsive',
+            caption: 'opacity',
+            displayType: 'default',
             displayTypeSpeed: 1,
             auto:true,
             autoTimeout: 1500,
@@ -128,10 +128,10 @@ var GalleryImages = function () {
             animationType: 'fadeOut', // quicksand
             gapHorizontal: 30,
             gapVertical: 30,
-            gridAdjustment: 'responsive', 
+            gridAdjustment: 'responsive',
             mediaQueries: [{ width: 1440, cols: 5 },{ width: 1024, cols: 4 },{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
-            caption: 'overlayBottomAlong', 
-            displayType: 'default', 
+            caption: 'overlayBottomAlong',
+            displayType: 'default',
             displayTypeSpeed: 1,
             auto:true,
             autoTimeout: 2000,
@@ -152,16 +152,16 @@ var GalleryImages = function () {
 //*****************************************************************************************
 var MapsGoogle = function () {
 
-    var mapMarker = function () {        
+    var mapMarker = function () {
         var lat = $('#event_gmap').data('lat');
-        var lng = $('#event_gmap').data('lng');        
-        var address = $('#event_gmap').data('address');  
-        var venue = $('#event_gmap').data('venue');  
+        var lng = $('#event_gmap').data('lng');
+        var address = $('#event_gmap').data('address');
+        var venue = $('#event_gmap').data('venue');
         var map = new GMaps({
             div: '#event_gmap',
             lat: lat,
             lng: lng
-        });        
+        });
         map.addMarker({
             lat: lat,
             lng: lng,
@@ -169,7 +169,7 @@ var MapsGoogle = function () {
             infoWindow: {
                 content: '<span style="color:#000"><b>'+venue+'</b><br>'+address+'</span>'
             }
-        });        
+        });
         map.setZoom(14);
     }
     return {
@@ -181,9 +181,161 @@ var MapsGoogle = function () {
 
 }();
 //*****************************************************************************************
+var RatingStars = function () {
+
+    var rating = function () {
+        //star on click
+        $('#form_write_review a.rating-star').on('click', function(ev) {
+            var star = $(this).data('star');
+            $('#form_write_review input[name="rating"]').val(star);
+            $('#form_write_review a.rating-star').find('i').removeClass('fa-star-o');
+            $('#form_write_review a.rating-star').each(function(k, v) {
+                if($(v).data('star') > star)
+                    $(v).find('i').addClass('fa-star-o');
+            });
+        });
+        //function on post
+        $('#btn_review_send').on('click', function(ev) {
+            $('#form_write_review input[name="show_id"]').val( $('#show_id').val() );
+            if($('#form_write_review input[name="rating"]').val()<1)
+            {
+                $('#modal_write_review').modal('hide');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must pick up a rating star.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_write_review').modal('show');
+                });
+            }
+            else
+            {
+                if($('#form_write_review').valid())
+                {
+                    $('#modal_write_review').modal('hide');
+                    swal({
+                        title: "Posting...",
+                        text: "Please, wait.",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/production/event/reviews',
+                        data: $('#form_write_review').serializeArray(),
+                        success: function(data) {
+                            if(data.success)
+                            {
+                                swal({
+                                    title: "<span style='color:green;'>Posted!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    timer: 1500,
+                                    type: "success",
+                                    showConfirmButton: false
+                                },function(){
+                                    //location.reload();
+                                });
+                            }
+                            else{
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                },function(){
+                                    $('#modal_write_review').modal('show');
+                                });
+                            }
+                        },
+                        error: function(){
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "There was an error trying to post your review.",
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_write_review').modal('show');
+                            });
+                        }
+                    });
+                }
+            }
+
+        });
+    }
+    return {
+        //main function to initiate map samples
+        init: function () {
+            rating();
+        }
+    };
+
+}();
+//*****************************************************************************************
+var ReviewValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation:
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_write_review');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    review: {
+                        minlength: 5,
+                        maxlength: 1000,
+                        required: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
 jQuery(document).ready(function() {
     TableDatatablesManaged.init();
-    AppCalendar.init(); 
-    GalleryImages.init(); 
-    MapsGoogle.init(); 
+    AppCalendar.init();
+    GalleryImages.init();
+    MapsGoogle.init();
+    ReviewValidation.init();
+    RatingStars.init();
 });

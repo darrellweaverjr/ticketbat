@@ -21,7 +21,7 @@
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
 <div class="row widget-row">
-    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the event">                
+    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the event">
         <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">
             @if(!empty($event->presented_by))<div style="font-size:14px;margin-bottom:-70px">{{$event->presented_by}} PRESENTS</div><br>@endif
             {{$event->name}}
@@ -37,13 +37,13 @@
     </div>
 </div>
 <!-- END NAME BAR-->
-<div class="page-content color-panel">  
+<div class="page-content color-panel">
     <!-- BEGIN BANNERS -->
     @if(count($event->banners))
     <div class="row fixed-panel">
         <div class="portlet light about-text"style="margin-left:15px;margin-right:15px">
             <!-- BEGIN BANNER -->
-            <div class="portfolio-content color-panel" > 
+            <div class="portfolio-content color-panel" >
                 <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
                     @foreach($event->banners as $index=>$i)
                     <div class="cbp-item show_section1">
@@ -60,7 +60,7 @@
         </div>
     </div>
     @endif
-    <!-- END BANNERS -->      
+    <!-- END BANNERS -->
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
         <div class="col-lg-6">
@@ -84,7 +84,20 @@
                             </ul>
                         </div>
                     </div>
-                </h4>  
+                </h4>
+                <div style="text-align:center;padding-top:10px">
+                    <input id="show_id" type="hidden" value="{{$event->id}}"/>
+                    <div class="form-inline has-warning">
+                        @php $rating = $event->reviews['rating'] @endphp
+                        @for($i=0;$i<5;$i++)
+                        <label class="fa fa-star {{($rating>$i && $rating<$i+1)? 'fa-star-half-full' : ( ($rating>$i)? '' : 'fa-star-o' )}}"></label>
+                        @endfor
+                        <a> ({{$event->reviews['posts']}} @if($event->reviews['posts']<2) review @else reviews @endif) </a>
+                        <a class="btn btn-outline sbold dark btn-sm" data-toggle="modal" title="You must log in to write a review for this event." @if(!Auth::check()) href="#modal_login" @else href="#modal_write_review" @endif>
+                            <i class="icon-pencil"></i> Write a review
+                        </a>
+                    </div>
+                </div>
                 <p class="margin-top-20" title="Description of the event.">
                     {!! $event->description !!}<br><br>
                 </p>
@@ -148,7 +161,7 @@
                         </div>
                     </div>
                     @endif
-                </h4> 
+                </h4>
                 @if($event->restrictions!="None")
                 <div class="margin-top-20 alert alert-danger" style="margin:5px" title="Restrictions of the event.">
                     <b>RESTRICTIONS:</b> {{preg_replace('~\D~','',$event->restrictions)}} years of age or older to attend the event.
@@ -157,7 +170,7 @@
                 @if(count($event->showtimes))
                 <div class="tab-content">
                     <!-- SHOW TIMES AS LIST -->
-                    <div class="tab-pane @if(count($event->showtimes)<8) active @endif" id="showtimes_list" style="margin:5px;padding-bottom:10px">   
+                    <div class="tab-pane @if(count($event->showtimes)<8) active @endif" id="showtimes_list" style="margin:5px;padding-bottom:10px">
                         <div class="portlet-body light portlet-fit" style="margin-top:-30px;">
                             <table class="table table-hover table-responsive" id="tb_model">
                                 <thead>
@@ -189,7 +202,7 @@
                             <div id="cal_model" class="has-toolbar" data-info='{!! $event->showtimes !!}' data-slug="{{url()->current()}}"> </div>
                         </div>
                     </div>
-                </div>  
+                </div>
                 @else
                  <!-- BEGIN CUTOFF TEXT -->
                 <p class="uppercase text-center" style="padding-bottom:20px">
@@ -219,7 +232,7 @@
             <!-- BEGIN DESCRIPTION -->
             <h4>
                 <i class="fa fa-youtube-play"></i> Videos
-            </h4>  
+            </h4>
             @foreach($event->videos as $v)
             <p class="text-center">
                 <iframe src="{!!$v->embed_code!!}" width="100%" height="600px" frameborder="0"></iframe>
@@ -237,10 +250,10 @@
             <!-- BEGIN DESCRIPTION -->
             <h4>
                 <i class="fa fa-image"></i> Gallery
-            </h4>  
+            </h4>
             <!-- END DESCRIPTION -->
             <!-- BEGIN GALLERY -->
-            <div class="portfolio-content color-panel" style="padding:20px;background-color: white;"> 
+            <div class="portfolio-content color-panel" style="padding:20px;background-color: white;">
                 <div id="myGallery" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
                     @foreach($event->images as $index=>$i)
                     <div class="cbp-item show_section1" style="margin-right:20px">
@@ -263,16 +276,20 @@
         </div>
     </div>
     @endif
-    <!-- END GALLERY -->    
+    <!-- END GALLERY -->
     <!-- BEGIN MAPS -->
     <div id="event_gmap" class="row gmaps" title="Location of the venue."
-                 data-lat="{{$event->lat}}" 
+                 data-lat="{{$event->lat}}"
                  data-lng="{{$event->lng}}"
                  data-address="{{$event->address}}<br>{{$event->city}}, {{$event->state}}, {{$event->country}} {{$event->zip}}"
                  data-venue="{{$event->venue}}"
                  ></div>
-    <!-- END MAPS -->    
-    
+    <!-- END MAPS -->
+
+    <!-- BEGIN RESET PASSWORD MODAL -->
+    @includeIf('production.events.reviews')
+    <!-- END RECOVER RESET MODAL -->
+
 </div>
 @endsection
 

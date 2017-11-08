@@ -11,7 +11,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('home', 'DashboardController@index')->name('home');
     //utils
     Route::post('media/load','BandController@load_social_media')->middleware('permissions:MEDIA');
-    Route::post('media/upload_image','ImageController@upload_image')->middleware('permissions:MEDIA'); 
+    Route::post('media/upload_image','ImageController@upload_image')->middleware('permissions:MEDIA');
     Route::get('media/preview/{filename}', function ($filename) {return Image::make(storage_path().'/app/tmp/'.$filename)->response();})->middleware('permissions:MEDIA');
     //dashboard
     Route::match(['get','post'], 'dashboard/ticket_sales', 'DashboardController@ticket_sales')->middleware('permissions:REPORTS');
@@ -24,7 +24,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('users/profile', 'UserController@profile')->middleware('permissions:USERS');
     Route::match(['get','post'],'users/impersonate/{user?}/{code?}', 'UserController@impersonate')->middleware('permissions:USERS');
     Route::post('users/save', 'UserController@save')->middleware('permissions:USERS');
-    Route::post('users/remove', 'UserController@remove')->middleware('permissions:USERS'); 
+    Route::post('users/remove', 'UserController@remove')->middleware('permissions:USERS');
     Route::match(['get','post'], 'users', 'UserController@index')->middleware('permissions:USERS');
     //bands
     Route::post('bands/save', 'BandController@save')->middleware('permissions:BANDS');
@@ -109,7 +109,7 @@ Route::group(['prefix' => 'production','middleware' => 'check','namespace' => 'P
     Route::get('/home', 'HomeController@index')->name('index');
     Route::post('home/search', 'HomeController@search');
     //general
-    Route::post('general/contact', 'GeneralController@contact');    
+    Route::post('general/contact', 'GeneralController@contact');
     Route::post('general/country', 'GeneralController@country');
     Route::post('general/region', 'GeneralController@region');
     //user
@@ -144,6 +144,7 @@ Route::group(['prefix' => 'production','middleware' => 'check','namespace' => 'P
     Route::post('purchase/welcome', 'PurchaseController@welcome');
     Route::post('purchase/receipts', 'PurchaseController@receipts');
     //event
+    Route::post('event/reviews', 'EventController@reviews');
     Route::match(['get','post'], 'event/{slug}/{product}', 'EventController@buy');
     Route::match(['get','post'], 'event/{slug}', 'EventController@index');
     //venues

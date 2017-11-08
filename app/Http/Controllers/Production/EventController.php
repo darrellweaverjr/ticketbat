@@ -27,9 +27,9 @@ class EventController extends Controller
             $event = DB::table('shows')
                         ->join('venues', 'venues.id', '=', 'shows.venue_id')
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
-                        ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url, 
+                        ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url,
                                           shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram,
-                                          venues.name as venue, shows.name, locations.*, shows.presented_by, shows.sponsor, 
+                                          venues.name as venue, shows.name, locations.*, shows.presented_by, shows.sponsor,
                                           shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id, shows.ua_conversion_code,
                                           IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
@@ -37,7 +37,7 @@ class EventController extends Controller
             if(!$event)
                 return redirect()->route('index');
             //funnel
-            $input = Input::all();  
+            $input = Input::all();
             if(!empty($input['funnel']) && in_array($input['funnel'], [0,1]))
             {
                 Session::put('funnel', $input['funnel']);
@@ -98,7 +98,7 @@ class EventController extends Controller
                 $part1 = explode('src="',$v->embed_code);
                 $part2 = explode('"',$part1[1]);
                 $v->embed_code = $part2[0];
-            } 
+            }
             //get bands
             $event->bands = DB::table('bands')
                                 ->join('categories', 'bands.category_id', '=', 'categories.id')
@@ -124,13 +124,21 @@ class EventController extends Controller
                                         $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
                                 })
                                 ->orderBy('show_times.show_time')->get();
+            //get reviews
+            $reviews = DB::table('show_reviews')
+                                ->select(DB::raw('COUNT(id) AS posts, AVG(rating) AS rating'))
+                                ->where('show_id',$event->show_id)->groupBy('show_id')->first();
+            if($reviews)
+                $event->reviews = ['posts'=>$reviews->posts,'rating'=>$reviews->rating];
+            else
+                $event->reviews = ['posts'=>0,'rating'=>0];
             //return view
             return view('production.events.index',compact('event'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Event Index: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Show the default method for the buy page.
      *
@@ -147,8 +155,8 @@ class EventController extends Controller
                         ->join('venues', 'venues.id', '=', 'shows.venue_id')
                         ->join('stages', 'stages.id', '=', 'shows.stage_id')
                         ->join('show_times', 'show_times.show_id', '=', 'shows.id')
-                        ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, 
-                                          venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time, 
+                        ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name,
+                                          venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time,
                                           show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id, stages.ticket_order,
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
@@ -210,7 +218,7 @@ class EventController extends Controller
                 {
                     if(in_array($t->ticket_type, explode(',',$p->ticket_types)))
                     {
-                        $pass = 1; 
+                        $pass = 1;
                         break;
                     }
                 }
@@ -225,7 +233,7 @@ class EventController extends Controller
                 //fill out tickets
                 if(isset($event->tickets[$id]))
                     $event->tickets[$id]['tickets'][] = $t;
-                else 
+                else
                     $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'password'=>$pass,'tickets'=>[$t]];
             }
             //order the ticket types according to the stage order
@@ -242,7 +250,7 @@ class EventController extends Controller
                         unset($event->tickets[$id]);
                     }
                 }
-                $event->tickets = array_merge($new_order,$event->tickets); 
+                $event->tickets = array_merge($new_order,$event->tickets);
             }
             //checkings for sale
             if($event->for_sale)
@@ -261,5 +269,34 @@ class EventController extends Controller
             throw new Exception('Error Production Buy Index: '.$ex->getMessage());
         }
     }
-       
+
+    /**
+     * Post reviews for the event
+     *
+     * @return Method
+     */
+    public function reviews()
+    {
+        try {
+            //init
+            $input = Input::all();
+            $current = date('Y-m-d H:i:s');
+            if(!empty($input['review']) && !empty($input['rating']) && !empty($input['show_id']))
+            {
+                DB::table('show_reviews')->insert([
+                    'show_id'=>$input['show_id'],
+                    'user_id'=>Auth::user()->id,
+                    'rating'=>$input['rating'],
+                    'review'=>$input['review'],
+                    'created'=>$current,
+                    'updated'=>$current,
+                ]);
+                return ['success'=>true,'msg'=> 'Review posted successfully!'];
+            }
+            return ['success'=>false,'msg'=> 'You must fill out the form correctly.'];
+        } catch (Exception $ex) {
+            return ['success'=>false,'msg'=> 'There is an error posting your reviews. Please, contact us.'];
+        }
+    }
+
 }
