@@ -157,8 +157,8 @@ var PortfolioManaged = function () {
             
         });
         //autoselect city
-        $.getJSON("http://freegeoip.net/json/", function (response) {
-            $('#myFilter select[name="filter_city"]').find('option[data-state="'+response.region_code+'"][data-country="'+response.country_code+'"]').attr('selected','selected').trigger('change');
+        $.getJSON("http://freegeoip.net/json/", function (response) {       
+            $('#myFilter select[name="filter_city"]').find('option[data-state="'+response.region_code+'"][data-country="'+response.country_code+'"]').prop('selected', true).trigger('change');
         });
         //$('.cbp').css('height','10000px!important');
         //$('#myShows').height(10000);
