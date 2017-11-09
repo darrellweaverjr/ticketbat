@@ -58,7 +58,7 @@
                 <center>
                     <h4><span style="color:#32c5d2"><b>Get Tickets Fast.</b></span> Download the <span style="color:#32c5d2"><b>Ticketbat App</b></span> and keep track of all your tickets on your phone.</h4><br>
                     <a href="https://itunes.apple.com/us/app/ticketbat/id1176307768?mt=8" target="_blank" class="btn btn-outline sbold dark btn-lg"><i class="fa fa-apple"></i> Apple Store</a>
-                    <a href="https://play.google.com/store/apps/details?id=com.ionicframework.ticketbatapp2017&hl=en" target="_blank" class="btn btn-outline sbold dark btn-lg"><i class="fa fa-google"></i> Google Play</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.ionicframework.ticketbatapp2017&hl=en" target="_blank" class="btn btn-outline sbold dark btn-lg"><i class="fa fa-play"></i> Google Play</a>
                 </center><br>
             </p>
         </div>
