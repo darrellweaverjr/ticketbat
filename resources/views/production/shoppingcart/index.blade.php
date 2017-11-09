@@ -28,7 +28,7 @@
             <p class="margin-top-20">
             <center><b style="color:#578ebe">
                     If you are attending this show with other people and would like to email them their ticket, please click on the
-                    <button type="button" class="btn btn-info"><i class="fa fa-share icon-share"></i></button> button below.
+                    <button type="button" disabled="true" class="btn btn-info"><i class="fa fa-share icon-share"></i></button> button below.
             </b></center>
             </p>
             <div class="portlet-body light portlet-fit" style="margin-top:-30px;padding:10px">
