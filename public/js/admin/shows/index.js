@@ -2771,10 +2771,103 @@ var TableDatatablesManaged = function () {
         //function with show_videos  *****************************************************************************************************   SHOW VIDEOS END
         //function with show_reviews  *************************************************************************************************   SHOW REVIEWS BEGIN
         
+        //function to update table
+        function update_reviews(data)
+        {
+            $('#tb_show_reviews').empty();
+            if(data.reviews && data.reviews.length)
+            {
+                $.each(data.reviews,function(k, v) {
+                    var check_row = '<td><label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" class="checkboxes" id="'+v.id+'" /><span></span></label></td>';
+                    var posted_row = '<td><b>Name: </b>'+v.name+' ('+v.email+')';
+                    var rating_row = ' <b>Rating: </b>'+v.rating+'/5 <b>Posted: </b>'+v.created;
+                    var review_row = '<br><i><small>" '+v.review+' "</small></i></td>';
+                    if(v.status=='Approved')
+                        var status_row = '<td><span class="label label-sm label-success"><b>'+v.status+'<b></span></td>';
+                    else if(v.status=='Denied')
+                        var status_row = '<td><span class="label label-sm label-danger"><b>'+v.status+'<b></span></td>';
+                    else
+                        var status_row = '<td><span class="label label-sm"><b>'+v.status+'<b></span></td>';
+                    $('#tb_show_reviews').append('<tr>'+check_row+posted_row+rating_row+review_row+status_row+'</tr>');
+                });
+            }
+        }
+        //function approved or deny elements
+        $('#btn_model_review_approve, #btn_model_review_deny').on('click', function(ev) {
+            $('#modal_model_update').modal('hide');
+            swal({
+                title: "Updating review's information",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            var status = $(this).data('status');
+            var show_id = $('#form_model_update input[name="id"]').val();
+            var ids = [];
+            var checked = $('#tb_show_reviews input[type=checkbox]:checked');
+            jQuery(checked).each(function (key, item) {
+                ids.push(item.id);
+            }); 
+            if(ids.length>0)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/shows/reviews', 
+                    data: {id:ids, status:status, show_id:show_id}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {                            
+                            swal({
+                                title: "<span style='color:green;'>Updated!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                            $('#modal_model_update').modal('show');
+                            update_reviews(data);
+                        }
+                        else{				
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){ 	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to update the review's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                }); 
+            }
+            else 
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "You must select at least one review to update.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }    
+        });
         //function refresh show_reviews
         $('#btn_model_review_refresh').on('click', function(ev) {
             $('#tb_show_reviews').empty();
-            var show_id = $('#form_model_update input[name="id"]').val()
+            var show_id = $('#form_model_update input[name="id"]').val();
             if(show_id)
             {
                 jQuery.ajax({
@@ -2785,15 +2878,7 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {                            
-                            if(data.reviews && data.reviews.length)
-                            {
-                                $.each(data.reviews,function(k, v) {
-                                    var posted_row = '<td><b>Name: </b>'+v.name+'<br><b>Email: </b>'+v.email+'<br><b>Posted: </b>'+v.created+'</td>';
-                                    var review_row = '<td><b>Rating: </b>'+v.rating+'/5<br><b>Review:</b><br>'+v.review+'</td>';
-                                    var status_row = '<td>'+v.status+'<br><b>Updated: </b>'+v.updated+'</td>';
-                                    $('#tb_show_reviews').append('<tr>'+posted_row+review_row+status_row+'</tr>');
-                                });
-                            }
+                            update_reviews(data);
                         }
                         else{					
                             $('#modal_model_update').modal('hide');

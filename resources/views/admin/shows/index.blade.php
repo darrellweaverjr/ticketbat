@@ -670,17 +670,25 @@
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reviews">
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_review_refresh" class="btn sbold bg-green"> Refresh
+                                            <button type="button" id="btn_model_review_refresh" class="btn sbold bg-blue"> Refresh
                                                 <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                        <div class="btn-group pull-right">
+                                            <button type="button" id="btn_model_review_approve" data-status="Approved" class="btn sbold bg-green"> Approve
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button type="button" id="btn_model_review_deny" data-status="Denied" class="btn sbold bg-red"> Deny
+                                                <i class="fa fa-minus"></i>
                                             </button>
                                         </div>
                                         <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
                                             <table class="table table-striped table-hover table-bordered">
                                                 <thead>
                                                     <tr>
+                                                        <th width="2%"></th>
                                                         <th> Posted </th>
-                                                        <th> Review </th>
-                                                        <th> Status </th>
+                                                        <th width="10%"> Status </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_show_reviews">

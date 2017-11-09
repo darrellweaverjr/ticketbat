@@ -1406,25 +1406,22 @@ class ShowController extends Controller{
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
-            //get
+            //update
+            if(!empty($input['id']) && !empty($input['status']))
+            {
+                DB::table('show_reviews')->whereIn('id',$input['id'])->update(['status'=>$input['status'], 'updated'=>$current]);
+            }
+            //get/update
             if(!empty($input['show_id']))
             {
                 $reviews = DB::table('show_reviews')
                                     ->join('users', 'show_reviews.user_id','=','users.id')
                                     ->select(DB::raw('show_reviews.*, users.email, CONCAT(users.first_name," ",users.last_name) AS name'))
-                                    ->where('show_reviews.show_id','=',$input['show_id'])->get();
-                return ['success'=>true,'reviews'=>$reviews];
+                                    ->where('show_reviews.show_id','=',$input['show_id'])
+                                    ->orderBy('show_reviews.created','DESC')->get();
+                return ['success'=>true,'reviews'=>$reviews,'msg'=>'Review updated successfully'];
             }
-            //get
-            else if(!empty($input['id']) && !empty($input['status']))
-            {
-                $success = DB::table('show_reviews')->where('id','=',$input['id'])->update(['status'=>$input['status']]);
-                if($success>=0)
-                    return ['success'=>true,'msg'=>'Review updated successfully'];
-                return ['success'=>false,'msg'=>'There was an error updating the review.'];
-            }
-            else
-                return ['success'=>false,'msg'=>'Invalid Option.'];
+            return ['success'=>false,'msg'=>'There was an error with the reviews.'];
         } catch (Exception $ex) {
             throw new Exception('Error ShowReviews Index: '.$ex->getMessage());
         }
