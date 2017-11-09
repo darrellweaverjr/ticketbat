@@ -134,8 +134,9 @@ class EventController extends Controller
                 $event->reviews = ['posts'=>0,'rating'=>0];
             $event->reviews['comments'] = DB::table('show_reviews')
                                 ->join('users', 'show_reviews.user_id', '=', 'users.id')
-                                ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name, show_reviews.review, show_reviews.created'))
-                                ->where('show_reviews.show_id',$event->show_id)->where('show_reviews.status','Approved')->get();
+                                ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name, show_reviews.review, show_reviews.rating, show_reviews.created'))
+                                ->where('show_reviews.show_id',$event->show_id)->where('show_reviews.status','Approved')
+                                ->orderBy('show_reviews.created','DESC')->get();
             //return view
             return view('production.events.index',compact('event'));
         } catch (Exception $ex) {

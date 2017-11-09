@@ -38,29 +38,6 @@
 </div>
 <!-- END NAME BAR-->
 <div class="page-content color-panel">
-    <!-- BEGIN BANNERS -->
-    @if(count($event->banners))
-    <div class="row fixed-panel">
-        <div class="portlet light about-text"style="margin-left:15px;margin-right:15px">
-            <!-- BEGIN BANNER -->
-            <div class="portfolio-content color-panel" >
-                <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
-                    @foreach($event->banners as $index=>$i)
-                    <div class="cbp-item show_section1">
-                        <div class="cbp-caption">
-                            <div class="cbp-caption-defaultWrap">
-                                <a href="{{$i->url}}" target="_blank"><img src="{{$i->file}}" alt="{{$i->url}}"></a>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            <!-- ENDS BANNER -->
-        </div>
-    </div>
-    @endif
-    <!-- END BANNERS -->
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
         <div class="col-lg-6">
@@ -102,27 +79,6 @@
                     {!! $event->description !!}<br><br>
                 </p>
                 <!-- END DESCRIPTION -->
-                
-                @if(count($event->reviews['comments']))
-                <!-- BEGIN: Comments -->
-                <div id="review_panel" class="mt-comments" style="margin:5px;padding-bottom:10px" title="Reviews.">
-                    @foreach($event->reviews['comments'] as $c)
-                    <div class="mt-comment">
-                        <div class="mt-comment-img">
-                            <img src="{{config('app.theme')}}img/avatar.png"> </div>
-                        <div class="mt-comment-body">
-                            <div class="mt-comment-info">
-                                <span class="mt-comment-author">{{$c->name}}</span>
-                                <span class="mt-comment-date">{{date('M d,Y@g:iA',strtotime($c->created))}}</span>
-                            </div>
-                            <div class="mt-comment-text">{!! $c->review !!}</div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                <!-- END: Comments -->
-                @endif
-                
                 @if(count($event->bands))
                 <!-- BEGIN BANDS -->
                 <div class="timeline" style="margin:5px;padding-bottom:10px" title="Bands to assist to.">
@@ -246,9 +202,32 @@
         </div>
     </div>
     <!-- END DESCRIPTION AND CALENDAR -->
+    <!-- BEGIN BANNERS -->
+    @if(count($event->banners))
+    <div class="row fixed-panel" style="padding:15px;margin-top:-15px">
+        <div class="portlet light about-text" >
+            <!-- BEGIN BANNER -->
+            <div class="portfolio-content color-panel" >
+                <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
+                    @foreach($event->banners as $index=>$i)
+                    <div class="cbp-item show_section1">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <a href="{{$i->url}}" target="_blank"><img src="{{$i->file}}" alt="{{$i->url}}"></a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <!-- ENDS BANNER -->
+        </div>
+    </div>
+    @endif
+    <!-- END BANNERS -->
     <!-- BEGIN VIDEOS -->
     @if(count($event->videos))
-    <div class="row fixed-panel" style="padding:15px" title="Videos of the event.">
+    <div class="row fixed-panel" style="padding:15px;margin-top:-20px" title="Videos of the event.">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4>
@@ -298,6 +277,38 @@
     </div>
     @endif
     <!-- END GALLERY -->
+    <!-- BEGIN REVIEWS -->
+    @if(count($event->reviews['comments']))
+    <div id="review_panel" class="row fixed-panel" style="padding:15px;margin-top:-20px" title="Reviews of the event.">
+        <div class="portlet light about-text">
+            <!-- BEGIN DESCRIPTION -->
+            <h4>
+                <i class="fa fa-comments"></i> Reviews
+            </h4>
+            <div class="mt-comments" style="margin-top:15px;background-color:white !important;" title="Reviews.">
+                @foreach($event->reviews['comments'] as $c)
+                <div class="mt-comment col-md-6">
+                    <div class="mt-comment-img">
+                        <img src="{{config('app.theme')}}img/avatar.png"> </div>
+                    <div class="mt-comment-body">
+                        <div class="mt-comment-info">
+                            <span class="mt-comment-author">
+                                {{$c->name}}<br>
+                                @for($i=0;$i<5;$i++)
+                                <label class="fa fa-star @if($c->rating<=$i) fa-star-o @endif"></label>
+                                @endfor
+                            </span>
+                            <span class="mt-comment-date">{{date('M d,Y@g:iA',strtotime($c->created))}}</span>
+                        </div>
+                        <div class="mt-comment-text">{!! $c->review !!}</div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+    <!-- END REVIEWS -->
     <!-- BEGIN MAPS -->
     <div id="event_gmap" class="row gmaps" title="Location of the venue."
                  data-lat="{{$event->lat}}"
