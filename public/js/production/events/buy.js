@@ -5,18 +5,9 @@ var FunctionsManaged = function () {
         //update stage images
         function update_stage_images(e)
         {
-            var ticket_type = $(e).data('type');
-            var image_default = $('#stage_images').data('default');
-            var image_types = $('#stage_images').data('types');
-            $.each(image_types,function(k,v){
-                if(v.ticket_type == ticket_type)
-                    image_default = v.url;
-            });
-            var width = $('#stage_images').width();
-            var height = $('#stage_images').height();
-            $('#stage_images').attr('src',image_default);
-            $('#stage_images').width(width);
-            $('#stage_images').height(height);
+            var image_type = $('#stage_images img[data-type="'+$(e).data('type')+'"]');
+            $('#stage_images img').css('display','none');
+            (image_type.length)? image_type.css('display','block') : $('#stage_images img[data-type="default"]').css('display','block');
         }
         //on click check images for ticket types
         $('#tickets_accordion a.accordion-toggle').on('click',function(){

@@ -44,8 +44,11 @@
                     </div>
                 </h4> 
                 <p class="margin-top-20">
-                    <center>
-                        <img id="stage_images" style="width:93%" src="{{$event->image_url}}" data-default="{{$event->image_url}}" data-types='{{json_encode($event->stage_images,true)}}'/>
+                    <center id="stage_images">
+                        <img style="width:93%" src="{{$event->image_url}}" data-type="default"/>
+                        @foreach($event->stage_images as $i)
+                        <img style="width:93%; display:none;" src="{{$i->url}}" data-type="{{$i->ticket_type}}"/>
+                        @endforeach
                     </center><br>
                 </p>
                 <!-- END STAGE -->
