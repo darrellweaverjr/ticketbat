@@ -136,8 +136,7 @@
                             <div class="cbp-l-caption-alignCenter">
                                 <div class="cbp-l-caption-body">
                                     <span class="cbp-l-caption-buttonLeft btn green">@if($s->time_alternative) {{$s->time_alternative}} @else From <b>@if($s->starting_at) ${{$s->starting_at}} @else ${{$s->price}} @endif</b> @endif</span>
-                                    <span class="cbp-l-caption-buttonLeft btn red">Next on <b class="date_next_on">{{date('m/d/y', strtotime($s->show_time))}}</b></span>
-                                    <a href="{{$s->url}}" class="cbp-lightbox cbp-l-caption-buttonRight btn yellow" data-title="{{$s->name}}<br>{{$s->venue}}"><i class="icon-size-fullscreen"></i></a>
+                                    <span class="cbp-l-caption-buttonRight btn red">Next on <b class="date_next_on">{{date('m/d/y', strtotime($s->show_time))}}</b></span>
                                 </div>
                             </div>
                         </div>
