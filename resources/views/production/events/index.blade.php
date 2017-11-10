@@ -82,22 +82,24 @@
                 <!-- END DESCRIPTION -->
                 @if(count($event->bands))
                 <!-- BEGIN BANDS -->
-                <div class="timeline" style="margin:5px;padding-bottom:10px" title="Bands to assist to.">
+                <div class="timeline" style="margin:5px;padding-bottom:10px">
                     @foreach($event->bands as $b)
                     <!-- BAND ITEM -->
-                    <div class="timeline-item">
+                    <div class="timeline-item" title="{!! $b->short_description !!}">
                         <div class="timeline-badge">
-                            <img height="90px" width="90px" src="{{$b->image_url}}"> </div>
+                            <a @if(!empty($b->website)) href="{{$b->website}}" target="_blank" @endif >
+                                <img height="90px" width="90px" src="{{$b->image_url}}"> 
+                            </a>
+                        </div>
                         <div class="timeline-body">
                             <div class="timeline-body-arrow"> </div>
                             <div class="timeline-body-head">
                                 <div class="timeline-body-head-caption">
-                                    <a href="javascript:;" class="timeline-body-title font-blue-madison">{{$b->name}}</a>
+                                    <a @if(!empty($b->website)) href="{{$b->website}}" target="_blank" @endif class="timeline-body-title font-blue-madison">{{$b->name}}</a>
                                     <span class="timeline-body-time font-grey-cascade">({{$b->category}})</span>
                                 </div>
                                 <div class="timeline-body-head-actions">
                                     <div class="btn-group">
-                                        @if(!empty($b->website)) <a class="social-icon social-icon-color rss" href="{{$b->website}}" target="_blank"></a> @endif
                                         @if(!empty($b->twitter)) <a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a> @endif
                                         @if(!empty($b->my_space)) <a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a> @endif
                                         @if(!empty($b->facebook)) <a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a> @endif
