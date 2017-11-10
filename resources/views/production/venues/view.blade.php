@@ -5,6 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="{{config('app.theme')}}css/gmap.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -113,13 +114,31 @@
     @endif
     <!-- END DESCRIPTION AND CALENDAR -->
     <!-- BEGIN MAPS -->
-    <div id="event_gmap" class="row gmaps" 
-                 data-lat="{{$venue->lat}}" 
+    <div class="c-content-contact-1 c-opt-1">
+        <div class="row" data-auto-height=".c-height">
+            <div class="col-lg-8 col-md-6 c-desktop"></div>
+            <div class="col-lg-4 col-md-6">
+                <div class="c-body">
+                    <div class="c-section">
+                        <h3>{{$venue->name}}</h3>
+                    </div>
+                    <div class="c-section">
+                        <div class="c-content-label uppercase bg-blue">Address</div>
+                        <p>{{$venue->address}}
+                            <br/>{{$venue->city}}, {{$venue->state}}
+                            <br/>{{$venue->country}} {{$venue->zip}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="event_gmap" class="gmaps c-content-contact-1-gmap" title="Location of the venue." style="height: 450px;"
+                 data-lat="{{$venue->lat}}"
                  data-lng="{{$venue->lng}}"
                  data-address="{{$venue->address}}<br>{{$venue->city}}, {{$venue->state}}, {{$venue->country}} {{$venue->zip}}"
                  data-venue="{{$venue->name}}"
                  ></div>
-    <!-- END MAPS -->    
+    </div>
+    <!-- END MAPS -->
     
 </div>
 @endsection

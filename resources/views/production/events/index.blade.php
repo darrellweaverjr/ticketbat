@@ -9,6 +9,7 @@
 <link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
+<link href="{{config('app.theme')}}css/gmap.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -310,12 +311,30 @@
     @endif
     <!-- END REVIEWS -->
     <!-- BEGIN MAPS -->
-    <div id="event_gmap" class="row gmaps" title="Location of the venue."
+    <div class="c-content-contact-1 c-opt-1">
+        <div class="row" data-auto-height=".c-height">
+            <div class="col-lg-8 col-md-6 c-desktop"></div>
+            <div class="col-lg-4 col-md-6">
+                <div class="c-body">
+                    <div class="c-section">
+                        <h3>{{$event->venue}}</h3>
+                    </div>
+                    <div class="c-section">
+                        <div class="c-content-label uppercase bg-blue">Address</div>
+                        <p>{{$event->address}}
+                            <br/>{{$event->city}}, {{$event->state}}
+                            <br/>{{$event->country}} {{$event->zip}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="event_gmap" class="gmaps c-content-contact-1-gmap" title="Location of the venue." style="height: 450px;"
                  data-lat="{{$event->lat}}"
                  data-lng="{{$event->lng}}"
                  data-address="{{$event->address}}<br>{{$event->city}}, {{$event->state}}, {{$event->country}} {{$event->zip}}"
                  data-venue="{{$event->venue}}"
                  ></div>
+    </div>
     <!-- END MAPS -->
 
     <!-- BEGIN RESET PASSWORD MODAL -->
