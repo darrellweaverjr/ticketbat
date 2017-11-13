@@ -298,6 +298,10 @@
                                                     <div class="col-md-9">
                                                         <input type="number" value="" name="starting_at" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
+                                                    <label class="control-label col-md-3">Tickets by customer</label>
+                                                    <div class="col-md-9">
+                                                        <input type="number" value="" name="ticket_limit" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
