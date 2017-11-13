@@ -64,9 +64,18 @@
                     </h4> 
                     <div class="portlet-body">
                         <center><h4>{{$event->show_time}}</h4></center>
-                        @if(empty($event->for_sale))
+                        @if(!empty($event->ticket_limit))
+                        <div class="alert alert-danger display-block" style="margin-bottom:-0px">
+                            <center> You can buy only {{$event->ticket_limit}} ticket(s) for this event. </center>
+                        </div>
+                        @endif
+                        @if(!empty($event->ticket_limit) && empty($event->ticket_left))
                         <div class="bg-red bg-font-red">
-                            <hr><center><h1>Tickets are currently not for sale</h1></center><br>
+                            <hr><center><h1>You have reach the limit of tickets for this event.</h1></center><br>
+                        </div>
+                        @elseif(empty($event->for_sale))
+                        <div class="bg-red bg-font-red">
+                            <hr><center><h1>Tickets are currently not for sale.</h1></center><br>
                         </div>
                         @else
                         <div class="panel-group accordion" id="tickets_accordion">
@@ -117,7 +126,7 @@
                         </div>
                         @endif
                     </div>
-                    @if(!empty($event->for_sale))
+                    @if(!empty($event->for_sale) && !empty($event->tickets))
                     <!-- BEGIN TOTALS -->
                     <p style="margin-top: 50px">
                         <div class="col-md-6">
@@ -136,7 +145,7 @@
                     <!-- END TOTALS -->
                     @endif
                 </div>
-                @if(!empty($event->for_sale))
+                @if(!empty($event->for_sale) && !empty($event->tickets))
                 <!-- BEGIN ADD TO -->
                 <div class="portlet light about-text">
                     <!-- BEGIN DESCRIPTION -->

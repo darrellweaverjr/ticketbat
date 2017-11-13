@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\User;
 use App\Http\Models\Util;
 
 class EventController extends Controller
@@ -160,7 +161,7 @@ class EventController extends Controller
                         ->join('venues', 'venues.id', '=', 'shows.venue_id')
                         ->join('stages', 'stages.id', '=', 'shows.stage_id')
                         ->join('show_times', 'show_times.show_id', '=', 'shows.id')
-                        ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name,
+                        ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, shows.ticket_limit,
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time,
                                           show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id, stages.ticket_order,
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
@@ -194,6 +195,43 @@ class EventController extends Controller
             $s_token = Util::s_token(false, true);
             $coupon = array_merge( Shoppingcart::tickets_coupon($s_token) , Util::tickets_coupon() );
             $has_coupon = 0;
+            //checkings for qty if ticket limit by customer
+            if(!empty($event->ticket_limit))
+            {
+                $event->ticket_left = $event->ticket_limit;
+                $email_guest = Session::get('email_guest', null); 
+                $user_id = null;
+                if(Auth::check())
+                    $user_id = Auth::user()->id;
+                else if(!empty($email_guest))
+                {
+                    $user = User::where('email',$email_guest)->first(['id']);
+                    if($user)
+                        $user_id = $user->id;
+                }
+                //get previous purchases by user
+                if(!empty($user_id))
+                {
+                    $purchases = DB::table('purchases')
+                                ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                                ->select(DB::raw('SUM(purchases.quantity) AS tickets'))
+                                ->where('show_times.id',$event->show_time_id)->where('purchases.user_id','=', $user_id)
+                                ->groupBy('purchases.user_id')->first();
+                    if($purchases && !empty($purchases->tickets))
+                        $event->ticket_left -= $purchases->tickets;
+                    
+                }
+                //see in shoppingcart
+                $cart = DB::table('shoppingcart')
+                                ->join('show_times', 'show_times.id', '=', 'shoppingcart.item_id')
+                                ->select(DB::raw('SUM(shoppingcart.number_of_items) AS tickets'))
+                                ->where('show_times.id',$event->show_time_id)->where('shoppingcart.session_id','=', $s_token)
+                                ->groupBy('shoppingcart.session_id')->first();
+                if($cart && !empty($cart->tickets))
+                        $event->ticket_left -= $cart->tickets;
+                //checking tickets left to buy
+                $event->ticket_left = ($event->ticket_left<0)? 0 : $event->ticket_left;
+            }
             //get tickets types
             $event->tickets = [];
             $tickets = DB::table('tickets')
@@ -210,36 +248,44 @@ class EventController extends Controller
                                 ->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get();
             foreach ($tickets as $t)
             {
-                //max available
-                if($t->max_available > $qty_tickets_sell)
-                    $t->max_available = $qty_tickets_sell;
-                //id
-                $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
-                //amex
-                $amex_only = ($event->amex_only>0 && in_array($t->ticket_type, $event->amex_only_ticket_types))? 1 : 0;
-                //password
-                $pass = 0;
-                foreach ($passwords as $p)
+                //limit ticket purchase by user
+                if(!empty($event->ticket_limit) && $event->ticket_left<$t->max_available)
+                    $t->max_available = $event->ticket_left;
+                if($t->max_available>0)
                 {
-                    if(in_array($t->ticket_type, explode(',',$p->ticket_types)))
+                    //max available
+                    if($t->max_available > $qty_tickets_sell)
+                        $t->max_available = $qty_tickets_sell;
+                    //id
+                    $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
+                    //amex
+                    $amex_only = ($event->amex_only>0 && in_array($t->ticket_type, $event->amex_only_ticket_types))? 1 : 0;
+                    //password
+                    $pass = 0;
+                    foreach ($passwords as $p)
                     {
-                        $pass = 1;
-                        break;
+                        if(in_array($t->ticket_type, explode(',',$p->ticket_types)))
+                        {
+                            $pass = 1;
+                            break;
+                        }
                     }
-                }
-                //tickets/coupon
-                if(in_array($t->ticket_id, $coupon))
-                {
-                    $t->coupon = 1;
-                    $has_coupon = 1;
+                    //tickets/coupon
+                    if(in_array($t->ticket_id, $coupon))
+                    {
+                        $t->coupon = 1;
+                        $has_coupon = 1;
+                    }
+                    else
+                        $t->coupon = 0;
+                    //fill out tickets
+                    if(isset($event->tickets[$id]))
+                        $event->tickets[$id]['tickets'][] = $t;
+                    else
+                        $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'password'=>$pass,'tickets'=>[$t]];
                 }
                 else
-                    $t->coupon = 0;
-                //fill out tickets
-                if(isset($event->tickets[$id]))
-                    $event->tickets[$id]['tickets'][] = $t;
-                else
-                    $event->tickets[$id] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'amex_only'=>$amex_only,'password'=>$pass,'tickets'=>[$t]];
+                    unset($t);
             }
             //order the ticket types according to the stage order
             if(!empty($event->ticket_order))

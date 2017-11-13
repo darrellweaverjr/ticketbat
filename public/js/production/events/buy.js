@@ -76,6 +76,7 @@ var FunctionsManaged = function () {
                     if(data.success) 
                     {
                         ShoppingcartQtyItems.init();
+                        Countdown.reset();
                         swal({
                             title: "<span style='color:green;'>Added to the cart!</span>",
                             text: data.msg,
@@ -83,8 +84,9 @@ var FunctionsManaged = function () {
                             timer: 1500,
                             type: "success",
                             showConfirmButton: false
+                        },function(){
+                            location.reload(); 
                         });
-                        Countdown.reset();
                     }
                     else{
                         swal({
