@@ -125,6 +125,7 @@ Route::group(['prefix' => 'production','middleware' => 'check','namespace' => 'P
     Route::get('user/purchases/tickets/{type}/{id}', 'UserPurchaseController@tickets')->middleware('productioncheck');
     Route::match(['get','post'], 'user/purchases', 'UserPurchaseController@index')->middleware('productioncheck');
     //user consignment
+    Route::post('user/consignments/contract', 'UserConsignmentController@contract')->middleware('productioncheck');
     Route::post('user/consignments/save', 'UserConsignmentController@save')->middleware('productioncheck');
     Route::match(['get','post'], 'user/consignments', 'UserConsignmentController@index')->middleware('productioncheck');
     //shoppingcart

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Util;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Consignment;
 
 class UserConsignmentController extends Controller
 {
@@ -20,7 +21,7 @@ class UserConsignmentController extends Controller
     {
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(isset($input) && !empty($input['id']))
             {
                 //get record
@@ -103,8 +104,8 @@ class UserConsignmentController extends Controller
                             ->leftJoin('seats', 'seats.consignment_id', '=', 'consignments.id')
                             ->leftJoin('tickets', 'tickets.id', '=', 'seats.ticket_id')
                             ->leftJoin('purchases', 'purchases.id', '=', 'seats.purchase_id')
-                            ->select(DB::raw('consignments.id, shows.name AS show_name, venues.name AS venue_name, show_times.show_time,
-                                             IF(show_times.show_time>NOW(),1,0) AS e_status, 
+                            ->select(DB::raw('consignments.id, shows.name AS show_name, venues.name AS venue_name, show_times.show_time, consignments.signed,
+                                             IF(show_times.show_time>NOW(),1,0) AS e_status,
                                              IF(consignments.created = purchases.created,1,0) AS purchase, consignments.due_date,
                                              consignments.status AS a_status, COUNT(seats.id) AS qty, shows.cutoff_hours,
                                              ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
@@ -117,7 +118,7 @@ class UserConsignmentController extends Controller
                             ->groupBy('consignments.id')->orderBy('show_times.show_time','DESC')->orderBy('shows.name')->get();
                 foreach ($consignments as $c)
                 {
-                    if($c->a_status!='Voided' && (date('Y-m-d',strtotime($c->show_time))>date('Y-m-d') || 
+                    if($c->a_status!='Voided' && (date('Y-m-d',strtotime($c->show_time))>date('Y-m-d') ||
                             (date('Y-m-d',strtotime($c->show_time))==date('Y-m-d') &&  date('H',strtotime($c->show_time))-$c->cutoff_hours > date('H') )))
                         $c->active = true;
                     else
@@ -168,7 +169,7 @@ class UserConsignmentController extends Controller
             throw new Exception('Error Production User Consignments save: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Save updated consignment.
      *
@@ -178,7 +179,7 @@ class UserConsignmentController extends Controller
     {
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(isset($input) && !empty($input['consignment_id']) && !empty($input['seat']) && !empty($input['total_money']) && !empty($input['total_qty']))
             {
                 //get record
@@ -199,7 +200,7 @@ class UserConsignmentController extends Controller
                         $success = Shoppingcart::add_item($consignment->show_time_id, null, 1, $s_token, $seat_id);
                         if(!$success['success'])
                             return $success;
-                    } 
+                    }
                     return ['success'=>true,'msg'=>'Consigment tickets updated successfully!'];
                 }
             }
@@ -208,6 +209,40 @@ class UserConsignmentController extends Controller
             throw new Exception('Error Production User Consignments save: '.$ex->getMessage());
         }
     }
-    
-       
+    /**
+     * Sign contract of consignment.
+     *
+     * @void
+     */
+    public function contract()
+    {
+        try {
+            //init
+            $input = Input::all();
+            if(empty($input['id']))
+                return ['success' => false, 'msg' => 'You have to select a valid consignment.<br>Invalid parameters.'];
+            if(!empty($input['signed']))
+            {
+                $consignment = Consignment::find($input['id']);
+                if($consignment)
+                {
+                    $current = date('Y-m-d H:i:s');
+                    $consignment->signed = $current;
+                    $consignment->save();
+                    return ['success' => true, 'msg' => 'You have sign and receive:<br>Consignment #'.$consignment->id.'<br>on '.$current];
+                }
+                return ['success' => false, 'msg' => 'The system could not find that consignment.<br>Please, contact us.'];
+            }
+            else
+            {
+                $contract = Consignment::generate_contract($input['id']);
+                if($contract)
+                    return ['success'=>true,'contract'=>$contract->render()];
+                return ['success' => false, 'msg' => 'The system could not load the contract for that consignment.<br>Please, contact us.'];
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Production User Consignments contract: '.$ex->getMessage());
+        }
+    }
+
 }

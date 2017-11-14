@@ -134,10 +134,59 @@ var ConsignmentsFunctions = function () {
                 }
             });
         }
+        //open form to sign consignments
+        function modal_sign_consignments(consignment_id)
+        {
+            swal({
+                title: "Loading agreement...",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/production/user/consignments/contract', 
+                data: {id:consignment_id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#contract_agreement').html(data.contract);
+                        $('#btn_sign_consignment').data('id',consignment_id);
+                        swal.close();
+                        $('#modal_sign_consignment').modal('show');
+                    }
+                    else{
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error",
+                            showConfirmButton: true
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to load the contract.",
+                        html: true,
+                        type: "error",
+                        showConfirmButton: true
+                    });
+                }
+            });
+        }
         //open consignments edit form
         $('#tb_consignments button').on('click', function(ev) {
             var consignment_id = $(this).data('id');
-            modal_edit_consignments(consignment_id);
+            if(consignment_id)
+                modal_edit_consignments(consignment_id);
+            else
+            {
+                var consignment_id = $(this).data('sign');
+                modal_sign_consignments(consignment_id);
+            }    
         });
         //checkbox tickets change update totals
         $(document).on('change', '#form_update_consignment input:checkbox', function(e){
@@ -233,6 +282,74 @@ var ConsignmentsFunctions = function () {
                     type: "error"
                 },function(){
                     $('#modal_update_consignment').modal('show');
+                });
+            }
+        });
+        //open confirm modal 
+        $('#btn_sign_consignment').on('click', function(ev) {
+            $('#modal_sign_consignment').modal('hide');
+            var consignment_id = $('#btn_sign_consignment').data('id');
+            if(consignment_id)
+            {
+                swal({
+                    title: "Signing agreement...",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/production/user/consignments/contract', 
+                    data: {id:consignment_id, signed:1}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Accepted!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            },function(){
+                                location.reload();
+                            });
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error",
+                                showConfirmButton: true
+                            },function(){
+                                $('#modal_sign_consignment').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to load the contract.",
+                            html: true,
+                            type: "error",
+                            showConfirmButton: true
+                        },function(){
+                            $('#modal_sign_consignment').modal('show');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: 'You must select at least one consignment to sign.',
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_sign_consignment').modal('show');
                 });
             }
         });

@@ -10,9 +10,9 @@
 
 @section('content')
 
-<div class="page-content color-panel" style="min-height:600px">     
+<div class="page-content color-panel" style="min-height:600px">
 @if(empty($consignments) || !count($consignments))
-<div>       
+<div>
     <center><br><h1>There are no consignments to list</h1></center>
 </div>
 @else
@@ -54,12 +54,13 @@
                                 <th>Due date</th>
                                 <th>Qty</th>
                                 <th>Totals</th>
+                                <th>Signed</th>
                                 <th>Check/purchase tickets</th>
                             </tr>
                         </thead>
                         <tbody style="text-align:center">
                             @foreach($consignments as $index=>$c)
-                            <tr @if($c->a_status=='Voided') class="danger" @endif>
+                            <tr @if($c->a_status=='Voided') class="danger" @elseif(empty($c->signed)) class="warning" @endif>
                                 <td>{{$index+1}}</td>
                                 <td>{{$c->venue_name}}</td>
                                 <td>{{$c->show_name}}</td>
@@ -70,7 +71,17 @@
                                 <td>{{date('m/d/Y',strtotime($c->due_date))}}</td>
                                 <td>{{number_format($c->qty)}}</td>
                                 <td style="text-align:right">${{number_format($c->total,2)}}</td>
-                                <td><button type="button" class="btn btn-lg bg-green btn-outline" @if(!$c->active) disabled @endif data-id="{{$c->id}}" ><i class="icon-docs"></i></button></td>
+                                @if(!empty($c->signed))
+                                <td>{{date('m/d/Y g:ia',strtotime($c->signed))}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-lg bg-green btn-outline" @if(!$c->active) disabled @endif data-id="{{$c->id}}"><i class="icon-docs"></i></button>
+                                </td>
+                                @else
+                                <td>Pending</td>
+                                <td>
+                                    <button type="button" class="btn btn-lg bg-red btn-outline" @if(!$c->active) disabled @endif data-sign="{{$c->id}}"><i class="icon-arrow-down"></i></button>
+                                </td>
+                                @endif
                             </tr>
                             @endforeach
                         </tbody>
@@ -151,6 +162,23 @@
     </div>
 </div>
 <!-- END SHARE TICKETS MODAL -->
+<!-- BEGIN SIGN MODAL -->
+<div id="modal_sign_consignment" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:60% !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3 class="modal-title">Consignment pending to receive</h3>
+            </div>
+            <div class="modal-body" id="contract_agreement" style="padding-left:50px;padding-right:50px"></div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
+                <button type="button" id="btn_sign_consignment" data-id="" class="btn bg-green btn-outline" title="Sign the consignment contract.">I agree with the terms and sign the contract</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SIGN MODAL -->
 @endsection
 
 @section('scripts')
