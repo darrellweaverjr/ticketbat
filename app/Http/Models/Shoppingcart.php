@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
  * @author ivan
  */
 class Shoppingcart extends Model
-{    
+{
     /**
      * The table associated with the model.
      *
@@ -78,57 +78,43 @@ class Shoppingcart extends Model
             {
                 //set up available qty by ticket limit
                 if(!isset($ticket_limit[$i->item_id]))
-                    $ticket_limit[$i->item_id] = ['l'=>$i->ticket_limit, 'p'=>null];
+                {
+                    $ticket_limit[$i->item_id] = ['c'=>$i->number_of_items, 'p'=>0];
+                    $email_guest = Session::get('email_guest', null);
+                    $user_id = null;
+                    if(Auth::check())
+                        $user_id = Auth::user()->id;
+                    else if(!empty($email_guest))
+                    {
+                        $user = User::where('email',$email_guest)->first(['id']);
+                        if($user)
+                            $user_id = $user->id;
+                    }
+                    //get previous purchases by user
+                    if(!empty($user_id))
+                    {
+                        $purchases = DB::table('purchases')
+                                    ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                                    ->select(DB::raw('SUM(purchases.quantity) AS tickets'))
+                                    ->where('show_times.id',$i->item_id)->where('purchases.user_id','=', $user_id)
+                                    ->groupBy('purchases.user_id')->first();
+                        if(($purchases && !empty($purchases->tickets)))
+                            $ticket_limit[$i->item_id]['p'] = $purchases->tickets;
+                    }
+                }
+                //calc
+                $max_available = ($i->available_qty!=-1 && $i->available_qty<$i->ticket_limit)? $i->available_qty : $i->ticket_limit;
+                $qty_current = $ticket_limit[$i->item_id]['c'] + $ticket_limit[$i->item_id]['p'];
                 //if no available for show
-                if($ticket_limit[$i->item_id]['l'] < 1)
+                if($qty_current > $max_available)
                     $i->available_qty = 0;
                 else
-                {
-                    //checking purchases    
-                    if(!isset($ticket_limit[$i->item_id]['p']))
-                    {
-                        $email_guest = Session::get('email_guest', null); 
-                        $user_id = null;
-                        if(Auth::check())
-                            $user_id = Auth::user()->id;
-                        else if(!empty($email_guest))
-                        {
-                            $user = User::where('email',$email_guest)->first(['id']);
-                            if($user)
-                                $user_id = $user->id;
-                        }
-                        //get previous purchases by user
-                        if(!empty($user_id))
-                        {
-                            $purchases = DB::table('purchases')
-                                        ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
-                                        ->select(DB::raw('SUM(purchases.quantity) AS tickets'))
-                                        ->where('show_times.id',$i->item_id)->where('purchases.user_id','=', $user_id)
-                                        ->groupBy('purchases.user_id')->first();
-                            $ticket_limit[$i->item_id]['p'] = ($purchases && !empty($purchases->tickets))? $purchases->tickets : 0;
-                        }
-                        else
-                            $ticket_limit[$i->item_id]['p'] = 0;
-                    }
-                    $qty_limit = $ticket_limit[$i->item_id]['l'] + $ticket_limit[$i->item_id]['p'];
-                    if($i->available_qty <= $qty_limit)
-                        $ticket_limit[$i->item_id]['l'] -= $i->number_of_items;
-                    else 
-                    {
-                        $i->available_qty = $qty_limit;
-                        $ticket_limit[$i->item_id]['l'] -= $i->available_qty;
-                    }
-                    //checking tickets left to buy
-                    $i->available_qty = ($ticket_limit[$i->item_id]['l']<0)? 0 : $ticket_limit[$i->item_id]['l'];
-                }
-                
+                    $i->available_qty = $max_available;
             }
             //continue checking availables
             $i->unavailable = 0;    //availables by default
-            if($i->available_event < 1) //available events
-                $i->unavailable = 3;
-            else if($i->available_time < 1) //available time to purchase
-                $i->unavailable = 2;
+            if($i->available_event < 1 || $i->available_time < 1 || $i->available_qty==0) //available events and time
+                $i->unavailable = 1;
             else if($i->available_qty!=-1 && $i->available_qty-$i->number_of_items<0)   //available qty of items to buy
             {
                 if($i->available_qty>0)
@@ -170,7 +156,7 @@ class Shoppingcart extends Model
         try {
             $price = $qty = $fee = $save = $saveAll = $total = 0;
             $saveAllApplied = false;
-            $coupon = $coupon_description = null; 
+            $coupon = $coupon_description = null;
             $restrictions = $banners = [];
             $amex_only = 0;
             $printed_tickets = ['details'=>0,'shows'=>[],'select'=>0];
@@ -224,8 +210,8 @@ class Shoppingcart extends Model
                         //others
                         $i->discount_id = ($coupon && $coupon['id'])? $coupon['id'] : 1;
                         $i->commission = ($i->c_fixed)? $i->c_fixed : Util::round($i->c_percent*$i->number_of_items*$p/100);
-                        $i->retail_price = Util::round($p);  
-                        
+                        $i->retail_price = Util::round($p);
+
                         //calculate discounts for each ticket the the coupon applies
                         $s = 0;
                         if(!empty($coupon) && !empty($coupon['tickets']))
@@ -256,7 +242,7 @@ class Shoppingcart extends Model
                                             $save += $s;
                                         }
                                         else $s = 0;
-                                    } 
+                                    }
                                     else
                                         $save += $s;
                                     break;
@@ -266,8 +252,8 @@ class Shoppingcart extends Model
                         //calculate savings for item
                         $i->savings = Util::round($s);
                     }
-                }                
-            }   
+                }
+            }
             //calculate and return sum of all values of the shoppingcart
             $total = $price + $fee - $save;
             if($total<0)
@@ -290,12 +276,12 @@ class Shoppingcart extends Model
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,'banners'=>$banners,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
                     'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
-           
+
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
-    
+
     /**
      * Applies coupon for the shoppingcart.
      */
@@ -311,9 +297,9 @@ class Shoppingcart extends Model
                 {
                     Session::forget('coup');
                     return ['success'=>true, 'msg'=>'Coupon removed successfully!'];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error trying to remove the coupon.'];
-            } 
+            }
             else
             {
                 //forced to add a coupon
@@ -338,9 +324,9 @@ class Shoppingcart extends Model
                         //continue loading coupon
                         $coupon->tickets = DB::table('discount_tickets')
                                 ->join('discounts', 'discount_tickets.discount_id', '=' ,'discounts.id')
-                                ->select(DB::raw('discount_tickets.ticket_id, 
+                                ->select(DB::raw('discount_tickets.ticket_id,
                                                   COALESCE(discount_tickets.fixed_commission,null) AS fixed_commission,
-                                                  COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num, 
+                                                  COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num,
                                                   COALESCE(discount_tickets.end_num,discounts.end_num,null) AS end_num'))
                                 ->where('discounts.id',$coupon->id)->get();
                         //object value into session
@@ -370,7 +356,7 @@ class Shoppingcart extends Model
                             Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>$coup]);
                         return ['success'=>true];
                     }
-                    else 
+                    else
                     {
                         Session::forget('coup');
                         Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>null]);
@@ -401,7 +387,7 @@ class Shoppingcart extends Model
                                 })
                                 ->get();
                     if(count($items))
-                    {   
+                    {
                         $coupon = DB::table('discounts')
                                 ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
                                 ->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
@@ -416,9 +402,9 @@ class Shoppingcart extends Model
                             //continue loading coupon
                             $coupon->tickets = DB::table('discount_tickets')
                                     ->join('discounts', 'discount_tickets.discount_id', '=' ,'discounts.id')
-                                    ->select(DB::raw('discount_tickets.ticket_id, 
+                                    ->select(DB::raw('discount_tickets.ticket_id,
                                                       COALESCE(discount_tickets.fixed_commission,null) AS fixed_commission,
-                                                      COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num, 
+                                                      COALESCE(discount_tickets.start_num,discounts.start_num) AS start_num,
                                                       COALESCE(discount_tickets.end_num,discounts.end_num,null) AS end_num'))
                                     ->where('discounts.id',$coupon->id)->get();
                             $couponx = json_encode($coupon,true);
@@ -432,7 +418,7 @@ class Shoppingcart extends Model
                                         Session::forget('coup');
                                 }
                                 return ['success'=>true, 'msg'=> Discount::find($coupon->id)->full_description($items) ];
-                            }  
+                            }
                             return ['success'=>false, 'msg'=>'There was an error trying to add the coupon.'];
                         }
                         return ['success'=>false, 'msg'=>'That coupon is not valid!'];
@@ -488,7 +474,7 @@ class Shoppingcart extends Model
                 $ticket = DB::table('seats')
                         ->join('tickets', 'seats.ticket_id', '=' ,'tickets.id')
                         ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat, tickets.ticket_type,
-                                          COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                          COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price,
                                           COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee'))
                         ->where('seats.id','=',$seat_id)->where('seats.status','=','Created')->first();
             }
