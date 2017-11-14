@@ -54,7 +54,7 @@
                                 <th>Due date</th>
                                 <th>Qty</th>
                                 <th>Totals</th>
-                                <th>Signed</th>
+                                <th>Signed & Received</th>
                                 <th>Check/purchase tickets</th>
                             </tr>
                         </thead>
