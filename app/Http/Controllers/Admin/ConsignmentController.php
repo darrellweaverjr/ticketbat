@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Storage;
  * @author ivan
  */
 class ConsignmentController extends Controller{
-    
+
     /**
      * List all Consignments and return default view.
      *
@@ -40,7 +40,7 @@ class ConsignmentController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             $current = date('Y-m-d H:i:s');
             if(isset($input) && isset($input['id']))
             {
@@ -51,22 +51,22 @@ class ConsignmentController extends Controller{
                                 ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                                 ->leftJoin('seats', 'seats.consignment_id', '=' ,'consignments.id')
                                 ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
-                                        COUNT(seats.id) AS qty, 
+                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email,
+                                        COUNT(seats.id) AS qty,
                                         ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
                                 })
                                 ->where('consignments.id','=',$input['id'])
-                                ->groupBy('consignments.id')    
+                                ->groupBy('consignments.id')
                                 ->first();
                 if(!$consignment)
                     return ['success'=>false,'msg'=>'There was an error getting the consignment.<br>Maybe it is not longer in the system.'];
                 $seats = DB::table('seats')
                                 ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select(DB::raw('seats.*, tickets.ticket_type, 
-                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                ->select(DB::raw('seats.*, tickets.ticket_type,
+                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price,
                                                   COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
                                                   COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
                                                   COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
@@ -80,7 +80,7 @@ class ConsignmentController extends Controller{
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email'))
                                 ->where('consignments.show_time_id','=',$consignment->show_time_id)
                                 ->where('consignments.id','<>',$consignment->id)
-                                ->groupBy('consignments.id')    
+                                ->groupBy('consignments.id')
                                 ->get();
                 return ['success'=>true,'consignment'=>$consignment, 'seats'=>$seats, 'moveto'=>$moveto];
             }
@@ -137,7 +137,7 @@ class ConsignmentController extends Controller{
                 {
                     $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$search['showtime_start_date']];
                     $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$search['showtime_end_date']];
-                } 
+                }
                 //search created
                 if(isset($input) && isset($input['created_start_date']) && isset($input['created_end_date']))
                 {
@@ -153,8 +153,8 @@ class ConsignmentController extends Controller{
                 {
                     $where[] = [DB::raw('DATE(consignments.created)'),'>=',$search['created_start_date']];
                     $where[] = [DB::raw('DATE(consignments.created)'),'<=',$search['created_end_date']];
-                } 
-                
+                }
+
                 //if user has permission to view
                 $sellers = [];
                 $stages = [];
@@ -175,7 +175,7 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('seats', 'seats.consignment_id', '=' ,'consignments.id')
                                 ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                 ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
-                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
+                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email,
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
                                         ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
                                 ->where($where)
@@ -188,7 +188,7 @@ class ConsignmentController extends Controller{
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
                                 })
-                                ->groupBy('consignments.id')    
+                                ->groupBy('consignments.id')
                                 ->orderBy('shows.name','show_times.show_time')
                                 ->get();
                         $search['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
@@ -203,7 +203,7 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('seats', 'seats.consignment_id', '=' ,'consignments.id')
                                 ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                 ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
-                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email, 
+                                ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email,
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
                                         ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
                                 ->where($where)
@@ -211,7 +211,7 @@ class ConsignmentController extends Controller{
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
                                 })
-                                ->groupBy('consignments.id')    
+                                ->groupBy('consignments.id')
                                 ->orderBy('shows.name','show_times.show_time')
                                 ->get();
                         $search['venues'] = Venue::orderBy('name')->get(['id','name']);
@@ -241,14 +241,14 @@ class ConsignmentController extends Controller{
      */
     public function save()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $file = null;
             if(Input::hasFile('agreement_file'))
                 $file = Input::file('agreement_file');
             $current = date('Y-m-d H:i:s');
-            //save all record      
+            //save all record
             if($input)
             {
                 if(isset($input['id']) && $input['id'])
@@ -270,7 +270,7 @@ class ConsignmentController extends Controller{
                            {
                                $consignment->status = $input['status'];
                                $consignment->save();
-                           }    
+                           }
                            else
                            {
                                 foreach ($seats as $s)
@@ -287,7 +287,7 @@ class ConsignmentController extends Controller{
                                              $t = DB::table('tickets')
                                                      ->join('seats', 'tickets.id', '=' ,'seats.ticket_id')
                                                      ->select(DB::raw('tickets.id,
-                                                                       COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                                       COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price,
                                                                        COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
                                                                        COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
                                                                        COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
@@ -342,7 +342,7 @@ class ConsignmentController extends Controller{
                                                 ->select('purchases.id')
                                                 ->where('consignments.id','=',$input['moveto'])
                                                 ->where('consignments.created','=','purchases.created')
-                                                ->first(); 
+                                                ->first();
                                 //if no purchase, check if it has tickets at begining(not our shows, alert) - or - create empty
                                 if(!$purchaseTo)
                                 {
@@ -355,8 +355,8 @@ class ConsignmentController extends Controller{
                                     {
                                         $current = $consignment->created;
                                         //get user and create as customer if it doesnt exists
-                                        $user = User::find($consignment->seller_id); 
-                                        $customer = Customer::where('email','=',$user->email)->first(); 
+                                        $user = User::find($consignment->seller_id);
+                                        $customer = Customer::where('email','=',$user->email)->first();
                                         if(!$customer)
                                         {
                                             $customer = new Customer;
@@ -376,7 +376,7 @@ class ConsignmentController extends Controller{
                                         $purchaseTo->show_time_id = $purchaseFrom->show_time_id;
                                         $purchaseTo->ticket_id = $purchaseFrom->ticket_id;
                                         $purchaseTo->customer_id = $customer->id;
-                                        $purchaseTo->session_id = Session::getId();  
+                                        $purchaseTo->session_id = Session::getId();
                                         $purchaseTo->referrer_url = Config::get('app.url');
                                         $purchaseTo->ticket_type = 'Consignment';
                                         $purchaseTo->retail_price = 0;
@@ -398,7 +398,7 @@ class ConsignmentController extends Controller{
                             {
                                 //init
                                 $updates = ['consignment_id'=>$input['moveto']];
-                                //if it has values, changing each time to asign a new 
+                                //if it has values, changing each time to asign a new
                                 if($purchaseFrom && $purchaseTo)
                                 {
                                     //asign purchase
@@ -407,7 +407,7 @@ class ConsignmentController extends Controller{
                                     $purchase_seat = DB::table('seats')
                                             ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
                                             ->select(DB::raw('seats.id,
-                                                              COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
+                                                              COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price,
                                                               COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
                                                               COALESCE(seats.fixed_commission,COALESCE(tickets.fixed_commission,0)) AS fixed_commission,
                                                               COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission'))
@@ -427,17 +427,17 @@ class ConsignmentController extends Controller{
                                     $purchaseTo->increment('commission_percent',$comm);
                                 }
                                 DB::table('seats')->where('id',$s)->update($updates);
-                            }   
+                            }
                         }
                         else if($input['action'] == 'showseats' && isset($input['showseats']))
                         {
                            foreach ($seats as $s)
-                               DB::table('seats')->where('id',$s)->update(['show_seat'=>$input['showseats']]); 
+                               DB::table('seats')->where('id',$s)->update(['show_seat'=>$input['showseats']]);
                         }
                     }
                     //return
                     return ['success'=>true,'msg'=>'Consignments Tickets saved successfully!'];
-                } 
+                }
                 else if(isset($input['consignment_id']) && isset($input['status']))
                 {
                     $consignment = Consignment::find($input['consignment_id']);
@@ -473,9 +473,9 @@ class ConsignmentController extends Controller{
                         }
                     }
                     return ['success'=>true,'msg'=>'Consignment saved successfully!'];
-                }    
+                }
                 else
-                {                    
+                {
                     //create consignment
                     $consignment = new Consignment;
                     $consignment->show_time_id = $input['show_time_id'];
@@ -490,8 +490,8 @@ class ConsignmentController extends Controller{
                     if(isset($input['purchase']) && $input['purchase'] && isset($input['seats'])&& $input['seats'])
                     {
                         //get user and create as customer if it doesnt exists
-                        $user = User::find($input['seller_id']); 
-                        $customer = Customer::where('email','=',$user->email)->first(); 
+                        $user = User::find($input['seller_id']);
+                        $customer = Customer::where('email','=',$user->email)->first();
                         if(!$customer)
                         {
                             $customer = new Customer;
@@ -510,7 +510,7 @@ class ConsignmentController extends Controller{
                         $purchase->user_id = $input['seller_id'];
                         $purchase->show_time_id = $input['show_time_id'];
                         $purchase->customer_id = $customer->id;
-                        $purchase->session_id = Session::getId();  
+                        $purchase->session_id = Session::getId();
                         $purchase->referrer_url = Config::get('app.url');
                         $purchase->ticket_type = 'Consignment';
                         $purchase->retail_price = 0;
@@ -596,7 +596,7 @@ class ConsignmentController extends Controller{
                                     $purchase->price_paid += $ret_pric + $pro_fees;
                                     $purchase->ticket_id = $ticket->id;
                                     $purchase->save();
-                                }  
+                                }
                                 $new_seat->save();
                             }
                             else
@@ -620,7 +620,7 @@ class ConsignmentController extends Controller{
     public function tickets($type,$ids,$start=null,$end=null)
     {
         try {
-            //check input values    
+            //check input values
             if(in_array($type,['C','S']))
             {
                 $tickets = $purchases_id = [];
@@ -637,7 +637,7 @@ class ConsignmentController extends Controller{
                     if($purchase)
                         $purchases_id[] = $purchase->id;
                 }
-                
+
                 //if it has no purchase throw error
                 if(!count($purchases_id))
                 {
@@ -656,7 +656,7 @@ class ConsignmentController extends Controller{
                 }
                 //create pdf tickets
                 $format = 'pdf';
-                $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format')); 
+                $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));
                 if($type == 'S')
                     return PDF::loadHTML($pdf_receipt->render())->setPaper([0,0,396,144],'portrait')->setWarnings(false)->download('TicketBat Admin - tickets - '.$ids.'.pdf');
                 return PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - tickets - '.$ids.'.pdf');
@@ -667,8 +667,8 @@ class ConsignmentController extends Controller{
                 $tickets = '<script>alert("The system could not load the information from the DB. These are not valid purchases.");window.close();</script>';
                 return View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'))->render();
             }
-            
-        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+
+        } catch (Exception $ex) {
             throw new Exception('Error Consignment tickets: '.$ex->getMessage());
         }
     }
@@ -680,57 +680,15 @@ class ConsignmentController extends Controller{
     public function contract($id)
     {
         try {
-            $consignment = DB::table('consignments')
-                                ->join('users', 'users.id', '=' ,'consignments.seller_id')
-                                ->join('show_times', 'show_times.id', '=' ,'consignments.show_time_id')
-                                ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                                ->leftJoin('seats', 'seats.consignment_id', '=' ,'consignments.id')
-                                ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select(DB::raw('consignments.id,shows.name AS show_name,show_times.show_time, consignments.created,
-                                        CONCAT(users.first_name," ",users.last_name) AS seller_name, 
-                                        COUNT(seats.id) AS qty, 
-                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total,
-                                        ROUND(SUM(COALESCE(seats.collect_price,0)),2) AS due'))
-                                ->where(function ($query) {
-                                    return $query->whereNull('seats.status')
-                                                 ->orWhere('seats.status','<>','Voided');
-                                })
-                                ->where('consignments.id','=',$id)
-                                ->groupBy('consignments.id')    
-                                ->first();
-            if($consignment && $consignment->qty > 0)
-            {
-                //set creator of the consignment
-                $creator = DB::table('consignments')
-                                ->join('users', 'users.id', '=' ,'consignments.create_user_id')
-                                ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name'))
-                                ->where('consignments.id','=',$id)
-                                ->first();
-                $consignment->creator = ($creator && isset($creator->name))? $creator->name : '___________________________________';
-                //set up seats by type
-                $types = DB::table('seats')
-                                ->join('tickets', 'tickets.id', '=' ,'seats.ticket_id')
-                                ->select(DB::raw('tickets.ticket_type, COUNT(seats.id) AS qty, 
-                                                  COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, 
-                                                  COALESCE(seats.collect_price,0) AS collect_price, 
-                                                  COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee'))
-                                ->where('seats.consignment_id','=',$consignment->id)->where('seats.status','<>','Voided')
-                                ->groupBy('tickets.ticket_type')->groupBy('retail_price')->groupBy('collect_price')->orderBy('tickets.ticket_type')
-                                ->distinct()->get();
-                $consignment->types = $types;
-                //create pdf tickets
-                $format = 'pdf';
-                $pdf_receipt = View::make('command.consignment_contract', compact('consignment','format')); 
-                //return $pdf_receipt->render();
-                return PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - Consignment Contract - '.$id.'.pdf');            
-            }
-            else
-            {
+            $contract = Consignment::generate_contract($id);
+            if($contract)
+                return PDF::loadHTML($contract->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - Consignment Contract - '.$id.'.pdf');
+            else {
                 $format='plain';
-                $consignment = '<script>alert("The system could not load the information from the DB. This consignment is not longer in the system or it has not tickets for the contract.");window.close();</script>';
+                $consignment = '<script>alert("There is an error with the server. Please, contact us.");window.close();</script>';
                 return View::make('command.consignment_contract', compact('consignment','format'))->render();
-            }          
-        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            }
+        } catch (Exception $ex) {
             throw new Exception('Error Consignment tickets: '.$ex->getMessage());
         }
     }
@@ -753,13 +711,13 @@ class ConsignmentController extends Controller{
                     $exists = Storage::disk('s3')->exists($file);
                     if($exists)
                     {
-                        $file = Storage::disk('s3')->get($file); 
+                        $file = Storage::disk('s3')->get($file);
                         return Response::make($file, 200, [
                             'Content-Type' => 'application/pdf',
                             'Content-Disposition' => 'inline; filename="Consignment_Agreement_'.$id.'" filename*="Consignment_Agreement_'.$id.'"'
                         ]);
                     }
-                    else 
+                    else
                         return '<script>alert("The system could not load the information from the DB. It does not exists.");window.close();</script>';
                 }
                 else
@@ -770,5 +728,5 @@ class ConsignmentController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error Consignments View: '.$ex->getMessage());
         }
-    } 
+    }
 }
