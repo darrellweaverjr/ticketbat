@@ -50,8 +50,8 @@
                         @foreach($cart['items'] as $i)
                         <tr id="{{$i->id}}" data-qty="{{$i->number_of_items}}">
                             <td>
-                                <b class="label label-sm sbold label-success">{{$i->product_type}}</b> for <a href="/production/event/{{$i->slug}}/{{$i->show_time_id}}">{{$i->name}}</a><br>
-                                On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}}
+                                <b class="label label-sm sbold label-success">{{$i->product_type}}</b> for <a href="/production/event/{{$i->slug}}/{{$i->show_time_id}}">{{$i->name}}</a>
+                                @if(!empty($i->package)) <br><small><i>{{$i->package}}</i></small> @endif <br>On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}} 
                             </td>
                             <td>
                                 <input type="number" @if(!empty($i->consignment)) disabled="true" @endif value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">

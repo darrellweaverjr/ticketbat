@@ -199,6 +199,7 @@ class EventController extends Controller
             if(!empty($event->ticket_limit))
             {
                 $event->ticket_left = $event->ticket_limit;
+                $event->ticket_reserved = 0;
                 $email_guest = Session::get('email_guest', null); 
                 $user_id = null;
                 if(Auth::check())
@@ -218,7 +219,10 @@ class EventController extends Controller
                                 ->where('show_times.id',$event->show_time_id)->where('purchases.user_id','=', $user_id)
                                 ->groupBy('purchases.user_id')->first();
                     if($purchases && !empty($purchases->tickets))
+                    {
                         $event->ticket_left -= $purchases->tickets;
+                        $event->ticket_reserved += $purchases->tickets;
+                    }
                     
                 }
                 //see in shoppingcart
@@ -228,7 +232,10 @@ class EventController extends Controller
                                 ->where('show_times.id',$event->show_time_id)->where('shoppingcart.session_id','=', $s_token)
                                 ->groupBy('shoppingcart.session_id')->first();
                 if($cart && !empty($cart->tickets))
-                        $event->ticket_left -= $cart->tickets;
+                {
+                    $event->ticket_left -= $cart->tickets;
+                    $event->ticket_reserved += $cart->tickets;
+                }
                 //checking tickets left to buy
                 $event->ticket_left = ($event->ticket_left<0)? 0 : $event->ticket_left;
             }
@@ -248,9 +255,11 @@ class EventController extends Controller
                                 ->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get();
             foreach ($tickets as $t)
             {
+                
                 //limit ticket purchase by user
-                if(!empty($event->ticket_limit) && $event->ticket_left<$t->max_available)
-                    $t->max_available = $event->ticket_left;
+                if(!empty($event->ticket_limit))
+                    $t->max_available = ($event->ticket_left<$t->max_available-$event->ticket_reserved)? $event->ticket_left : $t->max_available-$event->ticket_reserved;
+                //if there is tickets availables    
                 if($t->max_available>0)
                 {
                     //max available
