@@ -28,6 +28,17 @@ var PortfolioManaged = function () {
                return;
             window.location = $(this).data('href');
         });
+        function resizeVenues()
+        {
+            $('#myVenues div.myVenues').each(function(k,v){
+                var y2 = $(v).find('.cbp-item.filtered:not(.hidden):last').position().top;
+                $(v).height( parseInt((y2+(k+1)*250)) );
+            });
+        }
+        $(window).resize(function(){
+            setTimeout(resizeVenues, 500);
+        });
+        setTimeout(resizeVenues, 1);
     }
     return {
         //main function to initiate the module

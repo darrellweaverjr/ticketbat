@@ -4,7 +4,7 @@ var PortfolioManaged = function () {
         //grid shows
         $('#myShows').cubeportfolio({
             layoutMode: 'grid',
-            defaultFilter: '*',
+            //defaultFilter: '*',
             animationType: 'fadeOut', // quicksand
             gapHorizontal: 0,
             gapVertical: 0,
@@ -12,7 +12,8 @@ var PortfolioManaged = function () {
             mediaQueries: [{ width: 1440, cols: 5 },{ width: 1024, cols: 4 },{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
             caption: 'overlayBottomAlong', 
             displayType: 'default', 
-            displayTypeSpeed: 1
+            displayTypeSpeed: 1,
+            loadMoreAction: 'auto'
         });
         //link to shows details
         $('#myShows div.cbp-item').bind('click',function (e) {
@@ -150,20 +151,26 @@ var PortfolioManaged = function () {
                     $(this).attr('src', $('#myShows').data('broken'));
                 }
             });
+            resizeShows();
         }
         //check images on load and check the location
         $(window).load(function(){
             check_images();
-            
         });
+        $(window).resize(function(){
+            setTimeout(resizeShows, 500);
+        });
+        function resizeShows()
+        {
+            var y1 = $('#myShows').position().top;
+            var y2 = $('#myShows .cbp-item.filtered:not(.hidden):last').position().top;
+            $('#myShows').height( parseInt(y2+y1/2) );
+        }
         //autoselect city
         $.getJSON("http://freegeoip.net/json/", function (response) {       
             $('#myFilter select[name="filter_city"]').find('option[data-state="'+response.region_code+'"][data-country="'+response.country_code+'"]').prop('selected', true).trigger('change');
         });
-        //$('.cbp').css('height','10000px!important');
-        //$('#myShows').height(10000);
-        //$('#myShows .cbp-wrapper-outer').height(10000);
-        //$('#myShows .cbp-wrapper').height(10000);
+        
     }
     return {
         //main function to initiate the module
