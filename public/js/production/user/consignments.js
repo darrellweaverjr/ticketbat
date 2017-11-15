@@ -292,53 +292,69 @@ var ConsignmentsFunctions = function () {
             if(consignment_id)
             {
                 swal({
-                    title: "Signing agreement...",
-                    text: "Please, wait.",
-                    type: "info",
-                    showConfirmButton: false
-                });
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/production/user/consignments/contract', 
-                    data: {id:consignment_id, signed:1}, 
-                    success: function(data) {
-                        if(data.success) 
-                        {
-                            swal({
-                                title: "<span style='color:green;'>Accepted!</span>",
-                                text: data.msg,
-                                html: true,
-                                timer: 1500,
-                                type: "success",
-                                showConfirmButton: false
-                            },function(){
-                                location.reload();
-                            });
-                        }
-                        else{
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error",
-                                showConfirmButton: true
-                            },function(){
-                                $('#modal_sign_consignment').modal('show');
-                            });
-                        }
-                    },
-                    error: function(){
+                    title: "You are about to sign and receive the consignment tickets #"+consignment_id+'</b>',
+                    text: 'Are you sure?',
+                    html: true,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Sign & receive",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                  },
+                  function(isConfirm) {
+                    if (isConfirm) {
                         swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to load the contract.",
-                            html: true,
-                            type: "error",
-                            showConfirmButton: true
-                        },function(){
-                            $('#modal_sign_consignment').modal('show');
+                            title: "Signing agreement...",
+                            text: "Please, wait.",
+                            type: "info",
+                            showConfirmButton: false
                         });
-                    }
+                        jQuery.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '/production/user/consignments/contract', 
+                            data: {id:consignment_id, signed:1}, 
+                            success: function(data) {
+                                if(data.success) 
+                                {
+                                    swal({
+                                        title: "<span style='color:green;'>Accepted!</span>",
+                                        text: data.msg,
+                                        html: true,
+                                        timer: 1500,
+                                        type: "success",
+                                        showConfirmButton: false
+                                    },function(){
+                                        location.reload();
+                                    });
+                                }
+                                else{
+                                    swal({
+                                        title: "<span style='color:red;'>Error!</span>",
+                                        text: data.msg,
+                                        html: true,
+                                        type: "error",
+                                        showConfirmButton: true
+                                    },function(){
+                                        $('#modal_sign_consignment').modal('show');
+                                    });
+                                }
+                            },
+                            error: function(){
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: "There was an error trying to load the contract.",
+                                    html: true,
+                                    type: "error",
+                                    showConfirmButton: true
+                                },function(){
+                                    $('#modal_sign_consignment').modal('show');
+                                });
+                            }
+                        });
+                    } 
                 });
             }
             else
