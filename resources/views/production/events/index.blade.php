@@ -315,8 +315,8 @@
     <!-- BEGIN MAPS -->
     <div class="c-content-contact-1 c-opt-1">
         <div class="row" data-auto-height=".c-height">
-            <div class="col-lg-8 col-md-6 c-desktop"></div>
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-9 col-md-6 c-desktop"></div>
+            <div class="col-lg-3 col-md-6">
                 <div class="c-body">
                     <div class="c-section">
                         <h3>{{$event->venue}}</h3>
