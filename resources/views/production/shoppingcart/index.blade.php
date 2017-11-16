@@ -480,11 +480,11 @@
                                         <div class="col-sm-2 show-error"></div>
                                         <label class="control-label col-sm-2 text-right" id="collect_text">Collect</label>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{$cart['total']}}" value="-{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true" value="{{old('pending')}}">
+                                            <input type="text" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{$cart['total']}}" value="-{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true" value="{{old('pending')}}">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">Total</label>
                                         <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" style="color:blue;font-size:20px;font-weight:bold" value="0.00" name="subtotal" readOnly="true" value="{{old('subtotal')}}">
+                                            <input type="text" class="form-control" style="color:blue;font-size:20px;font-weight:bold" value="0.00" name="subtotal" readOnly="true" value="{{old('subtotal')}}">
                                         </div>
                                     </div>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">

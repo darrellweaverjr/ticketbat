@@ -38,15 +38,17 @@ var PurchaseFunctions = function () {
         });
         //update qty items
         $('#tb_items tr > td:nth-child(2) input').on('change', function(ev) {
-            var id = $(this).closest('tr').attr('id'); 
-            var qty = parseInt($(this).val());
-            var qty_ = parseInt($(this).closest('tr').data('qty'));
-            var min = parseInt($(this).attr('min'));
-            var max = parseInt($(this).attr('max'));
+            var input = $(this);
+            var id = input.closest('tr').attr('id'); 
+            var qty = parseInt(input.val());
+            var qty_ = parseInt(input.closest('tr').data('qty'));
+            var min = parseInt(input.attr('min'));
+            var max = parseInt(input.attr('max'));
             if(qty<min || qty>max)
-                $(this).val(qty_);
+                input.val(qty_);
             else if(qty != qty_)
             {
+                input.prop('disabled',true);
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -63,6 +65,7 @@ var PurchaseFunctions = function () {
                                 showConfirmButton: false
                             });
                             UpdateShoppingcartFunctions.init( data.cart );
+                            input.prop('disabled',false);
                         }
                     },
                     error: function(){
@@ -72,6 +75,8 @@ var PurchaseFunctions = function () {
                             html: true,
                             type: "error",
                             showConfirmButton: true
+                        },function(){
+                            input.prop('disabled',false);
                         });
                     }
                 }); 
