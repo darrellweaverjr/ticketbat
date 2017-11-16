@@ -40,7 +40,9 @@ class Handler extends ExceptionHandler
         if(env('ERROR_SEND_INFO'))
         {
             Handler::reportException($exception);
-        }        
+        }    
+        if(preg_match('/\/production/',url()->current()))
+            return redirect()->route('index');
         parent::report($exception);
     }
 
@@ -57,7 +59,9 @@ class Handler extends ExceptionHandler
         {
             if (!($exception instanceof AuthenticationException))
             {
-                Log::info('View with the error showed to the user.');
+                Log::info('View with the error showed to the user. Redirect to home page if it is production');
+                if(preg_match('/\/production/',url()->current()))
+                    return redirect()->route('index');
                 return response()->view('errors.default', [], 500);
             }
         }        
@@ -76,7 +80,6 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-
         return redirect()->guest('login');
     }
     /**
