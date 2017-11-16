@@ -2787,7 +2787,7 @@ var TableDatatablesManaged = function () {
                     else if(v.status=='Denied')
                         var status_row = '<td><span class="label label-sm label-danger"><b>'+v.status+'<b></span></td>';
                     else
-                        var status_row = '<td><span class="label label-sm"><b>'+v.status+'<b></span></td>';
+                        var status_row = '<td><span class="label label-sm label-default"><b>'+v.status+'<b></span></td>';
                     $('#tb_show_reviews').append('<tr>'+check_row+posted_row+rating_row+review_row+status_row+'</tr>');
                 });
             }
