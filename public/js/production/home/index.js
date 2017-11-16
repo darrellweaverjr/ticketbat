@@ -164,7 +164,7 @@ var PortfolioManaged = function () {
         {
             var y1 = $('#myShows').position().top;
             var y2 = $('#myShows .cbp-item.filtered:not(.hidden):last').position().top;
-            $('#myShows').height( parseInt(y2+y1/2) );
+            $('#myShows').height( parseInt(y2+y1/(1.8)) );
         }
         //autoselect city
         $.getJSON("http://freegeoip.net/json/", function (response) {       
