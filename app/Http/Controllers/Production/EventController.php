@@ -114,7 +114,7 @@ class EventController extends Controller
                                 ->select(DB::raw('show_times.id, show_times.time_alternative,
                                                  DATE_FORMAT(show_times.show_time,"%Y/%m/%d %H:%i") AS show_time,
                                                  DATE_FORMAT(show_times.show_time,"%W") AS show_day,
-                                                 DATE_FORMAT(show_times.show_time,"%M %D") AS show_date,
+                                                 DATE_FORMAT(show_times.show_time,"%b %D") AS show_date,
                                                  DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,
                                                  IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
                                                  IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR) AND NOW()<show_times.show_time, 1, 0) as presale'))
