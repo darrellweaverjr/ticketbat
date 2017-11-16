@@ -135,13 +135,23 @@
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
                                 <div class="cbp-l-caption-body">
-                                    <span class="cbp-l-caption-buttonLeft btn green">@if($s->time_alternative) {{$s->time_alternative}} @else From <b>@if($s->starting_at) ${{$s->starting_at}} @else ${{$s->price}} @endif</b> @endif</span>
+                                    @if(!($s->price=='0.00' || ($s->starting_at && $s->starting_at=='0.00')))
+                                    <span class="cbp-l-caption-buttonLeft btn info">@if($s->time_alternative) {{$s->time_alternative}} @else From <b>@if($s->starting_at) ${{$s->starting_at}} @else ${{$s->price}} @endif</b> @endif</span>
+                                    @endif
                                     <span class="cbp-l-caption-buttonRight btn red">Next on <b class="date_next_on">{{date('m/d/y', strtotime($s->show_time))}}</b></span>
                                 </div>
                             </div>
                         </div>
+                    </div>  
+                    @if($s->price=='0.00' || ($s->starting_at && $s->starting_at=='0.00'))
+                    <div class="btn btn-warning uppercase show_section_btnbuy"><h4 style="color:red;margin-top:5px"><b>Free</b></h4></div>
+                    @elseif($s->starting_at)
+                    <div class="btn btn-warning uppercase show_section_btnbuy">
+                        <h4 style="color:red;margin-top:5px;margin-bottom:-20px"><b>Clearance</b></h4><br><b style="text-decoration:line-through;color:#d43f3a">${{$s->price}}</b><br><h4 style="margin-top:-2px;color:green;font-weight:bold">${{$s->starting_at}}</h4>
                     </div>
-                    <div class="btn green uppercase show_section_btnbuy">Tickets @if($s->starting_at)<br><b style="text-decoration:line-through;color:#d43f3a">${{$s->price}}</b><br><b style="color:blue">${{$s->starting_at}}</b>@endif</div>
+                    @else
+                    <div class="btn green uppercase show_section_btnbuy">Tickets</div>
+                    @endif
                     <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
                     <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">On {{date('F j, Y @ h:i A', strtotime($s->show_time))}}</b><br><b>in {{$s->venue}}</b></a>
                 </div>

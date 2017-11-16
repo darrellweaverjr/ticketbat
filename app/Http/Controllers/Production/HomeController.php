@@ -53,7 +53,8 @@ class HomeController extends Controller
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, 
                                           venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
-                                          MIN(tickets.retail_price+tickets.processing_fee) AS price, shows.starting_at'))    
+                                          MIN(tickets.retail_price+tickets.processing_fee) AS price,
+                                          shows.starting_at'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
