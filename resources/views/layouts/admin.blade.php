@@ -139,11 +139,7 @@
                         <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
                             <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
                             <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-                            <li class="sidebar-toggler-wrapper hide">
-                                <div class="sidebar-toggler">
-                                    <span></span>
-                                </div>
-                            </li>
+                            <li class="sidebar-toggler-wrapper text-center uppercase bold" style="color:white">Production<br>&nbsp;</li>
                             @if(array_key_exists('REPORTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item start open @if(!(strpos(url()->current(),'/admin/home')===false) || !(strpos(url()->current(),'/admin/dashboard')===false)) active @endif">
                                 <a href="/admin/home" class="nav-link nav-toggle">
@@ -316,6 +312,19 @@
                                     <span class="arrow open"></span>
                                 </a>
                             </li>-->
+                            @endif
+                        </ul>
+                        <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                            <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+                            <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                            <li class="sidebar-toggler-wrapper text-center uppercase bold" style="color:white">Other Sites<br>&nbsp;</li>
+                            @if(array_key_exists('RESTAURANTS', Auth::user()->user_type->getACLs()))
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/sites/restaurants')===false)) active @endif">
+                                <a href="/admin/restaurants" class="nav-link nav-toggle">
+                                    <i class="icon-cup"></i>
+                                    <span class="title">Restaurants</span>
+                                </a>
+                            </li>
                             @endif
                         </ul>
                         <!-- END SIDEBAR MENU -->

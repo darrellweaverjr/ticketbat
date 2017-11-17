@@ -99,6 +99,10 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view')->middleware('permissions:CONSIGNMENTS');
     Route::post('consignments/save', 'ConsignmentController@save')->middleware('permissions:CONSIGNMENTS');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index')->middleware('permissions:CONSIGNMENTS');
+    //restaurants
+    Route::post('restaurants/save', 'RestaurantController@save')->middleware('permissions:RESTAURANTS');
+    Route::post('restaurants/remove', 'RestaurantController@remove')->middleware('permissions:RESTAURANTS');
+    Route::match(['get','post'], 'restaurants', 'RestaurantController@index')->middleware('permissions:RESTAURANTS');
 });
 
 //PRODUCTION ROUTES
