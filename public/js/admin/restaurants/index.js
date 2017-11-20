@@ -114,7 +114,14 @@ var TableDatatablesManaged = function () {
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
             $('#modal_model_update_title').html('Add Restaurant');
             $('#form_model_update select[name="venue_id"]').prop('disabled',false);
+            $('a[href="#tab_model_update_items"]').parent().css('display','none');
+            $('a[href="#tab_model_update_awards"]').parent().css('display','none');
+            $('a[href="#tab_model_update_reviews"]').parent().css('display','none');
+            $('a[href="#tab_model_update_comments"]').parent().css('display','none');
+            $('a[href="#tab_model_update_albums"]').parent().css('display','none');
+            $("#form_model_update").trigger('reset');
             $('#modal_model_update').modal('show');
+            $('a[href="#tab_model_update_general"]').click();
         });
         //function edit
         $('#btn_model_edit').on('click', function(ev) {
@@ -125,6 +132,11 @@ var TableDatatablesManaged = function () {
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#modal_model_update_title').html('Edit Restaurant');
+            $('a[href="#tab_model_update_items"]').parent().css('display','block');
+            $('a[href="#tab_model_update_awards"]').parent().css('display','block');
+            $('a[href="#tab_model_update_reviews"]').parent().css('display','block');
+            $('a[href="#tab_model_update_comments"]').parent().css('display','block');
+            $('a[href="#tab_model_update_albums"]').parent().css('display','block');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',

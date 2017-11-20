@@ -100,38 +100,105 @@
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            <div class="row" style="padding:0 20px">
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Venue
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9 show-error">
-                                        <select class="form-control" name="venue_id">
-                                            @foreach($venues as $index=>$v)
-                                                <option value="{{$v->id}}">{{$v->name}}</option>
-                                            @endforeach
-                                        </select>
+                            <div class="tabbable-line">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_items" data-toggle="tab" aria-expanded="false"> Items </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_awards" data-toggle="tab" aria-expanded="false"> Awards </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_reviews" data-toggle="tab" aria-expanded="false"> Reviews </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_comments" data-toggle="tab" aria-expanded="false"> Comments </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_albums" data-toggle="tab" aria-expanded="false"> Albums </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" style="padding:20px">
+                                    <div class="tab-pane active" id="tab_model_update_general">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">Venue
+                                                    <span class="required"> * </span>
+                                                </label>
+                                                <div class="col-md-9 show-error">
+                                                    <select class="form-control" name="venue_id">
+                                                        @foreach($venues as $index=>$v)
+                                                            <option value="{{$v->id}}">{{$v->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <label class="control-label col-md-3">Name
+                                                    <span class="required"> * </span>
+                                                </label>
+                                                <div class="col-md-9 show-error">
+                                                    <input type="text" name="name" class="form-control" placeholder="My Restaurant" />
+                                                </div>
+                                                <label class="control-label col-md-3">Phone
+                                                    <span class="required"><br>(Only numbers, splited by commas)</span>
+                                                </label>
+                                                <div class="col-md-9 show-error">
+                                                    <input type="text" name="phone" class="form-control" placeholder="7025556666,7027778888" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="control-label">Description:</label>
+                                            <div class="show-error">
+                                                <textarea name="description" class="form-control" rows="5"></textarea>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <label class="control-label col-md-3">Name
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-9 show-error">
-                                        <input type="text" name="name" class="form-control" placeholder="My Restaurant" />
+                                    <div class="tab-pane" id="tab_model_update_items">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_ticket_add" class="btn sbold bg-green"> Add
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Menu</th>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Price</th>
+                                                        <th>Enabled</th>
+                                                        <th>Image</th>
+                                                        <th> </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_restaurant_items">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <label class="control-label col-md-3">Phone
-                                        <span class="required"><br>(Only numbers, splited by commas)</span>
-                                    </label>
-                                    <div class="col-md-9 show-error">
-                                        <input type="text" name="phone" class="form-control" placeholder="7025556666,7027778888" />
+                                    <div class="tab-pane" id="tab_model_update_awards">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_reviews">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_comments">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_albums">
+                                        <div class="row">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row" style="padding:0 20px">
-                                <label class="control-label">Description:</label>
-                                <div class="show-error">
-                                    <textarea name="description" class="form-control" rows="5"></textarea>
-                                </div>
-                            </div>
+                            </div>  
                         </div>
                         <div class="form-actions">
                             <div class="row">

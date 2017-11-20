@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Models\Category;
-use App\Http\Models\Band;
 use App\Http\Models\Venue;
 use App\Http\Models\Restaurant;
+use App\Http\Models\RestaurantAlbums;
+use App\Http\Models\RestaurantAwards;
+use App\Http\Models\RestaurantComments;
+use App\Http\Models\RestaurantItems;
+use App\Http\Models\RestaurantReviews;
+use App\Http\Models\RestaurantSpecials;
 use App\Http\Models\Image;
 /**
  * Manage Bands
@@ -117,27 +121,33 @@ class RestaurantController extends Controller{
             //delete all records   
             foreach ($input['id'] as $id)
             {
-                Band::find($id)->delete_image_file();
-                if(!Band::destroy($id))
-                    return ['success'=>false,'msg'=>'There was an error deleting the band(s)!<br>They might have some dependences.'];
+                //get restaurant
+                $restaurant = Restaurant::find($id);
+                if($restaurant)
+                {
+                    //albums
+                    $albums = RestaurantAlbums::where('restaurants_id','=',$restaurant->id)->get();
+                    foreach ($albums as $a)
+                        DB::table('restaurant_album_images')->where('restaurant_albums_id','=',$a->id)->delete();
+                    RestaurantAlbums::where('restaurants_id','=',$restaurant->id)->delete();
+                    //awards
+                    RestaurantAwards::where('restaurants_id','=',$restaurant->id)->delete();
+                    //comments
+                    RestaurantComments::where('restaurants_id','=',$restaurant->id)->delete();
+                    //items
+                    RestaurantItems::where('restaurants_id','=',$restaurant->id)->delete();
+                    //reviews
+                    RestaurantReviews::where('restaurants_id','=',$restaurant->id)->delete();
+                    //specials
+                    RestaurantSpecials::where('restaurants_id','=',$restaurant->id)->delete();
+                    //restaurant
+                    $restaurant->delete();
+                }
             }
             return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
-            throw new Exception('Error Bands Remove: '.$ex->getMessage());
+            throw new Exception('Error Restaurants Remove: '.$ex->getMessage());
         }
     }
-    /**
-     * Search for social media in certain url given.
-     *
-     * @return Array with social media urls
-     */
-    public function load_social_media()
-    {
-        try {
-            $input = Input::all(); 
-            return Band::load_social_media($input['url']);
-        } catch (Exception $ex) {
-            throw new Exception('Error Bands Load Social Media: '.$ex->getMessage());
-        }
-    }
+    
 }
