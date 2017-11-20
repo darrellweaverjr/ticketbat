@@ -101,7 +101,124 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_add').prop("disabled",false);
         } 
-               
+        //function full reset form
+        var fullReset = function(){
+            $("#form_model_update input[name='id']:hidden").val('').trigger('change');
+            $("#form_model_update").trigger('reset');
+        };
+        //function add
+        $('#btn_model_add').on('click', function(ev) {
+            fullReset();
+            if($('#modal_model_update_header').hasClass('bg-yellow'))
+                $('#modal_model_update_header,#btn_model_save').removeClass('bg-yellow').addClass('bg-green');
+            else $('#modal_model_update_header,#btn_model_save').addClass('bg-green');
+            $('#modal_model_update_title').html('Add Restaurant');
+            $('#form_model_update select[name="venue_id"]').prop('disabled',false);
+            $('#modal_model_update').modal('show');
+        });
+        //function edit
+        $('#btn_model_edit').on('click', function(ev) {
+            fullReset();
+            if($('#modal_model_update_header').hasClass('bg-green'))
+                $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
+            else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
+            $('#modal_model_update_title').html('Edit Restaurant');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/restaurants', 
+                data: {id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        for(var key in data.restaurant)
+                            $('#form_model_update [name="'+key+'"]').val(data.restaurant[key]);
+                        $('#form_model_update select[name="venue_id"]').prop('disabled',true);
+                        $('#modal_model_update').modal('show');
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the restaurant's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });
+        });   
+        //function save
+        $('#btn_model_save').on('click', function(ev) {
+            $('#modal_model_update').modal('hide');
+            if($('#form_model_update').valid())
+            {
+                swal({
+                    title: "Saving restaurant's information",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/restaurants/save', 
+                    data: $('#form_model_update').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                            location.reload(); 
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to save the restaurant's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                }); 
+            } 
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "The form is not valid!<br>Please check the information again.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }        
+        });
         //init functions
         check_models(); 
     }
@@ -136,54 +253,22 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
-                    name: {
-                        minlength: 1,
-                        maxlength: 50,
+                    venue_id: {
                         required: true
                     },
-                    short_description: {
-                        minlength: 5,
-                        maxlength: 500,
+                    name: {
+                        minlength: 3,
+                        maxlength: 45,
                         required: true
+                    },
+                    phone: {
+                        minlength: 10,
+                        maxlength: 45,
+                        required: false
                     },
                     description: {
                         minlength: 5,
                         maxlength: 2000,
-                        required: false
-                    },  
-                    youtube: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    facebook: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    twitter: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    my_space: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    instagram: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    soundcloud: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    website: {
-                        minlength: 5,
-                        maxlength: 100,
                         required: false
                     }
                 },

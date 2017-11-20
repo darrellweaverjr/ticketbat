@@ -217,3 +217,7 @@ REFERENCES `restaurants` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
+ALTER TABLE `restaurants` 
+CHANGE COLUMN `description` `description` TINYTEXT NULL DEFAULT NULL ;
+
+
