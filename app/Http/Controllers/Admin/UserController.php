@@ -11,7 +11,9 @@ use App\Http\Models\UserType;
 use App\Http\Models\Discount;
 use App\Http\Models\Venue;
 use App\Http\Models\Country;
+use App\Http\Models\Customer;
 use App\Http\Models\Location;
+use App\Http\Models\Transaction;
 
 /**
  * Manage Users
@@ -208,7 +210,20 @@ class UserController extends Controller{
                 //$user->set_slug();
                 $user->save();
                 //update table customers
-                $user->update_customer();
+                if(!empty($input['update_customer']))
+                    $user->update_customer();
+                //update table transactions customer_id
+                if(!empty($input['update_transaction_customer']))
+                {
+                    $customer = Customer::where('email','=',$input['email'])->first();
+                    if($customer)
+                        Transaction::where('customer_id',$customer->id)->update(['card_holder'=>$user->first_name.' '.$user->last_name]);
+                }
+                //update table transactions user_id
+                if(!empty($input['update_transaction_user']))
+                {
+                    Transaction::where('user_id',$user->id)->update(['card_holder'=>$user->first_name.' '.$user->last_name]);
+                }
                 //update intermediate table with discounts
                 if(isset($input['discounts']) && $input['discounts'] && count($input['discounts']))
                     $user->user_discounts()->sync($input['discounts']);

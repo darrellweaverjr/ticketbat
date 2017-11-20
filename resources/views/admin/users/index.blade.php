@@ -302,6 +302,24 @@
                                                 </label>
                                             </div>
                                         </div>
+                                        <hr>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2"></label>
+                                            <div class="col-md-8 show-error">
+                                                <label>
+                                                    <input type="hidden"   name="update_customer" value="0" />
+                                                    <input type="checkbox" name="update_customer" value="1" checked="true"/> Update associated customer with this information?
+                                                </label><br>
+                                                <label>
+                                                    <input type="hidden"   name="update_transaction_customer" value="0" />
+                                                    <input type="checkbox" name="update_transaction_customer" value="1" /> Update associated cardholder name in transactions using the Customer ID?
+                                                </label><br>
+                                                <label>
+                                                    <input type="hidden"   name="update_transaction_user" value="0" />
+                                                    <input type="checkbox" name="update_transaction_user" value="1" /> Update associated cardholder name in transactions using the User ID?
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_discounts">
                                         <div class="form-group">
