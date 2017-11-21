@@ -13,7 +13,7 @@ var TableItemsDatatablesManaged = function () {
                 v.url = '<img src="'+v.url+'"/>';
             else
                 v.url = '-No image-';
-            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.url+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red remove"></td></tr>');
+            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.url+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
         });   
     }
     
@@ -135,7 +135,15 @@ var TableItemsDatatablesManaged = function () {
                             update_items_order(0);   
                             //fill out 
                             for(var key in data.item)
-                                $('#form_model_restaurant_items [name="'+key+'"]').val(data.item[key]);
+                            {
+                                var e = $('#form_model_restaurant_items [name="'+key+'"]');
+                                if(e.is('input:checkbox'))
+                                    $('#form_model_restaurant_items .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.item[key]>0)? true : false, true);
+                                else if(e.is('img'))
+                                    e.src = data.item[key];
+                                else
+                                    e.val(data.item[key]);
+                            }
                             //modal                         
                             $('#modal_model_restaurant_items').modal('show');
                         }
@@ -174,7 +182,9 @@ var TableItemsDatatablesManaged = function () {
                     data: {action:-1,id:row.data('id')}, 
                     success: function(data) {
                         if(data.success) 
-                            row.remove();  
+                        {
+                            update_items(data.items);
+                        }
                         else{
                             $('#modal_model_update').modal('hide');
                             swal({

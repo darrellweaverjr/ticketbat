@@ -253,12 +253,18 @@ class RestaurantController extends Controller{
                     $item = RestaurantItems::find($input['id']);
                     if($item)
                     {
-                        RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
+                        RestaurantItems::where('restaurants_id',$item->restaurants_id)->where('restaurant_menu_id',$item->restaurant_menu_id)
                                             ->where('order','>',$item->order)->decrement('order');
                         $item->delete_image();
                         $item->delete();
                     }
-                    return ['success'=>true,'msg'=>'Item removed successfully!'];
+                    $items = DB::table('restaurant_items')
+                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                        ->where('restaurant_items.restaurants_id',$item->restaurants_id)
+                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                        ->get();
+                    return ['success'=>true,'items'=>$items,'msg'=>'Item removed successfully!'];
                 }
                 return ['success'=>false,'msg'=>'There was an error deleting the item.<br>You must select a valid item.'];
             }
