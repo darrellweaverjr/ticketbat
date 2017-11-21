@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `restaurant_specials` (
   `title` VARCHAR(45) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
   `order` TINYINT NOT NULL DEFAULT 1,
-  `image_id` INT(10) UNSIGNED NOT NULL,
+  `image_id` VARCHAR(1000) NOT NULL,
   `enabled` TINYINT(1) NOT NULL DEFAULT 1,
   `restaurants_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -35,12 +35,6 @@ REFERENCES `restaurants` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE `restaurant_specials` 
-ADD FOREIGN KEY (`image_id`)
-REFERENCES `images` (`id`)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
-
 
 -- -----------------------------------------------------
 -- Table `mydb`.`restaurant_awards`
@@ -50,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `restaurant_awards` (
   `awarded` VARCHAR(45) NOT NULL,
   `description` TINYTEXT NULL,
   `posted` DATETIME NOT NULL,
-  `image_id` INT(10) UNSIGNED NOT NULL,
+  `image_id` VARCHAR(1000) NOT NULL,
   `restaurants_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
@@ -60,13 +54,6 @@ ENGINE = InnoDB;
 ALTER TABLE `restaurant_awards` 
 ADD FOREIGN KEY (`restaurants_id`)
 REFERENCES `restaurants` (`id`)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
-
-
-ALTER TABLE `restaurant_awards` 
-ADD FOREIGN KEY (`image_id`)
-REFERENCES `images` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
@@ -94,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `restaurant_items` (
   `notes` VARCHAR(45) NULL DEFAULT NULL,
   `description` VARCHAR(45) NULL DEFAULT NULL,
   `price` DECIMAL(2) NOT NULL DEFAULT 0.00,
-  `image_id` INT(10) UNSIGNED NULL DEFAULT NULL,
+  `image_id` VARCHAR(1000) NULL DEFAULT NULL,
   `order` TINYINT(1) NULL DEFAULT 1,
   `enabled` TINYINT(1) NULL,
   `restaurants_id` INT(11) NOT NULL,
@@ -113,12 +100,6 @@ ON UPDATE NO ACTION;
 ALTER TABLE `restaurant_items` 
 ADD FOREIGN KEY (`restaurant_menu_id`)
 REFERENCES `restaurant_menu` (`id`)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
-
-ALTER TABLE `restaurant_items` 
-ADD FOREIGN KEY (`image_id`)
-REFERENCES `images` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
@@ -218,6 +199,12 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `restaurants` 
+CHANGE COLUMN `description` `description` TINYTEXT NULL DEFAULT NULL ;
+
+ALTER TABLE `restaurant_menu` 
+CHANGE COLUMN `enabled` `disabled` TINYINT(1) NOT NULL DEFAULT '0' ;
+
+ALTER TABLE `restaurant_items` 
 CHANGE COLUMN `description` `description` TINYTEXT NULL DEFAULT NULL ;
 
 

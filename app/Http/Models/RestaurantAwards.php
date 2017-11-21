@@ -33,4 +33,23 @@ class RestaurantAwards extends Model
     }
     //RELATIONSHIPS MANY-MANY
     //PERSONALIZED METHODS
+    /**
+     * Set the url for the current banner.
+     */
+    public function set_image($url)
+    {
+        $this->image_id = Image::stablish_image('restaurants/awards',$url);
+    }
+    /**
+     * Remove the image file for the current banner.
+     */
+    public function delete_image()
+    {
+        if(Image::remove_image($this->image_id))
+        {
+            $this->image_id = null;
+            return true;
+        }
+        return true;   
+    }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Venue;
 use App\Http\Models\Restaurant;
+use App\Http\Models\RestaurantMenu;
 use App\Http\Models\RestaurantAlbums;
 use App\Http\Models\RestaurantAwards;
 use App\Http\Models\RestaurantComments;
@@ -38,15 +39,61 @@ class RestaurantController extends Controller{
                 $restaurant = Restaurant::find($input['id']);  
                 if(!$restaurant)
                     return ['success'=>false,'msg'=>'There was an error getting the restaurant.<br>Maybe it is not longer in the system.'];
-//                $shows = [];
-//                foreach($band->show_bands as $s)
-//                    $shows[] = [$s->name,$s->pivot->n_order];
-//                // change relative url uploads for real one
-//                $band->image_url = Image::view_image($band->image_url);
+                //items
+                $restaurant->items = DB::table('restaurant_items')
+                                ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                                ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                                ->where('restaurant_items.restaurants_id',$restaurant->id)
+                                ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                                ->get();
+                foreach($restaurant->items as $i)
+                    $i->image_id = Image::view_image($i->image_id);
+                //albums
+                $restaurant->albums = DB::table('restaurant_albums')
+                                ->leftJoin('restaurant_album_images', 'restaurant_album_images.restaurant_albums_id', '=' ,'restaurant_albums.id')
+                                ->leftJoin('images', 'images.id', '=' ,'restaurant_album_images.image_id')
+                                ->select('restaurant_albums.*')
+                                ->select(DB::raw('restaurant_albums.*, COUNT(images.id) AS images'))
+                                ->where('restaurant_albums.restaurants_id',$restaurant->id)
+                                ->groupBy('restaurant_albums.id')->orderBy('restaurant_albums.title')
+                                ->get();
+                //awards
+                $restaurant->awards = DB::table('restaurant_awards')
+                                ->select('restaurant_awards.*')
+                                ->where('restaurant_awards.restaurants_id',$restaurant->id)
+                                ->orderBy('restaurant_awards.posted','DESC')
+                                ->get();
+                //comments
+                $restaurant->comments = DB::table('restaurant_comments')
+                                ->select('restaurant_comments.*')
+                                ->where('restaurant_comments.restaurants_id',$restaurant->id)
+                                ->orderBy('restaurant_comments.posted','DESC')
+                                ->get();
+                //reviews
+                $restaurant->reviews = DB::table('restaurant_reviews')
+                                ->leftJoin('images', 'images.id', '=' ,'restaurant_reviews.image_id')
+                                ->select('restaurant_reviews.*','images.url')
+                                ->where('restaurant_reviews.restaurants_id',$restaurant->id)
+                                ->orderBy('restaurant_reviews.posted','DESC')
+                                ->get();
+                foreach($restaurant->reviews as $i)
+                    $i->url = Image::view_image($i->url);
+                //specials
+                $restaurant->specials = DB::table('restaurant_specials')
+                                ->leftJoin('images', 'images.id', '=' ,'restaurant_specials.image_id')
+                                ->select('restaurant_specials.*','images.url')
+                                ->where('restaurant_specials.restaurants_id',$restaurant->id)
+                                ->orderBy('restaurant_specials.title')
+                                ->get();
+                foreach($restaurant->reviews as $i)
+                    $i->url = Image::view_image($i->url);
                 return ['success'=>true,'restaurant'=>$restaurant];
             }
             else
             {
+                $restaurants = [];
+                $menu = [];
+                $venues = [];
                 //if user has permission to view
                 if(in_array('View',Auth::user()->user_type->getACLs()['RESTAURANTS']['permission_types']))
                 {
@@ -60,9 +107,10 @@ class RestaurantController extends Controller{
                                     ->select('restaurants.*', 'venues.name AS venue')
                                     ->orderBy('venues.name')->orderBy('restaurants.name')
                                     ->get();
+                    $menu = RestaurantMenu::all();
                 }
                 //return view
-                return view('admin.restaurants.index',compact('restaurants','venues'));
+                return view('admin.restaurants.index',compact('restaurants','venues','menu'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Restaurants Index: '.$ex->getMessage());
@@ -113,7 +161,7 @@ class RestaurantController extends Controller{
      *
      * @void
      */
-    public function remove()
+    public function remove()            //missing remove images from server
     {
         try {
             //init
@@ -128,17 +176,38 @@ class RestaurantController extends Controller{
                     //albums
                     $albums = RestaurantAlbums::where('restaurants_id','=',$restaurant->id)->get();
                     foreach ($albums as $a)
+                    {
+                        $images = DB::table('restaurant_album_images')->where('restaurant_albums_id','=',$a->id)->get();
+                        foreach ($items as $a)
+                        {
+                            $image = Image::find($a->image_id);
+                            if($image)
+                            {
+                                $image->delete_image_file();
+                                $image->delete();
+                            }
+                        }
                         DB::table('restaurant_album_images')->where('restaurant_albums_id','=',$a->id)->delete();
+                    }
                     RestaurantAlbums::where('restaurants_id','=',$restaurant->id)->delete();
                     //awards
+                    $awards = RestaurantAwards::where('restaurants_id','=',$restaurant->id)->get();
+                    foreach ($awards as $a)
+                        RestaurantAwards::find($a->id)->delete_image();
                     RestaurantAwards::where('restaurants_id','=',$restaurant->id)->delete();
                     //comments
                     RestaurantComments::where('restaurants_id','=',$restaurant->id)->delete();
                     //items
+                    $items = RestaurantItems::where('restaurants_id','=',$restaurant->id)->get();
+                    foreach ($items as $a)
+                        RestaurantItems::find($a->id)->delete_image();
                     RestaurantItems::where('restaurants_id','=',$restaurant->id)->delete();
                     //reviews
                     RestaurantReviews::where('restaurants_id','=',$restaurant->id)->delete();
                     //specials
+                    $specials = RestaurantSpecials::where('restaurants_id','=',$restaurant->id)->get();
+                    foreach ($specials as $a)
+                        RestaurantSpecials::find($a->id)->delete_image();
                     RestaurantSpecials::where('restaurants_id','=',$restaurant->id)->delete();
                     //restaurant
                     $restaurant->delete();
@@ -147,6 +216,113 @@ class RestaurantController extends Controller{
             return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Restaurants Remove: '.$ex->getMessage());
+        }
+    }
+    /**
+     * Get, Edit items for restaurants
+     *
+     * @return view
+     */
+    public function items()
+    {
+        try {  
+            //init
+            $input = Input::all(); 
+            //get
+            if(isset($input) && isset($input['action']) && $input['action']==0)
+            {
+                $item = DB::table('restaurant_items')
+                                ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                                ->leftJoin('images', 'images.id', '=' ,'restaurant_items.image_id')
+                                ->select('restaurant_items.*', 'restaurant_menu.name AS menu', 'images.url')
+                                ->where('restaurant_items.id',$input['id'])
+                                ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                                ->first();
+                if($item)
+                {
+                    $item->url = Image::view_image($item->url);
+                    return ['success'=>true,'item'=>$item];
+                }
+                return ['success'=>false,'msg'=>'There is an error getting the item.<br>Item not longer in the system.'];
+            }
+            //remove
+            else if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                if(!empty($input['id']))
+                {
+                    $item = RestaurantItems::find($input['id']);
+                    if($item)
+                    {
+                        RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
+                                            ->where('order','>',$item->order)->decrement('order');
+                        $item->delete_image();
+                        $item->delete();
+                    }
+                    return ['success'=>true,'msg'=>'Item removed successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the item.<br>You must select a valid item.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && !empty($input['restaurants_id']) && $input['action']==1)
+            {
+                if(!empty($input['id']))
+                {
+                    $item = RestaurantItems::find($input['id']);
+                    if(!$item)
+                        return ['success'=>false,'msg'=>'There was an error updating the item.<br>The item is not longer in the system.'];
+                }
+                else
+                {
+                    $item = new RestaurantItems;
+                }
+                $item->name = strip_tags(trim($input['name']));
+                $item->notes = (!empty($input['notes']))? strip_tags(trim($input['notes'])) : null;
+                $item->description = (!empty($input['description']))? strip_tags(trim($input['description'])) : null;
+                $item->price = $input['price'];
+                $item->enabled = (!empty($input['enabled']))? 1 : 0;
+                $item->restaurant_menu_id = $input['restaurant_menu_id'];
+                //image
+                if(!empty($input['url']))
+                {
+                    if(preg_match('/media\/preview/',$input['url'])) 
+                    {
+                        $item->delete_image();
+                        $item->set_image($input['url']);
+                    }
+                }
+                else
+                    $item->delete_image();
+                //order
+                $order = RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])->count();
+                if(empty($order))
+                    $item->order = 1;
+                else 
+                {
+                    if(empty($input['order']))
+                        $item->order = $order+1;
+                    else
+                    {
+                        $item->order = $input['order'];
+                        RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
+                                            ->where('order','>=',$item->order)->increment('order');
+                    }
+                }
+                //save and return
+                $item->save();
+                $items = DB::table('restaurant_items')
+                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                        ->where('restaurant_items.restaurants_id',$input['restaurants_id'])
+                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                        ->get();
+                foreach($items as $i)
+                    $i->image_id = Image::view_image($i->image_id);
+                return ['success'=>true,'items'=>$items];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error ShowTickets Index: '.$ex->getMessage());
         }
     }
     
