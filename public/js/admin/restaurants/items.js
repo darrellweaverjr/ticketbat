@@ -223,6 +223,10 @@ var TableItemsDatatablesManaged = function () {
                 });
             }
         });
+        //function load form to upload image
+        $('#btn_restaurant_item_upload_image').on('click', function(ev) {
+            FormImageUpload('restaurants.items','#modal_model_restaurant_items','#form_model_restaurant_items [name="url"]');       
+        }); 
     }
     return {
         //main function to initiate the module
