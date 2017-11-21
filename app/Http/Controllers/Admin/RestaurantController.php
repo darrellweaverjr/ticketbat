@@ -270,10 +270,17 @@ class RestaurantController extends Controller{
                     $item = RestaurantItems::find($input['id']);
                     if(!$item)
                         return ['success'=>false,'msg'=>'There was an error updating the item.<br>The item is not longer in the system.'];
+                    //order
+                    RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
+                                            ->where('order','>=',$input['order'])->where('id','!=',$input['id'])->increment('order');
                 }
                 else
                 {
                     $item = new RestaurantItems;
+                    $item->restaurants_id = $input['restaurants_id'];
+                    //order
+                    RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
+                                            ->where('order','>=',$input['order'])->increment('order');
                 }
                 $item->name = strip_tags(trim($input['name']));
                 $item->notes = (!empty($input['notes']))? strip_tags(trim($input['notes'])) : null;
@@ -293,21 +300,7 @@ class RestaurantController extends Controller{
                 else
                     $item->delete_image();
                 //order
-                $order = RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])->count();
-                if(empty($order))
-                    $item->order = 1;
-                else 
-                {
-                    if(empty($input['order']))
-                        $item->order = $order+1;
-                    else
-                    {
-                        $item->order = $input['order'];
-                        RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
-                                            ->where('order','>=',$item->order)->increment('order');
-                    }
-                }
-                //save and return
+                $item->order = $input['order'];
                 $item->save();
                 $items = DB::table('restaurant_items')
                         ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
@@ -315,8 +308,13 @@ class RestaurantController extends Controller{
                         ->where('restaurant_items.restaurants_id',$input['restaurants_id'])
                         ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
                         ->get();
-                foreach($items as $i)
+                foreach ($items as $index=>$i)
+                {
                     $i->image_id = Image::view_image($i->image_id);
+                    $i->order = $index+1;
+                    RestaurantItems::where('id',$i->id)->update(['order'=>$i->order]);
+                }
+                //return
                 return ['success'=>true,'items'=>$items];
             }
             else
