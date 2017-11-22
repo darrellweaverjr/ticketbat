@@ -37,9 +37,9 @@ class UserController extends Controller{
                             ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                             ->join('packages', 'packages.id', '=', 'tickets.package_id')
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                            ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, purchases.user_id, DATE_FORMAT(purchases.created,"%m/%d/%Y %H:%i:s") AS created,
+                            ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, purchases.user_id, DATE_FORMAT(purchases.created,"%m/%d/%Y %T") AS created,
                                               IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, NULL AS tickets,
-                                              venues.name AS venue_name, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:s") AS show_time, shows.name AS show_name, packages.title'))
+                                              venues.name AS venue_name, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %T") AS show_time, shows.name AS show_name, packages.title'))
                             ->where('purchases.status','=','Active')->where('purchases.user_id','=',$info['user_id'])
                             ->orderBy('purchases.created','DESC')
                             ->get();
