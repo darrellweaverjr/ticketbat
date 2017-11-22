@@ -81,7 +81,7 @@ class EmailSG {
             }
             else $_subject = '';
             //configure object mail
-            $this->mail = new SendGrid\Mail($_from, $_subject, $_to, new SendGrid\Content('text/html','<html><body></body></html>'));
+            $this->mail = new SendGrid\Mail($_from, $_subject, $_to, new SendGrid\Content('text/plain',' '));
             foreach ($_personalizations as $index=>$p)
                 $this->mail->personalization[$index] = $p;
         } catch (Exception $ex) {
