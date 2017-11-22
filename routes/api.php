@@ -34,5 +34,5 @@ Route::group(['prefix' => 'app','middleware' => 'app.security:1','namespace' => 
 //ADMIN ROUTES FOR JSON FEED
 Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {
     //feeds config
-    Route::get('events/{venue_id}', 'FeedController@events');
+    Route::get('events/{venue_id}', 'VenueController@events');
 });
