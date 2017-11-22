@@ -1,7 +1,7 @@
-var TableItemsDatatablesManaged = function () {
+var TableAwardsDatatablesManaged = function () {
     
-    var update_items = function (items) {
-        $('#tb_restaurant_items').empty();
+    var update_awards = function (items) {
+        $('#tb_restaurant_awards').empty();
         $.each(items,function(k, v) {
             //default style
             if(v.disabled==1)
@@ -13,43 +13,43 @@ var TableItemsDatatablesManaged = function () {
                 v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
                 v.image_id = '-No image-';
-            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.image_id+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
+            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.image_id+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
         });   
     }
     
-    var update_items_order = function (add=0) {
-        var positions = $('#tb_restaurant_items >tr').length;
+    var update_awards_order = function (add=0) {
+        var positions = $('#tb_restaurant_awards >tr').length;
         if(add) positions++;
-        $('#form_model_restaurant_items select[name="order"]').empty();
+        $('#form_model_restaurant_awards select[name="order"]').empty();
         if(positions>1)
         {
             while(positions > 0)
             {
-                $('#form_model_restaurant_items select[name="order"]').prepend('<option value="'+positions+'">'+positions+'</option>');
+                $('#form_model_restaurant_awards select[name="order"]').prepend('<option value="'+positions+'">'+positions+'</option>');
                 positions--;
             }
         }
         else
-            $('#form_model_restaurant_items select[name="order"]').append('<option value="">Last</option>');
+            $('#form_model_restaurant_awards select[name="order"]').append('<option value="">Last</option>');
     }
     
     var initTable = function () {
         
         //on select ticket_type
-        $('#btn_model_items_add').on('click', function(ev) {
-            $('#form_model_restaurant_items').trigger('reset');
-            $('#form_model_restaurant_items input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_restaurant_items input[name="restaurants_id"]:hidden').val( $('#form_model_update [name="id"]').val() );
-            $('#form_model_restaurant_items input[name="action"]:hidden').val( 1 );
-            update_items_order(1);    
-            $('#modal_model_restaurant_items').modal('show');
+        $('#btn_model_awards_add').on('click', function(ev) {
+            $('#form_model_restaurant_awards').trigger('reset');
+            $('#form_model_restaurant_awards input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_restaurant_awards input[name="restaurants_id"]:hidden').val( $('#form_model_update [name="id"]').val() );
+            $('#form_model_restaurant_awards input[name="action"]:hidden').val( 1 );
+            update_awards_order(1);    
+            $('#modal_model_restaurant_awards').modal('show');
         });
         
-        //function submit restaurant_items
-        $('#submit_model_restaurant_items').on('click', function(ev) {
-            $('#modal_model_restaurant_items').modal('hide');
+        //function submit restaurant_awards
+        $('#submit_model_restaurant_awards').on('click', function(ev) {
+            $('#modal_model_restaurant_awards').modal('hide');
             $('#modal_model_update').modal('hide');
-            if($('#form_model_restaurant_items').valid())
+            if($('#form_model_restaurant_awards').valid())
             {
                 swal({
                     title: "Saving restaurant's information",
@@ -60,8 +60,8 @@ var TableItemsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/items', 
-                    data: $('#form_model_restaurant_items').serializeArray(), 
+                    url: '/admin/restaurants/awards', 
+                    data: $('#form_model_restaurant_awards').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
                         {
@@ -84,7 +84,7 @@ var TableItemsDatatablesManaged = function () {
                                 type: "error"
                             },function(){
                                 $('#modal_model_update').modal('show');
-                                $('#modal_model_restaurant_items').modal('show');
+                                $('#modal_model_restaurant_awards').modal('show');
                             });
                         }
                     },
@@ -96,7 +96,7 @@ var TableItemsDatatablesManaged = function () {
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
-                            $('#modal_model_restaurant_items').modal('show');
+                            $('#modal_model_restaurant_awards').modal('show');
                         });
                     }
                 }); 
@@ -110,13 +110,13 @@ var TableItemsDatatablesManaged = function () {
                     type: "error"
                 },function(){
                     $('#modal_model_update').modal('show');
-                    $('#modal_model_restaurant_items').modal('show');
+                    $('#modal_model_restaurant_awards').modal('show');
                 });
             }    
         });
         
         //function edit or remove
-        $('#tb_restaurant_items').on('click', 'input[type="button"]', function(e){
+        $('#tb_restaurant_awards').on('click', 'input[type="button"]', function(e){
             var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
@@ -129,23 +129,23 @@ var TableItemsDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#form_model_restaurant_items').trigger('reset');
-                            $('#form_model_restaurant_items input[name="id"]:hidden').val(data.item.id).trigger('change');
+                            $('#form_model_restaurant_awards').trigger('reset');
+                            $('#form_model_restaurant_awards input[name="id"]:hidden').val(data.item.id).trigger('change');
                             //order
-                            update_items_order(0);   
+                            update_awards_order(0);   
                             //fill out 
                             for(var key in data.item)
                             {
-                                var e = $('#form_model_restaurant_items [name="'+key+'"]');
+                                var e = $('#form_model_restaurant_awards [name="'+key+'"]');
                                 if(e.is('input:checkbox'))
-                                    $('#form_model_restaurant_items .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.item[key]>0)? true : false, true);
+                                    $('#form_model_restaurant_awards .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.item[key]>0)? true : false, true);
                                 else if(e.is('img'))
                                     e.src = data.item[key];
                                 else
                                     e.val(data.item[key]);
                             }
                             //modal                         
-                            $('#modal_model_restaurant_items').modal('show');
+                            $('#modal_model_restaurant_awards').modal('show');
                         }
                         else{
                             $('#modal_model_update').modal('hide');
@@ -178,7 +178,7 @@ var TableItemsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/items', 
+                    url: '/admin/restaurants/awards', 
                     data: {action:-1,id:row.data('id')}, 
                     success: function(data) {
                         if(data.success) 
@@ -201,7 +201,7 @@ var TableItemsDatatablesManaged = function () {
 			$('#modal_model_update').modal('hide');	   	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to delete the item!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to delete the award!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
@@ -224,8 +224,8 @@ var TableItemsDatatablesManaged = function () {
             }
         });
         //function load form to upload image
-        $('#btn_restaurant_item_upload_image').on('click', function(ev) {
-            FormImageUpload('restaurants.items','#modal_model_restaurant_items','#form_model_restaurant_items [name="image_id"]');       
+        $('#btn_restaurant_award_upload_image').on('click', function(ev) {
+            FormImageUpload('restaurants.awards','#modal_model_restaurant_awards','#form_model_restaurant_awards [name="image_url"]');       
         }); 
     }
     return {
@@ -237,17 +237,17 @@ var TableItemsDatatablesManaged = function () {
             initTable();        
         },
         update_items: function (items) {
-            update_items(items);        
+            update_awards(items);        
         }
     };
 }();
 //*****************************************************************************************
-var FormItemsValidation = function () {
+var FormAwardsValidation = function () {
     // advance validation
     var handleValidation = function() {
         // for more info visit the official plugin documentation: 
         // http://docs.jquery.com/Plugins/Validation
-            var form = $('#form_model_restaurant_items');
+            var form = $('#form_model_restaurant_awards');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
             //IMPORTANT: update CKEDITOR textarea with actual content before submit
@@ -324,6 +324,6 @@ var FormItemsValidation = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    TableItemsDatatablesManaged.init();
-    FormItemsValidation.init();
+    TableAwardsDatatablesManaged.init();
+    FormAwardsValidation.init();
 });

@@ -1,13 +1,13 @@
-<!-- BEGIN ADD/EDIT ITEMS MODAL-->
-<div id="modal_model_restaurant_items" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+<!-- BEGIN ADD/EDIT AWARDS MODAL-->
+<div id="modal_model_restaurant_awards" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width:500px !important;">
         <div class="modal-content portlet">
             <div class="modal-header alert-block bg-grey-salsa">
-                <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Item</center></h4>
+                <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Award</center></h4>
             </div>
             <div class="modal-body">
                 <!-- BEGIN FORM-->
-                <form method="post" id="form_model_restaurant_items" class="form-horizontal">
+                <form method="post" id="form_model_restaurant_awards" class="form-horizontal">
                     <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                     <input type="hidden" name="restaurants_id" value="" />
                     <input type="hidden" name="id" value="" />
@@ -75,9 +75,9 @@
                                 </label>
                                 <div class="col-md-8 show-error" >
                                     <center>
-                                        <input type="hidden" name="image_id"/>
-                                        <button type="button" id="btn_restaurant_item_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
-                                        <img name="image_id" alt="- No image -" src="" width="200px" height="200px" />
+                                        <input type="hidden" name="url"/>
+                                        <button type="button" id="btn_restaurant_award_upload_image" class="btn btn-block sbold dark btn-outline" >Upload New Image</button>
+                                        <img name="url" alt="- No image -" src="" width="200px" height="200px" />
                                     </center>
                                 </div>
                             </div>
@@ -86,8 +86,8 @@
                     <div class="form-actions">
                         <div class="row">
                             <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_restaurant_items').trigger('reset')">Cancel</button>
-                                <button type="button" id="submit_model_restaurant_items" class="btn sbold grey-salsa">Save</button>
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_restaurant_awards').trigger('reset')">Cancel</button>
+                                <button type="button" id="submit_model_restaurant_awards" class="btn sbold grey-salsa">Save</button>
                             </div>
                         </div>
                     </div>
@@ -97,4 +97,4 @@
         </div>
     </div>
 </div>
-<!-- END ADD/EDIT ITEMS MODAL-->
+<!-- END ADD/EDIT AWARDS MODAL-->

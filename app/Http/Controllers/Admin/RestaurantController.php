@@ -233,6 +233,116 @@ class RestaurantController extends Controller{
             {
                 $item = DB::table('restaurant_items')
                                 ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                                ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                                ->where('restaurant_items.id',$input['id'])
+                                ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                                ->first();
+                if($item)
+                {
+                    $item->image_id = Image::view_image($item->image_id);
+                    return ['success'=>true,'item'=>$item];
+                }
+                return ['success'=>false,'msg'=>'There is an error getting the item.<br>Item not longer in the system.'];
+            }
+            //remove
+            else if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                if(!empty($input['id']))
+                {
+                    $item = RestaurantItems::find($input['id']);
+                    if($item)
+                    {
+                        RestaurantItems::where('restaurants_id',$item->restaurants_id)->where('restaurant_menu_id',$item->restaurant_menu_id)
+                                            ->where('order','>',$item->order)->decrement('order');
+                        $item->delete_image();
+                        $item->delete();
+                    }
+                    $items = DB::table('restaurant_items')
+                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                        ->where('restaurant_items.restaurants_id',$item->restaurants_id)
+                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                        ->get();
+                    return ['success'=>true,'items'=>$items,'msg'=>'Item removed successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the item.<br>You must select a valid item.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && !empty($input['restaurants_id']) && $input['action']==1)
+            {
+                if(!empty($input['id']))
+                {
+                    $item = RestaurantItems::find($input['id']);
+                    if(!$item)
+                        return ['success'=>false,'msg'=>'There was an error updating the item.<br>The item is not longer in the system.'];
+                    //order
+                    RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
+                                            ->where('order','>=',$input['order'])->where('id','!=',$input['id'])->increment('order');
+                }
+                else
+                {
+                    $item = new RestaurantItems;
+                    $item->restaurants_id = $input['restaurants_id'];
+                    //order
+                    RestaurantItems::where('restaurants_id',$input['restaurants_id'])->where('restaurant_menu_id',$input['restaurant_menu_id'])
+                                            ->where('order','>=',$input['order'])->increment('order');
+                }
+                $item->name = strip_tags(trim($input['name']));
+                $item->notes = (!empty($input['notes']))? strip_tags(trim($input['notes'])) : null;
+                $item->description = (!empty($input['description']))? strip_tags(trim($input['description'])) : null;
+                $item->price = $input['price'];
+                $item->enabled = (!empty($input['enabled']))? 1 : 0;
+                $item->restaurant_menu_id = $input['restaurant_menu_id'];
+                //image
+                if(!empty($input['image_id']))
+                {
+                    if(preg_match('/media\/preview/',$input['image_id'])) 
+                    {
+                        $item->delete_image();
+                        $item->set_image($input['image_id']);
+                    }
+                }
+                else
+                    $item->delete_image();
+                //order
+                $item->order = $input['order'];
+                $item->save();
+                $items = DB::table('restaurant_items')
+                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                        ->where('restaurant_items.restaurants_id',$input['restaurants_id'])
+                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                        ->get();
+                foreach ($items as $index=>$i)
+                {
+                    $i->image_id = Image::view_image($i->image_id);
+                    $i->order = $index+1;
+                    RestaurantItems::where('id',$i->id)->update(['order'=>$i->order]);
+                }
+                //return
+                return ['success'=>true,'items'=>$items];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error ShowTickets Index: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Get, Edit awards for restaurants
+     *
+     * @return view
+     */
+    public function awards()
+    {
+        try {  
+            //init
+            $input = Input::all(); 
+            //get
+            if(isset($input) && isset($input['action']) && $input['action']==0)
+            {
+                $award = DB::table('restaurant_awards')
                                 ->leftJoin('images', 'images.id', '=' ,'restaurant_items.image_id')
                                 ->select('restaurant_items.*', 'restaurant_menu.name AS menu', 'images.url')
                                 ->where('restaurant_items.id',$input['id'])
