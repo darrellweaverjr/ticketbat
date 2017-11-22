@@ -5,15 +5,15 @@ var TableItemsDatatablesManaged = function () {
         $.each(items,function(k, v) {
             //default style
             if(v.disabled==1)
-                v.disabled = '<span class="label label-sm sbold label-success"> Yes </span>';
+                v.disabled = '<span class="label label-sm sbold label-danger"> Yes </span>';
             else
-                v.disabled = '<span class="label label-sm sbold label-danger"> No </span>';
+                v.disabled = '<span class="label label-sm sbold label-success"> No </span>';
             //image
-            if(v.url)
-                v.url = '<img src="'+v.url+'"/>';
+            if(v.image_id)
+                v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
-                v.url = '-No image-';
-            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.url+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
+                v.image_id = '-No image-';
+            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.image_id+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
         });   
     }
     
