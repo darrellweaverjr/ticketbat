@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Discount class
@@ -59,6 +60,19 @@ class Discount extends Model
     public function user_discounts()
     {
         return $this->belongsToMany('App\Http\Models\User','user_discounts','discount_id','user_id');
+    }
+    /**
+     * The discount by code.
+     */
+    public static function get_coupon($code)
+    {
+        return DB::table('discounts')
+                            ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
+                            ->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
+                            ->leftJoin('discount_show_times', 'discount_show_times.discount_id', '=' ,'discounts.id')
+                            ->select(DB::raw('discounts.id, discounts.code, discounts.description, discounts.start_num, discounts.coupon_type,
+                                              discounts.discount_type, discounts.discount_scope, discounts.end_num, GROUP_CONCAT(discount_show_times.show_time_id) AS showtimes'))
+                            ->where('discounts.code',$code)->groupBy('discounts.id')->first();
     }
     /**
      * The user_discounts that belong to the discount.
