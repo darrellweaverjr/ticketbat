@@ -137,6 +137,9 @@ class VenueController extends Controller{
                     $ads_types = Util::getEnumValues('venue_ads','type');
                     $ticket_types = Util::getEnumValues('tickets','ticket_type');
                 }
+                //img format
+                foreach ($venues as $v)
+                    $v->image_url = Image::view_image($v->image_url);
                 //return view
                 return view('admin.venues.index',compact('venues','restrictions','ticket_types','banner_types','image_types','video_types','ads_types','onlyerrors'));
             }

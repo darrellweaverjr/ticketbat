@@ -238,6 +238,9 @@ class ShowController extends Controller{
                         unset($ticket_types[$tt->ticket_type]);
                     $packages = Package::all();
                 }
+                //img format
+                foreach ($shows as $s)
+                    $s->image_url = Image::view_image($s->image_url);
                 //return view
                 return view('admin.shows.index',compact('shows','categories','venues','stages','restrictions','ticket_types','ticket_types_classes','image_types','banner_types','video_types','packages','venue','showtime','status','onlyerrors'));
             }
