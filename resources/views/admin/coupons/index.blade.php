@@ -135,6 +135,9 @@
                                     <li class="">
                                         <a href="#tab_model_update_scope" data-toggle="tab" aria-expanded="false">Scope</a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_showtimes" data-toggle="tab" aria-expanded="false">Showtimes</a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_model_update_general" style="padding:0 20px">
@@ -285,6 +288,50 @@
                                                                 <td>{{$t->ticket_type}}</td>
                                                                 <td>{{$t->title}}</td>
                                                                 <td><center><button type="button" class="btn sbold bg-grey-salsa" data-ticket="{{$t->id}}"><i class="fa fa-edit"></i></button></center></td>
+                                                            </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_showtimes" style="padding:0 40px">
+                                        <div class="row">
+                                            <div class="alert alert-info text-center">
+                                                List of all show times in the next 90 days.<br>
+                                                Check only the dates you wish to apply the coupon to. Unselect all to apply all the dates.
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="show-error portlet-body" style="padding:0 15px;max-height:450px;overflow-y: auto;">
+                                                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_showtime">
+                                                        <thead>
+                                                            <tr>
+                                                                <th width="2%"></th>
+                                                                <th width="30%">Date</th>
+                                                                <th width="15%">Time</th>
+                                                                <th width="30%">Alternative</th>
+                                                                <th width="23%">Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($showtimes as $index=>$st)
+                                                            <tr @if(!$st->is_active) class="danger" @endif>
+                                                                <td>
+                                                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                                        <input type="checkbox" name="showtimes[]" class="stcheckboxes" value="{{$st->id}}" @if($st->enable) checked="true" @endif />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td>{{date('m/d/Y - l',strtotime($st->show_time))}}</td>
+                                                                <td>{{date('h:i A',strtotime($st->show_time))}}</td>
+                                                                <td>{{$st->time_alternative}}</td>
+                                                                <td><center> <span class="label label-sm sbold
+                                                                    @if($st->is_active) label-success"> Active
+                                                                    @else label-danger"> Inactive
+                                                                    @endif
+                                                                    </center></span>
+                                                                </td>
                                                             </tr>
                                                             @endforeach
                                                         </tbody>

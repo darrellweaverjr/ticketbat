@@ -44,6 +44,7 @@ class DiscountController extends Controller{
                 $coupon_types = [];
                 $tickets = [];
                 $discounts = [];
+                $showtimes = [];
                 //if user has permission to view
                 if(in_array('View',Auth::user()->user_type->getACLs()['COUPONS']['permission_types']))
                 {
@@ -97,13 +98,22 @@ class DiscountController extends Controller{
                                 ->orderBy('tickets.ticket_type','ASC')
                                 ->get();
                     }
+                    $showtimes = DB::table('show_times')
+                                ->leftJoin('discount_show_times', 'show_times.id', '=', 'discount_show_times.show_time_id')
+                                ->select(DB::raw('show_times.id, show_times.show_time, show_times.time_alternative, show_times.is_active,
+                                                  IF(discount_show_times.discount_id,1,0) AS enable'))
+                                ->whereDate('show_times.show_time','<=',date('Y-m-d', strtotime('+90 days')))
+                                ->whereDate('show_times.show_time','>=',date('Y-m-d', strtotime('now')))
+                                ->groupBy('show_times.id')
+                                ->orderBy('show_times.show_time','DESC')
+                                ->get();
                     //enum
                     $discount_types = Util::getEnumValues('discounts','discount_type');
                     $discount_scopes = Util::getEnumValues('discounts','discount_scope');
                     $coupon_types = Util::getEnumValues('discounts','coupon_type');
                 }
                 //return view
-                return view('admin.coupons.index',compact('discounts','discount_types','discount_scopes','coupon_types','tickets'));
+                return view('admin.coupons.index',compact('discounts','discount_types','discount_scopes','coupon_types','tickets','showtimes'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Discount Index: '.$ex->getMessage());
@@ -200,6 +210,11 @@ class DiscountController extends Controller{
                 }    
                 else
                     $discount->discount_tickets()->detach();
+                //update intermediate table with showtimes
+                if(isset($input['showtimes']) && $input['showtimes'] && count($input['showtimes']))
+                    $discount->discount_showtimes()->sync($input['showtimes']);
+                else
+                    $discount->discount_showtimes()->detach();
                 //return
                 return ['success'=>true,'msg'=>'Discount saved successfully!'];
             }
@@ -224,6 +239,7 @@ class DiscountController extends Controller{
                 $discount = Discount::find($id);
                 if($discount)
                 {
+                    $discount->discount_showtimes()->detach();
                     $discount->discount_tickets()->detach();
                     $discount->discount_shows()->detach();
                     $discount->user_discounts()->detach();
