@@ -308,10 +308,11 @@
                                                         <thead>
                                                             <tr>
                                                                 <th width="2%"></th>
-                                                                <th width="30%">Date</th>
-                                                                <th width="15%">Time</th>
-                                                                <th width="30%">Alternative</th>
-                                                                <th width="23%">Status</th>
+                                                                <th width="17%">Date</th>
+                                                                <th width="10%">Time</th>
+                                                                <th width="48%">Event</th>
+                                                                <th width="15%">Alternative</th>
+                                                                <th width="8%">Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -323,8 +324,9 @@
                                                                         <span></span>
                                                                     </label>
                                                                 </td>
-                                                                <td>{{date('m/d/Y - l',strtotime($st->show_time))}}</td>
+                                                                <td>{{date('m/d/Y - D',strtotime($st->show_time))}}</td>
                                                                 <td>{{date('h:i A',strtotime($st->show_time))}}</td>
+                                                                <td>{{$st->show_name}}</td>
                                                                 <td>{{$st->time_alternative}}</td>
                                                                 <td><center> <span class="label label-sm sbold
                                                                     @if($st->is_active) label-success"> Active
@@ -360,7 +362,7 @@
     <!-- END UPDATE MODAL-->
     <!-- BEGIN EDIT MODAL-->
     <div id="modal_model_edit" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:380px !important;">
+        <div class="modal-dialog" style="width:400px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Discount for Ticket Type</center></h4>

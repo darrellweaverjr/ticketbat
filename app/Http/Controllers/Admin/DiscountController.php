@@ -99,13 +99,14 @@ class DiscountController extends Controller{
                                 ->get();
                     }
                     $showtimes = DB::table('show_times')
+                                ->join('shows', 'shows.id', '=', 'show_times.show_id')
                                 ->leftJoin('discount_show_times', 'show_times.id', '=', 'discount_show_times.show_time_id')
-                                ->select(DB::raw('show_times.id, show_times.show_time, show_times.time_alternative, show_times.is_active,
+                                ->select(DB::raw('show_times.id, shows.name AS show_name, show_times.show_time, show_times.time_alternative, show_times.is_active,
                                                   IF(discount_show_times.discount_id,1,0) AS enable'))
                                 ->whereDate('show_times.show_time','<=',date('Y-m-d', strtotime('+90 days')))
                                 ->whereDate('show_times.show_time','>=',date('Y-m-d', strtotime('now')))
                                 ->groupBy('show_times.id')
-                                ->orderBy('show_times.show_time','DESC')
+                                ->orderBy('show_times.show_time','ASC')
                                 ->get();
                     //enum
                     $discount_types = Util::getEnumValues('discounts','discount_type');

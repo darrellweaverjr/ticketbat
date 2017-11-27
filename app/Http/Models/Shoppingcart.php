@@ -355,7 +355,7 @@ class Shoppingcart extends Model
                                           ->orWhereDate('discounts.effective_end_date','>=',$current);
                                 });
                         if(!empty($coupon->showtimes))
-                            $items->whereIn('shoppingcart.item_id', $coupon->showtimes);
+                            $items->whereIn('shoppingcart.item_id', explode(',', $coupon->showtimes));
                         if($items->count())
                             Shoppingcart::where('session_id','=',$session_id)->update(['coupon'=>$coup]);
                         return ['success'=>true];
@@ -395,7 +395,7 @@ class Shoppingcart extends Model
                                           ->orWhereDate('discounts.effective_end_date','>=',$current);
                                 });
                         if(!empty($coupon->showtimes))
-                            $items->whereIn('shoppingcart.item_id', $coupon->showtimes);
+                            $items->whereIn('shoppingcart.item_id', explode(',', $coupon->showtimes));
                         if(!count($items->get()))
                             return ['success'=>false, 'msg'=>'That coupon is not valid for your items!'];
                         //continue loading coupon
