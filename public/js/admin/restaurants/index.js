@@ -100,6 +100,7 @@ var TableDatatablesManaged = function () {
                 $('#btn_model_remove').prop("disabled",true);
             }
             $('#btn_model_add').prop("disabled",false);
+            $('#btn_model_menu').prop("disabled",false);
         } 
         //function full reset form
         var fullReset = function(){

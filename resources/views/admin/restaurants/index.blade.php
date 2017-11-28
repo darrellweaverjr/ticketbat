@@ -45,6 +45,11 @@
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['RESTAURANTS']['permission_types']))
+                            <button id="btn_model_menu" class="btn sbold bg-purple" disabled="true">Menu
+                                <i class="fa fa-spoon"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -233,6 +238,9 @@
         </div>
     </div>
     <!-- END UPDATE MODAL-->
+    <!-- BEGIN MENU -->
+    @include('admin.restaurants.menu')
+    <!-- END MENU -->
     <!-- BEGIN ITEMS -->
     @include('admin.restaurants.items')
     <!-- END ITEMS -->
@@ -242,6 +250,7 @@
 @endsection
 
 @section('scripts')
+<script src="/js/admin/restaurants/menu.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/awards.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/index.js" type="text/javascript"></script>

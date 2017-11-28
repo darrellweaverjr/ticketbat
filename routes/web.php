@@ -100,6 +100,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('consignments/save', 'ConsignmentController@save')->middleware('permissions:CONSIGNMENTS');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index')->middleware('permissions:CONSIGNMENTS');
     //restaurants
+    Route::match(['get','post'], 'restaurants/menu', 'RestaurantController@menu')->middleware('permissions:RESTAURANTS');
     Route::match(['get','post'], 'restaurants/items', 'RestaurantController@items')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/save', 'RestaurantController@save')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/remove', 'RestaurantController@remove')->middleware('permissions:RESTAURANTS');

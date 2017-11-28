@@ -351,7 +351,10 @@ class Purchase extends Model
                         if($change=='CHARGEBACK')
                         {
                             $subject = 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id;
-                            $top_copy = '';
+                            $top_copy  = '<b style="color:red">Credit Card Dispute<br><br>';
+                            $top_copy .= 'Please verify that this guest picked up their tickets and attended the show by providing the signed header card and Seat Retrieval Report showing they entered the showroom.<br><br>';
+                            $top_copy .= 'If the guest was a no show, DO NOT RETURN the tickets.  The Settlement Team will make the adjustment.<br><br>';
+                            $top_copy .= 'Please reply to this email.</b><br><br>';
                         }
                         else
                         {
