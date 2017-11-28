@@ -348,6 +348,16 @@ class Purchase extends Model
                     $p = $receipts[0]['purchase'];
                     if($p->s_individual_emails == 1 && !empty($p->emails))
                     {
+                        if($change=='CHARGEBACK')
+                        {
+                            $subject = 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id;
+                            $top_copy = '';
+                        }
+                        else
+                        {
+                            $subject.=' (BO Receipt)';
+                            $top_copy = $top;
+                        }
                         $subject = ($change=='CHARGEBACK')? 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id : $subject.' (BO Receipt)';
                         $email = new EmailSG(null, $p->emails , $subject);
                         $email->category('Receipts');
@@ -361,7 +371,7 @@ class Purchase extends Model
                         else
                         {
                             //info to send by email content
-                            $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>$banners,'top'=>$top]);
+                            $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>$banners,'top'=>$top_copy]);
                             $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
                         }
                         $email->send();
