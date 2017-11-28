@@ -55,15 +55,16 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof AuthenticationException) {
+            return $this->unauthenticated($request, $exception);
+        }
+        
         if(env('ERROR_SEND_INFO'))
         {
-            if (!($exception instanceof AuthenticationException))
-            {
-                Log::info('View with the error showed to the user. Redirect to home page if it is production');
-                //if(preg_match('/\/production/',url()->current()))
-                    //return redirect()->route('index');
-                return response()->view('errors.default', [], 500);
-            }
+            Log::info('View with the error showed to the user. Redirect to home page if it is production');
+            if(preg_match('/\/production/',url()->current()))
+                return redirect()->route('index');
+            return response()->view('errors.default', [], 500);
         }        
         return parent::render($request, $exception);
     }
@@ -81,6 +82,7 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
         return redirect()->guest('login');
+        //return redirect()->route('login');
     }
     /**
      * Send email and Log an exception only.
