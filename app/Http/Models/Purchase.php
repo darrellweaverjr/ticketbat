@@ -299,7 +299,7 @@ class Purchase extends Model
                         $totals['retail_price']+=$receipt['purchase']->retail_price;
                         $totals['discount']+=$receipt['purchase']->savings;
                         //show on top if change date
-                        if($change=='CANCELED')
+                        if($change=='CANCELED' || $change=='CHARGEBACK')
                             $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
                         else if($change=='ACTIVATED')
                             $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVED</b></h1>' ;
@@ -348,7 +348,8 @@ class Purchase extends Model
                     $p = $receipts[0]['purchase'];
                     if($p->s_individual_emails == 1 && !empty($p->emails))
                     {
-                        $email = new EmailSG(null, $p->emails , $subject.' (BO Receipt)');
+                        $subject = ($change=='CHARGEBACK')? 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id : $subject.' (BO Receipt)';
+                        $email = new EmailSG(null, $p->emails , $subject);
                         $email->category('Receipts');
                         $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
                         //check type of email to send
