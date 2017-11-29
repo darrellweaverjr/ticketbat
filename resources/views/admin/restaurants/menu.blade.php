@@ -70,7 +70,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <input type="text" class="form-control" name="name" placeholder="Item name">
+                                    <input type="text" class="form-control" name="name" placeholder="Menu name">
                                 </div>
                                 <label class="control-label col-md-3">Notes
                                 </label>
@@ -81,7 +81,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <select class="form-control" name="order">
+                                    <select class="form-control" name="parent_id">
                                     </select>
                                 </div>
                             </div>
