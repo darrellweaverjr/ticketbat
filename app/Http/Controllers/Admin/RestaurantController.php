@@ -107,7 +107,7 @@ class RestaurantController extends Controller{
                                     ->select('restaurants.*', 'venues.name AS venue')
                                     ->orderBy('venues.name')->orderBy('restaurants.name')
                                     ->get();
-                    $menu = RestaurantMenu::all();
+                    $menu = $this->menus_formated();
                 }
                 //return view
                 return view('admin.restaurants.index',compact('restaurants','venues','menu'));
@@ -224,34 +224,33 @@ class RestaurantController extends Controller{
      *
      * @return view
      */
+    function menus_formated()
+    {
+        $menus = RestaurantMenu::all();
+        $menu = [];
+        foreach($menus as $m)
+        {
+            if($m->parent_id == 0)
+            {
+                $m->name = '-&emsp;'.$m->name;
+                $menu[] = $m;
+                foreach ($m->children()->get() as $c)
+                {
+                    $c->name = '-&emsp;-&emsp;'.$c->name;
+                    $menu[] = $c;
+                    foreach ($c->children()->get() as $n)
+                    {
+                        $n->name = '-&emsp;-&emsp;-&emsp;'.$n->name;
+                        $menu[] = $n;
+                    }  
+                }
+            }
+        } 
+        return $menu;
+    }
     public function menu()
     {
         try {  
-            //function format menu
-            function menus_formated()
-            {
-                $menus = RestaurantMenu::all();
-                $menu = [];
-                foreach($menus as $m)
-                {
-                    if($m->parent_id == 0)
-                    {
-                        $m->name = '-'.$m->name;
-                        $menu[] = $m;
-                        foreach ($m->children()->get() as $c)
-                        {
-                            $c->name = '&nbsp;&nbsp;-&nbsp;&nbsp;'.$c->name;
-                            $menu[] = $c;
-                            foreach ($c->children()->get() as $n)
-                            {
-                                $n->name = '&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;'.$n->name;
-                                $menu[] = $n;
-                            }  
-                        }
-                    }
-                } 
-                return $menu;
-            }
             //init
             $input = Input::all(); 
             //get
@@ -282,7 +281,7 @@ class RestaurantController extends Controller{
                         }
                         remove_children($menu);
                     }
-                    $menu = menus_formated();   
+                    $menu = $this->menus_formated();   
                     return ['success'=>true,'menu'=>$menu,'msg'=>'Menus and submenus removed successfully!'];
                 }
                 return ['success'=>false,'msg'=>'There was an error deleting the menu and submenus.<br>You must select a valid item.'];
@@ -306,12 +305,12 @@ class RestaurantController extends Controller{
                 $menu->parent_id = $input['parent_id'];
                 $menu->save();
                 //return
-                $menu = menus_formated();   
+                $menu = $this->menus_formated();   
                 return ['success'=>true,'menu'=>$menu,'msg'=>'Menu saved successfully!'];
             }
             else //get all
             {
-                $menu = menus_formated();   
+                $menu = $this->menus_formated();   
                 return ['success'=>true,'menu'=>$menu];
             }
         } catch (Exception $ex) {
