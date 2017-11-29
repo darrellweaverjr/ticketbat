@@ -21,7 +21,7 @@ var TableItemsDatatablesManaged = function () {
         var positions = $('#tb_restaurant_items >tr').length;
         if(add) positions++;
         $('#form_model_restaurant_items select[name="order"]').empty();
-        if(positions>1)
+        if(positions>=1)
         {
             while(positions > 0)
             {
