@@ -111,6 +111,9 @@
                                         <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_reservations" data-toggle="tab" aria-expanded="false"> Reservations </a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_items" data-toggle="tab" aria-expanded="false"> Items </a>
                                     </li>
                                     <li class="">
@@ -159,6 +162,31 @@
                                             <div class="show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_reservations">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_items_add" disabled="true" class="btn sbold bg-green"> Add
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date<br>Time</th>
+                                                        <th>Guests</th>
+                                                        <th>Name</th>
+                                                        <th>Contact</th>
+                                                        <th>Occassion</th>
+                                                        <th>Special<br>Request</th>
+                                                        <th>Status</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_restaurant_reservations">
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_items">
