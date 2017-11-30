@@ -12,33 +12,31 @@
 @section('content')
 
 <div class="page-content">  
-    <div class="row fixed-panel">
         <!-- BEGIN SHOWS GRID-->
         @foreach($venues as $index=>$vv)
-        <h1>{{$vv['city']}}</h1>
-        <div class="portfolio-content body_grid color-panel text-center" style="padding:50px;">        
+        <div class="container">
+            <h1>{{$vv['city']}}</h1>
+
             <div class="cbp text-center myVenues">
                 @foreach($vv['venues'] as $v)
                 <div class="cbp-item show_section filtered" data-id="{{$v->venue_id}}" data-search="{{$v->name}}" data-href="/production/venue/{{$v->slug}}">
                     <div class="cbp-caption">
-                        <a class="cbp-caption-defaultWrap">
-                            <img src="{{$v->url}}" alt="{{$v->name}}"> </a>
+                        <a class="cbp-caption-defaultWrap"><img src="{{$v->url}}" alt="{{$v->name}}"></a>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
                                 <div class="cbp-l-caption-body">
-                                    <span class="btn red">View Events</span>
+                                    <span class="btn green">View Events</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <p style="height:100px" class="text-center"><small>{!! str_limit($v->description, $limit = 200, $end = '...') !!}</small></p>
+                    <p style="min-height:100px" class="text-center"><small>{!! str_limit($v->description, $limit = 200, $end = '...') !!}</small></p>
                 </div>
                 @endforeach
             </div>
         </div>    
         @endforeach
         <!-- END SHOWS GRID-->
-    </div>
 </div>
 @endsection
 

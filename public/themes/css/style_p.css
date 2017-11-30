@@ -124,11 +124,39 @@ html, body {
 	.carousel-inner .next        { left:  25%; }
 	.carousel-inner .prev		 { left: -25%; }	
 }
-.carousel-inner {
-    padding-left:60px;
-    margin-top:50px;
+.carousel-inner img{
+    width:100%;
+}
+.cbp-l-grid-projects-title {
+    font: 700 14px/21px "Open Sans", sans-serif;
+    color: #474747;
+    margin-top: 15px!important;
+}
+.cbp-l-grid-projects-desc {
+    font: 400 12px/18px "Open Sans", sans-serif;
+    color: #888888;
+    margin-bottom: 15px!important;
+    display: block;
+}
+.btn.green:not(.btn-outline).active, .btn.green:not(.btn-outline):active, .btn.green:not(.btn-outline):hover, .open>.btn.green:not(.btn-outline).dropdown-toggle {
+    color: #FFF;
+    background-color: #2d7005!important;
+    border-color: #2d7005!important;
 }
 
+.btn.green:not(.btn-outline) {
+    color: #FFF;
+    background-color: #2d7005;
+    border-color: #2d7005;
+}
+.cbp-item-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+    background: #fff;
+}
 /* TIMER */
 #timerClock {
     font-size: 36px;

@@ -44,6 +44,7 @@
 
 <div class="page-content">       
     <!-- BEGIN SEARCH BAR-->
+    <div class="row">
     <div id="myFilter" class="row widget-row">
         <div class="col-md-3">
             <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by show's name">                
@@ -122,6 +123,7 @@
             </div>
         </div>
     </div>
+    </div>
     <!-- END SEARCH BAR-->
     <!-- BEGIN SHOWS GRID-->
     <div class="row">    
@@ -144,7 +146,7 @@
                         </div>
                     </div>  
                     @if($s->price=='0.00' || ($s->starting_at && $s->starting_at=='0.00'))
-                    <div class="btn btn-warning uppercase show_section_btnbuy"><h4 style="color:red;margin-top:5px"><b>Free</b></h4></div>
+                    <div class="btn btn-warning uppercase show_section_btnbuy"><span style="color:#000;margin-top:5px;"><b>Free</b></span></div>
                     @elseif($s->starting_at)
                     <div class="btn btn-warning uppercase show_section_btnbuy">
                         <h4 style="color:red;margin-top:5px;margin-bottom:-20px"><b>Clearance</b></h4><br><b style="text-decoration:line-through;color:#d43f3a">${{$s->price}}</b><br><h4 style="margin-top:-2px;color:green;font-weight:bold">${{$s->starting_at}}</h4>
