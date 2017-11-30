@@ -44,8 +44,11 @@
     Default style for plugin. Please change them carefully!
     --------------------------------------------------------------- */
 .cbp-item {
-  display: inline-block;
-  margin: 0 10px 20px 0; }
+  /*display: inline-block;*/
+  margin: 10px 1%!important;
+  float: left;
+  width: 23%!important;
+}
 
 .cbp {
   position: relative;
@@ -3648,3 +3651,26 @@
 
 .cbp-social-pinterest path {
   fill: #cb2027; }
+
+
+@media screen and (max-width: 769px) {
+    .cbp-item {
+      /*display: inline-block;*/
+      margin: 10px 1%!important;
+      float: left;
+      width: 46%!important;
+    }
+    .home-page-panel {
+      width: 100%;
+      margin: auto;
+      padding: 0 20px;
+  }
+}
+@media screen and (max-width: 500px) {
+    .cbp-item {
+      /*display: inline-block;*/
+      margin: 10px 1%!important;
+      float: left;
+      width: 100%!important;
+    }
+}

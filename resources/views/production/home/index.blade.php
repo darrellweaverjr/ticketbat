@@ -45,89 +45,94 @@
 <div class="page-content">       
     <!-- BEGIN SEARCH BAR-->
     <div class="row">
-    <div id="myFilter" class="row widget-row">
-        <div class="col-md-3">
-            <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by show's name">                
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-green icon-magnifier"></i>
-                    <div class="widget-thumb-body">
-                        <span class="widget-thumb-subtitle">Search</span>
-                        <span class="widget-thumb-body-stat">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="filter_name" placeholder="Find an event">
+        <div class="home-page-panel">
+            <div id="myFilter" class="row widget-row">
+                <div class="col-md-3">
+                    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by show's name">                
+                        <div class="widget-thumb-wrap">
+                            <i class="widget-thumb-icon bg-green icon-magnifier"></i>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-subtitle">Search</span>
+                                <span class="widget-thumb-body-stat">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="filter_name" placeholder="Find an event">
+                                    </div>
+                                </span>
                             </div>
-                        </span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by location">
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-red icon-directions"></i>
-                    <div class="widget-thumb-body">
-                        <span class="widget-thumb-subtitle">City</span>
-                        <span class="widget-thumb-body-stat">
-                            <select class="form-control" name="filter_city">
-                                <option selected value="">All</option>
-                                @foreach($cities as $index=>$c)
-                                <option data-country="{{$c->country}}" data-state="{{$c->state}}" value="{{$c->city}}">{{$c->city}}</option>
-                                @endforeach
-                             </select>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by category">
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-purple icon-tag"></i>
-                    <div class="widget-thumb-body">
-                        <span class="widget-thumb-subtitle">Category</span>
-                        <span class="widget-thumb-body-stat">
-                            <select class="form-control" name="filter_category">
-                                <option selected value="">All</option>
-                                @foreach($categories as $index=>$c)
-                                    @if($c->id_parent == 0)
-                                        <option value="{{$c->id}}">{{$c->name}}</option>
-                                        @foreach ($c->children()->get() as $children)
-                                            <option value="{{$children->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
-                                            @foreach ($children->children()->get() as $niece)
-                                                <option value="{{$niece->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
-                                            @endforeach
+                <div class="col-md-3">
+                    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by location">
+                        <div class="widget-thumb-wrap">
+                            <i class="widget-thumb-icon bg-red icon-directions"></i>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-subtitle">City</span>
+                                <span class="widget-thumb-body-stat">
+                                    <select class="form-control" name="filter_city">
+                                        <option selected value="">All</option>
+                                        @foreach($cities as $index=>$c)
+                                        <option data-country="{{$c->country}}" data-state="{{$c->state}}" value="{{$c->city}}">{{$c->city}}</option>
                                         @endforeach
-                                    @endif
-                                @endforeach
-                            </select>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by date range">
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-blue icon-calendar"></i>
-                    <div class="widget-thumb-body">
-                        <span class="widget-thumb-subtitle">Date</span>
-                        <span class="widget-thumb-body-stat">
-                            <div id="filter_date" class="pull-left tooltips btn btn-fit-height" style="margin-top:-7px!important;font-size:13px">
-                                <span style="margin-left:-13px;font-weight:bold!important;" class="thin"></span>
-                                <input type="hidden" name="filter_start_date">
-                                <input type="hidden" name="filter_end_date">
+                                     </select>
+                                </span>
                             </div>
-                        </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by category">
+                        <div class="widget-thumb-wrap">
+                            <i class="widget-thumb-icon bg-purple icon-tag"></i>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-subtitle">Category</span>
+                                <span class="widget-thumb-body-stat">
+                                    <select class="form-control" name="filter_category">
+                                        <option selected value="">All</option>
+                                        @foreach($categories as $index=>$c)
+                                            @if($c->id_parent == 0)
+                                                <option value="{{$c->id}}">{{$c->name}}</option>
+                                                @foreach ($c->children()->get() as $children)
+                                                    <option value="{{$children->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
+                                                    @foreach ($children->children()->get() as $niece)
+                                                        <option value="{{$niece->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
+                                                    @endforeach
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by date range">
+                        <div class="widget-thumb-wrap">
+                            <i class="widget-thumb-icon bg-blue icon-calendar"></i>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-subtitle">Date</span>
+                                <span class="widget-thumb-body-stat">
+                                    <div id="filter_date" class="pull-left tooltips btn btn-fit-height" style="margin-top:-7px!important;font-size:13px">
+                                        <span style="margin-left:-13px;font-weight:bold!important;" class="thin"></span>
+                                        <input type="hidden" name="filter_start_date">
+                                        <input type="hidden" name="filter_end_date">
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <!-- END SEARCH BAR-->
     <!-- BEGIN SHOWS GRID-->
-    <div class="row">    
-        <div class="portfolio-content body_grid color-panel text-center "> 
+    <div class="row">
+
+        <div class="portfolio-content body_grid color-panel text-center ">
+        <div class="home-page-panel">
+ 
             <div id="myShows" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
                 @foreach($shows as $index=>$s)
                 <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/production/event/{{$s->slug}}">
@@ -159,6 +164,7 @@
                 </div>
                 @endforeach
             </div>
+        </div>
         </div>
     </div>    
     <!-- END SHOWS GRID-->

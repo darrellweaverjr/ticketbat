@@ -93,6 +93,10 @@ html, body {
     max-width:1200px!important;
     margin: 0 auto;
 }
+.home-page-panel{
+    width: 1160px;
+    margin: auto;
+}
 .color-panel {
     background: whitesmoke;  
 }
@@ -181,6 +185,14 @@ html, body {
     font-weight: 300;
     display: none;
 }
+@media screen and (max-width: 1130px) {
+    .home-page-panel{
+        width: 100%;
+        margin: auto;
+    }
+
+}
+
 @media screen and (max-width: 480px) {
     #timerClock {
         font-size: 12px;
