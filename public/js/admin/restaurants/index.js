@@ -150,6 +150,8 @@ var TableDatatablesManaged = function () {
                         for(var key in data.restaurant)
                             $('#form_model_update [name="'+key+'"]').val(data.restaurant[key]);
                         $('#form_model_update select[name="venue_id"]').prop('disabled',true);
+                        //update reservations
+                        TableReservationsDatatablesManaged.update_reservations(data.restaurant.reservations);
                         //update items
                         TableItemsDatatablesManaged.update_items(data.restaurant.items);
                         //show modal
