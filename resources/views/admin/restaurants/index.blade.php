@@ -169,7 +169,7 @@
                                             <label class="label label-info sbold">Reservations from 7 days ago.</label>
                                         </div>
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_reservations_add" disabled="true" class="btn sbold bg-green"> Add
+                                            <button type="button" id="btn_model_reservations_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                             <button type="button" id="btn_model_reservations_refresh" class="btn sbold bg-info"> Refresh
@@ -275,6 +275,9 @@
     <!-- BEGIN MENU -->
     @include('admin.restaurants.menu')
     <!-- END MENU -->
+     <!-- BEGIN RESERVATIONS -->
+    @include('admin.restaurants.reservations', ['reservation_occasions' => $reservation_occasions, 'reservation_status' => $reservation_status])
+    <!-- END RESERVATIONS -->
     <!-- BEGIN ITEMS -->
     @include('admin.restaurants.items')
     <!-- END ITEMS -->

@@ -73,6 +73,15 @@ var TableReservationsDatatablesManaged = function () {
             }); 
         });
         
+        //on select btn_model_reservations_add
+        $('#btn_model_reservations_add').on('click', function(ev) {
+            $('#form_model_restaurant_reservations').trigger('reset');
+            $('#form_model_restaurant_reservations input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_restaurant_reservations input[name="restaurants_id"]:hidden').val( $('#form_model_update [name="id"]').val() );
+            $('#form_model_restaurant_reservations input[name="action"]:hidden').val( 1 );
+            $('#modal_model_restaurant_reservations').modal('show');
+        });
+        
     }
     return {
         //main function to initiate the module
@@ -88,6 +97,104 @@ var TableReservationsDatatablesManaged = function () {
     };
 }();
 //*****************************************************************************************
+var FormReservationsValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation: 
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_model_restaurant_reservations');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            //IMPORTANT: update CKEDITOR textarea with actual content before submit
+            form.on('submit', function() {
+                for(var instanceName in CKEDITOR.instances) {
+                    CKEDITOR.instances[instanceName].updateElement();
+                }
+            })
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    schedule: {
+                        date: true,
+                        required: true
+                    },
+                    people: {
+                        digits: true,
+                        range: [1, 10],
+                        required: true
+                    },
+                    first_name: {
+                        minlength: 3,
+                        maxlength: 15,
+                        required: true
+                    },
+                    last_name: {
+                        minlength: 3,
+                        maxlength: 25,
+                        required: true
+                    },
+                    phone: {
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                        required: false
+                    },
+                    email: {
+                        email: true,
+                        required: false
+                    },
+                    occasion: {
+                        required: true
+                    },
+                    special_request: {
+                        minlength: 5,
+                        maxlength: 2000,
+                        required: false
+                    },
+                    status: {
+                        required: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
 jQuery(document).ready(function() {
     TableReservationsDatatablesManaged.init();
+    FormReservationsValidation.init();
 });

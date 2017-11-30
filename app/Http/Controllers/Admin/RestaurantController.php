@@ -16,6 +16,7 @@ use App\Http\Models\RestaurantItems;
 use App\Http\Models\RestaurantReviews;
 use App\Http\Models\RestaurantSpecials;
 use App\Http\Models\Image;
+use App\Http\Models\Util;
 /**
  * Manage Bands
  *
@@ -117,8 +118,11 @@ class RestaurantController extends Controller{
                                     ->get();
                     $menu = $this->menus_formated();
                 }
+                //nomeclators
+                $reservation_occasions = Util::getEnumValues('restaurant_reservations','occasion');
+                $reservation_status = Util::getEnumValues('restaurant_reservations','status');
                 //return view
-                return view('admin.restaurants.index',compact('restaurants','venues','menu'));
+                return view('admin.restaurants.index',compact('restaurants','venues','menu','reservation_occasions','reservation_status'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Restaurants Index: '.$ex->getMessage());
