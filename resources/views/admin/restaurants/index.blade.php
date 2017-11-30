@@ -45,6 +45,11 @@
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['RESTAURANTS']['permission_types']))
+                            <button id="btn_model_menu" class="btn sbold bg-purple" disabled="true">Menu
+                                <i class="fa fa-spoon"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -106,6 +111,9 @@
                                         <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_reservations" data-toggle="tab" aria-expanded="false"> Reservations </a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_items" data-toggle="tab" aria-expanded="false"> Items </a>
                                     </li>
                                     <li class="">
@@ -154,6 +162,31 @@
                                             <div class="show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_reservations">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_items_add" disabled="true" class="btn sbold bg-green"> Add
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date<br>Time</th>
+                                                        <th>Guests</th>
+                                                        <th>Name</th>
+                                                        <th>Contact</th>
+                                                        <th>Occassion</th>
+                                                        <th>Special<br>Request</th>
+                                                        <th>Status</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_restaurant_reservations">
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_items">
@@ -233,6 +266,9 @@
         </div>
     </div>
     <!-- END UPDATE MODAL-->
+    <!-- BEGIN MENU -->
+    @include('admin.restaurants.menu')
+    <!-- END MENU -->
     <!-- BEGIN ITEMS -->
     @include('admin.restaurants.items')
     <!-- END ITEMS -->
@@ -242,6 +278,7 @@
 @endsection
 
 @section('scripts')
+<script src="/js/admin/restaurants/menu.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/awards.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/index.js" type="text/javascript"></script>

@@ -348,6 +348,19 @@ class Purchase extends Model
                     $p = $receipts[0]['purchase'];
                     if($p->s_individual_emails == 1 && !empty($p->emails))
                     {
+                        if($change=='CHARGEBACK')
+                        {
+                            $subject = 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id;
+                            $top_copy  = '<b style="color:red">Credit Card Dispute<br><br>';
+                            $top_copy .= 'Please verify that this guest picked up their tickets and attended the show by providing the signed header card and Seat Retrieval Report showing they entered the showroom.<br><br>';
+                            $top_copy .= 'If the guest was a no show, DO NOT RETURN the tickets.  The Settlement Team will make the adjustment.<br><br>';
+                            $top_copy .= 'Please reply to this email.</b><br><br>';
+                        }
+                        else
+                        {
+                            $subject.=' (BO Receipt)';
+                            $top_copy = $top;
+                        }
                         $subject = ($change=='CHARGEBACK')? 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id : $subject.' (BO Receipt)';
                         $email = new EmailSG(null, $p->emails , $subject);
                         $email->category('Receipts');
@@ -361,7 +374,7 @@ class Purchase extends Model
                         else
                         {
                             //info to send by email content
-                            $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>$banners,'top'=>$top]);
+                            $email->body('receipt',['rows'=>$rows_html,'totals'=>$totals_html,'banners'=>$banners,'top'=>$top_copy]);
                             $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
                         }
                         $email->send();

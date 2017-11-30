@@ -208,3 +208,27 @@ ALTER TABLE `restaurant_items`
 CHANGE COLUMN `description` `description` TINYTEXT NULL DEFAULT NULL ;
 
 
+CREATE TABLE `restaurant_reservations` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `schedule` DATETIME NOT NULL,
+  `people` INT(2) NOT NULL DEFAULT 1,
+  `first_name` VARCHAR(15) NOT NULL,
+  `last_name` VARCHAR(25) NOT NULL,
+  `phone` VARCHAR(10) NULL DEFAULT NULL,
+  `email` VARCHAR(50) NULL DEFAULT NULL,
+  `occasion` ENUM('Regular', 'Birthday', 'Anniversary', 'Date', 'Business', 'Celebration') NOT NULL DEFAULT 'Regular',
+  `special_request` TINYTEXT NULL DEFAULT NULL,
+  `newsletter` TINYINT(1) NOT NULL DEFAULT 0,
+  `status` ENUM('Requested', 'Checked', 'Cancelled', 'Denied') NULL DEFAULT 'Requested',
+  `restaurants_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC))
+ENGINE = InnoDB;
+
+ALTER TABLE `restaurant_reservations` 
+ADD FOREIGN KEY (`restaurants_id`)
+REFERENCES `restaurants` (`id`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+

@@ -107,7 +107,7 @@ class RestaurantController extends Controller{
                                     ->select('restaurants.*', 'venues.name AS venue')
                                     ->orderBy('venues.name')->orderBy('restaurants.name')
                                     ->get();
-                    $menu = RestaurantMenu::all();
+                    $menu = $this->menus_formated();
                 }
                 //return view
                 return view('admin.restaurants.index',compact('restaurants','venues','menu'));
@@ -216,6 +216,105 @@ class RestaurantController extends Controller{
             return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Restaurants Remove: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Get, Edit menu for restaurants
+     *
+     * @return view
+     */
+    function menus_formated()
+    {
+        $menus = RestaurantMenu::all();
+        $menu = [];
+        foreach($menus as $m)
+        {
+            if($m->parent_id == 0)
+            {
+                $m->name = '-&emsp;'.$m->name;
+                $menu[] = $m;
+                foreach ($m->children()->get() as $c)
+                {
+                    $c->name = '-&emsp;-&emsp;'.$c->name;
+                    $menu[] = $c;
+                    foreach ($c->children()->get() as $n)
+                    {
+                        $n->name = '-&emsp;-&emsp;-&emsp;'.$n->name;
+                        $menu[] = $n;
+                    }  
+                }
+            }
+        } 
+        return $menu;
+    }
+    public function menu()
+    {
+        try {  
+            //init
+            $input = Input::all(); 
+            //get
+            if(isset($input) && isset($input['action']) && $input['action']==0)
+            {
+                $menu = RestaurantMenu::find($input['id']);
+                if($menu)
+                    return ['success'=>true,'menu'=>$menu];                
+                return ['success'=>false,'msg'=>'There is an error getting the menu.<br>Item not longer in the system.'];
+            }
+            //remove
+            else if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                if(!empty($input['id']))
+                {
+                    $menu = RestaurantMenu::find($input['id']);
+                    if($menu)
+                    {
+                        function remove_children($m)
+                        {
+                            $children = $m->children();
+                            if(count($children))
+                            {
+                                foreach ($children as $c)
+                                    remove_children($m);
+                            }
+                            $m->delete();
+                        }
+                        remove_children($menu);
+                    }
+                    $menu = $this->menus_formated();   
+                    return ['success'=>true,'menu'=>$menu,'msg'=>'Menus and submenus removed successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the menu and submenus.<br>You must select a valid item.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && $input['action']==1)
+            {
+                if(!empty($input['id']))
+                {
+                    $menu = RestaurantMenu::find($input['id']);
+                    if(!$menu)
+                        return ['success'=>false,'msg'=>'There was an error updating the menu.<br>The item is not longer in the system.'];
+                }
+                else
+                {
+                    $menu = new RestaurantMenu;
+                }
+                $menu->name = strip_tags(trim($input['name']));
+                $menu->notes = (!empty($input['notes']))? strip_tags(trim($input['notes'])) : null;
+                $menu->disabled = (!empty($input['disabled']))? 1 : 0;
+                $menu->parent_id = $input['parent_id'];
+                $menu->save();
+                //return
+                $menu = $this->menus_formated();   
+                return ['success'=>true,'menu'=>$menu,'msg'=>'Menu saved successfully!'];
+            }
+            else //get all
+            {
+                $menu = $this->menus_formated();   
+                return ['success'=>true,'menu'=>$menu];
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error ShowTickets Index: '.$ex->getMessage());
         }
     }
     /**

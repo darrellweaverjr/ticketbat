@@ -1,58 +1,102 @@
-var TableItemsDatatablesManaged = function () {
-    
-    var update_items = function (items) {
-        $('#tb_restaurant_items').empty();
-        $.each(items,function(k, v) {
-            //default style
-            if(v.disabled==1)
-                v.disabled = '<span class="label label-sm sbold label-danger"> Yes </span>';
-            else
-                v.disabled = '<span class="label label-sm sbold label-success"> No </span>';
-            //image
-            if(v.image_id)
-                v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
-            else
-                v.image_id = '-No image-';
-            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.image_id+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
-        });   
-    }
-    
-    var update_items_order = function (add=0) {
-        var positions = $('#tb_restaurant_items >tr').length;
-        if(add) positions++;
-        $('#form_model_restaurant_items select[name="order"]').empty();
-        if(positions>=1)
-        {
-            while(positions > 0)
-            {
-                $('#form_model_restaurant_items select[name="order"]').prepend('<option value="'+positions+'">'+positions+'</option>');
-                positions--;
-            }
-        }
-        else
-            $('#form_model_restaurant_items select[name="order"]').append('<option value="">Last</option>');
-    }
+var TableMenuDatatablesManaged = function () {
     
     var initTable = function () {
         
-        //on select ticket_type
-        $('#btn_model_items_add').on('click', function(ev) {
-            $('#form_model_restaurant_items').trigger('reset');
-            $('#form_model_restaurant_items input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_restaurant_items input[name="restaurants_id"]:hidden').val( $('#form_model_update [name="id"]').val() );
-            $('#form_model_restaurant_items input[name="action"]:hidden').val( 1 );
-            update_items_order(1);    
-            $('#modal_model_restaurant_items').modal('show');
+        var update_menu = function (items) {
+            $('#tb_restaurant_menu').empty();
+            $('#form_model_restaurant_menu_add select[name="parent_id"]').html('<option value="0">- No parent -</option>');
+            $.each(items,function(k, v) {
+                //default style
+                if(v.disabled==1)
+                    v.disabled = '<span class="label label-sm sbold label-danger"> Yes </span>';
+                else
+                    v.disabled = '<span class="label label-sm sbold label-success"> No </span>';
+                $('#tb_restaurant_menu').append('<tr data-id="'+v.id+'"><td>'+v.name+'</td><td>'+v.notes+'</td><td>'+v.disabled+'</td><td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" disabled="true" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td></tr>');
+                $('#form_model_restaurant_menu_add select[name="parent_id"]').append('<option value="'+v.id+'">&emsp;'+v.name+'</option>');
+            });   
+        }
+        
+        //on select main option
+        $('#btn_model_menu').on('click', function(ev) {
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/restaurants/menu', 
+                //data: {action:0}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        update_menu(data.menu);
+                        //show modal
+                        $('#modal_model_restaurant_menu').modal('show');
+                    }
+                    else{					
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                },
+                error: function(){	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to load the menu's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            }); 
+        });
+        
+        //on select main option
+        $('#btn_model_menu_add').on('click', function(ev) {
+            $('#form_model_restaurant_menu_add').trigger('reset');
+            $('#form_model_restaurant_menu_add input[name="id"]:hidden').val('').trigger('change');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/restaurants/menu', 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        update_menu(data.menu);
+                        //show modal
+                        $('#modal_model_restaurant_menu_add').modal('show');
+                    }
+                    else{					
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_restaurant_menu').modal('show');
+                        });
+                    }
+                },
+                error: function(){	
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to save the menu's information!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_restaurant_menu').modal('show');
+                    });
+                }
+            }); 
         });
         
         //function submit restaurant_items
-        $('#submit_model_restaurant_items').on('click', function(ev) {
-            $('#modal_model_restaurant_items').modal('hide');
-            $('#modal_model_update').modal('hide');
-            if($('#form_model_restaurant_items').valid())
+        $('#submit_model_restaurant_menu_add').on('click', function(ev) {
+            $('#modal_model_restaurant_menu_add').modal('hide');
+            $('#modal_model_restaurant_menu').modal('hide');
+            if($('#form_model_restaurant_menu').valid())
             {
                 swal({
-                    title: "Saving restaurant's information",
+                    title: "Saving menu's information",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
@@ -60,8 +104,8 @@ var TableItemsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/items', 
-                    data: $('#form_model_restaurant_items').serializeArray(), 
+                    url: '/admin/restaurants/menu', 
+                    data: $('#form_model_restaurant_menu_add').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
                         {
@@ -72,9 +116,9 @@ var TableItemsDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            update_items(data.items);
+                            update_menu(data.menu);
                             //show modal
-                            $('#modal_model_update').modal('show');
+                            $('#modal_model_restaurant_menu').modal('show');
                         }
                         else{					
                             swal({
@@ -83,20 +127,20 @@ var TableItemsDatatablesManaged = function () {
                                 html: true,
                                 type: "error"
                             },function(){
-                                $('#modal_model_update').modal('show');
-                                $('#modal_model_restaurant_items').modal('show');
+                                $('#modal_model_restaurant_menu').modal('show');
+                                $('#modal_model_restaurant_menu_add').modal('show');
                             });
                         }
                     },
                     error: function(){	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the item's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to save the menu's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
-                            $('#modal_model_update').modal('show');
-                            $('#modal_model_restaurant_items').modal('show');
+                            $('#modal_model_restaurant_menu').modal('show');
+                            $('#modal_model_restaurant_menu_add').modal('show');
                         });
                     }
                 }); 
@@ -109,14 +153,14 @@ var TableItemsDatatablesManaged = function () {
                     html: true,
                     type: "error"
                 },function(){
-                    $('#modal_model_update').modal('show');
-                    $('#modal_model_restaurant_items').modal('show');
+                    $('#modal_model_restaurant_menu').modal('show');
+                    $('#modal_model_restaurant_menu_add').modal('show');
                 });
             }    
         });
         
         //function edit or remove
-        $('#tb_restaurant_items').on('click', 'input[type="button"]', function(e){
+        $('#tb_restaurant_menu').on('click', 'button', function(e){
             var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
@@ -124,50 +168,42 @@ var TableItemsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/items', 
+                    url: '/admin/restaurants/menu', 
                     data: {action:0,id:row.data('id')}, 
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#form_model_restaurant_items').trigger('reset');
-                            $('#form_model_restaurant_items input[name="id"]:hidden').val(data.item.id).trigger('change');
-                            //order
-                            update_items_order(0);   
+                            $('#modal_model_restaurant_menu_add').trigger('reset');
+                            $('#modal_model_restaurant_menu_add input[name="id"]:hidden').val(data.menu.id).trigger('change');
                             //fill out 
-                            for(var key in data.item)
-                            {
-                                var e = $('#form_model_restaurant_items [name="'+key+'"]');
-                                if(e.is('input:checkbox'))
-                                    $('#form_model_restaurant_items .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.item[key]>0)? true : false, true);
-                                else if(e.is('img'))
-                                    e.src = data.item[key];
-                                else
-                                    e.val(data.item[key]);
-                            }
+                            for(var key in data.menu)
+                                $('#modal_model_restaurant_menu_add [name="'+key+'"]').val(data.menu[key]);
+                            $('#form_model_restaurant_menu_add select[name="parent_id"]').find('option:disabled').removeAttr('disabled');
+                            $('#form_model_restaurant_menu_add select[name="parent_id"]').find('option[value="'+data.menu.id+'"]').attr('disabled','disabled');
                             //modal                         
-                            $('#modal_model_restaurant_items').modal('show');
+                            $('#modal_model_restaurant_menu_add').modal('show');
                         }
                         else{
-                            $('#modal_model_update').modal('hide');
+                            $('#modal_model_restaurant_menu').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
                                 html: true,
                                 type: "error"
                             },function(){
-                                $('#modal_model_update').modal('show');
+                                $('#modal_model_restaurant_menu').modal('show');
                             });
                         }
                     },
                     error: function(){
-                        $('#modal_model_update').modal('hide');
+                        $('#modal_model_restaurant_menu').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the password's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to get the menu's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
-                            $('#modal_model_update').modal('show');
+                            $('#modal_model_restaurant_menu').modal('show');
                         });
                     }
                 });
@@ -178,34 +214,34 @@ var TableItemsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/items', 
+                    url: '/admin/restaurants/menu', 
                     data: {action:-1,id:row.data('id')}, 
                     success: function(data) {
                         if(data.success) 
                         {
-                            update_items(data.items);
+                            update_menu(data.menu);
                         }
                         else{
-                            $('#modal_model_update').modal('hide');
+                            $('#modal_model_restaurant_menu').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
                                 html: true,
                                 type: "error"
                             },function(){
-                                $('#modal_model_update').modal('show');
+                                $('#modal_model_restaurant_menu').modal('show');
                             });
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_restaurant_menu').modal('hide');	   	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to delete the item!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to delete the menu!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
-                            $('#modal_model_update').modal('show');
+                            $('#modal_model_restaurant_menu').modal('show');
                         });
                     }
                 });
@@ -223,10 +259,6 @@ var TableItemsDatatablesManaged = function () {
                 });
             }
         });
-        //function load form to upload image
-        $('#btn_restaurant_item_upload_image').on('click', function(ev) {
-            FormImageUpload('restaurants.items','#modal_model_restaurant_items','#form_model_restaurant_items [name="image_id"]');       
-        }); 
     }
     return {
         //main function to initiate the module
@@ -242,12 +274,12 @@ var TableItemsDatatablesManaged = function () {
     };
 }();
 //*****************************************************************************************
-var FormItemsValidation = function () {
+var FormMenuValidation = function () {
     // advance validation
     var handleValidation = function() {
         // for more info visit the official plugin documentation: 
         // http://docs.jquery.com/Plugins/Validation
-            var form = $('#form_model_restaurant_items');
+            var form = $('#form_model_restaurant_menu');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
             //IMPORTANT: update CKEDITOR textarea with actual content before submit
@@ -262,7 +294,7 @@ var FormItemsValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
-                    restaurant_menu_id: {
+                    parent_id: {
                         required: true
                     },
                     name: {
@@ -271,20 +303,9 @@ var FormItemsValidation = function () {
                         required: true
                     },
                     notes: {
-                        minlength: 3,
-                        maxlength: 45,
-                        required: false
-                    },
-                    description: {
                         minlength: 5,
                         maxlength: 2000,
                         required: false
-                    },
-                    price: {
-                        min: 0.01,
-                        //step: 0.01,
-                        //number:true,
-                        required: true
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -324,6 +345,6 @@ var FormItemsValidation = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    TableItemsDatatablesManaged.init();
-    FormItemsValidation.init();
+    TableMenuDatatablesManaged.init();
+    FormMenuValidation.init();
 });
