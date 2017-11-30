@@ -128,6 +128,14 @@ html, body {
 	.carousel-inner .next        { left:  25%; }
 	.carousel-inner .prev		 { left: -25%; }	
 }
+.venue-pic{
+    width: 50%;
+    min-height: 135px;
+    margin:auto;
+}
+.venue-pic img{
+    width: 100%;
+}
 .carousel-inner img{
     width:100%;
 }
