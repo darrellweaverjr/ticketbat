@@ -154,22 +154,22 @@ class GeneralController extends Controller{
                 if($show)
                 {
                     //get show times
-                    $showtimes = DB::table('show_times')
+                    $show->showtimes = DB::table('show_times')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                             ->select(DB::raw('DATE_FORMAT(show_times.show_time,"%m/%d/%Y") AS s_date'))
                             ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                             ->where('shows.id','=',$show->id)
                             ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
-                            ->orderBy('s_date')->groupBy('s_date')
+                            ->orderBy('show_times.show_time')
                             ->distinct()->take(30)->get(); 
                     //get videos
-                    $videos = DB::table('videos')
+                    $show->videos = DB::table('videos')
                                 ->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
                                 ->select('videos.id','videos.embed_code')
                                 ->where('show_videos.show_id','=',$show->id)
                                 ->distinct()->get();
-                    foreach ($videos as $v)
+                    foreach ($show->videos as $v)
                     {
                         $part1 = explode('src="',$v->embed_code);
                         $part2 = explode('"',$part1[1]);
@@ -184,18 +184,14 @@ class GeneralController extends Controller{
                                 ->distinct()->first();
                     $show->header = ($header)? Image::view_image($header->url) : null;
                     //get images
-                    $images = DB::table('images')
+                    $show->images = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=' ,'images.id')
                                 ->select('images.id','images.url','images.image_type')
                                 ->where('show_images.show_id','=',$show->id)
                                 ->whereIn('images.image_type',['Image'])
                                 ->distinct()->get();
-                    foreach ($images as $i)
+                    foreach ($show->images as $i)
                         $i->url = Image::view_image($i->url);
-                    //asign values to show and return 
-                    $show->showtimes = $showtimes;
-                    $show->videos = $videos;
-                    $show->images = $images;
                     return Util::json(['success'=>true, 'show'=>$show]);
                 }
                 return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']);             
