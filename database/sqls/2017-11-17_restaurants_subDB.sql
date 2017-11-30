@@ -231,4 +231,7 @@ REFERENCES `restaurants` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
+ALTER TABLE `restaurant_reservations` 
+ADD COLUMN `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `restaurants_id`;
+
 

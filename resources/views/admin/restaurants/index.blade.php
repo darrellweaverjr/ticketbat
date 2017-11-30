@@ -165,9 +165,15 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reservations">
+                                        <div class="row text-center">
+                                            <label class="label label-info sbold">Reservations from 7 days ago.</label>
+                                        </div>
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_items_add" disabled="true" class="btn sbold bg-green"> Add
+                                            <button type="button" id="btn_model_reservations_add" disabled="true" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button type="button" id="btn_model_reservations_refresh" class="btn sbold bg-info"> Refresh
+                                                <i class="fa fa-refresh"></i>
                                             </button>
                                         </div>
                                         <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
@@ -177,10 +183,10 @@
                                                         <th>Date<br>Time</th>
                                                         <th>Guests</th>
                                                         <th>Name</th>
-                                                        <th>Contact</th>
+                                                        <th>Phone<br>Email</th>
                                                         <th>Occassion</th>
                                                         <th>Special<br>Request</th>
-                                                        <th>Status</th>
+                                                        <th>Status<br>Created</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -279,6 +285,7 @@
 
 @section('scripts')
 <script src="/js/admin/restaurants/menu.js" type="text/javascript"></script>
+<script src="/js/admin/restaurants/reservations.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/awards.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/index.js" type="text/javascript"></script>
