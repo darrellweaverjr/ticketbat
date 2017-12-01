@@ -25,15 +25,7 @@
                                 <div class="col-md-8 show-error">
                                     <select class="form-control" name="restaurant_menu_id">
                                         @foreach($menu as $index=>$m)
-                                            @if($m->parent_id == 0)
-                                                <option value="{{$m->id}}" @if($m->disabled>0) disabled @endif>{{$m->name}}</option>
-                                                @foreach ($m->children()->get() as $children)
-                                                    <option value="{{$children->id}}" @if($children->disabled>0) disabled @endif>&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
-                                                    @foreach ($children->children()->get() as $niece)
-                                                        <option value="{{$niece->id}}" @if($niece->disabled>0) disabled @endif>&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
-                                                    @endforeach
-                                                @endforeach
-                                            @endif
+                                            <option value="{{$m->id}}" @if($m->disabled>0) disabled @endif>{{$m->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
