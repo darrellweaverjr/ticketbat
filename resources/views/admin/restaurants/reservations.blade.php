@@ -18,8 +18,15 @@
                                 <label class="control-label col-md-3">Schedule
                                     <span class="required"> * </span>
                                 </label>
-                                <div class="col-md-8 show-error">
-                                    <input type="text" class="form-control" name="schedule" value="{{date('m/d/Y h:i A',strtotime('today +22 hours'))}}">
+                                <div class="col-md-8">
+                                    <div id="schedule" class="input-group date form_datetime dtpicker">
+                                        <input size="16" readonly="" class="form-control" type="text" name="schedule" value="{{date('Y-m-d H:i'),strtotime('today +22 hours')}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
                                 </div>
                                 <label class="control-label col-md-3">People
                                     <span class="required"> * </span>
@@ -53,7 +60,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <select class="form-control" name="restaurant_menu_id">
+                                    <select class="form-control" name="occasion">
                                         @foreach($reservation_occasions as $index=>$o)
                                             <option value="{{$index}}">{{$o}}</option>
                                         @endforeach

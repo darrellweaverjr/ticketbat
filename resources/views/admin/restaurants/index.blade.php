@@ -5,6 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -188,6 +189,7 @@
                                                         <th>Special<br>Request</th>
                                                         <th>Status<br>Created</th>
                                                         <th></th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_restaurant_reservations">
@@ -287,6 +289,7 @@
 @endsection
 
 @section('scripts')
+<script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/menu.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/reservations.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>

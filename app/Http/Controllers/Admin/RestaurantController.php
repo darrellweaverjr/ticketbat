@@ -15,6 +15,7 @@ use App\Http\Models\RestaurantComments;
 use App\Http\Models\RestaurantItems;
 use App\Http\Models\RestaurantReviews;
 use App\Http\Models\RestaurantSpecials;
+use App\Http\Models\RestaurantReservations;
 use App\Http\Models\Image;
 use App\Http\Models\Util;
 /**
@@ -326,7 +327,7 @@ class RestaurantController extends Controller{
                 return ['success'=>true,'menu'=>$menu];
             }
         } catch (Exception $ex) {
-            throw new Exception('Error ShowTickets Index: '.$ex->getMessage());
+            throw new Exception('Error RestaurantMenu Index: '.$ex->getMessage());
         }
     }
     /**
@@ -341,6 +342,11 @@ class RestaurantController extends Controller{
     {
         return '-7 days';
     }  
+    public function get_reservations($restaurant_id)
+    {
+        return RestaurantReservations::whereDate('schedule','>=',date('Y-m-d', strtotime($this->start_reservations())))
+                        ->orderBy('schedule','DESC')->get();
+    }
     public function reservations()
     {
         try {  
@@ -349,73 +355,61 @@ class RestaurantController extends Controller{
             //get
             if(isset($input) && isset($input['action']) && $input['action']==0)
             {
-//                $menu = RestaurantMenu::find($input['id']);
-//                if($menu)
-//                    return ['success'=>true,'menu'=>$menu];                
-//                return ['success'=>false,'msg'=>'There is an error getting the menu.<br>Item not longer in the system.'];
+                $reservation = RestaurantReservations::find($input['id']);
+                if($reservation)
+                    return ['success'=>true,'reservation'=>$reservation];
+                return ['success'=>false,'msg'=>'There is an error getting the reservation.<br>Item not longer in the system.'];
             }
             //remove
             else if(isset($input) && isset($input['action']) && $input['action']==-1)
             {
-//                if(!empty($input['id']))
-//                {
-//                    $menu = RestaurantMenu::find($input['id']);
-//                    if($menu)
-//                    {
-//                        function remove_children($m)
-//                        {
-//                            $children = $m->children();
-//                            if(count($children))
-//                            {
-//                                foreach ($children as $c)
-//                                    remove_children($m);
-//                            }
-//                            $m->delete();
-//                        }
-//                        remove_children($menu);
-//                    }
-//                    $menu = $this->menus_formated();   
-//                    return ['success'=>true,'menu'=>$menu,'msg'=>'Menus and submenus removed successfully!'];
-//                }
-//                return ['success'=>false,'msg'=>'There was an error deleting the menu and submenus.<br>You must select a valid item.'];
+                if(!empty($input['id']))
+                {
+                    RestaurantReservations::where('id',$input['id'])->delete();
+                    $reservations = $this->get_reservations($input['restaurants_id']);
+                    return ['success'=>true,'reservations'=>$reservations,'msg'=>'Reservation removed successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the reservation.<br>You must select a valid item.'];
             }
             //save
             else if(isset($input) && isset($input['action']) && $input['action']==1)
             {
-//                if(!empty($input['id']))
-//                {
-//                    $menu = RestaurantMenu::find($input['id']);
-//                    if(!$menu)
-//                        return ['success'=>false,'msg'=>'There was an error updating the menu.<br>The item is not longer in the system.'];
-//                }
-//                else
-//                {
-//                    $menu = new RestaurantMenu;
-//                }
-//                $menu->name = strip_tags(trim($input['name']));
-//                $menu->notes = (!empty($input['notes']))? strip_tags(trim($input['notes'])) : null;
-//                $menu->disabled = (!empty($input['disabled']))? 1 : 0;
-//                $menu->parent_id = $input['parent_id'];
-//                $menu->save();
-//                //return
-//                $menu = $this->menus_formated();   
-//                return ['success'=>true,'menu'=>$menu,'msg'=>'Menu saved successfully!'];
+                if(!empty($input['id']))
+                {
+                    $reservation = RestaurantReservations::find($input['id']);
+                    if(!$reservation)
+                        return ['success'=>false,'msg'=>'There was an error updating the reservation.<br>The item is not longer in the system.'];
+                    $reservation->status = $input['status'];
+                }
+                else
+                {
+                    $reservation = new RestaurantReservations;
+                    $reservation->restaurants_id = $input['restaurants_id'];
+                    $reservation->status = 'Requested';
+                }
+                $reservation->schedule = $input['schedule'];
+                $reservation->people = $input['people'];
+                $reservation->first_name = $input['first_name'];
+                $reservation->last_name = $input['last_name'];
+                $reservation->phone = (!empty($input['phone']))? preg_replace('/[^0-9]/','',$input['phone']): null;
+                $reservation->email = (!empty($input['email']))? $input['email']: null;
+                $reservation->occasion = $input['occasion'];
+                $reservation->special_request = (!empty($input['special_request']))? strip_tags(trim($input['special_request'])) : null;
+                $reservation->newsletter = (!empty($input['newsletter']))? 1 : 0;
+                $reservation->save();
+                //return
+                $reservations = $this->get_reservations($reservation->restaurants_id);
+                return ['success'=>true,'reservations'=>$reservations,'msg'=>'Reservation saved successfully!'];
             }
             else if(isset($input) && isset($input['restaurants_id'])) //get all
             {
-                $reservations = DB::table('restaurant_reservations')
-                                ->select('restaurant_reservations.*')
-                                ->select(DB::raw('restaurant_reservations.*'))
-                                ->where('restaurant_reservations.restaurants_id',$input['restaurants_id'])
-                                ->whereDate('restaurant_reservations.schedule','>=', date('Y-m-d',strtotime($this->start_reservations())) )
-                                ->orderBy('restaurant_reservations.schedule','DESC')
-                                ->get(); 
+                $reservations = $this->get_reservations($input['restaurants_id']);
                 return ['success'=>true,'reservations'=>$reservations];
             }
             else
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
-            throw new Exception('Error ShowTickets Index: '.$ex->getMessage());
+            throw new Exception('Error RestaurantReservations Index: '.$ex->getMessage());
         }
     }
     /**
@@ -423,6 +417,18 @@ class RestaurantController extends Controller{
      *
      * @return view
      */
+    public function get_items($restaurant_id)
+    {
+        $items = DB::table('restaurant_items')
+                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                        ->where('restaurant_items.restaurants_id',$restaurant_id)
+                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                        ->get();
+        foreach ($items as $index=>$i)
+            $i->image_id = Image::view_image($i->image_id);
+        return $items;
+    }
     public function items()
     {
         try {  
@@ -457,12 +463,7 @@ class RestaurantController extends Controller{
                         $item->delete_image();
                         $item->delete();
                     }
-                    $items = DB::table('restaurant_items')
-                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
-                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
-                        ->where('restaurant_items.restaurants_id',$item->restaurants_id)
-                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
-                        ->get();
+                    $items = $this->get_items($restaurant_id);
                     return ['success'=>true,'items'=>$items,'msg'=>'Item removed successfully!'];
                 }
                 return ['success'=>false,'msg'=>'There was an error deleting the item.<br>You must select a valid item.'];
@@ -507,15 +508,9 @@ class RestaurantController extends Controller{
                 //order
                 $item->order = $input['order'];
                 $item->save();
-                $items = DB::table('restaurant_items')
-                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
-                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
-                        ->where('restaurant_items.restaurants_id',$input['restaurants_id'])
-                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
-                        ->get();
+                $items = $this->get_items($restaurant_id);
                 foreach ($items as $index=>$i)
                 {
-                    $i->image_id = Image::view_image($i->image_id);
                     $i->order = $index+1;
                     RestaurantItems::where('id',$i->id)->update(['order'=>$i->order]);
                 }
@@ -525,7 +520,7 @@ class RestaurantController extends Controller{
             else
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
-            throw new Exception('Error ShowTickets Index: '.$ex->getMessage());
+            throw new Exception('Error RestaurantItems Index: '.$ex->getMessage());
         }
     }
     
@@ -534,6 +529,18 @@ class RestaurantController extends Controller{
      *
      * @return view
      */
+    public function get_awards($restaurant_id)
+    {
+        $awards = DB::table('restaurant_items')
+                        ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                        ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                        ->where('restaurant_items.restaurants_id',$restaurant_id)
+                        ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                        ->get();
+        foreach ($awards as $index=>$i)
+            $i->image_id = Image::view_image($i->image_id);
+        return $awards;
+    }
     public function awards()
     {
         try {  
