@@ -5,6 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -169,7 +170,7 @@
                                             <label class="label label-info sbold">Reservations from 7 days ago.</label>
                                         </div>
                                         <div class="btn-group">
-                                            <button type="button" id="btn_model_reservations_add" disabled="true" class="btn sbold bg-green"> Add
+                                            <button type="button" id="btn_model_reservations_add" class="btn sbold bg-green"> Add
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                             <button type="button" id="btn_model_reservations_refresh" class="btn sbold bg-info"> Refresh
@@ -187,6 +188,7 @@
                                                         <th>Occassion</th>
                                                         <th>Special<br>Request</th>
                                                         <th>Status<br>Created</th>
+                                                        <th></th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -275,6 +277,9 @@
     <!-- BEGIN MENU -->
     @include('admin.restaurants.menu')
     <!-- END MENU -->
+     <!-- BEGIN RESERVATIONS -->
+    @include('admin.restaurants.reservations', ['reservation_occasions' => $reservation_occasions, 'reservation_status' => $reservation_status])
+    <!-- END RESERVATIONS -->
     <!-- BEGIN ITEMS -->
     @include('admin.restaurants.items')
     <!-- END ITEMS -->
@@ -284,6 +289,7 @@
 @endsection
 
 @section('scripts')
+<script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/menu.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/reservations.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>

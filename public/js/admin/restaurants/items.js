@@ -35,7 +35,7 @@ var TableItemsDatatablesManaged = function () {
     
     var initTable = function () {
         
-        //on select ticket_type
+        //on select btn_model_items_add
         $('#btn_model_items_add').on('click', function(ev) {
             $('#form_model_restaurant_items').trigger('reset');
             $('#form_model_restaurant_items input[name="id"]:hidden').val('').trigger('change');
