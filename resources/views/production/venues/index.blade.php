@@ -10,7 +10,14 @@
 @endsection
 
 @section('content')
-
+<style>
+.cbp-item {
+  /*display: inline-block;*/
+  margin: 0px 1%!important;
+  float: left;
+  width: 23%!important;
+}
+</style>
 <div class="page-content">  
         <!-- BEGIN SHOWS GRID-->
         @foreach($venues as $index=>$vv)
@@ -19,7 +26,7 @@
 
             <div class="cbp text-center myVenues">
                 @foreach($vv['venues'] as $v)
-                <div class="cbp-item show_section filtered" data-id="{{$v->venue_id}}" data-search="{{$v->name}}" data-href="/production/venue/{{$v->slug}}">
+                <div class="cbp-item  filtered" data-id="{{$v->venue_id}}" data-search="{{$v->name}}" data-href="/production/venue/{{$v->slug}}">
                     <div class="cbp-caption">
                         <div class="venue-pic">
                             <a class="cbp-caption-defaultWrap"><img src="{{$v->url}}" alt="{{$v->name}}"></a>
@@ -32,8 +39,9 @@
                             </div>
                         </div>
                     </div>
-                    <p style="min-height:100px" class="text-center"><small>{!! str_limit($v->description, $limit = 200, $end = '...') !!}</small></p>
+                    <div class="show-txt"><small>{!! str_limit($v->description, $limit = 200, $end = '...') !!}</small></div>
                 </div>
+
                 @endforeach
             </div>
         </div>    

@@ -30,9 +30,10 @@ var PortfolioManaged = function () {
         });
         function resizeVenues()
         {
-            $('#myVenues div.myVenues').each(function(k,v){
+            $('div.myVenues').each(function(k,v){
                 var y2 = $(v).find('.cbp-item.filtered:not(.hidden):last').position().top;
-                $(v).height( parseInt((y2+(k+1)*250)) );
+                // $(v).height( parseInt((y2+(k+2)*400)) );
+                console.log(v);
             });
         }
         $(window).resize(function(){

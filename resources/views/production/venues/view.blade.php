@@ -13,7 +13,7 @@
 
 <!-- BEGIN TOP HEADER -->
 <div class="row">
-    <center><img style="margin:auto;max-height:422px" src="{{$venue->header->url}}" alt="{{$venue->header->caption}}"></center>
+    <center><img style="margin:auto; width:100%;" src="{{$venue->header->url}}" alt="{{$venue->header->caption}}"></center>
 </div>
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
@@ -74,7 +74,7 @@
                 <div class="timeline-item">
                     <div class="timeline-badge">
                         <a href="/production/event/{{$e->slug}}">
-                            <img height="150px" width="150px" src="{{$e->url}}">
+                            <img height="100px" width="150px" src="{{$e->url}}">
                         </a>
                     </div>
                     <div class="timeline-body" style="margin-left:170px">
