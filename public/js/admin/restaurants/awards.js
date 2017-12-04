@@ -3,37 +3,27 @@ var TableAwardsDatatablesManaged = function () {
     var update_awards = function (items) {
         $('#tb_restaurant_awards').empty();
         $.each(items,function(k, v) {
-            //default style
-            if(v.disabled==1)
-                v.disabled = '<span class="label label-sm sbold label-danger"> Yes </span>';
-            else
-                v.disabled = '<span class="label label-sm sbold label-success"> No </span>';
+            v.posted = moment(v.posted).format('ddd, MMM D, YYYY')+'<br>'+moment(v.posted).format('h:mm A');
             //image
             if(v.image_id)
                 v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
                 v.image_id = '-No image-';
-            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.image_id+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
+            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.awarded+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
         });   
     }
     
-    var update_awards_order = function (add=0) {
-        var positions = $('#tb_restaurant_awards >tr').length;
-        if(add) positions++;
-        $('#form_model_restaurant_awards select[name="order"]').empty();
-        if(positions>1)
-        {
-            while(positions > 0)
-            {
-                $('#form_model_restaurant_awards select[name="order"]').prepend('<option value="'+positions+'">'+positions+'</option>');
-                positions--;
-            }
-        }
-        else
-            $('#form_model_restaurant_awards select[name="order"]').append('<option value="">Last</option>');
-    }
-    
     var initTable = function () {
+        
+        //posted
+        $('#posted').datetimepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "yyyy-mm-dd hh:ii",
+            pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
+            todayBtn: true,
+            defaultDate:'now'
+        });
         
         //on select ticket_type
         $('#btn_model_awards_add').on('click', function(ev) {
@@ -41,7 +31,6 @@ var TableAwardsDatatablesManaged = function () {
             $('#form_model_restaurant_awards input[name="id"]:hidden').val('').trigger('change');
             $('#form_model_restaurant_awards input[name="restaurants_id"]:hidden').val( $('#form_model_update [name="id"]').val() );
             $('#form_model_restaurant_awards input[name="action"]:hidden').val( 1 );
-            update_awards_order(1);    
             $('#modal_model_restaurant_awards').modal('show');
         });
         
@@ -91,7 +80,7 @@ var TableAwardsDatatablesManaged = function () {
                     error: function(){	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the item's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to save the award's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
@@ -124,7 +113,7 @@ var TableAwardsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/items', 
+                    url: '/admin/restaurants/awards', 
                     data: {action:0,id:row.data('id')}, 
                     success: function(data) {
                         if(data.success) 
@@ -137,9 +126,7 @@ var TableAwardsDatatablesManaged = function () {
                             for(var key in data.item)
                             {
                                 var e = $('#form_model_restaurant_awards [name="'+key+'"]');
-                                if(e.is('input:checkbox'))
-                                    $('#form_model_restaurant_awards .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.item[key]>0)? true : false, true);
-                                else if(e.is('img'))
+                                if(e.is('img'))
                                     e.src = data.item[key];
                                 else
                                     e.val(data.item[key]);
@@ -163,7 +150,7 @@ var TableAwardsDatatablesManaged = function () {
                         $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to get the password's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to get the award's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
@@ -175,11 +162,12 @@ var TableAwardsDatatablesManaged = function () {
             //delete
             else if($(this).hasClass('delete')) 
             {
+                var restaurants_id = $('#form_model_restaurant_awards input[name="restaurants_id"]:hidden').val();
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/admin/restaurants/awards', 
-                    data: {action:-1,id:row.data('id')}, 
+                    data: {action:-1,id:row.data('id'), restaurants_id:restaurants_id}, 
                     success: function(data) {
                         if(data.success) 
                         {
@@ -262,28 +250,21 @@ var FormAwardsValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
-                    restaurant_menu_id: {
-                        required: true
-                    },
-                    name: {
+                    awarded: {
                         minlength: 3,
                         maxlength: 45,
                         required: true
                     },
-                    notes: {
-                        minlength: 3,
-                        maxlength: 45,
-                        required: false
+                    posted: {
+                        date: true,
+                        required: true
                     },
                     description: {
                         minlength: 5,
                         maxlength: 2000,
-                        required: false
+                        required: true
                     },
-                    price: {
-                        min: 0.01,
-                        //step: 0.01,
-                        //number:true,
+                    url: {
                         required: true
                     }
                 },

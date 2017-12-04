@@ -19,59 +19,33 @@
                             <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="control-label col-md-3">Menu
+                                <label class="control-label col-md-3">Awarder
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <select class="form-control" name="restaurant_menu_id">
-                                        @foreach($menu as $index=>$m)
-                                            @if($m->parent_id == 0)
-                                                <option value="{{$m->id}}" @if($m->disabled>0) disabled @endif>{{$m->name}}</option>
-                                                @foreach ($m->children()->get() as $children)
-                                                    <option value="{{$children->id}}" @if($children->disabled>0) disabled @endif>&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
-                                                    @foreach ($children->children()->get() as $niece)
-                                                        <option value="{{$niece->id}}" @if($niece->disabled>0) disabled @endif>&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
-                                                    @endforeach
-                                                @endforeach
-                                            @endif
-                                        @endforeach
-                                    </select>
+                                    <input type="text" class="form-control" name="awarded" placeholder="Awarder name">
                                 </div>
-                                <label class="control-label col-md-3">Position
-                                </label>
-                                <div class="col-md-8 show-error">
-                                    <select class="form-control" name="order">
-                                    </select>
-                                </div>
-                                <label class="control-label col-md-3">Name
+                                <label class="control-label col-md-3">Posted
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <input type="text" class="form-control" name="name" placeholder="Item name">
-                                </div>
-                                <label class="control-label col-md-3">Notes
-                                </label>
-                                <div class="col-md-8 show-error">
-                                    <input type="text" class="form-control" name="notes" placeholder="Notes for this item">
-                                </div>
-                                <label class="col-md-3 control-label">Price ($)
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-8 show-error">
-                                    <input type="number" value="0.00" name="price" step="0.01" min="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
-                                </div>
-                                <label class="control-label col-md-3">Disabled
-                                </label>
-                                <div class="col-md-8">
-                                    <input type="hidden" name="enabled" value="0"/>
-                                    <input type="checkbox" class="make-switch" name="enabled" data-size="small" value="1" data-on-text="Yes" data-off-text="No" data-on-color="primary" data-off-color="danger">
+                                    <div id="posted" class="input-group date form_datetime dtpicker">
+                                        <input size="16" readonly="" class="form-control" type="text" name="posted" value="{{date('Y-m-d H:i'),strtotime('now')}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
                                 </div>
                                 <label class="col-md-3 control-label">Description
+                                    <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
                                     <textarea name="description" class="form-control" rows="3"></textarea>
                                 </div>
                                 <label class="control-label col-md-3">Image
+                                    <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error" >
                                     <center>

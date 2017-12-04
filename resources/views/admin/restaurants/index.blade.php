@@ -232,7 +232,7 @@
                                             <table class="table table-striped table-hover table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
+                                                        <th>Image</th>
                                                         <th>Awarded</th>
                                                         <th>Posted</th>
                                                         <th> </th>
