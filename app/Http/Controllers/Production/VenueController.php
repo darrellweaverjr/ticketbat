@@ -8,6 +8,14 @@ use App\Http\Models\Image;
 
 class VenueController extends Controller
 {
+    /*
+     * return cutoff_date for checking the showtime
+     */
+    public function cutoff_date()
+    {
+        return 'DATE_FORMAT(show_times.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00")';
+    }  
+    
     /**
      * Show the default method for the event page.
      *
@@ -22,10 +30,18 @@ class VenueController extends Controller
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
                         ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
                         ->join('images', 'venue_images.image_id', '=' ,'images.id')
+                        ->join('shows', 'venues.id', '=' ,'shows.venue_id')
+                        ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select(DB::raw('venues.id as venue_id, venues.slug, venues.description, venues.name,
                                           venues.facebook, venues.twitter, venues.googleplus, venues.yelpbadge, venues.youtube, venues.instagram,
                                           locations.*, images.url, images.caption'))
-                        ->where('venues.is_featured','>',0)->where('images.image_type','=','Logo')->get();
+                        ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where('show_times.is_active','>',0)
+                        ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
+                        ->where('images.image_type','=','Logo')->where('tickets.is_active','>',0)
+                        ->whereNotNull('images.url')
+                        ->groupBy('venues.id')->distinct()->get();
             foreach ($_venues as $v)
             {
                 $v->url = Image::view_image($v->url);
