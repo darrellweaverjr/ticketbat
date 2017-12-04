@@ -154,6 +154,8 @@ var TableDatatablesManaged = function () {
                         TableReservationsDatatablesManaged.update_reservations(data.restaurant.reservations);
                         //update items
                         TableItemsDatatablesManaged.update_items(data.restaurant.items);
+                        //update awards
+                        TableAwardsDatatablesManaged.update_awards(data.restaurant.awards);
                         //show modal
                         $('#modal_model_update').modal('show');
                     }

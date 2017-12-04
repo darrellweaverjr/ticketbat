@@ -73,6 +73,8 @@ class RestaurantController extends Controller{
                                 ->where('restaurant_awards.restaurants_id',$restaurant->id)
                                 ->orderBy('restaurant_awards.posted','DESC')
                                 ->get();
+                foreach($restaurant->awards as $i)
+                    $i->image_id = Image::view_image($i->image_id);
                 //comments
                 $restaurant->comments = DB::table('restaurant_comments')
                                 ->select('restaurant_comments.*')
@@ -81,8 +83,8 @@ class RestaurantController extends Controller{
                                 ->get();
                 //reviews
                 $restaurant->reviews = DB::table('restaurant_reviews')
-                                ->leftJoin('images', 'images.id', '=' ,'restaurant_reviews.image_id')
-                                ->select('restaurant_reviews.*','images.url')
+                                ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_reviews.restaurant_media_id')
+                                ->select('restaurant_reviews.*','restaurant_media.image_url')
                                 ->where('restaurant_reviews.restaurants_id',$restaurant->id)
                                 ->orderBy('restaurant_reviews.posted','DESC')
                                 ->get();
@@ -102,7 +104,7 @@ class RestaurantController extends Controller{
             else
             {
                 $restaurants = [];
-                $menu = [];
+                $menu = $media = [];
                 $venues = [];
                 //if user has permission to view
                 if(in_array('View',Auth::user()->user_type->getACLs()['RESTAURANTS']['permission_types']))
@@ -117,13 +119,14 @@ class RestaurantController extends Controller{
                                     ->select('restaurants.*', 'venues.name AS venue')
                                     ->orderBy('venues.name')->orderBy('restaurants.name')
                                     ->get();
-                    $menu = $this->menus_formated();
+                    $menu = $this->get_menus();
+                    $media = $this->get_media();
                 }
                 //nomeclators
                 $reservation_occasions = Util::getEnumValues('restaurant_reservations','occasion');
                 $reservation_status = Util::getEnumValues('restaurant_reservations','status');
                 //return view
-                return view('admin.restaurants.index',compact('restaurants','venues','menu','reservation_occasions','reservation_status'));
+                return view('admin.restaurants.index',compact('restaurants','venues','menu','media','reservation_occasions','reservation_status'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Restaurants Index: '.$ex->getMessage());
@@ -232,12 +235,94 @@ class RestaurantController extends Controller{
         }
     }
     
+    
     /**
      * Get, Edit menu for restaurants
      *
      * @return view
      */
-    function menus_formated()
+    function get_media()
+    {
+        return RestaurantMedia::orderBy('name')->get();
+    }
+    public function media()
+    {
+        try {  
+            //init
+            $input = Input::all(); 
+            //get
+            if(isset($input) && isset($input['action']) && $input['action']==0)
+            {
+                $media = RestaurantMedia::find($input['id']);
+                if($media)
+                    return ['success'=>true,'media'=>$media];                
+                return ['success'=>false,'msg'=>'There is an error getting the media.<br>Item not longer in the system.'];
+            }
+            //remove
+            else if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                if(!empty($input['id']))
+                {
+                    $media = RestaurantMedia::find($input['id']);
+                    if($media)
+                    {
+                        $media->delete_image();
+                        $media->delete();
+                    }
+                    $medias = $this->get_media();   
+                    return ['success'=>true,'medias'=>$medias,'msg'=>'Mediaremoved successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the menu and submenus.<br>You must select a valid item.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && $input['action']==1)
+            {
+                if(!empty($input['id']))
+                {
+                    $media = RestaurantMedia::find($input['id']);
+                    if(!$media)
+                        return ['success'=>false,'msg'=>'There was an error updating the media.<br>The item is not longer in the system.'];
+                }
+                else
+                {
+                    $media = new RestaurantMedia;
+                    $name = RestaurantMedia::where('name',$input['id'])->count();
+                    if($name>0)
+                        return ['success'=>false,'msg'=>'There was an error creating the media.<br>There is already an item with that name in the system.'];
+                }
+                $media->name = strip_tags(trim($input['name']));
+                //image
+                if(!empty($input['image_id']))
+                {
+                    if(preg_match('/media\/preview/',$input['image_id'])) 
+                    {
+                        $media->delete_image();
+                        $media->set_image($input['image_id']);
+                    }
+                }
+                else
+                    $media->delete_image();
+                $media->save();
+                //return
+                $medias = $this->get_media();   
+                return ['success'=>true,'medias'=>$medias,'msg'=>'Media saved successfully!'];
+            }
+            else //get all
+            {
+                $medias = $this->get_media();   
+                return ['success'=>true,'medias'=>$medias];
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error RestaurantMedia Index: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Get, Edit menu for restaurants
+     *
+     * @return view
+     */
+    function get_menus()
     {
         $menus = RestaurantMenu::all();
         $menu = [];
@@ -294,7 +379,7 @@ class RestaurantController extends Controller{
                         }
                         remove_children($menu);
                     }
-                    $menu = $this->menus_formated();   
+                    $menu = $this->get_menus();   
                     return ['success'=>true,'menu'=>$menu,'msg'=>'Menus and submenus removed successfully!'];
                 }
                 return ['success'=>false,'msg'=>'There was an error deleting the menu and submenus.<br>You must select a valid item.'];
@@ -318,12 +403,12 @@ class RestaurantController extends Controller{
                 $menu->parent_id = $input['parent_id'];
                 $menu->save();
                 //return
-                $menu = $this->menus_formated();   
+                $menu = $this->get_menus();   
                 return ['success'=>true,'menu'=>$menu,'msg'=>'Menu saved successfully!'];
             }
             else //get all
             {
-                $menu = $this->menus_formated();   
+                $menu = $this->get_menus();   
                 return ['success'=>true,'menu'=>$menu];
             }
         } catch (Exception $ex) {
@@ -508,7 +593,7 @@ class RestaurantController extends Controller{
                 //order
                 $item->order = $input['order'];
                 $item->save();
-                $items = $this->get_items($restaurant_id);
+                $items = $this->get_items($item->restaurants_id);
                 foreach ($items as $index=>$i)
                 {
                     $i->order = $index+1;
@@ -586,12 +671,12 @@ class RestaurantController extends Controller{
                 $award->description = (!empty($input['description']))? strip_tags(trim($input['description'])) : null;
                 $award->posted = $input['posted'];
                 //image
-                if(!empty($input['url']))
+                if(!empty($input['image_id']))
                 {
-                    if(preg_match('/media\/preview/',$input['url'])) 
+                    if(preg_match('/media\/preview/',$input['image_id'])) 
                     {
                         $award->delete_image();
-                        $award->set_image($input['url']);
+                        $award->set_image($input['image_id']);
                     }
                 }
                 else

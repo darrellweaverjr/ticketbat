@@ -234,4 +234,26 @@ ON UPDATE NO ACTION;
 ALTER TABLE `restaurant_reservations` 
 ADD COLUMN `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `restaurants_id`;
 
+ALTER TABLE `restaurant_reviews` 
+ADD COLUMN `notes` VARCHAR(45) NULL DEFAULT NULL AFTER `link`;
 
+CREATE TABLE `restaurant_media` (
+  `id` INT NOT NULL,
+  `image_id` VARCHAR(45) NULL,
+  `name` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE .`restaurant_reviews` 
+DROP FOREIGN KEY `restaurant_reviews_ibfk_2`;
+ALTER TABLE `restaurant_reviews` 
+CHANGE COLUMN `image_id` `restaurant_media_id` INT(11) UNSIGNED NOT NULL ,
+DROP INDEX `image_id` ;
+
+ALTER TABLE `restaurant_reviews` 
+ADD INDEX `restaurant_media_id` (`restaurant_media_id` ASC);
+
+ALTER TABLE `restaurant_reviews` 
+ADD FOREIGN KEY (`restaurant_media_id`)
+REFERENCES `restaurant_media` (`id`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;

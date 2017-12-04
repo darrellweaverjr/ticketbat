@@ -9,7 +9,7 @@ var TableAwardsDatatablesManaged = function () {
                 v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
                 v.image_id = '-No image-';
-            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.awarded+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
+            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.awarded+'</td><td>'+v.posted+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
         });   
     }
     
@@ -61,7 +61,7 @@ var TableAwardsDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            update_items(data.items);
+                            update_awards(data.awards);
                             //show modal
                             $('#modal_model_update').modal('show');
                         }
@@ -119,17 +119,15 @@ var TableAwardsDatatablesManaged = function () {
                         if(data.success) 
                         {
                             $('#form_model_restaurant_awards').trigger('reset');
-                            $('#form_model_restaurant_awards input[name="id"]:hidden').val(data.item.id).trigger('change');
-                            //order
-                            update_awards_order(0);   
+                            $('#form_model_restaurant_awards input[name="id"]:hidden').val(data.award.id).trigger('change');
                             //fill out 
-                            for(var key in data.item)
+                            for(var key in data.award)
                             {
                                 var e = $('#form_model_restaurant_awards [name="'+key+'"]');
                                 if(e.is('img'))
-                                    e.src = data.item[key];
+                                    e.src = data.award[key];
                                 else
-                                    e.val(data.item[key]);
+                                    e.val(data.award[key]);
                             }
                             //modal                         
                             $('#modal_model_restaurant_awards').modal('show');
@@ -171,7 +169,7 @@ var TableAwardsDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            update_items(data.items);
+                            update_awards(data.awards);
                         }
                         else{
                             $('#modal_model_update').modal('hide');
@@ -213,7 +211,7 @@ var TableAwardsDatatablesManaged = function () {
         });
         //function load form to upload image
         $('#btn_restaurant_award_upload_image').on('click', function(ev) {
-            FormImageUpload('restaurants.awards','#modal_model_restaurant_awards','#form_model_restaurant_awards [name="image_url"]');       
+            FormImageUpload('restaurants.awards','#modal_model_restaurant_awards','#form_model_restaurant_awards [name="image_id"]');       
         }); 
     }
     return {
@@ -224,7 +222,7 @@ var TableAwardsDatatablesManaged = function () {
             }
             initTable();        
         },
-        update_items: function (items) {
+        update_awards: function (items) {
             update_awards(items);        
         }
     };
@@ -264,7 +262,7 @@ var FormAwardsValidation = function () {
                         maxlength: 2000,
                         required: true
                     },
-                    url: {
+                    image_id: {
                         required: true
                     }
                 },
