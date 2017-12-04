@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Venue;
 use App\Http\Models\Restaurant;
 use App\Http\Models\RestaurantMenu;
+use App\Http\Models\RestaurantMedia;
 use App\Http\Models\RestaurantAlbums;
 use App\Http\Models\RestaurantAwards;
 use App\Http\Models\RestaurantComments;
