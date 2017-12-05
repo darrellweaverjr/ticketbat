@@ -9,7 +9,7 @@ var TableAwardsDatatablesManaged = function () {
                 v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
                 v.image_id = '-No image-';
-            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.awarded+'</td><td>'+v.posted+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
+            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.name+'</td><td>'+v.posted+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
         });   
     }
     
@@ -249,8 +249,6 @@ var FormAwardsValidation = function () {
                 ignore: "", // validate all fields including form hidden input
                 rules: {
                     awarded: {
-                        minlength: 3,
-                        maxlength: 45,
                         required: true
                     },
                     posted: {
@@ -260,9 +258,6 @@ var FormAwardsValidation = function () {
                     description: {
                         minlength: 5,
                         maxlength: 2000,
-                        required: true
-                    },
-                    image_id: {
                         required: true
                     }
                 },

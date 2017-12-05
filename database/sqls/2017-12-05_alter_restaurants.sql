@@ -47,3 +47,9 @@ ADD FOREIGN KEY (`restaurant_media_id`)
 REFERENCES `restaurant_media` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
+
+
+
+
+ALTER TABLE `restaurant_awards` 
+CHANGE COLUMN `awarded` `awarded` INT(11) NOT NULL ;

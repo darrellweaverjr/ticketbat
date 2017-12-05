@@ -70,7 +70,8 @@ class RestaurantController extends Controller{
                                 ->get();
                 //awards
                 $restaurant->awards = DB::table('restaurant_awards')
-                                ->select('restaurant_awards.*')
+                                ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_awards.awarded')
+                                ->select('restaurant_awards.*','restaurant_media.name','restaurant_media.image_id')
                                 ->where('restaurant_awards.restaurants_id',$restaurant->id)
                                 ->orderBy('restaurant_awards.posted','DESC')
                                 ->get();
@@ -290,7 +291,7 @@ class RestaurantController extends Controller{
                 else
                 {
                     $media = new RestaurantMedia;
-                    $name = RestaurantMedia::where('name',$input['id'])->count();
+                    $name = RestaurantMedia::where('name',trim($input['id']))->count();
                     if($name>0)
                         return ['success'=>false,'msg'=>'There was an error creating the media.<br>There is already an item with that name in the system.'];
                 }
@@ -592,8 +593,8 @@ class RestaurantController extends Controller{
                         $item->set_image($input['image_id']);
                     }
                 }
-                else
-                    $item->delete_image();
+                /*else
+                    $item->delete_image();*/
                 //order
                 $item->order = $input['order'];
                 $item->save();
@@ -620,8 +621,13 @@ class RestaurantController extends Controller{
      */
     public function get_awards($restaurant_id)
     {
-        $awards = RestaurantAwards::where('restaurants_id',$restaurant_id)->get();
-        foreach ($awards as $index=>$i)
+        $awards = DB::table('restaurant_awards')
+                        ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_awards.awarded')
+                        ->select('restaurant_awards.*','restaurant_media.name','restaurant_media.image_id')
+                        ->where('restaurant_awards.restaurants_id',$restaurant_id)
+                        ->orderBy('restaurant_awards.posted','DESC')
+                        ->get();
+        foreach($awards as $i)
             $i->image_id = Image::view_image($i->image_id);
         return $awards;
     }
@@ -683,8 +689,8 @@ class RestaurantController extends Controller{
                         $award->set_image($input['image_id']);
                     }
                 }
-                else
-                    $award->delete_image();
+                /*else
+                    $award->delete_image();*/
                 $award->save();
                 $awards = $this->get_awards($input['restaurants_id']);
                 //return

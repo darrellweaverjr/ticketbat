@@ -23,7 +23,11 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <input type="text" class="form-control" name="awarded" placeholder="Awarder name">
+                                    <select class="form-control" name="awarded">
+                                        @foreach($media as $index=>$m)
+                                            <option value="{{$m->id}}">{{$m->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <label class="control-label col-md-3">Posted
                                     <span class="required"> * </span>
