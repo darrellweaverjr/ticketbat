@@ -248,7 +248,7 @@ var FormAwardsValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "", // validate all fields including form hidden input
                 rules: {
-                    awarded: {
+                    restaurant_media_id: {
                         required: true
                     },
                     posted: {

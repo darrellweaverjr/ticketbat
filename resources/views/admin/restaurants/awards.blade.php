@@ -23,7 +23,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <select class="form-control" name="awarded">
+                                    <select class="form-control" name="restaurant_media_id">
                                         @foreach($media as $index=>$m)
                                             <option value="{{$m->id}}">{{$m->name}}</option>
                                         @endforeach

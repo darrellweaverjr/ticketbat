@@ -43,22 +43,9 @@ class RestaurantController extends Controller{
                 if(!$restaurant)
                     return ['success'=>false,'msg'=>'There was an error getting the restaurant.<br>Maybe it is not longer in the system.'];
                 //reservations
-                $restaurant->reservations = DB::table('restaurant_reservations')
-                                ->select('restaurant_reservations.*')
-                                ->select(DB::raw('restaurant_reservations.*'))
-                                ->where('restaurant_reservations.restaurants_id',$restaurant->id)
-                                ->whereDate('restaurant_reservations.schedule','>=', date('Y-m-d',strtotime($this->start_reservations())) )
-                                ->orderBy('restaurant_reservations.schedule','DESC')
-                                ->get();
+                $restaurant->reservations = $this->get_reservations($restaurant->id);
                 //items
-                $restaurant->items = DB::table('restaurant_items')
-                                ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
-                                ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
-                                ->where('restaurant_items.restaurants_id',$restaurant->id)
-                                ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
-                                ->get();
-                foreach($restaurant->items as $i)
-                    $i->image_id = Image::view_image($i->image_id);
+                $restaurant->items = $this->get_items($restaurant->id);
                 //albums
                 $restaurant->albums = DB::table('restaurant_albums')
                                 ->leftJoin('restaurant_album_images', 'restaurant_album_images.restaurant_albums_id', '=' ,'restaurant_albums.id')
@@ -69,14 +56,7 @@ class RestaurantController extends Controller{
                                 ->groupBy('restaurant_albums.id')->orderBy('restaurant_albums.title')
                                 ->get();
                 //awards
-                $restaurant->awards = DB::table('restaurant_awards')
-                                ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_awards.awarded')
-                                ->select('restaurant_awards.*','restaurant_media.name','restaurant_media.image_id')
-                                ->where('restaurant_awards.restaurants_id',$restaurant->id)
-                                ->orderBy('restaurant_awards.posted','DESC')
-                                ->get();
-                foreach($restaurant->awards as $i)
-                    $i->image_id = Image::view_image($i->image_id);
+                $restaurant->awards = $this->get_awards($restaurant->id);
                 //comments
                 $restaurant->comments = DB::table('restaurant_comments')
                                 ->select('restaurant_comments.*')
@@ -622,7 +602,7 @@ class RestaurantController extends Controller{
     public function get_awards($restaurant_id)
     {
         $awards = DB::table('restaurant_awards')
-                        ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_awards.awarded')
+                        ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_awards.restaurant_media_id')
                         ->select('restaurant_awards.*','restaurant_media.name','restaurant_media.image_id')
                         ->where('restaurant_awards.restaurants_id',$restaurant_id)
                         ->orderBy('restaurant_awards.posted','DESC')
