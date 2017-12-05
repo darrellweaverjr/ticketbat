@@ -51,6 +51,11 @@
                                 <i class="fa fa-spoon"></i>
                             </button>
                             @endif
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['RESTAURANTS']['permission_types']))
+                            <button id="btn_model_media" class="btn sbold bg-purple" disabled="true">Media
+                                <i class="fa fa-newspaper-o"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -277,6 +282,9 @@
     <!-- BEGIN MENU -->
     @include('admin.restaurants.menu')
     <!-- END MENU -->
+    <!-- BEGIN MEDIA -->
+    @include('admin.restaurants.media')
+    <!-- END MEDIA -->
      <!-- BEGIN RESERVATIONS -->
     @include('admin.restaurants.reservations', ['reservation_occasions' => $reservation_occasions, 'reservation_status' => $reservation_status])
     <!-- END RESERVATIONS -->
@@ -291,6 +299,7 @@
 @section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/menu.js" type="text/javascript"></script>
+<script src="/js/admin/restaurants/media.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/reservations.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/awards.js" type="text/javascript"></script>

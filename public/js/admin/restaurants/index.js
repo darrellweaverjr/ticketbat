@@ -101,6 +101,7 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_add').prop("disabled",false);
             $('#btn_model_menu').prop("disabled",false);
+            $('#btn_model_media').prop("disabled",false);
         } 
         //function full reset form
         var fullReset = function(){

@@ -85,7 +85,7 @@ class RestaurantController extends Controller{
                 //reviews
                 $restaurant->reviews = DB::table('restaurant_reviews')
                                 ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_reviews.restaurant_media_id')
-                                ->select('restaurant_reviews.*','restaurant_media.image_url')
+                                ->select('restaurant_reviews.*','restaurant_media.image_id')
                                 ->where('restaurant_reviews.restaurants_id',$restaurant->id)
                                 ->orderBy('restaurant_reviews.posted','DESC')
                                 ->get();
@@ -244,7 +244,10 @@ class RestaurantController extends Controller{
      */
     function get_media()
     {
-        return RestaurantMedia::orderBy('name')->get();
+        $medias = RestaurantMedia::orderBy('name')->get();
+        foreach($medias as $m)
+            $m->image_id = Image::view_image($m->image_id);
+        return $medias;
     }
     public function media()
     {
@@ -310,8 +313,8 @@ class RestaurantController extends Controller{
             }
             else //get all
             {
-                $medias = $this->get_media();   
-                return ['success'=>true,'medias'=>$medias];
+                $media = $this->get_media();   
+                return ['success'=>true,'media'=>$media];
             }
         } catch (Exception $ex) {
             throw new Exception('Error RestaurantMedia Index: '.$ex->getMessage());
