@@ -1,7 +1,7 @@
-var TableAwardsDatatablesManaged = function () {
+var TableReviewsDatatablesManaged = function () {
     
-    var update_awards = function (items) {
-        $('#tb_restaurant_awards').empty();
+    var update_reviews = function (items) {
+        $('#tb_restaurant_reviews').empty();
         $.each(items,function(k, v) {
             v.posted = moment(v.posted).format('ddd, MMM D, YYYY')+'<br>'+moment(v.posted).format('h:mm A');
             //image
@@ -9,14 +9,14 @@ var TableAwardsDatatablesManaged = function () {
                 v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
                 v.image_id = '-No image-';
-            $('#tb_restaurant_awards').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.name+'</td><td>'+v.posted+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
+            $('#tb_restaurant_reviews').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.title+'</td><td>'+v.notes+'</td><td>'+v.posted+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
         });   
     }
     
     var initTable = function () {
         
         //posted
-        $('#posted_awards').datetimepicker({
+        $('#posted_reviews').datetimepicker({
             autoclose: true,
             isRTL: App.isRTL(),
             format: "yyyy-mm-dd hh:ii",
@@ -26,19 +26,19 @@ var TableAwardsDatatablesManaged = function () {
         });
         
         //on select ticket_type
-        $('#btn_model_awards_add').on('click', function(ev) {
-            $('#form_model_restaurant_awards').trigger('reset');
-            $('#form_model_restaurant_awards input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_restaurant_awards input[name="restaurants_id"]:hidden').val( $('#form_model_update [name="id"]').val() );
-            $('#form_model_restaurant_awards input[name="action"]:hidden').val( 1 );
-            $('#modal_model_restaurant_awards').modal('show');
+        $('#btn_model_reviews_add').on('click', function(ev) {
+            $('#form_model_restaurant_reviews').trigger('reset');
+            $('#form_model_restaurant_reviews input[name="id"]:hidden').val('').trigger('change');
+            $('#form_model_restaurant_reviews input[name="restaurants_id"]:hidden').val( $('#form_model_update [name="id"]').val() );
+            $('#form_model_restaurant_reviews input[name="action"]:hidden').val( 1 );
+            $('#modal_model_restaurant_reviews').modal('show');
         });
         
-        //function submit restaurant_awards
-        $('#submit_model_restaurant_awards').on('click', function(ev) {
-            $('#modal_model_restaurant_awards').modal('hide');
+        //function submit restaurant_reviews
+        $('#submit_model_restaurant_reviews').on('click', function(ev) {
+            $('#modal_model_restaurant_reviews').modal('hide');
             $('#modal_model_update').modal('hide');
-            if($('#form_model_restaurant_awards').valid())
+            if($('#form_model_restaurant_reviews').valid())
             {
                 swal({
                     title: "Saving restaurant's information",
@@ -49,8 +49,8 @@ var TableAwardsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/awards', 
-                    data: $('#form_model_restaurant_awards').serializeArray(), 
+                    url: '/admin/restaurants/reviews', 
+                    data: $('#form_model_restaurant_reviews').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
                         {
@@ -61,7 +61,7 @@ var TableAwardsDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            update_awards(data.awards);
+                            update_reviews(data.reviews);
                             //show modal
                             $('#modal_model_update').modal('show');
                         }
@@ -73,19 +73,19 @@ var TableAwardsDatatablesManaged = function () {
                                 type: "error"
                             },function(){
                                 $('#modal_model_update').modal('show');
-                                $('#modal_model_restaurant_awards').modal('show');
+                                $('#modal_model_restaurant_reviews').modal('show');
                             });
                         }
                     },
                     error: function(){	
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to save the award's information!<br>The request could not be sent to the server.",
+                            text: "There was an error trying to save the review's information!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){
                             $('#modal_model_update').modal('show');
-                            $('#modal_model_restaurant_awards').modal('show');
+                            $('#modal_model_restaurant_reviews').modal('show');
                         });
                     }
                 }); 
@@ -99,13 +99,13 @@ var TableAwardsDatatablesManaged = function () {
                     type: "error"
                 },function(){
                     $('#modal_model_update').modal('show');
-                    $('#modal_model_restaurant_awards').modal('show');
+                    $('#modal_model_restaurant_reviews').modal('show');
                 });
             }    
         });
         
         //function edit or remove
-        $('#tb_restaurant_awards').on('click', 'input[type="button"]', function(e){
+        $('#tb_restaurant_reviews').on('click', 'input[type="button"]', function(e){
             var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
@@ -113,24 +113,18 @@ var TableAwardsDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/awards', 
+                    url: '/admin/restaurants/reviews', 
                     data: {action:0,id:row.data('id')}, 
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#form_model_restaurant_awards').trigger('reset');
-                            $('#form_model_restaurant_awards input[name="id"]:hidden').val(data.award.id).trigger('change');
+                            $('#form_model_restaurant_reviews').trigger('reset');
+                            $('#form_model_restaurant_reviews input[name="id"]:hidden').val(data.review.id).trigger('change');
                             //fill out 
-                            for(var key in data.award)
-                            {
-                                var e = $('#form_model_restaurant_awards [name="'+key+'"]');
-                                if(e.is('img'))
-                                    e.src = data.award[key];
-                                else
-                                    e.val(data.award[key]);
-                            }
+                            for(var key in data.review)
+                                $('#form_model_restaurant_reviews [name="'+key+'"]').val(data.review[key]);
                             //modal                         
-                            $('#modal_model_restaurant_awards').modal('show');
+                            $('#modal_model_restaurant_reviews').modal('show');
                         }
                         else{
                             $('#modal_model_update').modal('hide');
@@ -160,16 +154,16 @@ var TableAwardsDatatablesManaged = function () {
             //delete
             else if($(this).hasClass('delete')) 
             {
-                var restaurants_id = $('#form_model_restaurant_awards input[name="restaurants_id"]:hidden').val();
+                var restaurants_id = $('#form_model_restaurant_reviews input[name="restaurants_id"]:hidden').val();
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/restaurants/awards', 
+                    url: '/admin/restaurants/reviews', 
                     data: {action:-1,id:row.data('id'), restaurants_id:restaurants_id}, 
                     success: function(data) {
                         if(data.success) 
                         {
-                            update_awards(data.awards);
+                            update_reviews(data.reviews);
                         }
                         else{
                             $('#modal_model_update').modal('hide');
@@ -211,7 +205,7 @@ var TableAwardsDatatablesManaged = function () {
         });
         //function load form to upload image
         $('#btn_restaurant_award_upload_image').on('click', function(ev) {
-            FormImageUpload('restaurants.awards','#modal_model_restaurant_awards','#form_model_restaurant_awards [name="image_id"]');       
+            FormImageUpload('restaurants.reviews','#modal_model_restaurant_reviews','#form_model_restaurant_reviews [name="image_id"]');       
         }); 
     }
     return {
@@ -222,18 +216,18 @@ var TableAwardsDatatablesManaged = function () {
             }
             initTable();        
         },
-        update_awards: function (items) {
-            update_awards(items);        
+        update_reviews: function (items) {
+            update_reviews(items);        
         }
     };
 }();
 //*****************************************************************************************
-var FormAwardsValidation = function () {
+var FormReviewsValidation = function () {
     // advance validation
     var handleValidation = function() {
         // for more info visit the official plugin documentation: 
         // http://docs.jquery.com/Plugins/Validation
-            var form = $('#form_model_restaurant_awards');
+            var form = $('#form_model_restaurant_reviews');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
             //IMPORTANT: update CKEDITOR textarea with actual content before submit
@@ -255,10 +249,19 @@ var FormAwardsValidation = function () {
                         date: true,
                         required: true
                     },
-                    description: {
-                        minlength: 5,
-                        maxlength: 2000,
+                    title: {
+                        minlength: 3,
+                        maxlength: 100,
                         required: true
+                    },
+                    link: {
+                        url: true,
+                        required: true
+                    },
+                    notes: {
+                        minlength: 3,
+                        maxlength: 45,
+                        required: false
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -298,6 +301,6 @@ var FormAwardsValidation = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    TableAwardsDatatablesManaged.init();
-    FormAwardsValidation.init();
+    TableReviewsDatatablesManaged.init();
+    FormReviewsValidation.init();
 });

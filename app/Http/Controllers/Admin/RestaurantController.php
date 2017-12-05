@@ -64,14 +64,7 @@ class RestaurantController extends Controller{
                                 ->orderBy('restaurant_comments.posted','DESC')
                                 ->get();
                 //reviews
-                $restaurant->reviews = DB::table('restaurant_reviews')
-                                ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_reviews.restaurant_media_id')
-                                ->select('restaurant_reviews.*','restaurant_media.image_id')
-                                ->where('restaurant_reviews.restaurants_id',$restaurant->id)
-                                ->orderBy('restaurant_reviews.posted','DESC')
-                                ->get();
-                foreach($restaurant->reviews as $i)
-                    $i->url = Image::view_image($i->url);
+                $restaurant->reviews = $this->get_reviews($restaurant->id);
                 //specials
                 $restaurant->specials = DB::table('restaurant_specials')
                                 ->leftJoin('images', 'images.id', '=' ,'restaurant_specials.image_id')
@@ -79,8 +72,8 @@ class RestaurantController extends Controller{
                                 ->where('restaurant_specials.restaurants_id',$restaurant->id)
                                 ->orderBy('restaurant_specials.title')
                                 ->get();
-                foreach($restaurant->reviews as $i)
-                    $i->url = Image::view_image($i->url);
+                foreach($restaurant->specials as $i)
+                    $i->image_id = Image::view_image($i->image_id);
                 return ['success'=>true,'restaurant'=>$restaurant];
             }
             else
@@ -680,6 +673,78 @@ class RestaurantController extends Controller{
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error RestaurantAwards Index: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Get, Edit reviews for restaurants
+     *
+     * @return view
+     */
+    public function get_reviews($restaurant_id)
+    {
+        $reviews = DB::table('restaurant_reviews')
+                        ->join('restaurant_media', 'restaurant_media.id', '=' ,'restaurant_reviews.restaurant_media_id')
+                        ->select('restaurant_reviews.*','restaurant_media.name','restaurant_media.image_id')
+                        ->where('restaurant_reviews.restaurants_id',$restaurant_id)
+                        ->orderBy('restaurant_reviews.posted','DESC')
+                        ->get();
+        foreach($reviews as $i)
+            $i->image_id = Image::view_image($i->image_id);
+        return $reviews;
+    }
+    public function reviews()
+    {
+        try {  
+            //init
+            $input = Input::all(); 
+            //get
+            if(isset($input) && isset($input['action']) && $input['action']==0)
+            {
+                $review = RestaurantReviews::find($input['id']);
+                if($review)
+                    return ['success'=>true,'review'=>$review];
+                return ['success'=>false,'msg'=>'There is an error getting the award.<br>Item not longer in the system.'];
+            }
+            //remove
+            else if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                if(!empty($input['id']))
+                {
+                    RestaurantReviews::where('id',$input['id'])->delete();
+                    $reviews = $this->get_reviews($input['restaurants_id']);
+                    return ['success'=>true,'reviews'=>$reviews,'msg'=>'Review removed successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the reviews.<br>You must select a valid item.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && !empty($input['restaurants_id']) && $input['action']==1)
+            {
+                if(!empty($input['id']))
+                {
+                    $review = RestaurantReviews::find($input['id']);
+                    if(!$review)
+                        return ['success'=>false,'msg'=>'There was an error updating the review.<br>The item is not longer in the system.'];
+                }
+                else
+                {
+                    $review = new RestaurantReviews;
+                    $review->restaurants_id = $input['restaurants_id'];
+                }
+                $review->title = strip_tags(trim($input['title']));
+                $review->link = strip_tags(trim($input['link']));
+                $review->notes = (!empty($input['notes']))? strip_tags(trim($input['notes'])) : null;
+                $review->posted = $input['posted'];
+                $review->restaurant_media_id = $input['restaurant_media_id'];
+                $review->save();
+                $reviews = $this->get_reviews($input['restaurants_id']);
+                //return
+                return ['success'=>true,'reviews'=>$reviews, 'msg'=>'Review saved successfully!'];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error RestaurantReviews Index: '.$ex->getMessage());
         }
     }
     

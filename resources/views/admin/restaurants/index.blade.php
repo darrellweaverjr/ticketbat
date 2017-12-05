@@ -250,7 +250,26 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reviews">
-                                        <div class="row">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_reviews_add" class="btn sbold bg-green"> Add
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Media</th>
+                                                        <th>Title</th>
+                                                        <th>Notes</th>
+                                                        <th>Posted</th>
+                                                        <th> </th>
+                                                        <th> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_restaurant_reviews">
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_comments">
@@ -294,6 +313,9 @@
     <!-- BEGIN AWARDS -->
     @include('admin.restaurants.awards')
     <!-- END AWARDS -->
+    <!-- BEGIN REVIEWS -->
+    @include('admin.restaurants.reviews')
+    <!-- END REVIEWS -->
 @endsection
 
 @section('scripts')
@@ -303,5 +325,6 @@
 <script src="/js/admin/restaurants/reservations.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/awards.js" type="text/javascript"></script>
+<script src="/js/admin/restaurants/reviews.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/index.js" type="text/javascript"></script>
 @endsection
