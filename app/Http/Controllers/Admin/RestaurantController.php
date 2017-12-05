@@ -57,12 +57,6 @@ class RestaurantController extends Controller{
                                 ->get();
                 //awards
                 $restaurant->awards = $this->get_awards($restaurant->id);
-                //comments
-                $restaurant->comments = DB::table('restaurant_comments')
-                                ->select('restaurant_comments.*')
-                                ->where('restaurant_comments.restaurants_id',$restaurant->id)
-                                ->orderBy('restaurant_comments.posted','DESC')
-                                ->get();
                 //reviews
                 $restaurant->reviews = $this->get_reviews($restaurant->id);
                 //specials
@@ -745,6 +739,45 @@ class RestaurantController extends Controller{
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error RestaurantReviews Index: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Get, Edit comments for restaurants
+     *
+     * @return view
+     */
+    public function get_comments($restaurant_id)
+    {
+        return DB::table('restaurant_comments')
+                        ->select('restaurant_comments.*')
+                        ->where('restaurant_comments.restaurants_id',$restaurant_id)
+                        ->orderBy('restaurant_comments.posted','DESC')
+                        ->get();
+    }
+    public function comments()
+    {
+        try {  
+            //init
+            $input = Input::all(); 
+            //update
+            if(isset($input) && isset($input['restaurants_id']) && isset($input['status']) && !empty($input['id']))
+            {
+                $status = (!empty($input['status']))? 1 : 0;
+                DB::table('restaurant_comments')->whereIn('id', $input['id'])->update(['enabled'=>$status]);
+                $comments = $this->get_comments($input['restaurants_id']);
+                //return
+                return ['success'=>true,'comments'=>$comments, 'msg'=>'Reviews saved successfully!'];
+            }
+            else if(isset($input) && isset($input['restaurants_id'])) //get all
+            {
+                $comments = $this->get_comments($input['restaurants_id']);
+                return ['success'=>true,'comments'=>$comments];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Restaurantcomments Index: '.$ex->getMessage());
         }
     }
     

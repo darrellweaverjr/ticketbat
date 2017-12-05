@@ -273,7 +273,31 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_comments">
-                                        <div class="row">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_comments_refresh" class="btn sbold bg-blue"> Refresh
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                        <div class="btn-group pull-right">
+                                            <button type="button" id="btn_model_comments_enable" data-status="1" class="btn sbold bg-green"> Enable
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button type="button" id="btn_model_comments_disable" data-status="0" class="btn sbold bg-red"> Disable
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="2%"></th>
+                                                        <th> Posted </th>
+                                                        <th width="10%"> Status </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_restaurant_comments">
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_albums">
@@ -326,5 +350,6 @@
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/awards.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/reviews.js" type="text/javascript"></script>
+<script src="/js/admin/restaurants/comments.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/index.js" type="text/javascript"></script>
 @endsection
