@@ -2,18 +2,28 @@ var TableAlbumsDatatablesManaged = function () {
     
     var update_albums = function (items) {
         $('#tb_restaurant_albums').empty();
-        var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
+        var row_edit = '<td><button type="button" class="btn sbold bg-blue view"><i class="fa fa-image"></i></button></td><td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
         $.each(items,function(k, v) {
             //default style
-            if(v.enabled==1)
-                v.enabled = '<span class="label label-sm sbold label-success"> Yes </span>';
+            if(v.enabled>0)
+                v.enabled = '<span class="label label-sm sbold label-success">Yes</span>';
             else
-                v.enabled = '<span class="label label-sm sbold label-danger"> No </span>';
-            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.title+'</td><td>'+v.posted+'</td><td>'+v.enabled+'</td><td>'+v.images+'</td>'+row_edit+'</tr>');
+                v.enabled = '<span class="label label-sm sbold label-danger">No</span>';
+            $('#tb_restaurant_albums').append('<tr data-id="'+v.id+'"><td>'+v.title+'</td><td>'+v.posted+'</td><td>'+v.enabled+'</td><td>'+v.images+'</td>'+row_edit+'</tr>');
         });   
     }
     
     var initTable = function () {
+        
+        //posted
+        $('#posted_albums').datetimepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "yyyy-mm-dd hh:ii",
+            pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
+            todayBtn: true,
+            defaultDate:'now'
+        });
         
         //on select btn_model_items_add
         $('#btn_model_albums_add').on('click', function(ev) {
@@ -51,7 +61,7 @@ var TableAlbumsDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            update_items(data.items);
+                            update_albums(data.albums);
                             //show modal
                             $('#modal_model_update').modal('show');
                         }
@@ -109,11 +119,15 @@ var TableAlbumsDatatablesManaged = function () {
                         if(data.success) 
                         {
                             $('#form_model_restaurant_albums').trigger('reset');
-                            $('#form_model_restaurant_albums input[name="id"]:hidden').val(data.item.id).trigger('change');
+                            $('#form_model_restaurant_albums input[name="id"]:hidden').val(data.album.id).trigger('change');
                             //fill out 
-                            for(var key in data.item)
+                            for(var key in data.album)
                             {
-                                $('#form_model_restaurant_albums [name="'+key+'"]').val(data.item[key]);
+                                var e = $('#form_model_restaurant_albums [name="'+key+'"]');
+                                if(e.is('input:checkbox'))
+                                    $('#form_model_restaurant_albums .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.album[key]>0)? true : false, true);
+                                else
+                                    e.val(data.album[key]);
                             }
                             //modal                         
                             $('#modal_model_restaurant_albums').modal('show');
@@ -173,6 +187,44 @@ var TableAlbumsDatatablesManaged = function () {
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to delete the album!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                });
+            }
+            //view gallery
+            else if($(this).hasClass('view')) 
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/restaurants/albums', 
+                    data: {action:2,id:row.data('id')}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#modal_model_restaurant_albums_images').modal('show');
+                        }
+                        else{
+                            $('#modal_model_update').modal('hide');
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+			$('#modal_model_update').modal('hide');	   	
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the gallery for the album!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
                         },function(){

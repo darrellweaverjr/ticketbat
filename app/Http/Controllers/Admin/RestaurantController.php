@@ -47,14 +47,7 @@ class RestaurantController extends Controller{
                 //items
                 $restaurant->items = $this->get_items($restaurant->id);
                 //albums
-                $restaurant->albums = DB::table('restaurant_albums')
-                                ->leftJoin('restaurant_album_images', 'restaurant_album_images.restaurant_albums_id', '=' ,'restaurant_albums.id')
-                                ->leftJoin('images', 'images.id', '=' ,'restaurant_album_images.image_id')
-                                ->select('restaurant_albums.*')
-                                ->select(DB::raw('restaurant_albums.*, COUNT(images.id) AS images'))
-                                ->where('restaurant_albums.restaurants_id',$restaurant->id)
-                                ->groupBy('restaurant_albums.id')->orderBy('restaurant_albums.title')
-                                ->get();
+                $restaurant->albums = $this->get_albums($restaurant->id);
                 //awards
                 $restaurant->awards = $this->get_awards($restaurant->id);
                 //reviews
@@ -803,11 +796,11 @@ class RestaurantController extends Controller{
             //get
             if(isset($input) && isset($input['action']) && $input['action']==0)
             {
-                $album = DB::table('restaurant_items')
-                                ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
-                                ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
-                                ->where('restaurant_items.id',$input['id'])
-                                ->orderBy('restaurant_menu.name')->orderBy('restaurant_items.order')
+                $album = DB::table('restaurant_albums')
+                                ->leftJoin('restaurant_album_images', 'restaurant_album_images.restaurant_albums_id', '=' ,'restaurant_albums.id')
+                                ->select(DB::raw('restaurant_albums.*, COUNT(restaurant_album_images.image_id) AS images'))
+                                ->where('restaurant_albums.id',$input['id'])
+                                ->groupBy('restaurant_albums.id')->orderBy('restaurant_albums.posted','DESC')
                                 ->first();
                 if($album)
                     return ['success'=>true,'album'=>$album];
@@ -859,7 +852,36 @@ class RestaurantController extends Controller{
                 $album->save();
                 $albums = $this->get_albums($album->restaurants_id);
                 //return
-                return ['success'=>true,'album'=>$album,'msg'=>'Album saved successfully!'];
+                return ['success'=>true,'albums'=>$albums,'msg'=>'Album saved successfully!'];
+            }
+            //get images
+            else if(isset($input) && isset($input['action']) && !empty($input['id']) && $input['action']==2)
+            {
+                $album = RestaurantAlbums::find($input['id']);
+                if(!$album)
+                        return ['success'=>false,'msg'=>'There was an error getting the images for that album.<br>The item is not longer in the system.'];
+                
+//                if(!empty($input['id']))
+//                {
+//                    $album = RestaurantAlbums::find($input['id']);
+//                    if(!$album)
+//                        return ['success'=>false,'msg'=>'There was an error updating the album.<br>The item is not longer in the system.'];
+//                }
+//                else
+//                {
+//                    $album = new RestaurantAlbums;
+//                    $album->restaurants_id = $input['restaurants_id'];
+//                    $exist = RestaurantAlbums::where('restaurants_id',$input['restaurants_id'])->where('title',$input['title'])->count();
+//                    if($exist)
+//                        return ['success'=>false,'msg'=>'There was an error saving the album.<br>There is already an album with that name in the system.'];
+//                }
+//                $album->title = strip_tags(trim($input['title']));
+//                $album->posted = $input['posted'];
+//                $album->enabled = (!empty($input['enabled']))? 1 : 0;
+//                $album->save();
+                $albums = $this->get_albums($album->restaurants_id);
+                //return
+                return ['success'=>true,'albums'=>$albums,'msg'=>'Album saved successfully!'];
             }
             else
                 return ['success'=>false,'msg'=>'Invalid Option.'];
