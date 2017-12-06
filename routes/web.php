@@ -47,7 +47,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('shows/tickets', 'ShowController@tickets')->middleware('permissions:SHOWS');
     Route::post('shows/bands', 'ShowController@bands')->middleware('permissions:SHOWS');
     Route::post('shows/showtimes', 'ShowController@showtimes')->middleware('permissions:SHOWS');
-    Route::post('shows/contracts/{format?}/{id?}', 'ShowController@contracts')->middleware('permissions:SHOWS');
+    Route::match(['get','post'],'shows/contracts/{format?}/{id?}', 'ShowController@contracts')->middleware('permissions:SHOWS');
     Route::post('shows/images', 'ShowController@images')->middleware('permissions:SHOWS');
     Route::post('shows/banners', 'ShowController@banners')->middleware('permissions:SHOWS');
     Route::post('shows/videos', 'ShowController@videos')->middleware('permissions:SHOWS');

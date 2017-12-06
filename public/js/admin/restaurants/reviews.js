@@ -2,6 +2,7 @@ var TableReviewsDatatablesManaged = function () {
     
     var update_reviews = function (items) {
         $('#tb_restaurant_reviews').empty();
+        var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
         $.each(items,function(k, v) {
             v.posted = moment(v.posted).format('ddd, MMM D, YYYY')+'<br>'+moment(v.posted).format('h:mm A');
             //image
@@ -9,7 +10,6 @@ var TableReviewsDatatablesManaged = function () {
                 v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
                 v.image_id = '-No image-';
-            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
             $('#tb_restaurant_reviews').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.title+'</td><td>'+v.notes+'</td><td>'+v.posted+'</td>'+row_edit+'</tr>');
         });   
     }

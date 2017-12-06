@@ -586,9 +586,9 @@
                                             <table class="table table-striped table-hover table-bordered" id="tb_sub_bands">
                                                 <thead>
                                                     <tr>
-                                                        <th> Order </th>
-                                                        <th> Band </th>
-                                                        <th> </th>
+                                                        <th>Order</th>
+                                                        <th>Band</th>
+                                                        <th width="5%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -628,11 +628,11 @@
                                             <table class="table table-striped table-hover table-bordered" >
                                                 <thead>
                                                     <tr>
-                                                        <th> Date Uploaded </th>
-                                                        <th> Effective Date </th>
-                                                        <th> Status </th>
-                                                        <th>  </th>
-                                                        <th>  </th>
+                                                        <th>Date Uploaded</th>
+                                                        <th>Effective Date</th>
+                                                        <th>Status</th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_show_contracts">

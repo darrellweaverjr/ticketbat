@@ -2,6 +2,7 @@ var TableReservationsDatatablesManaged = function () {
     
     var update_reservations = function (items) {
         $('#tb_restaurant_reservations').empty();
+        var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
         $.each(items,function(k, v) {
             var row_date = '<td>'+moment(v.schedule).format('ddd, MMM D, YYYY')+'<br>'+moment(v.schedule).format('h:mm A')+'</td>';
             var row_guests = '<td>'+v.people+'</td>';
@@ -34,7 +35,6 @@ var TableReservationsDatatablesManaged = function () {
                     break; 
             }
             var row_status = '<td>'+v.status+'<br>'+moment(v.created).format('M/D/YYYY h:mmA')+'</td>'; //created here
-            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
             $('#tb_restaurant_reservations').append('<tr data-id="'+v.id+'" title="'+title+'">'+ row_date + row_guests + row_client + row_contact + row_occassion + row_request + row_status + row_edit +'</tr>');
         });   
     }

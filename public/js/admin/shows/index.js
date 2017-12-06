@@ -397,39 +397,24 @@ var TableDatatablesManaged = function () {
             //fill out passwords
             if(data.passwords && data.passwords.length)
             {
+                var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
                 $.each(data.passwords,function(k, v) {
-                    $('#tb_show_passwords').append('<tr class="'+v.id+'"><td>'+v.password+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td>'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                    $('#tb_show_passwords').append('<tr class="'+v.id+'"><td>'+v.password+'</td><td>'+v.start_date+'</td><td>'+v.end_date+'</td><td>'+v.ticket_types+'</td>'+row_edit+'</tr>');
                 });
             }
             //fill out tickets
             $('#form_model_show_contracts select[name="ticket_id"]').append('<option disabled selected value=""></option>');
             if(data.tickets && data.tickets.length)
             {
-                $.each(data.tickets,function(k, v) {
-                    //default style
-                    if(v.is_default==1)
-                        v.is_default = '<span class="label label-sm sbold label-success">Yes</span>';
-                    else
-                        v.is_default = '<span class="label label-sm sbold label-danger">No</span>';
-                    //active style
-                    if(v.is_active==1)
-                        v.is_active = '<span class="label label-sm sbold label-success">Active</span>';
-                    else
-                        v.is_active = '<span class="label label-sm sbold label-danger">Inactive</span>';
-                    //unlimited tickets
-                    if(v.max_tickets == 0) v.max_tickets = '&#8734;';
-                    //commission$
-                    if(!v.fixed_commission) v.fixed_commission = '0.00';
-                    $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
-                    $('#form_model_show_contracts select[name="ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' ('+v.is_active+') '+v.title+'</option>');
-                });
+                update_tickets(data.tickets,1);
             }
             //fill out bands
             tableBands.clear().draw();
             if(data.bands && data.bands.length)
             {
+                var row_edit = '<button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button>';
                 $.each(data.bands,function(k, v) {
-                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                                
+                    tableBands.row.add( [ v.n_order,v.name,row_edit ] ).draw();                                
                 });
             }
             //fill out sweepstakes
@@ -453,6 +438,7 @@ var TableDatatablesManaged = function () {
             //fill out contracts
             if(data.contracts && data.contracts.length)
             {
+                var row_edit = '<td><button type="button" class="btn sbold bg-blue view"><i class="fa fa-file-pdf-o"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
                 $.each(data.contracts,function(k, v) {
                     //status for cron job
                     if(!v.data)
@@ -461,7 +447,7 @@ var TableDatatablesManaged = function () {
                         v.data = '<span class="label label-sm sbold label-danger">Pending</span>';
                     var updated = moment(v.updated);
                     var effective_date = moment(v.effective_date);
-                    $('#tb_show_contracts').append('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+v.data+'</td><td><input type="button" value="View" rel="'+v.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+v.id+'" class="btn sbold bg-red delete"></td></tr>');
+                    $('#tb_show_contracts').append('<tr data-id="'+v.id+'" ><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+v.data+'</td>'+row_edit+'</tr>');
                 });
             }
             //fill out images
@@ -693,7 +679,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_show_passwords').trigger('reset');
             $('#modal_model_show_passwords').modal('show');
         });
-        $('#tb_show_passwords').on('click', 'input[type="button"]', function(e){
+        $('#tb_show_passwords').on('click', 'button', function(e){
             var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
@@ -815,12 +801,13 @@ var TableDatatablesManaged = function () {
                                 showConfirmButton: false
                             });
                             var v = data.password;
+                            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
                             //update row
                             if($('#tb_show_passwords').find('tr[class="'+v.id+'"]').length)
-                                $('#tb_show_passwords').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td>');
+                                $('#tb_show_passwords').find('tr[class="'+v.id+'"]').html('<td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td>'+row_edit);
                             //add row
                             else
-                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Delete" class="btn sbold bg-red delete"></td></tr>');
+                                $('#tb_show_passwords').append('<tr class="'+v.id+'"><td class="password">'+v.password+'</td><td class="start_date">'+v.start_date+'</td><td class="end_date">'+v.end_date+'</td><td class="ticket_types">'+v.ticket_types+'</td>'+row_edit+'</tr>');
                             //show modal
                             $('#modal_model_update').modal('show');
                         }
@@ -928,6 +915,31 @@ var TableDatatablesManaged = function () {
         });
         //function with show_sweepstakes  *****************************************************************************************************   SHOW sweepstakes END
         //function with show_tickets  *******************************************************************************************************   SHOW TICKETS BEGIN
+       
+        function update_tickets(items,option=0)
+        {
+            $('#tb_show_tickets').empty();
+            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td>';
+            $.each(items,function(k, v) {
+                //default style
+                if(v.is_default==1)
+                    v.is_default = '<span class="label label-sm sbold label-success"> Yes </span>';
+                else
+                    v.is_default = '<span class="label label-sm sbold label-danger"> No </span>';
+                //active style
+                if(v.is_active==1)
+                    v.is_active = '<span class="label label-sm sbold label-success"> Active </span>';
+                else
+                    v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
+                //unlimited tickets
+                if(v.max_tickets == 0) v.max_tickets = '&#8734;';
+                //commission$
+                if(!v.fixed_commission) v.fixed_commission = '0.00';
+                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td>'+row_edit+'</tr>');
+                if(option)
+                    $('#form_model_show_contracts select[name="ticket_id"]').append('<option value="'+v.id+'">'+v.ticket_type+' ('+v.is_active+') '+v.title+'</option>');
+            });   
+        }
         //on select ticket_type
         $('#form_model_show_tickets [name="ticket_type"]').on('change', function(ev) {
             var classX = $(this).find('option:selected').attr('data-class');
@@ -960,7 +972,7 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
-        $('#tb_show_tickets').on('click', 'input[type="button"]', function(e){
+        $('#tb_show_tickets').on('click', 'button', function(e){
             var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
@@ -1045,24 +1057,7 @@ var TableDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            $('#tb_show_tickets').empty();
-                            $.each(data.tickets,function(k, v) {
-                                //default style
-                                if(v.is_default==1)
-                                    v.is_default = '<span class="label label-sm sbold label-success"> Yes </span>';
-                                else
-                                    v.is_default = '<span class="label label-sm sbold label-danger"> No </span>';
-                                //active style
-                                if(v.is_active==1)
-                                    v.is_active = '<span class="label label-sm sbold label-success"> Active </span>';
-                                else
-                                    v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
-                                //unlimited tickets
-                                if(v.max_tickets == 0) v.max_tickets = '&#8734;';
-                                //commission$
-                                if(!v.fixed_commission) v.fixed_commission = '0.00';
-                                $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td></tr>');
-                            });   
+                            update_tickets(data.tickets);
                             //show modal
                             $('#modal_model_update').modal('show');
                         }
@@ -1199,7 +1194,7 @@ var TableDatatablesManaged = function () {
             }
         } );
         //delete
-        $('#tb_sub_bands tbody').on('click', 'input[type="button"]', function(e){
+        $('#tb_sub_bands tbody').on('click', 'button', function(e){
             var show_id = $('#form_model_update input[name="id"]:hidden').val();
             var row = $(this).closest('tr');
             var order = tableBands.row(row).data()[0];
@@ -1216,8 +1211,9 @@ var TableDatatablesManaged = function () {
                             tableBands.clear().draw();
                             if(data.bands && data.bands.length)
                             {
+                                var row_edit = '<button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button>';
                                 $.each(data.bands,function(k, v) {
-                                    tableBands.row.add( [ v.n_order,v.name,'<input type="button" value="Delete" class="btn sbold bg-red delete">' ] ).draw();                               
+                                    tableBands.row.add( [ v.n_order,v.name,row_edit ] ).draw();                               
                                 });
                             }
                         }    
@@ -2000,9 +1996,9 @@ var TableDatatablesManaged = function () {
             $('#modal_model_show_contracts').modal('show');
         });
         //view file or remove
-        $('#tb_show_contracts').on('click', 'input[type="button"]', function(e){
-            var id = $(this).attr('rel');
+        $('#tb_show_contracts').on('click', 'button', function(e){
             var row = $(this).closest('tr');
+            var id = row.data('id');
             //remove
             if($(this).hasClass('delete'))
             {
@@ -2075,7 +2071,8 @@ var TableDatatablesManaged = function () {
                                 data.contract.data = '<span class="label label-sm sbold label-danger">Pending</span>';
                             var updated = moment(data.contract.updated);
                             var effective_date = moment(data.contract.effective_date);
-                            $('#tb_show_contracts').prepend('<tr><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+data.contract.data+'</td><td><input type="button" value="View" rel="'+data.contract.id+'" class="btn sbold bg-green view"></td><td><input type="button" value="Delete" rel="'+data.contract.id+'" class="btn sbold bg-red delete"></td></tr>');
+                            var row_edit = '<td><button type="button" class="btn sbold bg-blue view"><i class="fa fa-file-pdf-o"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
+                            $('#tb_show_contracts').prepend('<tr data-id="'+data.contract.id+'"><td>'+updated.format('MM/DD/YYYY h:mma')+'</td><td>'+effective_date.format('MM/DD/YYYY')+'</td><td>'+data.contract.data+'</td>'+row_edit+'</tr>');
                             //show modal
                             $('#modal_model_update').modal('show');
                         }

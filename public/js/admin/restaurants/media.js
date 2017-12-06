@@ -4,13 +4,14 @@ var TableMediaDatatablesManaged = function () {
         
         var update_media = function (items) {
             $('#tb_restaurant_media').empty();
+            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete" disabled="true"><i class="fa fa-remove"></i></button></td>';
             $.each(items,function(k, v) {
                 //image
                 if(v.image_id)
                     v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
                 else
                     v.image_id = '-No image-';
-                $('#tb_restaurant_media').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.name+'</td><td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" disabled="true" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td></tr>');
+                $('#tb_restaurant_media').append('<tr data-id="'+v.id+'"><td>'+v.image_id+'</td><td>'+v.name+'</td>'+row_edit+'</tr>');
             });   
         }
         

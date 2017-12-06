@@ -5,6 +5,7 @@ var TableMenuDatatablesManaged = function () {
         var update_menu = function (items) {
             $('#tb_restaurant_menu').empty();
             $('#form_model_restaurant_menu_add select[name="parent_id"]').html('<option value="0">- No parent -</option>');
+            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
             $.each(items,function(k, v) {
                 //default style
                 if(v.disabled==1)
@@ -12,7 +13,7 @@ var TableMenuDatatablesManaged = function () {
                 else
                     v.disabled = '<span class="label label-sm sbold label-success"> No </span>';
                 v.notes = (v.notes)? v.notes : '';
-                $('#tb_restaurant_menu').append('<tr data-id="'+v.id+'"><td>&emsp;'+v.name+'</td><td>'+v.notes+'</td><td>'+v.disabled+'</td><td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" disabled="true" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td></tr>');
+                $('#tb_restaurant_menu').append('<tr data-id="'+v.id+'"><td>&emsp;'+v.name+'</td><td>'+v.notes+'</td><td>'+v.disabled+'</td>'+row_edit+'</tr>');
                 $('#form_model_restaurant_menu_add select[name="parent_id"]').append('<option value="'+v.id+'">&emsp;'+v.name+'</option>');
             });   
         }

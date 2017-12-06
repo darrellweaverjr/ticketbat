@@ -1432,6 +1432,7 @@ var TableDatatablesManaged = function () {
         function update_ads(items)
         {
             $('#tb_venue_ads').empty();
+            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
             $.each(items,function(k, v) {
                 var start_date = moment(v.start_date).format('M/DD/YY h:ma');
                 var end_date = moment(v.end_date).format('M/DD/YY h:ma');
@@ -1441,7 +1442,6 @@ var TableDatatablesManaged = function () {
                     size = ' width="100px" height="50px" ';
                 else if(type=='V')
                     size = ' width="50px" height="100px" ';
-                var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
                 $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img '+size+' src="'+v.image+'"></td><td>'+type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+start_date+'</td><td>'+end_date+'</td>'+row_edit+'</tr>');
             }); 
         }        
