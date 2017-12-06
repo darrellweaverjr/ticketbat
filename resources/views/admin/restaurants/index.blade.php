@@ -193,8 +193,8 @@
                                                         <th>Occassion</th>
                                                         <th>Special<br>Request</th>
                                                         <th>Status<br>Created</th>
-                                                        <th></th>
-                                                        <th></th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_restaurant_reservations">
@@ -218,8 +218,8 @@
                                                         <th>Price</th>
                                                         <th>Disabled</th>
                                                         <th>Image</th>
-                                                        <th> </th>
-                                                        <th> </th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_restaurant_items">
@@ -240,8 +240,8 @@
                                                         <th>Image</th>
                                                         <th>Awarded</th>
                                                         <th>Posted</th>
-                                                        <th> </th>
-                                                        <th> </th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_restaurant_awards">
@@ -263,8 +263,8 @@
                                                         <th>Title</th>
                                                         <th>Notes</th>
                                                         <th>Posted</th>
-                                                        <th> </th>
-                                                        <th> </th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_restaurant_reviews">
@@ -291,8 +291,8 @@
                                                 <thead>
                                                     <tr>
                                                         <th width="2%"></th>
-                                                        <th> Posted </th>
-                                                        <th width="10%"> Status </th>
+                                                        <th>Posted</th>
+                                                        <th width="10%">Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_restaurant_comments">

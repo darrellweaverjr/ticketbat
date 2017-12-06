@@ -13,7 +13,8 @@ var TableItemsDatatablesManaged = function () {
                 v.image_id = '<img width="80px" height="80px" src="'+v.image_id+'"/>';
             else
                 v.image_id = '-No image-';
-            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.image_id+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Remove" class="btn sbold bg-red delete"></td></tr>');
+            var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
+            $('#tb_restaurant_items').append('<tr data-id="'+v.id+'"><td>'+v.menu+'</td><td>'+v.order+'</td><td>'+v.name+'</td><td>$'+v.price+'</td><td>'+v.disabled+'</td><td>'+v.image_id+'</td>'+row_edit+'</tr>');
         });   
     }
     
@@ -116,7 +117,7 @@ var TableItemsDatatablesManaged = function () {
         });
         
         //function edit or remove
-        $('#tb_restaurant_items').on('click', 'input[type="button"]', function(e){
+        $('#tb_restaurant_items').on('click', 'button', function(e){
             var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
