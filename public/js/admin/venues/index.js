@@ -254,17 +254,7 @@ var TableDatatablesManaged = function () {
             //fill out ads
             if(data.ads && data.ads.length)
             {
-                $.each(data.ads,function(k, v) {
-                    var start_date = moment(v.start_date).format('M/DD/YY h:ma');
-                    var end_date = moment(v.end_date).format('M/DD/YY h:ma');
-                    var type = v.type.slice(0,1);
-                    var size = ' width="100px" height="100px" ';
-                    if(type=='H')
-                        size = ' width="100px" height="50px" ';
-                    else if(type=='V')
-                        size = ' width="50px" height="100px" ';
-                    $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img '+size+' src="'+v.image+'"></td><td>'+type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+start_date+'</td><td>'+end_date+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Del" class="btn sbold bg-red delete"></td></tr>');
-                }); 
+                update_ads(data.ads);      
             }
             //show modal
             $('#modal_model_update').modal('show');
@@ -1438,6 +1428,23 @@ var TableDatatablesManaged = function () {
         });
         //function with venue_videos  *****************************************************************************************************   VENUE VIDEOS END
         //function with venue_ads  *******************************************************************************************************    VENUE ADS BEGIN
+        
+        function update_ads(items)
+        {
+            $('#tb_venue_ads').empty();
+            $.each(items,function(k, v) {
+                var start_date = moment(v.start_date).format('M/DD/YY h:ma');
+                var end_date = moment(v.end_date).format('M/DD/YY h:ma');
+                var type = v.type.slice(0,1);
+                var size = ' width="100px" height="100px" ';
+                if(type=='H')
+                    size = ' width="100px" height="50px" ';
+                else if(type=='V')
+                    size = ' width="50px" height="100px" ';
+                var row_edit = '<td><button type="button" class="btn sbold bg-yellow edit"><i class="fa fa-edit"></i></button></td><td><button type="button" class="btn sbold bg-red delete"><i class="fa fa-remove"></i></button></td>';
+                $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img '+size+' src="'+v.image+'"></td><td>'+type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+start_date+'</td><td>'+end_date+'</td>'+row_edit+'</tr>');
+            }); 
+        }        
         $('#ads_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
                 format: 'YYYY-MM-DD HH:mm',
@@ -1473,7 +1480,7 @@ var TableDatatablesManaged = function () {
             $('#form_model_venue_ads input[name="action"]:hidden').val(1);
             $('#modal_model_venue_ads').modal('show');
         });
-        $('#tb_venue_ads').on('click', 'input[type="button"]', function(e){            
+        $('#tb_venue_ads').on('click', 'button', function(e){            
             var row = $(this).closest('tr');
             //edit
             if($(this).hasClass('edit')) 
@@ -1536,18 +1543,7 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#tb_venue_ads').empty();
-                            $.each(data.ads,function(k, v) {
-                                var start_date = moment(v.start_date).format('M/DD/YY h:ma');
-                                var end_date = moment(v.end_date).format('M/DD/YY h:ma');
-                                var type = v.type.slice(0,1);
-                                var size = ' width="100px" height="100px" ';
-                                if(type=='H')
-                                    size = ' width="100px" height="50px" ';
-                                else if(type=='V')
-                                    size = ' width="50px" height="100px" ';
-                                $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img '+size+' src="'+v.image+'"></td><td>'+type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+start_date+'</td><td>'+end_date+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Del" class="btn sbold bg-red delete"></td></tr>');
-                            }); 
+                            update_ads(data.ads);
                         }
                         else{
 			    $('#modal_model_update').modal('hide');						
@@ -1600,18 +1596,7 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success) 
                         {
-                            $('#tb_venue_ads').empty();
-                            $.each(data.ads,function(k, v) {
-                                var start_date = moment(v.start_date).format('M/DD/YY h:ma');
-                                var end_date = moment(v.end_date).format('M/DD/YY h:ma');
-                                var type = v.type.slice(0,1);
-                                var size = ' width="100px" height="100px" ';
-                                if(type=='H')
-                                    size = ' width="100px" height="50px" ';
-                                else if(type=='V')
-                                    size = ' width="50px" height="100px" ';
-                                $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img '+size+' src="'+v.image+'"></td><td>'+type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+start_date+'</td><td>'+end_date+'</td><td><input type="button" value="Edit" class="btn sbold bg-yellow edit"></td><td><input type="button" value="Del" class="btn sbold bg-red delete"></td></tr>');
-                            });             
+                            update_ads(data.ads);      
                         }
                         else{
 			    $('#modal_model_update').modal('hide');						
