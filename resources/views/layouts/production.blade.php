@@ -46,9 +46,9 @@
         <link href="{{config('app.theme')}}css/layout.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/style_p.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="{{config('app.theme')}}img/favicon.png" /> 
-        <link rel="apple-touch-icon" href="{{config('app.theme')}}img/favicon.png"/>
-        <link rel="apple-touch-icon-precomposed" href="{{config('app.theme')}}img/favicon.png"/>
+        <link rel="shortcut icon" href="{{config('app.theme')}}img/favicon.ico" /> 
+        <link rel="apple-touch-icon" href="{{config('app.theme')}}img/favicon.ico"/>
+        <link rel="apple-touch-icon-precomposed" href="{{config('app.theme')}}img/favicon.ico"/>
         @yield('styles')
     </head>
     <!-- END HEAD -->
