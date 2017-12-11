@@ -73,23 +73,39 @@
                 <!-- BEGIN FORM-->
                 <form method="post" id="form_model_restaurant_albums_images" class="form-horizontal">
                     <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                    <input type="hidden" name="restaurants_id" value="" />
                     <input type="hidden" name="id" value="" />
-                    <input type="hidden" name="action" value="1" />
+                    <input type="hidden" name="action" value="3" />
                     <div class="form-body">
                         <div class="alert alert-danger display-hide">
                             <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                         <div class="alert alert-success display-hide">
                             <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        <div class="row">
-                            
+                        <div class="row" style="max-height:600px !important;overflow-y: auto;">
+                            <div class="portfolio-content body_grid color-panel text-center ">
+                                <div id="albumImages" class="cbp text-center" style="min-height: 2000px; width:950px !important;">
+                                    
+                                    <div class="cbp-item">
+                                        <div class="cbp-caption">
+                                            <a class="cbp-caption-defaultWrap">
+                                                <img src="http://ticketbat.s3-website-us-west-2.amazonaws.com/restaurants/media/12stones800000.jpg" alt="Error image"> </a>
+                                            <div class="cbp-caption-activeWrap">
+                                                <div class="cbp-l-caption-alignCenter">
+                                                    <div class="cbp-l-caption-body">
+                                                        <button data-id="5" class="cbp-l-caption btn btn-lg red"><i class="fa fa-remove"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-actions">
                         <div class="row">
                             <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_restaurant_albums_images').trigger('reset')">Cancel</button>
-                                <button type="button" id="submit_model_restaurant_albums_images" class="btn sbold grey-salsa">Save</button>
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                             </div>
                         </div>
                     </div>

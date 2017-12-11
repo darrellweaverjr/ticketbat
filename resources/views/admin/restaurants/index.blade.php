@@ -5,6 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
@@ -366,6 +367,7 @@
 @endsection
 
 @section('scripts')
+<script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/menu.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/media.js" type="text/javascript"></script>

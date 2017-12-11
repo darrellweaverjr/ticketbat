@@ -202,10 +202,13 @@ var TableAlbumsDatatablesManaged = function () {
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/admin/restaurants/albums', 
-                    data: {action:2,id:row.data('id')}, 
+                    data: {action:0,restaurant_albums_id:row.data('id')}, 
                     success: function(data) {
                         if(data.success) 
                         {
+                            $('#modal_model_restaurant_albums_images').trigger('reset');
+                            $('#modal_model_restaurant_albums_images input[name="id"]:hidden').val(row.data('id')).trigger('change');
+                            update_album_images(data.images);
                             $('#modal_model_restaurant_albums_images').modal('show');
                         }
                         else{
@@ -247,13 +250,46 @@ var TableAlbumsDatatablesManaged = function () {
             }
         });
     }
+    
+    var update_album_images = function (items) {
+        $('#albumImages').empty();
+        $.each(items,function(k, v) {
+            var image = '<div class="cbp-item"><div class="cbp-caption"><a class="cbp-caption-defaultWrap">'+
+                    '<img src="'+v.url+'" alt="Error image"> </a>'+
+                    '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
+                    '<button data-id="'+v.id+'" class="cbp-l-caption btn btn-lg red"><i class="fa fa-remove"></i></button>'+
+                    '</div></div></div></div></div>';
+            $('#albumImages').append(image);
+        });   
+    }
+    
+    var initPortfolio = function () {
+        
+        //grid shows
+        $('#albumImages').cubeportfolio({
+            layoutMode: 'grid',
+            //defaultFilter: '*',
+            animationType: 'fadeOut', // quicksand
+            gapHorizontal: 0,
+            gapVertical: 0,
+            gridAdjustment: 'responsive', 
+            mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
+            caption: 'overlayBottomAlong', 
+            displayType: 'default', 
+            displayTypeSpeed: 1,
+            loadMoreAction: 'auto'
+        });
+        
+    }
+    
     return {
         //main function to initiate the module
         init: function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable();        
+            initTable();   
+            initPortfolio();
         },
         update_albums: function (items) {
             update_albums(items);        

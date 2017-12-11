@@ -37,7 +37,42 @@ class RestaurantAlbums extends Model
      */
     public function images()
     {
-        return $this->hasMany('App\Http\Models\RestaurantAlbumImages','restaurant_albums_id');
+        return $this->belongsToMany('App\Http\Models\Image','restaurant_album_images','restaurant_albums_id','image_id');
     }
     //PERSONALIZED METHODS
+    /**
+     * Set the url for the current banner.
+     */
+    public function add_image($url)
+    {
+        $url = Image::stablish_image('restaurants/albums',$url);
+        $image = new Image;
+        $image->url = $url;
+        $image->created = date('Y-m-d H:i:s');
+        $image->save();
+        if($image)
+        {
+            $this->images()->attach($image->id);
+            return true;
+        }
+        else
+        {
+            Image::remove_image($url);
+            return false;
+        }
+    }
+    /**
+     * Remove the image file for the current banner.
+     */
+    public function delete_image($id)
+    {
+        $image = Image::find($id);
+        if($image)
+        {
+            $image->delete_image_file();
+            $this->images()->detach($image->id);
+            $image->delete();
+        }
+        return true;   
+    }
 }

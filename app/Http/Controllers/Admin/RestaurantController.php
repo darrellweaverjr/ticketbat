@@ -788,13 +788,60 @@ class RestaurantController extends Controller{
                         ->groupBy('restaurant_albums.id')->orderBy('restaurant_albums.posted','DESC')
                         ->get();
     }
+    public function get_album_images($album_id)
+    {
+        return DB::table('restaurant_album_images')
+                        ->join('images', 'restaurant_album_images.image_id', '=' ,'images.id')
+                        ->select(DB::raw('images.id, images.url'))
+                        ->where('restaurant_album_images.restaurant_albums_id',$album_id)
+                        ->groupBy('restaurant_album_images.image_id')->orderBy('images.created','DESC')
+                        ->get();
+    }
     public function albums()
     {
         try {  
             //init
             $input = Input::all(); 
-            //get
-            if(isset($input) && isset($input['action']) && $input['action']==0)
+            //get images
+            if(isset($input) && isset($input['action']) && !empty($input['restaurant_albums_id']) && $input['action']==0)
+            {
+                $album = RestaurantAlbums::find($input['restaurant_albums_id']);
+                if(!$album)
+                        return ['success'=>false,'msg'=>'There was an error getting the images for that album.<br>The item is not longer in the system.'];
+                $images = $album->images();
+                foreach ($images as $i)
+                    $i->url = Image::view_image($i->url);
+                //return
+                return ['success'=>true,'images'=>$images];
+            }
+            //add images
+            else if(isset($input) && isset($input['action']) && !empty($input['restaurant_albums_id']) && !empty($input['url']) && $input['action']==1)
+            {
+                $album = RestaurantAlbums::find($input['restaurant_albums_id']);
+                if(!$album)
+                        return ['success'=>false,'msg'=>'There was an error adding images for that album.<br>The item is not longer in the system.'];
+                if($album->add_image($input['url']))
+                {
+                    $images = $this->get_album_images($album->id);
+                    return ['success'=>true,'images'=>$images,'msg'=>'Image added successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There is an error adding the image.'];
+            }
+            //remove images
+            else if(isset($input) && isset($input['action']) && !empty($input['restaurant_albums_id']) && !empty($input['id']) && $input['action']==-1)
+            {
+                $album = RestaurantAlbums::find($input['restaurant_albums_id']);
+                if(!$album)
+                        return ['success'=>false,'msg'=>'There was an error removing the image for that album.<br>The item is not longer in the system.'];
+                if($album->delete_image($input['id']))
+                {
+                    $images = $this->get_album_images($album->id);
+                    return ['success'=>true,'images'=>$images,'msg'=>'Image removed successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There is an error removing the image.'];
+            }
+            //get albums
+            else if(isset($input) && isset($input['action']) && $input['action']==0)
             {
                 $album = DB::table('restaurant_albums')
                                 ->leftJoin('restaurant_album_images', 'restaurant_album_images.restaurant_albums_id', '=' ,'restaurant_albums.id')
@@ -854,39 +901,10 @@ class RestaurantController extends Controller{
                 //return
                 return ['success'=>true,'albums'=>$albums,'msg'=>'Album saved successfully!'];
             }
-            //get images
-            else if(isset($input) && isset($input['action']) && !empty($input['id']) && $input['action']==2)
-            {
-                $album = RestaurantAlbums::find($input['id']);
-                if(!$album)
-                        return ['success'=>false,'msg'=>'There was an error getting the images for that album.<br>The item is not longer in the system.'];
-                
-//                if(!empty($input['id']))
-//                {
-//                    $album = RestaurantAlbums::find($input['id']);
-//                    if(!$album)
-//                        return ['success'=>false,'msg'=>'There was an error updating the album.<br>The item is not longer in the system.'];
-//                }
-//                else
-//                {
-//                    $album = new RestaurantAlbums;
-//                    $album->restaurants_id = $input['restaurants_id'];
-//                    $exist = RestaurantAlbums::where('restaurants_id',$input['restaurants_id'])->where('title',$input['title'])->count();
-//                    if($exist)
-//                        return ['success'=>false,'msg'=>'There was an error saving the album.<br>There is already an album with that name in the system.'];
-//                }
-//                $album->title = strip_tags(trim($input['title']));
-//                $album->posted = $input['posted'];
-//                $album->enabled = (!empty($input['enabled']))? 1 : 0;
-//                $album->save();
-                $albums = $this->get_albums($album->restaurants_id);
-                //return
-                return ['success'=>true,'albums'=>$albums,'msg'=>'Album saved successfully!'];
-            }
             else
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
-            throw new Exception('Error Restaurantalbums Index: '.$ex->getMessage());
+            throw new Exception('Error RestaurantAlbumsImages Index: '.$ex->getMessage());
         }
     }
     
