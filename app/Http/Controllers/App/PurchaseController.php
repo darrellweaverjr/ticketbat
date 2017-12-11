@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Input;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Transaction;
 use App\Http\Models\Purchase;
+use App\Http\Models\Location;
 use App\Http\Models\Util;
 use App\Http\Models\User;
 
