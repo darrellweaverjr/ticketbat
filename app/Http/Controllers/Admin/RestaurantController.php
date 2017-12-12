@@ -790,12 +790,15 @@ class RestaurantController extends Controller{
     }
     public function get_album_images($album_id)
     {
-        return DB::table('restaurant_album_images')
+        $images = DB::table('restaurant_album_images')
                         ->join('images', 'restaurant_album_images.image_id', '=' ,'images.id')
                         ->select(DB::raw('images.id, images.url'))
                         ->where('restaurant_album_images.restaurant_albums_id',$album_id)
                         ->groupBy('restaurant_album_images.image_id')->orderBy('images.created','DESC')
                         ->get();
+        foreach($images as $i)
+            $i->url = Image::view_image($i->url);
+        return $images;
     }
     public function albums()
     {
@@ -808,10 +811,7 @@ class RestaurantController extends Controller{
                 $album = RestaurantAlbums::find($input['restaurant_albums_id']);
                 if(!$album)
                         return ['success'=>false,'msg'=>'There was an error getting the images for that album.<br>The item is not longer in the system.'];
-                $images = $album->images();
-                foreach ($images as $i)
-                    $i->url = Image::view_image($i->url);
-                //return
+                $images = $this->get_album_images($album->id);
                 return ['success'=>true,'images'=>$images];
             }
             //add images

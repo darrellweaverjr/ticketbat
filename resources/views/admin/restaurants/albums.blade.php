@@ -62,7 +62,7 @@
     </div>
 </div>
 <!-- END ADD/EDIT ALBUMS MODAL-->
-<!-- BEGIN ADD/EDIT GALLERY MODAL-->
+<!-- BEGIN ADD/VIEW GALLERY MODAL-->
 <div id="modal_model_restaurant_albums_images" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width:1000px !important;">
         <div class="modal-content portlet">
@@ -70,49 +70,29 @@
                 <h4 class="modal-title bold uppercase" style="color:white;"><center>Add/Edit Album Images</center></h4>
             </div>
             <div class="modal-body">
+                <div class="btn-group">
+                    <button type="button" id="btn_model_album_images_add" class="btn sbold bg-green"> Add
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <div class="row" style="max-height:600px !important;overflow-y: auto;">
+                    <div class="portfolio-content body_grid color-panel text-center ">
+                        <div id="albumImages" class="cbp text-center" style="min-height: 2000px; width:950px !important;"></div>
+                    </div>
+                </div>
                 <!-- BEGIN FORM-->
-                <form method="post" id="form_model_restaurant_albums_images" class="form-horizontal">
+                <form method="post" id="form_model_restaurant_albums_images" class="hidden">
                     <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                    <input type="hidden" name="id" value="" />
-                    <input type="hidden" name="action" value="3" />
-                    <div class="form-body">
-                        <div class="alert alert-danger display-hide">
-                            <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
-                        <div class="alert alert-success display-hide">
-                            <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        <div class="row" style="max-height:600px !important;overflow-y: auto;">
-                            <div class="portfolio-content body_grid color-panel text-center ">
-                                <div id="albumImages" class="cbp text-center" style="min-height: 2000px; width:950px !important;">
-                                    
-                                    <div class="cbp-item">
-                                        <div class="cbp-caption">
-                                            <a class="cbp-caption-defaultWrap">
-                                                <img src="http://ticketbat.s3-website-us-west-2.amazonaws.com/restaurants/media/12stones800000.jpg" alt="Error image"> </a>
-                                            <div class="cbp-caption-activeWrap">
-                                                <div class="cbp-l-caption-alignCenter">
-                                                    <div class="cbp-l-caption-body">
-                                                        <button data-id="5" class="cbp-l-caption btn btn-lg red"><i class="fa fa-remove"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <div class="row">
-                            <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                            </div>
-                        </div>
-                    </div>
+                    <input type="hidden" name="restaurant_albums_id" value="" />
+                    <input type="hidden" name="action" value="1" />
+                    <input type="hidden" name="url" value=""/>
                 </form>
                 <!-- END FORM-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
             </div>
         </div>
     </div>
 </div>
-<!-- END ADD/EDIT GALLERY MODAL-->
+<!-- END ADD/VIEW GALLERY MODAL-->

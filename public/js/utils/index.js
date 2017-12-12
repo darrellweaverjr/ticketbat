@@ -201,7 +201,7 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                         if(image_callback)
                         {
                             $(image_callback).attr('src','./'+data.file);
-                            $(image_callback).val(data.file);
+                            $(image_callback).val(data.file).trigger('change');
                             image_callback = null;
                         } 
                         if(modal_callback)

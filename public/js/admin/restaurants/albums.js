@@ -207,8 +207,8 @@ var TableAlbumsDatatablesManaged = function () {
                         if(data.success) 
                         {
                             $('#modal_model_restaurant_albums_images').trigger('reset');
-                            $('#modal_model_restaurant_albums_images input[name="id"]:hidden').val(row.data('id')).trigger('change');
-                            update_album_images(data.images);
+                            $('#modal_model_restaurant_albums_images input[name="restaurant_albums_id"]:hidden').val(row.data('id')).trigger('change');
+                            update_album_images(data.images,row.data('id'));
                             $('#modal_model_restaurant_albums_images').modal('show');
                         }
                         else{
@@ -251,7 +251,7 @@ var TableAlbumsDatatablesManaged = function () {
         });
     }
     
-    var update_album_images = function (items) {
+    var update_album_images = function (items,album) {
         $('#albumImages').empty();
         $.each(items,function(k, v) {
             var image = '<div class="cbp-item"><div class="cbp-caption"><a class="cbp-caption-defaultWrap">'+
@@ -261,6 +261,7 @@ var TableAlbumsDatatablesManaged = function () {
                     '</div></div></div></div></div>';
             $('#albumImages').append(image);
         });   
+        $('#tb_restaurant_albums tr[data-id="'+album+'"] td:nth-child(4)').html(items.length);
     }
     
     var initPortfolio = function () {
@@ -278,6 +279,147 @@ var TableAlbumsDatatablesManaged = function () {
             displayType: 'default', 
             displayTypeSpeed: 1,
             loadMoreAction: 'auto'
+        });
+        
+        //function load form to upload image
+        $('#btn_model_album_images_add').on('click', function(ev) {
+            $('#form_model_restaurant_albums_images [name="url"]').val('');
+            FormImageUpload('albums.url','#modal_model_restaurant_albums_images','#form_model_restaurant_albums_images [name="url"]');   
+        }); 
+        
+        //function upload image
+        $('#form_model_restaurant_albums_images [name="url"]').on('change', function(ev) {
+            var valid = $(this).val().match(/media\/preview/);
+            $('#modal_model_restaurant_albums_images').modal('hide');
+            $('#modal_model_update').modal('hide');
+            if(valid && valid.length > 0)
+            {
+                swal({
+                    title: "Uploading image to the server",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/restaurants/albums', 
+                    data: $('#form_model_restaurant_albums_images').serializeArray(), 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            $('#form_model_restaurant_albums_images [name="url"]').val('');
+                            update_album_images(data.images,$('#modal_model_restaurant_albums_images input[name="restaurant_albums_id"]:hidden').val());
+                            swal({
+                                title: "<span style='color:green;'>Uploaded!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_restaurant_albums_images').modal('show');
+                            });
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                                $('#modal_model_restaurant_albums_images').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to upload the image!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_restaurant_albums_images').modal('show');
+                        });
+                    }
+                }); 
+            }    
+            else
+            {
+                $('#form_model_restaurant_albums_images [name="url"]').val('');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "There was an error updating the image.<br>You must select a valid one!",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                    $('#modal_model_restaurant_albums_images').modal('show');
+                });
+            }
+        }); 
+        
+        //function remove
+        $(document).on('click', '#albumImages button', function(ev){
+            var id = $(this).data('id');
+            var restaurant_albums_id = $('#modal_model_restaurant_albums_images input[name="restaurant_albums_id"]:hidden').val();
+            $('#modal_model_restaurant_albums_images').modal('hide');
+            $('#modal_model_update').modal('hide');
+            swal({
+                title: "Removing image",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/restaurants/albums', 
+                data: {action:-1, restaurant_albums_id:restaurant_albums_id, id:id}, 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        update_album_images(data.images,$('#modal_model_restaurant_albums_images input[name="restaurant_albums_id"]:hidden').val());
+                        swal({
+                            title: "<span style='color:green;'>Deleted!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_restaurant_albums_images').modal('show');
+                        });
+                    }
+                    else{
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#modal_model_restaurant_albums_images').modal('show');
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to delete the image!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_model_update').modal('show');
+                        $('#modal_model_restaurant_albums_images').modal('show');
+                    });
+                }
+            }); 
+                
         });
         
     }
