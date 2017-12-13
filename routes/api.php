@@ -32,7 +32,17 @@ Route::group(['prefix' => 'app','middleware' => 'app.security:1','namespace' => 
     Route::post('my_tickets_scan', 'UserController@scan_tickets');
 });
 //ADMIN ROUTES FOR JSON FEED
-Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {
-    //feeds config
+Route::group(['prefix' => 'venue','middleware' => 'cors','namespace' => 'Feed'], function () {
+    //feeds venue
     Route::get('events/{venue_id}', 'VenueController@events');
+});
+//ADMIN ROUTES FOR JSON FEED
+Route::group(['prefix' => 'restaurant','namespace' => 'Feed'], function () {
+    //feeds restaurant
+    Route::get('general/{restaurant_id}', 'RestaurantController@general');
+    Route::get('menu/{restaurant_id}', 'RestaurantController@menu');
+    Route::get('awards/{restaurant_id}', 'RestaurantController@awards');
+    Route::get('reviews/{restaurant_id}', 'RestaurantController@reviews');
+    Route::get('comments/{restaurant_id}', 'RestaurantController@comments');
+    Route::get('albums/{restaurant_id}', 'RestaurantController@albums');
 });

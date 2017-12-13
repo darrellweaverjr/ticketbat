@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Models\Image;
 
 /**
- * Manage Users
+ * Manage Venue API
  *
  * @author ivan
  */

@@ -70,7 +70,8 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="38%">Venue</th>
+                                <th width="8%">ID</th>
+                                <th width="30%">Venue</th>
                                 <th width="30%">Name</th>
                                 <th width="30%">Phone</th>
                             </tr>
@@ -84,6 +85,7 @@
                                         <span></span>
                                     </label>
                                 </td>
+                                <td>{{$r->id}}</td>
                                 <td>{{$r->venue}}</td>
                                 <td>{{$r->name}}</td>
                                 <td>{{$r->phone}}</td>
