@@ -143,9 +143,9 @@
                             <div class="cbp-l-caption-alignCenter">
                                 <div class="cbp-l-caption-body">
                                     @if(!($s->price=='0.00' || ($s->starting_at && $s->starting_at=='0.00')))
-                                    <span class="cbp-l-caption-buttonLeft btn info">@if($s->time_alternative) {{$s->time_alternative}} @else From <b>@if($s->starting_at) ${{$s->starting_at}} @else ${{$s->price}} @endif</b> @endif</span>
+                                    <span class="cbp-l-caption-buttonLeft btn info">@if($s->time_alternative) {{$s->time_alternative}} @else Starting at <b>@if($s->starting_at) ${{$s->starting_at}} @else ${{$s->price}} @endif</b> @endif</span>
                                     @endif
-                                    <span class="cbp-l-caption-buttonRight btn red">Next on <b class="date_next_on">{{date('m/d/y', strtotime($s->show_time))}}</b></span>
+                                    <span class="cbp-l-caption-buttonRight btn info">GET TICKETS <i class="fa fa-arrow-circle-right"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@
                     <div class="btn green uppercase show_section_btnbuy">Tickets</div>
                     @endif
                     <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
-                    <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">On {{date('F j, Y @ h:i A', strtotime($s->show_time))}}</b><br><b>in {{$s->venue}}</b></a>
+                    <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">Next on {{date('M j, Y @ g:i A', strtotime($s->show_time))}}</b><br><b>in {{$s->venue}}</b></a>
                 </div>
                 @endforeach
             </div>

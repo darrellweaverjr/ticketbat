@@ -100,7 +100,7 @@
                         <div class="timeline-body-content">
                             <span class="font-grey-cascade">{!! $e->description !!}</span><hr>
                             <span class="col-md-4"><i class="fa fa-calendar icon-calendar"></i> {{date('F j, Y @ h:i A', strtotime($e->show_time))}}</span>
-                            <span class="col-md-4"><i class="fa fa-ticket icon-tag"></i>@if($e->price>0) ${{$e->price}} @else <b class="label label-sm sbold label-success">FREE</b> @endif</span>
+                            <span class="col-md-4"><i class="fa fa-ticket icon-tag"></i>@if($e->price>0) Starting at ${{$e->price}} @else <b class="label label-sm sbold label-success">FREE</b> @endif</span>
                             <span class="col-md-4"><a href="/production/event/{{$e->slug}}" style="color:white!important" class="btn bg-blue">SEE TICKETS <i class="fa fa-arrow-circle-right"></i></a></span>
                         </div>
                     </div>

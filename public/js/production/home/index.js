@@ -85,15 +85,9 @@ var PortfolioManaged = function () {
                                 $.each(data.shows,function(k, v) {
                                     var sh = $('#myShows').find('.cbp-item[data-id="'+v.id+'"]');
                                     if(v.time_alternative && v.time_alternative.length>0)
-                                    {
-                                        sh.find('.date_next_on').html(v.time_alternative);
                                         sh.find('.date_venue_on').html(v.time_alternative);
-                                    }
                                     else
-                                    {
-                                        sh.find('.date_next_on').html(v.date_next_on);
-                                        sh.find('.date_venue_on').html('ON '+v.date_venue_on);
-                                    }
+                                        sh.find('.date_venue_on').html('NEXT ON '+v.date_venue_on);
                                     sh.removeClass('hidden').addClass('filtered');
                                 });
                                 filter_name();

@@ -122,8 +122,8 @@ class HomeController extends Controller
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.id, DATE_FORMAT(MIN(show_times.show_time),"%m/%d/%Y") AS date_next_on,
-                                          DATE_FORMAT(MIN(show_times.show_time),"%M %d, %Y @ %h:%i %p") AS date_venue_on, show_times.time_alternative'))    
+                        ->select(DB::raw('shows.id, show_times.time_alternative,
+                                          DATE_FORMAT(MIN(show_times.show_time),"%b %d, %Y @ %h:%i %p") AS date_venue_on'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
