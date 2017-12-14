@@ -104,6 +104,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('restaurants/menu', 'RestaurantController@menu')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/media', 'RestaurantController@media')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/items', 'RestaurantController@items')->middleware('permissions:RESTAURANTS');
+    Route::post('restaurants/specials', 'RestaurantController@specials')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/awards', 'RestaurantController@awards')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/reviews', 'RestaurantController@reviews')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/comments', 'RestaurantController@comments')->middleware('permissions:RESTAURANTS');

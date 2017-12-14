@@ -41,7 +41,7 @@ class RestaurantController extends Controller{
                 }
             }
         }     
-        return $restaurant->toJson();
+        return Util::json($restaurant);
     }
     
     /*
@@ -56,33 +56,37 @@ class RestaurantController extends Controller{
             //recursive method
             function sub_menu($m,$restaurant_id)
             {
-                $children = $m->children()->get();
-                $submenu = [];
-                //recursive
-                if(count($children))
+                if($m->disabled<1)
                 {
-                    foreach ($children as $c)
+                    $children = $m->children()->get();
+                    $submenu = [];
+                    //recursive
+                    if(count($children))
                     {
-                        $sub = sub_menu($c,$restaurant_id);
-                        if(!empty($sub))
-                            $submenu[] = $sub;
+                        foreach ($children as $c)
+                        {
+                            $sub = sub_menu($c,$restaurant_id);
+                            if(!empty($sub))
+                                $submenu[] = $sub;
+                        }
                     }
+                    $m->submenu = $submenu;
+                    //get items
+                    $m->items = DB::table('restaurant_items')
+                                    ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
+                                    ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
+                                    ->where('restaurant_items.restaurants_id',$restaurant_id)
+                                    ->where('restaurant_items.restaurant_menu_id',$m->id)
+                                    ->where('restaurant_items.enabled','>',0)
+                                    ->orderBy('restaurant_items.order')
+                                    ->get();
+                    foreach ($m->items as $index=>$i)
+                        $i->image_id = Image::view_image($i->image_id);
+                    //return
+                    if(count($m->items) || !empty($m->submenu))
+                        return $m;
+                    return null;
                 }
-                $m->submenu = $submenu;
-                //get items
-                $m->items = DB::table('restaurant_items')
-                                ->join('restaurant_menu', 'restaurant_menu.id', '=' ,'restaurant_items.restaurant_menu_id')
-                                ->select('restaurant_items.*', 'restaurant_menu.name AS menu')
-                                ->where('restaurant_items.restaurants_id',$restaurant_id)
-                                ->where('restaurant_items.restaurant_menu_id',$m->id)
-                                ->where('restaurant_items.enabled','>',0)
-                                ->orderBy('restaurant_items.order')
-                                ->get();
-                foreach ($m->items as $index=>$i)
-                    $i->image_id = Image::view_image($i->image_id);
-                //return
-                if(count($m->items) || !empty($m->submenu))
-                    return $m;
                 return null;
             }
             //first call
@@ -97,6 +101,25 @@ class RestaurantController extends Controller{
             } 
         }   
         return Util::json($menu);
+    }
+    
+    /*
+     * return specials (by restaurant id) in json format
+     */
+    public function specials($restaurant_id)
+    {
+        $specials = [];
+        if(!empty($restaurant_id) && is_numeric($restaurant_id))
+        {
+            $specials = DB::table('restaurant_specials')
+                        ->select('restaurant_specials.*')
+                        ->where('restaurant_specials.restaurants_id',$restaurant_id)
+                        ->orderBy('restaurant_specials.order')
+                        ->get();
+            foreach($specials as $i)
+                $i->image_id = Image::view_image($i->image_id);
+        }   
+        return Util::json($specials);
     }
     
     /*
@@ -115,8 +138,8 @@ class RestaurantController extends Controller{
                         ->get();
             foreach($awards as $i)
                 $i->image_id = Image::view_image($i->image_id);
-        }     
-        return $awards->toJson();
+        }   
+        return Util::json($awards);
     }
     
     /*
@@ -135,8 +158,8 @@ class RestaurantController extends Controller{
                         ->get();
             foreach($reviews as $i)
                 $i->image_id = Image::view_image($i->image_id);
-        }     
-        return $reviews->toJson();
+        }   
+        return Util::json($reviews);
     }
     
     /*
@@ -149,11 +172,12 @@ class RestaurantController extends Controller{
         {
             $comments = DB::table('restaurant_comments')
                         ->select('restaurant_comments.*')
-                        ->where('restaurant_comments.restaurants_id',$restaurant_id)->where('restaurant_comments.enabled','>',0)
+                        ->where('restaurant_comments.restaurants_id',$restaurant_id)
+                        ->where('restaurant_comments.enabled','>',0)
                         ->orderBy('restaurant_comments.posted','DESC')
                         ->get();
-        }     
-        return $comments->toJson();
+        }  
+        return Util::json($comments);
     }
     
     /*
@@ -168,6 +192,7 @@ class RestaurantController extends Controller{
                         ->join('restaurant_album_images', 'restaurant_album_images.restaurant_albums_id', '=' ,'restaurant_albums.id')
                         ->select(DB::raw('restaurant_albums.*, COUNT(restaurant_album_images.image_id) AS qty'))
                         ->where('restaurant_albums.restaurants_id',$restaurant_id)
+                        ->where('restaurant_albums.enabled','>',0)
                         ->groupBy('restaurant_albums.id')->orderBy('restaurant_albums.posted','DESC')
                         ->get();
             foreach ($albums as $a)
@@ -181,8 +206,8 @@ class RestaurantController extends Controller{
                 foreach($a->images as $i)
                     $i->url = Image::view_image($i->url);
             }
-        }     
-        return $albums->toJson();
+        }
+        return Util::json($albums);
     }
     
     

@@ -46,21 +46,15 @@ class RestaurantController extends Controller{
                 $restaurant->reservations = $this->get_reservations($restaurant->id);
                 //items
                 $restaurant->items = $this->get_items($restaurant->id);
+                //specials
+                $restaurant->specials = $this->get_specials($restaurant->id);
                 //albums
                 $restaurant->albums = $this->get_albums($restaurant->id);
                 //awards
                 $restaurant->awards = $this->get_awards($restaurant->id);
                 //reviews
                 $restaurant->reviews = $this->get_reviews($restaurant->id);
-                //specials
-                $restaurant->specials = DB::table('restaurant_specials')
-                                ->leftJoin('images', 'images.id', '=' ,'restaurant_specials.image_id')
-                                ->select('restaurant_specials.*','images.url')
-                                ->where('restaurant_specials.restaurants_id',$restaurant->id)
-                                ->orderBy('restaurant_specials.title')
-                                ->get();
-                foreach($restaurant->specials as $i)
-                    $i->image_id = Image::view_image($i->image_id);
+                //return
                 return ['success'=>true,'restaurant'=>$restaurant];
             }
             else
@@ -513,7 +507,7 @@ class RestaurantController extends Controller{
                         $item->delete_image();
                         $item->delete();
                     }
-                    $items = $this->get_items($restaurant_id);
+                    $items = $this->get_items($input['restaurants_id']);
                     return ['success'=>true,'items'=>$items,'msg'=>'Item removed successfully!'];
                 }
                 return ['success'=>false,'msg'=>'There was an error deleting the item.<br>You must select a valid item.'];
@@ -571,6 +565,116 @@ class RestaurantController extends Controller{
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error RestaurantItems Index: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Get, Edit specials for restaurants
+     *
+     * @return view
+     */
+    public function get_specials($restaurant_id)
+    {
+        $specials = DB::table('restaurant_specials')
+                        ->select('restaurant_specials.*')
+                        ->where('restaurant_specials.restaurants_id',$restaurant_id)
+                        ->orderBy('restaurant_specials.order')
+                        ->get();
+        foreach ($specials as $index=>$i)
+            $i->image_id = Image::view_image($i->image_id);
+        return $specials;
+    }
+    public function specials()
+    {
+        try {  
+            //init
+            $input = Input::all(); 
+            //get
+            if(isset($input) && isset($input['action']) && $input['action']==0)
+            {
+                $special = DB::table('restaurant_specials')
+                                ->select('restaurant_specials.*')
+                                ->where('restaurant_specials.id',$input['id'])
+                                ->first();
+                if($special)
+                {
+                    $special->image_id = Image::view_image($special->image_id);
+                    return ['success'=>true,'special'=>$special];
+                }
+                return ['success'=>false,'msg'=>'There is an error getting the special.<br>Item not longer in the system.'];
+            }
+            //remove
+            else if(isset($input) && isset($input['action']) && $input['action']==-1)
+            {
+                if(!empty($input['id']))
+                {
+                    $special = RestaurantSpecials::find($input['id']);
+                    if($special)
+                    {
+                        RestaurantSpecials::where('restaurants_id',$special->restaurants_id)
+                                            ->where('order','>',$special->order)->decrement('order');
+                        $special->delete_image();
+                        $special->delete();
+                    }
+                    $specials = $this->get_specials($input['restaurants_id']);
+                    return ['success'=>true,'specials'=>$specials,'msg'=>'Special removed successfully!'];
+                }
+                return ['success'=>false,'msg'=>'There was an error deleting the special.<br>You must select a valid item.'];
+            }
+            //save
+            else if(isset($input) && isset($input['action']) && !empty($input['restaurants_id']) && $input['action']==1)
+            {
+                if(!empty($input['id']))
+                {
+                    $special = RestaurantSpecials::find($input['id']);
+                    if(!$special)
+                        return ['success'=>false,'msg'=>'There was an error updating the special.<br>The item is not longer in the system.'];
+                    //order
+                    RestaurantSpecials::where('restaurants_id',$input['restaurants_id'])
+                                            ->where('order','>=',$input['order'])->where('id','!=',$input['id'])->increment('order');
+                }
+                else
+                {
+                    $exist = RestaurantSpecials::where('restaurants_id',$input['restaurants_id'])
+                                            ->where('title',$input['title'])->count();
+                    if($exist)
+                        return ['success'=>false,'msg'=>'There was an error updating the special.<br>There is already one element with that title in the system.'];
+                    $special = new RestaurantSpecials;
+                    $special->restaurants_id = $input['restaurants_id'];
+                    //order
+                    RestaurantSpecials::where('restaurants_id',$input['restaurants_id'])
+                                            ->where('order','>=',$input['order'])->increment('order');
+                }
+                $special->title = strip_tags(trim($input['title']));
+                $special->description = (!empty($input['description']))? strip_tags(trim($input['description'])) : null;
+                $special->enabled = (!empty($input['enabled']))? 1 : 0;
+                //image
+                if(!empty($input['image_id']))
+                {
+                    if(preg_match('/media\/preview/',$input['image_id'])) 
+                    {
+                        $special->delete_image();
+                        $special->set_image($input['image_id']);
+                    }
+                }
+                /*else
+                    $special->delete_image();*/
+                //order
+                $special->order = $input['order'];
+                $special->save();
+                $specials = $this->get_specials($special->restaurants_id);
+                foreach ($specials as $index=>$i)
+                {
+                    $i->order = $index+1;
+                    RestaurantSpecials::where('id',$i->id)->update(['order'=>$i->order]);
+                }
+                //return
+                return ['success'=>true,'specials'=>$specials,'msg'=>'Special saved successfully!'];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error RestaurantSpecials Index: '.$ex->getMessage());
         }
     }
     

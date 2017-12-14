@@ -117,6 +117,7 @@ var TableDatatablesManaged = function () {
             $('#modal_model_update_title').html('Add Restaurant');
             $('#form_model_update select[name="venue_id"]').prop('disabled',false);
             $('a[href="#tab_model_update_items"]').parent().css('display','none');
+            $('a[href="#tab_model_update_specials"]').parent().css('display','none');
             $('a[href="#tab_model_update_awards"]').parent().css('display','none');
             $('a[href="#tab_model_update_reviews"]').parent().css('display','none');
             $('a[href="#tab_model_update_comments"]').parent().css('display','none');
@@ -135,6 +136,7 @@ var TableDatatablesManaged = function () {
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#modal_model_update_title').html('Edit Restaurant');
             $('a[href="#tab_model_update_items"]').parent().css('display','block');
+            $('a[href="#tab_model_update_specials"]').parent().css('display','block');
             $('a[href="#tab_model_update_awards"]').parent().css('display','block');
             $('a[href="#tab_model_update_reviews"]').parent().css('display','block');
             $('a[href="#tab_model_update_comments"]').parent().css('display','block');
@@ -155,6 +157,8 @@ var TableDatatablesManaged = function () {
                         TableReservationsDatatablesManaged.update_reservations(data.restaurant.reservations);
                         //update items
                         TableItemsDatatablesManaged.update_items(data.restaurant.items);
+                        //update specials
+                        TableSpecialsDatatablesManaged.update_specials(data.restaurant.specials);
                         //update awards
                         TableAwardsDatatablesManaged.update_awards(data.restaurant.awards);
                         //update reviews

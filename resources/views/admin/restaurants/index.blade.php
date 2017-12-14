@@ -126,6 +126,9 @@
                                         <a href="#tab_model_update_items" data-toggle="tab" aria-expanded="false"> Items </a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_specials" data-toggle="tab" aria-expanded="false"> Specials </a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_awards" data-toggle="tab" aria-expanded="false"> Awards </a>
                                     </li>
                                     <li class="">
@@ -219,13 +222,37 @@
                                                         <th>#</th>
                                                         <th>Name</th>
                                                         <th>Price</th>
-                                                        <th>Disabled</th>
+                                                        <th>Enabled</th>
                                                         <th>Image</th>
                                                         <th width="5%"></th>
                                                         <th width="5%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tb_restaurant_items">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_specials">
+                                        <div class="btn-group">
+                                            <button type="button" id="btn_model_specials_add" class="btn sbold bg-green"> Add
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="row table-responsive" style="padding:20px;max-height:400px;overflow-y: auto;">
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Title</th>
+                                                        <th>Description</th>
+                                                        <th>Enabled</th>
+                                                        <th>Image</th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tb_restaurant_specials">
                                                 </tbody>
                                             </table>
                                         </div>
@@ -357,6 +384,9 @@
     <!-- BEGIN ITEMS -->
     @include('admin.restaurants.items')
     <!-- END ITEMS -->
+    <!-- BEGIN SPECIALS -->
+    @include('admin.restaurants.specials')
+    <!-- END SPECIALS -->
     <!-- BEGIN AWARDS -->
     @include('admin.restaurants.awards')
     <!-- END AWARDS -->
@@ -375,6 +405,7 @@
 <script src="/js/admin/restaurants/media.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/reservations.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/items.js" type="text/javascript"></script>
+<script src="/js/admin/restaurants/specials.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/awards.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/reviews.js" type="text/javascript"></script>
 <script src="/js/admin/restaurants/comments.js" type="text/javascript"></script>
