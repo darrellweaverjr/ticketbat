@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Feed;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use App\Http\Models\Util;
 use App\Http\Models\Image;
 use App\Http\Models\Restaurant;
 use App\Http\Models\RestaurantMenu;
+use App\Http\Models\RestaurantReservations;
 
 /**
  * Manage Restaurant API
@@ -42,6 +44,34 @@ class RestaurantController extends Controller{
             }
         }     
         return Util::json($restaurant);
+    }
+    
+    /*
+     * insert reservations
+     */
+    public function reservations()
+    {
+        $input = Input::all(); 
+        if($input && !empty($input['restaurants_id']) && !empty($input['schedule']) && !empty($input['people']) && !empty($input['first_name']) 
+           && !empty($input['occasion']) && !empty($input['last_name']) && (!empty($input['phone']) || !empty($input['email']))   )
+        {
+            $occasions = Util::getEnumValues('restaurant_reservations','occasion');
+            $reservation = new RestaurantReservations;
+            $reservation->schedule = $input['schedule'];
+            $reservation->people = $input['people'];
+            $reservation->first_name = $input['first_name'];
+            $reservation->last_name = $input['last_name'];
+            $reservation->phone = (!empty($input['phone']))? $input['phone'] : null;
+            $reservation->email = (!empty($input['email']))? $input['email'] : null;
+            $reservation->occasion = (array_key_exists($input['occasion'],$occasions))? $input['occasion'] : 'Regular';
+            $reservation->special_request = (!empty($input['special_request']))? $input['special_request'] : null;
+            $reservation->newsletter = (!empty($input['newsletter']))? 1 : 0;
+            $reservation->restaurants_id = $input['restaurants_id'];
+            if($reservation->save())
+                return Util::json(['success'=>true, 'msg'=>'Reservation saved successfully!']);
+            return Util::json(['success'=>false, 'msg'=>'There is an error saving the reservation']);
+        }
+        return Util::json(['success'=>false, 'msg'=>'You must fill out the form correctly!']);
     }
     
     /*

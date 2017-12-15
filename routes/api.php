@@ -38,6 +38,7 @@ Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], 
     //restaurant
     Route::get('restaurant/general/{restaurant_id}', 'RestaurantController@general');
     Route::get('restaurant/menu/{restaurant_id}', 'RestaurantController@menu');
+    Route::post('restaurant/reservations', 'RestaurantController@reservations');
     Route::get('restaurant/specials/{restaurant_id}', 'RestaurantController@specials');
     Route::get('restaurant/awards/{restaurant_id}', 'RestaurantController@awards');
     Route::get('restaurant/reviews/{restaurant_id}', 'RestaurantController@reviews');
