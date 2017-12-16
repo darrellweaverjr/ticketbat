@@ -139,13 +139,6 @@ class PurchaseController extends Controller{
                 $search['customers'] = Customer::orderBy('email')->get(['id','email']);
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
-                //search user
-                if(isset($input) && isset($input['user']))
-                {
-                    $search['user'] = $input['user'];
-                    if($search['user'] != '')
-                        $where[] = ['purchases.user_id','=',$input['user']];
-                }
                 //search venue
                 if(isset($input) && isset($input['venue']))
                 {

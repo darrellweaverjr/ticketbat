@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Models\Venue;
 use App\Http\Models\Show;
 use App\Http\Models\User;
+use App\Http\Models\Customer;
 use App\Http\Models\Util;
 
 class DashboardController extends Controller
@@ -84,7 +85,8 @@ class DashboardController extends Controller
         $data['search']['venues'] = [];
         $data['search']['shows'] = [];
         $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
-        $data['search']['users'] = User::get(['id','email']);
+        $data['search']['users'] = User::orderBy('email')->get(['id','email']);
+        $data['search']['customers'] = Customer::orderBy('email')->get(['id','email']);
         //search venue
         if(isset($input) && isset($input['venue']))
         {
@@ -151,7 +153,7 @@ class DashboardController extends Controller
             $data['search']['payment_type'] = array_values($data['search']['payment_types']);
         }
         //search user      
-        if(isset($input) && isset($input['payment_type']) && !empty($input['user']))
+        if(isset($input) && !empty($input['user']))
         {
             $data['search']['user'] = $input['user'];
             $data['where'][] = ['purchases.user_id','=',$data['search']['user']];
@@ -159,6 +161,26 @@ class DashboardController extends Controller
         else
         {
             $data['search']['user'] = '';
+        }
+        //search customer      
+        if(isset($input) && !empty($input['customer']))
+        {
+            $data['search']['customer'] = $input['customer'];
+            $data['where'][] = ['purchases.customer_id','=',$data['search']['customer']];
+        }
+        else
+        {
+            $data['search']['customer'] = '';
+        }
+        //search order_id      
+        if(isset($input) && !empty($input['order_id']) && is_numeric($input['order_id']))
+        {
+            $data['search']['order_id'] = $input['order_id'];
+            $data['where'][] = ['purchases.id','=',$data['search']['order_id']];
+        }
+        else
+        {
+            $data['search']['order_id'] = '';
         }
         //search printing
         if(isset($input) && isset($input['mirror_period']) && !empty($input['mirror_period']) && is_numeric($input['mirror_period']))

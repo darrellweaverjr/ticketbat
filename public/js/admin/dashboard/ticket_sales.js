@@ -182,7 +182,6 @@ var TableDatatablesButtons = function () {
             }]
 	});
         
-        $('input[name="mirror_period"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:10 });
     }
     return {
         //main function to initiate the module

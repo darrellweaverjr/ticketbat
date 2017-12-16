@@ -374,33 +374,52 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <hr><label class="control-label">
-                                    <span class="required">Printing</span>
-                                </label><br>
                                 <div class="form-group">
-                                    <label class="control-label col-md-8"> Mirror prior sold date period (qty mirrors):</label>
-                                    <div class="col-md-4 show-error"> 
+                                    <label class="control-label col-md-3">Customer:</label>
+                                    <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="text" name="mirror_period" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " @if(!empty($search['mirror_period'])) value="{{$search['mirror_period']}}" @else value="0" @endif />
+                                            <select class="form-control" name="customer" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['customers'] as $index=>$c)
+                                                    <option @if(!empty($search['customer']) && $c->id==$search['customer']) selected @endif value="{{$c->id}}">{{$c->email}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                    <label class="control-label col-md-8"> Replace sales table by chart:</label>
-                                    <div class="col-md-4 show-error"> 
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Order id:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:20px;padding:20px">
+                                <label class="control-label">
+                                    <span class="required">Printing Settings</span>
+                                </label><br>
+                                <div class="form-group">
+                                    <div class="show-error"> 
+                                        <div class="input-group">
+                                            <input type="text" name="mirror_period" style="width:20px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " @if(!empty($search['mirror_period'])) value="{{$search['mirror_period']}}" @else value="0" @endif />
+                                            <label class="control-label">&nbsp;&nbsp;&nbsp;Qty of mirrors prior sold date period</label>
+                                        </div>
+                                    </div>
+                                    <div class="show-error"> 
                                         <div class="input-group mt-checkbox-single">
                                             <label class="mt-checkbox">
                                                 <input type="checkbox" @if(!empty($search['replace_chart'])) checked="true" @endif name="replace_chart" value="1" />
-                                                <span></span>
+                                                <span></span> Replace sales table by chart
                                             </label>
                                         </div>
                                     </div>
-                                    <label class="control-label col-md-8"> Include Coupon's Report:</label>
-                                    <div class="col-md-4 show-error"> 
+                                    <div class="show-error"> 
                                         <div class="input-group mt-checkbox-single">
                                             <label class="mt-checkbox">
                                                 <input type="checkbox" @if(!empty($search['coupon_report'])) checked="true" @endif name="coupon_report" value="1" />
-                                                <span></span>
+                                                <span></span> Include Coupon's Report
                                             </label>
                                         </div>
                                     </div>
