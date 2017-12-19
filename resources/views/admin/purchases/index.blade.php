@@ -44,6 +44,9 @@
                             <button id="btn_model_edit" class="btn sbold bg-purple" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
+                            <button id="btn_model_share" class="btn sbold bg-purple" disabled="true">Share
+                                <i class="fa fa-share"></i>
+                            </button>
                             @endif
                         </div>
                     </div>
@@ -74,7 +77,7 @@
                             <tr>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$p->id}}" value="{{$p->email}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$p->id}}" data-qty="{{$p->quantity}}" value="{{$p->email}}" />
                                         <span></span>
                                     </label>
                                 </td>
@@ -641,9 +644,13 @@
         </div>
     </div>
     <!-- END MOVE MODAL-->
+    <!-- BEGIN SHARE TICKETS MODAL -->
+    @includeIf('production.general.share_tickets')
+    <!-- END SHARE TICKETS MODAL -->
 @endsection
 
 @section('scripts')
 <script src="{{config('app.theme')}}js/summernote.min.js" type="text/javascript"></script>
+<script src="/js/production/general/share_tickets.js" type="text/javascript"></script>
 <script src="/js/admin/purchases/index.js" type="text/javascript"></script>
 @endsection

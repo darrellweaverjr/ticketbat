@@ -90,7 +90,7 @@ class Purchase extends Model
             $ticket_number = [];
             foreach ($shared as $s)
             {
-                if($s['email'] != $this->customer()->email)
+                if($s['email'] != $this->customer->email)
                 {
                     if($qty_shared < $this->quantity)
                     {
