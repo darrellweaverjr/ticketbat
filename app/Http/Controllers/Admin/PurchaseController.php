@@ -37,7 +37,32 @@ class PurchaseController extends Controller{
         try {
             //init
             $input = Input::all(); 
-            if(isset($input) && isset($input['id']))
+            if(isset($input) && !empty($input['id']) && isset($input['action']) && $input['action']==0)
+            {
+                $purchase = DB::table('purchases')
+                                    ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                                    ->join('users', 'users.id', '=' ,'purchases.user_id')
+                                    ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
+                                    ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                                    ->join('shows', 'shows.id', '=', 'show_times.show_id')
+                                    ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                                    ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
+                                    ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                                    ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
+                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
+                                                      (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
+                                                      IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
+                                                      discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
+                                                      users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
+                                                      customers.first_name, customers.last_name, customers.email, customers.phone,
+                                                      show_times.show_time, shows.name AS show_name, packages.title'))
+                                    ->where('purchases.id',$input['id'])->groupBy('purchases.id')->first();
+                if($purchase)
+                    return ['success'=>true,'purchase'=>$purchase];
+                return ['success'=>false,'msg'=>'There was an error.<br>That purchase is not longer in the system.'];
+            }
+            else if(isset($input) && isset($input['id']))
             {
                 $current = DB::table('purchases')
                                 ->join('show_times', 'purchases.show_time_id', '=', 'show_times.id')
@@ -230,6 +255,7 @@ class PurchaseController extends Controller{
                         if(count($input)) 
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                                    ->join('users', 'users.id', '=' ,'purchases.user_id')
                                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                                     ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                                     ->join('shows', 'shows.id', '=', 'show_times.show_id')
@@ -241,8 +267,9 @@ class PurchaseController extends Controller{
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
-                                                      discounts.code, tickets.ticket_type AS ticket_type_type,
-                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email, customers.phone,
+                                                      discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
+                                                      users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
+                                                      customers.first_name, customers.last_name, customers.email, customers.phone,
                                                       show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where($where)
                                     ->where(function($query)
@@ -262,6 +289,7 @@ class PurchaseController extends Controller{
                         if(count($input)) 
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                                    ->join('users', 'users.id', '=' ,'purchases.user_id')
                                     ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                                     ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                                     ->join('shows', 'shows.id', '=', 'show_times.show_id')
@@ -273,8 +301,9 @@ class PurchaseController extends Controller{
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
-                                                      discounts.code, tickets.ticket_type AS ticket_type_type,
-                                                      venues.name AS venue_name, customers.first_name, customers.last_name, customers.email, customers.phone,
+                                                      discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
+                                                      users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
+                                                      customers.first_name, customers.last_name, customers.email, customers.phone,
                                                       show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where($where)
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
@@ -317,8 +346,16 @@ class PurchaseController extends Controller{
                     $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
                     $purchase->updated = $current;
                     $purchase->save();
+                    //send emails for pending status
+                    if(preg_match('/^Pending/',$input['status']))
+                    {
+                        $sent = $purchase->set_pending();
+                        if(!$sent)
+                            return ['success'=>false,'msg'=>'The system updated the status.<br>But the email could not be sent to the admin.'];
+                        return ['success'=>true,'msg'=>'Purchase saved and email sent to the admin successfully!'];
+                    }
                     //re-send email if change form active to any inactive and viceversa
-                    if($input['status']=='Active' || $old_status=='Active')
+                    else if($input['status']=='Active' || $old_status=='Active' || preg_match('/^Pending/',$old_status))
                     {
                         $receipt = $purchase->get_receipt();
                         $status = ($input['status']=='Active')? 'ACTIVATED' : ( ($input['status']=='Chargeback')? 'CHARGEBACK' :'CANCELED' );

@@ -145,47 +145,137 @@ var TableDatatablesManaged = function () {
                 }
             });
         }
+        
+        //view details
+        $(document).on('click', 'td.modal_details_view', function(ev){
+            var id = $(this).data('id');
+            if(id)
+            {
+                swal({
+                    title: "Getting purchase's details",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/purchases', 
+                    data: {id:id,action:0}, 
+                    success: function(data) {
+                        if(data.success) 
+                        {
+                            //fill out shows
+                            for(var key in data.purchase)
+                            {
+                                if(key=='email' || key=='u_email')
+                                    $('#modal_model_details b.'+key).html('<i><a href="mailto:'+data.purchase[key]+'" target="_top">'+data.purchase[key]+'</a></i>');
+                                else if(key=='referrer_url')
+                                    $('#modal_model_details span.'+key).html('<i><a href="'+data.purchase[key]+'" target="_blank">'+data.purchase[key]+'</a></i>');
+                                else if(key=='note')
+                                    $('#modal_model_details span.'+key).html('<i>'+data.purchase[key]+'</i>');
+                                else
+                                    $('#modal_model_details b.'+key).html(data.purchase[key]);
+                            }
+                            swal.close();
+                            $('#modal_model_details').modal('show');
+                        }
+                        else swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            });
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to get the details!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                });
+            }
+        });
+        
         //function on status select
         $(document).on('change', '#tb_model select[name="status"]', function(ev){
             var id = $(this).attr('ref');
             var old_status = $(this).data('status');
             var status = $(this).val();
-            if(status=='Active' || old_status=='Active')
+            if(old_status != status)
             {
-                var status_msg = (status=='Active')? 'active' :'canceled';
-                swal({
-                    title: "Are you sure to change the status from <b>"+old_status+"</b> to <b>"+status+"</b>?",
-                    text: "An email will be sent to both the customer and venue stating this purchase is "+status_msg,
-                    type: "warning",
-                    html:true,
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, do it!",
-                    closeOnConfirm: true,
-                    closeOnCancel: true
-                },
-                  function(isConfirm) {
-                    if (isConfirm) {
-                        if(id)
-                        {
-                            change_status(id,status);
+                if(status.substring(0,7) == 'Pending')
+                {
+                    swal({
+                        title: "Are you sure to change the status from <b>"+old_status+"</b> to <b>"+status+"</b>?",
+                        text: "An email will be sent to the admin to complete the action.",
+                        type: "warning",
+                        html:true,
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, do it!",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    },
+                      function(isConfirm) {
+                        if (isConfirm) {
+                            if(id)
+                            {
+                                change_status(id,status);
+                            }
+                            else
+                            {
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: "Please, you must select the purchase first.",
+                                    html: true,
+                                    type: "error"
+                                });
+                            }
+                        } else {
+                            $(this).val(old_status);
                         }
-                        else
-                        {
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: "Please, you must select the purchase first.",
-                                html: true,
-                                type: "error"
-                            });
+                    });
+                }
+                else if(status=='Active' || old_status=='Active')
+                {
+                    var status_msg = (status=='Active')? 'active' :'canceled';
+                    swal({
+                        title: "Are you sure to change the status from <b>"+old_status+"</b> to <b>"+status+"</b>?",
+                        text: "An email will be sent to both the customer and venue stating this purchase is "+status_msg,
+                        type: "warning",
+                        html:true,
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, do it!",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    },
+                      function(isConfirm) {
+                        if (isConfirm) {
+                            if(id)
+                            {
+                                change_status(id,status);
+                            }
+                            else
+                            {
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: "Please, you must select the purchase first.",
+                                    html: true,
+                                    type: "error"
+                                });
+                            }
+                        } else {
+                            $(this).val(old_status);
                         }
-                    } else {
-                        $(this).val(old_status);
-                    }
-                });
+                    });
+                }
+                else
+                    change_status(id,status);
             }
-            else
-                change_status(id,status);
         });
         //function search
         $('#btn_model_search').on('click', function(ev) {
@@ -609,6 +699,7 @@ var TableDatatablesManaged = function () {
                             if(data.success) 
                             {
                                 $('#note_'+id).html(data.note);
+                                $('#note_'+id).removeClass('hidden');
                                 swal({
                                     title: "<span style='color:green;'>Note Added Successfully!</span>",
                                     text: data.msg,

@@ -248,6 +248,43 @@ class Purchase extends Model
         return ['purchase' => $purchase, 'customer' => $customer, 'tickets' => $tickets, 'banners'=> $banners];
     }
     /**
+     * Get the purchase receipt info.
+     */
+    public function set_pending()
+    {
+        //get purchase info mix  
+        $purchase = DB::table('purchases')
+                            ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                            ->select(DB::raw('purchases.id, purchases.quantity AS qty, purchases.payment_type, purchases.status, purchases.ticket_type,
+                                    IF(transactions.amount IS NOT NULL, transactions.amount, purchases.price_paid) as amount,
+                                    transactions.trans_result, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
+                                    customers.first_name, customers.last_name, customers.phone, customers.email, transactions.id AS transaction_id,
+                                    purchases.created'))
+                            ->where('purchases.id', '=', $this->id)
+                            ->groupBy('purchases.id')->first();
+        if(!$purchase)
+            return false;
+        $link = str_replace('/save', '', url()->current()).'?order_id='.$this->id.'&soldtime_start_date=&soldtime_end_date=';
+        $html  = '<b>PURCHASE PENDING TO REFUND</b><br><br>';
+        $html .= '<b>Customer:</b> '.$purchase->first_name.' '.$purchase->last_name.'<br>';
+        $html .= '<b>Email:</b> <a href="mailto:'.$purchase->email.'" target="_top">'.$purchase->email.'</a> <b>Phone:</b> '.$purchase->phone.'<br><br>';
+        $html .= '<b>Purchase:</b> '.$purchase->id.' <b>Status:</b> '.$purchase->status.'<br>';
+        $html .= '<b>Tickets:</b> '.$purchase->qty.' / '.$purchase->ticket_type.'<br>';
+        $html .= '<b>Created:</b> '.$purchase->created.'<br>';
+        $html .= '<b>Payment:</b> '.$purchase->payment_type.' <b>Amount:</b> $ '.$purchase->amount.'<br><br>';
+        $html .= '<b>Transacion:</b> '.$purchase->transaction_id.' <b>Status:</b> '.$purchase->trans_result.'<br>';
+        $html .= '<b>Cardholder:</b> '.$purchase->card_holder.' <b>Card:</b> ...'.$purchase->last_4.'<br>';
+        $html .= '<b>Authcode:</b> '.$purchase->authcode.' <b>Refnum:</b> '.$purchase->refnum.'<br><br>';
+        $html .= '<b>Click here to update status:</b> <a href="'.$link.'">'.$link.'</a><br><br>';
+        //send email           
+        $email = new EmailSG(null, env('MAIL_PURCHASE_PENDING','MAIL_ADMIN'), 'TicketBat Admin: Purchase pending to refund');
+        $email->category('Custom');
+        $email->body('custom',['body'=>$html]);
+        $email->template('46388c48-5397-440d-8f67-48f82db301f7');
+        return ($email->send());
+    }
+    /**
      * Send by email given purchases receipts.
      */
     public static function email_receipts($subject,$receipts,$type_email,$change=null,$promotor_copy=false)
