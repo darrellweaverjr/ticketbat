@@ -5,6 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\EmailSG;
 use Barryvdh\DomPDF\Facade as PDF;
 
@@ -267,6 +268,7 @@ class Purchase extends Model
             return false;
         $link = str_replace('/save', '', url()->current()).'?order_id='.$this->id.'&soldtime_start_date=&soldtime_end_date=';
         $html  = '<b>PURCHASE PENDING TO REFUND</b><br><br>';
+        $html .= '<b>Request by:</b> '.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.')<br><br>';
         $html .= '<b>Customer:</b> '.$purchase->first_name.' '.$purchase->last_name.'<br>';
         $html .= '<b>Email:</b> <a href="mailto:'.$purchase->email.'" target="_top">'.$purchase->email.'</a> <b>Phone:</b> '.$purchase->phone.'<br><br>';
         $html .= '<b>Purchase:</b> '.$purchase->id.' <b>Status:</b> '.$purchase->status.'<br>';
