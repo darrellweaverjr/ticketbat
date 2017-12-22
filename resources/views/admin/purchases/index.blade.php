@@ -110,7 +110,7 @@
                                 <td width="11%">
                                     @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                                     <select ref="{{$p->id}}" class="form-control" name="status" data-status="{{$p->status}}">
-                                        @foreach($status as $indexS=>$s)
+                                        @foreach($search['status'] as $indexS=>$s)
                                         <option @if($indexS == $p->status) selected @endif value="{{$indexS}}">{{$s}}</option>
                                         @endforeach
                                     </select>
@@ -213,7 +213,7 @@
     <!-- END DETAILS MODAL-->
     <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" data-modal="{{$modal}}" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:470px !important;">
+        <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
@@ -302,6 +302,48 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="control-label col-md-3">Amount start:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <input type="number" class="form-control input-large" name="start_amount" step="0.01" value="{{$search['start_amount']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Amount ends:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <input type="number" class="form-control input-large" name="end_amount" step="0.01" value="{{$search['end_amount']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Ticket Type:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <select class="form-control" name="ticket_type" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['ticket_types'] as $index=>$tt)
+                                                    <option @if(!empty($search['ticket_type']) && $index==$search['ticket_type']) selected @endif value="{{$index}}">{{$tt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Status:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <select class="form-control" name="statu" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['status'] as $index=>$s)
+                                                    <option @if(!empty($search['statu']) && $index==$search['statu']) selected @endif value="{{$index}}">{{$s}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-3">User:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
@@ -332,6 +374,22 @@
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
                                             <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">AuthCode:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-large" name="authcode" value="{{$search['authcode']}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">RefNum:</label>
+                                    <div class="col-md-9 show-error"> 
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" />
                                         </div>
                                     </div>
                                 </div>

@@ -162,6 +162,8 @@ class PurchaseController extends Controller{
                 $search['payment_types'] = Util::getEnumValues('purchases','payment_type');
                 $search['users'] = User::orderBy('email')->get(['id','email']);
                 $search['customers'] = Customer::orderBy('email')->get(['id','email']);
+                $search['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
+                $search['status'] = Util::getEnumValues('purchases','status');
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search venue
@@ -214,6 +216,25 @@ class PurchaseController extends Controller{
                     $where[] = [DB::raw('DATE(purchases.created)'),'>=',$search['soldtime_start_date']];
                     $where[] = [DB::raw('DATE(purchases.created)'),'<=',$search['soldtime_end_date']];
                 } 
+                //search date range
+                if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
+                {
+                    $search['start_amount'] = $input['start_amount'];
+                    $where[] = [DB::raw('amount'),'>=',$search['start_amount']];
+                }
+                else
+                {
+                    $search['start_amount'] = '';
+                }
+                if(isset($input) && isset($input['end_amount']) && is_numeric($input['end_amount']))
+                {
+                    $search['end_amount'] = $input['end_amount'];
+                    $where[] = [DB::raw('amount'),'<=',$search['end_amount']];
+                }
+                else
+                {
+                    $search['end_amount'] = '';
+                }
                 //search payment types        
                 if(isset($input) && isset($input['payment_type']) && !empty($input['payment_type']))
                 {
@@ -223,6 +244,22 @@ class PurchaseController extends Controller{
                 {
                     $search['payment_type'] = array_values($search['payment_types']);
                 }
+                //search ticket_type      
+                if(isset($input) && !empty($input['ticket_type']))
+                {
+                    $search['ticket_type'] = $input['ticket_type'];
+                    $where[] = ['tickets.ticket_type','=',$search['ticket_type']];
+                }
+                else
+                    $search['ticket_type'] = '';
+                //search status      
+                if(isset($input) && !empty($input['statu']))
+                {
+                    $search['statu'] = $input['statu'];
+                    $where[] = ['purchases.status','=',$search['statu']];
+                }
+                else
+                    $search['statu'] = '';
                 //search user      
                 if(isset($input) && !empty($input['user']))
                 {
@@ -247,6 +284,22 @@ class PurchaseController extends Controller{
                 }
                 else
                     $search['order_id'] = ''; 
+                //search authcode    
+                if(isset($input) && !empty($input['authcode']))
+                {
+                    $search['authcode'] = $input['authcode'];
+                    $where[] = ['transactions.authcode','=',$search['authcode']];
+                }
+                else
+                    $search['authcode'] = ''; 
+                //search refnum    
+                if(isset($input) && !empty($input['refnum']))
+                {
+                    $search['refnum'] = $input['refnum'];
+                    $where[] = ['transactions.refnum','=',$search['refnum']];
+                }
+                else
+                    $search['refnum'] = ''; 
                 //if user has permission to view                
                 if(in_array('View',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                 {
@@ -312,10 +365,9 @@ class PurchaseController extends Controller{
                         $search['venues'] = Venue::orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
                     }   
-                    $status = Util::getEnumValues('purchases','status');
                 }
                 $modal = (count($input))? 0 : 1;
-                return view('admin.purchases.index',compact('purchases','status','search','modal'));
+                return view('admin.purchases.index',compact('purchases','search','modal'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Index: '.$ex->getMessage());

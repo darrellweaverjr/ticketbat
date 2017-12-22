@@ -87,6 +87,8 @@ class DashboardController extends Controller
         $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
         $data['search']['users'] = User::orderBy('email')->get(['id','email']);
         $data['search']['customers'] = Customer::orderBy('email')->get(['id','email']);
+        $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
+        $data['search']['status'] = Util::getEnumValues('purchases','status');
         //search venue
         if(isset($input) && isset($input['venue']))
         {
@@ -152,6 +154,41 @@ class DashboardController extends Controller
         {
             $data['search']['payment_type'] = array_values($data['search']['payment_types']);
         }
+        //search date range
+        if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
+        {
+            $data['search']['start_amount'] = $input['start_amount'];
+            $data['where'][] = [DB::raw('amount'),'>=',$data['search']['start_amount']];
+        }
+        else
+        {
+            $data['search']['start_amount'] = '';
+        }
+        if(isset($input) && isset($input['end_amount']) && is_numeric($input['end_amount']))
+        {
+            $data['search']['end_amount'] = $input['end_amount'];
+            $data['where'][] = [DB::raw('amount'),'<=',$data['search']['end_amount']];
+        }
+        else
+        {
+            $data['search']['end_amount'] = '';
+        }
+        //search ticket_type      
+        if(isset($input) && !empty($input['ticket_type']))
+        {
+            $data['search']['ticket_type'] = $input['ticket_type'];
+            $data['where'][] = ['tickets.ticket_type','=',$data['search']['ticket_type']];
+        }
+        else
+            $data['search']['ticket_type'] = '';
+        //search status      
+        if(isset($input) && !empty($input['statu']))
+        {
+            $data['search']['statu'] = $input['statu'];
+            $data['where'][] = ['purchases.status','=',$data['search']['statu']];
+        }
+        else
+            $data['search']['statu'] = '';
         //search user      
         if(isset($input) && !empty($input['user']))
         {
@@ -182,6 +219,22 @@ class DashboardController extends Controller
         {
             $data['search']['order_id'] = '';
         }
+        //search authcode    
+        if(isset($input) && !empty($input['authcode']))
+        {
+            $data['search']['authcode'] = $input['authcode'];
+            $data['where'][] = ['transactions.authcode','=',$data['search']['authcode']];
+        }
+        else
+            $data['search']['authcode'] = ''; 
+        //search refnum    
+        if(isset($input) && !empty($input['refnum']))
+        {
+            $data['search']['refnum'] = $input['refnum'];
+            $data['where'][] = ['transactions.refnum','=',$data['search']['refnum']];
+        }
+        else
+            $data['search']['refnum'] = ''; 
         //search printing
         if(isset($input) && isset($input['mirror_period']) && !empty($input['mirror_period']) && is_numeric($input['mirror_period']))
             $data['search']['mirror_period'] = $input['mirror_period'];
