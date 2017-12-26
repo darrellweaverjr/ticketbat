@@ -76,7 +76,7 @@ class BandController extends Controller{
                         }
                         foreach ($bands as $b)
                             $b->image_url = Image::view_image($b->image_url);
-                        $categories = Category::all();
+                        $categories = Category::get_categories('-&emsp;&emsp;');
                     }  
                 }
                 //return view

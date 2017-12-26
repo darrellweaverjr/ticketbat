@@ -90,15 +90,7 @@
                                     <select class="form-control" name="filter_category">
                                         <option selected value="">All</option>
                                         @foreach($categories as $index=>$c)
-                                            @if($c->id_parent == 0)
-                                                <option value="{{$c->id}}">{{$c->name}}</option>
-                                                @foreach ($c->children()->get() as $children)
-                                                    <option value="{{$children->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
-                                                    @foreach ($children->children()->get() as $niece)
-                                                        <option value="{{$niece->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
-                                                    @endforeach
-                                                @endforeach
-                                            @endif
+                                        <option value="{{$c->id}}">{{$c->name}}</option>
                                         @endforeach
                                     </select>
                                 </span>

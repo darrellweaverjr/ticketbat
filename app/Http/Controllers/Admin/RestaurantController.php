@@ -283,27 +283,7 @@ class RestaurantController extends Controller{
      */
     function get_menus()
     {
-        $menus = RestaurantMenu::all();
-        $menu = [];
-        foreach($menus as $m)
-        {
-            if($m->parent_id == 0)
-            {
-                $m->name = '-&emsp;'.$m->name;
-                $menu[] = $m;
-                foreach ($m->children()->get() as $c)
-                {
-                    $c->name = '-&emsp;-&emsp;'.$c->name;
-                    $menu[] = $c;
-                    foreach ($c->children()->get() as $n)
-                    {
-                        $n->name = '-&emsp;-&emsp;-&emsp;'.$n->name;
-                        $menu[] = $n;
-                    }  
-                }
-            }
-        } 
-        return $menu;
+        return RestaurantMenu::get_menu('-&emsp;&emsp;');
     }
     public function menu()
     {

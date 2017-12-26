@@ -36,7 +36,7 @@ class CategoryController extends Controller{
             }
             else
             {
-                $categories = Category::all();
+                $categories = Category::get_categories('-&emsp;&emsp;');
                 //return view
                 return view('admin.categories.index',compact('categories'));
             }

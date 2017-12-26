@@ -133,15 +133,7 @@
                                         <div class="col-md-9 show-error">
                                             <select class="form-control" name="category_id">
                                                 @foreach($categories as $index=>$c)
-                                                    @if($c->id_parent == 0)
-                                                        <option value="{{$c->id}}" @if($c->disabled>0) disabled @endif>{{$c->name}}</option>
-                                                        @foreach ($c->children()->get() as $children)
-                                                            <option value="{{$children->id}}" @if($children->disabled>0) disabled @endif>&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
-                                                            @foreach ($children->children()->get() as $niece)
-                                                                <option value="{{$niece->id}}" @if($niece->disabled>0) disabled @endif>&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
-                                                            @endforeach
-                                                        @endforeach
-                                                    @endif
+                                                <option value="{{$c->id}}" @if($c->disabled>0) disabled @endif>{{$c->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>

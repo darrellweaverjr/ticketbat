@@ -59,42 +59,16 @@
                         </thead>
                         <tbody>
                             @foreach($categories as $index=>$c)
-                                @if($c->id_parent == 0)
-                                    <tr>
-                                        <td width="2%">
-                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                <input type="checkbox" class="checkboxes" id="{{$c->id}}" value="{{$c->name}}" />
-                                                <span></span>
-                                            </label>
-                                        </td>
-                                        <td width="88%">{{$c->name}}</td>
-                                        <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$c->id}}" @if($c->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
-                                    </tr>
-                                    @foreach ($c->children()->get() as $children)
-                                        <tr>
-                                            <td width="2%">
-                                                <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                    <input type="checkbox" class="checkboxes" id="{{$children->id}}" value="{{$children->name}}" />
-                                                    <span></span>
-                                                </label>
-                                            </td>
-                                            <td width="88%"><span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>{{$children->name}}</td>
-                                            <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$children->id}}" @if($children->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
-                                        </tr>
-                                        @foreach ($children->children()->get() as $niece)
-                                            <tr>
-                                                <td width="2%">
-                                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                        <input type="checkbox" class="checkboxes" id="{{$niece->id}}" value="{{$niece->name}}" />
-                                                        <span></span>
-                                                    </label>
-                                                </td>
-                                                <td width="88%"><span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>-<span style="display: inline-block; width: 4ch;">&#9;</span>{{$niece->name}}</td>
-                                                <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$niece->id}}" @if($niece->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
-                                            </tr>
-                                        @endforeach
-                                    @endforeach
-                                @endif
+                            <tr>
+                                <td width="2%">
+                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input type="checkbox" class="checkboxes" id="{{$c->id}}" value="{{$c->name}}" />
+                                        <span></span>
+                                    </label>
+                                </td>
+                                <td width="88%">{{$c->name}}</td>
+                                <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$c->id}}" @if($c->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -105,7 +79,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:350px !important;">
+        <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title"></center></h4>
@@ -132,17 +106,9 @@
                                 </label>
                                 <div class="col-md-9 show-error">
                                     <select class="form-control" name="id_parent">
-                                        <option value="0">- No parent -</option>
+                                        <option value="0">No parent</option>
                                         @foreach($categories as $index=>$c)
-                                            @if($c->id_parent == 0)
-                                                <option value="{{$c->id}}">{{$c->name}}</option>
-                                                @foreach ($c->children()->get() as $children)
-                                                    <option value="{{$children->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;{{$children->name}}</option>
-                                                    @foreach ($children->children()->get() as $niece)
-                                                        <option value="{{$niece->id}}">&nbsp;&nbsp;-&nbsp;&nbsp;-&nbsp;&nbsp;{{$niece->name}}</option>
-                                                    @endforeach
-                                                @endforeach
-                                            @endif
+                                        <option value="{{$c->id}}">{{$c->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>

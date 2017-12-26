@@ -65,7 +65,7 @@ class HomeController extends Controller
             if(!empty($s->url))
                 $s->url = Image::view_image($s->url);
             //get categories
-            $categories = Category::all();
+            $categories = Category::get_categories();
             //get cities
             $cities = DB::table('venues')
                         ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')

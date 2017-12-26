@@ -52,4 +52,31 @@ class Category extends Model
     {
         return $this->hasMany('App\Http\Models\Show','category_id');
     }
+    //PERSONALIZED FUNCTIONS
+    /**
+     * Get the purchase receipt info.
+     */
+    public static function get_categories($concat = '-')
+    {
+        $categories = [];
+        $concat = $concat.'&emsp;';
+        $level = 0;
+        $cats = Category::orderBy('name')->get();
+        
+        function subs($cat, $l, $concat)
+        {
+            $cat->name = str_repeat($concat, ++$l).$cat->name;
+            $cat_subs = [];
+            $children = $cat->children()->orderBy('name')->get();
+            foreach ($children as $c)
+                $cat_subs = array_merge($cat_subs, subs($c, $l, $concat)); 
+            return array_merge([$cat], $cat_subs);  
+        }
+        
+        foreach ($cats as $c)
+            if($c->id_parent == $level)
+                $categories = array_merge($categories, subs($c, $level, $concat)); 
+
+        return $categories;
+    }
 }

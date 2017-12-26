@@ -220,7 +220,7 @@ class ShowController extends Controller{
                         $venues = Venue::orderBy('name')->get(['id','name','restrictions']);
                     }  
                     //other enum
-                    $categories = Category::all();
+                    $categories = Category::get_categories('-&emsp;&emsp;');
                     $stages = Stage::all('id','name','venue_id');
                     $restrictions = Util::getEnumValues('shows','restrictions');
                     $ticket_types_aux = Util::getEnumValues('tickets','ticket_type');

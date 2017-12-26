@@ -57,23 +57,25 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="50%">Ticket Type</th>
-                                <th width="38%">Ticket Class</th>
+                                <th width="30%">Ticket Type</th>
+                                <th width="28%">Ticket Class</th>
+                                <th width="30%">Preview</th>
                                 <th width="10%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($tickets as $index=>$t)
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$index}}" value="{{$index}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="50%">{{$t['ticket_type']}}</td>
-                                <td width="38%">{{$t['ticket_type_class']}}</td>
-                                <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$index}}" {{$t['active']}} data-size="mini" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger"></td>
+                                <td>{{$t['ticket_type']}}</td>
+                                <td>{{$t['ticket_type_class']}}</td>
+                                <td><button class="btn {{$t['ticket_type_class']}}">{{$t['ticket_type']}}</button></td>
+                                <td><input type="checkbox" class="make-switch" name="active" value="{{$index}}" {{$t['active']}} data-size="mini" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger"></td>
                             </tr>
                             @endforeach
                         </tbody>
