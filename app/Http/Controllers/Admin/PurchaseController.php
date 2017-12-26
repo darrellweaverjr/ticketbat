@@ -59,7 +59,17 @@ class PurchaseController extends Controller{
                                                       show_times.show_time, shows.name AS show_name, packages.title'))
                                     ->where('purchases.id',$input['id'])->groupBy('purchases.id')->first();
                 if($purchase)
+                {
+                    $purchase->tickets = DB::table('ticket_number')
+                            ->join('customers', 'customers.id', '=', 'ticket_number.customers_id')
+                            ->join('purchases', 'purchases.id', '=', 'ticket_number.purchases_id')
+                            ->select(DB::raw('ticket_number.id, ticket_number.tickets, 
+                                              customers.first_name, customers.last_name, customers.email'))
+                            ->whereColumn('ticket_number.customers_id','<>','purchases.customer_id')
+                            ->where('ticket_number.purchases_id', $purchase->id)
+                            ->groupBy('ticket_number.id')->orderBy('ticket_number.id','DESC')->get();
                     return ['success'=>true,'purchase'=>$purchase];
+                }
                 return ['success'=>false,'msg'=>'There was an error.<br>That purchase is not longer in the system.'];
             }
             else if(isset($input) && isset($input['id']))
@@ -316,6 +326,10 @@ class PurchaseController extends Controller{
                                     ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->leftJoin('ticket_number',function($join){
+                                        $join->on('ticket_number.purchases_id','=','purchases.id')
+                                             ->on('ticket_number.customers_id','!=','customers.id');
+                                    })
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
@@ -323,7 +337,7 @@ class PurchaseController extends Controller{
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
                                                       customers.first_name, customers.last_name, customers.email, customers.phone,
-                                                      show_times.show_time, shows.name AS show_name, packages.title'))
+                                                      show_times.show_time, shows.name AS show_name, packages.title, COUNT( ticket_number.id ) AS shared'))
                                     ->where($where)
                                     ->where(function($query)
                                     {
@@ -332,6 +346,7 @@ class PurchaseController extends Controller{
                                     })
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
+                                    ->groupBy('purchases.id')
                                     ->get();
                         $search['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
@@ -350,6 +365,10 @@ class PurchaseController extends Controller{
                                     ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->leftJoin('ticket_number',function($join){
+                                        $join->on('ticket_number.purchases_id','=','purchases.id')
+                                             ->on('ticket_number.customers_id','!=','customers.id');
+                                    })
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
@@ -357,10 +376,11 @@ class PurchaseController extends Controller{
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
                                                       customers.first_name, customers.last_name, customers.email, customers.phone,
-                                                      show_times.show_time, shows.name AS show_name, packages.title'))
+                                                      show_times.show_time, shows.name AS show_name, packages.title, COUNT( ticket_number.id ) AS shared'))
                                     ->where($where)
                                     ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                     ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
+                                    ->groupBy('purchases.id')
                                     ->get();
                         $search['venues'] = Venue::orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);

@@ -173,7 +173,15 @@ var TableDatatablesManaged = function () {
                                 else if(key=='referrer_url')
                                     $('#modal_model_details span.'+key).html('<i><a href="'+data.purchase[key]+'" target="_blank">'+data.purchase[key]+'</a></i>');
                                 else if(key=='note')
-                                    $('#modal_model_details span.'+key).html('<i>'+data.purchase[key]+'</i>');
+                                    $('#modal_model_details span.'+key+'s').html('<i>'+data.purchase[key]+'</i>');
+                                else if(key=='tickets')
+                                {
+                                    var tickets = '';
+                                    $.each(data.purchase[key],function(k, v) {
+                                        tickets += '[<b>'+v.tickets+'</b>] <b>'+v.first_name+' '+v.last_name+'</b>, <i><a href="mailto:'+v.email+'" target="_top">'+v.email+'</a></i><br>';
+                                    });
+                                    $('#modal_model_details span.'+key).html( tickets );
+                                }
                                 else
                                     $('#modal_model_details b.'+key).html(data.purchase[key]);
                             }

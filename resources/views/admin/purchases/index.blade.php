@@ -89,7 +89,7 @@
                                     <div class="search-content" >
                                         @if($previous_color != $color)
                                         <b class="search-title">
-                                            <i class="fa fa-ticket"></i> {{$p->first_name}} {{$p->last_name}}, <small><i> <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></i></small>
+                                            <i class="fa fa-ticket"></i> {{$p->first_name}} {{$p->last_name}}, <small><i> <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></i></small> @if($p->shared) &emsp;<small><i><span class="fa fa-share"></span> ticket(s) shared with {{$p->shared}} people</i></small> @endif
                                             @if($p->first_name != $p->u_first_name || $p->last_name != $p->u_last_name || $p->email != $p->email) <br><i class="fa fa-user"></i> {{$p->u_first_name}} {{$p->u_last_name}} <small><i> (<a href="mailto:{{$p->u_email}}" target="_top">{{$p->u_email}}</a>)</i></small> @endif
                                             @if($p->card_holder && $p->card_holder != $p->first_name.' '.$p->last_name) <br><i class="fa fa-credit-card"></i> {{$p->card_holder}}@endif
                                         </b>
@@ -165,6 +165,13 @@
                                     </div>
                                 </li>
                                 <li class="in">
+                                    <div class="avatar">Shared Tickets</div>
+                                    <div class="message">
+                                        <span class="arrow"> </span>
+                                        <span class="body note tickets" style="margin-left:15px"></span>
+                                    </div>
+                                </li>
+                                <li class="in">
                                     <div class="avatar">Transaction Info</div>
                                     <div class="message">
                                         <span class="arrow"> </span>
@@ -195,7 +202,7 @@
                                     <div class="avatar">Notes</div>
                                     <div class="message">
                                         <span class="arrow"> </span>
-                                        <span class="body note" style="margin-left:15px"></span>
+                                        <span class="body note notes" style="margin-left:15px"></span>
                                     </div>
                                 </li>
                             </ul>
