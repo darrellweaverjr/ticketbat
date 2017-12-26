@@ -75,39 +75,39 @@
                             @foreach($purchases as $index=>$p)
                                 @php $color = substr(dechex(crc32($p->color)),0,6) @endphp
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$p->id}}" data-qty="{{$p->quantity}}" value="{{$p->email}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" title="Click here to see details" class="modal_details_view" 
+                                <td title="Click here to see details" class="modal_details_view" 
                                     data-id="{{$p->id}}" style="text-align:center;background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;">
                                     <i class="fa fa-search"></i>
                                 </td>
-                                <td class="search-item clearfix" width="47%">
+                                <td class="search-item clearfix">
                                     <div class="search-content" >
                                         @if($previous_color != $color)
                                         <b class="search-title">
-                                            <i class="fa fa-ticket"></i> {{$p->first_name}} {{$p->last_name}} <small><i> (<a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a>)</i></small>
+                                            <i class="fa fa-ticket"></i> {{$p->first_name}} {{$p->last_name}}, <small><i> <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></i></small>
                                             @if($p->first_name != $p->u_first_name || $p->last_name != $p->u_last_name || $p->email != $p->email) <br><i class="fa fa-user"></i> {{$p->u_first_name}} {{$p->u_last_name}} <small><i> (<a href="mailto:{{$p->u_email}}" target="_top">{{$p->u_email}}</a>)</i></small> @endif
                                             @if($p->card_holder && $p->card_holder != $p->first_name.' '.$p->last_name) <br><i class="fa fa-credit-card"></i> {{$p->card_holder}}@endif
                                         </b>
-                                        <br><small><i>Method: <b>{{$p->method}}</b> @if($p->transaction_id)AuthCode: <b>{{$p->authcode}}</b> RefNum: <b>{{$p->refnum}}</b>@endif</i></small><br>
+                                        <br><small><i>Method: <b>{{$p->method}}</b>, @if($p->transaction_id)AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>,@endif</i></small><br>
                                         @endif
-                                        <small><i>ID: <b>{{$p->id}}</b> Qty: <b>{{$p->quantity}}</b> T.Type: <b>{{$p->ticket_type_type}}</b> Pkg: <b>{{$p->title}}</b>
-                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b> Fees: <b>${{number_format($p->processing_fee,2)}}</b> Commiss.: <b>${{number_format($p->commission_percent,2)}}</b> Savings: <b>${{number_format($p->savings,2)}}</b>
+                                        <small><i>ID: <b>{{$p->id}}</b>, Qty: <b>{{$p->quantity}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
+                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}}</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>
                                         </i></small>
-                                        <span @if(empty(trim($p->note))) class="hidden" @endif id="note_{{$p->id}}"><hr>@php echo trim($p->note) @endphp<span>
+                                        <div id="note_{{$p->id}}" class="note note-info @if(empty(trim($p->note))) hidden @endif" style="font-style:italic;font-size:smaller">@php echo trim($p->note) @endphp</div>
                                     </div>
                                 </td>
-                                <td width="18%"><center>{{$p->show_name}}<br>at<br>{{$p->venue_name}}</center></td>
-                                <td width="8%" data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}}</center></td>
-                                <td width="8%" data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}}</center></td>
-                                <td width="5%" style="text-align:right">
+                                <td><center>{{$p->show_name}}<br>at<br>{{$p->venue_name}}</center></td>
+                                <td data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}}</center></td>
+                                <td data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}}</center></td>
+                                <td style="text-align:right">
                                     @if($previous_color != $color) @if($p->amount > 0) $ {{number_format($p->amount,2)}} @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
-                                <td width="11%">
+                                <td>
                                     @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                                     <select ref="{{$p->id}}" class="form-control" name="status" data-status="{{$p->status}}">
                                         @foreach($search['status'] as $indexS=>$s)

@@ -80,7 +80,7 @@
                                 <td data-order="{{strtotime($d->created)}}">{{date('m/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->amount,2)}}</td>
-                                <td>{{$d->note}}</b></td>
+                                <td>@php echo $d->note @endphp</b></td>
                             </tr>
                             @endforeach
                         </tbody>

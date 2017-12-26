@@ -60,41 +60,43 @@
                                     </label>
                                 </th>
                                 <th width="10%">Logo</th>
-                                <th width="85%">Description</th>
+                                <th width="80%">Description</th>
+                                <th width="5%">Preview</th>
                                 <th width="5%">Featured</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($venues as $index=>$v)
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$v->id}}" value="{{$v->name}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%" data-order="{{$v->name}}">
-                                    <center style="color:red;"><i><b><a href="https://www.ticketbat.com/venue/{{$v->slug}}" target="_blank"><img alt="- No image -" height="110px" width="110px" src="{{$v->image_url}}"/></a></b></i></center>
+                                <td data-order="{{$v->name}}" style="text-align:center;color:red" title="Click on the image to go to the website.">
+                                    <a><img alt="- No image -" height="110px" width="110px" src="{{$v->image_url}}"/></a>
                                 </td>
-                                <td class="search-item clearfix" width="85%">
+                                <td class="search-item clearfix">
                                     <div class="search-title">
                                         <h4>
-                                            <a>{{$v->name}}</a>&nbsp;&nbsp;&nbsp;
+                                            <b>{{$v->name}}&emsp;
+                                            <a style="font-style:italic;font-weight:bold;font-size:small!important" href='http://maps.google.com/?q={{$v->address}} {{$v->city}} {{$v->state}} {{$v->country}} {{$v->zip}}' target="_blank"><span class="fa fa-map-marker"></span> {{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</a>
+                                            </b>&emsp;
                                             @if($v->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$v->googleplus}}" target="_blank"></a>@endif
                                             @if($v->facebook)<a class="social-icon social-icon-color facebook" href="{{$v->facebook}}" target="_blank"></a>@endif
                                             @if($v->twitter)<a class="social-icon social-icon-color twitter" href="{{$v->twitter}}" target="_blank"></a>@endif
                                             @if($v->youtube)<a class="social-icon social-icon-color youtube" href="{{$v->youtube}}" target="_blank"></a>@endif
                                             @if($v->instagram)<a class="social-icon social-icon-color instagram" href="{{$v->instagram}}" target="_blank"></a>@endif
                                             @if($v->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$v->yelpbadge}}" target="_blank"></a>@endif
-                                            &nbsp;&nbsp;&nbsp;
-                                            <a href='http://maps.google.com/?q={{$v->address}} {{$v->city}} {{$v->state}} {{$v->country}} {{$v->zip}}' target="_blank" class="fa fa-map-marker"><small> {{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</small></a>
                                         </h4>
                                     </div>
-                                    <div class="search-content">
-                                        <small>@if($v->description){{$v->description}}@else <i style="color:red"><b>- No description -</b></i>@endif</small>
+                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">
+                                        @if($v->description){{$v->description}}@else <span style="color:red">- No description -</span>@endif
                                     </div>
                                 </td>
-                                <td width="5%"><center> <span class="label label-sm sbold
+                                <td><center><a target="_blank" href="https://www.ticketbat.com/venue/{{$v->slug}}" class="btn sbold dark btn-outline"><img src="{{config('app.theme')}}img/favicon.ico"></td>
+                                <td><center> <span class="label label-sm sbold
                                     @if($v->is_featured) label-success"> Yes
                                     @else label-danger"> No
                                     @endif

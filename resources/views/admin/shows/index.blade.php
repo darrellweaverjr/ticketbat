@@ -62,7 +62,8 @@
                                     </label>
                                 </th>
                                 <th width="10%">Logo</th>
-                                <th width="72%">Description</th>
+                                <th width="70%">Description</th>
+                                <th width="2%">Preview</th>
                                 <th width="8%">Category</th>
                                 <th width="3%">Featured</th>
                                 <th width="5%">Status</th>
@@ -71,20 +72,19 @@
                         <tbody>
                             @foreach($shows as $index=>$s)
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$s->id}}" value="{{$s->name}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%" data-order="{{$s->name}}">
-                                    <center style="color:red;"><i><b><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}"><img alt="- No image -" height="110px" width="110px" src="{{$s->image_url}}"/></a></b></i></center>
+                                <td data-order="{{$s->name}}" style="text-align:center;color:red" title="Click on the image to go to the website.">
+                                    <a target="_blank" href="{{$s->url}}"><img alt="- No image -" height="110px" width="110px" src="{{$s->image_url}}"/>
                                 </td>
-                                <td class="search-item clearfix" width="72%">
+                                <td class="search-item clearfix">
                                     <div class="search-title">
                                         <h4>
-                                            <a>{{$s->name}}</a>&nbsp;&nbsp;&nbsp;
-                                            @if($s->url)<a class="social-icon social-icon-color rss" href="{{$s->url}}" target="_blank"></a>@endif
+                                            <b>{{$s->name}}&emsp;</b>
                                             @if($s->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$s->googleplus}}" target="_blank"></a>@endif
                                             @if($s->facebook)<a class="social-icon social-icon-color facebook" href="{{$s->facebook}}" target="_blank"></a>@endif
                                             @if($s->twitter)<a class="social-icon social-icon-color twitter" href="{{$s->twitter}}" target="_blank"></a>@endif
@@ -93,18 +93,19 @@
                                             @if($s->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$s->yelpbadge}}" target="_blank"></a>@endif
                                         </h4>
                                     </div>
-                                    <div class="search-content">
-                                        <small>@if($s->short_description){{$s->short_description}}@else <i style="color:red"><b>- No short description -</b></i>@endif</small>
+                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">
+                                        @if($s->short_description){{$s->short_description}}@else <span style="color:red">- No short description -</span>@endif
                                     </div>
                                 </td>
-                                <td width="8%"><center> {{$s->category}} </center></td>
-                                <td width="3%"><center> <span class="label label-sm sbold
+                                <td><center><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}" class="btn sbold dark btn-outline"><img src="{{config('app.theme')}}img/favicon.ico"></td>
+                                <td><center> {{$s->category}} </center></td>
+                                <td><center> <span class="label label-sm sbold
                                     @if($s->is_featured) label-success"> Yes
                                     @else label-danger"> No
                                     @endif
                                     </center></span>
                                 </td>
-                                <td width="5%"><center> <span class="label label-sm sbold
+                                <td><center> <span class="label label-sm sbold
                                     @if($s->is_active) label-success"> Active
                                     @else label-danger"> Inactive
                                     @endif

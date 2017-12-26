@@ -66,22 +66,19 @@
                         <tbody>
                             @foreach($bands as $index=>$b)
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$b->id}}" value="{{$b->name}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="10%" data-order="{{$b->name}}">
-                                    @if(preg_match('/\/uploads\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_OLDTB_SERVER').$b->image_url @endphp @endif
-                                    @if(preg_match('/\/s3\//',$b->image_url)) @php $b->image_url = env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$b->image_url) @endphp @endif
-                                    <center style="color:red;"><i><b><a><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a></b></i></center>
+                                <td data-order="{{$b->name}}" style="text-align:center;color:red" title="Click on the image to go to the website.">
+                                    <a href="{{$b->website}}" target="_blank"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a>
                                 </td>
-                                <td class="search-item clearfix" width="78%">
+                                <td class="search-item clearfix">
                                     <div class="search-title">
                                         <h4>
-                                            <a>{{$b->name}}</a>&nbsp;&nbsp;&nbsp;
-                                            @if($b->website)<a class="social-icon social-icon-color rss" href="{{$b->website}}" target="_blank"></a>@endif
+                                            <b>{{$b->name}}&emsp;</b>
                                             @if($b->youtube)<a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a>@endif
                                             @if($b->facebook)<a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a>@endif
                                             @if($b->twitter)<a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a>@endif
@@ -91,11 +88,11 @@
                                             @if($b->soundcloud)<a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a>@endif
                                         </h4>
                                     </div>
-                                    <div class="search-content">
-                                        <small>@if($b->short_description){{$b->short_description}}@else <i style="color:red"><b>- No short description -</b></i>@endif</small>
+                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">
+                                        @if($b->short_description){{$b->short_description}}@else <span style="color:red">- No short description -</span>@endif
                                     </div>
                                 </td>
-                                <td width="10%"><center> {{$b->category}} </center></td>
+                                <td><center> {{$b->category}} </center></td>
                             </tr>
                             @endforeach
                         </tbody>

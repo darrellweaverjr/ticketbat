@@ -74,6 +74,8 @@ class BandController extends Controller{
                                             ->orderBy('categories.name')
                                             ->get();
                         }
+                        foreach ($bands as $b)
+                            $b->image_url = Image::view_image($b->image_url);
                         $categories = Category::all();
                     }  
                 }
