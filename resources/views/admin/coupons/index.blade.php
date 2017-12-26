@@ -58,20 +58,21 @@
                                 <th width="12%">Discount Type</th>
                                 <th width="12%">Discount Scope</th>
                                 <th width="5%">Redemptions</th>
-                                <th width="45%">Description</th>
+                                <th width="40%">Description</th>
+                                <th width="5%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($discounts as $index=>$d)
-                            <tr @if(!$d->active) class="danger" @endif>
-                                <td width="2%">
+                            <tr>
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$d->id}}" value="{{$d->code}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="12%">{{$d->code}}</td>
-                                <td width="12%"><span class="label label-sm sbold
+                                <td>{{$d->code}}</td>
+                                <td><span class="label label-sm sbold
                                     @if($d->coupon_type == 'Normal') label-success
                                     @elseif($d->coupon_type == 'Broker') label-danger
                                     @elseif($d->coupon_type == 'Affiliate') label-warning
@@ -80,7 +81,7 @@
                                     @endif
                                     ">{{$d->coupon_type}}</span>
                                 </td>
-                                <td width="12%"><span class="label label-sm sbold
+                                <td><span class="label label-sm sbold
                                     @if($d->discount_type == 'Dollar') label-success
                                     @elseif($d->discount_type == 'N for N') label-danger
                                     @elseif($d->discount_type == 'Percent') label-warning
@@ -88,7 +89,7 @@
                                     @endif
                                     ">{{($d->discount_type)? $d->discount_type : 'Multiple'}}</span>
                                 </td>
-                                <td width="12%"><span class="label label-sm sbold
+                                <td><span class="label label-sm sbold
                                     @if($d->discount_scope == 'Ticket') label-success
                                     @elseif($d->discount_scope == 'Total') label-danger
                                     @elseif($d->discount_scope == 'Merchandise') label-warning
@@ -96,12 +97,18 @@
                                     @endif
                                     ">{{($d->discount_scope)? $d->discount_scope : 'Multiple'}}</span>
                                 </td>
-                                <td width="5%"><center><span class="label label-sm sbold
+                                <td><center><span class="label label-sm sbold
                                     @if($d->purchases) label-success
                                     @else label-danger
                                     @endif
                                     ">{{$d->purchases}}</span></center></td>
-                                <td width="45%"> {{$d->description}} </td>
+                                <td>{{$d->description}}</td>
+                                <td><center>@if($d->active>0)
+                                    <span class="label label-sm sbold label-success">Active</span>
+                                    @else 
+                                    <span class="label label-sm sbold label-danger">Inactive</span>
+                                    @endif </center>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
