@@ -85,14 +85,17 @@ var TableDatatablesManaged = function () {
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
             var checked = $(set+"[type=checkbox]:checked").length;
-            if(checked == 1)
+            if(checked >= 1)
             {
-                $('button[id*="btn_model_"]').prop("disabled",false);
-            }
-            else if(checked > 1)
-            {
-                $('button[id*="btn_model_"]').prop("disabled",true);
-                $('#btn_model_email').prop("disabled",false);
+                if(checked == 1)
+                {
+                    $('button[id*="btn_model_"]').prop("disabled",false);
+                }
+                else 
+                {
+                    $('button[id*="btn_model_"]').prop("disabled",true);
+                    $('#btn_model_email').prop("disabled",false);
+                }
             }
             else
             {
@@ -103,6 +106,7 @@ var TableDatatablesManaged = function () {
         //function to change status to purchase
         function change_status(id,status)
         {
+            
             swal({
                 title: "Changing purchase's status",
                 text: "Please, wait.",
@@ -117,8 +121,8 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#tb_model select[name="status"]').data('status',status);
-                        $('#note_'+id).html(data.note);
+                        $('#tb_model select[data-id="'+id+'"]').data('status',status);
+                        $('#note_'+id).html(data.note);                        
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
                             text: data.msg,
@@ -133,6 +137,8 @@ var TableDatatablesManaged = function () {
                             text: data.msg,
                             html: true,
                             type: "error"
+                        },function(){
+                            $('#tb_model select[data-id="'+id+'"]').val(  $('#tb_model select[data-id="'+id+'"]').data('status')  );
                         });
                 },
                 error: function(){
@@ -141,6 +147,8 @@ var TableDatatablesManaged = function () {
                         text: "There was an error trying to set the status!<br>The request could not be sent to the server.",
                         html: true,
                         type: "error"
+                    },function(){
+                        $('#tb_model select[data-id="'+id+'"]').val(  $('#tb_model select[data-id="'+id+'"]').data('status')  );
                     });
                 }
             });
@@ -209,13 +217,13 @@ var TableDatatablesManaged = function () {
         
         //function on status select
         $(document).on('change', '#tb_model select[name="status"]', function(ev){
-            var id = $(this).attr('ref');
+            var id = $(this).data('id');
             var old_status = $(this).data('status');
             var status = $(this).val();
             if(old_status != status)
             {
                 if(status.substring(0,7) == 'Pending')
-                {
+                {                    
                     swal({
                         title: "Are you sure to change the status from <b>"+old_status+"</b> to <b>"+status+"</b>?",
                         text: "An email will be sent to the admin to complete the action.",
@@ -224,7 +232,7 @@ var TableDatatablesManaged = function () {
                         showCancelButton: true,
                         confirmButtonClass: "btn-danger",
                         confirmButtonText: "Yes, do it!",
-                        closeOnConfirm: true,
+                        closeOnConfirm: false,
                         closeOnCancel: true
                     },
                       function(isConfirm) {
@@ -241,9 +249,10 @@ var TableDatatablesManaged = function () {
                                     html: true,
                                     type: "error"
                                 });
+                                $('#tb_model select[data-id="'+id+'"]').val(old_status);
                             }
                         } else {
-                            $(this).val(old_status);
+                            $('#tb_model select[data-id="'+id+'"]').val(old_status);
                         }
                     });
                 }
@@ -258,7 +267,7 @@ var TableDatatablesManaged = function () {
                         showCancelButton: true,
                         confirmButtonClass: "btn-danger",
                         confirmButtonText: "Yes, do it!",
-                        closeOnConfirm: true,
+                        closeOnConfirm: false,
                         closeOnCancel: true
                     },
                       function(isConfirm) {
@@ -275,9 +284,10 @@ var TableDatatablesManaged = function () {
                                     html: true,
                                     type: "error"
                                 });
+                                $('#tb_model select[data-id="'+id+'"]').val(old_status);
                             }
                         } else {
-                            $(this).val(old_status);
+                            $('#tb_model select[data-id="'+id+'"]').val(old_status);
                         }
                     });
                 }

@@ -424,7 +424,6 @@ class PurchaseController extends Controller{
                         $sent = $purchase->set_pending();
                         if(!$sent)
                             return ['success'=>false,'msg'=>'The system updated the status.<br>But the email could not be sent to the admin.'];
-                        return ['success'=>true,'msg'=>'Purchase saved and email sent to the admin successfully!'];
                     }
                     //re-send email if change form active to any inactive and viceversa
                     else if($input['status']=='Active' || $old_status=='Active' || preg_match('/^Pending/',$old_status))

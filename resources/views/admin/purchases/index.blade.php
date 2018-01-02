@@ -109,7 +109,7 @@
                                 </td>
                                 <td>
                                     @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
-                                    <select ref="{{$p->id}}" class="form-control" name="status" data-status="{{$p->status}}">
+                                    <select data-id="{{$p->id}}" class="form-control" name="status" data-status="{{$p->status}}">
                                         @foreach($search['status'] as $indexS=>$s)
                                         <option @if($indexS == $p->status) selected @endif value="{{$indexS}}">{{$s}}</option>
                                         @endforeach
