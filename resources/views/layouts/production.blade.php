@@ -75,8 +75,8 @@
                     <!-- BEGIN HORIZANTAL MENU -->
                     <div class="collapse navbar-collapse" style="background:#000">
                         <ul class="nav navbar-nav @if(!empty(Session::get('funnel',null))) hidden @endif">
-                            <li @if(preg_match('/\/home/',url()->current())) class="active" @endif>
-                                <a @if(!empty(Session::get('slug',null))) href="/event/{{Session::get('slug')}}" @else href="{{route('index')}}" @endif class="menu_nav" title="Go to home page">
+                            <li @if( url()->current() == route('index') ) class="active" @endif>
+                                <a @if(!empty(Session::get('slug',null))) href="/event/{{Session::get('slug')}}" @else href="/home" @endif class="menu_nav" title="Go to home page">
                                     <i class="icon-home"></i> Home 
                                 </a>                                
                             </li>
