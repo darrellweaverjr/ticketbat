@@ -2,7 +2,7 @@
 
 //GENERAL ROUTES
 Auth::routes();
-Route::get('/', function () { return redirect()->route('home'); });
+Route::get('/', function () { return redirect()->route('index'); });
 Route::get('/admin', function () { return redirect()->route('home'); });
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 //ADMIN ROUTES
