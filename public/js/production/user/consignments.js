@@ -22,7 +22,7 @@ var ConsignmentsFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/user/consignments', 
+                url: '/user/consignments', 
                 data: {id:consignment_id}, 
                 success: function(data) {
                     if(data.success) 
@@ -146,7 +146,7 @@ var ConsignmentsFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/user/consignments/contract', 
+                url: '/user/consignments/contract', 
                 data: {id:consignment_id}, 
                 success: function(data) {
                     if(data.success) 
@@ -240,7 +240,7 @@ var ConsignmentsFunctions = function () {
                         jQuery.ajax({
                             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             type: 'POST',
-                            url: '/production/user/consignments/save', 
+                            url: '/user/consignments/save', 
                             data: $('#form_update_consignment').serializeArray(),
                             success: function(data) {
                                 if(data.success)
@@ -314,7 +314,7 @@ var ConsignmentsFunctions = function () {
                         jQuery.ajax({
                             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             type: 'POST',
-                            url: '/production/user/consignments/contract', 
+                            url: '/user/consignments/contract', 
                             data: {id:consignment_id, signed:1}, 
                             success: function(data) {
                                 if(data.success) 

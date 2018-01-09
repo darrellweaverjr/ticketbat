@@ -24,7 +24,18 @@ var TableDatatablesManaged = function () {
                     "first": "First"
                 }
             },
-            //"ajax": '/admin/users/ajax',
+            "ajax": {
+                url: '/admin/dashboard/ticket_sales',
+                dataSrc: 'data'
+            },
+            "columns": [
+                { data: 'name' },
+                { data: 'position' },
+                { data: 'salary' },
+                { data: 'state_date' },
+                { data: 'office' },
+                { data: 'extn' }
+            ],
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
                 [10, 15, 20, -1],

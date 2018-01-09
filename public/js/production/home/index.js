@@ -75,7 +75,7 @@ var PortfolioManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/home/search', 
+                    url: '/home/search', 
                     data: {city:city,category:category,start_date:start_date,end_date:end_date}, 
                     success: function(data) {
                         if(data.success) 

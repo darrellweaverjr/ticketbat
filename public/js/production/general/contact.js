@@ -36,7 +36,7 @@ var ContactFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/general/contact', 
+                    url: '/general/contact', 
                     data: $('#form_contact_us').serializeArray(), 
                     success: function(data) {
                         if(data.success) 

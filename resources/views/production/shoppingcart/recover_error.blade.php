@@ -22,7 +22,7 @@
                 The system could not recover your session.<br>Your link has been expired!
             </p>
             <p class="margin-top-20" style="padding-bottom:20px">
-                <a class="btn btn-danger" href="/production/home">Home</a> <a class="btn btn-danger" data-toggle="modal" href="#modal_contact_us">Contact Us</a>
+                <a class="btn btn-danger" href="/home">Home</a> <a class="btn btn-danger" data-toggle="modal" href="#modal_contact_us">Contact Us</a>
             </p>
             <!-- END DESCRIPTION -->
         </div>

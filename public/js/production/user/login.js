@@ -24,7 +24,7 @@ var LoginFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/user/login', 
+                    url: '/user/login', 
                     data: $('#form_login').serializeArray(), 
                     success: function(data) {
                         if(data.success) 

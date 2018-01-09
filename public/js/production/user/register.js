@@ -6,7 +6,7 @@ var RegisterFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/general/country', 
+                url: '/general/country', 
                 success: function(data) {
                     if(data.success) 
                     {
@@ -38,7 +38,7 @@ var RegisterFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/general/region', 
+                url: '/general/region', 
                 data: { country: country_code }, 
                 success: function(data) {
                     if(data.success) 
@@ -74,7 +74,7 @@ var RegisterFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/user/register', 
+                    url: '/user/register', 
                     data: $('#form_register').serializeArray(), 
                     success: function(data) {
                         if(data.success) 

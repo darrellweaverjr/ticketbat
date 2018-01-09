@@ -50,7 +50,7 @@
                         @foreach($cart['items'] as $i)
                         <tr id="{{$i->id}}" data-qty="{{$i->number_of_items}}">
                             <td>
-                                <b class="label label-sm sbold label-success">{{$i->product_type}}</b> for <a href="/production/event/{{$i->slug}}/{{$i->show_time_id}}">{{$i->name}}</a>
+                                <b class="label label-sm sbold label-success">{{$i->product_type}}</b> for <a href="/event/{{$i->slug}}/{{$i->show_time_id}}">{{$i->name}}</a>
                                 @if(!empty($i->package)) <br><small><i>{{$i->package}}</i></small> @endif <br>On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}} 
                             </td>
                             <td>
@@ -536,7 +536,7 @@
     </div>
     <!-- END PAYMENT -->
     <!-- BEGIN FORM COMPLETE-->
-    <form method="post" id="form_complete" action="/production/purchase/complete" class="hidden">
+    <form method="post" id="form_complete" action="/purchase/complete" class="hidden">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <input type="hidden" name="purchases" value="">
         <input type="hidden" name="send_welcome_email" value="">

@@ -168,10 +168,10 @@
                 <!-- BEGIN SHORTCUT FORM -->
                 <div class="portlet light about-text" id="continue_buy_checkout_msg" style="display:none">
                     <div class="col-md-6">
-                        <a href="/production/home" class="btn btn-info btn-block btn-lg uppercase"><i class="fa fa-suitcase"></i> Continue shopping </a>
+                        <a href="/home" class="btn btn-info btn-block btn-lg uppercase"><i class="fa fa-suitcase"></i> Continue shopping </a>
                     </div>
                     <div class="col-md-6">
-                        <a href="/production/shoppingcart" class="btn btn-success btn-block btn-lg uppercase"><i class="fa fa-shopping-cart"></i> Checkout </a>
+                        <a href="/shoppingcart" class="btn btn-success btn-block btn-lg uppercase"><i class="fa fa-shopping-cart"></i> Checkout </a>
                     </div>
                 </div>
                 <!-- END SHORTCUT FORM -->

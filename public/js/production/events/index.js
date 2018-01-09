@@ -232,7 +232,7 @@ var RatingStars = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/production/event/reviews',
+                        url: '/event/reviews',
                         data: $('#form_write_review').serializeArray(),
                         success: function(data) {
                             if(data.success)

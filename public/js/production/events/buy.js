@@ -70,7 +70,7 @@ var FunctionsManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/add', 
+                url: '/shoppingcart/add', 
                 data: $('#form_model_update').serializeArray(), 
                 success: function(data) {
                     if(data.success) 

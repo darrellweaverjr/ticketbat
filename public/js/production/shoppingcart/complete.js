@@ -12,7 +12,7 @@ var CompleteFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/purchase/welcome', 
+                url: '/purchase/welcome', 
                 data: { user_id: user_id}, 
                 success: function(data) {
                     if(data.success) 
@@ -51,7 +51,7 @@ var CompleteFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/purchase/receipts', 
+                url: '/purchase/receipts', 
                 data: { purchases: purchases }, 
                 success: function(data) {
                     if(data.success && data.sent_receipts) 

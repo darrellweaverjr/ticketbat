@@ -14,7 +14,7 @@ var RecoverFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/user/recover_password', 
+                    url: '/user/recover_password', 
                     data: $('#form_recover_password').serializeArray(), 
                     success: function(data) {
                         if(data.success) 

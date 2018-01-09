@@ -26,7 +26,7 @@
                     </div>
                     <div class="actions">
                         <div class="btn-group">
-                            <form method="post" action="/production/user/consignments" id="form_search_consignments">
+                            <form method="post" action="/user/consignments" id="form_search_consignments">
                                 <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                                 <label>
                                     Hide voided consignments:<span></span>
@@ -154,7 +154,7 @@
                 <!-- END FORM-->
             </div>
             <div class="modal-footer">
-                <a href="/production/shoppingcart" class="btn bg-info btn-outline">Shopping cart</a>
+                <a href="/shoppingcart" class="btn bg-info btn-outline">Shopping cart</a>
                 <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
                 <button type="button" id="btn_update_consignment" class="btn bg-green btn-outline" title="Check the consignment tickets.">Purchase</button>
             </div>

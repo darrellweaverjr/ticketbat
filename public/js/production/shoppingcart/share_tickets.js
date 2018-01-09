@@ -9,7 +9,7 @@ var ShareFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/share', 
+                url: '/shoppingcart/share', 
                 data: { id: shoppingcart_id }, 
                 success: function(data) {
                     if(data.success) 
@@ -53,7 +53,7 @@ var ShareFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/shoppingcart/share', 
+                    url: '/shoppingcart/share', 
                     data: $('#form_share_tickets').serializeArray(), 
                     success: function(data) {
                         if(data.success) 

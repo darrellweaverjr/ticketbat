@@ -11,7 +11,7 @@ var FunctionsGuest = function () {
             type: "warning",
             showConfirmButton: false
         },function(){
-            window.location = '/production/home';
+            window.location = '/home';
         });
     }
     return {

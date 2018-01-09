@@ -58,7 +58,7 @@
                 <div class="page-header-inner container-fluid fixed-panel">
                     <!-- BEGIN LOGO -->
                     <div class="page-logo">
-                        <a @if(!empty(Session::get('slug',null))) href="/production/event/{{Session::get('slug')}}" @else href="{{route('index')}}" @endif title="Go to home page">
+                        <a @if(!empty(Session::get('slug',null))) href="/event/{{Session::get('slug')}}" @else href="{{route('index')}}" @endif title="Go to home page">
                         <img src="{{config('app.theme')}}img/_logo.png" alt="logo" class="logo-default"/>
                         </a>
                     </div>
@@ -76,17 +76,17 @@
                     <div class="collapse navbar-collapse" style="background:#000">
                         <ul class="nav navbar-nav @if(!empty(Session::get('funnel',null))) hidden @endif">
                             <li @if(preg_match('/\/home/',url()->current())) class="active" @endif>
-                                <a @if(!empty(Session::get('slug',null))) href="/production/event/{{Session::get('slug')}}" @else href="{{route('index')}}" @endif class="menu_nav" title="Go to home page">
+                                <a @if(!empty(Session::get('slug',null))) href="/event/{{Session::get('slug')}}" @else href="{{route('index')}}" @endif class="menu_nav" title="Go to home page">
                                     <i class="icon-home"></i> Home 
                                 </a>                                
                             </li>
                             <li @if(preg_match('/\/venues/',url()->current())) class="active" @endif>
-                                <a href="/production/venues" class="menu_nav" title="View our venues">
+                                <a href="/venues" class="menu_nav" title="View our venues">
                                     <i class="icon-pointer"></i> Venues 
                                 </a>                                
                             </li>
                             <li @if(preg_match('/\/merchandise/',url()->current())) class="active" @endif>
-                                <a href="/production/merchandises" class="menu_nav" title="View our merchandises in our venues">
+                                <a href="/merchandises" class="menu_nav" title="View our merchandises in our venues">
                                     <i class="icon-bag"></i> Merchandise
                                 </a>                                
                             </li>
@@ -115,12 +115,12 @@
                                         <i class="icon-lock"></i>&nbsp;&nbsp;&nbsp;Change password</a>
                                     </li>
                                     <li>
-                                        <a href="/production/user/purchases" title="List your purchases">
+                                        <a href="/user/purchases" title="List your purchases">
                                         <i class="icon-basket"></i>&nbsp;&nbsp;&nbsp;My Purchases</a>
                                     </li>
                                     @if(in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                                     <li>
-                                        <a href="/production/user/consignments" title="View your consignment tickets">
+                                        <a href="/user/consignments" title="View your consignment tickets">
                                         <i class="icon-tag"></i>&nbsp;&nbsp;&nbsp;My Consignments</a>
                                     </li>
                                     @endif
@@ -133,7 +133,7 @@
                             </li>
                             @endif
                             <li class="dropdown-notification @if(preg_match('/\/shoppingcart/',url()->current())) active @endif">
-                                <a href="/production/shoppingcart" class="menu_nav" title="View/pay you items in the shopping cart">
+                                <a href="/shoppingcart" class="menu_nav" title="View/pay you items in the shopping cart">
                                     <i class="icon-basket"></i> Shopping Cart <span class="badge badge-danger"><b id="shoppingcart_qty_items" style="font-size:14px">Loading</b></span>
                                 </a>
                             </li>
@@ -147,7 +147,7 @@
                     <span class="uppercase text-justify">Please complete your purchase in</span>
                     <span id="timerClock" data-countdown="{{Session::get('countdown','')}}"></span>
                     <span class="uppercase text-justify">minutes : seconds</span>
-                    <a href="/production/shoppingcart" style="font-size:10px;font-weight:bold" class="btn btn-success">checkout now</a> 
+                    <a href="/shoppingcart" style="font-size:10px;font-weight:bold" class="btn btn-success">checkout now</a> 
                 </div>  
                 
             </div>

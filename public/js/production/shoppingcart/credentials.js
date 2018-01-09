@@ -16,7 +16,7 @@ var FunctionsGuest = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/user/login', 
+                    url: '/user/login', 
                     data: $('#form_login_guest').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
@@ -70,7 +70,7 @@ var FunctionsGuest = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/user/guest', 
+                    url: '/user/guest', 
                     data: $('#form_guest_login').serializeArray(), 
                     success: function(data) {
                         if(data.success) 

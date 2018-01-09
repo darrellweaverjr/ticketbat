@@ -26,7 +26,7 @@
 
             <div class="cbp text-center myVenues">
                 @foreach($vv['venues'] as $v)
-                <div class="cbp-item  filtered" data-id="{{$v->venue_id}}" data-search="{{$v->name}}" data-href="/production/venue/{{$v->slug}}">
+                <div class="cbp-item  filtered" data-id="{{$v->venue_id}}" data-search="{{$v->name}}" data-href="/venue/{{$v->slug}}">
                     <div class="cbp-caption">
                         <div class="venue-pic">
                             <a class="cbp-caption-defaultWrap"><img src="{{$v->url}}" alt="{{$v->name}}"></a>

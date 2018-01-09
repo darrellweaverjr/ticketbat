@@ -73,7 +73,7 @@
                                 <td>{{date('m/d/Y',strtotime($p->created))}} - {{date('g:ia',strtotime($p->created))}}</td>
                                 <td>{{$p->quantity}}</td>
                                 <td style="text-align:right">${{number_format($p->price_paid,2)}}</td>
-                                <td><a href="/production/user/purchases/receipts/{{$p->id}}" target="_blank" class="btn btn-lg bg-green btn-outline"><i class="icon-doc"></i></a></td>
+                                <td><a href="/user/purchases/receipts/{{$p->id}}" target="_blank" class="btn btn-lg bg-green btn-outline"><i class="icon-doc"></i></a></td>
                                 @if(!$p->passed)
                                     @if($seller>0)
                                     <td>-</td>
@@ -81,9 +81,9 @@
                                 <td>-</td>
                                 <td>-</td>
                                 @else
-                                <td><a href="/production/user/purchases/tickets/C/{{$p->id}}" target="_blank" class="btn btn-lg btn-success btn-outline"><i class="icon-printer"></i></a></td>
+                                <td><a href="/user/purchases/tickets/C/{{$p->id}}" target="_blank" class="btn btn-lg btn-success btn-outline"><i class="icon-printer"></i></a></td>
                                 @if($seller>0)
-                                <td><a href="/production/user/purchases/tickets/S/{{$p->id}}" target="_blank" class="btn btn-lg btn-danger btn-outline"><i class="icon-printer"></i></a></td>
+                                <td><a href="/user/purchases/tickets/S/{{$p->id}}" target="_blank" class="btn btn-lg btn-danger btn-outline"><i class="icon-printer"></i></a></td>
                                 @endif
                                 <td><button type="button" class="btn btn-lg bg-green btn-outline btn_share_tickets" data-id="{{$p->id}}" data-qty="{{$p->quantity}}"><i class="icon-share"></i></button></td>
                                 @endif

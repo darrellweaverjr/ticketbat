@@ -28,7 +28,7 @@ var Logout = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/user/logout', 
+                url: '/user/logout', 
                 success: function(data) {
                     if(data.success) 
                         location.reload();
@@ -69,7 +69,7 @@ var ShoppingcartQtyItems = function () {
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
-            url: '/production/shoppingcart/count', 
+            url: '/shoppingcart/count', 
             success: function(data) {
                 if(data.success) 
                 {
@@ -122,7 +122,7 @@ var Countdown = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/countdown', 
+                url: '/shoppingcart/countdown', 
                 data: {status:1}, 
                 success: function(data) {
                     if(data.success) 
@@ -140,7 +140,7 @@ var Countdown = function () {
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
-            url: '/production/shoppingcart/countdown', 
+            url: '/shoppingcart/countdown', 
             data: {status:1}, 
             success: function(data) {
                 if(data.success) 
@@ -164,7 +164,7 @@ var Countdown = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/countdown', 
+                url: '/shoppingcart/countdown', 
                 data: {status:0}
             }); 
             setTimeout(keepCount, 1000); 
@@ -188,7 +188,7 @@ var Countdown = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/production/shoppingcart/countdown', 
+                        url: '/shoppingcart/countdown', 
                         data: {status:1}, 
                         success: function(data) {
                             swal({
@@ -199,7 +199,7 @@ var Countdown = function () {
                                 timer: 2000,
                                 showConfirmButton: false
                             },function(){
-                                window.location.href = '/production/shoppingcart';
+                                window.location.href = '/shoppingcart';
                             });
                         }
                     });
@@ -209,7 +209,7 @@ var Countdown = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/production/shoppingcart/countdown', 
+                        url: '/shoppingcart/countdown', 
                         data: {status:-2}, 
                         success: function(data) {
                             swal({
@@ -220,7 +220,7 @@ var Countdown = function () {
                                 timer: 2000,
                                 showConfirmButton: false
                             },function(){
-                                window.location.href = '/production/home';
+                                window.location.href = '/home';
                             });
                         }
                     }); 
@@ -233,7 +233,7 @@ var Countdown = function () {
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
-            url: '/production/shoppingcart/countdown', 
+            url: '/shoppingcart/countdown', 
             data: {status:-1}
         }); 
         $('#timerClockPanel').css('display','none'); 

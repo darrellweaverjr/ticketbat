@@ -9,7 +9,7 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/remove', 
+                url: '/shoppingcart/remove', 
                 data: { id: id }, 
                 success: function(data) {
                     if(data.success) 
@@ -52,7 +52,7 @@ var PurchaseFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/shoppingcart/update', 
+                    url: '/shoppingcart/update', 
                     data: { id: id, qty: qty }, 
                     success: function(data) {
                         if(data.success) 
@@ -89,7 +89,7 @@ var PurchaseFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/shoppingcart/coupon', 
+                    url: '/shoppingcart/coupon', 
                     data: $('#form_coupon').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
@@ -130,7 +130,7 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/general/region', 
+                url: '/general/region', 
                 data: { country: country_code }, 
                 success: function(data) {
                     if(data.success) 
@@ -158,7 +158,7 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/printed', 
+                url: '/shoppingcart/printed', 
                 data: { option: printed_option }, 
                 success: function(data) {
                     if(data.success) 
@@ -198,7 +198,7 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/shoppingcart/items', 
+                url: '/shoppingcart/items', 
                 success: function(data) {
                     if(data) 
                         UpdateShoppingcartFunctions.init( data );
@@ -330,7 +330,7 @@ var SubmitFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/purchase/process', 
+                    url: '/purchase/process', 
                     data: $('#'+form_id).serializeArray(), 
                     success: function(data) {
                         if(data.success) 

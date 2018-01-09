@@ -115,11 +115,11 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 });
 
 //PRODUCTION ROUTES
-Route::group(['prefix' => 'production','middleware' => 'check','namespace' => 'Production'], function () {
+Route::group(['middleware' => 'check','namespace' => 'Production'], function () {
     //home
-    Route::get('/', function () { return redirect()->route('index'); });
+    Route::get('/', 'HomeController@index')->name('index');
+    Route::get('/home', function () { return redirect()->route('index'); });
     Route::get('/events', function () { return redirect()->route('index'); });
-    Route::get('/home', 'HomeController@index')->name('index');
     Route::post('home/search', 'HomeController@search');
     //general
     Route::post('general/contact', 'GeneralController@contact');

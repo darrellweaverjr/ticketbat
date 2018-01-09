@@ -5,7 +5,7 @@ var ResetFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/user/logout', 
+                url: '/user/logout', 
                 success: function(data) {
                     if(data.success) 
                         location.reload();
@@ -46,7 +46,7 @@ var ResetFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/user/reset_password', 
+                    url: '/user/reset_password', 
                     data: $('#form_reset_password').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
