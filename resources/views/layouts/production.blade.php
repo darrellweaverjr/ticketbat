@@ -234,7 +234,7 @@
         
         @if(!empty($conversion_code))
         @foreach($conversion_code as $cc)
-            echo $cc
+            @php echo $cc @endphp
         @endforeach
         @endif
     </body>

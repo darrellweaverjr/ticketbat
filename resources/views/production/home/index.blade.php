@@ -90,7 +90,7 @@
                                     <select class="form-control" name="filter_category">
                                         <option selected value="">All</option>
                                         @foreach($categories as $index=>$c)
-                                        <option value="{{$c->id}}">{{$c->name}}</option>
+                                        <option value="{{$c->id}}" data-parent="{{$c->id_parent}}">{{$c->name}} {{$c->subs}}</option>
                                         @endforeach
                                     </select>
                                 </span>
@@ -127,7 +127,7 @@
  
             <div id="myShows" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
                 @foreach($shows as $index=>$s)
-                <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-href="/event/{{$s->slug}}">
+                <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-category="{{$s->category_id}}" data-href="/event/{{$s->slug}}">
                     <div class="cbp-caption">
                         <a class="cbp-caption-defaultWrap">
                             <img src="{{$s->url}}" alt="{{$s->name}}"> </a>

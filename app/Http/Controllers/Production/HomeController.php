@@ -39,6 +39,9 @@ class HomeController extends Controller
     public function home()
     {
         try {
+            //get categories
+            $categs = Category::get_categories();
+            $cats = $categories = [];
             //get sliders
             $sliders = Slider::orderBy('n_order')->get();
             foreach ($sliders as $s)
@@ -51,7 +54,7 @@ class HomeController extends Controller
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, 
+                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, shows.category_id,
                                           venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
                                           MIN(tickets.retail_price+tickets.processing_fee) AS price,
                                           shows.starting_at'))    
@@ -62,10 +65,32 @@ class HomeController extends Controller
                         ->groupBy('shows.id')
                         ->distinct()->get();
             foreach ($shows as $s)
-            if(!empty($s->url))
-                $s->url = Image::view_image($s->url);
-            //get categories
-            $categories = Category::get_categories();
+            {
+                if(!empty($s->url))
+                    $s->url = Image::view_image($s->url);
+                //category filter 1
+                if(!in_array($s->category_id, $cats))
+                {
+                    $cats[] = $s->category_id;
+                    $c = Category::find($s->category_id);
+                    if($c && $c->id_parent != 0)
+                    {
+                        $father = $c->id_parent;
+                        while(!in_array($father, $cats))
+                        {
+                            $cats[] = $father;
+                            if($father != 0)
+                                $c = $c->parent();
+                            else 
+                                break;
+                        }
+                    }
+                }
+            }
+            //category filter 2
+            foreach ($categs as $c)
+                if(in_array($c->id, $cats))
+                    $categories[] = $c;
             //get cities
             $cities = DB::table('venues')
                         ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
