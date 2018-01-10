@@ -156,21 +156,17 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th></th>
-                                        <th></th>
+                                        <th>Date</th>
+                                        <th>Time</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($event->showtimes as $st)
                                     <tr>
-                                        @if(!empty($st->time_alternative))
-                                        <td colspan="3">{{$st->time_alternative}}</td>
-                                        @else
                                         <td>{{$st->show_day}}</td>
                                         <td>{{$st->show_date}}</td>
-                                        <td>{{$st->show_hour}}</td>
-                                        @endif
+                                        <td>@if(!empty($st->time_alternative)) {{$st->time_alternative}} @else {{$st->show_hour}} @endif</td>
                                         <td><center><a @if($st->ext_slug) href="{{$st->ext_slug}}" @else href="{{url()->current()}}/{{$st->id}}" @endif style="color:white!important" class="btn bg-blue">
                                             BUY TICKETS <i class="fa fa-arrow-circle-right"></i>
                                         </a></center></td>
