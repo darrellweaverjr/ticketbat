@@ -17,7 +17,7 @@
 
 <!-- BEGIN TOP HEADER -->
 <div class="row">
-    <center><img style="margin:auto;max-height:422px" src="{{$event->header->url}}" alt="{{$event->header->caption}}"></center>
+    <center><img style="margin:auto;width:100%" src="{{$event->header->url}}" alt="{{$event->header->caption}}"></center>
 </div>
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
