@@ -81,7 +81,7 @@
                         <ul class="nav navbar-nav pull-right">
                             <!-- BEGIN USER LOGIN DROPDOWN -->
                             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-                            <li class="dropdown dropdown-user">
+                            <li class="dropdown dropdown-user" title="User options">
                                 <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                     <span class="username username-hide-on-mobile"> Hello, {{Auth::user()->first_name}} </span>
                                     <i class="fa fa-angle-down"></i>
@@ -104,8 +104,13 @@
                             <!-- END USER LOGIN DROPDOWN -->
                             <!-- BEGIN QUICK SIDEBAR TOGGLER -->
                             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-                            <li class="dropdown dropdown-quick-sidebar-toggler">
-                                <a href="{{route('logout')}}" class="dropdown-toggle">
+                            <li class="dropdown dropdown-quick-sidebar-toggler" title="Go to the www.ticketbat.com">
+                                <a href="{{route('index')}}">
+                                    <i class="icon-settings"></i>
+                                </a>
+                            </li>
+                            <li class="dropdown dropdown-quick-sidebar-toggler" title="Exit your session">
+                                <a href="{{route('logout')}}">
                                     <i class="icon-logout"></i>
                                 </a>
                             </li>

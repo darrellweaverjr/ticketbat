@@ -110,6 +110,12 @@
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    @if(in_array(Auth::user()->user_type_id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))))
+                                    <li>
+                                        <a href="/admin" title="Go to the Admin module">
+                                        <i class="icon-settings"></i>&nbsp;&nbsp;&nbsp;Admin</a>
+                                    </li>
+                                    @endif
                                     <li>
                                         <a data-toggle="modal" href="#modal_reset_password" title="Change your password">
                                         <i class="icon-lock"></i>&nbsp;&nbsp;&nbsp;Change password</a>
