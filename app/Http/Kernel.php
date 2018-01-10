@@ -57,5 +57,6 @@ class Kernel extends HttpKernel
         'app.security' => \App\Http\Middleware\AppSecurity::class,
         'productioncheck' => \App\Http\Middleware\ProductionCheck::class,
         'check' => \App\Http\Middleware\ValidateRequest::class,
+        'forceSSL' => \App\Http\Middleware\ForceSSL::class,
     ];
 }
