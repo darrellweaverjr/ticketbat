@@ -135,7 +135,7 @@ html, body {
 	.carousel-inner .prev		 { left: -25%; }	
 }
 .venue-pic{
-    width: 50%;
+    width: 100%;
     min-height: 135px;
     margin:auto;
 }
