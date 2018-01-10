@@ -62,9 +62,10 @@ var AppCalendar = function() {
             var slug = $('#cal_model').data('slug');
             var go_to_date = (events && events.length>0)? events[0].show_time : new Date();
             $.each(events,function(k, v) {
+                var display = (v.time_alternative)? v.time_alternative : v.show_hour;
                 calendarEvents.push( {
                     id: v.id,
-                    title: '<center><b>'+v.show_hour+' <i class="fa fa-arrow-circle-right"></i></b></center>',
+                    title: '<center><b>'+display+' <i class="fa fa-arrow-circle-right"></i></b></center>',
                     start: v.show_time,
                     backgroundColor: 'bg-blue',
                     allDay: false,
