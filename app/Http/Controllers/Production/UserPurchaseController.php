@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Production;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -67,16 +68,39 @@ class UserPurchaseController extends Controller
     public function tickets($type,$id)
     {
         try {
-            if(!in_array($type,['C','S']) || ($type=='S' && !(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))))
+            $access = false;
+            //get tickets
+            $tickets = $purchases = [];
+            $ids = explode('-', $id);
+            foreach ($ids as $i)
+                $purchases[] = Purchase::find($i);
+            if(in_array($type,['C','S']) && count($purchases))
+            {
+                if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
+                    $access = true;
+                else if($type=='C')
+                {
+                    $email_guest = Session::get('email_guest', ''); 
+                    if(Auth::check())
+                    {
+                        if($purchases[0]->user_id == Auth::user()->id)
+                            $access = true;
+                    }
+                    else if(!empty($email_guest))
+                    {
+                        if($purchases[0]->user->email == $email_guest || $purchases[0]->customer->email == $email_guest)
+                            $access = true;
+                    }
+                }
+            }
+            if(!$access)
                 return redirect()->route('index');
             $format = 'pdf';
             //paper size
             $paper = ($type=='C')? 'a4' : [0, 0, 396, 144];
             //get tickets
-            $tickets = [];
-            $ids = explode('-', $id);
-            foreach ($ids as $i)
-                $tickets = array_merge($tickets, Purchase::find($i)->get_receipt()['tickets'] );
+            foreach ($purchases as $p)
+                $tickets = array_merge($tickets, $p->get_receipt()['tickets'] );
             //create pdf tickets
             $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format')); 
             return PDF::loadHTML($pdf_receipt->render())->setPaper($paper, 'portrait')->setWarnings(false)->download('TicketBat Purchase Tickets #'.$id.'.pdf');
