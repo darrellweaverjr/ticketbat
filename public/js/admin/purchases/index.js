@@ -24,10 +24,6 @@ var TableDatatablesManaged = function () {
                     "first": "First"
                 }
             },
-            "ajax": {
-                url: '/admin/dashboard/ticket_sales',
-                dataSrc: 'data'
-            },
             "columns": [
                 { data: 'name' },
                 { data: 'position' },
