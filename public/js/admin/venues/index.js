@@ -451,7 +451,7 @@ var TableDatatablesManaged = function () {
         //fn fill out images
         var fn_venue_stages = function(stage)
         {
-            return  '<div class="cbp-item stage_'+stage.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+stage.image_url+'" alt=""></div>'+
+            return  '<div class="cbp-item stage_'+stage.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+stage.image_url+'" alt="'+stage.image_url+'"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+stage.id+'"><i class="fa fa-edit"></i></a>'+
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+stage.id+'"><i class="fa fa-remove"></i></a>'+
@@ -662,7 +662,7 @@ var TableDatatablesManaged = function () {
         //fn fill out images
         var fn_venue_stage_images = function(stage_images)
         {
-            return  '<div class="cbp-item stage_images_'+stage_images.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+stage_images.url+'" alt=""></div>'+
+            return  '<div class="cbp-item stage_images_'+stage_images.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+stage_images.url+'" alt="'+stage_images.url+'"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+stage_images.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+stage_images.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+stage_images.name+'<br>'+stage_images.ticket_type+'"><i class="fa fa-search"></i></a>'+
@@ -822,7 +822,7 @@ var TableDatatablesManaged = function () {
         var fn_venue_images = function(image)
         {
             if(!image.caption) image.caption = '';
-            return  '<div class="cbp-item '+image.image_type+' image_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.url+'" alt=""></div>'+
+            return  '<div class="cbp-item '+image.image_type+' image_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.url+'" alt="'+image.url+'"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
@@ -1039,7 +1039,7 @@ var TableDatatablesManaged = function () {
             }
             else
                 var link = '<a href="'+image.url+'" target="_blank">'+(image.url.substr(0,47)+'...')+'</a>'; 
-            return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt=""></div>'+
+            return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt="'+image.file+'<br>"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
