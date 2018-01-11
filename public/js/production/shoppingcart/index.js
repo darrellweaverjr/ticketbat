@@ -1,7 +1,7 @@
 var PurchaseFunctions = function () {
-    
+
     var initFunctions = function () {
-        
+
         //remove item
         $('#tb_items tr > td:last-child button').on('click', function(ev) {
             var row = $(this).closest('tr');
@@ -9,10 +9,10 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/shoppingcart/remove', 
-                data: { id: id }, 
+                url: '/shoppingcart/remove',
+                data: { id: id },
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
@@ -39,7 +39,7 @@ var PurchaseFunctions = function () {
         //update qty items
         $('#tb_items tr > td:nth-child(2) input').on('change', function(ev) {
             var input = $(this);
-            var id = input.closest('tr').attr('id'); 
+            var id = input.closest('tr').attr('id');
             var qty = parseInt(input.val());
             var qty_ = parseInt(input.closest('tr').data('qty'));
             var min = parseInt(input.attr('min'));
@@ -52,10 +52,10 @@ var PurchaseFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/shoppingcart/update', 
-                    data: { id: id, qty: qty }, 
+                    url: '/shoppingcart/update',
+                    data: { id: id, qty: qty },
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             swal({
                                 title: "<span style='color:green;'>Updated!</span>",
@@ -79,7 +79,7 @@ var PurchaseFunctions = function () {
                             input.prop('disabled',false);
                         });
                     }
-                }); 
+                });
             }
         });
         //add coupon
@@ -89,10 +89,10 @@ var PurchaseFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/shoppingcart/coupon', 
-                    data: $('#form_coupon').serializeArray(), 
+                    url: '/shoppingcart/coupon',
+                    data: $('#form_coupon').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             swal({
                                 title: "<span style='color:green;'>Updated!</span>",
@@ -121,7 +121,7 @@ var PurchaseFunctions = function () {
                             showConfirmButton: true
                         });
                     }
-                }); 
+                });
             }
         });
         //on change country select
@@ -130,15 +130,16 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/general/region', 
-                data: { country: country_code }, 
+                url: '/general/region',
+                data: { country: country_code },
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
-                        $('select[name="state"]').empty();
+                        $('select[name="state"]').find('option').not(':first').remove();
                         $.each(data.regions,function(k, v) {
                             $('select[name="state"]').append('<option value="'+v.code+'">'+v.name+'</option>');
                         });
+                        $('select[name="state"]').val('');
                     }
                 },
                 error: function(){
@@ -150,7 +151,7 @@ var PurchaseFunctions = function () {
                         showConfirmButton: true
                     });
                 }
-            }); 
+            });
         });
         //on change ticket printed options select
         $('select[name="printed_tickets"]').on('change', function(ev) {
@@ -158,10 +159,10 @@ var PurchaseFunctions = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/shoppingcart/printed', 
-                data: { option: printed_option }, 
+                url: '/shoppingcart/printed',
+                data: { option: printed_option },
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
@@ -189,41 +190,41 @@ var PurchaseFunctions = function () {
                         showConfirmButton: true
                     });
                 }
-            }); 
+            });
         });
-        
-        //functio to update shoppingcart 
+
+        //functio to update shoppingcart
         function update_shoppingcart()
         {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/shoppingcart/items', 
+                url: '/shoppingcart/items',
                 success: function(data) {
-                    if(data) 
+                    if(data)
                         UpdateShoppingcartFunctions.init( data );
                     else
-                        location.reload(); 
+                        location.reload();
                 },
                 error: function(){
-                    location.reload(); 
+                    location.reload();
                 }
             });
         }
         //update shoppingcart each minute
-        setTimeout(update_shoppingcart(), 60000); 
-        
+        setTimeout(update_shoppingcart(), 60000);
+
     }
     return {
         //main function to initiate the module
         init: function () {
-            initFunctions();        
+            initFunctions();
         }
     };
 }();
 //*****************************************************************************************
 var SubmitFunctions = function () {
-    
+
     var initFunctions = function () {
         //on accept newsletter
         $('#accept_newsletter').bind('click','change', function(e){
@@ -243,12 +244,12 @@ var SubmitFunctions = function () {
         //on change bill
         $('a[href^="#tab_"]').on('click', function(ev) {
             $('#accept_terms').prop('checked', false);
-            
+
         });
         //on input or select change, disable submit to re-check values
         $('#tabs_payment input, #tabs_payment select').on('change', function(e){
             var form_id = $('#tabs_payment').find('.tab-pane.active:not(.hidden)').find('form').attr('id');
-            if(!$('#'+form_id).valid())
+            if(!$('#'+form_id).validate().element( $(this) ))
             {
                 $('#accept_terms').prop('checked', false);
                 disabled_submit();
@@ -274,7 +275,7 @@ var SubmitFunctions = function () {
                             var month = parseInt($('#form_card select[name="month"]').val())-1;
                             if( amex_only>0 )
                                 var exp_card =/^3[47][0-9]{13}$/;
-                            else 
+                            else
                                 var exp_card =/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/;
                             if(!exp_card.test( $('#form_card input[name="card"]').val() ))
                             {
@@ -310,7 +311,7 @@ var SubmitFunctions = function () {
                     $('#btn_process').prop('disabled',true);
                     e.preventDefault();
                 }
-            }    
+            }
             else
                 disabled_submit();
         });
@@ -330,10 +331,10 @@ var SubmitFunctions = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/purchase/process', 
-                    data: $('#'+form_id).serializeArray(), 
+                    url: '/purchase/process',
+                    data: $('#'+form_id).serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             swal({
                                 title: "<span style='color:green;'>"+data.msg+"</span>",
@@ -377,21 +378,21 @@ var SubmitFunctions = function () {
                         });
                     }
                 });
-            }  
+            }
         });
-        
+
     }
     return {
         //main function to initiate the module
         init: function () {
-            initFunctions();        
+            initFunctions();
         }
     };
 }();
 //*****************************************************************************************
 var GalleryImages = function () {
 
-    var initGallery = function () {        
+    var initGallery = function () {
         //banners carousel
         $('#myBanners').cubeportfolio({
             layoutMode: 'slider',
@@ -400,9 +401,9 @@ var GalleryImages = function () {
             gapHorizontal: 30,
             gapVertical: 30,
             mediaQueries: [{ width: 320, cols: 1 }],
-            gridAdjustment: 'responsive', 
-            caption: 'opacity', 
-            displayType: 'default', 
+            gridAdjustment: 'responsive',
+            caption: 'opacity',
+            displayType: 'default',
             displayTypeSpeed: 1,
             auto:true,
             autoTimeout: 1500,
@@ -411,25 +412,6 @@ var GalleryImages = function () {
             showPagination: false,
             rewindNav: true
         });
-        //gallery carousel
-        /*$('#myGallery').cubeportfolio({
-            layoutMode: 'slider',
-            defaultFilter: '*',
-            animationType: 'fadeOut', // quicksand
-            gapHorizontal: 30,
-            gapVertical: 30,
-            gridAdjustment: 'responsive', 
-            mediaQueries: [{ width: 1440, cols: 5 },{ width: 1024, cols: 4 },{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
-            caption: 'overlayBottomAlong', 
-            displayType: 'default', 
-            displayTypeSpeed: 1,
-            auto:true,
-            autoTimeout: 2000,
-            drag:true,
-            showNavigation: true,
-            showPagination: false,
-            rewindNav: true
-        });*/
     }
     return {
         //main function to initiate map samples
@@ -443,5 +425,5 @@ var GalleryImages = function () {
 jQuery(document).ready(function() {
     PurchaseFunctions.init();
     SubmitFunctions.init();
-    GalleryImages.init(); 
+    GalleryImages.init();
 });
