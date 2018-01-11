@@ -115,7 +115,7 @@ class PurchaseController extends Controller{
             //init set 
             $send_welcome_email = false;            
             //set up user and customer
-            $user = User::where('email','=',$info['email'])->first();
+            $user = User::where('email','=',trim($info['email']))->first();
             if(!$user)
             {
                 //send welcome email
@@ -125,6 +125,8 @@ class PurchaseController extends Controller{
                 $user->user_type_id = 2;
                 $user->is_active = 1;
                 $user->force_password_reset = 0;
+                $user->email = trim($info['email']);
+                $user->audit_user_id = 2;
                 $location = new Location;
                 $location->created = $current;
             }
