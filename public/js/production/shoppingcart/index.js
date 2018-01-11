@@ -412,6 +412,19 @@ var GalleryImages = function () {
             showPagination: false,
             rewindNav: true
         });
+        
+        //check for broken images to change
+        function check_images(){
+            $('#myBanners .cbp-item.filtered:not(.hidden) img').each(function(){
+                if((typeof this.naturalWidth != "undefined" && this.naturalWidth < 1 ) || this.readyState == 'uninitialized' || this.naturalWidth == "undefined" ) 
+                    $(this).attr('src', $('#myBanners').data('broken'));
+            });
+        }
+        //check images on load and check the location
+        $(window).load(function(){
+            check_images();
+        });
+        
     }
     return {
         //main function to initiate map samples
