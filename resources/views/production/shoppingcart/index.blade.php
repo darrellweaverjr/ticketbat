@@ -149,7 +149,7 @@
         <div class="portlet light about-text">
             <!-- BEGIN BANNER -->
             <div class="portfolio-content color-panel">
-                <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
+                <div id="myBanners" class="cbp text-center">
                     @foreach($cart['banners'] as $index=>$i)
                     <div class="cbp-item show_section1" style="margin-right:20px">
                         <div class="cbp-caption">

@@ -417,7 +417,7 @@ var GalleryImages = function () {
         function check_images(){
             $('#myBanners .cbp-item.filtered:not(.hidden) img').each(function(){
                 if((typeof this.naturalWidth != "undefined" && this.naturalWidth < 1 ) || this.readyState == 'uninitialized' || this.naturalWidth == "undefined" ) 
-                    $(this).attr('src', $('#myBanners').data('broken'));
+                    $(this).attr('src', $('meta[name="broken-image"]').attr('content') );
             });
         }
         //check images on load and check the location

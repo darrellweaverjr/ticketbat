@@ -25,6 +25,7 @@
         <meta @if(!empty($analytics)) content="{{$analytics}}" @else content="[]" @endif name="analytics" />
         <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
         <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
+        <meta content="{{config('app.theme')}}img/no-image.jpg" name="broken-image" />
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />

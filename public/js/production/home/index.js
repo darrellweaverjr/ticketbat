@@ -147,7 +147,7 @@ var PortfolioManaged = function () {
                 if((typeof this.naturalWidth != "undefined" && this.naturalWidth < 1 ) || this.readyState == 'uninitialized' || this.naturalWidth == "undefined" ) 
                 {
                     //$(this).attr('src', this.naturalWidth);
-                    $(this).attr('src', $('#myShows').data('broken'));
+                    $(this).attr('src', $('meta[name="broken-image"]').attr('content') );
                 }
             });
             resizeShows();

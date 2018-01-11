@@ -125,7 +125,7 @@
         <div class="portfolio-content body_grid color-panel text-center ">
         <div class="home-page-panel">
  
-            <div id="myShows" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
+            <div id="myShows" class="cbp text-center">
                 @foreach($shows as $index=>$s)
                 <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-category="{{$s->category_id}}" data-href="/event/{{$s->slug}}">
                     <div class="cbp-caption">
