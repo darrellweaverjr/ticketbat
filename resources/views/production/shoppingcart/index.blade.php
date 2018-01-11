@@ -14,17 +14,17 @@
 @section('content')
 
 <!-- BEGIN TOP HEADER -->
-<div class="page-content color-panel">  
+<div class="page-content color-panel">
     <!-- BEGIN ITEMS -->
     <div class="row fixed-panel">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Items in the shopping cart.">
-                <i class="fa fa-list icon-list"></i> Shopping Cart 
+                <i class="fa fa-list icon-list"></i> Shopping Cart
                 <div class="actions pull-right">
                     <label id="count_items">You currently have <b>{{count($cart['items'])}}</b> @if(count($cart['items'])>1) items @else item @endif</label>
                 </div>
-            </h4>  
+            </h4>
             <p class="margin-top-20">
             <center><b style="color:#578ebe">
                     If you are attending this show with other people and would like to email them their ticket, please click on the
@@ -51,7 +51,7 @@
                         <tr id="{{$i->id}}" data-qty="{{$i->number_of_items}}">
                             <td>
                                 <b class="label label-sm sbold label-success">{{$i->product_type}}</b> for <a href="/event/{{$i->slug}}/{{$i->show_time_id}}">{{$i->name}}</a>
-                                @if(!empty($i->package)) <br><small><i>{{$i->package}}</i></small> @endif <br>On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}} 
+                                @if(!empty($i->package)) <br><small><i>{{$i->package}}</i></small> @endif <br>On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}}
                             </td>
                             <td>
                                 <input type="number" @if(!empty($i->consignment)) disabled="true" @endif value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}" @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
@@ -101,7 +101,7 @@
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Printed options for selected tickets.">
                 <i class="fa fa-print icon-printer"></i> Ticket options
-            </h4> 
+            </h4>
             <p id="printed_details" class="margin-top-20 @if( $cart['printed_tickets']['details'] < 1 ) hidden @endif">
             All tickets for @if(count($cart['printed_tickets']['shows'])>1) these shows @else this show @endif will be mailed if you pick a printed ticket option:<br>
             @foreach($cart['printed_tickets']['shows'] as $s)
@@ -130,8 +130,8 @@
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Restrictions for the event(s).">
-                <i class="fa fa-ban icon-ban"></i> Restrictions 
-            </h4>  
+                <i class="fa fa-ban icon-ban"></i> Restrictions
+            </h4>
             <p class="margin-top-20" id="restrictions_panel">
                 @foreach($cart['restrictions'] as $show=>$age)
                 <b style="color:#32c5d2">{{$show}}</b> requires attendees to be {{$age}} years of age or older.<br>
@@ -148,7 +148,7 @@
     <div class="row fixed-panel" >
         <div class="portlet light about-text">
             <!-- BEGIN BANNER -->
-            <div class="portfolio-content color-panel"> 
+            <div class="portfolio-content color-panel">
                 <div id="myBanners" class="cbp text-center" data-broken="{{config('app.theme')}}img/no-image.jpg">
                     @foreach($cart['banners'] as $index=>$i)
                     <div class="cbp-item show_section1" style="margin-right:20px">
@@ -171,8 +171,8 @@
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Payment methods.">
-                <i class="fa fa-credit-card icon-credit-card"></i> Payment 
-            </h4>  
+                <i class="fa fa-credit-card icon-credit-card"></i> Payment
+            </h4>
             <div class="portlet light bordered">
                 <div class="portlet-body">
                     @if($cart['seller'] && $cart['total']>0)
@@ -190,11 +190,11 @@
                     @endif
                     <div class="tab-content" id="tabs_payment">
                         <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">
-                            <div class="row"> 
+                            <div class="row">
                                 <!-- BEGIN FORM-->
                                 <form method="post" id="form_skip" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
-                                        <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
+                                        <button class="close" data-close="alert"></button> You have some form errors. Please check below.
                                     </div>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="method" value="skip">
@@ -237,7 +237,7 @@
                                 <!-- BEGIN FORM-->
                                 <form method="post" id="form_card" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
-                                        <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
+                                        <button class="close" data-close="alert"></button> You have some form errors. Please check below.
                                     </div>
                                     <div class="alert alert-warning display-hide"></div>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -260,7 +260,7 @@
                                             <input type="number" class="form-control" placeholder="#### #### #### ####" name="card" data-amex="{{$cart['amex_only']}}" style="min-width:170px" autocomplete="on">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">CVV:
-                                            <i class="required"> required</i> 
+                                            <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
                                             <div class="input-group">
@@ -309,7 +309,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="0000 Main St." name="address" value="{{old('address')}}" autocomplete="on">
+                                            <input type="text" class="form-control" placeholder="" name="address" value="{{old('address')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -317,7 +317,7 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-3 show-error">
-                                            <input type="text" class="form-control" placeholder="Las Vegas" name="city" value="{{old('city')}}" autocomplete="on">
+                                            <input type="text" class="form-control" placeholder="" name="city" value="{{old('city')}}" autocomplete="on">
                                         </div>
                                         <label class="control-label col-sm-2 text-right">Zip:
                                             <i class="required"> required</i>
@@ -342,6 +342,7 @@
                                         </label>
                                         <div class="col-sm-3 show-error">
                                             <select class="form-control" name="state" placeholder="Nevada" style="min-width:135px" value="{{old('state')}}" autocomplete="on">
+									                              <option value="" disabled="true" selected="true">- Select state/region -</option>
                                                 @foreach( $cart['regions'] as $r)
                                                     <option value="{{$r->code}}">{{$r->name}}</option>
                                                 @endforeach
@@ -371,7 +372,7 @@
                                 <!-- BEGIN FORM-->
                                 <form method="post" id="form_swipe" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
-                                        <button class="close" data-close="alert"></button> You have some form errors. Please check below. 
+                                        <button class="close" data-close="alert"></button> You have some form errors. Please check below.
                                     </div>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="method" value="swipe">
@@ -420,7 +421,7 @@
                                 <!-- BEGIN FORM-->
                                 <form method="post" id="form_cash" class="form-horizontal">
                                     <div class="alert alert-danger display-hide">
-                                        <button class="close" data-close="alert"></button> You have some errors. Please check below. 
+                                        <button class="close" data-close="alert"></button> You have some errors. Please check below.
                                     </div>
                                     <div class="form-group desglose" style="padding-right:15px">
                                         <label class="control-label col-sm-1 text-right">$100 x</label>
