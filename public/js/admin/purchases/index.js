@@ -24,14 +24,7 @@ var TableDatatablesManaged = function () {
                     "first": "First"
                 }
             },
-            "columns": [
-                { data: 'name' },
-                { data: 'position' },
-                { data: 'salary' },
-                { data: 'state_date' },
-                { data: 'office' },
-                { data: 'extn' }
-            ],
+            //"ajax": '/admin/users/ajax',
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
             "lengthMenu": [
                 [10, 15, 20, -1],
