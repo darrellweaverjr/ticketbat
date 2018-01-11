@@ -12,7 +12,7 @@ use App\Mail\EmailSG;
  * @author ivan
  */
 class Transaction extends Model
-{    
+{
     /**
      * The table associated with the model.
      *
@@ -46,7 +46,7 @@ class Transaction extends Model
     {
         return $this->belongsTo('App\Http\Models\User','user_id');
     }
-    
+
     //PERSONALIZED FUNCTIONS
     /*
      * make transaction
@@ -56,24 +56,24 @@ class Transaction extends Model
         try {
             //init params
             $tran=new umTransaction();
-            $tran->testmode=env('USAEPAY_TEST',1); 
+            $tran->testmode=env('USAEPAY_TEST',1);
             if($tran->testmode>0)
             {
-                $tran->key="_5n4fazc17ya1luc3euqVSj648zOs0D8"; 
+                $tran->key="_5n4fazc17ya1luc3euqVSj648zOs0D8";
                 $tran->usesandbox=true;
             }
             else
-                $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ"; 
-            //card info            
-            $tran->card = $payment['card'];	
+                $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ";
+            //card info
+            $tran->card = $payment['card'];
             $tran->exp = $payment['month'].substr($payment['year'],-2);
             if(!empty($payment['cvv']))
                 $tran->cvv2 = $payment['cvv'];
-            $tran->amount = $shoppingcart['total'];			
-            $tran->invoice = $payment['s_token'];  
-            $tran->orderid = $payment['s_token']; 
+            $tran->amount = $shoppingcart['total'];
+            $tran->invoice = $payment['s_token'];
+            $tran->orderid = $payment['s_token'];
             //cardholder info
-            $tran->cardholder = strtoupper($payment['first_name'].' '.$payment['last_name']); 
+            $tran->cardholder = $payment['first_name'].' '.$payment['last_name']; 
             if(!empty($payment['street']))
                 $tran->street = $tran->billstreet = $payment['street'];
             if(!empty($payment['city']))
@@ -89,9 +89,9 @@ class Transaction extends Model
             $coupon = (!empty($shoppingcart['coupon']))? ' coupon: '.$shoppingcart['coupon'] : ' no coupon';
             foreach($shoppingcart['items'] as $item)
             {
-                $tran_description.= '* '.$item->number_of_items.' '.$item->product_type.' '.$item->package.' for '.$item->name.' on '.$item->show_time.' with '.$coupon.' *'; 
+                $tran_description.= '* '.$item->number_of_items.' '.$item->product_type.' '.$item->package.' for '.$item->name.' on '.$item->show_time.' with '.$coupon.' *';
                 $tran->custid = $item->item_id;
-            } 
+            }
             $tran->description = $tran_description;
             //swipe card
             if(!empty($payment['UMcardpresent']))
@@ -106,9 +106,9 @@ class Transaction extends Model
             }
             //process
             $success = ($tran->Process() && $tran->result=='Approved');
-            //hide credit card number  
-            unset($tran->card); 
-            $payment['card'] = substr($payment['card'], -4); 
+            //hide credit card number
+            unset($tran->card);
+            $payment['card'] = substr($payment['card'], -4);
             //store into DB
             $transaction = new Transaction;
             $transaction->show_time_id = $tran->custid;
@@ -142,9 +142,9 @@ class Transaction extends Model
                 $email->html($html);
                 $email->send();
                 return ['success'=>false, 'msg'=>'Card Declined.<br>'.$tran->error];
-            }            
+            }
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
-    }  
+    }
 }
