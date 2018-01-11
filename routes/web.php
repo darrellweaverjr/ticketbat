@@ -151,7 +151,7 @@ Route::group(['middleware' => ['forceSSL','check'],'namespace' => 'Production'],
     Route::post('shoppingcart/items', 'ShoppingcartController@items');
     Route::post('shoppingcart/count', 'ShoppingcartController@count');
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
-    Route::match(['get','post'], 'shoppingcart', 'ShoppingcartController@index');
+    Route::match(['get','post'], 'shoppingcart/viewcart', 'ShoppingcartController@index');
     //purchase
     Route::post('purchase/process', 'PurchaseController@process');
     Route::post('purchase/complete', 'PurchaseController@complete');

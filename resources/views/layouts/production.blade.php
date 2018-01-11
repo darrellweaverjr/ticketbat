@@ -140,7 +140,7 @@
                             </li>
                             @endif
                             <li class="dropdown-notification @if(preg_match('/\/shoppingcart/',url()->current())) active @endif">
-                                <a href="/shoppingcart" class="menu_nav" title="View/pay you items in the shopping cart">
+                                <a href="/shoppingcart/viewcart" class="menu_nav" title="View/pay you items in the shopping cart">
                                     <i class="icon-basket"></i> Shopping Cart <span class="badge badge-danger"><b id="shoppingcart_qty_items" style="font-size:14px">Loading</b></span>
                                 </a>
                             </li>
@@ -154,7 +154,7 @@
                     <span class="uppercase text-justify">Please complete your purchase in</span>
                     <span id="timerClock" data-countdown="{{Session::get('countdown','')}}"></span>
                     <span class="uppercase text-justify">minutes : seconds</span>
-                    <a href="/shoppingcart" style="font-size:10px;font-weight:bold" class="btn btn-success">checkout now</a> 
+                    <a href="/shoppingcart/viewcart" style="font-size:10px;font-weight:bold" class="btn btn-success">checkout now</a> 
                 </div>  
                 
             </div>

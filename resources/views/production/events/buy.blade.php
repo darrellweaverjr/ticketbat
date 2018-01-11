@@ -171,7 +171,7 @@
                         <a href="/home" class="btn btn-info btn-block btn-lg uppercase"><i class="fa fa-suitcase"></i> Continue shopping </a>
                     </div>
                     <div class="col-md-6">
-                        <a href="/shoppingcart" class="btn btn-success btn-block btn-lg uppercase"><i class="fa fa-shopping-cart"></i> Checkout </a>
+                        <a href="/shoppingcart/viewcart" class="btn btn-success btn-block btn-lg uppercase"><i class="fa fa-shopping-cart"></i> Checkout </a>
                     </div>
                 </div>
                 <!-- END SHORTCUT FORM -->
