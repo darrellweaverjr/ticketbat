@@ -22,7 +22,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'dashboard/referrals', 'DashboardController@referrals')->middleware('permissions:REPORTS');
     //users
     Route::post('users/profile', 'UserController@profile')->middleware('permissions:USERS');
-    Route::match(['get','post'],'users/impersonate/{user?}/{code?}', 'UserController@impersonate')->middleware('permissions:USERS');
+    Route::post('users/impersonate', 'UserController@impersonate')->middleware('permissions:USERS');
     Route::post('users/save', 'UserController@save')->middleware('permissions:USERS');
     Route::post('users/remove', 'UserController@remove')->middleware('permissions:USERS');
     Route::match(['get','post'], 'users', 'UserController@index')->middleware('permissions:USERS');

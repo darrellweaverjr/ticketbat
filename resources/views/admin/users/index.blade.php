@@ -47,6 +47,11 @@
                             <button id="btn_model_purchases" class="btn sbold bg-purple" disabled="true">Purchases
                                 <i class="fa fa-ticket"></i>
                             </button>
+                            @if(Auth::user()->user_type_id == 1)
+                            <button id="btn_model_impersonate" class="btn sbold bg-purple" disabled="true">Impersonate
+                                <i class="fa fa-rocket"></i>
+                            </button>
+                            @endif
                             @endif
                         </div>
                     </div>

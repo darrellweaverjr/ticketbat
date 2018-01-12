@@ -90,18 +90,21 @@ var TableDatatablesManaged = function () {
                 $('#btn_model_edit').prop("disabled",false);
                 $('#btn_model_remove').prop("disabled",false);
                 $('#btn_model_purchases').prop("disabled",false);
+                $('#btn_model_impersonate').prop("disabled",false);
             }
             else if(checked > 1)
             {
                 $('#btn_model_edit').prop("disabled",true);
                 $('#btn_model_remove').prop("disabled",false);
                 $('#btn_model_purchases').prop("disabled",true);
+                $('#btn_model_impersonate').prop("disabled",true);
             }
             else
             {
                 $('#btn_model_edit').prop("disabled",true);
                 $('#btn_model_remove').prop("disabled",true);
                 $('#btn_model_purchases').prop("disabled",true);
+                $('#btn_model_impersonate').prop("disabled",true);
             }
             $('#btn_model_add').prop("disabled",false);
             $('#btn_model_search').prop("disabled",false);
@@ -333,6 +336,82 @@ var TableDatatablesManaged = function () {
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             window.open('/admin/purchases?user='+id+'&soldtime_start_date=&soldtime_end_date=','_self');
+        });
+        //function impersonate
+        $('#btn_model_impersonate').on('click', function(ev) {
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
+            swal({
+                title: "You must select the website to impersonate to, please confirm action: ",
+                text: "<span style='text-align:left;color:red;'>The site will refresh to confirm the action.</span>",
+                html: true,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                cancelButtonClass: "btn-success",
+                confirmButtonText: "Admin",
+                cancelButtonText: "TicketBat",
+                closeOnConfirm: true,
+                closeOnCancel: true
+              },
+              function(isConfirm) {
+                if (isConfirm) {
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/admin/users/impersonate', 
+                        data: {id:id, option:0}, 
+                        success: function(data) {
+                            if(data.success) 
+                            {
+                                location.reload();
+                            }
+                            else swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                });
+                        },
+                        error: function(){
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "There was an error trying to impersonate the user!<br>The request could not be sent to the server.",
+                                html: true,
+                                type: "error"
+                            });
+                        }
+                    });
+                } else{
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/admin/users/impersonate', 
+                        data: {id:id, option:1}, 
+                        success: function(data) {
+                            if(data.success) 
+                            {
+                                window.location.href = "/";
+                            }
+                            else swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                });
+                        },
+                        error: function(){
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "There was an error trying to impersonate the user!<br>The request could not be sent to the server.",
+                                html: true,
+                                type: "error"
+                            });
+                        }
+                    });
+                }
+            }); 
+            
         });
         //init functions
         check_models();   

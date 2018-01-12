@@ -93,13 +93,6 @@
                                             <i class="icon-user"></i> My Profile 
                                         </a>
                                     </li>
-                                    @if(Auth::user()->user_type_id == 1)
-                                    <li>
-                                        <a id="impersonate_menu">
-                                            <i class="icon-rocket"></i> Impersonate
-                                        </a>
-                                    </li>
-                                    @endif
                                 </ul>
                             </li>
                             <!-- END USER LOGIN DROPDOWN -->

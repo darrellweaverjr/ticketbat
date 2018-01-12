@@ -298,69 +298,51 @@ class UserController extends Controller{
             throw new Exception('Error Users Profile: '.$ex->getMessage());
         }
     }
+    
     /**
      * Code for impersonate.
      *
      * @void
      */
-    public function impersonate($user=null,$code=null)
+    public function impersonate()
     {
         try {
             //init
             $input = Input::all();
-            $current = date('Y-m-d H:i');
-            if($user && $code)
+            if(Auth::check() && Auth::user()->user_type_id == 1)
             {
-                $user = User::find($user);
-                if($user)
+                if(!empty($input['id']) && isset($input['option']))
                 {
-                    $current0 = substr(md5(substr(md5($user->email),0,10).substr(md5($current),0,10)),0,20);
-                    $current1 = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i',strtotime($current.' -1 minutes'))),0,10)),0,20);
-                    if($code == $current0 || $code == $current1)
+                    $user = User::find($input['id']);
+                    //admin
+                    if($input['option']==0)
                     {
-                        if (Auth::attempt(['email' => $user->email, 'password' => $user->password])) 
+                        if($user && in_array($user->user_type_id, explode(',',env('ADMIN_LOGIN_USER_TYPE'))))
                         {
-                            if(Auth::user()->is_active > 0 && in_array(Auth::user()->user_type->id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))))
-                                return redirect()->route('home');
-                            else
-                                return redirect()->route('logout');
-                        } 
-                        else 
-                            return redirect()->route('logout');
+                            Auth::logout();
+                            Auth::login($user);
+                            return ['success'=>true,'msg'=>'The system is going to enter into the '.$user->first_name.' '.$user->last_name.' session.'];
+                        }
+                        return ['success'=>false,'msg'=>'There was an error.<br>You must select a valid user allowed to enter to the Admin.'];
                     }
-                    else 
-                        return redirect()->route('home');
-                }
-                else 
-                    return redirect()->route('home');
-            }
-            //save all record      
-            else if($input)
-            {
-                if(isset($input['action']) && $input['action']==0)
-                {
-                    $user_types = UserType::orderBy('user_type')->pluck('user_type');
-                    $users = DB::table('users')
-                                ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                                ->select(DB::raw('users.id, user_types.user_type, CONCAT(users.first_name," ",users.last_name) AS name, users.email'))
-                                ->orderBy('users.first_name')->get();
-                    return ['success'=>true,'user_types'=>$user_types,'users'=>$users];
-                }
-                else if(isset($input['user_id']) && !empty($input['user_id']))
-                {
-                    $user = User::find($input['user_id']);
-                    if($user)
+                    //public
+                    else if($input['option']==1)
                     {
-                        $current = substr(md5(substr(md5($user->email),0,10).substr(md5(date('Y-m-d H:i')),0,10)),0,20);
-                        $link = $input['user_id'].'/'.$current;
-                        return ['success'=>true,'link'=>$link];
+                        if($user)
+                        {
+                            Auth::logout();
+                            Auth::login($user);
+                            return ['success'=>true,'msg'=>'The system is going to enter into the '.$user->first_name.' '.$user->last_name.' session.'];
+                        }
+                        return ['success'=>false,'msg'=>'There was an error.<br>You must select a valid user allowed to enter to TicketBat.'];
                     }
-                    return ['success'=>false,'msg'=>'There was an error.<br>That user does not exist.'];
+                    else
+                        return ['success'=>false,'msg'=>'There was an error.<br>You must select a valid site to redirect.'];
                 }
-                else
-                    return ['success'=>false,'msg'=>'There was an error.<br>Option Invalid!.'];
+                return ['success'=>false,'msg'=>'There was an error.<br>You must select a valid user to impersonate.'];
             }
-            return ['success'=>false,'msg'=>'There was an error.<br>The server could not retrieve the data.'];
+            return ['success'=>false,'msg'=>'There was an error.<br>You must be logged as an administrator to use this option.'];
+            
         } catch (Exception $ex) {
             throw new Exception('Error Users Impersonate: '.$ex->getMessage());
         }
