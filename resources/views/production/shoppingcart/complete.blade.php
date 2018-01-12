@@ -30,6 +30,7 @@
                 <h4>Print tickets as:</h4><br>
                 <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Standard Printer</a>
                 <a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> BOCA Ticket Printer</a>
+                <a class="btn btn-info btn-lg uppercase" href="/user/purchases/tickets/W/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Printer (wrist)</a>
             </center>
             @else
             <center><a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>

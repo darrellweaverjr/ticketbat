@@ -75,6 +75,14 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
               @endforeach
       </div>
       @endforeach
+@elseif ($type && $type=='W')
+    @foreach($tickets as $ticket)
+        <div style='page-break-after:always;text-align:center;'>
+            <div style='font-size:12px;position:absolute;top:-10;left:150;'>
+                <img src='{{$ticket['QRcode']}}' alt='TB{{$ticket['id']}}{{$ticket['user_id']}}{{$ticket['number']}}' width=70px height=70px/>
+            </div>
+        </div>
+    @endforeach
   @else
   @php echo $tickets @endphp
   @endif

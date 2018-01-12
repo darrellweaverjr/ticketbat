@@ -74,7 +74,7 @@ class UserPurchaseController extends Controller
             $ids = explode('-', $id);
             foreach ($ids as $i)
                 $purchases[] = Purchase::find($i);
-            if(in_array($type,['C','S']) && count($purchases))
+            if(in_array($type,['C','S','W']) && count($purchases))
             {
                 if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                     $access = true;
@@ -99,7 +99,7 @@ class UserPurchaseController extends Controller
                 return redirect()->route('index');
             $format = 'pdf';
             //paper size
-            $paper = ($type=='C')? 'a4' : [0, 0, 396, 144];
+            $paper = ($type=='C')? 'a4' : ( ($type=='W')? [0, 0, 500, 100] : [0, 0, 396, 144] );
             //get tickets
             foreach ($purchases as $p)
                 $tickets = array_merge($tickets, $p->get_receipt()['tickets'] );
