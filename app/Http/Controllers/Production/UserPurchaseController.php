@@ -99,7 +99,7 @@ class UserPurchaseController extends Controller
                 return redirect()->route('index');
             $format = 'pdf';
             //paper size
-            $paper = ($type=='C')? 'a4' : ( ($type=='W')? [0, 0, 500, 100] : [0, 0, 396, 144] );
+            $paper = ($type=='C')? 'a4' : ( ($type=='W')? [0, 0, 792, 96] : [0, 0, 396, 144] );
             //get tickets
             foreach ($purchases as $p)
                 $tickets = array_merge($tickets, $p->get_receipt()['tickets'] );

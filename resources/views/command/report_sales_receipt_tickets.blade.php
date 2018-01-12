@@ -78,8 +78,13 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 @elseif ($type && $type=='W')
     @foreach($tickets as $ticket)
         <div style='page-break-after:always;text-align:center;'>
-            <div style='font-size:12px;position:absolute;top:-10;left:150;'>
+            <div style='font-size:12px;position:absolute;top:-10;left:250;'>
                 <img src='{{$ticket['QRcode']}}' alt='TB{{$ticket['id']}}{{$ticket['user_id']}}{{$ticket['number']}}' width=70px height=70px/>
+            </div>
+            <div style='font-size:12px;position:absolute;top:0;left:300;text-align:left;'>
+                TICKETBAT - {{$ticket['venue_name']}}<br>
+                {{date('l, m/d/Y h:ia',strtotime($ticket['show_time']))}}<br>
+                {{$ticket['ticket_type']}} @if($ticket['package'] != 'None') ({{$ticket['package']}}) @endif
             </div>
         </div>
     @endforeach
