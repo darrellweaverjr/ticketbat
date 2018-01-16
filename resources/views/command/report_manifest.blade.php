@@ -1,8 +1,10 @@
 @if($format == 'csv')
 "#","STATUS","ORDER","EVENT NAME","SHOW DATE","DATE PURCHASED","CUSTOMER NAME","CUSTOMER ADDRESS","CUSTOMER PHONE","EMAIL","QTY","CODE","DESCRIPTION","AMOUNT","SHARED TO"
+@if(isset($data['purchases']))
 @foreach ($data['purchases'] as $n => $p)
 "{{$n+1}}","{{$p['p_status']}}","{{$p['id']}}","{{$p['event_name']}}","{{date('m/d/Y g:ia',strtotime($p['show_time']))}}","{{date('m/d/Y g:ia',strtotime($p['created']))}}","{{$p['customer_name']}}","{{$p['address']}}","{{$p['phone']}}","{{$p['email']}}","{{$p['quantity']}}","{{$p['code']}}","{{$p['description']}}","{{$p['amount']}}","{{$p['gifts']}}"
 @endforeach
+@endif
 @elseif($format == 'pdf')
 <!DOCTYPE html>
 <html>
@@ -119,6 +121,7 @@
                 </tr>
             </thead>
             <tbody>
+            @if(isset($data['purchases']))
             @foreach ($data['purchases'] as $n => $p)
                 <tr>
                     <td>{{$n+1}}</td>
@@ -132,6 +135,7 @@
                     <td style='text-align:center'>{{$p['gifts']}}</td>
                 </tr>
             @endforeach
+            @endif
             </tbody>
         </table>
         <p>Generated on: {{date('m/d/Y g:ia',strtotime($data['date_now']))}}</p>
