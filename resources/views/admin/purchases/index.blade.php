@@ -27,8 +27,8 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
-                            <button id="btn_model_search" class="btn sbold grey-salsa">Search
-                                <i class="fa fa-search"></i>
+                            <button id="btn_model_search" class="btn sbold grey-salsa">Filter
+                                <i class="fa fa-filter"></i>
                             </button>
                             <button id="btn_model_email" class="btn sbold bg-green" disabled="true">Email
                                 <i class="fa fa-envelope"></i>
@@ -223,7 +223,7 @@
         <div class="modal-dialog" style="width:500px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->

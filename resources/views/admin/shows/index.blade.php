@@ -29,8 +29,8 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
-                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search">Search
-                                <i class="fa fa-search"></i>
+                            <button id="btn_model_search" class="btn sbold grey-salsa" data-toggle="modal" data-target="#modal_model_search">Filter
+                                <i class="fa fa-filter"></i>
                             </button>
                             @endif
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
@@ -718,7 +718,7 @@
         <div class="modal-dialog" style="width:400px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->

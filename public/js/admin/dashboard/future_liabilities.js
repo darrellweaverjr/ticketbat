@@ -27,7 +27,7 @@ var TableDatatablesButtons = function () {
             },
             "buttons": [
                 {
-                    text: 'Search <i class="fa fa-search"></i>',
+                    text: 'Filter <i class="fa fa-filter"></i>',
                     className: 'btn sbold grey-salsa',
                     action: function () {
                         $('#modal_model_search').modal('show');

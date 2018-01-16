@@ -25,8 +25,8 @@
                     </div>
                     <div class="actions">
                         <div class="btn-group">
-                            <button id="btn_model_search" class="btn sbold grey-salsa">Search
-                                <i class="fa fa-search"></i>
+                            <button id="btn_model_search" class="btn sbold grey-salsa">Filter
+                                <i class="fa fa-filter"></i>
                             </button>
                             @if(in_array('Add',Auth::user()->user_type->getACLs()['USERS']['permission_types']))
                             <button id="btn_model_add" class="btn sbold bg-green" disabled="true">Add
@@ -103,7 +103,7 @@
         <div class="modal-dialog" style="width:470px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Search Panel</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
