@@ -138,4 +138,48 @@ class ManifestController extends Controller{
         }
     } 
     
+    /**
+     * Resend email.
+     *
+     * @return boolean
+     */
+    public function send()
+    {
+        try {
+            //init
+            $input = Input::all(); 
+            if(isset($input) && isset($input['id']) && isset($input['action']) && in_array($input['action'],[0,1,2]))
+            {
+                if($input['action']==2 && empty($input['email']))
+                    return ['success'=>false,'msg'=>'There was an error.<br>Your must enter a valid email.'];
+                $manifest = Manifest::find($input['id']);
+                if($manifest && !empty($manifest->email) && Util::isJSON($manifest->email))
+                {
+                    $emails = null;
+                    if($input['action']==1)
+                    {
+                        $mail = DB::table('manifest_emails')
+                                        ->join('show_times', 'show_times.id', '=' ,'manifest_emails.show_time_id')
+                                        ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                                        ->select('shows.emails')
+                                        ->where('manifest_emails.id','=',$manifest->id)
+                                        ->first();
+                        $emails = $mail->emails;
+                    }
+                    else if($input['action']==2)
+                        $emails = $input['email'];
+                    
+                    if($manifest->send($emails,null))
+                        return ['success'=>true,'msg'=>'The email was sent successfully!'];
+                    return ['success'=>false,'msg'=>'There was an error sending the email.'];
+                }
+                return ['success'=>false,'msg'=>'There was an error.<br>That manifest is not longer in the system.'];
+            }
+            return ['success'=>false,'msg'=>'There was an error.<br>Your must select all valid options.'];
+            
+        } catch (Exception $ex) {
+            throw new Exception('Error Manifests Send: '.$ex->getMessage());
+        }
+    } 
+    
 }
