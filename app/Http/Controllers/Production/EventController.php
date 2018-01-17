@@ -117,9 +117,9 @@ class EventController extends Controller
                                                  DATE_FORMAT(show_times.show_time,"%b %D") AS show_date,
                                                  DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,
                                                  IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
-                                                 IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR) AND NOW()<show_times.show_time, 1, 0) as presale'))
+                                                 IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
                                 ->where('show_times.show_id',$event->show_id)->where('show_times.is_active','>',0)
-                                ->whereRaw(DB::raw('show_times.show_time > NOW()'))
+                                ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
                                 ->where(function($query) {
                                     if(Auth::check() && !in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                                         $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
@@ -168,7 +168,7 @@ class EventController extends Controller
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
                         ->where('shows.slug', $slug)->where('show_times.id', $product)->where('show_times.is_active','>',0)
-                        ->whereRaw(DB::raw('show_times.show_time > NOW()'))
+                        ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
                         ->where(function($query) {
                             if(Auth::check() && !in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                                 $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));

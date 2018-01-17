@@ -2919,7 +2919,7 @@ var TableDatatablesManaged = function () {
         
         //init functions
         check_models(); 
-        $('input[name="cutoff_hours"]').TouchSpin({ initval:1,min:1,step:1,decimals:0,max:99 });
+        $('input[name="cutoff_hours"]').TouchSpin({ initval:1,min:-5,step:1,decimals:0,max:99 });
         $('input[name="sequence"]').TouchSpin({ initval:10000,min:1,step:1,decimals:0,max:10000 });
         $('input[name="max_tickets"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000 });
         $('input[name="ticket_limit"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:999 });

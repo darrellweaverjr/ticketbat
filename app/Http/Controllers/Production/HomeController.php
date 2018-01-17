@@ -58,8 +58,10 @@ class HomeController extends Controller
                                           venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
                                           MIN(tickets.retail_price+tickets.processing_fee) AS price,
                                           shows.starting_at'))    
-                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
+                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where('images.image_type','=','Logo')
+                        ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
+                        ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                         ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
