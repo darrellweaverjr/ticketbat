@@ -429,4 +429,85 @@ class Purchase extends Model
             return false;
         }
     }
+    
+    /*
+     * saving the purchase into the database
+     */                          
+    public static function purchase_save($x_token,$client,$shoppingcart,$current,$app=false)
+    {
+        try {
+            $purchase_ids=[];
+            $errors_ids=[];
+            foreach ($shoppingcart['items'] as $i)
+            {
+                //create purchase
+                $purchase = new Purchase;
+                $purchase->user_id = $client['user_id'];
+                $purchase->customer_id = $client['customer_id'];
+                $purchase->transaction_id = (!empty($shoppingcart['transaction_id']))? $shoppingcart['transaction_id'] : null;
+                $purchase->payment_type = (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None';
+                $purchase->discount_id = $i->discount_id;
+                $purchase->ticket_id = $i->ticket_id;
+                $purchase->show_time_id = $i->item_id;
+                $purchase->session_id = $x_token;
+                $purchase->referrer_url = ($app)? 'http://app.ticketbat.com' : substr(strval( url()->current() ),0,499);
+                $purchase->quantity = $i->number_of_items;
+                $purchase->savings = $i->savings;
+                $purchase->status = 'Active';
+                $purchase->ticket_type = $i->name.' '.$i->product_type;
+                $purchase->retail_price = $i->retail_price;
+                $purchase->commission_percent = $i->commission;
+                $purchase->processing_fee = $i->processing_fee;
+                $purchase->price_paid = Util::round($purchase->retail_price+$purchase->processing_fee-$purchase->savings);
+                $purchase->updated = $current;
+                $purchase->created = $current;
+                $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;  
+                if($purchase->save())
+                {
+                    //get id for receipts
+                    $purchase_ids[] = $purchase->id;
+                    //get shoppingcart 
+                    $sc = Shoppingcart::find($i->id);
+                    if($sc)
+                    {
+                        if(!empty($i->consignment) && !empty($i->seat))
+                        {
+                            $seat = Seat::find($i->seat);
+                            if($seat)
+                            {
+                                $seat->purchase_id = $purchase->id;
+                                $seat->status = 'Sold';
+                                $seat->save();
+                            }
+                        }
+                        else
+                        {
+                            if(!empty($cs->gifts) && Util::isJSON($cs->gifts))
+                            {
+                                $shared = [];
+                                $indexes = json_decode($cs->gifts,true);
+                                foreach ($indexes as $i)
+                                    $shared[] = ['first_name'=>$i['first_name'],'last_name'=>$i['last_name'],'email'=>$i['email'],
+                                                 'comment'=>(!empty($i['comment']))? $i['comment'] : null,'qty'=>$i['qty']];
+                                $purchase->share_tickets($shared);
+                            }
+                            else
+                            {
+                                //create tickets, no gifts
+                                $tickets = implode(range(1,$purchase->quantity));
+                                DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                            }
+                        }
+                        //remove item from shoppingcart
+                        $sc->delete();
+                    }
+                }
+                else
+                    $errors_ids[] = $i->id;
+            }
+            return ['success'=>true, 'ids'=>$purchase_ids, 'errors'=>$errors_ids];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    } 
 }

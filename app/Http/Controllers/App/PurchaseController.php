@@ -53,7 +53,7 @@ class PurchaseController extends Controller{
                     if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
                         return Util::json(['success'=>false, 'msg'=>'There is no payment method for your items.']);
                 //set up customer
-                $client = $this->customer_set($info, $current);
+                $client = User::customer_set($info, $current);
                 if(!$client['success'])
                     return Util::json($client);                
                 //check payment type, if not free tickets
@@ -69,7 +69,7 @@ class PurchaseController extends Controller{
                     $shoppingcart['payment_type'] = 'Credit';
                 }
                 //save purchase
-                $purchase = $this->purchase_save($info['x_token'],$client,$shoppingcart,$current);
+                $purchase = Purchase::purchase_save($info['s_token'], $client, $shoppingcart, $current, true);
                 if(!$purchase['success'])
                         return Util::json($purchase);
                 if(count($purchase['errors']))
@@ -105,111 +105,5 @@ class PurchaseController extends Controller{
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     } 
-    
-    /*
-     * setting up the customer
-     */
-    public function customer_set($info,$current)
-    {
-        try {
-            //init set 
-            $send_welcome_email = false;            
-            //set up user and customer
-            $user = User::where('email','=',trim($info['email']))->first();
-            if(!$user)
-            {
-                //send welcome email
-                $send_welcome_email = true;
-                //create user
-                $user = new User;
-                $user->user_type_id = 2;
-                $user->is_active = 1;
-                $user->force_password_reset = 0;
-                $user->email = trim($info['email']);
-                $user->audit_user_id = 2;
-                $location = new Location;
-                $location->created = $current;
-            }
-            else
-                $location = $user->location;
-            //save location
-            $location->address = $info['address'];
-            $location->city = $info['city'];
-            $location->state = strtoupper($info['region']);
-            $location->zip = $info['zip'];
-            $location->country = $info['country'];
-            $location->set_lng_lat();
-            $location->save();
-            //save user
-            $user->location()->associate($location);
-            $user->first_name = $info['first_name'];
-            $user->last_name = $info['last_name'];
-            $user->phone = (!empty($info['phone']))? $info['phone'] : null;
-            $user->save();
-            //send email welcome
-            if($send_welcome_email)
-                $user->welcome_email(true);
-            //erase temp pass
-            $user->set_slug();
-            //get customer
-            $customer_id = $user->update_customer();
-            if(!$customer_id)
-                return ['success'=>false, 'msg'=>'There is an error setting up the customer information.'];
-            return ['success'=>true, 'user_id'=>$user->id, 'customer_id'=>$customer_id];
-        } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error setting up the customer information!'];
-        }
-    }  
-    
-    /*
-     * saving the purchase into the database
-     */                          
-    public function purchase_save($x_token,$client,$shoppingcart,$current)
-    {
-        try {
-            $purchase_ids=[];
-            $errors_ids=[];
-            foreach ($shoppingcart['items'] as $i)
-            {
-                //create purchase
-                $purchase = new Purchase;
-                $purchase->user_id = $client['user_id'];
-                $purchase->customer_id = $client['customer_id'];
-                $purchase->transaction_id = (!empty($shoppingcart['transaction_id']))? $shoppingcart['transaction_id'] : null;
-                $purchase->payment_type = (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None';
-                $purchase->discount_id = $i->discount_id;
-                $purchase->ticket_id = $i->ticket_id;
-                $purchase->show_time_id = $i->item_id;
-                $purchase->session_id = $x_token;
-                $purchase->referrer_url = 'http://app.ticketbat.com';
-                $purchase->quantity = $i->number_of_items;
-                $purchase->savings = $i->savings;
-                $purchase->status = 'Active';
-                $purchase->ticket_type = $i->name.' '.$i->product_type;
-                $purchase->retail_price = $i->retail_price;
-                $purchase->commission_percent = $i->commission;
-                $purchase->processing_fee = $i->processing_fee;
-                $purchase->price_paid = Util::round($purchase->retail_price+$purchase->processing_fee-$purchase->savings);
-                $purchase->updated = $current;
-                $purchase->created = $current;
-                $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;  
-                if($purchase->save())
-                {
-                    //remove item from shoppingcart
-                    Shoppingcart::where('id','=',$i->id)->delete();
-                    //create tickets, no gifts
-                    $tickets = implode(range(1,$purchase->quantity));
-                    DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
-                    //get id for receipts
-                    $purchase_ids[] = $purchase->id;
-                }
-                else
-                    $errors_ids[] = $i->id;
-            }
-            return ['success'=>true, 'ids'=>$purchase_ids, 'errors'=>$errors_ids];
-        } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
-        }
-    }  
     
 }

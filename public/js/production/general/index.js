@@ -199,7 +199,7 @@ var Countdown = function () {
                                 timer: 2000,
                                 showConfirmButton: false
                             },function(){
-                                window.location.href = '/shoppingcart';
+                                window.location.href = '/shoppingcart/viewcart';
                             });
                         }
                     });
