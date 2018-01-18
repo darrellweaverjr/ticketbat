@@ -181,7 +181,9 @@ class PurchaseController extends Controller
                 $send_welcome_email = true;
                 //create user
                 $user = new User;
+                $user->email = $info['email'];
                 $user->user_type_id = 2;
+                $user->audit_user_id = 2;
                 $user->is_active = 1;
                 $user->force_password_reset = 0;
                 $location = new Location;
