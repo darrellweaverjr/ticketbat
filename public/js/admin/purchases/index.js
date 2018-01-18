@@ -780,7 +780,7 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/production/user/purchases/share', 
+                url: '/user/purchases/share', 
                 data: { id: purchase_id }, 
                 success: function(data) {
                     if(data.success) 
@@ -826,7 +826,7 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/production/user/purchases/share', 
+                    url: '/user/purchases/share', 
                     data: $('#form_share_tickets').serializeArray(), 
                     success: function(data) {
                         if(data.success) 
