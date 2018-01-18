@@ -2964,7 +2964,7 @@ var FormValidation = function () {
                 rules: {
                     name: {
                         minlength: 1,
-                        maxlength: 50,
+                        maxlength: 100,
                         required: true
                     },
                     short_description: {
