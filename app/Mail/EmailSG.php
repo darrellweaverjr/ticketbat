@@ -229,6 +229,7 @@ class EmailSG {
     public function body($type, $body) {
         try {
             if (is_array($body)) {
+                $this->html('<html><body></body></html>');
                 $data = $this->replace($type, $body);
                 foreach ($data as $e) {
                     $this->mail->personalization[0]->addSubstitution($e['variable'], $e['value']);
