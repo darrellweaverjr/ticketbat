@@ -167,7 +167,7 @@
                                         <td>{{$st->show_day}}</td>
                                         <td>{{$st->show_date}}</td>
                                         <td>@if(!empty($st->time_alternative)) {{$st->time_alternative}} @else {{$st->show_hour}} @endif</td>
-                                        <td><center><a @if($st->ext_slug) href="{{$st->ext_slug}}" @else href="{{url()->current()}}/{{$st->id}}" @endif style="color:white!important" class="btn bg-blue">
+                                        <td><center><a @if($st->ext_slug) href="{{$st->ext_slug}}" @else href="/buy/{{$event->slug}}/{{$st->id}}" @endif style="color:white!important" class="btn bg-blue">
                                             BUY TICKETS <i class="fa fa-arrow-circle-right"></i>
                                         </a></center></td>
                                     </tr>
@@ -179,7 +179,7 @@
                     <!-- SHOW TIMES AS CALENDAR -->
                     <div class="tab-pane @if(count($event->showtimes)>7) active @endif" id="showtimes_calendar" style="margin:5px;padding-bottom:10px">
                         <div class="portlet-body light portlet-fit calendar">
-                            <div id="cal_model" class="has-toolbar" data-info='{!! $event->showtimes !!}' data-slug="{{url()->current()}}"> </div>
+                            <div id="cal_model" class="has-toolbar" data-info='{!! $event->showtimes !!}' data-slug="/buy/{{$event->slug}}"> </div>
                         </div>
                     </div>
                 </div>

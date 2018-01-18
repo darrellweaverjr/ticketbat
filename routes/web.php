@@ -160,7 +160,7 @@ Route::group(['middleware' => ['forceSSL','check'],'namespace' => 'Production'],
     Route::post('purchase/receipts', 'PurchaseController@receipts');
     //event
     Route::post('event/reviews', 'EventController@reviews');
-    Route::match(['get','post'], 'event/{slug}/{product}', 'EventController@buy');
+    Route::match(['get','post'], 'buy/{slug}/{product}', 'EventController@buy');
     Route::match(['get','post'], 'event/{slug}', 'EventController@index');
     //venues
     Route::match(['get','post'], 'venue/{slug}', 'VenueController@view');
