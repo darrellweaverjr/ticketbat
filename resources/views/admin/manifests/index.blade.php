@@ -12,7 +12,7 @@
     <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
-        <small> - List and view manifests.</small>
+        <small> - List and view manifests. <i>(Manifests do not sent if there are no purchases of the show)</i></small>
     </h1>
     <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
@@ -48,12 +48,14 @@
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="2%"> </th>
-                                <th width="1%"> </th>
-                                <th width="20%"> Show Time </th>
-                                <th width="6%"> Type </th>
-                                <th width="62%"> Info </th>
-                                <th width="9%"> Sent At </th>
+                                <th width="2%"></th>
+                                <th width="1%"></th>
+                                <th width="25%">Show Time</th>
+                                <th width="10%">Type</th>
+                                <th width="6%">Purchases</th>
+                                <th width="6%">Tickets Sold</th>
+                                <th width="40%">Receipts</th>
+                                <th width="10%">Sent At</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,21 +63,21 @@
                             @foreach($manifests as $index=>$m)
                                 @php $color = substr(dechex(crc32($m->show_time_id.date('mdYgi',strtotime($m->show_time)))),0,6) @endphp
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
                                         <input type="radio" name="radios" id="{{$m->id}}" value="{{$m->id}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" style="background-color:#{{$color}};border-top:thick solid @if($previous_show_time_id==$m->show_time_id) #{{$color}} @else #ffffff @endif !important;"></td>
-                                <td width="20%">
+                                <td style="background-color:#{{$color}};border-top:thick solid @if($previous_show_time_id==$m->show_time_id) #{{$color}} @else #ffffff @endif !important;"></td>
+                                <td>
                                     @if($previous_show_time_id != $m->show_time_id)
                                     <center>
-                                        <b><a>{{$m->name}}</a></b><br><small>{{date('m/d/Y g:ia',strtotime($m->show_time))}}</small>
+                                        <b>{{$m->name}}</b><br>{{date('m/d/Y g:ia',strtotime($m->show_time))}}
                                     </center>
                                     @endif
                                 </td>
-                                <td width="6%">
+                                <td>
                                     <center>
                                         <span class="label label-sm sbold
                                         @if($m->manifest_type=='Preliminary') label-success
@@ -85,16 +87,13 @@
                                     "> {{$m->manifest_type}} </span>
                                     </center>
                                 </td>
-                                <td width="62%">
-                                    <div class="search-content" style="text-align:left">
-                                        <small><i>
-                                        Purchases: <b>{{$m->num_purchases}}</b>, Tickets Sold: <b>{{$m->num_people}}</b><br>
-                                        @php $emails = explode(',',$m->recipients) @endphp
-                                        Receipts: (@foreach($emails as $e) <a href="mailto:{{$e}}" target="_top">{{$e}}</a> . @endforeach)
-                                        </i></small>
-                                    </div>
+                                <td><center>{{$m->num_purchases}}</center></td>
+                                <td><center>{{$m->num_people}}</center></td>
+                                <td style="text-align:left">
+                                    @php $emails = explode(',',$m->recipients) @endphp
+                                    ({{count($emails)}}): @foreach($emails as $e) <a href="mailto:{{$e}}" target="_top">{{$e}}</a> @endforeach
                                 </td>
-                                <td width="9%" data-order="{{strtotime($m->created)}}"><center> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}} </center></td>
+                                <td data-order="{{strtotime($m->created)}}"><center> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}} </center></td>
                             </tr>
                             @php $previous_show_time_id = $m->show_time_id @endphp
                             @endforeach
