@@ -262,6 +262,12 @@
                                     <span class="title">ACLs</span>
                                 </a>
                             </li>
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/commands')===false)) active @endif">
+                                <a href="/admin/commands" class="nav-link nav-toggle">
+                                    <i class="icon-settings"></i>
+                                    <span class="title">Commands</span>
+                                </a>
+                            </li>
                             @endif
                             @if(array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/manifests')===false)) active @endif">

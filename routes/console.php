@@ -17,11 +17,8 @@ Artisan::command('ReportConsignment', function () {
     $this->call('Report:consignment');
 });
 //PROMOTIONS
-Artisan::command('ReportSales {days=7}', function ($days) {
+Artisan::command('PromoAnnounced {days=7}', function ($days) {
     $this->call('Promo:announced',['days'=>$days]);
-});
-Artisan::command('ReportSales {days=1} {onlyadmin=1}', function ($days, $onlyadmin) {
-    $this->call('Report:sales',['days'=>$days,'onlyadmin'=>$onlyadmin]);
 });
 //UTILITIES
 Artisan::command('ShoppingcartClean {days=10}', function ($days) {
