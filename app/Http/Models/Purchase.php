@@ -310,16 +310,18 @@ class Purchase extends Model
                     //create pdf receipt
                     $purchase = array_merge((array)$receipt['purchase'],(array)$receipt['customer']);
                     $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
-                    $pdfUrlR = '/tmp/Receipt_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
+                    $pdfUrlR = '/tmp/Receipt_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
                     $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));  
+                    unlink($pdfUrlR);
                     PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
                     $pdf_receipts[] = $pdfUrlR;
                     
                     //create pdf tickets
                     $tickets = $receipt['tickets'];
                     $type = 'C';
-                    $pdfUrlT = '/tmp/Tickets_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
+                    $pdfUrlT = '/tmp/Tickets_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
                     $pdf_ticket = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));  
+                    unlink($pdfUrlT);
                     PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
                     $pdf_tickets[] = $pdfUrlT;
                     
