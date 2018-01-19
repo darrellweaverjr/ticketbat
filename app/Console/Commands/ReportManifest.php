@@ -86,7 +86,7 @@ class ReportManifest extends Command
                 {
                     //get purchases    
                     $purchases = DB::select("SELECT s.name AS event_name, st.show_time, CONCAT(c.last_name, ', ', c.first_name) AS customer_name, l.address, c.phone, c.email,
-                        p.quantity, d.code, p.ticket_type as description, p.price_paid as amount, p.customer_id, p.id, p.created, IF(p.status='Active','Active','Canceled') AS p_status
+                        p.quantity, d.code, p.ticket_type as description, p.price_paid as amount, p.savings, p.customer_id, p.id, p.created, IF(p.status='Active','Active','Canceled') AS p_status
                         FROM purchases p
                         INNER JOIN show_times st ON st.id = p.show_time_id
                         INNER JOIN shows s ON s.id = st.show_id

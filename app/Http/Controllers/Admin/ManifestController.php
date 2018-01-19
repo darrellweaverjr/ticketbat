@@ -118,7 +118,7 @@ class ManifestController extends Controller{
                         $data = $manifest->email;
                     }
                     $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
-                    return PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - manifests - '.$id.'.pdf');
+                    return PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'landscape')->setWarnings(false)->download('TicketBat Admin - manifests - '.$id.'.pdf');
                 }
                 else
                 {

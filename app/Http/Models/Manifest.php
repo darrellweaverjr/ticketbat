@@ -52,7 +52,7 @@ class Manifest extends Model
         $format = 'pdf';
         $pdf_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.pdf';
         $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
-        PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
+        PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'landscape')->setWarnings(false)->save($pdf_path);
 
         //create csv
         $format = 'csv';
