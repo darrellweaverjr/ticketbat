@@ -15,7 +15,7 @@ use Barryvdh\DomPDF\Facade as PDF;
  * @author ivan
  */
 class Purchase extends Model
-{    
+{
     /**
      * The table associated with the model.
      *
@@ -155,7 +155,7 @@ class Purchase extends Model
      */
     public function get_receipt()
     {
-        //get purchase info mix  
+        //get purchase info mix
         $purchase = DB::table('purchases')
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
@@ -166,25 +166,25 @@ class Purchase extends Model
                             ->join('locations', 'locations.id', '=', 'venues.location_id')
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                             ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
-                            ->select(DB::raw('purchases.*, purchases.quantity AS qty, tickets.ticket_type AS ticket_type_type, show_times.time_alternative, 
-                                    show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng, 
-                                    shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets, 
-                                    shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails, 
-                                    shows.daily_sales_emails AS s_daily_sales_emails, shows.financial_report_emails AS s_financial_report_emails, 
-                                    venues.name AS venue_name, venues.ticket_info, venues.daily_sales_emails AS v_daily_sales_emails, 
-                                    venues.financial_report_emails AS v_financial_report_emails, venues.weekly_sales_emails AS v_weekly_sales_emails, 
+                            ->select(DB::raw('purchases.*, purchases.quantity AS qty, tickets.ticket_type AS ticket_type_type, show_times.time_alternative,
+                                    show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng,
+                                    shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets,
+                                    shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails,
+                                    shows.daily_sales_emails AS s_daily_sales_emails, shows.financial_report_emails AS s_financial_report_emails,
+                                    venues.name AS venue_name, venues.ticket_info, venues.daily_sales_emails AS v_daily_sales_emails,
+                                    venues.financial_report_emails AS v_financial_report_emails, venues.weekly_sales_emails AS v_weekly_sales_emails,
                                     IF(ticket_number.id IS NULL, 0, 1) as section'))
                             ->where('purchases.id', '=', $this->id)
                             ->distinct()->first();
-        //get customer info mix 
+        //get customer info mix
         $customer = DB::table('customers')
                             ->join('locations', 'locations.id', '=' ,'customers.location_id')
                             ->select('customers.*', 'locations.*')
                             ->where('customers.id', '=', $this->customer_id)
                             ->first();
-        //get tickets 
+        //get tickets
         $tickets = [];
-        
+
         if($purchase)
         {
             //get all tickets by section
@@ -203,7 +203,7 @@ class Purchase extends Model
                         $main_info = ['number'=>$i,'customer_name'=>$tn->first_name.' '.$tn->last_name,'customer_email'=>$tn->email,'checked'=>(in_array($i,explode(',',$tn->checked)))? $checked_= 1 : $checked_= 0,'comment'=>$tn->comment,'QRcode'=>Util::getQRcode($this->id,$this->user_id,$i)];
                         $extra_info = ['show_name'=>$purchase->show_name,'show_time'=>$purchase->show_time,'price_each'=>number_format($this->price_paid/$this->quantity,2),'id'=>$this->id,'venue_name'=>$purchase->venue_name,'restrictions'=>$purchase->restrictions,'user_id'=>$this->user_id,'ticket_type'=>$purchase->ticket_type_type,'time_alternative'=>$purchase->time_alternative,'package'=>$purchase->title];
                         $tickets[] = array_merge($main_info,$extra_info);
-                    }    
+                    }
             }
             //get all tickets by section/row/seat
             else
@@ -214,7 +214,7 @@ class Purchase extends Model
                                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                                    ->select(DB::raw('seats.id,seats.purchase_id,seats.consignment_id,seats.ticket_id,seats.seat,seats.show_seat,seats.status,seats.updated, tickets.ticket_type, 
+                                    ->select(DB::raw('seats.id,seats.purchase_id,seats.consignment_id,seats.ticket_id,seats.seat,seats.show_seat,seats.status,seats.updated, tickets.ticket_type,
                                                       COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price, purchases.savings,
                                                       COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee,
                                                       COALESCE(seats.percent_commission,COALESCE(tickets.percent_commission,0)) AS percent_commission,
@@ -253,7 +253,7 @@ class Purchase extends Model
      */
     public function set_pending()
     {
-        //get purchase info mix  
+        //get purchase info mix
         $purchase = DB::table('purchases')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
@@ -279,7 +279,7 @@ class Purchase extends Model
         $html .= '<b>Cardholder:</b> '.$purchase->card_holder.' <b>Card:</b> ...'.$purchase->last_4.'<br>';
         $html .= '<b>Authcode:</b> '.$purchase->authcode.' <b>Refnum:</b> '.$purchase->refnum.'<br><br>';
         $html .= '<b>Click here to update status:</b> <a href="'.$link.'">'.$link.'</a><br><br>';
-        //send email           
+        //send email
         $email = new EmailSG(null, env('MAIL_PURCHASE_PENDING','MAIL_ADMIN'), 'TicketBat Admin: Purchase pending to refund');
         $email->category('Custom');
         $email->body('custom',['body'=>$html]);
@@ -305,28 +305,28 @@ class Purchase extends Model
                 foreach ($receipts as $receipt)
                 {
                     $purchases[] = $receipt['purchase'];
-                   
+
                     $format = 'pdf';
                     //create pdf receipt
                     $purchase = array_merge((array)$receipt['purchase'],(array)$receipt['customer']);
                     $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
                     $pdfUrlR = '/tmp/Receipt_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
-                    $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));  
-                    unlink($pdfUrlR);
+                    $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
+                    if(file_exists($pdfUrlR)) unlink($pdfUrlR);
                     PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
                     $pdf_receipts[] = $pdfUrlR;
-                    
+
                     //create pdf tickets
                     $tickets = $receipt['tickets'];
                     $type = 'C';
                     $pdfUrlT = '/tmp/Tickets_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
-                    $pdf_ticket = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));  
-                    unlink($pdfUrlT);
+                    $pdf_ticket = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));
+                    if(file_exists($pdfUrlT)) unlink($pdfUrlT);
                     PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
                     $pdf_tickets[] = $pdfUrlT;
-                    
+
                     if($type_email != 'reminder')
-                    {  
+                    {
                         //row on email to each purchase
                         $rows_html.='<tr>'
                                         . '<td align="center">'.$receipt['purchase']->ticket_type_type.' For '.$receipt['purchase']->show_name.'<br/>On '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).'</td> '
@@ -358,13 +358,13 @@ class Purchase extends Model
                 if($totals['discount'] > 0)
                     $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
                 $totals_html.='<tr> <td align="right" style="color:#1F9F0B;"><b>GRAND TOTAL</b>:</td> <td align="right" style="color:#1F9F0B;">$ '.number_format($totals['total'],2).'</td> </tr>';
-                
+
                 //banners
                 if(!empty($receipt['banners']))
                     foreach ($receipt['banners'] as $b)
                         $banners .= '<div><a href="'.$b->url.'"><img src="'.$b->file.'"/></a></div>';
-                
-                //send email           
+
+                //send email
                 $email = new EmailSG(null, $customer->email , $subject);
                 //$email->cc(env('MAIL_REPORT_CC'));
                 $email->category('Receipts');
@@ -382,10 +382,10 @@ class Purchase extends Model
                     $email->template('98066597-4797-40bf-b95a-0219da4ca1dc');
                 }
                 $response = $email->send();
-                
+
                 //send copy to event promotor if available option
                 if($promotor_copy)
-                {                      
+                {
                     $p = $receipts[0]['purchase'];
                     if($p->s_individual_emails == 1 && !empty($p->emails))
                     {
@@ -423,7 +423,7 @@ class Purchase extends Model
                 }
                 //clean up and return
                 foreach(array_merge($pdf_receipts,$pdf_tickets) as $link)
-                    unlink($link);
+                    if(file_exists($link)) unlink($link);
                 return $response;
             }
             else return false;
@@ -431,10 +431,10 @@ class Purchase extends Model
             return false;
         }
     }
-    
+
     /*
      * saving the purchase into the database
-     */                          
+     */
     public static function purchase_save($x_token,$client,$shoppingcart,$current,$app=false)
     {
         try {
@@ -463,12 +463,12 @@ class Purchase extends Model
                 $purchase->price_paid = Util::round($purchase->retail_price+$purchase->processing_fee-$purchase->savings);
                 $purchase->updated = $current;
                 $purchase->created = $current;
-                $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;  
+                $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;
                 if($purchase->save())
                 {
                     //get id for receipts
                     $purchase_ids[] = $purchase->id;
-                    //get shoppingcart 
+                    //get shoppingcart
                     $sc = Shoppingcart::find($i->id);
                     if($sc)
                     {
@@ -511,5 +511,5 @@ class Purchase extends Model
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
-    } 
+    }
 }
