@@ -99,7 +99,7 @@ class VenueController extends Controller
                         ->where('images.image_type','=','Logo')->where('show_times.is_active','=',1)
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())
                         ->whereNotNull('images.url')
-                        ->orderBy('shows.name','ASC')->orderBy('show_times.show_time','ASC')
+                        ->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
                         ->distinct()->get();
             foreach ($venue->events as $s)
