@@ -158,6 +158,7 @@ class UserController extends Controller{
             if($input)
             {
                 $current = date('Y-m-d H:i:s');
+                $customer = null;
                 if(isset($input['id']) && $input['id'])
                 {
                     if(User::where('email','=',$input['email'])->where('id','!=',$input['id'])->count())
@@ -168,6 +169,7 @@ class UserController extends Controller{
                     $location->updated = $current;
                     if(isset($input['password']) && $input['password'])
                         $user->password = md5($input['password']);
+                    $customer = Customer::where('email',$user->email)->first();
                 }                    
                 else
                 {                    
@@ -180,6 +182,7 @@ class UserController extends Controller{
                     $user->audit_user_id = Auth::user()->id;
                     if(isset($input['password']) && $input['password'])
                         $user->set_password();
+                    $customer = Customer::where('email',$input['email'])->first();
                 }
                 //save location
                 $location->address = strip_tags($input['address']);
@@ -211,11 +214,12 @@ class UserController extends Controller{
                 $user->save();
                 //update table customers
                 if(!empty($input['update_customer']))
-                    $user->update_customer();
+                    $user->update_customer($customer);
                 //update table transactions customer_id
                 if(!empty($input['update_transaction_customer']))
                 {
-                    $customer = Customer::where('email','=',$input['email'])->first();
+                    if(!$customer)
+                        $customer = Customer::where('email','=',$input['email'])->first();
                     if($customer)
                         Transaction::where('customer_id',$customer->id)->update(['card_holder'=>$user->first_name.' '.$user->last_name]);
                 }

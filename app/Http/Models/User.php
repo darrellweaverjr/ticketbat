@@ -122,11 +122,11 @@ class User extends Authenticatable
     /*
      * send welcome email 
      */
-    public function update_customer()
+    public function update_customer($customer=null)
     {
         try {
             //get customer
-            $customer = Customer::where('email',$this->email)->first();
+            $customer = (!empty($customer))? $customer : Customer::where('email',$this->email)->first();
             if(!$customer)
             {
                 $customer = new Customer;
@@ -152,6 +152,7 @@ class User extends Authenticatable
             $customer->location()->associate($location);
             $customer->first_name = $this->first_name;
             $customer->last_name = $this->last_name;
+            $customer->email = $this->email;
             $customer->phone = $this->phone;
             $customer->updated = $this->updated;
             $customer->save();
