@@ -86,13 +86,11 @@ class UserPurchaseController extends Controller
                         if($purchases[0]->user_id == Auth::user()->id)
                             $access = true;
                     }
-                    /*else if(!empty($email_guest))
+                    else if(!empty($email_guest))
                     {
                         if($purchases[0]->user->email == $email_guest || $purchases[0]->customer->email == $email_guest)
                             $access = true;
-                    }*/
-                    else
-                    $access = true;                        
+                    }               
                 }
             }
             if(!$access)

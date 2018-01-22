@@ -138,7 +138,7 @@ Route::group(['middleware' => ['forceSSL','check'],'namespace' => 'Production'],
     //user purchase
     Route::post('user/purchases/share', 'UserPurchaseController@share')->middleware('productioncheck');
     Route::get('user/purchases/receipts/{id}', 'UserPurchaseController@receipts')->middleware('productioncheck');
-    Route::get('user/purchases/tickets/{type}/{id}', 'UserPurchaseController@tickets')->middleware('productioncheck');
+    Route::get('user/purchases/tickets/{type}/{id}', 'UserPurchaseController@tickets');
     Route::match(['get','post'], 'user/purchases', 'UserPurchaseController@index')->middleware('productioncheck');
     //user consignment
     Route::post('user/consignments/contract', 'UserConsignmentController@contract')->middleware('productioncheck');
