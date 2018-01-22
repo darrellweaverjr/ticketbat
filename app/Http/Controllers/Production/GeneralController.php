@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Http\Models\Country;
 use App\Http\Models\Region;
+use App\Http\Models\Contact;
+use App\Http\Models\Util;
 
 class GeneralController extends Controller
 {
@@ -17,7 +19,24 @@ class GeneralController extends Controller
     public function contact()
     {
         try {
-            
+            $info = Input::all();
+            if(!empty($info['name']) && !empty($info['email']) && !empty($info['message']))
+            {
+                //create entry on table
+                $contact = new Contact;
+                $contact->name = $info['name'];
+                $contact->email = $info['email'];
+                $contact->phone = (!empty($info['phone']))? $info['phone'] : null;
+                $contact->show_name = (!empty($info['event']))? $info['event'] : null; 
+                $contact->show_time = (!empty($info['date']))? $info['date'] : null; 
+                $contact->system_info = Util::system_info();
+                $contact->message = $info['message'];
+                $contact->save();
+                if($contact->email_us())
+                    return ['success'=>true, 'msg'=>'Email sent successfully! An administrator will contact you soon.'];
+                return ['success'=>false, 'msg'=>'There was an error sending the email. Please try later!'];
+            }
+            return ['success'=>false, 'msg'=>'You must fill out correctly the form!'];
         } catch (Exception $ex) {
             throw new Exception('Error Production General Contact: '.$ex->getMessage());
         }

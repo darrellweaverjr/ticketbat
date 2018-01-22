@@ -34,6 +34,7 @@ class Contact extends Model
             //send email
             $html = '<b>Customer: </b>'.$this->name.'<br><b>Email: </b>'.$this->email.'</b><br><b>Phone: </b>'.$this->phone;
             $html .= '<br><b>Show/Venue: </b>'.$this->show_name;
+            $html .= '<br><b>Date/Time: </b>'.$this->show_time;
             $html .= '<br><b>System Info: </b>'.$this->system_info.'<br><b>Message: </b>'.$this->message;
             $email = new EmailSG(null,env('MAIL_APP_ADMIN','debug@ticketbat.com'),'TicketBat App - Contact');
             $email->html($html);
