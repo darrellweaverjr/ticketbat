@@ -693,6 +693,16 @@
                                     <input class="form-control" name="to_quantity" type="number" step="1" min="1" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Enter the email of the <b>USER</b> to change to:</label>
+                                    <input type="email" class="form-control" name="to_user_email">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Enter the email of the <b>CUSTOMER</b> to change to:</label>
+                                    <input type="email" class="form-control" name="to_customer_email">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">

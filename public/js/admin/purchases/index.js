@@ -479,9 +479,11 @@ var TableDatatablesManaged = function () {
             var to_show_time_id = $('#form_model_edit select[name="to_show_time_id"]').val();
             var to_ticket_id = $('#form_model_edit select[name="to_ticket_id"]').val();
             var to_quantity = $('#form_model_edit input[name="to_quantity"]').val();
+            var to_user = $('#form_model_edit input[name="to_user_email"]').val();
+            var to_customer = $('#form_model_edit input[name="to_customer_email"]').val();
             var to_discount_id = $('#form_model_edit select[name="to_discount_id"]').val();
             $('#modal_model_edit').modal('hide');
-            if($('#form_model_edit').valid() && (to_show_time_id || to_ticket_id || to_quantity || to_discount_id))
+            if($('#form_model_edit').valid() && (to_show_time_id || to_ticket_id || to_quantity || to_discount_id || to_user || to_customer))
             {
                 swal({
                     title: "Saving purchase's information",

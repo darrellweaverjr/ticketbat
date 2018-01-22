@@ -452,6 +452,28 @@ class PurchaseController extends Controller{
                 if($purchase)
                 {
                     $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
+                    if(!empty($input['to_user_email']))
+                    {
+                        $to_email = trim($input['to_user_email']);
+                        if (!filter_var($to_email, FILTER_VALIDATE_EMAIL))
+                            return ['success'=>false,'msg'=>'You must enter a valid email for the user.'];
+                        $user = User::where('email',$to_email)->first();
+                        if(!$user)
+                            return ['success'=>false,'msg'=>'That user does not exists in the system.'];
+                        $note.= ', user from '.$purchase->user->email.' to '.$to_email;
+                        $purchase->user_id = $user->id;
+                    }
+                    if(!empty($input['to_customer_email']))
+                    {
+                        $to_email = trim($input['to_customer_email']);
+                        if (!filter_var($to_email, FILTER_VALIDATE_EMAIL))
+                            return ['success'=>false,'msg'=>'You must enter a valid email for the customer.'];
+                        $customer = Customer::where('email',$to_email)->first();
+                        if(!$customer)
+                            return ['success'=>false,'msg'=>'That customer does not exists in the system.'];
+                        $note.= ', customer from '.$purchase->customer->email.' to '.$to_email;
+                        $purchase->customer_id = $customer->id;
+                    }
                     if(!empty($input['to_show_time_id']) && $purchase->show_time_id != $input['to_show_time_id'])
                     {
                         $from = ShowTime::find($purchase->show_time_id);
