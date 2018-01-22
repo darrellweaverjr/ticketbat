@@ -155,25 +155,25 @@
     <body>
         <div class="container">
             <div class="header">
-                <img src="https://ticketbat.com/img/newsletter/logo.jpg" alt="Ticket Bat">
+                <img src="/themes/img/logo-header.jpg" alt="Ticket Bat">
             </div>
             <div class="tb-title">
                 Your Ticketbat purchase for <span class="tb-highlight-color">{{$purchase['show_name']}}</span> on <span class="tb-highlight-color">{{date('m/d/Y g:ia',strtotime($purchase['show_time']))}}</span> is confirmed. Have a great time!
             </div>
-            @if ($purchase['restrictions'] == 'Over 18' || $purchase['restrictions'] == 'Over 21')
+            @if($purchase['restrictions'] != 'None')
             <div class="tb-ticket-top-sect">
                 <div class="tb-customer-intro-cust">
                     <span class="tb-order-subtitle">Restrictions:</span> <span class="tb-customer-txt">{{$purchase['restrictions']}}</span>
                 </div>
-            </div>
+            </div><br><br>
             @endif
             <div class="tb-ticket-top-sect">
                 <div class="tb-customer-intro-cust">
                     <span class="tb-order-subtitle">Order ID:</span> <span class="tb-customer-txt">{{$purchase['id']}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <span class="tb-order-subtitle">Customer Name:</span> <span class="tb-customer-txt">{{$purchase['first_name']}}  {{$purchase['last_name']}}</span>
                 </div>
-            </div>
-            <table class="tb-show-details-table" border="0" align="center" cellpadding="10" cellspacing="0">
+            </div><br><br><br>
+            <table class="tb-show-details-table" border="0" align="center" cellpadding="10" cellspacing="0"">
                 <tbody>
                     <tr class="tb-show-details-title">
                         <td><div class="show-date">Show Date</div></td>
