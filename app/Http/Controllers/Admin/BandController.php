@@ -147,14 +147,23 @@ class BandController extends Controller{
         try {
             //init
             $input = Input::all();
+            $errors = [];
             //delete all records   
             foreach ($input['id'] as $id)
             {
-                Band::find($id)->delete_image_file();
-                if(!Band::destroy($id))
-                    return ['success'=>false,'msg'=>'There was an error deleting the band(s)!<br>They might have some dependences.'];
+                $band = Band::find($id);
+                if($band)
+                {
+                    $band->delete_image_file();
+                    $band->show_bands()->detach();
+                    $name = $band->name;
+                    if(!$band->delete())
+                        $errors[] = $name;
+                }
             }
-            return ['success'=>true,'msg'=>'All records deleted successfully!'];
+            if(empty($errors))
+                return ['success'=>true,'msg'=>'All records deleted successfully!'];
+            return ['success'=>false,'msg'=>'There was an error deleting the band(s)!<br>They might have some dependences on the following bands:<br>'.implode('<br>', $errors)];
         } catch (Exception $ex) {
             throw new Exception('Error Bands Remove: '.$ex->getMessage());
         }
