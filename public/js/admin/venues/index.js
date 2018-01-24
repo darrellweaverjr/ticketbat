@@ -436,7 +436,7 @@ var TableDatatablesManaged = function () {
             gapVertical: 0,
             gridAdjustment: 'responsive',
             mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
-            caption: 'overlayBottomReveal',
+            caption: 'fadeIn',
             displayType: 'default',
             displayTypeSpeed: 1,
             lightboxDelegate: '.cbp-lightbox',
@@ -453,11 +453,11 @@ var TableDatatablesManaged = function () {
         {
             return  '<div class="cbp-item stage_'+stage.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+stage.image_url+'" alt="'+stage.image_url+'"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
-                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+stage.id+'"><i class="fa fa-edit"></i></a>'+
+                    '</div></div></div></div>'+
+                    '<center><a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+stage.id+'"><i class="fa fa-edit"></i></a>'+
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+stage.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+stage.image_url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+stage.name+'<br>'+stage.description+'"><i class="fa fa-search"></i></a>'+
-                    '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+(stage.name.substr(0,47)+'...')+'</div>'+
+                    '</center><div class="cbp-l-grid-projects-title uppercase text-center">'+(stage.name.substr(0,47)+'...')+'</div>'+
                     '<div class="cbp-l-grid-projects-desc text-center">'+(stage.description.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
@@ -647,7 +647,7 @@ var TableDatatablesManaged = function () {
             gapVertical: 0,
             gridAdjustment: 'responsive',
             mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
-            caption: 'overlayBottomReveal',
+            caption: 'fadeIn',
             displayType: 'default',
             displayTypeSpeed: 1,
             lightboxDelegate: '.cbp-lightbox',
@@ -664,10 +664,10 @@ var TableDatatablesManaged = function () {
         {
             return  '<div class="cbp-item stage_images_'+stage_images.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+stage_images.url+'" alt="'+stage_images.url+'"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
-                    '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+stage_images.id+'"><i class="fa fa-remove"></i></a>'+
-                    '<a href="'+stage_images.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+stage_images.name+'<br>'+stage_images.ticket_type+'"><i class="fa fa-search"></i></a>'+
                     '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+(stage_images.name.substr(0,47)+'...')+'</div>'+
+                    '<center><a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+stage_images.id+'"><i class="fa fa-remove"></i></a>'+
+                    '<a href="'+stage_images.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+stage_images.name+'<br>'+stage_images.ticket_type+'"><i class="fa fa-search"></i></a>'+
+                    '</center><div class="cbp-l-grid-projects-title uppercase text-center">'+(stage_images.name.substr(0,47)+'...')+'</div>'+
                     '<div class="cbp-l-grid-projects-desc text-center">'+(stage_images.ticket_type.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
@@ -802,7 +802,7 @@ var TableDatatablesManaged = function () {
             gapVertical: 0,
             gridAdjustment: 'responsive',
             mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
-            caption: 'overlayBottomReveal',
+            caption: 'fadeIn',
             displayType: 'default',
             displayTypeSpeed: 1,
             lightboxDelegate: '.cbp-lightbox',
@@ -824,11 +824,11 @@ var TableDatatablesManaged = function () {
             if(!image.caption) image.caption = '';
             return  '<div class="cbp-item '+image.image_type+' image_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.url+'" alt="'+image.url+'"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
-                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
+                    '</div></div></div></div>'+
+                    '<center><a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+image.url+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.image_type+'<br>'+image.caption+'"><i class="fa fa-search"></i></a>'+
-                    '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+image.image_type+'</div>'+
+                    '</center><div class="cbp-l-grid-projects-title uppercase text-center">'+image.image_type+'</div>'+
                     '<div class="cbp-l-grid-projects-desc text-center">'+(image.caption.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
@@ -1016,7 +1016,7 @@ var TableDatatablesManaged = function () {
             gapVertical: 0,
             gridAdjustment: 'responsive',
             mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
-            caption: 'overlayBottomReveal',
+            caption: 'fadeIn',
             displayType: 'default',
             displayTypeSpeed: 1,
             lightboxDelegate: '.cbp-lightbox',
@@ -1041,11 +1041,11 @@ var TableDatatablesManaged = function () {
                 var link = '<a href="'+image.url+'" target="_blank">'+(image.url.substr(0,47)+'...')+'</a>'; 
             return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt="'+image.file+'<br>"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
-                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
+                    '</div></div></div></div>'+
+                    '<center><a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+image.id+'"><i class="fa fa-edit"></i></a>'+
                     '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+image.id+'"><i class="fa fa-remove"></i></a>'+
                     '<a href="'+image.file+'" class="cbp-lightbox cbp-l-caption-buttonRight btn green uppercase" onclick="$(\'#modal_model_update\').modal(\'hide\');" data-title="'+image.type+'<br>'+image.url+'"><i class="fa fa-search"></i></a>'+
-                    '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-desc uppercase text-center"><b>'+(image.type.substr(0,38)+'...')+'</b></div>'+
+                    '</center><div class="cbp-l-grid-projects-desc uppercase text-center"><b>'+(image.type.substr(0,38)+'...')+'</b></div>'+
                     '<div class="cbp-l-grid-projects-desc text-center">'+link+'</div>'+
                     '</div>';
         };
@@ -1236,7 +1236,7 @@ var TableDatatablesManaged = function () {
             gapVertical: 0,
             gridAdjustment: 'responsive',
             mediaQueries: [{ width: 800, cols: 3 }, { width: 480, cols: 2 }, { width: 320, cols: 1 }],
-            caption: 'overlayBottomReveal',
+            caption: 'fadeIn',
             displayType: 'default',
             displayTypeSpeed: 1,
             lightboxDelegate: '.cbp-lightbox',
@@ -1255,10 +1255,10 @@ var TableDatatablesManaged = function () {
             var vid = $($.parseHTML(video.embed_code)); vid.width(310); vid.height(200); 
             return  '<div class="cbp-item video_'+video.id+'" style="padding:5px;width:290px;"><div class="cbp-caption"><div class="cbp-caption-defaultWrap">'+vid.prop('outerHTML')+'</div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
-                    '<a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+video.id+'"><i class="fa fa-edit"></i></a>'+
-                    '<a class="cbp-l-caption-buttonLeft btn red uppercase delete" rel="'+video.id+'"><i class="fa fa-remove"></i></a>'+
                     '</div></div></div></div>'+
-                    '<div class="cbp-l-grid-projects-title uppercase text-center">'+video.video_type+'</div>'+
+                    '<center><a class="cbp-l-caption-buttonLeft btn yellow uppercase edit" rel="'+video.id+'"><i class="fa fa-edit"></i></a>'+
+                    '<a class="cbp-l-caption-buttonRight btn red uppercase delete" rel="'+video.id+'"><i class="fa fa-remove"></i></a>'+
+                    '</center><div class="cbp-l-grid-projects-title uppercase text-center">'+video.video_type+'</div>'+
                     '<div class="cbp-l-grid-projects-desc text-center">'+(video.description.substr(0,47)+'...')+'</div>'+
                     '</div>';
         };
