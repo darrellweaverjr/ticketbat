@@ -296,8 +296,8 @@ var TableDatatablesManaged = function () {
                             {
                                 $('#form_model_update input[name="emails"]').val(data.default.weekly_email);
                                 $('#form_model_update input[name="accounting_email"]').val(data.default.accounting_email);
-                                $('#form_model_update .make-switch:checkbox[name="daily_sales_emails"]').bootstrapSwitch('state',(data.default.daily_sales_emails)? true : false);
-                                $('#form_model_update .make-switch:checkbox[name="financial_report_emails"]').bootstrapSwitch('state',(data.default.financial_report_emails)? true : false);
+                                $('#form_model_update .make-switch:checkbox[name="daily_sales_emails"]').bootstrapSwitch('state',(data.default.daily_sales_emails>0)? true : false);
+                                $('#form_model_update .make-switch:checkbox[name="financial_report_emails"]').bootstrapSwitch('state',(data.default.financial_report_emails>0)? true : false);
                             }
                             else 
                             {
@@ -372,7 +372,7 @@ var TableDatatablesManaged = function () {
                 if(e.is('img'))
                     e.attr('src',data.show[key]);
                 else if(e.is('input:checkbox'))
-                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key])? true : false, true);
+                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key]>0)? true : false, true);
                 else if(key!='venue_id' && key!='stage_id')
                     e.val(data.show[key]);
             }
@@ -1905,7 +1905,7 @@ var TableDatatablesManaged = function () {
                                 //fill out
                                 var e = $('#form_model_show_contracts [name="'+key+'"]');
                                 if(e.is('input:checkbox'))
-                                    $('#form_model_show_contracts .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.ticket[key])? true : false, true);
+                                    $('#form_model_show_contracts .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.ticket[key]>0)? true : false, true);
                                 else
                                     e.val(data.ticket[key]);
                             }
