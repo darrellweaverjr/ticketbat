@@ -394,7 +394,10 @@
                                                                 <div class="mt-widget-3">
                                                                     <div class="mt-head bg-red">
                                                                         <div class="mt-head-desc">
-                                                                            <input type="radio" name="action" value="crop"checked="true"><label for="crop"> Crop Image</label>
+                                                                            <label class="mt-radio">
+                                                                                <input type="radio" name="action" value="crop" checked="true"> Crop Image
+                                                                                <span></span>
+                                                                            </label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="mt-body-actions-icons">
@@ -423,7 +426,10 @@
                                                                 <div class="mt-widget-3">
                                                                     <div class="mt-head bg-yellow">
                                                                         <div class="mt-head-desc"> 
-                                                                            <input type="radio" name="action" value="resize"><label for="resize"> Resize Image</label>
+                                                                            <label class="mt-radio">
+                                                                                <input type="radio" name="action" value="resize"> Resize Image
+                                                                                <span></span>
+                                                                            </label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="mt-body-actions-icons">
