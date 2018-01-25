@@ -19,9 +19,9 @@
         <link href="{{config('app.theme')}}css/login.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/style.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="{{config('app.theme')}}img/favicon.png" /> 
-        <link rel="apple-touch-icon" href="{{config('app.theme')}}img/favicon.png"/>
-        <link rel="apple-touch-icon-precomposed" href="{{config('app.theme')}}img/favicon.png"/>
+        <link rel="shortcut icon" href="{{config('app.theme')}}img/favicon.ico" />
+        <link rel="apple-touch-icon" href="{{config('app.theme')}}img/favicon.ico"/>
+        <link rel="apple-touch-icon-precomposed" href="{{config('app.theme')}}img/favicon.ico"/>
     <!-- END HEAD -->
 
     <body class=" login">
@@ -42,7 +42,7 @@
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                     <label class="control-label visible-ie8 visible-ie9">Email</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="email" autocomplete="off" placeholder="Email" name="username" value="{{ old('email') }}" required autofocus /> 
+                    <input class="form-control form-control-solid placeholder-no-fix" type="email" autocomplete="off" placeholder="Email" name="username" value="{{ old('email') }}" required autofocus />
                     @if ($errors->has('email'))
                         <span class="help-block">
                             <strong>{{ $errors->first('email') }}</strong>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                     <label class="control-label visible-ie8 visible-ie9">Password</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" required/> 
+                    <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" required/>
                     @if ($errors->has('password'))
                         <span class="help-block">
                             <strong>{{ $errors->first('password') }}</strong>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="form-actions">
                     <center><button type="submit" class="btn green uppercase">Login</button></center>
-                </div>    
+                </div>
             </form>
             <!-- END LOGIN FORM -->
         </div>
