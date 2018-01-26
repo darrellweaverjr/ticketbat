@@ -204,7 +204,7 @@ class UserController extends Controller{
                             ->join('customers', 'customers.id', '=', 'purchases.customer_id')
                             ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
                             ->select(DB::raw('purchases.id, purchases.quantity, tickets.ticket_type AS ticket_type_type, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, 
-                                              packages.title, shows.name AS show_name, shows.restrictions, venues.name AS venue_name,
+                                              packages.title, shows.name AS show_name, shows.restrictions, venues.name AS venue_name, tickets.avail_hours,
                                               customers.first_name, customers.last_name, IF(ticket_number.id IS NULL, 0, 1) as section'))
                             ->where('purchases.id','=',$purchase_id)->where('show_times.id','=',$show_time_id)->groupBy('purchases.id')->first();
             if($purchase)
@@ -224,7 +224,7 @@ class UserController extends Controller{
                     $purchase->tickets = $tickets->qty;
                     $purchase->checked = $tickets->checked;
                     $tickets = DB::table('ticket_number')
-                                    ->select(DB::raw('id, tickets, checked,
+                                    ->select(DB::raw('id, tickets, checked, updated, 
                                                       (LENGTH(tickets)-LENGTH(REPLACE(tickets,",",""))+1) AS qty'))
                                     ->where('purchases_id','=',$purchase->id)->get();
                     foreach ($tickets as $t)
@@ -235,7 +235,12 @@ class UserController extends Controller{
                         //find tickets already checked
                         $already = array_intersect($checked,$to_check);
                         if(count($already))
+                        {
+                            //check if reentry
+                            if(!empty($purchase->avail_hours) && $t->updated && date('Y-m-d H:i')<= date('Y-m-d H:i', strtotime($t->updated. ' + '.$purchase->avail_hours.' hours'))  )
+                                return ['success'=>true, 'purchase'=>$purchase];
                             return ['success'=>false, 'msg'=>'These tickets are already checked: '.implode(',',$already)];
+                        } 
                         //find tickets to update
                         $to_update = array_intersect($qty_tck,$to_check);
                         if(count($to_update))
@@ -243,9 +248,10 @@ class UserController extends Controller{
                             $t_updated = implode(',',array_merge($checked,$to_update));
                             //continue to update
                             $updated = DB::table('ticket_number')->where('id',$t->id)->update(['checked' => $t_updated]);
-                            
                             if($updated>=0)
                             {
+                                if(!empty($purchase->avail_hours))
+                                    DB::table('ticket_number')->where('id',$t->id)->update(['updated' => date('Y-m-d H:i')]);
                                 $purchase->checked += count($to_update);
                                 $to_check = array_diff($to_check, $to_update);
                             } 
@@ -274,7 +280,12 @@ class UserController extends Controller{
                         if(!$seat)
                             return ['success'=>false, 'msg'=>'This ticket is not valid: '.$t];
                         if($seat->status == 'Checked')
+                        {
+                            //check if reentry
+                            if(!empty($purchase->avail_hours) && $seat->updated && date('Y-m-d H:i')<= date('Y-m-d H:i', strtotime($seat->updated. ' + '.$purchase->avail_hours.' hours'))  )
+                                return ['success'=>true, 'purchase'=>$purchase];
                             return ['success'=>false, 'msg'=>'This ticket has been checked already: '.$t];
+                        }  
                         if($seat->status != 'Sold')
                             return ['success'=>false, 'msg'=>'This ticket does not have a valid status: '.$t];
                         $updated = $seat->update(['status'=>'Checked', 'updated'=>date('Y-m-d H:i:s')]);
