@@ -936,6 +936,11 @@
                                     <div class="col-md-7 show-error">
                                         <input type="number" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                     </div>
+                                    <label class="col-md-5 control-label">Avail. hours
+                                    </label>
+                                    <div class="col-md-7 show-error">
+                                        <input type="number" value="0" name="avail_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
                                 </div>
                             </div>
                         </div>

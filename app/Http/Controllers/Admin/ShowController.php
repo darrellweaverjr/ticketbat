@@ -363,6 +363,7 @@ class ShowController extends Controller{
                 $show->conversion_code = (!empty($input['conversion_code']))? $input['conversion_code'] : null;
                 $show->ua_conversion_code = (!empty($input['ua_conversion_code']))? $input['ua_conversion_code'] : null;
                 $show->ticket_limit = (!empty($input['ticket_limit']))? $input['ticket_limit'] : null;
+                $show->avail_hours = (!empty($input['avail_hours']))? $input['avail_hours'] : null;
                 if(isset($input['amex_only_start_date']) && $input['amex_only_start_date']!='' && isset($input['amex_only_end_date']) && $input['amex_only_end_date']!=''
                         && isset($input['ticket_types']) && count($input['ticket_types']))
                 {
