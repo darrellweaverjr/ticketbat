@@ -126,7 +126,7 @@ class Purchase extends Model
                             $customer->save();
                         }
                         //create tickets number
-                        $tickets = implode(',', range($qty_shared+1,$qty_shared+$s['qty']));
+                        $tickets = implode(',',range($qty_shared+1,$qty_shared+$s['qty']));
                         $qty_shared+=$s['qty'];
                         $comment = (!empty(trim(strip_tags($s['comment']))))? trim(strip_tags($s['comment'])) : null;
                         $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=>$customer->id, 'tickets'=>$tickets, 'comment'=>$comment];
@@ -136,7 +136,7 @@ class Purchase extends Model
             //if missing tickets to share put them to the customer
             if($qty_shared<$this->quantity)
             {
-                $tickets = implode(',', range($qty_shared+1,$this->quantity));
+                $tickets = implode(',',range($qty_shared+1,$this->quantity));
                 $ticket_number[] = ['purchases_id'=> $this->id, 'customers_id'=> $this->customer_id, 'tickets'=>$tickets, 'comment'=>null];
             }
             //save if there is values to save
@@ -496,7 +496,7 @@ class Purchase extends Model
                             else
                             {
                                 //create tickets, no gifts
-                                $tickets = implode(range(1,$purchase->quantity));
+                                $tickets = implode(',',range(1,$purchase->quantity));
                                 DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
                             }
                         }
