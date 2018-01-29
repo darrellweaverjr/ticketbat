@@ -11,9 +11,11 @@ use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\User;
 use App\Http\Models\Util;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
+    private $style_url = 'styles/ticket_types.css';
     /**
      * Show the default method for the event page.
      *
@@ -323,8 +325,12 @@ class EventController extends Controller
                 if(empty($event->tickets))
                     $event->for_sale = 0;
             }
+            //get styles from cloud
+            $ticket_types_css = '';
+            if(Storage::disk('s3')->exists($this->style_url))
+                $ticket_types_css = Storage::disk('s3')->get($this->style_url);
             //return view
-            return view('production.events.buy',compact('event','has_coupon'));
+            return view('production.events.buy',compact('event','has_coupon','ticket_types_css'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Buy Index: '.$ex->getMessage());
         }

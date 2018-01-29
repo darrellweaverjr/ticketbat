@@ -5,7 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="{{env('IMAGE_URL_AMAZON_SERVER')}}/styles/ticket_types.css" rel="stylesheet" type="text/css" />
+<style>@php echo $ticket_types_css; @endphp</style>
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
