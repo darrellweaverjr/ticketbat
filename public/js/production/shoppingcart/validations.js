@@ -99,7 +99,7 @@ var CardValidation = function () {
                         required: false
                     },
                     card: {
-                        minlength: 16,
+                        minlength: 15,
                         maxlength: 16,
                         creditcard: true,
                         digits: true,
