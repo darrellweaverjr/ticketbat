@@ -68,7 +68,7 @@
                         </thead>
                         <tbody>
                             @foreach($venues as $index=>$v)
-                            <tr>
+                            <tr @if(!empty($v->errors)) class="danger" @endif>
                                 <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$v->id}}" value="{{$v->name}}" />

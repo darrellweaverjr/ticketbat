@@ -66,7 +66,7 @@
                         </thead>
                         <tbody>
                             @foreach($bands as $index=>$b)
-                            <tr>
+                            <tr @if(!empty($b->errors)) class="danger" @endif>
                                 <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$b->id}}" value="{{$b->name}}" />

@@ -72,7 +72,7 @@
                         </thead>
                         <tbody>
                             @foreach($shows as $index=>$s)
-                            <tr>
+                            <tr @if(!empty($s->errors)) class="danger" @endif>
                                 <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$s->id}}" value="{{$s->name}}" />
