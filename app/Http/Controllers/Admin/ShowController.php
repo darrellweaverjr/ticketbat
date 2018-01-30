@@ -485,7 +485,10 @@ class ShowController extends Controller{
                         }
                         $tickets = Ticket::where('show_id',$show->id)->delete();
                         //banners
-                        $banners = Banner::where('parent_id',$show->id)->where('belongto','show')->delete();
+                        $banners = Banner::where('parent_id',$venue->id)->where('belongto','show')->get();
+                        foreach ($banners as $b)
+                            Image::remove_image($b->url);
+                        $banners = Banner::where('parent_id',$venue->id)->where('belongto','show')->delete();
                         //discount_shows
                         $discount_shows = DB::table('discount_shows')->where('show_id',$show->id)->delete();
                         //merchandise(merchandise_photos)

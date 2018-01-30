@@ -353,6 +353,9 @@ class VenueController extends Controller{
                     if(!$dependences)
                     {
                         //banners
+                        $banners = Banner::where('parent_id',$venue->id)->where('belongto','venue')->get();
+                        foreach ($banners as $b)
+                            Image::remove_image($b->url);
                         $banners = Banner::where('parent_id',$venue->id)->where('belongto','venue')->delete();
                         //stages
                         $stages = Stage::where('venue_id',$venue->id)->get();
@@ -414,7 +417,10 @@ class VenueController extends Controller{
                 if($stage)
                 {
                     if(preg_match('/media\/preview/',$input['image_url'])) 
+                    {
+                        Image::remove_image($stage->image_url);
                         $stage->set_image_url($input['image_url']);
+                    }  
                     $stage->name = strip_tags($input['name']);
                     $stage->description = strip_tags($input['description']);
                     if(!empty($input['ticket_type']) && count($input['ticket_type']))
