@@ -55,9 +55,14 @@ class VenueController extends Controller{
                             //get all records        
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
+                                                             FROM venue_images vi 
+                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                                             WHERE i.image_type = "Logo") as images'),
+                                        function($join){
+                                            $join->on('venues.id','=','images.venue_id');
+                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url',
@@ -74,17 +79,18 @@ class VenueController extends Controller{
                             //get all records        
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
+                                                             FROM venue_images vi 
+                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                                             WHERE i.image_type = "Logo") as images'),
+                                        function($join){
+                                            $join->on('venues.id','=','images.venue_id');
+                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url',
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->where('venues.audit_user_id','=',Auth::user()->id)
-                                        ->where(function ($query) {
-                                            $query->where('images.image_type','Logo')
-                                                  ->orWhereNull('images.url');
-                                        })
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
                         }
@@ -97,9 +103,14 @@ class VenueController extends Controller{
                             //get all records        
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
+                                                             FROM venue_images vi 
+                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                                             WHERE i.image_type = "Logo") as images'),
+                                        function($join){
+                                            $join->on('venues.id','=','images.venue_id');
+                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url',
@@ -115,16 +126,17 @@ class VenueController extends Controller{
                             //get all records        
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
-                                        ->leftJoin('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                                        ->leftJoin('images', 'venue_images.image_id', '=' ,'images.id')
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
+                                                             FROM venue_images vi 
+                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                                             WHERE i.image_type = "Logo") as images'),
+                                        function($join){
+                                            $join->on('venues.id','=','images.venue_id');
+                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url',
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
-                                        ->where(function ($query) {
-                                            $query->where('images.image_type','Logo')
-                                                  ->orWhereNull('images.url');
-                                        })
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
                         }
