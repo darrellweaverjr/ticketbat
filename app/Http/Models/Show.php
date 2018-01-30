@@ -90,7 +90,7 @@ class Show extends Model
     }
     //PERSONALIZED METHODS
     /**
-     * Set the image_url for the current band.
+     * Set the image_url for the current show.
      */
     public function set_sponsor_logo_id($sponsor_logo_id)
     {

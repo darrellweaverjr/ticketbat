@@ -60,4 +60,24 @@ class Venue extends Model
     {
         return $this->belongsToMany('App\Http\Models\Video','venue_videos','venue_id','video_id');
     }
+    //PERSONALIZED METHODS
+    /**
+     * Set the image_url for the current venue.
+     */
+    public function set_sponsor_logo_id($sponsor_logo_id)
+    {
+        $this->sponsor_logo_id = Image::stablish_image('venues',$sponsor_logo_id);
+    }
+    /**
+     * Remove the image file for the current band.
+     */
+    public function delete_image_file()
+    {
+        if(Image::remove_image($this->sponsor_logo_id))
+        {
+            $this->sponsor_logo_id = '';
+            return true;
+        }
+        return true;   
+    }
 }

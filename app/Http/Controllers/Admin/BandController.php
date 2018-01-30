@@ -135,8 +135,11 @@ class BandController extends Controller{
                 $band->instagram = strip_tags($input['instagram']);
                 $band->soundcloud = strip_tags($input['soundcloud']);
                 $band->website = strip_tags($input['website']);
-                if(preg_match('/media\/preview/',$input['image_url'])) 
+                if(!empty($input['image_url']) && preg_match('/media\/preview/',$input['image_url'])) 
+                {
+                    $band->delete_image_file();
                     $band->set_image_url($input['image_url']);
+                }
                 $band->save();
                 //return
                 return ['success'=>true,'msg'=>'Band saved successfully!'];

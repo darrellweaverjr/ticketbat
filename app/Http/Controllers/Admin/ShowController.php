@@ -394,8 +394,11 @@ class ShowController extends Controller{
                     $show->amex_only_start_date = null;
                     $show->amex_only_end_date = null;
                 }
-                if(preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
+                if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
+                {
+                    $show->delete_image_file();
                     $show->set_sponsor_logo_id($input['sponsor_logo_id']);
+                }
                 if(!empty($input['ext_slug']) && preg_match('/^http(s)?:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i',$input['ext_slug']))
                     $show->ext_slug = $input['ext_slug'];
                 else
@@ -521,6 +524,7 @@ class ShowController extends Controller{
                         //show_times
                         $show_times = DB::table('show_times')->where('show_id',$show->id)->delete();
                         //try to delete final show if it has not dependences
+                        $show->delete_image_file();
                         if(!$show->delete())
                         {
                             if($msg1=='')

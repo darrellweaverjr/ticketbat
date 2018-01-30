@@ -292,6 +292,11 @@ class VenueController extends Controller{
                 $venue->default_percent_pfee = $input['default_percent_pfee'];
                 $venue->default_fixed_commission = $input['default_fixed_commission'];
                 $venue->default_percent_commission = $input['default_percent_commission'];
+                if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
+                {
+                    $venue->delete_image_file();
+                    $venue->set_sponsor_logo_id($input['sponsor_logo_id']);
+                }
                 $venue->save();
                 //return
                 if(isset($input['id']) && $input['id'])
@@ -379,6 +384,7 @@ class VenueController extends Controller{
                             DB::table('videos')->where('id',$v->video_id)->delete();
                         $venue_videos = DB::table('venue_videos')->where('venue_id',$venue->id)->delete();
                         //try to delete final show if it has not dependences
+                        $venue->delete_image_file();
                         if(!$venue->delete())
                         {
                             if($msg1=='')

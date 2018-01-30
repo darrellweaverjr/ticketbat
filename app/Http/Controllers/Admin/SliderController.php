@@ -91,9 +91,12 @@ class SliderController extends Controller{
                     $slider = new Slider;
                     $slider->n_order = Slider::count() + 1;
                 }
-                //save show
-                if(preg_match('/media\/preview/',$input['image_url'])) 
+                //save slider
+                if(!empty($input['image_url']) && preg_match('/media\/preview/',$input['image_url'])) 
+                {
+                    $slider->delete_image_file();
                     $slider->set_image_url(strip_tags($input['image_url']));
+                } 
                 $slider->slug = strip_tags($input['slug']);
                 $slider->alt = strip_tags($input['alt']);
                 $slider->filter = (!empty(strip_tags($input['filter'])))? strip_tags($input['filter']) : null;
@@ -125,7 +128,7 @@ class SliderController extends Controller{
                 if($slider)
                 {
                     $order = $slider->n_order;
-                    Image::remove_image($slider->image_url);
+                    $slider->delete_image_file();
                     if(!$slider->delete())
                     {
                         if($msg=='')
