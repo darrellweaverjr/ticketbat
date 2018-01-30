@@ -59,8 +59,9 @@
                                     </label>
                                 </th>
                                 <th width="10%">Logo</th>
-                                <th width="78%">Description</th>
+                                <th width="68%">Description</th>
                                 <th width="10%">Category</th>
+                                <th width="10%">Errors</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,11 +89,10 @@
                                             @if($b->soundcloud)<a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a>@endif
                                         </h4>
                                     </div>
-                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">
-                                        @if($b->short_description){{$b->short_description}}@else <span style="color:red">- No short description -</span>@endif
-                                    </div>
+                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$b->short_description}}</div>
                                 </td>
                                 <td><center> {{$b->category}} </center></td>
+                                <td class="search-content" style="font-style:italic;font-size:smaller;color:red">@php echo $b->errors @endphp</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -239,8 +239,10 @@
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="onlyerrors" class="col-md-5"> <span>Only With Error:</span> </label>
-                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="onlyerrors" style="width:65px !important">
+                                    <label for="onlyerrors" class="col-md-9">Only With Error:<br>
+                                        <span class="required">(Empty logo image or short description)</span>
+                                    </label>
+                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-3" name="onlyerrors" style="width:65px !important">
                                         <option @if($onlyerrors==0) selected @endif value="0">No</option>
                                         <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
                                     </select>

@@ -62,11 +62,12 @@
                                     </label>
                                 </th>
                                 <th width="10%">Logo</th>
-                                <th width="70%">Description</th>
+                                <th width="60%">Description</th>
                                 <th width="2%">Preview</th>
                                 <th width="8%">Category</th>
                                 <th width="3%">Featured</th>
                                 <th width="5%">Status</th>
+                                <th width="10%">Errors</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,9 +94,7 @@
                                             @if($s->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$s->yelpbadge}}" target="_blank"></a>@endif
                                         </h4>
                                     </div>
-                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">
-                                        @if($s->short_description){{$s->short_description}}@else <span style="color:red">- No short description -</span>@endif
-                                    </div>
+                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$s->short_description}}</div>
                                 </td>
                                 <td><center><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}" class="btn sbold dark btn-outline"><img src="{{config('app.theme')}}img/favicon.ico"></td>
                                 <td><center> {{$s->category}} </center></td>
@@ -111,6 +110,7 @@
                                     @endif
                                     </center></span>
                                 </td>
+                                <td class="search-content" style="font-style:italic;font-size:smaller;color:red">@php echo $s->errors @endphp</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -752,7 +752,9 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="onlyerrors" class="col-md-5"> <span>Only With Error:</span> </label>
+                                    <label for="onlyerrors" class="col-md-5">Only With Error:<br>
+                                        <span class="required">(Empty logo image, no active show time, no active or default tickets)</span>
+                                    </label>
                                     <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="onlyerrors" style="width:65px !important">
                                         <option @if($onlyerrors==0) selected @endif value="0">No</option>
                                         <option @if($onlyerrors==1) selected @endif value="1">Yes</option>

@@ -60,9 +60,10 @@
                                     </label>
                                 </th>
                                 <th width="10%">Logo</th>
-                                <th width="80%">Description</th>
+                                <th width="70%">Description</th>
                                 <th width="5%">Preview</th>
                                 <th width="5%">Featured</th>
+                                <th width="10%">Errors</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,9 +92,7 @@
                                             @if($v->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$v->yelpbadge}}" target="_blank"></a>@endif
                                         </h4>
                                     </div>
-                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">
-                                        @if($v->description){{$v->description}}@else <span style="color:red">- No description -</span>@endif
-                                    </div>
+                                    <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$v->description}}</div>
                                 </td>
                                 <td><center><a target="_blank" href="https://www.ticketbat.com/venue/{{$v->slug}}" class="btn sbold dark btn-outline"><img src="{{config('app.theme')}}img/favicon.ico"></td>
                                 <td><center> <span class="label label-sm sbold
@@ -102,6 +101,7 @@
                                     @endif
                                     </center></span>
                                 </td>
+                                <td class="search-content" style="font-style:italic;font-size:smaller;color:red">@php echo $v->errors @endphp</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -491,8 +491,10 @@
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="onlyerrors" class="col-md-5"> <span>Only With Error:</span> </label>
-                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-7" name="onlyerrors" style="width:65px !important">
+                                    <label for="onlyerrors" class="col-md-9">Only With Error:<br>
+                                        <span class="required">(Empty logo image or no stages)</span>
+                                    </label>
+                                    <select class="table-group-action-input form-control input-inline input-small input-sm col-md-3" name="onlyerrors" style="width:65px !important">
                                         <option @if($onlyerrors==0) selected @endif value="0">No</option>
                                         <option @if($onlyerrors==1) selected @endif value="1">Yes</option>
                                     </select>

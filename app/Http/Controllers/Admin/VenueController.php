@@ -65,11 +65,12 @@ class VenueController extends Controller{
                                         })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url',
+                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->where('venues.audit_user_id','=',Auth::user()->id)
                                         ->whereNull('stages.id')
                                         ->orWhereNull('images.url')
+                                        ->orWhereNull('venues.description')
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
                         }
@@ -79,6 +80,7 @@ class VenueController extends Controller{
                             //get all records        
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                        ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
                                         ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
                                                              FROM venue_images vi 
                                                              LEFT JOIN images i ON vi.image_id = i.id 
@@ -88,7 +90,7 @@ class VenueController extends Controller{
                                         })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url',
+                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->where('venues.audit_user_id','=',Auth::user()->id)
                                         ->orderBy('venues.name')->groupBy('venues.id')
@@ -113,10 +115,11 @@ class VenueController extends Controller{
                                         })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url',
+                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->whereNull('stages.id')
                                         ->orWhereNull('images.url')
+                                        ->orWhereNull('venues.description')
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
                         }
@@ -126,6 +129,7 @@ class VenueController extends Controller{
                             //get all records        
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                                        ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
                                         ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
                                                              FROM venue_images vi 
                                                              LEFT JOIN images i ON vi.image_id = i.id 
@@ -135,7 +139,7 @@ class VenueController extends Controller{
                                         })
                                         ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url',
+                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
@@ -151,7 +155,19 @@ class VenueController extends Controller{
                 }
                 //img format
                 foreach ($venues as $v)
+                {
+                    //check image
                     $v->image_url = Image::view_image($v->image_url);
+                    //set errors
+                    $v->errors = '';
+                    if(empty($v->image_url))
+                        $v->errors .= '<br>- No logo image.';
+                    if(empty($v->stages))
+                        $v->errors .= '<br>- No stages.';
+                    if(empty($v->description))
+                        $v->errors .= '<br>- No short description.';
+                }
+                    
                 //return view
                 return view('admin.venues.index',compact('venues','restrictions','ticket_types','banner_types','image_types','video_types','ads_types','onlyerrors'));
             }

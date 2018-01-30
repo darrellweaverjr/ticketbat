@@ -126,7 +126,7 @@ class ShowController extends Controller{
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url')
+                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
                                         ->where(function($query)
@@ -137,6 +137,7 @@ class ShowController extends Controller{
                                         ->whereNull('images.url')
                                         ->orWhereNull('tickets.id')
                                         ->orWhereNull('show_times.id')
+                                        ->orWhereNull('shows.short_description')
                                         ->orderBy('shows.name')->groupBy('shows.id')
                                         ->distinct()->get();
                         }
@@ -147,6 +148,7 @@ class ShowController extends Controller{
                             $shows = DB::table('shows')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
+                                        ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
                                         ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
                                                              FROM show_images si 
                                                              LEFT JOIN images i ON si.image_id = i.id 
@@ -156,7 +158,7 @@ class ShowController extends Controller{
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url')
+                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where(function($query)
                                         {
@@ -187,12 +189,13 @@ class ShowController extends Controller{
                                         })                                     
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url')
+                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
                                         ->whereNull('images.url')
                                         ->orWhereNull('tickets.id')
                                         ->orWhereNull('show_times.id')
+                                        ->orWhereNull('shows.short_description')
                                         ->orderBy('shows.name')->groupBy('shows.id')
                                         ->distinct()->get();
                         }
@@ -203,6 +206,7 @@ class ShowController extends Controller{
                             $shows = DB::table('shows')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
+                                        ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
                                         ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
                                                              FROM show_images si 
                                                              LEFT JOIN images i ON si.image_id = i.id 
@@ -212,7 +216,7 @@ class ShowController extends Controller{
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active','shows.is_featured',
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url')
+                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->orderBy('shows.name')->groupBy('shows.id')
                                         ->distinct()->get();
@@ -240,7 +244,20 @@ class ShowController extends Controller{
                 }
                 //img format
                 foreach ($shows as $s)
+                {
+                    //check image
                     $s->image_url = Image::view_image($s->image_url);
+                    //set errors
+                    $s->errors = '';
+                    if(empty($s->image_url))
+                        $s->errors .= '<br>- No logo image.';
+                    if(empty($s->tickets))
+                        $s->errors .= '<br>- No active/default tickets.';
+                    if(empty($s->show_times))
+                        $s->errors .= '<br>- No active show times.';
+                    if(empty($s->short_description))
+                        $s->errors .= '<br>- No short description.';
+                }
                 //return view
                 return view('admin.shows.index',compact('shows','categories','venues','stages','restrictions','ticket_types','ticket_types_classes','image_types','banner_types','video_types','packages','venue','showtime','status','onlyerrors'));
             }

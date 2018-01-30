@@ -75,7 +75,16 @@ class BandController extends Controller{
                                             ->get();
                         }
                         foreach ($bands as $b)
+                        {
+                            //check image
                             $b->image_url = Image::view_image($b->image_url);
+                            //set errors
+                            $b->errors = '';
+                            if(empty($b->image_url))
+                                $b->errors .= '<br>- No logo image.';
+                            if(empty($b->short_description))
+                                $b->errors .= '<br>- No short description.';
+                        } 
                         $categories = Category::get_categories('-&emsp;&emsp;');
                     }  
                 }
