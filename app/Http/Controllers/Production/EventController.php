@@ -73,7 +73,8 @@ class EventController extends Controller
                                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
                                 ->select(DB::raw('images.url, images.caption'))
                                 ->where('show_images.show_id',$event->show_id)->where('images.image_type','=','Logo')->first();
-            $event->logo->url = Image::view_image($event->logo->url);
+            if($event->logo)
+                $event->logo->url = Image::view_image($event->logo->url);
             //get images
             $event->images = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
