@@ -187,14 +187,16 @@ class Image extends Model
     public static function view_image($image_url)
     {
         try {  
-            // change relative url uploads for real one
-            if(preg_match('/\/uploads\//',$image_url) && strpos($image_url,'/uploads')===0) 
-                return env('IMAGE_URL_OLDTB_SERVER').$image_url;
             // change relative url s3 for real one
-            if(preg_match('/\/s3\//',$image_url)  && strpos($image_url,'/s3')===0) 
+            if(preg_match('/^\/s3\//',$image_url) ) 
                 return env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$image_url);
-            //return the same
-            return $image_url;
+            // the image has full url
+            else if(!preg_match('/^\/uploads\//',$image_url) ) 
+                return $image_url;
+            // change relative url uploads for real one
+            else
+                //return env('IMAGE_URL_OLDTB_SERVER').$image_url;
+                return '';
         } catch (Exception $ex) {
             return $image_url;
         }
