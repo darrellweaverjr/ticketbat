@@ -24,6 +24,9 @@ Artisan::command('PromoAnnounced {days=7}', function ($days) {
 Artisan::command('ShoppingcartClean {days=10}', function ($days) {
     $this->call('Shoppingcart:clean',['days'=>$days]);
 });
+Artisan::command('BrokenImageClean', function () {
+    $this->call('BrokenImage:clean');
+});
 Artisan::command('ShoppingcartRecover {hours=4}', function ($hours) {
     $this->call('Shoppingcart:recover',['hours'=>$hours]);
 });

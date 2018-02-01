@@ -33,6 +33,7 @@ class CommandController extends Controller{
             $commands[] = ['command'=>'Promo:announced','values'=>['days'=>1]];
 
             $commands[] = ['command'=>'Shoppingcart:clean','values'=>['days'=>10]];
+            $commands[] = ['command'=>'BrokenImage:clean','values'=>[]];
             $commands[] = ['command'=>'Shoppingcart:recover','values'=>['hours'=>4]];
             $commands[] = ['command'=>'Contract:update_tickets','values'=>[]];
             $commands[] = ['command'=>'Consignments:check','values'=>[]];

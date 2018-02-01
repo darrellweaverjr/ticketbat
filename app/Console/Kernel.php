@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         Commands\PromoAnnounced::class,
         
         Commands\ShoppingcartClean::class,
+        Commands\BrokenImageClean::class,
         Commands\ShoppingcartRecover::class,
         Commands\ContractUpdateTickets::class,
         
