@@ -130,7 +130,13 @@ class ReportManifest extends Command
                     
                     //if it is saved and is config to send email then send it
                     if($manifest->save() && $data['s_manifest_emails'] == 1 && $data['emails'])
-                        $manifest->send ($data['emails'], $emailSubject);                
+                    {
+                        $sent = $manifest->send ($data['emails'], $emailSubject); 
+                        //storage if email was sent successfully
+                        $data['sent'] = ($sent)? 1 : 0;
+                        $manifest->email = json_encode($data);
+                        $manifest->save();
+                    }               
                 }
                 //advance progress bar
                 $progressbar->advance();                

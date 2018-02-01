@@ -93,7 +93,9 @@
                                     @php $emails = explode(',',$m->recipients) @endphp
                                     ({{count($emails)}}): @foreach($emails as $e) <a href="mailto:{{$e}}" target="_top">{{$e}}</a> @endforeach
                                 </td>
-                                <td data-order="{{strtotime($m->created)}}"><center> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}} </center></td>
+                                <td class="text-center" data-order="{{strtotime($m->created)}}"> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}}
+                                    @if(isset($m->sent)) @if(!empty($m->sent)) <span class="label label-success"><i class="fa fa-send"></i></span> @else <span class="label label-danger"><i class="fa fa-send"></i></span> @endif @endif
+                                </td>
                             </tr>
                             @php $previous_show_time_id = $m->show_time_id @endphp
                             @endforeach

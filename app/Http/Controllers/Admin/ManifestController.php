@@ -73,6 +73,12 @@ class ManifestController extends Controller{
                                         ->orderBy('manifest_emails.show_time_id','desc')
                                         ->get();
                 }
+                //search if email was sent or not
+                foreach ($manifests as $m)
+                {
+                    if(Util::isJSON($m->email) && isset(json_decode($m->email,true)['sent']))
+                        $m->sent = (!empty(json_decode($m->email,true)['sent']))? 1 : 0;
+                }
             }
             //return view
             return view('admin.manifests.index',compact('manifests','start_date','end_date'));
