@@ -46,6 +46,11 @@
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['VENUES']['permission_types']))
+                            <button id="btn_model_preview" class="btn sbold purple" disabled="true">Preview
+                                <i class="fa fa-tablet"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -60,8 +65,7 @@
                                     </label>
                                 </th>
                                 <th width="10%">Logo</th>
-                                <th width="70%">Description</th>
-                                <th width="5%">Preview</th>
+                                <th width="73%">Description</th>
                                 <th width="5%">Featured</th>
                                 <th width="10%">Errors</th>
                             </tr>
@@ -71,7 +75,7 @@
                             <tr @if(!empty($v->errors)) class="danger" @endif>
                                 <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$v->id}}" value="{{$v->name}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$v->id}}" value="{{$v->name}}" data-preview="{{env('IMAGE_URL_OLDTB_SERVER','https://www.ticketbat.com')}}/venue/{{$v->slug}}" />
                                         <span></span>
                                     </label>
                                 </td>
@@ -94,7 +98,6 @@
                                     </div>
                                     <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$v->description}}</div>
                                 </td>
-                                <td><center><a target="_blank" href="https://www.ticketbat.com/venue/{{$v->slug}}" class="btn sbold dark btn-outline"><img src="{{config('app.theme')}}img/favicon.ico"></td>
                                 <td><center> <span class="label label-sm sbold
                                     @if($v->is_featured) label-success"> Yes
                                     @else label-danger"> No

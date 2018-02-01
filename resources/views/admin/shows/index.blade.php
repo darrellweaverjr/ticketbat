@@ -48,6 +48,11 @@
                                 <i class="fa fa-remove"></i>
                             </button>
                             @endif
+                            @if(in_array('Other',Auth::user()->user_type->getACLs()['SHOWS']['permission_types']))
+                            <button id="btn_model_preview" class="btn sbold purple" disabled="true">Preview
+                                <i class="fa fa-tablet"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -63,8 +68,7 @@
                                 </th>
                                 <th width="10%">Logo</th>
                                 <th width="60%">Description</th>
-                                <th width="2%">Preview</th>
-                                <th width="8%">Category</th>
+                                <th width="10%">Category</th>
                                 <th width="3%">Featured</th>
                                 <th width="5%">Status</th>
                                 <th width="10%">Errors</th>
@@ -75,7 +79,7 @@
                             <tr @if(!empty($s->errors)) class="danger" @endif>
                                 <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$s->id}}" value="{{$s->name}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$s->id}}" value="{{$s->name}}" data-preview="{{env('IMAGE_URL_OLDTB_SERVER','https://www.ticketbat.com')}}/event/{{$s->slug}}"/>
                                         <span></span>
                                     </label>
                                 </td>
@@ -96,7 +100,6 @@
                                     </div>
                                     <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$s->short_description}}</div>
                                 </td>
-                                <td><center><a target="_blank" href="https://www.ticketbat.com/event/{{$s->slug}}" class="btn sbold dark btn-outline"><img src="{{config('app.theme')}}img/favicon.ico"></td>
                                 <td><center> {{$s->category}} </center></td>
                                 <td><center> <span class="label label-sm sbold
                                     @if($s->is_featured) label-success"> Yes

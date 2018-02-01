@@ -212,16 +212,19 @@ var TableDatatablesManaged = function () {
             if(checked == 1)
             {
                 $('#btn_model_edit').prop("disabled",false);
+                $('#btn_model_preview').prop("disabled",false);
                 $('#btn_model_remove').prop("disabled",false);
             }
             else if(checked > 1)
             {
                 $('#btn_model_edit').prop("disabled",true);
+                $('#btn_model_preview').prop("disabled",true);
                 $('#btn_model_remove').prop("disabled",false);
             }
             else
             {
                 $('#btn_model_edit').prop("disabled",true);
+                $('#btn_model_preview').prop("disabled",true);
                 $('#btn_model_remove').prop("disabled",true);
             }
             $('#btn_model_add').prop("disabled",false);
@@ -489,7 +492,12 @@ var TableDatatablesManaged = function () {
             //show modal
             $('#modal_model_update').modal('show');
         }
-        
+        //function preview
+        $('#btn_model_preview').on('click', function(ev) {      
+            var set = $('.group-checkable').attr("data-set");
+            var link = $(set+"[type=checkbox]:checked:first").data('preview'); 
+            window.open(link, '_blank');
+        });
         //function edit
         $('#btn_model_edit').on('click', function(ev) {  
             var set = $('.group-checkable').attr("data-set");
