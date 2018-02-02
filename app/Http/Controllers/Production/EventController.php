@@ -68,13 +68,6 @@ class EventController extends Controller
                                 ->select(DB::raw('images.url, images.caption'))
                                 ->where('venue_images.venue_id',$event->venue_id)->where('images.image_type','=','Header')->first();
             $event->header->url = Image::view_image($event->header->url);
-            //get logo
-            $event->logo = DB::table('images')
-                                ->join('show_images', 'show_images.image_id', '=', 'images.id')
-                                ->select(DB::raw('images.url, images.caption'))
-                                ->where('show_images.show_id',$event->show_id)->where('images.image_type','=','Logo')->first();
-            if($event->logo)
-                $event->logo->url = Image::view_image($event->logo->url);
             //get images
             $event->images = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
@@ -203,7 +196,7 @@ class EventController extends Controller
             {
                 $event->ticket_left = $event->ticket_limit;
                 $event->ticket_reserved = 0;
-                $email_guest = Session::get('email_guest', null); 
+                $email_guest = Session::get('email_guest', null);
                 $user_id = null;
                 if(Auth::check())
                     $user_id = Auth::user()->id;
@@ -226,7 +219,7 @@ class EventController extends Controller
                         $event->ticket_left -= $purchases->tickets;
                         $event->ticket_reserved += $purchases->tickets;
                     }
-                    
+
                 }
                 //see in shoppingcart
                 $cart = DB::table('shoppingcart')
@@ -258,11 +251,11 @@ class EventController extends Controller
                                 ->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get();
             foreach ($tickets as $t)
             {
-                
+
                 //limit ticket purchase by user
                 if(!empty($event->ticket_limit))
                     $t->max_available = ($event->ticket_left<$t->max_available-$event->ticket_reserved)? $event->ticket_left : $t->max_available-$event->ticket_reserved;
-                //if there is tickets availables    
+                //if there is tickets availables
                 if($t->max_available>0)
                 {
                     //max available
