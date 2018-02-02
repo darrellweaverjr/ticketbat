@@ -212,7 +212,7 @@ class Shoppingcart extends Model
                         $qty += $i->number_of_items;
                         //others
                         $i->discount_id = 1;
-                        $i->commission = ($i->c_fixed)? $i->c_fixed : Util::round($i->c_percent*$i->number_of_items*$p/100);
+                        $i->commission = ($i->c_fixed)? Util::round($i->c_fixed*$i->number_of_items) : Util::round($i->c_percent*$i->number_of_items*$p/100);
                         $i->retail_price = Util::round($p);
 
                         //calculate discounts for each ticket the the coupon applies
