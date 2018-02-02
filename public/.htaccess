@@ -5,6 +5,13 @@
 #   Options +SymLinksIfOwnerMatch
     RewriteEngine On
 
+#   Blocking traffic to /autodiscover/autodiscover.xml
+    RewriteCond %{REQUEST_URI} /autodiscover/autodiscover.xml
+    RewriteRule ^ - [F,L]
+
+#   Blocking urls to old uploads folder for images
+    RewriteRule (^|/)uploads(/|$) - [F]
+
 #   Force connections to https in ticketbat.com public site
     RewriteCond %{HTTP_HOST} ^ticketbat\.com [NC]
     RewriteCond %{SERVER_PORT} 80 
