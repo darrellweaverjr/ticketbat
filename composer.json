@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "barryvdh/laravel-dompdf": "^0.8.1",
-        "guzzlehttp/guzzle": "~6.2.2",
+        "guzzlehttp/guzzle": "6.*",
         "intervention/image": "^2.3",
         "laravel/framework": "5.5.*",
         "league/flysystem-aws-s3-v3": "~1.0",
