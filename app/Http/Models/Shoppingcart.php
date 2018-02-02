@@ -68,7 +68,7 @@ class Shoppingcart extends Model
         //limit tickets by show
         $ticket_limit = [];
         //search for availables items
-        foreach ($items as $i)
+        foreach ($items as $key=>$i)
         {
             //recalculate availables tickets
             if($i->max_tickets>0 && $i->available_qty<-1)
@@ -129,8 +129,11 @@ class Shoppingcart extends Model
                     $i->unavailable = 1;
             }
             //if there is unavailable item remove it
-            if($i->unavailable > 0)
+            if($i->unavailable > 0 || $i->number_of_items < 1)
+            {
                 Shoppingcart::where('id', $i->id)->delete();
+                $items->forget($key);
+            }
             else
             {
                 //get seats for consignments
@@ -143,7 +146,7 @@ class Shoppingcart extends Model
                         $i->seat = $opt['seats'];
                     }
                 }
-            }
+            } 
         }
         //return
         return $items;
