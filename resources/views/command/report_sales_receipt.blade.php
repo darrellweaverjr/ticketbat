@@ -155,7 +155,7 @@
     <body>
         <div class="container">
             <div class="header">
-                <img src="{{config('app.theme')}}img/logo-header.jpg" alt="Ticket Bat">
+                <img src="http://www.ticketbat.com/themes/img/logo-header.jpg" alt="Ticket Bat">
             </div>
             <div class="tb-title">
                 Your Ticketbat purchase for <span class="tb-highlight-color">{{$purchase['show_name']}}</span> on <span class="tb-highlight-color">{{date('m/d/Y g:ia',strtotime($purchase['show_time']))}}</span> is confirmed. Have a great time!
