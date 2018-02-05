@@ -2,6 +2,10 @@
         Options -MultiViews
     </IfModule>
 
+    <IfModule mod_headers.c>
+       RequestHeader unset Proxy
+    </IfModule>
+
 #   Options +SymLinksIfOwnerMatch
     RewriteEngine On
 
