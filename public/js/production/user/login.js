@@ -16,7 +16,7 @@ var LoginFunctions = function () {
             {  
                 $('#modal_login').modal('hide');
                 swal({
-                    title: "Loging in...",
+                    title: "Logging in...",
                     text: "Please, wait.",
                     type: "info",
                     showConfirmButton: false
