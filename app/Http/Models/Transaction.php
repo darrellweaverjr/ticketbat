@@ -64,6 +64,8 @@ class Transaction extends Model
             }
             else
                 $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ";
+            //command
+            $tran->command='cc:sale';
             //card info
             $tran->card = $payment['card'];
             $tran->exp = $payment['month'].substr($payment['year'],-2);

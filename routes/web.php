@@ -92,6 +92,10 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('purchases/tickets/{type}/{ids}', 'PurchaseController@tickets')->middleware('permissions:PURCHASES');
     Route::post('purchases/save', 'PurchaseController@save')->middleware('permissions:PURCHASES');
     Route::match(['get','post'], 'purchases', 'PurchaseController@index')->middleware('permissions:PURCHASES');
+    //refunds
+    Route::post('refunds/save', 'RefundController@save')->middleware('permissions:REFUNDS');
+    Route::get('refunds/pendings', 'RefundController@pendings')->middleware('permissions:REFUNDS');
+    Route::get('refunds', 'RefundController@index')->middleware('permissions:REFUNDS');
     //home sliders
     Route::post('sliders/save', 'SliderController@save')->middleware('permissions:SLIDERS');
     Route::post('sliders/remove', 'SliderController@remove')->middleware('permissions:SLIDERS');

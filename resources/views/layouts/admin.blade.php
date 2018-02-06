@@ -293,6 +293,31 @@
                                 </a>
                             </li>
                             @endif
+                            
+                            
+                            <li class="nav-item start open @if(!(strpos(url()->current(),'/admin/refunds')===false) ) active @endif">
+                                <a href="/admin/refunds" class="nav-link nav-toggle">
+                                    <i class="icon-credit-card"></i>
+                                    <span class="title">Refunds</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow open"></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li class="nav-item start open">
+                                        <a href="/admin/refunds" class="nav-link">
+                                            <i class="icon-list"></i>
+                                            <span class="title">List</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a href="/admin/refunds/pendings" class="nav-link">
+                                            <i class="icon-basket"></i>
+                                            <span class="title">Pending</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            
                             @if(array_key_exists('SLIDERS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/sliders')===false)) active @endif">
                                 <a href="/admin/sliders" class="nav-link nav-toggle">
