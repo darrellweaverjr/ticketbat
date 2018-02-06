@@ -53,10 +53,15 @@ class ReportSales extends Command
                         DATE_FORMAT(st.show_time,'%c/%e/%y %l:%s%p') AS shows_time, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, sum(p.retail_price) AS retail_price, 
                         SUM(p.processing_fee) AS processing_fee, SUM(p.savings) AS savings, SUM(p.price_paid) AS gross_revenue, 
                         SUM(p.price_paid) AS total_paid, ROUND(SUM(p.retail_price)-SUM(p.commission_percent),2) AS due_to_show, ROUND(SUM(p.commission_percent),2) AS commission, 
-                        (CASE WHEN (p.ticket_type = 'Consignment') THEN p.ticket_type ELSE p.payment_type END) AS method,
+                        (CASE WHEN (p.ticket_type = 'Consignment') THEN p.ticket_type 
+                              WHEN (p.ticket_type != 'Consignment') AND (t.retail_price<0.01) THEN 'Free' 
+                              ELSE p.payment_type END) AS method,
                         SUBSTRING_INDEX(SUBSTRING_INDEX(p.referrer_url, '://', -1),'/', 1) AS referral_url,
                         SUBSTRING_INDEX(p.referrer_url, '://', -1) AS url, SUM(p.price_paid)-SUM(p.commission_percent)-SUM(p.processing_fee) AS net ";
-            $sqlTypes = "SELECT (CASE WHEN p.ticket_type = 'Consignment' THEN p.ticket_type ELSE p.payment_type END) AS payment_type, sum(p.quantity) AS qty, COUNT(*) AS purchase_count, SUM(p.price_paid) AS gross_revenue, SUM(p.processing_fee) AS processing_fee,
+            $sqlTypes = "SELECT (CASE WHEN (p.ticket_type = 'Consignment') THEN p.ticket_type 
+                                 WHEN (p.ticket_type != 'Consignment') AND (t.retail_price<0.01) THEN 'Free' 
+                                 ELSE p.payment_type END) AS payment_type, 
+                        SUM(p.quantity) AS qty, COUNT(*) AS purchase_count, SUM(p.price_paid) AS gross_revenue, SUM(p.processing_fee) AS processing_fee,
                         ROUND(SUM(p.commission_percent),2) AS commission, SUM(p.price_paid)-SUM(p.commission_percent)-SUM(p.processing_fee) AS net ";
 
             $sqlFrom =" FROM purchases p
@@ -150,7 +155,7 @@ class ReportSales extends Command
                 $pdf_future_path = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $future_email = View::make('command.report_sales', compact('data','send','format'));                
                 PDF::loadHTML($future_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_future_path);
-                                
+                                $emailx = 'ivan@ticketbat.com';
                 //SENDING EMAIL
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Daily Sales Report to '.$namex);
                 $email->cc(env('MAIL_REPORT_CC'));

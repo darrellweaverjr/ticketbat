@@ -85,6 +85,7 @@ class DashboardController extends Controller
         $data['search']['venues'] = [];
         $data['search']['shows'] = [];
         $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
+        $data['search']['payment_types']['Free'] = 'Free';
         $data['search']['users'] = User::orderBy('email')->get(['id','email']);
         $data['search']['customers'] = Customer::orderBy('email')->get(['id','email']);
         $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
@@ -309,7 +310,9 @@ class DashboardController extends Controller
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, customers.email,
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name,
-                                          (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
+                                          ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
+                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                            ELSE purchases.payment_type END ) AS method,
                                           COUNT(purchases.id) AS purchases, 
                                           SUM(purchases.quantity) AS tickets, 
                                           SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit, 
@@ -396,7 +399,9 @@ class DashboardController extends Controller
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                            ->select(DB::raw('(CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type ELSE purchases.payment_type END) AS method,
+                            ->select(DB::raw('( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
+                                                WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                                ELSE purchases.payment_type END ) AS method,
                                               COUNT(purchases.id) AS purchases, 
                                               SUM(purchases.quantity) AS tickets, 
                                               SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit, 
