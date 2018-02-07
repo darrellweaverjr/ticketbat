@@ -16,6 +16,7 @@ use App\Http\Models\Show;
 use App\Http\Models\Ticket;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Transaction;
+use App\Http\Models\TransactionRefund;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Models\Util;
 use App\Mail\EmailSG;
@@ -174,55 +175,98 @@ class RefundController extends Controller{
      *
      * @void
      */
-    public function refund()
+    public function save()
     {
         try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
+            //function refund each
+            function refund_each($purchase, $user, $amount, $description, $current)
+            {
+                if($amount>0.01 && $amount<=$purchase->price_paid)
+                {
+                    $refunded = TransactionRefund::usaepay($purchase, $user, $amount, $description, $current);
+                    if($refunded['success'])
+                    {
+                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount.'/ $'.$purchase->price_paid;
+                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                        $purchase->status = 'Chargeback';
+                        $purchase->updated = $current;
+                        $purchase->save();
+                        return ['success'=>true, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
+                    }
+                    else
+                    {
+                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount.'/ $'.$purchase->price_paid;
+                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note; 
+                        $purchase->save();
+                        return ['success'=>false, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
+                    }
+                }
+                return ['success'=>false, 'id'=>$purchase->id, 'msg'=>'This is an invalid amount to refund in that purchase'];
+            }
             //save all record      
-            if($input && isset($input['id']))
+            if($input && isset($input['id']) && isset($input['type']))
             {
                 $purchase = Purchase::find($input['id']);
-                if(isset($input['status']))
+                if($purchase && $purchase->transaction_id && $purchase->price_paid>0)
                 {
-                    //update status
-                    $old_status = $purchase->status;
-                    $purchase->status = $input['status'];
-                    $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
-                    $note.= ' status from '.$old_status.' to '.$input['status'];
-                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
-                    $purchase->updated = $current;
-                    $purchase->save();
-                    //send emails for pending status
-                    if(preg_match('/^Pending/',$input['status']))
+                    $user = Auth::user();
+                    $description = (!empty(trim($input['description'])))? trim($input['description']) : null;
+                    if($input['type']=='current_purchase')
                     {
-                        $sent = $purchase->set_pending();
-                        if(!$sent)
-                            return ['success'=>false,'msg'=>'The system updated the status.<br>But the email could not be sent to the admin.'];
-                    }
-                    //re-send email if change form active to any inactive and viceversa
-                    else if($input['status']=='Active' || $old_status=='Active' || preg_match('/^Pending/',$old_status))
+                        $refunded = refund_each($purchase, $user, $purchase->price_paid, $description, $current);
+                        if($refunded['success'])
+                            return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' refunded successfully!<br>'.$refunded['msg']];
+                        return ['success'=>false, 'msg'=>'There was an error trying to refund the purchase #'.$purchase->id.'<br>'.$refunded['msg']];
+                    }  
+                    else if($input['type']=='full_transaction')
                     {
-                        $receipt = $purchase->get_receipt();
-                        $status = ($input['status']=='Active')? 'ACTIVATED' : ( ($input['status']=='Chargeback')? 'CHARGEBACK' :'CANCELED' );
-                        $sent = Purchase::email_receipts($status.': TicketBat Purchase',[$receipt],'receipt',$status,true);
-                        if(!$sent)
-                            return ['success'=>false,'msg'=>'The purchase changed the status.<br>But the email could not be sent to the customer and the venue.'];
-                    }
-                    return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
-                }                    
-                else if(isset($input['note']))
-                {                    
-                    $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b>'.strip_tags($input['note']).'&nbsp;';
-                    $purchase->note = $purchase->note.$note;
-                    $purchase->updated = $current;
-                    $purchase->save();
-                    return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
-                }               
-                else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>Invalid data.'];
+                        $msg = '';
+                        $success = $errors = [];
+                        $purchases = $purchase->transaction->purchases();
+                        foreach ($purchases as $p)
+                        {
+                            $refunded = refund_each($p, $user, $p->price_paid, $description, $current);
+                            if($refunded['success'])
+                                $success[$p->id] = $refunded['msg'];
+                            else
+                                $errors[$p->id] = $refunded['msg'];
+                        }
+                        if(count($success))
+                        {
+                            $msg .= 'These purchases where successfully refunded:<br>';
+                            foreach ($success as $k=>$v)
+                                $msg .= ' - #'.$k.' => '.$v.'<br>';
+                        }
+                        if(count($errors))
+                        {
+                            $msg .= 'These purchases had errors trying to refund them:<br>';
+                            foreach ($errors as $k=>$v)
+                                $msg .= ' - #'.$k.' => '.$v.'<br>';
+                        }
+                        if(count($success))
+                            return ['success'=>true,'msg'=>$msg];
+                        return ['success'=>false, 'msg'=>$msg];
+                    }  
+                    else if($input['type']=='custom_amount')
+                    {
+                        if(!empty($input['amount']) && $input['amount']<=$purchase->price_paid  && $input['amount']>0)
+                        {
+                            $refunded = refund_each($purchase, $user, $input['amount'], $description, $current);
+                            if($refunded['success'])
+                                return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' refunded successfully!<br>'.$refunded['msg']];
+                            return ['success'=>false, 'msg'=>'There was an error trying to refund the purchase #'.$purchase->id.'<br>'.$refunded['msg']];
+                        }
+                        return ['success'=>false, 'msg'=>'The amount to refund must be greater than $0.00 and less or equal to $'.$purchase->price_paid];
+                    }  
+                    else 
+                        return ['success'=>false,'msg'=>'There was an error refunding.<br>Invalid option.'];
+                }
+                return ['success'=>false,'msg'=>'There was an error refunding.<br>That purchase is not longer available to refund.'];
             }
-            return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>Invalid Option.'];
+            return ['success'=>false,'msg'=>'There was an error refund.<br>Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Save: '.$ex->getMessage());
         }

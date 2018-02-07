@@ -26,7 +26,7 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
-                            <button id="btn_model_search" class="btn sbold bg-purple">Refund
+                            <button id="btn_model_refund" class="btn sbold bg-purple">Refund
                                 <i class="fa fa-credit-card"></i>
                             </button>
                             @endif
@@ -37,12 +37,7 @@
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
                         <thead>
                             <tr>
-                                <th width="2%">
-                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="group-checkable" data-set="#tb_model .checkboxes" />
-                                        <span></span>
-                                    </label>
-                                </th>
+                                <th width="2%"></th>
                                 <th width="1%"></th>
                                 <th width="47%">Purchase Info</th>
                                 <th width="18%">Show/Venue</th>
@@ -58,14 +53,13 @@
                                 @php $color = substr(dechex(crc32($p->color)),0,6) @endphp
                             <tr>
                                 <td>
-                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$p->id}}" data-qty="{{$p->quantity}}" value="{{$p->email}}" />
+                                    <label class="mt-radio mt-radio-single mt-radio-outline">
+                                        <input type="radio" name="radios" id="{{$p->id}}" value="{{$p->id}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td title="Click here to see details" class="modal_details_view" 
-                                    data-id="{{$p->id}}" style="text-align:center;background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;">
-                                    <i class="fa fa-search"></i>
+                                <td style="text-align:center;background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;">
+                                    
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-content" >
@@ -98,6 +92,63 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN REFUND MODAL-->
+    <div id="modal_model_refund" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-purple">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Refund Purchase/Transaction</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_refund" class="form-horizontal">
+                        <input name="id" type="hidden" value=""/>
+                        <div class="form-body">
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                            <div class="alert alert-success display-hide">
+                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                            <div class="row" style="padding-left:15px">
+                                <div class="mt-radio-list">
+                                    <label class="mt-radio mt-radio-single mt-radio-outline">
+                                        <input type="radio" name="type" value="current_purchase" checked="true" />Selected purchase only.
+                                        <span></span>
+                                    </label><hr>
+                                    <label class="mt-radio mt-radio-single mt-radio-outline">
+                                        <input type="radio" class="form-control" name="type" value="full_transaction" />All purchases that matches this transaction.
+                                        <span></span>
+                                    </label><hr>
+                                    <label class="mt-radio mt-radio-single mt-radio-outline col-md-9">
+                                        <input type="radio" name="type" value="custom_amount" />Specific amount from this selected purchase:
+                                        <span></span>
+                                    </label>
+                                    <div class="col-md-3">
+                                    <input type="number" class="form-control" name="amount" value=""/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding:15px">
+                                <label class="control-label">Description:</label>
+                                <div class="show-error">
+                                    <textarea name="description" class="form-control" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="btn_model_save" class="btn sbold bg-purple">Process</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END REFUND MODAL-->
 @endsection
 
 @section('scripts')

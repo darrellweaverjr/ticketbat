@@ -23,15 +23,6 @@
                     <div class="caption">
                         <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
                     </div>
-<!--                    <div class="actions">
-                        <div class="btn-group">
-                            @if(in_array('Other',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
-                            <button id="btn_model_search" class="btn sbold bg-purple">Refund
-                                <i class="fa fa-credit-card"></i>
-                            </button>
-                            @endif
-                        </div>
-                    </div>-->
                 </div>
                 <div class="portlet-body">
                     <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">

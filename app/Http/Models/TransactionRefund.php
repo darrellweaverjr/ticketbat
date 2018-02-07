@@ -69,37 +69,33 @@ class TransactionRefund extends Model
             $transaction = new TransactionRefund;
             $transaction->purchase_id = $purchase->id;
             $transaction->user_id = $user->id;
-            $transaction->amount = $amount;
-            $transaction->description = $description;
-            $transaction->type = $tran->type;
-            $transaction->key = $tran->key;
-            $transaction->ref_num = $tran->ref_num;
-            $transaction->authcode = $tran->authcode;
-            $transaction->is_duplicate = $tran->is_duplicate;
-            $transaction->result_code = $tran->result_code;
-            $transaction->result = $tran->result;
-            $transaction->error = $tran->error;
-            $transaction->error_code = $tran->error_code;
+            $transaction->amount = $tran->amount;
+            if(!empty($description))
+                $transaction->description = $description;
+            if(!empty($tran->type))
+                $transaction->type = $tran->type;
+            if(!empty($tran->key))
+                $transaction->key = $tran->key;
+            if(!empty($tran->ref_num))
+                $transaction->ref_num = $tran->ref_num;
+            if(!empty($tran->authcode))
+                $transaction->authcode = $tran->authcode;
+            if(!empty($tran->is_duplicate))
+                $transaction->is_duplicate = $tran->is_duplicate;
+            if(!empty($tran->result_code))
+                $transaction->result_code = $tran->result_code;
+            if(!empty($tran->result))
+                $transaction->result = $tran->result;
+            if(!empty($tran->error))
+                $transaction->error = $tran->error;
+            if(!empty($tran->error_code))
+                $transaction->error_code = $tran->error_code;
             $transaction->created = $created;
             $transaction->save();
             //return
             if($success)
-            {
-                $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($created)).'): </b> Refunded successfully $'.$amount.'/$'.$purchase->transaction->amount;
-                $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
-                $purchase->status = 'Chargeback';
-                $purchase->updated = $current;
-                $purchase->save();
                 return ['success'=>true, 'msg'=>$transaction->result];
-            }
-            else
-            {
-                $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($created)).'): </b> Intented to refund $'.$amount.'/$'.$purchase->transaction->amount;
-                $purchase->note = ($purchase->note)? $purchase->note.$note : $note; 
-                $purchase->updated = $current;
-                $purchase->save();
-                return ['success'=>false, 'msg'=>$transaction->error];
-            }
+            return ['success'=>false, 'msg'=>$transaction->error];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }

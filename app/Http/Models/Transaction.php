@@ -46,6 +46,13 @@ class Transaction extends Model
     {
         return $this->belongsTo('App\Http\Models\User','user_id');
     }
+    /**
+     * Get the purchases for the transaction.
+     */
+    public function purchases()
+    {
+        return $this->hasMany('App\Http\Models\Purchase','transaction_id');
+    }
 
     //PERSONALIZED FUNCTIONS
     /*
