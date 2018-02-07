@@ -55,8 +55,8 @@ class RefundController extends Controller{
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                  transactions.amount, purchases.note,
-                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
+                                                  transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
+                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, 
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
@@ -79,8 +79,8 @@ class RefundController extends Controller{
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                  transactions.amount, purchases.note,
-                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
+                                                  transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
+                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, 
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
