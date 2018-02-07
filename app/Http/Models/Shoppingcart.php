@@ -168,7 +168,7 @@ class Shoppingcart extends Model
             if(count($items))
             {
                 //check coupon for discounts
-                if($items[0]->coupon)
+                if(!empty($items[0]) && !empty($items[0]->coupon))
                     $coupon = json_decode($items[0]->coupon,true);
                 //loop for all items to calculate
                 foreach ($items as $i)
