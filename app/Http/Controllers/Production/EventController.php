@@ -67,7 +67,10 @@ class EventController extends Controller
                                 ->join('venue_images', 'venue_images.image_id', '=', 'images.id')
                                 ->select(DB::raw('images.url, images.caption'))
                                 ->where('venue_images.venue_id',$event->venue_id)->where('images.image_type','=','Header')->first();
-            $event->header->url = Image::view_image($event->header->url);
+            if($event->header)
+                $event->header->url = Image::view_image($event->header->url);
+            else
+                return redirect()->route('index');
             //get images
             $event->images = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
