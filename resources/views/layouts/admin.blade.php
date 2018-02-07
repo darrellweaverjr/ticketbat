@@ -293,8 +293,7 @@
                                 </a>
                             </li>
                             @endif
-                            
-                            
+                            @if(array_key_exists('REFUNDS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item start open @if(!(strpos(url()->current(),'/admin/refunds')===false) ) active @endif">
                                 <a href="/admin/refunds" class="nav-link nav-toggle">
                                     <i class="icon-credit-card"></i>
@@ -317,7 +316,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            
+                            @endif
                             @if(array_key_exists('SLIDERS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/sliders')===false)) active @endif">
                                 <a href="/admin/sliders" class="nav-link nav-toggle">
@@ -333,16 +332,6 @@
                                     <span class="title">Consignments</span>
                                 </a>
                             </li>
-                            @endif
-                            @if(array_key_exists('APPS', Auth::user()->user_type->getACLs()))
-                            <!--<li class="nav-item @if(!(strpos(url()->current(),'/admin/apps')===false)) active @endif">
-                                <a href="/admin/apps" class="nav-link nav-toggle">
-                                    <i class="icon-calendar"></i>
-                                    <span class="title">Apps</span>
-                                    <span class="selected"></span>
-                                    <span class="arrow open"></span>
-                                </a>
-                            </li>-->
                             @endif
                         </ul>
                         @if(array_key_exists('RESTAURANTS', Auth::user()->user_type->getACLs()))
