@@ -52,7 +52,9 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
+                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model" 
+                           data-status="{{json_encode($search['status'],true)}}"
+                           @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types'])) data-edit="1" @else data-edit="0" @endif>
                         <thead>
                             <tr>
                                 <th width="2%">
@@ -107,15 +109,7 @@
                                 <td style="text-align:right">
                                     @if($previous_color != $color) @if($p->amount > 0) $ {{number_format($p->amount,2)}} @elseif($p->method=='Free') @php echo '(Free)' @endphp @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
-                                <td>
-                                    @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
-                                    <select data-id="{{$p->id}}" class="form-control" name="status" data-status="{{$p->status}}">
-                                        @foreach($search['status'] as $indexS=>$s)
-                                        <option @if($indexS == $p->status) selected @endif value="{{$indexS}}">{{$s}}</option>
-                                        @endforeach
-                                    </select>
-                                    @else <center>{{$p->status}}</center> @endif
-                                </td>
+                                <td data-status="{{$p->status}}"><center>{{$p->status}}</center></td>
                             </tr>
                             @php $previous_color = $color @endphp
                             @endforeach
