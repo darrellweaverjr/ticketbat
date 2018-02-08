@@ -111,12 +111,6 @@
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    @if(in_array(Auth::user()->user_type_id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))))
-                                    <li>
-                                        <a href="/admin" title="Go to the Admin module">
-                                        <i class="icon-settings"></i>&nbsp;&nbsp;&nbsp;Admin</a>
-                                    </li>
-                                    @endif
                                     <li>
                                         <a data-toggle="modal" href="#modal_reset_password" title="Change your password">
                                         <i class="icon-lock"></i>&nbsp;&nbsp;&nbsp;Change password</a>
@@ -138,6 +132,12 @@
                                     </li>
                                 </ul>
                             </li>
+                            @if(in_array(Auth::user()->user_type_id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))))
+                            <li>
+                                <a class="menu_nav" href="/admin" title="Go to the Admin module">
+                                <i class="icon-settings"></i> Admin</a>
+                            </li>
+                            @endif
                             @endif
                             <li class="dropdown-notification @if(preg_match('/\/shoppingcart/',url()->current())) active @endif">
                                 <a href="/shoppingcart/viewcart" class="menu_nav" title="View/pay you items in the shopping cart">

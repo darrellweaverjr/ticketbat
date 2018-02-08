@@ -58,6 +58,7 @@ class TransactionRefund extends Model
                 $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ";
             //command
             $tran->command = 'creditvoid';
+            $tran->pin = '4826';
             //refund info
             $tran->refnum=$purchase->transaction->refnum;	
             $tran->amount=$amount;
