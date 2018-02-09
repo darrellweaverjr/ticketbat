@@ -52,9 +52,10 @@
                                             @if($p->card_holder && $p->card_holder != $p->first_name.' '.$p->last_name) <br><i class="fa fa-credit-card"></i> {{$p->card_holder}}@endif
                                         </b>
                                         <br><small><i>AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>, ID: <b>{{$p->order_id}}</b>, Qty: <b>{{$p->quantity}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
-                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}}</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>
+                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}}</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>,
+                                        <br> Method: <b>{{$p->method}}</b> , Status: <b>{{$p->status}}</b>
                                         </i></small>
-                                        <div class="note note-info" style="font-style:italic;font-size:smaller">@php echo trim($p->note) @endphp</div>
+                                        @if(!empty(trim($p->note)))<div class="note note-info" style="font-style:italic;font-size:smaller">@php echo trim($p->note) @endphp</div>@endif
                                     </div>
                                     @endif
                                 </td>
@@ -64,9 +65,9 @@
                                             <i class="fa fa-user"></i> Refunded by: {{$p->u_first_name}} {{$p->u_last_name}} <small><i> (<a href="mailto:{{$p->u_email}}" target="_top">{{$p->u_email}}</a>)</i></small> 
                                         </b>
                                         <br><small><i>ID: <b>{{$p->id}}</b>, AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>,  IsDuplicate: <b>{{$p->is_duplicate}}</b>, 
-                                        <br> Result: <b>({{$p->result_code}}) {{$p->result}}</b>, <br> Error: <b>({{$p->error_code}}) {{$p->error}}</b>
+                                        <br> Result: <b>({{$p->result_code}}) {{$p->result}}</b>, Error: <b>({{$p->error_code}}) {{$p->error}}</b>
                                         </i></small>
-                                        <div class="note note-info" style="font-style:italic;font-size:smaller">@php echo trim($p->description) @endphp</div>
+                                        @if(!empty(trim($p->description)))<div class="note note-info" style="font-style:italic;font-size:smaller">@php echo trim($p->description) @endphp</div>@endif
                                     </div>
                                 </td>
                                 <td>${{number_format($p->amount,2)}}</td>

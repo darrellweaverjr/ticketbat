@@ -26,7 +26,7 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
-                            <button id="btn_model_refund" class="btn sbold bg-purple">Refund
+                            <button id="btn_model_refund" class="btn sbold bg-purple">Chargeback
                                 <i class="fa fa-credit-card"></i>
                             </button>
                             @endif

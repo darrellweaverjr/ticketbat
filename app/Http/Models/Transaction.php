@@ -66,11 +66,11 @@ class Transaction extends Model
             $tran->testmode=env('USAEPAY_TEST',1);
             if($tran->testmode>0)
             {
-                $tran->key="_5n4fazc17ya1luc3euqVSj648zOs0D8";
+                $tran->key=env('USAEPAY_KEY_TEST','_5n4fazc17ya1luc3euqVSj648zOs0D8');
                 $tran->usesandbox=true;
             }
             else
-                $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ";
+                $tran->key=env('USAEPAY_KEY_SALE','0549A863bCqbKNzS1uw6o75EMgPL3xpQ');;
             //command
             $tran->command='cc:sale';
             //card info

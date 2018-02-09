@@ -56,8 +56,11 @@ class RefundController extends Controller{
                                 ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
-                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings,
+                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, 
+                                                  ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                                        ELSE purchases.payment_type END ) AS method,
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
                                 >whereIn('shows.venue_id',[Auth::user()->venues_edit])
@@ -80,11 +83,14 @@ class RefundController extends Controller{
                                 ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
-                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings,
+                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, 
+                                                  ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                                        ELSE purchases.payment_type END ) AS method, 
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
-                                ->orderBy('purchases.created','transaction_refunds.created')
+                                ->orderBy('purchases.created','DESC')->orderBy('transaction_refunds.created','DESC')
                                 ->groupBy('transaction_refunds.id')
                                 ->get();
                 }   
@@ -184,27 +190,41 @@ class RefundController extends Controller{
             //function refund each
             function refund_each($purchase, $user, $amount, $description, $current)
             {
-                if($amount>0.01 && $amount<=$purchase->price_paid)
+                if($purchase->payment_type != 'Credit')
                 {
-                    $refunded = TransactionRefund::usaepay($purchase, $user, $amount, $description, $current);
-                    if($refunded['success'])
-                    {
-                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount.'/ $'.$purchase->price_paid;
-                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
-                        $purchase->status = 'Chargeback';
-                        $purchase->updated = $current;
-                        $purchase->save();
-                        return ['success'=>true, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
-                    }
-                    else
-                    {
-                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount.'/ $'.$purchase->price_paid;
-                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note; 
-                        $purchase->save();
-                        return ['success'=>false, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
-                    }
+                    $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Chargeback.';
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                    $purchase->status = 'Chargeback';
+                    $purchase->updated = $current;
+                    $purchase->save();
+                    return ['success'=>true, 'id'=>$purchase->id, 'msg'=>$note];
                 }
-                return ['success'=>false, 'id'=>$purchase->id, 'msg'=>'This is an invalid amount to refund in that purchase'];
+                else if($purchase->payment_type == 'Credit' && $purchase->transaction && $purchase->transaction->trans_result=='Approved')
+                {
+                    if($amount>0.01 && $amount<=$purchase->price_paid)
+                    {
+                        $refunded = TransactionRefund::usaepay($purchase, $user, $amount, $description, $current);
+                        if($refunded['success'])
+                        {
+                            $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount.'/ $'.$purchase->price_paid;
+                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                            $purchase->status = 'Chargeback';
+                            $purchase->updated = $current;
+                            $purchase->save();
+                            return ['success'=>true, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
+                        }
+                        else
+                        {
+                            $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount.'/ $'.$purchase->price_paid;
+                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note; 
+                            $purchase->save();
+                            return ['success'=>false, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
+                        }
+                    }
+                    return ['success'=>false, 'id'=>$purchase->id, 'msg'=>'This is an invalid amount to refund in that purchase'];
+                }
+                else
+                    return ['success'=>false, 'id'=>$purchase->id, 'msg'=>'That purchase has not a valid transaction to refund from'];
             }
             //save all record      
             if($input && isset($input['id']) && isset($input['type']))
@@ -224,31 +244,49 @@ class RefundController extends Controller{
                     else if($input['type']=='full_transaction')
                     {
                         $msg = '';
-                        $success = $errors = [];
-                        $purchases = $purchase->transaction->purchases();
-                        foreach ($purchases as $p)
+                        $purchases = $success = $errors = [];
+                        if(!empty($purchase->transaction_id))
                         {
-                            $refunded = refund_each($p, $user, $p->price_paid, $description, $current);
-                            if($refunded['success'])
-                                $success[$p->id] = $refunded['msg'];
+                            $transaction = Transaction::find($purchase->transaction_id);
+                            if($transaction)
+                                $purchases = $transaction->purchases();
                             else
-                                $errors[$p->id] = $refunded['msg'];
+                                return ['success'=>false, 'msg'=>'There is not a valid Transaction associate to that Purchase'];
                         }
-                        if(count($success))
+                        else
                         {
-                            $msg .= 'These purchases where successfully refunded:<br>';
-                            foreach ($success as $k=>$v)
-                                $msg .= ' - #'.$k.' => '.$v.'<br>';
+                            $purchases = Purchase::where('transaction_id',$purchase->transaction_id)
+                                                 ->where('user_id',$purchase->user_id)
+                                                 ->where('created',$purchase->created)->get();
                         }
-                        if(count($errors))
+                        //loop by purchases
+                        if(!empty($purchases))
                         {
-                            $msg .= 'These purchases had errors trying to refund them:<br>';
-                            foreach ($errors as $k=>$v)
-                                $msg .= ' - #'.$k.' => '.$v.'<br>';
+                            foreach ($purchases as $p)
+                            {
+                                $refunded = refund_each($p, $user, $p->price_paid, $description, $current);
+                                if($refunded['success'])
+                                    $success[$p->id] = $refunded['msg'];
+                                else
+                                    $errors[$p->id] = $refunded['msg'];
+                            }
+                            if(count($success))
+                            {
+                                $msg .= 'These purchases where successfully refunded:<br>';
+                                foreach ($success as $k=>$v)
+                                    $msg .= ' - #'.$k.' => '.$v.'<br>';
+                            }
+                            if(count($errors))
+                            {
+                                $msg .= 'These purchases had errors trying to refund them:<br>';
+                                foreach ($errors as $k=>$v)
+                                    $msg .= ' - #'.$k.' => '.$v.'<br>';
+                            }
+                            if(count($success))
+                                return ['success'=>true,'msg'=>$msg];
+                            return ['success'=>false, 'msg'=>$msg];
                         }
-                        if(count($success))
-                            return ['success'=>true,'msg'=>$msg];
-                        return ['success'=>false, 'msg'=>$msg];
+                        return ['success'=>false, 'msg'=>'That Transaction has no Purchases associates'];
                     }  
                     else if($input['type']=='custom_amount')
                     {

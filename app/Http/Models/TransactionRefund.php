@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Illuminate\Support\Facades\Request;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Libraries\usaepay\umTransaction;
 
@@ -51,21 +52,22 @@ class TransactionRefund extends Model
             $tran->testmode=env('USAEPAY_TEST',1);
             if($tran->testmode>0)
             {
-                $tran->key="_5n4fazc17ya1luc3euqVSj648zOs0D8";
+                $tran->key=env('USAEPAY_KEY_TEST','_5n4fazc17ya1luc3euqVSj648zOs0D8');
                 $tran->usesandbox=true;
             }
             else
-                $tran->key="0549A863bCqbKNzS1uw6o75EMgPL3xpQ";
+                $tran->key=env('USAEPAY_KEY_REFUND','1AGjBQ3Z5Iq10NB154PAZ04I1xnWPdZv');
             //command
             $tran->command = 'creditvoid';
-            $tran->pin = '4826';
+            $tran->pin = env('USAEPAY_PIN_REFUND','4826');
+            $tran->ip=Request::getClientIp();
             //refund info
             $tran->refnum=$purchase->transaction->refnum;	
             $tran->amount=$amount;
             if(!empty($description))
                 $tran->description=$description;
             //process
-            $success = $tran->Process();
+            $success = ($tran->Process() && $tran->result=='Approved');
             //store into DB
             $transaction = new TransactionRefund;
             $transaction->purchase_id = $purchase->id;
@@ -95,8 +97,8 @@ class TransactionRefund extends Model
             $transaction->save();
             //return
             if($success)
-                return ['success'=>true, 'msg'=>$transaction->result];
-            return ['success'=>false, 'msg'=>$transaction->error];
+                return ['success'=>true, 'msg'=>'<b>'.$transaction->result.'</b>'];
+            return ['success'=>false, 'msg'=>'<b>'.$transaction->result.'. '.$transaction->error.'</b>'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }

@@ -90,6 +90,8 @@ var TableDatatablesManaged = function () {
                             html: true,
                             type: "success",
                             showConfirmButton: true
+                        },function(){
+                            location.reload();
                         });
                     }
                     else swal({
@@ -98,6 +100,8 @@ var TableDatatablesManaged = function () {
                             html: true,
                             type: "error",
                             showConfirmButton: true
+                        },function(){
+                            location.reload();
                         });
                 },
                 error: function(){
