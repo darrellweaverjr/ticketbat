@@ -59,7 +59,9 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AuthenticationException) {
             return $this->unauthenticated($request, $exception);
         }
-        
+        if ($exception instanceof NotFoundHttpException) {
+            return response()->view('errors.default', [], 404);
+        }
         if(env('ERROR_SEND_INFO'))
         {
             Log::info('View with the error showed to the user. Redirect to home page if it is production');
@@ -83,7 +85,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
         return redirect()->guest('login');
-        //return redirect()->route('login');
     }
     /**
      * Send email and Log an exception only.
