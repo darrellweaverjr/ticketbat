@@ -50,19 +50,15 @@ class TransactionRefund extends Model
             //init params
             $tran=new umTransaction();
             $tran->testmode=env('USAEPAY_TEST',1);
-            if($tran->testmode>0)
-            {
-                $tran->key=env('USAEPAY_KEY_TEST','_5n4fazc17ya1luc3euqVSj648zOs0D8');
-                $tran->usesandbox=true;
-            }
-            else
-                $tran->key=env('USAEPAY_KEY_REFUND','1AGjBQ3Z5Iq10NB154PAZ04I1xnWPdZv');
+            $tran->key=env('USAEPAY_KEY_REFUND','1AGjBQ3Z5Iq10NB154PAZ04I1xnWPdZv');
+            $tran->pin=env('USAEPAY_PIN_REFUND','4826');;
+            $tran->ip=Request::getClientIp();
             //command
             $tran->command = 'creditvoid';
-            $tran->pin = env('USAEPAY_PIN_REFUND','4826');
-            $tran->ip=Request::getClientIp();
             //refund info
             $tran->refnum=$purchase->transaction->refnum;	
+            //$tran->invoice=$purchase->transaction->invoice_num;
+            //$tran->usesandbox=true;
             $tran->amount=$amount;
             if(!empty($description))
                 $tran->description=$description;

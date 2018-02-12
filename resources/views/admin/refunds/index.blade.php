@@ -65,7 +65,7 @@
                                             <i class="fa fa-user"></i> Refunded by: {{$p->u_first_name}} {{$p->u_last_name}} <small><i> (<a href="mailto:{{$p->u_email}}" target="_top">{{$p->u_email}}</a>)</i></small> 
                                         </b>
                                         <br><small><i>ID: <b>{{$p->id}}</b>, AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>,  IsDuplicate: <b>{{$p->is_duplicate}}</b>, 
-                                        <br> Result: <b>({{$p->result_code}}) {{$p->result}}</b>, Error: <b>({{$p->error_code}}) {{$p->error}}</b>
+                                        <br> <span class="label label-sm sbold @if($p->result=='Approved') label-success @else label-danger @endif"> Result: <b>({{$p->result_code}}) {{$p->result}}</b>, Error: <b>({{$p->error_code}}) {{$p->error}}</b> </span>
                                         </i></small>
                                         @if(!empty(trim($p->description)))<div class="note note-info" style="font-style:italic;font-size:smaller">@php echo trim($p->description) @endphp</div>@endif
                                     </div>
