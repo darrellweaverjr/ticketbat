@@ -79,10 +79,10 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
     @foreach($tickets as $ticket)
         <div style='page-break-after:always;text-align:center;'>
             <div style='font-size:12px;position:absolute;top:-30;left:270;'>
-                <img src='{{$ticket['QRcode']}}' alt='TB{{$ticket['id']}}{{$ticket['user_id']}}{{$ticket['number']}}' width=85px height=85px/>
+                <img src='{{$ticket['QRcode']}}' alt='TB{{$ticket['id']}}{{$ticket['user_id']}}{{$ticket['number']}}' width=90px height=90px/>
             </div>
-            <div style='font-size:12px;position:absolute;top:-20;left:330;text-align:left;'>
-                {{$ticket['venue_name']}} / {{$ticket['show_name']}}<br>
+            <div style='font-size:12px;position:absolute;top:-20;left:340;text-align:left;'>
+                {{$ticket['venue_name']}}<br>{{$ticket['show_name']}}<br>
                 {{date('l, m/d/Y h:ia',strtotime($ticket['show_time']))}}<br>
                 {{$ticket['ticket_type']}} @if($ticket['package'] != 'None') ({{$ticket['package']}}) @endif
             </div>
