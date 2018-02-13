@@ -77,6 +77,32 @@ class Discount extends Model
     /**
      * The user_discounts that belong to the discount.
      */
+    public function free_tickets($qty,$start_num=null,$end_num=null)
+    {
+        $start_num = ($start_num)? $start_num : $this->start_num;
+        $end_num = ($end_num)? $end_num : $this->end_num;
+        $free = $total = 0;
+        if(!empty($start_num) && !empty($end_num))
+        {
+            $maxFreeSets = floor($qty / $start_num);
+            while ($maxFreeSets > 0) 
+            {
+                $a = 0;
+                while ($a < $start_num && $total < $qty) {
+                    $total++; $a++;
+                }
+                $b = 0;
+                while ($b < $end_num && $total < $qty) {
+                    $free++; $total++; $b++;
+                }
+                $maxFreeSets--;
+            }
+        }
+        return $free;
+    }
+    /**
+     * The user_discounts that belong to the discount.
+     */
     public function calculate_savings($qty,$cost,$start_num=null,$end_num=null)
     {
         $savings = 0;
@@ -91,20 +117,7 @@ class Discount extends Model
                     $savings = ($this->discount_scope=='Total')? $start_num : $start_num * $qty;
                     break;
             case 'N for N':
-                    $maxFreeSets = floor($qty / $start_num);
-                    $free = $total = 0;
-                    while ($maxFreeSets > 0) 
-                    {
-                        $a = 0;
-                        while ($a < $start_num && $total < $qty) {
-                            $total++; $a++;
-                        }
-                        $b = 0;
-                        while ($b < $end_num && $total < $qty) {
-                            $free++; $total++; $b++;
-                        }
-                        $maxFreeSets--;
-                    }
+                    $free = $this->free_tickets($qty, $start_num, $end_num);
                     $savings = Util::round($cost / $qty * $free);
                     break;
             default:  
