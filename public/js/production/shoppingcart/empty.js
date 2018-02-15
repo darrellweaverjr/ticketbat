@@ -1,4 +1,4 @@
-var FunctionsGuest = function () {
+var EmptyMessage = function () {
     
     var initFunctions = function () {
         
@@ -23,5 +23,5 @@ var FunctionsGuest = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    FunctionsGuest.init();
+    EmptyMessage.init();
 });
