@@ -439,6 +439,7 @@ class DashboardController extends Controller
             $where[] = ['purchases.created','>=',$start];
             //info for the graph
             $graph = DB::table('purchases')
+                    ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased, 
