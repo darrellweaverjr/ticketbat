@@ -7,6 +7,17 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
+<style type="text/css">
+      @media print {
+        body {
+          display:none;
+        }
+
+        #xxx {
+          display:block;
+        }
+      }
+    </style>
 @endsection
 
 @section('content')
@@ -27,10 +38,11 @@
             <hr>
             @if($seller>0)
             <center>
-                <h4>Print tickets as:</h4><br>
-                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Standard Printer</a>
-                <a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> BOCA Ticket Printer</a>
-                <a class="btn btn-info btn-lg uppercase" href="/user/purchases/tickets/W/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Printer (wrist)</a>
+                <a class="btn btn-danger btn-lg uppercase" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</a><hr>
+                <h4>Print tickets:</h4><br>
+                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-newspaper-o"></i> Regular Paper</a>
+                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
+                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/W/{{$purchases}}" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
             </center>
             @else
             <center><a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
@@ -88,6 +100,13 @@
     </div>
     @endif
     <!-- END BANNERS -->
+    <!-- BEGIN RECEIPT -->
+    <div id="receipt_print" class="row hidden" style="text-align:center;font-size:8px">
+        @foreach($view_receipts as $r)
+            @php echo $r @endphp
+        @endforeach
+    </div>
+    <!-- END RECEIPT -->
 </div>
 
 @endsection

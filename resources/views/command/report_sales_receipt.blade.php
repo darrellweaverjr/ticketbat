@@ -4,6 +4,7 @@
 "{{$n+1}}","{{$p['id']}}","{{$p['show_name']}}","{{$p['first_name']}}","{{$p['last_name']}}","{{$p['ticket_type']}}","{{$p['code']}}","{{$p['qty']}}","$ {{$p['retail_price']}}","$ {{$p['processing_fee']}}","$ {{$p['savings']}}","$ {{$p['price_paid']}}","{{date('m/d/Y g:ia',strtotime($p['show_time']))}}"
 @endforeach
 @else
+    @if($format != 'view')
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -153,6 +154,7 @@
             </style>
     </head>
     <body>
+    @endif
         <div class="container">
             <div class="header">
                 <img src="http://www.ticketbat.com/themes/img/logo-header.jpg" alt="Ticket Bat">
@@ -240,6 +242,8 @@
                 </tbody>
             </table>
         </div>
+    @if($format != 'view')
     </body>
 </html>
+    @endif
 @endif

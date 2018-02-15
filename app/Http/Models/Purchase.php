@@ -289,14 +289,14 @@ class Purchase extends Model
     /**
      * Send by email given purchases receipts.
      */
-    public static function email_receipts($subject,$receipts,$type_email,$change=null,$promotor_copy=false)
+    public static function email_receipts($subject,$receipts,$type_email,$change=null,$promotor_copy=false,$receipt_view=false)
     {
         try {
             if(is_array($receipts) && count($receipts) && is_string($subject) && is_string($type_email))
             {
                 //init variables
                 $rows_html = $totals_html = '';
-                $pdf_receipts = $pdf_tickets = $purchases = [];
+                $view_receipts = $pdf_receipts = $pdf_tickets = $purchases = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
                 $top = $banners = '';
                 //set customer
@@ -305,7 +305,7 @@ class Purchase extends Model
                 foreach ($receipts as $receipt)
                 {
                     $purchases[] = $receipt['purchase'];
-
+        
                     $format = 'pdf';
                     //create pdf receipt
                     $purchase = array_merge((array)$receipt['purchase'],(array)$receipt['customer']);
@@ -315,6 +315,14 @@ class Purchase extends Model
                     if(file_exists($pdfUrlR)) unlink($pdfUrlR);
                     PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
                     $pdf_receipts[] = $pdfUrlR;
+                    
+                    //print copy of receipt
+                    if($receipt_view)
+                    {
+                        $format = 'view';
+                        $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
+                        $view_receipts[] = $pdf_receipt;
+                    }
 
                     //create pdf tickets
                     $tickets = $receipt['tickets'];
@@ -424,6 +432,8 @@ class Purchase extends Model
                 //clean up and return
                 foreach(array_merge($pdf_receipts,$pdf_tickets) as $link)
                     if(file_exists($link)) unlink($link);
+                if($receipt_view)
+                    return ['success'=>$response,'receipts'=>$view_receipts];
                 return $response;
             }
             else return false;

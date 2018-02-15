@@ -170,7 +170,7 @@ class PurchaseController extends Controller
      */                          
     public function complete()
     {
-        $receipts=[];
+        $view_receipts=$receipts=[];
         $purchased=[];
         $sent_to = null;
         $purchases = null;
@@ -193,15 +193,16 @@ class PurchaseController extends Controller
                 //send receipts
                 $data = $this->receipts($purchases);
                 //get data
+                $view_receipts = $data['view_receipts'];
                 $receipts = $data['receipts'];
                 $purchased = $data['purchased'];
                 $sent_to = $data['sent_to'];
                 $sent_receipts = $data['sent_receipts'];
-                $analytics = json_encode($data['analytics'],true);
+                $analytics = $data['analytics'];
                 $transaction = $data['transaction'];
                 $totals = $data['totals'];
                 $conversion_code = $data['conversion_code'];
-                $ua_conversion_code = json_encode($data['ua_conversion_code'],true);
+                $ua_conversion_code = $data['ua_conversion_code'];
                 $banners = $data['banners'];
                 Session::forget('change');
             }
@@ -210,7 +211,7 @@ class PurchaseController extends Controller
         } finally {
             //return
             return response() 
-                        ->view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller','analytics','totals','transaction','conversion_code','ua_conversion_code','banners'))
+                        ->view('production.shoppingcart.complete',compact('sent_to','view_receipts','sent_receipts','purchases','purchased','send_welcome_email','seller','analytics','totals','transaction','conversion_code','ua_conversion_code','banners'))
                         ->withHeaders([
                             'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
                             'Pragma' => 'no-cache',
@@ -224,7 +225,7 @@ class PurchaseController extends Controller
      */                          
     public function receipts($purchasex=null)
     {
-        $receipts=[];
+        $receipts=$view_receipts=[];
         $purchased=[];
         $sent_to = null;
         $sent_receipts = false;
@@ -253,10 +254,10 @@ class PurchaseController extends Controller
                         $purchased[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'schedule'=>date('l, F j, Y @ g:i A', strtotime($p->show_time->show_time)),
                                         'slug'=>$p->ticket->show->slug,'show_time_id'=>$p->show_time->id];
                         $analytics[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'ticket_type'=>$p->ticket->ticket_type,'ticket_id'=>$p->ticket->id,
-                                        'show_id'=>$p->ticket->show->id,'venue'=>$p->ticket->show->venue->name,'price'=>$p->price_paid];
+                                        'show_id'=>$p->ticket->show->id,'venue'=>$p->ticket->show->venue->name,'price'=>$p->price_paid,'id'=>$p->id];
                         $totals += $p->price_paid;
                         if(empty($transaction))
-                            $transaction = (empty($p->transaction_id))? strtotime($p->reated) : $p->transaction_id;
+                            $transaction = (empty($p->transaction_id))? $p->user_id.'.'.strtotime($p->created) : $p->transaction_id;
                         if(!empty($p->ticket->show->conversion_code))
                             $conversion_code[] = $p->ticket->show->conversion_code;
                         if(!empty($p->ticket->show->ua_conversion_code))
@@ -281,14 +282,16 @@ class PurchaseController extends Controller
                 }
             }
             //sent email
-            $sent_receipts = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true);
+            $response = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true,true);
+            $sent_receipts = $response['success'];
+            $view_receipts = $response['receipts'];
         } catch (Exception $ex) {
             
         } finally {
             if(!empty($purchasex))
                 return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,
                         'sent_receipts'=>$sent_receipts, 'analytics'=>$analytics, 'totals'=>$totals, 'transaction'=>$transaction,
-                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code];
+                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code,'view_receipts'=>$view_receipts];
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];
         }
     }

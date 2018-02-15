@@ -10,22 +10,32 @@
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com; 
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ; 
                           img-src *  'self' blob: http://admindev.ticketbat.com {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
                           style-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} http://fonts.googleapis.com 'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
-                          child-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
-                          script-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js https://www.google-analytics.com/analytics.js;">
+                          frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
+                          script-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js;">
         <title>@yield('title') - TicketBat</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
-        <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
-        <meta @if(!empty($ua_conversion_code)) content="{{$ua_conversion_code}}" @else content="[]" @endif name="ua-conversion_code" />
-        <meta @if(!empty($analytics)) content="{{$analytics}}" @else content="[]" @endif name="analytics" />
+<!--        <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
+        <meta @if(!empty($ua_conversion_code)) content="{{json_encode($ua_conversion_code,true)}}" @else content="[]" @endif name="ua-conversion_code" />
+        <meta @if(!empty($analytics)) content="{{json_encode($analytics,true)}}" @else content="[]" @endif name="analytics" />
         <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
-        <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
+        <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />-->
         <meta content="{{config('app.theme')}}img/no-image.jpg" name="broken-image" />
+        
+        <!-- BEGIN GTAG VIEW -->
+        @includeIf('production.general.gtag',['ua_conversion_code'=>(!empty($ua_conversion_code))? $ua_conversion_code:null,
+                                              'ua_code'=>Session::get('ua_code',null),
+                                              'analytics'=>(!empty($analytics))? $analytics: null,
+                                              'transaction'=>(isset($transaction))? $transaction: null,
+                                              'totals'=>(isset($totals))? $totals: null,
+                                              'conversion_code'=>(!empty($conversion_code))? $conversion_code: null])
+        <!-- END GTAG VIEW -->
+        
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -222,7 +232,7 @@
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>
-        <script src="/js/production/general/analytics.js" type="text/javascript"></script>
+<!--        <script src="/js/production/general/analytics.js" type="text/javascript"></script>-->
         <script src="/js/production/general/contact.js" type="text/javascript"></script>
         <script src="/js/production/user/login.js" type="text/javascript"></script>
         <script src="/js/production/user/register.js" type="text/javascript"></script>
@@ -232,12 +242,6 @@
         <script type="text/javascript">$('#modal_reset_password').modal('show');</script>
         @endif
         @yield('scripts')
-        
-        @if(!empty($conversion_code))
-        @foreach($conversion_code as $cc)
-            @php echo $cc @endphp
-        @endforeach
-        @endif
     </body>
 
 </html>

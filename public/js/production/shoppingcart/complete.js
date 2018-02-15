@@ -84,6 +84,14 @@ var CompleteFunctions = function () {
             }); 
         });
         
+        //on resend email welcome
+        $('#btn_receipt_print').on('click', function(ev) {
+            var receiptWindow = window.open('dfghfgh','','width=303');
+            receiptWindow.document.write(document.getElementById("receipt_print").innerHTML);
+            receiptWindow.print();
+            receiptWindow.close();
+        });
+        
         //check for broken images to change
         function check_images(){
             $('#myBanners .cbp-item.filtered:not(.hidden) img').each(function(){
