@@ -69,7 +69,7 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
                             <div style='text-align:center;'><span>@if (!($ticket['restrictions']=='None' || $ticket['restrictions']=='Inherit'))RESTRICTIONS: {{$ticket['restrictions']}} years old to attend the event.@endif</span></div>
                     </div>
                     <div style='float:right;width:25%;margin-top:-22px'>
-                            <div style='padding-top:-10px;'><img src='{{$ticket['QRcode']}}' alt='TB{{$ticket['id']}}{{$ticket['user_id']}}{{$ticket['number']}}' width=200px height=200px /></div>
+                            <div style='padding-top:-10px;'><img src='{{$ticket['QRcode']}}' alt='TB{{$ticket['id']}}{{$ticket['user_id']}}{{$ticket['number']}}' width=195px height=195px /></div>
                             <div style='padding-top:-25px;text-align:left;padding-left:25px'><span style='font-size:12px;'></span>${{$ticket['price_each']}} - #{{$ticket['id']}}-{{$ticket['number']}}</div>
                     </div>
               @php $top=$top+1 @endphp
