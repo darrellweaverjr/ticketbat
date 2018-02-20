@@ -10,9 +10,9 @@
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ; 
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ; 
                           img-src *  'self' blob: http://admindev.ticketbat.com {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
-                          style-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} http://fonts.googleapis.com 'unsafe-inline';
+                          style-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://fonts.googleapis.com 'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
                           script-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js;">
@@ -20,11 +20,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
-<!--        <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
-        <meta @if(!empty($ua_conversion_code)) content="{{json_encode($ua_conversion_code,true)}}" @else content="[]" @endif name="ua-conversion_code" />
-        <meta @if(!empty($analytics)) content="{{json_encode($analytics,true)}}" @else content="[]" @endif name="analytics" />
-        <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
-        <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />-->
         <meta content="{{config('app.theme')}}img/no-image.jpg" name="broken-image" />
         
         <!-- BEGIN GTAG VIEW -->
@@ -37,7 +32,7 @@
         <!-- END GTAG VIEW -->
         
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/bootstrap.min.css" rel="stylesheet" type="text/css" />

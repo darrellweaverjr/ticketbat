@@ -166,7 +166,7 @@ var PortfolioManaged = function () {
             $('#myShows').height( parseInt(y2+y1/(1.8)) );
         }
         //autoselect city
-        $.getJSON("http://freegeoip.net/json/", function (response) {       
+        $.getJSON("https://freegeoip.net/json/", function (response) {       
             $('#myFilter select[name="filter_city"]').find('option[data-state="'+response.region_code+'"][data-country="'+response.country_code+'"]').prop('selected', true).trigger('change');
         });
         
