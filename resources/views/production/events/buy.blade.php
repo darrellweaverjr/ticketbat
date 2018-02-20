@@ -5,7 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<style>@php echo $ticket_types_css; @endphp</style>
+<style>@if($ticket_types_css) {{$ticket_types_css}} @endif</style>
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 

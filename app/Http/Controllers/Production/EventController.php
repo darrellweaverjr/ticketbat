@@ -323,9 +323,7 @@ class EventController extends Controller
                     $event->for_sale = 0;
             }
             //get styles from cloud
-            $ticket_types_css = '';
-            if(Storage::disk('s3')->exists($this->style_url))
-                $ticket_types_css = Storage::disk('s3')->get($this->style_url);
+            $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER').'/'.$this->style_url);
             //return view
             return view('production.events.buy',compact('event','has_coupon','ticket_types_css'));
         } catch (Exception $ex) {
