@@ -70,11 +70,25 @@ var TableDatatablesButtons = function () {
                     className: 'btn sbold blue'
                 },
                 {
-                    extend: 'pdf',
+                    extend: 'pdfHtml5',
                     text:      'PDF <i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',
                     className: 'btn sbold red',
-                    orientation: 'landscape'
+                    orientation: 'landscape',
+                    download: 'open',
+                    customize: function ( doc ) {
+                        doc.content.splice( 1, 0, {
+                            margin: [ 0, -141, 0, 12 ],
+                            alignment: 'left',
+                            text : $('#tb_summary tr:first').text() 
+                        } );
+                        doc.content.splice( 1, 0, {
+                            margin: [ 100, -10, 0, 12 ],
+                            alignment: 'left',
+                            text : $('#tb_summary tr:last').text()
+                        } );
+
+                    }
                 },
                 { 
                     extend: 'csv', 
