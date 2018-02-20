@@ -229,6 +229,7 @@
                         <thead>
                             <tr>
                                 <th style="text-align:center">Sales Details</th>
+                                <th style="text-align:center">Customer</th>
                                 <th style="text-align:center">Venue</th>
                                 <th style="text-align:center">Show</th>
                                 <th style="text-align:center">Show<br>Date</th>
@@ -247,7 +248,8 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td><b>{{$d->name}}</b>, <small><i><b><a href="mailto:{{$d->email}}" target="_top">{{$d->email}}</a></b>,<br> Order#: <b>{{$d->id}}</b>, Code: <b>{{$d->code}}</b>,<br> Ticket Type: <b>{{$d->ticket_type}}</b>, Method: <b>{{$d->method}}</b></i></small></td>
+                                <td>Order#: <b>{{$d->id}}</b>, Code: <b>{{$d->code}}</b>,<br> Ticket Type: <b>{{$d->ticket_type}}</b>, Method: <b>{{$d->method}}</b></i></small></td>
+                                <td style="text-align:center"><b>{{$d->name}}</b>, <small><i><b><a href="mailto:{{$d->email}}" target="_top">{{$d->email}}</a></b></td>
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
