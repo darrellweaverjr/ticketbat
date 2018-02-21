@@ -94,7 +94,17 @@ var TableDatatablesButtons = function () {
                     extend: 'csv', 
                     text:      'CSV <i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'CSV',
-                    className: 'btn sbold bg-green'
+                    className: 'btn sbold bg-green',
+                    customize: function (csv) {
+                        var split_csv = csv.split("\n");
+                        var summary = [];
+                        $.each($('#tb_summary tr:first th'), function( index, value ) {
+                            summary.push('"'+$(value).text()+'",": '+$('#tb_summary tr:last td:nth-child('+parseInt(index+1)+')').text().replace(',',' ')+'"');
+                        });
+                        summary.push('');
+                        csv = $.merge(summary,split_csv).join("\n");
+                        return csv;
+                    }
                 },
                 {
                     text: 'Toggle Total Details <i class="fa fa-list"></i>',
