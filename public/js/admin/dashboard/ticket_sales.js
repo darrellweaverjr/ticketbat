@@ -77,17 +77,28 @@ var TableDatatablesButtons = function () {
                     orientation: 'landscape',
                     download: 'open',
                     customize: function ( doc ) {
+                        var summary = '';
+                        function pad(string,num=20) {
+                            var char = ' ';
+                            for (var i = string.length; i < num; i++)
+                                string += char;
+                            return string;
+                        }
+                        $.each($('#tb_summary th'), function( i, v ) {
+                            summary += pad($(v).text());
+                        });
+                        summary += '\n';
+                        $.each($('#tb_summary tr'), function( index, value ) {
+                            $.each($(value).find('td'), function( i, v ) {
+                                summary += pad($(v).text(), ((i)? 28 : 20) );
+                            });
+                            summary += '\n';
+                        });
                         doc.content.splice( 1, 0, {
-                            margin: [ 0, -141, 0, 12 ],
+                            margin: [ 0, 0, 0, 12 ],
                             alignment: 'left',
-                            text : $('#tb_summary tr:first').text() 
+                            text: summary
                         } );
-                        doc.content.splice( 1, 0, {
-                            margin: [ 100, -10, 0, 12 ],
-                            alignment: 'left',
-                            text : $('#tb_summary tr:last').text()
-                        } );
-
                     }
                 },
                 { 
