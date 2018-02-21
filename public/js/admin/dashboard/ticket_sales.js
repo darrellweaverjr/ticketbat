@@ -98,8 +98,19 @@ var TableDatatablesButtons = function () {
                     customize: function (csv) {
                         var split_csv = csv.split("\n");
                         var summary = [];
-                        $.each($('#tb_summary tr:first th'), function( index, value ) {
-                            summary.push('"'+$(value).text()+'",": '+$('#tb_summary tr:last td:nth-child('+parseInt(index+1)+')').text().replace(',',' ')+'"');
+                        var header = '';
+                        $.each($('#tb_summary th'), function( i, v ) {
+                            header += '"' + $(v).text() + '",';
+                        });
+                        header += '""';
+                        summary.push(header);
+                        $.each($('#tb_summary tr'), function( index, value ) {
+                            var row = '';
+                            $.each($(value).find('td'), function( i, v ) {
+                                row += '"' + $(v).text() + '",';
+                            });
+                            row += '""';
+                            summary.push(row);
                         });
                         summary.push('');
                         csv = $.merge(summary,split_csv).join("\n");
