@@ -173,7 +173,7 @@
                     <span class="tb-order-subtitle">Customer Name:</span> <span class="tb-customer-txt">{{$purchase['first_name']}}  {{$purchase['last_name']}}</span>
                 </div>
             </div><br><br><br>
-            <table class="tb-show-details-table" border="0" align="center" cellpadding="10" cellspacing="0"">
+            <table class="tb-show-details-table" border="0" align="center" cellpadding="10" cellspacing="0">
                 <tbody>
                     <tr class="tb-show-details-title">
                         <td><div class="show-date">Show Date</div></td>
@@ -243,36 +243,33 @@
     </body>
 </html>
 @elseif($format == 'printer')
+        <div style="text-align:center">
+            <img src="http://www.ticketbat.com/themes/img/logo-header.jpg" alt="Ticket Bat">
+        </div><hr>
         @if($purchase['restrictions'] != 'None')
         <b>Restrictions:</b> {{$purchase['restrictions']}}<br>
         @endif
         <b>Order ID:</b> {{$purchase['id']}}<br>
-        <b>Customer Name:</b> {{$purchase['first_name']}}  {{$purchase['last_name']}}<br>
-        <table border="0" align="center" cellpadding="10" cellspacing="0"">
+        <b>Customer Name:</b> {{$purchase['first_name']}}  {{$purchase['last_name']}}<hr>
+        <table border="0" align="center" cellpadding="10" cellspacing="0">
             <thead>
-                <th class="tb-show-details-title">
-                    <td width="80%">ITEMS</td>
-                    <td width="20%">PRICE</td>
-                </th>
+                <tr>
+                    <th width="80%">ITEMS</th>
+                    <th width="20%">PRICE</th>
+                </tr>
             </thead>
             <tbody>
-                <tr class="tb-ticket-purchase-info">
+                <tr>
                     <td valign="top">
-                        <div  class="show-date">
-                            @if ($purchase['time_alternative']) {{$purchase['time_alternative']}} @else {{date('m/d/Y g:ia',strtotime($purchase['show_time']))}} @endif
-                        </div>
+                        {{$purchase['qty']}} {{$purchase['ticket_type_type']}} ticket(s)<br>
+                        {{$purchase['show_name']}} <br> 
+                        @if($purchase['time_alternative']) {{$purchase['time_alternative']}} @else {{date('m/d/Y g:ia',strtotime($purchase['show_time']))}} @endif     
+                        @if($purchase['title']!='None') Package: {{$purchase['title']}} @endif
                     </td>
-                    <td valign="top">
-                        <div class="show-details">
-                            <span class="tb-highlight-color">Package: {{$purchase['title']}}</span><br>
-                            <span class="tb-highlight-color-blue">{{$purchase['show_name']}}</span><br>
-                            {{$purchase['qty']}} - {{$purchase['ticket_type_type']}}
-                        </div>
+                    <td valign="bottom">
+                        $ {{money_format('%(#10n',$purchase['price_each'])}}
                     </td>
-                    <td valign="top">
-                        <div  class="show-price">$ {{money_format('%(#10n',$purchase['price_each'])}}</div>
-                    </td>
-                    </tr>
+                </tr>
             </tbody>
         </table>
 @endif
