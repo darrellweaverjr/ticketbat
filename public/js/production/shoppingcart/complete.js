@@ -86,10 +86,10 @@ var CompleteFunctions = function () {
         
         //on resend email welcome
         $('#btn_receipt_print').on('click', function(ev) {
-            var receiptWindow = window.open('','MsgWindow','width=303,titlebar=1');
+            var receiptWindow = window.open('','TicketBat Receipt','width=300');
             receiptWindow.document.write(document.getElementById("receipt_print").innerHTML);
-            //receiptWindow.print();
-            //receiptWindow.close();
+            receiptWindow.print();
+            receiptWindow.close();
         });
         
         //check for broken images to change

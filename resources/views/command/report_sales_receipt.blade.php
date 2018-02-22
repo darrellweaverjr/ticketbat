@@ -271,5 +271,6 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table><hr>
+        <p>{{$purchase['ticket_info']}}</p>    
 @endif

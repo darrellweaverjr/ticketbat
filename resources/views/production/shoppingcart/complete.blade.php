@@ -101,7 +101,7 @@
     @endif
     <!-- END BANNERS -->
     <!-- BEGIN RECEIPT -->
-    <div id="receipt_print" class="row hidden" style="text-align:center;font-size:8px">
+    <div id="receipt_print" class="row hidden" style="text-align:center;">
         @foreach($view_receipts as $r)
             @php echo $r @endphp
         @endforeach
