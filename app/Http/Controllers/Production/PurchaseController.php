@@ -193,7 +193,7 @@ class PurchaseController extends Controller
                 //send receipts
                 $data = $this->receipts($purchases);
                 //get data
-                $view_receipts = $data['view_receipts'];
+                $view_receipts = $data['view_receipts'];   
                 $receipts = $data['receipts'];
                 $purchased = $data['purchased'];
                 $sent_to = $data['sent_to'];
@@ -238,7 +238,7 @@ class PurchaseController extends Controller
         $input = Input::all(); 
         //load input 
         $purchases = (empty($purchasex) && !empty($input['purchases']))? explode(',', $input['purchases']) : explode(',', $purchasex);
-        try {   
+        try {  
             //send receipts
             foreach ($purchases as $id)
             {

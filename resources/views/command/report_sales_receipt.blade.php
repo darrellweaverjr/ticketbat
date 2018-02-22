@@ -3,8 +3,7 @@
 @foreach ($data as $n => $p)
 "{{$n+1}}","{{$p['id']}}","{{$p['show_name']}}","{{$p['first_name']}}","{{$p['last_name']}}","{{$p['ticket_type']}}","{{$p['code']}}","{{$p['qty']}}","$ {{$p['retail_price']}}","$ {{$p['processing_fee']}}","$ {{$p['savings']}}","$ {{$p['price_paid']}}","{{date('m/d/Y g:ia',strtotime($p['show_time']))}}"
 @endforeach
-@else
-    @if($format != 'view')
+@elseif($format == 'pdf')
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -154,7 +153,6 @@
             </style>
     </head>
     <body>
-    @endif
         <div class="container">
             <div class="header">
                 <img src="http://www.ticketbat.com/themes/img/logo-header.jpg" alt="Ticket Bat">
@@ -242,8 +240,39 @@
                 </tbody>
             </table>
         </div>
-    @if($format != 'view')
     </body>
 </html>
-    @endif
+@elseif($format == 'printer')
+        @if($purchase['restrictions'] != 'None')
+        <b>Restrictions:</b> {{$purchase['restrictions']}}<br>
+        @endif
+        <b>Order ID:</b> {{$purchase['id']}}<br>
+        <b>Customer Name:</b> {{$purchase['first_name']}}  {{$purchase['last_name']}}<br>
+        <table border="0" align="center" cellpadding="10" cellspacing="0"">
+            <thead>
+                <th class="tb-show-details-title">
+                    <td width="80%">ITEMS</td>
+                    <td width="20%">PRICE</td>
+                </th>
+            </thead>
+            <tbody>
+                <tr class="tb-ticket-purchase-info">
+                    <td valign="top">
+                        <div  class="show-date">
+                            @if ($purchase['time_alternative']) {{$purchase['time_alternative']}} @else {{date('m/d/Y g:ia',strtotime($purchase['show_time']))}} @endif
+                        </div>
+                    </td>
+                    <td valign="top">
+                        <div class="show-details">
+                            <span class="tb-highlight-color">Package: {{$purchase['title']}}</span><br>
+                            <span class="tb-highlight-color-blue">{{$purchase['show_name']}}</span><br>
+                            {{$purchase['qty']}} - {{$purchase['ticket_type_type']}}
+                        </div>
+                    </td>
+                    <td valign="top">
+                        <div  class="show-price">$ {{money_format('%(#10n',$purchase['price_each'])}}</div>
+                    </td>
+                    </tr>
+            </tbody>
+        </table>
 @endif

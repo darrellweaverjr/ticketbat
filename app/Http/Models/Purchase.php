@@ -298,32 +298,32 @@ class Purchase extends Model
                 $rows_html = $totals_html = '';
                 $view_receipts = $pdf_receipts = $pdf_tickets = $purchases = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
-                $top = $banners = '';
+                $top = $banners = '';   
                 //set customer
-                $customer = $receipts[0]['customer'];
+                $customer = $receipts[0]['customer'];       
                 //loop receipts
                 foreach ($receipts as $receipt)
                 {
                     $purchases[] = $receipt['purchase'];
-        
-                    $format = 'pdf';
-                    //create pdf receipt
+                    
+                    //receipt
                     $purchase = array_merge((array)$receipt['purchase'],(array)$receipt['customer']);
                     $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
+                    
+                    //print copy of receipt
+                    if($receipt_view)
+                    {
+                        $format = 'printer';
+                        $view_receipts[] = View::make('command.report_sales_receipt', compact('purchase','format'));
+                    }
+                    //create pdf receipt
+                    $format = 'pdf';
                     $pdfUrlR = '/tmp/Receipt_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
                     $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
                     if(file_exists($pdfUrlR)) unlink($pdfUrlR);
                     PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
                     $pdf_receipts[] = $pdfUrlR;
                     
-                    //print copy of receipt
-                    if($receipt_view)
-                    {
-                        $format = 'view';
-                        $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
-                        $view_receipts[] = $pdf_receipt;
-                    }
-
                     //create pdf tickets
                     $tickets = $receipt['tickets'];
                     $type = 'C';
