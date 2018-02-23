@@ -237,6 +237,11 @@ class DashboardController extends Controller
         else
             $data['search']['refnum'] = ''; 
         //search printing
+        if(isset($input) && isset($input['mirror_type']) && !empty($input['mirror_type']))
+            $data['search']['mirror_type'] = $input['mirror_type'];
+        else
+            $data['search']['mirror_type'] = 'previous_period';
+        
         if(isset($input) && isset($input['mirror_period']) && !empty($input['mirror_period']) && is_numeric($input['mirror_period']))
             $data['search']['mirror_period'] = $input['mirror_period'];
         else
@@ -245,7 +250,7 @@ class DashboardController extends Controller
         if(isset($input) && isset($input['replace_chart']) && !empty($input['replace_chart']))
             $data['search']['replace_chart'] = 1;
         else
-            $data['search']['replace_chart'] = 0;
+            $data['search']['replace_chart'] = 1;
         
         if(isset($input) && isset($input['coupon_report']) && !empty($input['coupon_report']))
             $data['search']['coupon_report'] = 1;
@@ -348,36 +353,60 @@ class DashboardController extends Controller
                 });
             }
             //calculate summary table according to period
-            function cal_summary($period,$where,$search)
+            function cal_summary($period,$where,$search,$type='previous')
             {
                 $title = '';
                 if(!empty($period))
                 {
                     if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
                     {
-                        //calculate date range according to period
-                        $start_date = strtotime($search['soldtime_start_date']);
-                        $end_date = strtotime($search['soldtime_end_date']);
-                        $diff_days = floor(($end_date-$start_date) / (60*60*24));
-                        //if full month
-                        if(  date('Y-m-d',strtotime('first day of this month',$start_date)) == $search['soldtime_start_date']
-                          && date('Y-m-d',strtotime('last day of this month',$start_date)) == $search['soldtime_end_date'] )
+                        if($type=='previous_period')
                         {
-                            $start_date = date('Y-m-d',strtotime('first day of this month '.$period.' months ago',$start_date));
-                            $end_date = date('Y-m-d',strtotime('last day of this month '.$period.' months ago',$end_date));
+                            //calculate date range according to period
+                            $start_date = strtotime($search['soldtime_start_date']);
+                            $end_date = strtotime($search['soldtime_end_date']);
+                            $diff_days = floor(($end_date-$start_date) / (60*60*24));
+                            //if full month
+                            if(  date('Y-m-d',strtotime('first day of this month',$start_date)) == $search['soldtime_start_date']
+                              && date('Y-m-d',strtotime('last day of this month',$end_date)) == $search['soldtime_end_date'] )
+                            {
+                                $start_date = date('Y-m-d',strtotime('first day of this month '.$period.' months ago',$start_date));
+                                $end_date = date('Y-m-d',strtotime('last day of this month '.$period.' months ago',$end_date));
+                            }
+                            else if(  date('Y-m-d',strtotime('first day of this year',$start_date)) == $search['soldtime_start_date']
+                              && date('Y-m-d',strtotime('last day of this year',$end_date)) == $search['soldtime_end_date'] )
+                            {
+                                $start_date = date('Y-m-d',strtotime('first day of this year '.$period.' years ago',$start_date));
+                                $end_date = date('Y-m-d',strtotime('last day of this year '.$period.' years ago',$end_date));
+                            }
+                            else
+                            {
+                                $diff_days = ($diff_days + 1) * $period;
+                                $start_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$start_date));
+                                $end_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$end_date));
+                            }
                         }
-                        else if(  date('Y-m-d',strtotime('first day of this year',$start_date)) == $search['soldtime_start_date']
-                          && date('Y-m-d',strtotime('last day of this year',$end_date)) == $search['soldtime_end_date'] )
+                        else if($type=='previous_year')
                         {
-                            $start_date = date('Y-m-d',strtotime('first day of this year '.$period.' years ago',$start_date));
-                            $end_date = date('Y-m-d',strtotime('last day of this year '.$period.' years ago',$end_date));
+                            //calculate date range according to yearly
+                            $start_date = strtotime($search['soldtime_start_date'].' -'.$period.' year');
+                            $end_date = strtotime($search['soldtime_end_date'].' -'.$period.' year');
+                            $diff_days = floor(($end_date-$start_date) / (60*60*24));
+                            //if full month
+                            if(  date('Y-m-d',strtotime('first day of this month',$start_date)) ==$start_date
+                              && date('Y-m-d',strtotime('last day of this month',$end_date)) == $end_date )
+                            {
+                                $start_date = date('Y-m-d',strtotime('first day of this month '.$period.' months ago',$start_date));
+                                $end_date = date('Y-m-d',strtotime('last day of this month '.$period.' months ago',$end_date));
+                            }
+                            else
+                            {
+                                $start_date = date('Y-m-d',$start_date);
+                                $end_date = date('Y-m-d',$end_date);
+                            }
                         }
-                        else
-                        {
-                            $diff_days = ($diff_days + 1) * $period;
-                            $start_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$start_date));
-                            $end_date = date('Y-m-d',strtotime('-'.$diff_days.' days',$end_date));
-                        }
+                        else return ['title'=>$title,'table'=>[]];
+                        
                         //remove previous date comparison
                         $where = clear_date_sold($where);
                         //set up new date period
@@ -432,7 +461,7 @@ class DashboardController extends Controller
                 return ['title'=>$title,'table'=>$summary_table];
             }
             for ($i=0;$i<=$search['mirror_period'];$i++)
-                $summary[] = cal_summary($i,$where,$search);
+                $summary[] = cal_summary($i,$where,$search,$search['mirror_type']);
             //remove conditios of date for the graph, to show 1 year ago
             $where = clear_date_sold($where);
             $start = date('Y-m-d', strtotime('-1 year'));

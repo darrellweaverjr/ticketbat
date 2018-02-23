@@ -462,11 +462,19 @@
                                 </label><br>
                                 <div class="form-group">
                                     <div class="show-error"> 
-                                        <div class="input-group">
+                                        <div class="input-group mt-radio-list">
+                                            <label class="mt-radio">
+                                                <input type="radio" @if((!empty($search['mirror_type']) && $search['mirror_type']=='previous_period') || empty($search['mirror_type'])) checked="true" @endif name="mirror_type" value="previous_period" />Previous mirror type (default)
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" @if(!empty($search['mirror_type']) && $search['mirror_type']=='previous_year' ) checked="true" @endif name="mirror_type" value="previous_year" />Last years mirror period
+                                                <span></span>
+                                            </label>
                                             <input type="text" name="mirror_period" style="width:20px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " @if(!empty($search['mirror_period'])) value="{{$search['mirror_period']}}" @else value="0" @endif />
                                             <label class="control-label">&nbsp;&nbsp;&nbsp;Qty of mirrors prior sold date period</label>
                                         </div>
-                                    </div>
+                                    </div><br>
                                     <div class="show-error"> 
                                         <div class="input-group mt-checkbox-single">
                                             <label class="mt-checkbox">
