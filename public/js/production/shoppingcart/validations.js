@@ -224,7 +224,7 @@ var SwipeValidation = function () {
                         required: true
                     },
                     year: {
-                        minlength: 4,
+                        minlength: 2,
                         maxlength: 4,
                         digits: true,
                         required: true

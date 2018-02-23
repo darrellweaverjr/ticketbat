@@ -19,8 +19,8 @@ var SwipeCardFunctions = function () {
             e.preventDefault();
             $('#modal_swipe_card').modal('hide');
             $('#tab_swipe input[name="customer"]').focus();
-        }).keyup(function (e) {
-            if($(this).val().substr($(this).val().length-1)=="?") 
+        }).keyup(function (e) { 
+            if($(this).val().length>=78 && $(this).val().substr($(this).val().length-1)=="?") 
             {
                 if(valid_swipe_credit_card($(this).val()))
                 {
@@ -31,15 +31,20 @@ var SwipeCardFunctions = function () {
         });
         //event to check swipe
         function valid_swipe_credit_card(card_data)
-        {
+        {   
             var card_tracks = card_data.split("?");
             var valid_track1 = /^%B[^\^\W]{0,19}\^[^\^]{2,26}\^\d{4}\w{3}[^?]+\?\w?$/.test(card_tracks[0]+'?');
             var valid_track2 = /;[^=]{0,19}=\d{4}\w{3}[^?]+\?\w?/.test(card_tracks[1]+'?');
-            if(valid_track1 && valid_track2)
+            if(valid_track1 || valid_track2)
             {
                 var details1 = card_data.split("^");
                 var card_number = details1[0];
                 card_number = card_number.substring(2);
+                if(details1[1].trim()=='')
+                {
+                    alert('That credit card has no client name on it.');
+                    return false;
+                }
                 var names = details1[1].split("/");
                 var first_name = names[1].trim();
                 var last_name = names[0].trim();
