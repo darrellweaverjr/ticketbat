@@ -85,8 +85,9 @@ var CompleteFunctions = function () {
         });
         
         //on resend email welcome
-        $('#btn_receipt_print').on('click', function(ev) {
-            var receiptWindow = window.open('','TicketBat Receipt','width=300');
+        $('#btn_receipt_print').on('click', function(ev) {  
+            var height = parseInt($('#receipt_print').data('qty'))*200+400;
+            var receiptWindow = window.open('','TicketBat Receipt','width=300,height='+height);
             receiptWindow.document.write(document.getElementById("receipt_print").innerHTML);
             receiptWindow.print();
             receiptWindow.close();

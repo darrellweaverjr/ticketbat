@@ -244,7 +244,7 @@
 </html>
 @elseif($format == 'printer')
         <div style="text-align:center">
-            <img src="http://www.ticketbat.com/themes/img/logo-header.jpg" alt="Ticket Bat">
+            <img src="http://www.ticketbat.com/themes/img/logo-header.jpg" width="280" alt="TicketBat Receipt">
         </div><hr>
         @if($purchase['restrictions'] != 'None')
         <b>Restrictions:</b> {{$purchase['restrictions']}}<br>
@@ -269,6 +269,24 @@
                     <td valign="bottom">
                         $ {{money_format('%(#10n',$purchase['price_each'])}}
                     </td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr>
+                    <td valign="bottom">Qty</td>
+                    <td valign="bottom">{{$purchase['qty']}}</td>
+                </tr>
+                <tr>
+                    <td valign="bottom">Totals</td>
+                    <td valign="bottom">$ {{money_format('%(#10n',$purchase['price_paid'])}}</td>
+                </tr>
+                <tr>
+                    <td valign="bottom">Paid</td>
+                    <td valign="bottom">$ {{money_format('%(#10n',$purchase['price_paid'])}}</td>
+                </tr>
+                <tr>
+                    <td valign="bottom">Pending</td>
+                    <td valign="bottom">$ 0.00</td>
                 </tr>
             </tbody>
         </table><hr>

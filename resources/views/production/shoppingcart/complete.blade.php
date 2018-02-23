@@ -101,7 +101,7 @@
     @endif
     <!-- END BANNERS -->
     <!-- BEGIN RECEIPT -->
-    <div id="receipt_print" class="row hidden" style="text-align:center;">
+    <div id="receipt_print" class="row hidden" style="text-align:center;" data-qty="{{count($view_receipts)}}">
         @foreach($view_receipts as $r)
             @php echo $r @endphp
         @endforeach
