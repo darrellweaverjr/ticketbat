@@ -122,6 +122,7 @@ class ReportSales extends Command
             //FUNCTION SENDING EMAIL
             function sendEmailReport($data,$send,$date_report,$sqlMain,$sqlFrom,$sqlPaid,$sqlFuture)
             {
+                $emailx = env('MAIL_REPORT_TO');    
                 $namex = 'Administrator';
                 if($send != 'admin')
                 {
@@ -154,7 +155,7 @@ class ReportSales extends Command
                 $pdf_future_path = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $future_email = View::make('command.report_sales', compact('data','send','format'));                
                 PDF::loadHTML($future_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_future_path);
-                                $emailx = 'ivan@ticketbat.com';
+                                
                 //SENDING EMAIL
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Daily Sales Report to '.$namex);
                 $email->cc(env('MAIL_REPORT_CC'));
