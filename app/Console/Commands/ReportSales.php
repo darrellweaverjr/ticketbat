@@ -122,7 +122,6 @@ class ReportSales extends Command
             //FUNCTION SENDING EMAIL
             function sendEmailReport($data,$send,$date_report,$sqlMain,$sqlFrom,$sqlPaid,$sqlFuture)
             {
-                $emailx = env('MAIL_REPORT_TO');    
                 $namex = 'Administrator';
                 if($send != 'admin')
                 {
