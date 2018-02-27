@@ -27,7 +27,7 @@ class EmailSG {
                 if (is_array($from)) 
                     $_from = new SendGrid\Email($from[0], $from[1]);
                 else 
-                    $_from = new SendGrid\Email(null, $from);
+                    $_from = new SendGrid\Email(env('MAIL_FROM_NAME'), $from);
             }
             else    
                 $_from = new SendGrid\Email(env('MAIL_FROM_NAME'), env('MAIL_FROM'));
