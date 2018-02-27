@@ -143,7 +143,7 @@ var PurchaseFunctions = function () {
                         $('select[name="state"]').val('');
                         //check the zip code
                         $('input[name="zip"]').rules('remove');
-                        if(country_code=='US')
+                        if(country_code=='US' || country_code=='UM')
                         {
                             $('input[name="zip"]').rules('add', {
                                 minlength: 5,
