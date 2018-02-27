@@ -519,7 +519,11 @@
                             </div>
                         </div>
                         <div class="row" style="padding:20px">
-                            <hr><label class="mt-checkbox"><input type="checkbox" id="accept_terms" value="1"/>
+                            <hr>
+                            <label class="control-label text-center">
+                                <i class="required"> You must accept the terms and conditions in order to checkout.</i>
+                            </label><br>
+                            <label class="mt-checkbox"><input type="checkbox" id="accept_terms" value="1"/>
                                 I ACCEPT THE TERMS AND CONDITIONS. <a data-toggle="modal" href="#modal_terms_conditions">CLICK HERE TO VIEW TERMS AND CONDITIONS.</a>
                             <span></span></label><br>
                             <label class="mt-checkbox"><input type="checkbox" checked="true" id="accept_newsletter" value="1"/>
