@@ -1,0 +1,2 @@
+# fix purchase 16790, Shine Flores did a partial refund of $30.28 of $99.99:::: price paid changed and status, with note
+update purchases p set p.price_paid = 69.71, p.status='Active', p.note = 'Partial refund made by Shine Flores of $30.28 /$99.99' where p.id = 16790;
