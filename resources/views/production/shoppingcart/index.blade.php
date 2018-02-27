@@ -311,21 +311,7 @@
                                         <div class="col-sm-8 show-error">
                                             <input type="text" class="form-control" placeholder="" name="address" value="{{old('address')}}" autocomplete="on">
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-sm-3 text-right">City:
-                                            <i class="required"> required</i>
-                                        </label>
-                                        <div class="col-sm-3 show-error">
-                                            <input type="text" class="form-control" placeholder="" name="city" value="{{old('city')}}" autocomplete="on">
-                                        </div>
-                                        <label class="control-label col-sm-2 text-right">Zip:
-                                            <i class="required"> required</i>
-                                        </label>
-                                        <div class="col-sm-3 show-error">
-                                            <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px" value="{{old('zip')}}" autocomplete="on">
-                                        </div>
-                                    </div>
+                                    </div>                                    
                                     <div class="form-group">
                                         <label class="control-label col-sm-3 text-right">Country:
                                             <i class="required"> required</i>
@@ -347,6 +333,20 @@
                                                     <option value="{{$r->code}}">{{$r->name}}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3 text-right">City:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <input type="text" class="form-control" placeholder="" name="city" value="{{old('city')}}" autocomplete="on">
+                                        </div>
+                                        <label class="control-label col-sm-2 text-right">Zip:
+                                            <i class="required"> required</i>
+                                        </label>
+                                        <div class="col-sm-3 show-error">
+                                            <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px" value="{{old('zip')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">

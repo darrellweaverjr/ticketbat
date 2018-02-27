@@ -135,11 +135,32 @@ var PurchaseFunctions = function () {
                 success: function(data) {
                     if(data.success)
                     {
+                        //fill out states
                         $('select[name="state"]').find('option').not(':first').remove();
                         $.each(data.regions,function(k, v) {
                             $('select[name="state"]').append('<option value="'+v.code+'">'+v.name+'</option>');
                         });
                         $('select[name="state"]').val('');
+                        //check the zip code
+                        $('input[name="zip"]').rules('remove');
+                        if(country_code=='US')
+                        {
+                            $('input[name="zip"]').rules('add', {
+                                minlength: 5,
+                                maxlength: 5,
+                                digits: true,
+                                range: [10000, 99999],
+                                required: true
+                            });
+                        }
+                        else
+                        {
+                            $('input[name="zip"]').rules('add', {
+                                minlength: 3,
+                                maxlength: 10,
+                                required: true
+                            });
+                        }
                     }
                 },
                 error: function(){
