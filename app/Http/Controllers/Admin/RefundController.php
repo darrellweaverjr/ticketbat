@@ -188,7 +188,7 @@ class RefundController extends Controller{
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
             //function refund each
-            function refund_each($purchase, $user, $amount, $description, $current)
+            function refund_each($purchase, $user, $amount, $description, $current, $partial=false)
             {
                 if($purchase->payment_type != 'Credit')
                 {
@@ -208,7 +208,15 @@ class RefundController extends Controller{
                         {
                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount.'/ $'.$purchase->price_paid;
                             $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
-                            $purchase->status = 'Chargeback';
+                            if($partial)
+                            {
+                                $purchase->status = 'Active';
+                                $purchase->price_paid -= $amount;
+                            }
+                            else
+                            {
+                                $purchase->status = 'Chargeback';
+                            }
                             $purchase->updated = $current;
                             $purchase->save();
                             return ['success'=>true, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
@@ -290,14 +298,14 @@ class RefundController extends Controller{
                     }  
                     else if($input['type']=='custom_amount')
                     {
-                        if(!empty($input['amount']) && $input['amount']<=$purchase->price_paid  && $input['amount']>0)
+                        if(!empty($input['amount']) && $input['amount']<$purchase->price_paid  && $input['amount']>0)
                         {
-                            $refunded = refund_each($purchase, $user, $input['amount'], $description, $current);
+                            $refunded = refund_each($purchase, $user, $input['amount'], $description, $current,true);
                             if($refunded['success'])
                                 return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' refunded successfully!<br>'.$refunded['msg']];
                             return ['success'=>false, 'msg'=>'There was an error trying to refund the purchase #'.$purchase->id.'<br>'.$refunded['msg']];
                         }
-                        return ['success'=>false, 'msg'=>'The amount to refund must be greater than $0.00 and less or equal to $'.$purchase->price_paid];
+                        return ['success'=>false, 'msg'=>'The amount to refund must be greater than $0.00 and less than $'.$purchase->price_paid];
                     }  
                     else 
                         return ['success'=>false,'msg'=>'There was an error refunding.<br>Invalid option.'];
