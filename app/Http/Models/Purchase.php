@@ -304,59 +304,62 @@ class Purchase extends Model
                 //loop receipts
                 foreach ($receipts as $receipt)
                 {
-                    $purchases[] = $receipt['purchase'];
-                    
-                    //receipt
-                    $purchase = array_merge((array)$receipt['purchase'],(array)$receipt['customer']);
-                    $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
-                    
-                    //print copy of receipt
-                    if($receipt_view)
+                    if($purchase['qty']>0)
                     {
-                        $format = 'printer';
-                        $view_receipts[] = View::make('command.report_sales_receipt', compact('purchase','format'));
-                    }
-                    //create pdf receipt
-                    $format = 'pdf';
-                    $pdfUrlR = '/tmp/Receipt_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
-                    $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
-                    if(file_exists($pdfUrlR)) unlink($pdfUrlR);
-                    PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
-                    $pdf_receipts[] = $pdfUrlR;
+                        $purchases[] = $receipt['purchase'];
                     
-                    //create pdf tickets
-                    $tickets = $receipt['tickets'];
-                    $type = 'C';
-                    $pdfUrlT = '/tmp/Tickets_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
-                    $pdf_ticket = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));
-                    if(file_exists($pdfUrlT)) unlink($pdfUrlT);
-                    PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
-                    $pdf_tickets[] = $pdfUrlT;
+                        //receipt
+                        $purchase = array_merge((array)$receipt['purchase'],(array)$receipt['customer']);
+                        $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
 
-                    if($type_email != 'reminder')
-                    {
-                        //row on email to each purchase
-                        $rows_html.='<tr>'
-                                        . '<td align="center">'.$receipt['purchase']->ticket_type_type.' For '.$receipt['purchase']->show_name.'<br/>On '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).'</td> '
-                                        . '<td align="center">'.$receipt['purchase']->quantity.'</td> '
-                                        . '<td align="center">'.number_format($purchase['price_each'],2).'</td>  '
-                                        . '<td align="center">'.number_format($purchase['retail_price'],2).'</td> '
-                                        . '<td align="center">'.number_format($purchase['processing_fee'],2).'</td> </tr>';
-                        //sum values to show
-                        $totals['qty']+=$receipt['purchase']->quantity;
-                        $totals['processing_fee']+=$receipt['purchase']->processing_fee;
-                        $totals['retail_price']+=$receipt['purchase']->retail_price;
-                        $totals['discount']+=$receipt['purchase']->savings;
-                        //show on top if change date
-                        if($change=='CANCELED' || $change=='CHARGEBACK')
-                            $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
-                        else if($change=='ACTIVATED')
-                            $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVED</b></h1>' ;
-                        else if($change)
-                            $top = 'Your purchase of '.$receipt['purchase']->quantity.' '.$receipt['purchase']->ticket_type_type.' ticket(s) for '.
-                                   $receipt['purchase']->show_name.' on '.date('l, F jS - g:i A',strtotime($change)).
-                                   ' has been changed to '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).
-                                   '.<br>Your updated receipt and tickets are attached.' ;
+                        //print copy of receipt
+                        if($receipt_view)
+                        {
+                            $format = 'printer';
+                            $view_receipts[] = View::make('command.report_sales_receipt', compact('purchase','format'));
+                        }
+                        //create pdf receipt
+                        $format = 'pdf';
+                        $pdfUrlR = '/tmp/Receipt_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
+                        $pdf_receipt = View::make('command.report_sales_receipt', compact('purchase','format'));
+                        if(file_exists($pdfUrlR)) unlink($pdfUrlR);
+                        PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
+                        $pdf_receipts[] = $pdfUrlR;
+
+                        //create pdf tickets
+                        $tickets = $receipt['tickets'];
+                        $type = 'C';
+                        $pdfUrlT = '/tmp/Tickets_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
+                        $pdf_ticket = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));
+                        if(file_exists($pdfUrlT)) unlink($pdfUrlT);
+                        PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
+                        $pdf_tickets[] = $pdfUrlT;
+
+                        if($type_email != 'reminder')
+                        {
+                            //row on email to each purchase
+                            $rows_html.='<tr>'
+                                            . '<td align="center">'.$receipt['purchase']->ticket_type_type.' For '.$receipt['purchase']->show_name.'<br/>On '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).'</td> '
+                                            . '<td align="center">'.$receipt['purchase']->quantity.'</td> '
+                                            . '<td align="center">'.number_format($purchase['price_each'],2).'</td>  '
+                                            . '<td align="center">'.number_format($purchase['retail_price'],2).'</td> '
+                                            . '<td align="center">'.number_format($purchase['processing_fee'],2).'</td> </tr>';
+                            //sum values to show
+                            $totals['qty']+=$receipt['purchase']->quantity;
+                            $totals['processing_fee']+=$receipt['purchase']->processing_fee;
+                            $totals['retail_price']+=$receipt['purchase']->retail_price;
+                            $totals['discount']+=$receipt['purchase']->savings;
+                            //show on top if change date
+                            if($change=='CANCELED' || $change=='CHARGEBACK')
+                                $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
+                            else if($change=='ACTIVATED')
+                                $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVED</b></h1>' ;
+                            else if($change)
+                                $top = 'Your purchase of '.$receipt['purchase']->quantity.' '.$receipt['purchase']->ticket_type_type.' ticket(s) for '.
+                                       $receipt['purchase']->show_name.' on '.date('l, F jS - g:i A',strtotime($change)).
+                                       ' has been changed to '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).
+                                       '.<br>Your updated receipt and tickets are attached.' ;
+                        }
                     }
                 }
                 //table on email to show all totals
