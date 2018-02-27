@@ -288,8 +288,9 @@ class UserController extends Controller{
                         }  
                         if($seat->status != 'Sold')
                             return ['success'=>false, 'msg'=>'This ticket does not have a valid status: '.$t];
-                        $updated = $seat->update(['status'=>'Checked', 'updated'=>date('Y-m-d H:i:s')]);
-                        if(!$updated)
+                        $seat->status = 'Checked';
+                        $seat->updated = date('Y-m-d H:i:s');
+                        if(!$seat->save())
                             return ['success'=>false, 'msg'=>'There was an error checking this ticket: '.$t];
                         else
                             $purchase->checked++;
