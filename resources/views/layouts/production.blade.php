@@ -22,6 +22,12 @@
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <meta content="{{config('app.theme')}}img/no-image.jpg" name="broken-image" />
         
+        <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
+        <meta @if(!empty($ua_conversion_code)) content="{{json_encode($ua_conversion_code,true)}}" @else content="[]" @endif name="ua-conversion_code" />
+        <meta @if(!empty($analytics)) content="{{json_encode($analytics,true)}}" @else content="[]" @endif name="analytics" />
+        <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
+        <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
+        
         <!-- BEGIN GTAG VIEW -->
         @includeIf('production.general.gtag',['ua_conversion_code'=>(!empty($ua_conversion_code))? $ua_conversion_code:null,
                                               'ua_code'=>Session::get('ua_code',null),
@@ -227,7 +233,7 @@
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>
-<!--        <script src="/js/production/general/analytics.js" type="text/javascript"></script>-->
+        <script src="/js/production/general/analytics.js" type="text/javascript"></script>
         <script src="/js/production/general/contact.js" type="text/javascript"></script>
         <script src="/js/production/user/login.js" type="text/javascript"></script>
         <script src="/js/production/user/register.js" type="text/javascript"></script>
