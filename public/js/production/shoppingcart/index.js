@@ -281,6 +281,7 @@ var SubmitFunctions = function () {
             var proceed = false;
             var form_id = $('#tabs_payment').find('.tab-pane.active:not(.hidden)').find('form').attr('id');
             $('.alert-warning', $('#'+form_id) ).hide();
+            $('.alert-danger', $('#'+form_id) ).hide();
             if( $(this).is(':checked') )
             {
                 if( $('#'+form_id).valid() )
