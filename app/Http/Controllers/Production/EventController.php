@@ -36,6 +36,10 @@ class EventController extends Controller
                                           shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id, shows.ua_conversion_code,
                                           IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
                         ->where('shows.slug', $slug)->first();
             if(!$event)
                 return redirect()->route('index');
@@ -166,6 +170,10 @@ class EventController extends Controller
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                         ->where('shows.is_active','>',0)->where('venues.is_featured','>',0)
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
                         ->where('shows.slug', $slug)->where('show_times.id', $product)->where('show_times.is_active','>',0)
                         ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
                         ->where(function($query) {

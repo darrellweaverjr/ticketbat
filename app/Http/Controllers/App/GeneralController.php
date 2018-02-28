@@ -87,6 +87,10 @@ class GeneralController extends Controller{
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
@@ -117,6 +121,10 @@ class GeneralController extends Controller{
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select('venues.id','venues.name','images.url','locations.city')
                         ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('images.image_type','=','Logo')->where('tickets.is_active','>',0)
@@ -148,6 +156,10 @@ class GeneralController extends Controller{
                         ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue, shows.restrictions, 
                                           locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->orderBy('shows.name')->groupBy('shows.id')->first(); 

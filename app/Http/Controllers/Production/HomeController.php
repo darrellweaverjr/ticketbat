@@ -59,6 +59,10 @@ class HomeController extends Controller
                                           MIN(tickets.retail_price+tickets.processing_fee) AS price,
                                           shows.starting_at'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
                         ->where('images.image_type','=','Logo')
                         ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
                         ->where('show_times.is_active','=',1)
@@ -152,6 +156,10 @@ class HomeController extends Controller
                         ->select(DB::raw('shows.id, show_times.time_alternative,
                                           DATE_FORMAT(MIN(show_times.show_time),"%b %d, %Y @ %h:%i %p") AS date_venue_on'))    
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                     //custom

@@ -371,7 +371,7 @@ class ShowController extends Controller{
                 $show->instagram = strip_tags($input['instagram']);
                 $show->yelpbadge = strip_tags($input['yelpbadge']);
                 $show->on_sale = $input['on_sale'];
-                $show->on_featured = (!empty($input['on_featured']))? $input['on_featured'] : null;
+                $show->on_featured = (!empty($input['on_featured']) && strtotime($input['on_featured']))? $input['on_featured'] : null;
                 $show->printed_tickets = $input['printed_tickets'];
                 $show->individual_emails = $input['individual_emails'];
                 $show->manifest_emails = $input['manifest_emails'];
