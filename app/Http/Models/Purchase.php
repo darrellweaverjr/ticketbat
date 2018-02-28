@@ -304,7 +304,7 @@ class Purchase extends Model
                 //loop receipts
                 foreach ($receipts as $receipt)
                 {
-                    if($receipt['purchase']['qty']>0)
+                    if($receipt['purchase']->qty>0)
                     {
                         $purchases[] = $receipt['purchase'];
                     
