@@ -91,6 +91,16 @@ var TableDatatablesManaged = function () {
             minuteStep: 15,
             defaultDate:'now'
         });
+        //on_featured_date
+        $('#on_featured_date').datetimepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "yyyy-mm-dd hh:ii",
+            pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
+            todayBtn: true,
+            minuteStep: 15,
+            defaultDate:'now'
+        });
         $('#amex_only_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
                 format: 'YYYY-MM-DD HH:mm',
@@ -141,6 +151,11 @@ var TableDatatablesManaged = function () {
         $('#clear_onsale_date').on('click', function(ev) {
             $('#form_model_update [name="on_sale"]').val('');
             $('#on_sale_date').datetimepicker('update');
+        });
+        //clear onfeatured_date
+        $('#clear_onfeatured_date').on('click', function(ev) {
+            $('#form_model_update [name="on_featured"]').val('');
+            $('#on_featured_date').datetimepicker('update');
         });
         //clear amex_only_date
         $('#clear_amex_only_date').on('click', function(ev) {

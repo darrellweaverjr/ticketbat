@@ -342,20 +342,39 @@
                                                     <div class="col-md-11 show-error">
                                                         <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" />
                                                     </div>
-                                                    <label class="control-label col-md-9">Active</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="is_active" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="is_active" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                    <label class="control-label col-md-9">Featured</label>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Featured</label>
                                                     <div class="col-md-3">
                                                         <input type="hidden" name="is_featured" value="0"/>
                                                         <input type="checkbox" class="make-switch input-large" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
-                                                    <label class="control-label col-md-9">Available Printed Tickets</label>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-7">
+                                                        <div id="on_featured_date" class="input-group date form_datetime dtpicker">
+                                                            <input size="16" readonly="" class="form-control" type="text" name="on_featured" value="">
+                                                            <span class="input-group-btn">
+                                                                <button class="btn default date-set" type="button">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </button>
+                                                                <button class="btn default" type="button" id="clear_onfeatured_date">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-5">Mail printed tickets</label>
+                                                    <div class="col-md-7">
                                                         <input type="hidden" name="printed_tickets" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="Yes, mail them" data-off-text="No, e-tickets" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-5">Status</label>
+                                                    <div class="col-md-7">
+                                                        <input type="hidden" name="is_active" value="0"/>
+                                                        <input type="checkbox" class="make-switch input-large" name="is_active" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
                                             </div>
