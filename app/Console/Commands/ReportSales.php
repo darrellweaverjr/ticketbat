@@ -45,7 +45,7 @@ class ReportSales extends Command
             $days = $this->argument('days');
             $onlyadmin = $this->argument('onlyadmin');
             $date_report = date("F j, Y", strtotime('- '.$days.' day')).' to '.date("F j, Y", strtotime('yesterday'));
-            //dd($date_report);
+            
             setlocale(LC_MONETARY, 'en_US');
 
             $sqlMain = "SELECT v.id as v_id, v.name as v_name, v.accounting_email as v_email, s.id as s_id, s.name as s_name, s.accounting_email as s_email, t.ticket_type,
@@ -155,7 +155,7 @@ class ReportSales extends Command
                 $pdf_future_path = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$namex).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $future_email = View::make('command.report_sales', compact('data','send','format'));                
                 PDF::loadHTML($future_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_future_path);
-                                   
+                                 
                 //SENDING EMAIL
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Daily Sales Report to '.$namex);
                 $email->cc(env('MAIL_REPORT_CC'));
@@ -167,9 +167,9 @@ class ReportSales extends Command
                 if($send == 'admin')
                 {   
                     //add resume of types on the email body
-                    $format = 'types';
+                    /*$format = 'types';
                     $email_body = View::make('command.report_sales', compact('data','send','format'));          
-                    $email->view($email_body);
+                    $email->view($email_body);*/
                     
                     //SALES REFERRER PDF
                     $format = 'referrer';
