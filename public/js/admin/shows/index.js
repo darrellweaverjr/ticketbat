@@ -87,9 +87,8 @@ var TableDatatablesManaged = function () {
             isRTL: App.isRTL(),
             format: "yyyy-mm-dd hh:ii",
             pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
-            todayBtn: true,
             minuteStep: 15,
-            defaultDate:'now'
+            startDate: new Date()
         });
         //on_featured_date
         $('#on_featured_date').datetimepicker({
@@ -97,9 +96,8 @@ var TableDatatablesManaged = function () {
             isRTL: App.isRTL(),
             format: "yyyy-mm-dd hh:ii",
             pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
-            todayBtn: true,
             minuteStep: 15,
-            defaultDate:'now'
+            startDate: new Date()
         });
         $('#amex_only_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
