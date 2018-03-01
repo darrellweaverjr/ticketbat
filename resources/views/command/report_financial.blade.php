@@ -127,13 +127,22 @@
                     <td>TICKETS</td>
                     <td>AMOUNT</td>
                 </tr>
-                @foreach($summary as $v)
+                @foreach($summary as $i=>$v)
+                @if(count($summary)-1!=$i)
                 <tr>
                     <td width="30%" style='text-align:left'>{{substr($v['name'],0,25)}}</td>
                     <td style='text-align:center'>{{number_format($v['purchases'])}}</td>
                     <td style='text-align:center'>{{number_format($v['tickets'])}}</td>
                     <td style='text-align:right'>$ {{number_format($v['amount'],2)}}</td>
                 </tr>
+                @else
+                <tr style="font-weight:bold">
+                    <td width="30%" style='text-align:left'>{{$v['name']}}</td>
+                    <td style='text-align:center'>{{number_format($v['purchases'],2)}} %</td>
+                    <td style='text-align:center'>{{number_format($v['tickets']),2}} %</td>
+                    <td style='text-align:right'>{{number_format($v['amount'],2)}} %</td>
+                </tr>
+                @endif
                 @endforeach
             </table>
         </div>

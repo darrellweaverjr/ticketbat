@@ -93,7 +93,7 @@ class ReportFinancial extends Command
                         ->whereDate('purchases.created','<=',date('Y-m-t',strtotime($end)))
                         ->groupBy('venues.id')->orderBy('venues.name')
                         ->distinct()->get()->toArray();
-            $summary[] = calc_totals($table2,'Total Month - '.date('M',strtotime($end)));
+            $summary[] = calc_totals($table2,'Total Month ('.date('M',strtotime($end)).')');
             $tables[] = ['title'=>'Month: '.date('F/Y', strtotime($end)),'data'=>$table2];
             //get all purchases totals YTD
             $table3 = DB::table('purchases')
@@ -126,10 +126,18 @@ class ReportFinancial extends Command
                         ->groupBy('venues.id')->orderBy('venues.name')
                         ->distinct()->get()->toArray();
             $summary[] = calc_totals($table4,'YOY Same Period');
+            $summary[] = ['name'=>($summary[0]['purchases']>$summary[3]['purchases'])? 'Increased' : 'Decreased',
+                          'purchases'=>($summary[0]['purchases']-$summary[3]['purchases'])/$summary[3]['purchases']*100,
+                          'tickets'=>($summary[0]['tickets']-$summary[3]['tickets'])/$summary[3]['tickets']*100,
+                          'amount'=>($summary[0]['amount']-$summary[3]['amount'])/$summary[3]['amount']*100];
             $tables[] = ['title'=>'YOY: '.date('F j, Y',strtotime('-1 year '.$start)).' to '.date('F j, Y',strtotime('-1 year '.$end)),'data'=>$table4];
             //create report
             $pdf_path = '/tmp/ReportFinancial_'.date('Y-m-d').'_'.date('U').'.pdf';
             $view_email = View::make('command.report_financial', compact('summary','tables')); 
+            
+            echo $view_email->render();
+            exit();
+            
             PDF::loadHTML($view_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
             //send the report
             $emailx = 'ivan@ticketbat.com';
