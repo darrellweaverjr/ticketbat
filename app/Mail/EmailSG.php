@@ -319,7 +319,7 @@ class EmailSG {
                         break;
                     }
                 case 'promos_announced': {
-                        if (isset($data['announced']) && isset($data['week'])) {
+                        if (isset($data) && isset($data['announced']) && isset($data['week'])) {
                             $body[] = array('variable' => ':announced', 'value' => $data['announced']);
                             $body[] = array('variable' => ':week', 'value' => $data['week']);
                             $body[] = array('variable' => ':year', 'value' => date('Y'));
@@ -327,19 +327,19 @@ class EmailSG {
                         break;
                     }
                 case 'welcome':{
-                        if(isset($data['username']) && isset($data['password']))
-                        {
+                        if(isset($data) && isset($data['username']) && isset($data['password']))
+                        {       
                           $body[] = array('variable'=>':username', 'value' => $data['username']);
                           $body[] = array('variable'=>':password', 'value' => $data['password']);
                           if(empty($data['first_purchase']))
                               $body[] = array('variable'=>':purchase', 'value' => '');
                           else 
-                              $body[] = array('variable'=>':purchase', 'value' => 'Thank you for making your first purchase with <a href="https://ticketbat.com/" style="color:#00AA0E; text-transform:capitalize;">TicketBat.com</a>!');
+                              $body[] = array('variable'=>':purchase', 'value' => 'Thank you for making your first purchase with <a href="https://www.ticketbat.com" style="color:#00AA0E; text-transform:capitalize;">TicketBat.com</a>!');
                         }
                         break;
                     }
                 case 'custom': {
-                        if (isset($data)) {
+                        if (isset($data) && isset($data['body'])) {
                             $body[] = array('variable' => ':body', 'value' => $data['body']);
                         }
                         break;

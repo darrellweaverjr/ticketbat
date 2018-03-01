@@ -169,8 +169,8 @@ class User extends Authenticatable
         try {
             //send email
             $email = new EmailSG(null,$this->email,'TicketBat Team - Welcome to TicketBat!');
-            $email->body('welcome',['username'=>$this->email,'password'=> $this->slug,'first_purchase'=>$first_purchase]);
             $email->category('Primary');
+            $email->body('welcome',['username'=>$this->email,'password'=> $this->slug,'first_purchase'=>$first_purchase]);
             $email->template('a7b5c451-4d26-4292-97cd-239880e7dd20');
             return $email->send();
         } catch (Exception $ex) {
