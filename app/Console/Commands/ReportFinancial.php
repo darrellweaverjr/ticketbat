@@ -136,7 +136,7 @@ class ReportFinancial extends Command
             $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Financial Report');
             $email->cc(env('MAIL_REPORT_CC'));
             $email->category('Reports');
-            $email->body('sales_report',array('date'=>$date_report));
+            $email->body('sales_report',array('date'=>$tables[0]['title']));
             $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
             $email->attachment($pdf_path);
             if($email->send())
