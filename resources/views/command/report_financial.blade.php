@@ -3,381 +3,172 @@
         <style>
             table {
                 border-collapse: collapse;
+                border-spacing: 0;
+            }
+            td, th {
+                padding: 0;
+                text-align: left;
             }
 
-            table, th, td {
-                border: 1px solid black;
-                text-align: center;
-                font-size: 15.7px;
+            .table {
+                margin-bottom: 20px;
+                max-width: 50%;
+                width: 48%;
             }
-            tr:hover {
+            .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+                border-top: 1px solid #ddd;
+                line-height: 1.42857;
+                padding: 8px;
+                vertical-align: top;
+            }
+            .table > thead > tr > th {
+                border-bottom: 2px solid #ddd;
+                vertical-align: bottom;
+            }
+            .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > th, .table > caption + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > td, .table > thead:first-child > tr:first-child > td {
+                border-top: 0 none;
+            }
+            .table > tbody + tbody {
+                border-top: 2px solid #ddd;
+            }
+            .table .table {
+                background-color: #fff;
+            }
+            .table-condensed > thead > tr > th, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > td {
+                padding: 5px;
+            }
+            .table-bordered {
+                border: 1px solid #ddd;
+            }
+            .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+                border: 1px solid #ddd;
+            }
+            .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+                border-bottom-width: 2px;
+            }
+            .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+                background-color: #EEEEEE;
+            }
+            .table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
                 background-color: #f5f5f5;
             }
-            tr:nth-child(even) {
-                background-color: #f2f2f2;
+            table col[class*="col-"] {
+                display: table-column;
+                float: none;
+                position: static;
             }
-        </style>  
+            table td[class*="col-"], table th[class*="col-"] {
+                display: table-cell;
+                float: none;
+                position: static;
+            }
+            .table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th {
+                background-color: #f5f5f5;
+            }
+            .table-hover > tbody > tr > td.active:hover, .table-hover > tbody > tr > th.active:hover, .table-hover > tbody > tr.active:hover > td, .table-hover > tbody > tr:hover > .active, .table-hover > tbody > tr.active:hover > th {
+                background-color: #e8e8e8;
+            }
+            .table > thead > tr > td.success, .table > tbody > tr > td.success, .table > tfoot > tr > td.success, .table > thead > tr > th.success, .table > tbody > tr > th.success, .table > tfoot > tr > th.success, .table > thead > tr.success > td, .table > tbody > tr.success > td, .table > tfoot > tr.success > td, .table > thead > tr.success > th, .table > tbody > tr.success > th, .table > tfoot > tr.success > th {
+                background-color: #dff0d8;
+            }
+            .table-hover > tbody > tr > td.success:hover, .table-hover > tbody > tr > th.success:hover, .table-hover > tbody > tr.success:hover > td, .table-hover > tbody > tr:hover > .success, .table-hover > tbody > tr.success:hover > th {
+                background-color: #d0e9c6;
+            }
+            .table > thead > tr > td.info, .table > tbody > tr > td.info, .table > tfoot > tr > td.info, .table > thead > tr > th.info, .table > tbody > tr > th.info, .table > tfoot > tr > th.info, .table > thead > tr.info > td, .table > tbody > tr.info > td, .table > tfoot > tr.info > td, .table > thead > tr.info > th, .table > tbody > tr.info > th, .table > tfoot > tr.info > th {
+                background-color: #d9edf7;
+            }
+            .table-hover > tbody > tr > td.info:hover, .table-hover > tbody > tr > th.info:hover, .table-hover > tbody > tr.info:hover > td, .table-hover > tbody > tr:hover > .info, .table-hover > tbody > tr.info:hover > th {
+                background-color: #c4e3f3;
+            }
+            .table > thead > tr > td.warning, .table > tbody > tr > td.warning, .table > tfoot > tr > td.warning, .table > thead > tr > th.warning, .table > tbody > tr > th.warning, .table > tfoot > tr > th.warning, .table > thead > tr.warning > td, .table > tbody > tr.warning > td, .table > tfoot > tr.warning > td, .table > thead > tr.warning > th, .table > tbody > tr.warning > th, .table > tfoot > tr.warning > th {
+                background-color: #fcf8e3;
+            }
+            .table-hover > tbody > tr > td.warning:hover, .table-hover > tbody > tr > th.warning:hover, .table-hover > tbody > tr.warning:hover > td, .table-hover > tbody > tr:hover > .warning, .table-hover > tbody > tr.warning:hover > th {
+                background-color: #faf2cc;
+            }
+            .table > thead > tr > td.danger, .table > tbody > tr > td.danger, .table > tfoot > tr > td.danger, .table > thead > tr > th.danger, .table > tbody > tr > th.danger, .table > tfoot > tr > th.danger, .table > thead > tr.danger > td, .table > tbody > tr.danger > td, .table > tfoot > tr.danger > td, .table > thead > tr.danger > th, .table > tbody > tr.danger > th, .table > tfoot > tr.danger > th {
+                background-color: #f2dede;
+            }
+            .table-hover > tbody > tr > td.danger:hover, .table-hover > tbody > tr > th.danger:hover, .table-hover > tbody > tr.danger:hover > td, .table-hover > tbody > tr:hover > .danger, .table-hover > tbody > tr.danger:hover > th {
+                background-color: #ebcccc;
+            }
+        </style>
     </head>
     <meta charset="utf-8">
-    <body style="margin:-20px -20px">
-
-        @if ($filter==0)	
-
-        <table align="center" style="margin-top:80px;border:2;height:800px;page-break-after:always;">       
+    <body>
+        <h1>TicketBat.com</h1>
+        <h3>Financial Report<br><i>{{$date_report}}</i></h3><hr>
+        <table style="float: left;font-size:10px!important" class="table table-striped table-responsive">
+            <tr style="font-weight:bold">
+                <td width="40%">VENUES</td>
+                <td>PURCHASES</td>
+                <td>TICKETS</td>
+                <td>AMOUNT</td>
+            </tr>
+            @foreach($venues as $v)
             <tr>
-                <td colspan="19" style="text-align:center;font-size: 20px;background-color: black; color:white">
-                    <div class="purchase-reciept"><b>TICKETBAT FINANCIAL REPORT<br/>ADMIN</b></div>
-                </td>
+                <td width="30%" style='text-align:left'>{{substr($v->name,0,25)}}</td>
+                <td style='text-align:center'>{{number_format($v->purchases)}}</td>
+                <td style='text-align:center'>{{number_format($v->tickets)}}</td>
+                <td style='text-align:right'>$ {{number_format($v->amount,2)}}</td>
             </tr>
-            <tr style="background-color: gray; color:white">
-
-                <td style="width:400px;background-color: gray; color:white"></td>
-                @foreach($days_this_week as $week_day=>$date)
-                <td colspan="2" style="background-color: gray; color:white">{{date('m/d/Y',strtotime($date))}}<br/>{{$week_day}}
-                </td>
-                @endforeach
-                <td colspan="2" style="background-color: gray; color:white">Week Total</td>
-                <td colspan="2" style="background-color: gray; color:white">All Time Total</td>
-
-            </tr>
-            <tr style="background-color: gray; color:white">
-                <td style="width:400px;background-color: gray; color:white"></td>
-                @for ($x = 1; $x <= 9; $x++)
-                <td style="background-color: gray; color:white">Amount</td><td style="background-color: gray; color:white">Qty</td>
-                @endfor
+            @endforeach
+        </table>
+        <table style="float: right;font-size:10px!important" class="table table-striped table-responsive">
+            <tr style="font-weight:bold">
+                <td width="30%">TOTALS</td>
+                <td>PURCHASES</td>
+                <td>TICKETS</td>
+                <td>AMOUNT</td>
             </tr>
             <tr>
-                <td colspan="19" style="background-color: gray"></td>
-            </tr>
-            <!--      GROSS REVENUE      -->
-            <tr>
-                <td colspan="19" height="15px" style="background-color: gray; color:white">GROSS REVENUE</td>
-            </tr>
-
-            @foreach($gross_revenue as $type=>$gross)
-                @if($type !='total_total')
-            <tr height="15px">
-                <td style="width:400px;text-align: left;font-weight: bold">                                    
-                    @if($type =='week_this') Current Week 
-                    @elseif($type =='week_last') Previous Week 
-                    @elseif($type =='week_diff') Increase/Decrease
-                    @else Increase/Decrease %
-                    @endif
-                </td>
-                @foreach($days_this_week as $week_day=>$date)
-                    @if((date('Y-m-d')>= $date || $type=='week_last') && isset($gross[$date]))                          
-                        @php $revenue = number_format($gross[$date]['gross_revenue'],2); @endphp
-                        @if($revenue < 0) @php $revenue = '<b style="color:red">'.$revenue.'</b>'; @endphp @endif
-                        @php $qty = number_format($gross[$date]['qty']) @endphp
-                        @if($qty < 0)  @php $qty = '<b style="color:red">'.$qty.'</b>' @endphp @endif
-                        @php $t_revenue = number_format($gross['week_total']['gross_revenue'],2) @endphp
-                        @if($t_revenue < 0)  @php $t_revenue = '<b style="color:red">'.$t_revenue.'</b>' @endphp @endif
-                        @php $t_qty = number_format($gross['week_total']['qty']) @endphp
-                        @if($t_qty < 0)  @php $t_qty = '<b style="color:red">'.$t_qty.'</b>' @endphp @endif  
-                <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif @php echo $revenue @endphp @if($type == 'week_perc') %@endif</td>
-                <td style="text-align: center;">@php echo $qty @endphp @if($type == 'week_perc') %@endif</td>
-                    @else
-                <td style="padding-right: 10px;text-align: center;">-</td>
-                <td style="text-align: center;">-</td>
-                    @endif
-                @endforeach
-                <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_revenue @endphp @if($type == 'week_perc') % @endif</td>
-                <td style="text-align: center;font-weight: bold"> @php echo $t_qty @endphp @if($type == 'week_perc') % @endif</td> 
-                @if($type=='week_this')
-                <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray">$ {{number_format($gross_revenue['total_total']['gross_revenue'],2)}}</td>
-                <td style="text-align: center;font-weight: bold; color:Blue  ;font-size: 18px;background-color: lightgray">{{number_format($gross_revenue['total_total']['qty'])}}</td>
+                <td style='text-align:left'>Total Tickets</td>
+                @if(!empty($total_tickets))
+                <td style='text-align:center'>{{number_format($total_tickets['purchases'])}}</td>
+                <td style='text-align:center'>{{number_format($total_tickets['tickets'])}}</td>
+                <td style='text-align:right'>$ {{number_format($total_tickets['amount'],2)}}</td>
                 @else
-                <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue  ;font-size: 18px;background-color: gray"></td>
-                <td style="text-align: center;font-weight: bold; color:Blue  ;font-size: 18px;background-color: gray"></td>
+                <td style='text-align:center'>0</td>
+                <td style='text-align:center'>0</td>
+                <td style='text-align:right'>$ 0.00</td>
                 @endif
-            </tr> 
-                @endif
-            @endforeach
-        <tr>
-            <td colspan="19" style="background-color: gray"></td>
-        </tr>
-
-        <!--      COUPONS      -->
-        <tr>
-            <td colspan="19" height="15px" style="background-color: gray; color:white">COUPONS</td>
-        </tr>
-        @foreach($coupons as $code=>$coupon)
-            @if($code != 'total')
-        <tr>
-            <td style="width:400px;text-align: left;">{{$code}}</td>
-                @foreach($days_this_week as $week_day=>$date)
-                    @if(date('Y-m-d')>= $date && isset($coupon[$date]))
-            <td style="padding-right: 10px;text-align: right;">$ {{number_format($coupon[$date]['savings'],2)}}</td>
-            <td style="text-align: center;">{{number_format($coupon[$date]['qty'],2)}}</td>
-                    @else
-            <td style="padding-right: 10px;text-align: center;">$ 0.00</td>
-            <td style="text-align: center;">0</td>
-                    @endif
-                @endforeach
-            <td style="padding-right: 10px;text-align: right;font-weight: bold">$ {{number_format($coupon['week_total']['savings'],2)}}</td>
-            <td style="text-align: center;font-weight: bold;">{{number_format($coupon['week_total']['qty'])}}</td>
-            <td style="padding-right: 10px;text-align: right;font-weight: bold;">$ {{number_format($coupon['total_total']['savings'],2)}}</td>
-            <td style="text-align: center;font-weight: bold;">{{number_format($coupon['total_total']['qty'])}}</td>
-        </tr> 
-            @endif 
-        @endforeach
-        <tr style=";background-color: lightgray">
-            <td style="width:400px;text-align: left;font-weight: bold">Coupons Total</td>
-            @foreach($days_this_week as $week_day=>$date)
-                @if(date('Y-m-d')>= $date && isset($coupons['total'][$date]))
-            <td style="padding-right: 10px;text-align: right;font-weight: bold">$ {{number_format($coupons['total'][$date]['savings'],2)}}</td>
-            <td style="text-align: center;font-weight: bold">{{number_format($coupons['total'][$date]['qty'])}}</td>
+            </tr>
+            <tr>
+                <td style='text-align:left'>Total Month</td>
+                @if(!empty($total_month))
+                <td style='text-align:center'>{{number_format($total_month->purchases)}}</td>
+                <td style='text-align:center'>{{number_format($total_month->tickets)}}</td>
+                <td style='text-align:right'>$ {{number_format($total_month->amount,2)}}</td>
                 @else
-            <td style="padding-right: 10px;text-align: center;font-weight: bold">$ 0.00</td>
-            <td style="text-align: center;font-weight: bold">0</td>
+                <td style='text-align:center'>0</td>
+                <td style='text-align:center'>0</td>
+                <td style='text-align:right'>$ 0.00</td>
                 @endif
-            @endforeach
-            <td style="padding-right: 10px;text-align: right;font-weight: bold">$ {{number_format($coupons['total']['week_total']['savings'],2)}}</td>
-            <td style="text-align: center;font-weight: bold">{{number_format($coupons['total']['week_total']['qty'])}}</td>
-            <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue">$ {{number_format($coupons['total']['total_total']['savings'],2)}}</td>
-            <td style="text-align: center;font-weight: bold; color:Blue">{{number_format($coupons['total']['total_total']['qty'])}}</td>
-        </tr> 
-        <tr>
-            <td colspan="19" style="background-color: gray"></td>
-        </tr>
-
-        <!--      GROSS PROFITS      -->
-        
-        <tr>
-            <td colspan="19" height="15px" style="background-color: gray; color:white">GROSS PROFITS</td>
-        </tr>
-        @foreach($gross_profit as $type=>$profit)
-            @if($type !='total_total')
-        <tr>
-            <td colspan="19" style="width:400px;text-align: left;">
-                @if($type =='week_this') Current Week 
-                @elseif($type =='week_last') Previous Week 
-                @elseif($type =='week_diff') Increase/Decrease
-                @elseif($type =='week_perc') Increase/Decrease %
+            </tr>
+            <tr>
+                <td style='text-align:left'>Total Tickets YTD</td>
+                @if(!empty($total_ytd))
+                <td style='text-align:center'>{{number_format($total_ytd->purchases)}}</td>
+                <td style='text-align:center'>{{number_format($total_ytd->tickets)}}</td>
+                <td style='text-align:right'>$ {{number_format($total_ytd->amount,2)}}</td>
                 @else
+                <td style='text-align:center'>0</td>
+                <td style='text-align:center'>0</td>
+                <td style='text-align:right'>$ 0.00</td>
                 @endif
-            </td>
-        </tr> 
-        <tr>
-            <td style="width:400px;text-align: left;">Commissions</td>
-            @foreach($days_this_week as $week_day=>$date)
-                @if(date('Y-m-d')>= $date && isset($profit[$date])) 
-                    @php $commissions = number_format($profit[$date]['commissions'],2) @endphp
-                    @if($commissions < 0)  @php $commissions = '<b style="color:red">'.$commissions.'</b>' @endphp @endif
-                    @php $t_commissions = number_format($profit['week_total']['commissions'],2) @endphp
-                    @if($t_commissions < 0)  @php $t_commissions = '<b style="color:red">'.$t_commissions.'</b>' @endphp @endif
-        <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif @php echo $commissions @endphp @if($type == 'week_perc') % @endif</td>
-        <td>-</td>
+            </tr>
+            <tr>
+                <td style='text-align:left'>YOY Same Period</td>
+                @if(!empty($total_yoy))
+                <td style='text-align:center'>{{number_format($total_yoy->purchases)}}</td>
+                <td style='text-align:center'>{{number_format($total_yoy->tickets)}}</td>
+                <td style='text-align:right'>$ {{number_format($total_yoy->amount,2)}}</td>
                 @else
-        <td style="padding-right: 10px;text-align: center;">-</td>
-        <td>-</td>
+                <td style='text-align:center'>0</td>
+                <td style='text-align:center'>0</td>
+                <td style='text-align:right'>$ 0.00</td>
                 @endif
-            @endforeach
-        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_commissions @endphp @if($type == 'week_perc') % @endif</td>
-        <td>-</td>
-        <td @if($type != 'week_this')style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;background-color:gray;" 
-             @else style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;" @endif 
-             colspan="2">@if($type == 'week_this')$ {{number_format($gross_profit['total_total']['commissions'],2)}} @endif</td>
-        </tr>
-        <tr>
-            <td style="width:400px;text-align: left;">Proccessing Fees</td>
-            @foreach($days_this_week as $week_day=>$date)
-                @if(date('Y-m-d')>= $date && isset($profit[$date])) 
-                    @php $processing_fees = number_format($profit[$date]['processing_fees'],2) @endphp
-                    @if($processing_fees < 0)  @php $processing_fees = '<b style="color:red">'.$processing_fees.'</b>' @endphp @endif
-                    @php $t_processing_fees = number_format($profit['week_total']['processing_fees'],2) @endphp
-                    @if($t_processing_fees < 0)  @php $t_processing_fees = '<b style="color:red">'.$t_processing_fees.'</b>' @endphp @endif
-            <td style="padding-right: 10px;text-align: right;">@if($type != 'week_perc') $ @endif @php echo $processing_fees @endphp @if($type == 'week_perc') % @endif</td>
-        <td>-</td>
-                @else
-        <td style="padding-right: 10px;text-align: center;">-</td>
-        <td>-</td>
-                @endif 
-            @endforeach
-        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_processing_fees @endphp @if($type == 'week_perc') % @endif</td>
-            <td>-</td>
-            <td @if($type != 'week_this')style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;background-color:gray;" 
-                 @else style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;" @endif 
-                 colspan="2">@if($type == 'week_this')$ {{number_format($gross_profit['total_total']['processing_fees'],2)}} @endif</td>
-        </tr>
-        <tr>
-            <td style="width:400px;text-align: left;font-weight: bold">
-                @if($type =='week_this') Current Week 
-                @elseif($type =='week_last') Previous Week 
-                @elseif($type =='week_diff') Increase/Decrease
-                @elseif($type =='week_perc') Increase/Decrease %
-                @else   
-                @endif
-                Total
-            </td>
-                @foreach($days_this_week as $week_day=>$date)
-                    @if(date('Y-m-d')>= $date && isset($profit[$date])) 
-                        @php $profitt = number_format($profit[$date]['gross_profit'],2) @endphp
-                        @if($profitt < 0)  @php $profitt = '<b style="color:red">'.$profitt.'</b>' @endphp @endif
-                        @php $t_profit = number_format($profit['week_total']['gross_profit'],2) @endphp
-                        @if($t_profit < 0)  @php $t_profit = '<b style="color:red">'.$t_profit.'</b>' @endphp @endif
-            <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $profitt @endphp @if($type == 'week_perc') % @endif</td>
-            <td>-</td>
-                    @else
-            <td style="padding-right: 10px;text-align: center;">-</td>
-            <td>-</td>
-                    @endif
-                @endforeach
-        <td style="padding-right: 10px;text-align: right;font-weight: bold">@if($type != 'week_perc') $ @endif @php echo $t_profit @endphp @if($type == 'week_perc') % @endif</td>
-            <td>-</td>
-            <td @if($type != 'week_this')style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;background-color:gray;" 
-                 @else style="padding-right:10px;text-align:right;font-weight:bold;color:Blue;" @endif
-                 colspan="2">@if($type == 'week_this')$ {{number_format($gross_profit['total_total']['gross_profit'],2)}} @endif</td>
-        </tr>
-        <tr>
-            <td colspan="19" style="background-color: gray"></td>
-        </tr> 
-            @endif
-        @endforeach
-
-            <!--      CHARGEBACK      -->
-            <tr>
-                <td colspan="19" height="15px" style="background-color: gray; color:white">CHARGEBACK</td>
             </tr>
-            <tr>                              
-                <td style="width:400px;text-align: left;font-weight: bold">Charge Back</td>
-                @foreach($charge_back as $date=>$charges)
-                    @if((date('Y-m-d')>= $date || $date=='week_total') && isset($charges['price_paid']) && isset($charges['qty'])) 
-                <td @if($date=='week_total')style="padding-right:10px;text-align:right;font-weight:bold;" @else style="padding-right:10px;text-align:right;" @endif>$ -{{number_format($charges['price_paid'],2)}}</td>
-            <td @if($date=='week_total')style="padding-right:10px;text-align:right;font-weight:bold;" @else style="padding-right:10px;text-align:right;" @endif>{{number_format($charges['qty'])}}</td> 
-                    @elseif($date!='total_total')
-            <td style="padding-right: 10px;text-align: center;">$ -0.00</td>
-            <td style="padding-right: 10px;text-align: center;">0</td>   
-                    @endif
-                @endforeach
-            <td style="padding-right: 10px;text-align: right;font-weight: bold; color:Blue">$ -{{number_format($charge_back['total_total']['price_paid'],2)}}</td>
-                <td style="text-align: center;font-weight: bold; color:Blue">{{number_format($charge_back['total_total']['qty'])}}</td> 
-            </tr>
-            <tr>
-                <td colspan="19" style="background-color: gray"></td>
-            </tr>  
-            <tr>
-                <td colspan="19" style="background-color: white;border:1px solid white;text-align:left"><i>NOTE: Only showed venues with tickets sold this week.</i></td>
-            </tr>                                                
-        </table> 
-        @endif     
-        
-        <!--      VENUES      -->
-
-        @foreach($venues as $venue_id=>$venue)
-            @if(($filter == 0 || ($filter != 0 && $venue_id == $filter)) && (($venue['total_total']['qty'] != 0 && $filter==0) || $filter!=0))
-        <table align="center" style="margin-top:80px;border:2px;page-break-after:always;">       
-        <tr>
-            <td colspan="19" style="text-align:center;font-size: 20px;background-color: black; color:white">
-                    <div class="purchase-reciept"><b>TICKETBAT FINANCIAL REPORT FOR VENUES <br/>- {{strtoupper($venue['name'])}} -</b></div>
-                </td>
-            </tr>
-            <tr style="background-color: gray; color:white">
-                <td style="width:500px;background-color: gray; color:white"></td>                
-                @foreach($days_this_week as $week_day=>$date)
-                <td colspan="2" style="background-color: gray; color:white">{{date('m/d/Y',strtotime($date))}}<br/>{{$week_day}}
-                </td>
-                @endforeach
-                <td colspan="2" style="background-color: gray; color:white">Week Total</td>
-                <td colspan="2" style="background-color: gray; color:white">All Time Total</td>
-            </tr>
-            <tr style="background-color: gray; color:white">
-                <td style="width:500px;background-color: gray; color:white"></td>
-                @for ($x = 1; $x <= 9; $x++)
-                <td style="background-color: gray; color:white">Amount</td><td style="background-color: gray; color:white">Qty</td>
-                @endfor
-            </tr>
-            <tr>
-                <td colspan="19" style="background-color: gray"></td>
-            </tr>
-
-            <tr>
-
-                <td colspan="19" style="width:500px;text-align: left;font-weight: bold;background-color: lightgray">{{strtoupper($venue['name'])}}</td>
-
-            </tr>
-            @foreach($venue['shows'] as $show_id=>$show)
-            <tr>
-                <td style="width:500px;text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;{{mb_strimwidth($show['name'],0,55,'...')}}</td>
-                @foreach($days_this_week as $week_day=>$date)
-                    @if(date('Y-m-d')>= $date) 
-                <td style="padding-right: 10px;text-align: right;">$ {{number_format($show['this_week'][$date]['price_paid'],2)}}</td>
-                <td style="text-align: center;">{{number_format($show['this_week'][$date]['qty'])}}</td>
-                        @else
-                <td style="padding-right: 10px;text-align: center;">-</td>
-                <td style="text-align: center;">-</td>
-                        @endif
-                    @endforeach
-                <td style="padding-right: 10px;text-align: right;font-weight: bold">$ {{number_format($show['this_week']['week_total']['price_paid'],2)}}</td>
-                <td style="text-align: center;font-weight: bold">{{number_format($show['this_week']['week_total']['qty'])}}</td>
-                <td style="padding-right: 10px;text-align: right;font-weight: bold; color:RoyalBlue ">$ {{number_format($show['total_total']['price_paid'],2)}}</td>
-                <td style="text-align: center;font-weight: bold; color:RoyalBlue ">{{number_format($show['total_total']['qty'])}}</td>
-            </tr>
-                @if(isset($show['this_week']['show_time']))
-                    @foreach($show['this_week']['show_time'] as $st_time=>$st)
-            <tr>
-                <td style="width:500px;text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$st_time}}</td>
-                        @foreach($days_this_week as $week_day=>$date)
-                            @if(date('Y-m-d')>= $date && isset($st[$date])) 
-                <td style="padding-right: 10px;text-align: right;">$ {{number_format($st[$date]['price_paid'],2)}}</td>
-                <td style="text-align: center;">{{number_format($st[$date]['qty'])}}</td>
-                            @else
-                <td style="padding-right: 10px;text-align: center;">$ 0.00</td>
-                <td style="text-align: center;">0</td>
-                            @endif
-                        @endforeach
-            <td style="padding-right: 10px;text-align: right;font-weight: bold">$ {{number_format($st['week_total']['price_paid'],2)}}</td>
-                <td style="text-align: center;font-weight: bold">{{number_format($st['week_total']['qty'])}}</td>
-                <td style="padding-right: 10px;text-align: right;font-weight: bold; color:DodgerBlue">$ {{number_format($st['total_total']['price_paid'],2)}}</td>
-                <td style="text-align: center;font-weight: bold; color:DodgerBlue">{{number_format($st['total_total']['qty'])}}</td>
-            </tr>
-                    @endforeach     
-                @endif
-            @endforeach
-            <tr style="font-weight: bold;background-color: lightgray">
-                <td style="width:500px;text-align: left;">{{$venue['name']}} Charge Back</td>
-            
-            @foreach($venue['this_week'] as $date=>$subtotals)
-                @if(date('Y-m-d')>= $date || $date=='week_total') 
-                <td style="padding-right: 10px;text-align: right;">$ -{{number_format($subtotals['chargeback_amount'],2)}}</td>
-                <td style="text-align: center;">{{number_format($subtotals['chargeback_qty'])}}</td>
-                    @else
-                <td style="padding-right: 10px;text-align: center;">-</td>
-                <td style="text-align: center;">-</td>
-                @endif
-            @endforeach
-            <td style="padding-right: 10px;text-align: right;; color:Blue;background-color: lightgray">$ -{{number_format($venue['total_total']['chargeback_amount'],2)}}</td>
-                <td style="text-align: center; color:Blue;background-color: lightgray">{{number_format($venue['total_total']['chargeback_qty'])}}</td>                                
-            </tr>
-            <tr style="font-weight: bold;background-color: lightgray">
-                <td style="width:500px;text-align: left;">{{$venue['name']}} Gross Revenue<br/>{{$venue['name']}} Commissions<br/>{{$venue['name']}} Processing Fees<br/>{{$venue['name']}} Gross Profit</td>
-            @foreach($venue['this_week'] as $date=>$subtotals)
-                @if(date('Y-m-d')>= $date || $date=='week_total') 
-                <td style="padding-right: 10px;text-align: right;">
-                    $ {{number_format($subtotals['gross_revenue'],2)}}<br/>
-                    $ {{number_format($subtotals['commissions'],2)}}<br/>
-                    $ {{number_format($subtotals['processing_fees'],2)}}<br/>
-                    $ {{number_format($subtotals['gross_profit'],2)}}
-                </td>
-                <td style="text-align: center;">{{number_format($subtotals['qty'])}}</td>
-                    @else
-                <td style="padding-right: 10px;text-align: center;">-</td>
-                <td style="text-align: center;">-</td>
-                @endif
-            @endforeach
-                <td style="padding-right: 10px;text-align: right;; color:Blue;background-color: lightgray">
-                    $ {{number_format($venue['total_total']['price_paid'],2)}}<br/>
-                    $ {{number_format($venue['total_total']['commission'],2)}}<br/>
-                    $ {{number_format($venue['total_total']['processing_fee'],2)}}<br/>
-                    $ {{number_format($venue['total_total']['gross_profit'],2)}}
-                </td>
-                <td style="text-align: center; color:Blue;background-color: lightgray">{{number_format($venue['total_total']['qty'])}}</td>                                
-            </tr>
-            <tr>
-                <td colspan="19" style="background-color: gray"></td>                                
-            </tr>
-        </table>    
-            @endif
-        @endforeach 
-    {{--</body>
-</html>--}}
+        </table>
+    </body>
+</html>
