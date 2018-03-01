@@ -98,7 +98,7 @@
     <body>
         <h1>TicketBat.com</h1>
         <h3>Financial Report</h3><hr>
-        <div style="float: left;font-size:10px!important">
+        <div style="float: left;font-size:10px!important;width:49%!important">
             @foreach($tables as $t)
             <h3>{{$t['title']}}</h3>
             <table  class="table table-striped table-responsive">
@@ -119,7 +119,7 @@
             </table><hr>
             @endforeach
         </div>
-        <div style="float: right;font-size:10px!important">
+        <div style="float: right;font-size:10px!important;width:49%!important">
             <table  class="table table-striped table-responsive">
                 <tr style="font-weight:bold">
                     <td width="40%">TOTALS</td>
