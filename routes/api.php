@@ -45,7 +45,3 @@ Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], 
     Route::get('restaurant/comments/{restaurant_id}', 'RestaurantController@comments');
     Route::get('restaurant/albums/{restaurant_id}', 'RestaurantController@albums');
 });
-
-Route::get('xxx', function(){
-    Artisan::call('Report:financial');
-});

@@ -12,8 +12,8 @@
 
             .table {
                 margin-bottom: 20px;
-                max-width: 50%;
-                width: 48%;
+                max-width: 95%;
+                width: 100%;
             }
             .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
                 border-top: 1px solid #ddd;
@@ -97,78 +97,45 @@
     <meta charset="utf-8">
     <body>
         <h1>TicketBat.com</h1>
-        <h3>Financial Report<br><i>{{$date_report}}</i></h3><hr>
-        <table style="float: left;font-size:10px!important" class="table table-striped table-responsive">
-            <tr style="font-weight:bold">
-                <td width="40%">VENUES</td>
-                <td>PURCHASES</td>
-                <td>TICKETS</td>
-                <td>AMOUNT</td>
-            </tr>
-            @foreach($venues as $v)
-            <tr>
-                <td width="30%" style='text-align:left'>{{substr($v->name,0,25)}}</td>
-                <td style='text-align:center'>{{number_format($v->purchases)}}</td>
-                <td style='text-align:center'>{{number_format($v->tickets)}}</td>
-                <td style='text-align:right'>$ {{number_format($v->amount,2)}}</td>
-            </tr>
+        <h3>Financial Report</h3><hr>
+        <div style="float: left;font-size:10px!important">
+            @foreach($tables as $t)
+            <h3>{{$t['title']}}</h3>
+            <table  class="table table-striped table-responsive">
+                <tr style="font-weight:bold">
+                    <td width="40%">VENUES</td>
+                    <td>PURCHASES</td>
+                    <td>TICKETS</td>
+                    <td>AMOUNT</td>
+                </tr>
+                @foreach($t['data'] as $v)
+                <tr>
+                    <td width="30%" style='text-align:left'>{{substr($v->name,0,25)}}</td>
+                    <td style='text-align:center'>{{number_format($v->purchases)}}</td>
+                    <td style='text-align:center'>{{number_format($v->tickets)}}</td>
+                    <td style='text-align:right'>$ {{number_format($v->amount,2)}}</td>
+                </tr>
+                @endforeach
+            </table><hr>
             @endforeach
-        </table>
-        <table style="float: right;font-size:10px!important" class="table table-striped table-responsive">
-            <tr style="font-weight:bold">
-                <td width="30%">TOTALS</td>
-                <td>PURCHASES</td>
-                <td>TICKETS</td>
-                <td>AMOUNT</td>
-            </tr>
-            <tr>
-                <td style='text-align:left'>Total Tickets</td>
-                @if(!empty($total_tickets))
-                <td style='text-align:center'>{{number_format($total_tickets['purchases'])}}</td>
-                <td style='text-align:center'>{{number_format($total_tickets['tickets'])}}</td>
-                <td style='text-align:right'>$ {{number_format($total_tickets['amount'],2)}}</td>
-                @else
-                <td style='text-align:center'>0</td>
-                <td style='text-align:center'>0</td>
-                <td style='text-align:right'>$ 0.00</td>
-                @endif
-            </tr>
-            <tr>
-                <td style='text-align:left'>Total Month</td>
-                @if(!empty($total_month))
-                <td style='text-align:center'>{{number_format($total_month->purchases)}}</td>
-                <td style='text-align:center'>{{number_format($total_month->tickets)}}</td>
-                <td style='text-align:right'>$ {{number_format($total_month->amount,2)}}</td>
-                @else
-                <td style='text-align:center'>0</td>
-                <td style='text-align:center'>0</td>
-                <td style='text-align:right'>$ 0.00</td>
-                @endif
-            </tr>
-            <tr>
-                <td style='text-align:left'>Total Tickets YTD</td>
-                @if(!empty($total_ytd))
-                <td style='text-align:center'>{{number_format($total_ytd->purchases)}}</td>
-                <td style='text-align:center'>{{number_format($total_ytd->tickets)}}</td>
-                <td style='text-align:right'>$ {{number_format($total_ytd->amount,2)}}</td>
-                @else
-                <td style='text-align:center'>0</td>
-                <td style='text-align:center'>0</td>
-                <td style='text-align:right'>$ 0.00</td>
-                @endif
-            </tr>
-            <tr>
-                <td style='text-align:left'>YOY Same Period</td>
-                @if(!empty($total_yoy))
-                <td style='text-align:center'>{{number_format($total_yoy->purchases)}}</td>
-                <td style='text-align:center'>{{number_format($total_yoy->tickets)}}</td>
-                <td style='text-align:right'>$ {{number_format($total_yoy->amount,2)}}</td>
-                @else
-                <td style='text-align:center'>0</td>
-                <td style='text-align:center'>0</td>
-                <td style='text-align:right'>$ 0.00</td>
-                @endif
-            </tr>
-        </table>
+        </div>
+        <div style="float: right;font-size:10px!important">
+            <table  class="table table-striped table-responsive">
+                <tr style="font-weight:bold">
+                    <td width="40%">TOTALS</td>
+                    <td>PURCHASES</td>
+                    <td>TICKETS</td>
+                    <td>AMOUNT</td>
+                </tr>
+                @foreach($summary as $v)
+                <tr>
+                    <td width="30%" style='text-align:left'>{{substr($v['name'],0,25)}}</td>
+                    <td style='text-align:center'>{{number_format($v['purchases'])}}</td>
+                    <td style='text-align:center'>{{number_format($v['tickets'])}}</td>
+                    <td style='text-align:right'>$ {{number_format($v['amount'],2)}}</td>
+                </tr>
+                @endforeach
+            </table>
+        </div>
     </body>
 </html>
