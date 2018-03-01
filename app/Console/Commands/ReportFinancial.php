@@ -130,8 +130,6 @@ class ReportFinancial extends Command
             //create report
             $pdf_path = '/tmp/ReportFinancial_'.date('Y-m-d').'_'.date('U').'.pdf';
             $view_email = View::make('command.report_financial', compact('summary','tables')); 
-            echo $view_email->render();
-            exit();
             PDF::loadHTML($view_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
             //send the report
             $emailx = 'ivan@ticketbat.com';
@@ -143,8 +141,6 @@ class ReportFinancial extends Command
             $email->attachment($pdf_path);
             if($email->send())
                 unlink($pdf_path);
-            
-            //echo $view_email->render();
             return true;
         } catch (Exception $ex) {
             throw new Exception('Error creating report with ReportFinancial Command: '.$ex->getMessage());
