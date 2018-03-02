@@ -107,8 +107,15 @@ class HomeController extends Controller
                         ->whereNotNull('images.url')
                         ->orderBy('locations.city')->groupBy('locations.city')
                         ->distinct()->get();
+            //get venues
+            $venues = DB::table('venues')
+                        ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                        ->select('venues.id','venues.name','locations.city')
+                        ->where('venues.is_featured','>',0)
+                        ->orderBy('venues.name')->groupBy('venues.id')
+                        ->distinct()->get();
             //return view
-            return view('production.home.index',compact('sliders','shows','categories','cities'));
+            return view('production.home.index',compact('sliders','shows','categories','cities','venues'));
            
         } catch (Exception $ex) {
             throw new Exception('Error Production Home Index: '.$ex->getMessage());
@@ -165,6 +172,9 @@ class HomeController extends Controller
                     //custom
                         ->when(!empty($input['city']), function($shows) use ($input){
                             return $shows->where('locations.city','LIKE',$input['city']);
+                        })
+                        ->when(!empty($input['venue']), function($shows) use ($input){
+                            return $shows->where('venues.id','=',$input['venue']);
                         })
                         ->when(!empty($input['start_date']) && strtotime($input['start_date']), function($shows) use ($input){
                             return $shows->whereDate('show_times.show_time','>=',$input['start_date']);

@@ -47,27 +47,27 @@
     <div class="row">
         <div class="home-page-panel">
             <div id="myFilter" class="row widget-row">
-                <div class="col-md-3">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">
                     <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by show's name">                
                         <div class="widget-thumb-wrap">
-                            <i class="widget-thumb-icon bg-green icon-magnifier"></i>
+                            
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-subtitle">Search</span>
+                                <span class="widget-thumb-subtitle"><i class="icon-magnifier"></i> Search</span>
                                 <span class="widget-thumb-body-stat">
-                                    <div class="input-group">
                                         <input type="text" class="form-control" name="filter_name" placeholder="Find an event">
-                                    </div>
+                                   
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by location">
                         <div class="widget-thumb-wrap">
-                            <i class="widget-thumb-icon bg-red icon-directions"></i>
+                            
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-subtitle">City</span>
+                                <span class="widget-thumb-subtitle"><i class="icon-directions"></i> City</span>
                                 <span class="widget-thumb-body-stat">
                                     <select class="form-control" name="filter_city">
                                         <option selected value="">All</option>
@@ -80,12 +80,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by category">
+                <div class="col-md-2">
+                    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by venue">
                         <div class="widget-thumb-wrap">
-                            <i class="widget-thumb-icon bg-purple icon-tag"></i>
+                            
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-subtitle">Genre</span>
+                                <span class="widget-thumb-subtitle"><i class="icon-pointer"></i> Venue</span>
+                                <span class="widget-thumb-body-stat">
+                                    <select class="form-control" name="filter_venue">
+                                        <option selected value="">All</option>
+                                        @foreach($venues as $index=>$v)
+                                        <option value="{{$v->id}}" data-city="{{$v->city}}">{{$v->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by genre">
+                        <div class="widget-thumb-wrap">
+                            
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-subtitle"><i class="icon-tag"></i> Genre</span>
                                 <span class="widget-thumb-body-stat">
                                     <select class="form-control" name="filter_category">
                                         <option selected value="">All</option>
@@ -97,13 +115,13 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-3">
+                </div>                
+                <div class="col-md-2">
                     <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by date range">
                         <div class="widget-thumb-wrap">
-                            <i class="widget-thumb-icon bg-blue icon-calendar"></i>
+                            
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-subtitle">Date</span>
+                                <span class="widget-thumb-subtitle"><i class="icon-calendar"></i> Date</span>
                                 <span class="widget-thumb-body-stat">
                                     <div id="filter_date" class="pull-left tooltips btn btn-fit-height" style="margin-top:-7px!important;font-size:13px">
                                         <span style="margin-left:-13px;font-weight:bold!important;" class="thin"></span>
@@ -115,6 +133,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-1"></div>
             </div>
         </div>
     </div>

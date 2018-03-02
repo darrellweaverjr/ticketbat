@@ -61,6 +61,17 @@ var PortfolioManaged = function () {
                 else
                     $(v).removeClass('hidden');
             });
+            $.each($('#myFilter select[name="filter_venue"] option'),function(k, v) {
+                if(city!='' && $(v).data('city')!=city && $(v).val()!='')
+                    $(v).addClass('hidden');
+                else
+                    $(v).removeClass('hidden');
+            });
+            $('#myFilter select[name="filter_venue"] option:first').prop('selected',true);
+            filter_search();     
+        });
+        //filter venue
+        $('#myFilter select[name="filter_venue"]').on('change', function(ev) {
             filter_search();     
         });
         //filter category
@@ -74,16 +85,17 @@ var PortfolioManaged = function () {
         //main filter
         function filter_search(){
             var city = $('#myFilter select[name="filter_city"] option:selected').val();
+            var venue = $('#myFilter select[name="filter_venue"] option:selected').val();
             var category = $('#myFilter select[name="filter_category"] option:selected').val();
             var start_date = $('#myFilter input[name="filter_start_date"]').val();
             var end_date = $('#myFilter input[name="filter_end_date"]').val();
-            if(!(city=='' && category=='' && start_date=='' && end_date==''))
+            if(!(city=='' && venue=='' && category=='' && start_date=='' && end_date==''))
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/home/search', 
-                    data: {city:city,category:category,start_date:start_date,end_date:end_date}, 
+                    data: {city:city,venue:venue,category:category,start_date:start_date,end_date:end_date}, 
                     success: function(data) {
                         if(data.success) 
                         {
@@ -170,9 +182,10 @@ var PortfolioManaged = function () {
         {
             var y1 = $('#myShows').position().top;
             var y2 = $('#myShows .cbp-item.filtered:not(.hidden):last').position().top;
-            $('#myShows').height( parseInt(y2+y1/(1.8)) );
+            $('#myShows').height( parseInt(y2+y1/(1.6)) );
         }
         //autoselect city
+        $('#myFilter select[name="filter_city"] option:first').prop('selected',true).trigger('update');
         $.getJSON("https://freegeoip.net/json/", function (response) {       
             $('#myFilter select[name="filter_city"]').find('option[data-state="'+response.region_code+'"][data-country="'+response.country_code+'"]').prop('selected', true).trigger('change');
         });
