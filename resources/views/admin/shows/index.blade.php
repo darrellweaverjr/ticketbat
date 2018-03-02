@@ -88,30 +88,14 @@
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
-                                        <h4>
-                                            <b>{{$s->name}}&emsp;</b>
-                                            @if($s->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$s->googleplus}}" target="_blank"></a>@endif
-                                            @if($s->facebook)<a class="social-icon social-icon-color facebook" href="{{$s->facebook}}" target="_blank"></a>@endif
-                                            @if($s->twitter)<a class="social-icon social-icon-color twitter" href="{{$s->twitter}}" target="_blank"></a>@endif
-                                            @if($s->youtube)<a class="social-icon social-icon-color youtube" href="{{$s->youtube}}" target="_blank"></a>@endif
-                                            @if($s->instagram)<a class="social-icon social-icon-color instagram" href="{{$s->instagram}}" target="_blank"></a>@endif
-                                            @if($s->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$s->yelpbadge}}" target="_blank"></a>@endif
-                                        </h4>
+                                        <h4><b>{{$s->name}}&emsp;</b></h4>
                                     </div>
                                     <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$s->short_description}}</div>
                                 </td>
-                                <td><center> {{$s->category}} </center></td>
-                                <td><center> <span class="label label-sm sbold
-                                    @if($s->is_featured) label-success"> Yes
-                                    @else label-danger"> No
-                                    @endif
-                                    </center></span>
+                                <td><center>{{$s->category}}</center></td>
+                                <td><center>{{$s->is_featured}}</center></span>
                                 </td>
-                                <td><center> <span class="label label-sm sbold
-                                    @if($s->is_active) label-success"> Active
-                                    @else label-danger"> Inactive
-                                    @endif
-                                    </center></span>
+                                <td><center>{{$s->is_active}}</center></span>
                                 </td>
                                 <td class="search-content" style="font-style:italic;font-size:smaller;color:red">@php echo $s->errors @endphp</td>
                             </tr>
