@@ -86,8 +86,6 @@ class DashboardController extends Controller
         $data['search']['shows'] = [];
         $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
         $data['search']['payment_types']['Free'] = 'Free';
-        $data['search']['users'] = User::orderBy('email')->get(['id','email']);
-        $data['search']['customers'] = Customer::orderBy('email')->get(['id','email']);
         $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
         $data['search']['status'] = Util::getEnumValues('purchases','status');
         //search venue
@@ -158,7 +156,7 @@ class DashboardController extends Controller
         //search date range
         if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
         {
-            $data['search']['start_amount'] = $input['start_amount'];
+            $data['search']['start_amount'] = trim($input['start_amount']);
             $data['where'][] = [DB::raw('amount'),'>=',$data['search']['start_amount']];
         }
         else
@@ -167,7 +165,7 @@ class DashboardController extends Controller
         }
         if(isset($input) && isset($input['end_amount']) && is_numeric($input['end_amount']))
         {
-            $data['search']['end_amount'] = $input['end_amount'];
+            $data['search']['end_amount'] = trim($input['end_amount']);
             $data['where'][] = [DB::raw('amount'),'<=',$data['search']['end_amount']];
         }
         else
@@ -193,8 +191,8 @@ class DashboardController extends Controller
         //search user      
         if(isset($input) && !empty($input['user']))
         {
-            $data['search']['user'] = $input['user'];
-            $data['where'][] = ['purchases.user_id','=',$data['search']['user']];
+            $data['search']['user'] = trim($input['user']);
+            $data['where'][] = ['users.email','=',$data['search']['user']];
         }
         else
         {
@@ -203,8 +201,8 @@ class DashboardController extends Controller
         //search customer      
         if(isset($input) && !empty($input['customer']))
         {
-            $data['search']['customer'] = $input['customer'];
-            $data['where'][] = ['purchases.customer_id','=',$data['search']['customer']];
+            $data['search']['customer'] = trim($input['customer']);
+            $data['where'][] = ['customers.email','=',$data['search']['customer']];
         }
         else
         {
@@ -213,7 +211,7 @@ class DashboardController extends Controller
         //search order_id      
         if(isset($input) && !empty($input['order_id']) && is_numeric($input['order_id']))
         {
-            $data['search']['order_id'] = $input['order_id'];
+            $data['search']['order_id'] = trim($input['order_id']);
             $data['where'][] = ['purchases.id','=',$data['search']['order_id']];
         }
         else
@@ -223,7 +221,7 @@ class DashboardController extends Controller
         //search authcode    
         if(isset($input) && !empty($input['authcode']))
         {
-            $data['search']['authcode'] = $input['authcode'];
+            $data['search']['authcode'] = trim($input['authcode']);
             $data['where'][] = ['transactions.authcode','=',$data['search']['authcode']];
         }
         else
@@ -231,7 +229,7 @@ class DashboardController extends Controller
         //search refnum    
         if(isset($input) && !empty($input['refnum']))
         {
-            $data['search']['refnum'] = $input['refnum'];
+            $data['search']['refnum'] = trim($input['refnum']);
             $data['where'][] = ['transactions.refnum','=',$data['search']['refnum']];
         }
         else
@@ -310,6 +308,7 @@ class DashboardController extends Controller
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                        ->join('users', 'users.id', '=' ,'purchases.user_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
@@ -425,6 +424,7 @@ class DashboardController extends Controller
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                            ->join('users', 'users.id', '=' ,'purchases.user_id')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
@@ -471,6 +471,8 @@ class DashboardController extends Controller
                     ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                    ->join('users', 'users.id', '=' ,'purchases.user_id')
+                    ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                     ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased, 
                                     SUM(purchases.quantity) AS qty, SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
                     ->where($where)

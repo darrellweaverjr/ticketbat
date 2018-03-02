@@ -306,7 +306,7 @@
                                     <label class="control-label col-md-3">Amount start:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="number" class="form-control input-large" name="start_amount" step="0.01" value="{{$search['start_amount']}}" />
+                                            <input type="number" class="form-control input-large" name="start_amount" step="0.01" value="{{$search['start_amount']}}" placeholder="Price paid start range" />
                                         </div>
                                     </div>
                                 </div>
@@ -314,7 +314,7 @@
                                     <label class="control-label col-md-3">Amount ends:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="number" class="form-control input-large" name="end_amount" step="0.01" value="{{$search['end_amount']}}" />
+                                            <input type="number" class="form-control input-large" name="end_amount" step="0.01" value="{{$search['end_amount']}}" placeholder="Price paid end range" />
                                         </div>
                                     </div>
                                 </div>
@@ -348,12 +348,7 @@
                                     <label class="control-label col-md-3">User:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <select class="form-control" name="user" style="width: 321px !important">
-                                                <option selected value="">All</option>
-                                                @foreach($search['users'] as $index=>$u)
-                                                    <option @if(!empty($search['user']) && $u->id==$search['user']) selected @endif value="{{$u->id}}">{{$u->email}}</option>
-                                                @endforeach
-                                            </select>
+                                            <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="Email of the user" />
                                         </div>
                                     </div>
                                 </div>
@@ -361,12 +356,7 @@
                                     <label class="control-label col-md-3">Customer:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <select class="form-control" name="customer" style="width: 321px !important">
-                                                <option selected value="">All</option>
-                                                @foreach($search['customers'] as $index=>$c)
-                                                    <option @if(!empty($search['customer']) && $c->id==$search['customer']) selected @endif value="{{$c->id}}">{{$c->email}}</option>
-                                                @endforeach
-                                            </select>
+                                            <input type="text" class="form-control input-large" name="customer" value="{{$search['customer']}}" placeholder="Email of the customer" />
                                         </div>
                                     </div>
                                 </div>
@@ -374,7 +364,7 @@
                                     <label class="control-label col-md-3">Order id:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" />
+                                            <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" placeholder="ID of the order (purchase id)" />
                                         </div>
                                     </div>
                                 </div>
@@ -382,7 +372,7 @@
                                     <label class="control-label col-md-3">AuthCode:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="authcode" value="{{$search['authcode']}}" />
+                                            <input type="text" class="form-control input-large" name="authcode" value="{{$search['authcode']}}" placeholder="AuthCode of the transaction" />
                                         </div>
                                     </div>
                                 </div>
@@ -390,7 +380,7 @@
                                     <label class="control-label col-md-3">RefNum:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" />
+                                            <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" placeholder="RefNum of the transaction" />
                                         </div>
                                     </div>
                                 </div>

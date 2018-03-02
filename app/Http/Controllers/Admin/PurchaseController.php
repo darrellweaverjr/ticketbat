@@ -176,8 +176,6 @@ class PurchaseController extends Controller{
                 $search['shows'] = [];
                 $search['payment_types'] = Util::getEnumValues('purchases','payment_type');
                 $search['payment_types']['Free'] = 'Free';
-                $search['users'] = User::orderBy('email')->get(['id','email']);
-                $search['customers'] = Customer::orderBy('email')->get(['id','email']);
                 $search['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
                 $search['status'] = Util::getEnumValues('purchases','status');
                 $purchases = [];
@@ -235,7 +233,7 @@ class PurchaseController extends Controller{
                 //search date range
                 if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
                 {
-                    $search['start_amount'] = $input['start_amount'];
+                    $search['start_amount'] = trim($input['start_amount']);
                     $where[] = [DB::raw('amount'),'>=',$search['start_amount']];
                 }
                 else
@@ -244,7 +242,7 @@ class PurchaseController extends Controller{
                 }
                 if(isset($input) && isset($input['end_amount']) && is_numeric($input['end_amount']))
                 {
-                    $search['end_amount'] = $input['end_amount'];
+                    $search['end_amount'] = trim($input['end_amount']);
                     $where[] = [DB::raw('amount'),'<=',$search['end_amount']];
                 }
                 else
@@ -279,23 +277,23 @@ class PurchaseController extends Controller{
                 //search user      
                 if(isset($input) && !empty($input['user']))
                 {
-                    $search['user'] = $input['user'];
-                    $where[] = ['purchases.user_id','=',$search['user']];
+                    $search['user'] = trim($input['user']);
+                    $where[] = ['users.email','=',$search['user']];
                 }
                 else
                     $search['user'] = '';
                 //search customer      
                 if(isset($input) && !empty($input['customer']))
                 {
-                    $search['customer'] = $input['customer'];
-                    $where[] = ['purchases.customer_id','=',$search['customer']];
+                    $search['customer'] = trim($input['customer']);
+                    $where[] = ['customers.email','=',$search['customer']];
                 }
                 else
                     $search['customer'] = '';
                 //search order id      
                 if(isset($input) && !empty($input['order_id']) && is_numeric($input['order_id']))
                 {
-                    $search['order_id'] = $input['order_id'];
+                    $search['order_id'] = trim($input['order_id']);
                     $where[] = ['purchases.id','=',$search['order_id']];
                 }
                 else
@@ -303,7 +301,7 @@ class PurchaseController extends Controller{
                 //search authcode    
                 if(isset($input) && !empty($input['authcode']))
                 {
-                    $search['authcode'] = $input['authcode'];
+                    $search['authcode'] = trim($input['authcode']);
                     $where[] = ['transactions.authcode','=',$search['authcode']];
                 }
                 else
@@ -311,7 +309,7 @@ class PurchaseController extends Controller{
                 //search refnum    
                 if(isset($input) && !empty($input['refnum']))
                 {
-                    $search['refnum'] = $input['refnum'];
+                    $search['refnum'] = trim($input['refnum']);
                     $where[] = ['transactions.refnum','=',$search['refnum']];
                 }
                 else
