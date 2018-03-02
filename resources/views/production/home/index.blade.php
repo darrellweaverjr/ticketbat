@@ -24,7 +24,7 @@
     <!-- Wrapper for slides -->
     <div class="carousel-inner" role="listbox">
         @foreach($sliders as $index=>$s)
-        <div class="item @if(!$index) active @endif" >
+        <div class="item @if(!$index) active @endif" data-filter="{{$s->filter}}">
             <a href="{{$s->slug}}"><img style="margin:auto" src="{{$s->image_url}}" alt="{{$s->alt}}"></a>
         </div>
         @endforeach
@@ -85,7 +85,7 @@
                         <div class="widget-thumb-wrap">
                             <i class="widget-thumb-icon bg-purple icon-tag"></i>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-subtitle">Category</span>
+                                <span class="widget-thumb-subtitle">Genre</span>
                                 <span class="widget-thumb-body-stat">
                                     <select class="form-control" name="filter_category">
                                         <option selected value="">All</option>

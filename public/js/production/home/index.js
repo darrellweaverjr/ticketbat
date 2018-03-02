@@ -54,6 +54,13 @@ var PortfolioManaged = function () {
         $('#filter_date span').html('All<br><small>'+moment().format('M/D/YYYY')+' - '+moment().add('year',1).endOf('month').format('M/D/YYYY'));
         //filter city 
         $('#myFilter select[name="filter_city"]').on('change', function(ev) {
+            var city = $(this).val();
+            $.each($('#mySliders div.item'),function(k, v) {
+                if(city!='' && $(v).data('filter')!='' && $(v).data('filter')!=city)
+                    $(v).addClass('hidden');
+                else
+                    $(v).removeClass('hidden');
+            });
             filter_search();     
         });
         //filter category
