@@ -102,7 +102,7 @@
             <h5>{{$t['title']}}</h5>
             <table  class="table table-striped table-responsive" style="font-size:10px!important;">
                 <tr style="font-weight:bold">
-                    <td width="40%">VENUES</td>
+                    <td width="25%">VENUES</td>
                     <td>PURCHASES</td>
                     <td>TICKETS</td>
                     <td>PAID</td>
@@ -112,7 +112,7 @@
                 </tr>
                 @foreach($t['data'] as $v)
                 <tr>
-                    <td width="30%" style='text-align:left'>{{$v->name}}</td>
+                    <td width="25%" style='text-align:left'>{{$v->name}}</td>
                     <td style='text-align:center'>{{number_format($v->purchases)}}</td>
                     <td style='text-align:center'>{{number_format($v->tickets)}}</td>
                     <td style='text-align:right'>$ {{number_format($v->paid,2)}}</td>
@@ -122,7 +122,7 @@
                 </tr>
                 @endforeach
                 <tr style="font-weight:bold">
-                    <td width="30%" style='text-align:left'>{!!$t['total']['name']!!}</td>
+                    <td width="25%" style='text-align:left'>{!!$t['total']['name']!!}</td>
                     <td style='text-align:center'>{{number_format($t['total']['purchases'])}}</td>
                     <td style='text-align:center'>{{number_format($t['total']['tickets'])}}</td>
                     <td style='text-align:right'>$ {{number_format($t['total']['paid'],2)}}</td>
