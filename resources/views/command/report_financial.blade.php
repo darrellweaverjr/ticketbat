@@ -12,7 +12,7 @@
 
             .table {
                 margin-bottom: 20px;
-                max-width: 95%;
+                max-width: 100%;
                 width: 100%;
             }
             .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
@@ -98,53 +98,39 @@
     <body>
         <h1>TicketBat.com</h1>
         <h3>Financial Report</h3><hr>
-        <div style="float: left;font-size:10px!important;width:49%!important">
             @foreach($tables as $t)
-            <h3>{{$t['title']}}</h3>
-            <table  class="table table-striped table-responsive">
+            <h5>{{$t['title']}}</h5>
+            <table  class="table table-striped table-responsive" style="font-size:10px!important;">
                 <tr style="font-weight:bold">
                     <td width="40%">VENUES</td>
                     <td>PURCHASES</td>
                     <td>TICKETS</td>
-                    <td>AMOUNT</td>
+                    <td>PAID</td>
+                    <td>COMMIS.(C)</td>
+                    <td>FEES(F)</td>
+                    <td>C+F</td>
                 </tr>
                 @foreach($t['data'] as $v)
                 <tr>
-                    <td width="30%" style='text-align:left'>{{substr($v->name,0,25)}}</td>
+                    <td width="30%" style='text-align:left'>{{$v->name}}</td>
                     <td style='text-align:center'>{{number_format($v->purchases)}}</td>
                     <td style='text-align:center'>{{number_format($v->tickets)}}</td>
+                    <td style='text-align:right'>$ {{number_format($v->paid,2)}}</td>
+                    <td style='text-align:right'>$ {{number_format($v->commissions,2)}}</td>
+                    <td style='text-align:right'>$ {{number_format($v->fees,2)}}</td>
                     <td style='text-align:right'>$ {{number_format($v->amount,2)}}</td>
                 </tr>
                 @endforeach
+                <tr style="font-weight:bold">
+                    <td width="30%" style='text-align:left'>{!!$t['total']['name']!!}</td>
+                    <td style='text-align:center'>{{number_format($t['total']['purchases'])}}</td>
+                    <td style='text-align:center'>{{number_format($t['total']['tickets'])}}</td>
+                    <td style='text-align:right'>$ {{number_format($t['total']['paid'],2)}}</td>
+                    <td style='text-align:right'>$ {{number_format($t['total']['commissions'],2)}}</td>
+                    <td style='text-align:right'>$ {{number_format($t['total']['fees'],2)}}</td>
+                    <td style='text-align:right'>$ {{number_format($t['total']['amount'],2)}}</td>
+                </tr>
             </table><hr>
             @endforeach
-        </div>
-        <div style="float: right;font-size:10px!important;width:49%!important">
-            <table  class="table table-striped table-responsive">
-                <tr style="font-weight:bold">
-                    <td width="40%">TOTALS</td>
-                    <td>PURCHASES</td>
-                    <td>TICKETS</td>
-                    <td>AMOUNT</td>
-                </tr>
-                @foreach($summary as $i=>$v)
-                @if(count($summary)-1!=$i)
-                <tr>
-                    <td width="30%" style='text-align:left'>{{substr($v['name'],0,25)}}</td>
-                    <td style='text-align:center'>{{number_format($v['purchases'])}}</td>
-                    <td style='text-align:center'>{{number_format($v['tickets'])}}</td>
-                    <td style='text-align:right'>$ {{number_format($v['amount'],2)}}</td>
-                </tr>
-                @else
-                <tr style="font-weight:bold">
-                    <td width="30%" style='text-align:left'>{{$v['name']}}</td>
-                    <td style='text-align:center'>{{number_format($v['purchases'],2)}} %</td>
-                    <td style='text-align:center'>{{number_format($v['tickets']),2}} %</td>
-                    <td style='text-align:right'>{{number_format($v['amount'],2)}} %</td>
-                </tr>
-                @endif
-                @endforeach
-            </table>
-        </div>
     </body>
 </html>
