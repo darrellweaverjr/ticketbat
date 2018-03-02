@@ -84,25 +84,13 @@
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
-                                        <h4>
-                                            <b>{{$v->name}}&emsp;
+                                        <h4><b>{{$v->name}}&emsp;
                                             <a style="font-style:italic;font-weight:bold;font-size:small!important" href='http://maps.google.com/?q={{$v->address}} {{$v->city}} {{$v->state}} {{$v->country}} {{$v->zip}}' target="_blank"><span class="fa fa-map-marker"></span> {{$v->address}}, {{$v->city}}, {{$v->state}}, {{$v->country}} {{$v->zip}}</a>
-                                            </b>&emsp;
-                                            @if($v->googleplus)<a class="social-icon social-icon-color googleplus" href="{{$v->googleplus}}" target="_blank"></a>@endif
-                                            @if($v->facebook)<a class="social-icon social-icon-color facebook" href="{{$v->facebook}}" target="_blank"></a>@endif
-                                            @if($v->twitter)<a class="social-icon social-icon-color twitter" href="{{$v->twitter}}" target="_blank"></a>@endif
-                                            @if($v->youtube)<a class="social-icon social-icon-color youtube" href="{{$v->youtube}}" target="_blank"></a>@endif
-                                            @if($v->instagram)<a class="social-icon social-icon-color instagram" href="{{$v->instagram}}" target="_blank"></a>@endif
-                                            @if($v->yelpbadge)<a class="social-icon social-icon-color jolicloud" href="{{$v->yelpbadge}}" target="_blank"></a>@endif
-                                        </h4>
+                                        </b></h4>
                                     </div>
                                     <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$v->description}}</div>
                                 </td>
-                                <td><center> <span class="label label-sm sbold
-                                    @if($v->is_featured) label-success"> Yes
-                                    @else label-danger"> No
-                                    @endif
-                                    </center></span>
+                                <td><center>{{$v->is_featured}}</center></span>
                                 </td>
                                 <td class="search-content" style="font-style:italic;font-size:smaller;color:red">@php echo $v->errors @endphp</td>
                             </tr>

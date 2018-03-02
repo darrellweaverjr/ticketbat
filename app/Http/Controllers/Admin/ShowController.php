@@ -124,7 +124,7 @@ class ShowController extends Controller{
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
                                         })
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url','shows.is_active',DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
+                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)

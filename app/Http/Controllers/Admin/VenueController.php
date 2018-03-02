@@ -63,7 +63,7 @@ class VenueController extends Controller{
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
                                         })
-                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                        ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
@@ -88,7 +88,7 @@ class VenueController extends Controller{
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
                                         })
-                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                        ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
@@ -113,7 +113,7 @@ class VenueController extends Controller{
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
                                         })
-                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                        ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
@@ -137,7 +137,7 @@ class VenueController extends Controller{
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
                                         })
-                                        ->select('venues.id','venues.name','venues.slug','venues.description','venues.is_featured',
+                                        ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
                                                  'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
