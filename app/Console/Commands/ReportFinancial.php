@@ -147,8 +147,7 @@ class ReportFinancial extends Command
             $view_email = View::make('command.report_financial', compact('summary','tables')); 
             PDF::loadHTML($view_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
             //send the report
-            $emailx = 'ivan@ticketbat.com';
-            $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Financial Report');
+            $email = new EmailSG(env('MAIL_REPORT_FROM'), env('MAIL_REPORT_TO','ivan@ticketbat.com') ,'Financial Report');
             $email->cc(env('MAIL_REPORT_CC'));
             $email->category('Reports');
             $email->body('sales_report',array('date'=>$tables[0]['title']));
