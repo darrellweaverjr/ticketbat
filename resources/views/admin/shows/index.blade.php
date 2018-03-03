@@ -562,6 +562,7 @@
                                                         <th> Default? </th>
                                                         <th> Max </th>
                                                         <th> Status </th>
+                                                        <th> Inc.fee </th>
                                                         <th> </th>
                                                     </tr>
                                                 </thead>
@@ -948,6 +949,12 @@
                                     </label>
                                     <div class="col-md-7 show-error">
                                         <input type="number" value="0" name="avail_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    </div>
+                                    <label class="control-label col-md-5">Inclusive fee
+                                    </label>
+                                    <div class="col-md-7">
+                                        <input type="hidden" name="inclusive_fee" value="0"/>
+                                        <input type="checkbox" class="make-switch" name="inclusive_fee" data-size="small" value="1" data-on-text="Inclusive" data-off-text="Over the price" data-on-color="primary" data-off-color="danger">
                                     </div>
                                 </div>
                             </div>
