@@ -146,14 +146,16 @@ class ReportFinancial extends Command
             $pdf_path = '/tmp/ReportFinancial_'.date('Y-m-d').'_'.date('U').'.pdf';
             $view_email = View::make('command.report_financial', compact('summary','tables')); 
             PDF::loadHTML($view_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
+            
             //send the report
             $email = new EmailSG(env('MAIL_REPORT_FROM'), env('MAIL_REPORT_TO','ivan@ticketbat.com') ,'Financial Report');
-            if(env('MAIL_REPORT_CC',null))
-                $email->cc(env('MAIL_REPORT_CC'));
+            /*if(env('MAIL_REPORT_CC',null))
+                $email->cc(env('MAIL_REPORT_CC'));*/
             $email->category('Reports');
             $email->body('sales_report',array('date'=>$tables[0]['title']));
             $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
             $email->attachment($pdf_path);
+            dd($email->send(1));
             if($email->send())
                 unlink($pdf_path);
             return true;

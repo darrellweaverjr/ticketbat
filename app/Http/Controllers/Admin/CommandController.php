@@ -27,7 +27,7 @@ class CommandController extends Controller{
             $commands[] = ['command'=>'Report:manifest','values'=>[]];
             $commands[] = ['command'=>'Report:sales','values'=>['days'=>1,'onlyadmin'=>1]];
             $commands[] = ['command'=>'Report:sales_receipt','values'=>['days'=>1]];
-            $commands[] = ['command'=>'Report:financial','values'=>['weeks'=>0]];
+            $commands[] = ['command'=>'Report:financial','values'=>['start'=>0,'end'=>0]];
             $commands[] = ['command'=>'Report:consignment','values'=>[]];
 
             $commands[] = ['command'=>'Promo:announced','values'=>['days'=>1]];
