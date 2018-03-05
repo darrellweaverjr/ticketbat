@@ -87,10 +87,10 @@
                             <div class="widget-thumb-body">
                                 <span class="widget-thumb-subtitle"><i class="icon-pointer"></i> Venue</span>
                                 <span class="widget-thumb-body-stat">
-                                    <select class="form-control" name="filter_venue">
+                                    <select class="form-control" name="filter_venue" data-content='@php echo str_replace("'"," ",json_encode($venues));@endphp'>
                                         <option selected value="">All</option>
                                         @foreach($venues as $index=>$v)
-                                        <option value="{{$v->id}}" data-city="{{$v->city}}">{{$v->name}}</option>
+                                        <option value="{{$v->id}}">{{$v->name}}</option>
                                         @endforeach
                                     </select>
                                 </span>

@@ -61,13 +61,17 @@ var PortfolioManaged = function () {
                 else
                     $(v).removeClass('hidden');
             });
-            $.each($('#myFilter select[name="filter_venue"] option'),function(k, v) {
-                if(city!='' && $(v).data('city')!=city && $(v).val()!='')
-                    $(v).addClass('hidden');
-                else
-                    $(v).removeClass('hidden');
-            });
-            $('#myFilter select[name="filter_venue"] option:first').prop('selected',true);
+            //list venues
+            $('#myFilter select[name="filter_venue"]').empty().append('<option value="">All</option>');;
+            var venues = $('#myFilter select[name="filter_venue"]').data('content');
+            if(venues)
+            {
+                $.each(venues,function(k, v) {
+                    if(city=='' || v.city==city)
+                        $('#myFilter select[name="filter_venue"]').append('<option value="'+v.id+'">'+v.name+'</option>');
+                });
+                $('#myFilter select[name="filter_venue"] option:first').prop('selected',true);
+            }
             filter_search();     
         });
         //filter venue
