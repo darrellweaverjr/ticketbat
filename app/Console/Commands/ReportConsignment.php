@@ -91,7 +91,8 @@ class ReportConsignment extends Command
                     $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
                     //sending email
                     $email = new EmailSG(env('MAIL_REPORT_FROM'),$c->emails,'Consignment Report #'.$c->id.' - '.$c->show_name.' @ '.date('m/d/Y g:ia',strtotime($c->show_time)));
-                    $email->cc(env('MAIL_REPORT_CC'));
+                    if(env('MAIL_REPORT_CC',null))
+                        $email->cc(env('MAIL_REPORT_CC'));
                     $email->text('Report Consignment sent at: '.date('m/d/Y g:ia'));
                     $email->category('Consignments');
                     $email->attachment([$csv_path]);

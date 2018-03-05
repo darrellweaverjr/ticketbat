@@ -107,7 +107,8 @@ class ReportSalesReceipt extends Command
                 }     
                 //send email           
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $to ,$part_name_report.' Sales Report to '.$name);
-                //$email->cc(env('MAIL_REPORT_CC'));
+                /*if(env('MAIL_REPORT_CC',null))
+                    $email->cc(env('MAIL_REPORT_CC'));*/
                 $email->category('Reports');
                 $email->text($part_name_report.' Sales Report Receipt. Created at '.date('m/d/Y g:ia'));
                 $email->attachment($receipts);

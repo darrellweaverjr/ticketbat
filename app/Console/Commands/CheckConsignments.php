@@ -67,7 +67,8 @@ class CheckConsignments extends Command
                     $html.= '<b>Ticket Types: </b>'.$c->ticket_types;
                     //SENDING EMAIL
                     $email = new EmailSG(null, $to ,'No Contract Uploaded for Consignment Tickets');
-                    $email->cc(env('MAIL_REPORT_CC'));
+                    if(env('MAIL_REPORT_CC',null))
+                        $email->cc(env('MAIL_REPORT_CC'));
                     $email->category('Important');
                     $email->html($html);
                     $email->send();

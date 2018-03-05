@@ -158,7 +158,8 @@ class ReportSales extends Command
                                  
                 //SENDING EMAIL
                 $email = new EmailSG(env('MAIL_REPORT_FROM'), $emailx ,'Daily Sales Report to '.$namex);
-                $email->cc(env('MAIL_REPORT_CC'));
+                if(env('MAIL_REPORT_CC',null))
+                    $email->cc(env('MAIL_REPORT_CC'));
                 $email->category('Reports');
                 $email->body('sales_report',array('date'=>$date_report));
                 $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');

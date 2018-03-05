@@ -604,7 +604,6 @@ class PurchaseController extends Controller{
                         {
                             //send email           
                             $email = new EmailSG(null, $t->email, strip_tags($input['email'][2]['value']));
-                            //$email->cc(env('MAIL_REPORT_CC'));
                             $email->category('Custom');
                             $email->body('custom',['body'=>$input['email'][3]['value']]);
                             if(!empty($input['email'][4]['value']))
