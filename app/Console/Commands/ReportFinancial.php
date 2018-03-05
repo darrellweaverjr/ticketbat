@@ -155,7 +155,6 @@ class ReportFinancial extends Command
             $email->body('sales_report',array('date'=>$tables[0]['title']));
             $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
             $email->attachment($pdf_path);
-            dd($email->send(1));
             if($email->send())
                 unlink($pdf_path);
             return true;
