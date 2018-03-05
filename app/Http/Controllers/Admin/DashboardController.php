@@ -192,7 +192,12 @@ class DashboardController extends Controller
         if(isset($input) && !empty($input['user']))
         {
             $data['search']['user'] = trim($input['user']);
-            $data['where'][] = ['users.email','=',$data['search']['user']];
+            if(is_numeric($data['search']['user']))
+                $data['where'][] = ['users.id','=',$data['search']['user']];
+            else if(filter_var($data['search']['user'], FILTER_VALIDATE_EMAIL))
+                $data['where'][] = ['users.email','=',$data['search']['user']];
+            else
+                $data['search']['user'] = '';
         }
         else
         {
@@ -202,7 +207,12 @@ class DashboardController extends Controller
         if(isset($input) && !empty($input['customer']))
         {
             $data['search']['customer'] = trim($input['customer']);
-            $data['where'][] = ['customers.email','=',$data['search']['customer']];
+            if(is_numeric($data['search']['customer']))
+                $data['where'][] = ['customers.id','=',$data['search']['customer']];
+            else if(filter_var($data['search']['user'], FILTER_VALIDATE_EMAIL))
+                $data['where'][] = ['customers.email','=',$data['search']['customer']];
+            else
+                $data['search']['customer'] = '';
         }
         else
         {

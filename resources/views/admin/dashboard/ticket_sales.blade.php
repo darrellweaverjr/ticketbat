@@ -409,7 +409,7 @@
                                     <label class="control-label col-md-3">User:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="Email of the user" />
+                                            <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="ID/Email of the user" />
                                         </div>
                                     </div>
                                 </div>
@@ -417,7 +417,7 @@
                                     <label class="control-label col-md-3">Customer:</label>
                                     <div class="col-md-9 show-error"> 
                                         <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="customer" value="{{$search['customer']}}" placeholder="Email of the customer" />
+                                            <input type="text" class="form-control input-large" name="customer" value="{{$search['customer']}}" placeholder="ID/Email of the customer" />
                                         </div>
                                     </div>
                                 </div>

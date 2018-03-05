@@ -278,7 +278,12 @@ class PurchaseController extends Controller{
                 if(isset($input) && !empty($input['user']))
                 {
                     $search['user'] = trim($input['user']);
-                    $where[] = ['users.email','=',$search['user']];
+                    if(is_numeric($search['user']))
+                        $where[] = ['users.id','=',$search['user']];
+                    else if(filter_var($search['user'], FILTER_VALIDATE_EMAIL))
+                        $where[] = ['users.email','=',$search['user']];
+                    else
+                        $search['user'] = '';
                 }
                 else
                     $search['user'] = '';
@@ -286,7 +291,12 @@ class PurchaseController extends Controller{
                 if(isset($input) && !empty($input['customer']))
                 {
                     $search['customer'] = trim($input['customer']);
-                    $where[] = ['customers.email','=',$search['customer']];
+                    if(is_numeric($search['customer']))
+                        $where[] = ['customers.id','=',$search['customer']];
+                    else if(filter_var($search['user'], FILTER_VALIDATE_EMAIL))
+                        $where[] = ['customers.email','=',$search['customer']];
+                    else
+                        $search['customer'] = '';
                 }
                 else
                     $search['customer'] = '';
