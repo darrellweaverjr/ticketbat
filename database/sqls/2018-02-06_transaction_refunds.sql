@@ -1,4 +1,4 @@
-CREATE TABLE `transaction_refunds` (
+#CREATE TABLE `transaction_refunds` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `purchase_id` INT(10) NOT NULL,
   `user_id` INT(10) NOT NULL,
