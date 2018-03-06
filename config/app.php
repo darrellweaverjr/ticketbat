@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'TicketBat Admin',
+    'name' => 'TicketBat',
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://admin.ticketbat.com'),
+    'url' => env('APP_URL', 'https://www.ticketbat.com'),
 
     /*
     |--------------------------------------------------------------------------
