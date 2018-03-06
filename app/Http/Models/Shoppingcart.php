@@ -50,6 +50,7 @@ class Shoppingcart extends Model
         $items = DB::table('shoppingcart')
                             ->join('show_times', 'show_times.id', '=' ,'shoppingcart.item_id')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->leftJoin('purchases', function ($join) {
@@ -62,7 +63,8 @@ class Shoppingcart extends Model
                                               tickets.processing_fee AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
                                               (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date, shows.id AS show_id,
                                               (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date, shows.venue_id,
-                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty, shows.ticket_limit, tickets.max_tickets'))
+                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty, shows.ticket_limit, tickets.max_tickets,
+                                              venues.disable_cash_breakdown'))
                             ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
                             ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
         //limit tickets by show
@@ -163,7 +165,7 @@ class Shoppingcart extends Model
     {
         try {
             $price = $qty = $fee = $save = $saveAll = $total = 0;
-            $saveAllApplied = false;
+            $saveAllApplied = $disable_cash_breakdown = false;
             $coupon = $coupon_description = null;
             $restrictions = $banners = [];
             $amex_only = 0;
@@ -178,6 +180,9 @@ class Shoppingcart extends Model
                 //loop for all items to calculate
                 foreach ($items as $i)
                 {
+                    //pre-conditions cash fill out
+                    if(!$disable_cash_breakdown && $i->disable_cash_breakdown>0)
+                        $disable_cash_breakdown = true;
                     //printed tickets
                     if($i->printed_tickets>0)
                         $printed_tickets['shows'][] = $i->name;
@@ -293,10 +298,25 @@ class Shoppingcart extends Model
             $total += $printed_tickets['select'];
             $printed_tickets['details'] = count($items)-count($printed_tickets['shows']);
             $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
+            //cash form fill out
+            if($disable_cash_breakdown && $seller && $total>0)
+            {
+                $amount = Util::round($total);
+                $denominations = [ 'x100' => 100, 'x50' => 50, 'x20' => 20, 'x10' => 10, 'x5' => 5,  'x1' => 1, 'change' => 0.01 ];
+                arsort($denominations); // sort the denomination values from high to low
+                $cash_breakdown = array();
+                foreach ($denominations as $key=>$value) {
+                    while ($amount >= $value) {
+                        $amount = round($amount - $value,2); // decrement by the value of the denomination
+                        (!isset($cash_breakdown[$key]))? $cash_breakdown[$key] = 1 : $cash_breakdown[$key]++ ; // track the occurrence of each denomination(++)
+                    }
+                }
+            }
             //return
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,'banners'=>$banners,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
-                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
+                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets,
+                    'cash_breakdown'=>(!empty($cash_breakdown))? $cash_breakdown : null];
 
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];

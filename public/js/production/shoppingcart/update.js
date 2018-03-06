@@ -86,10 +86,22 @@ var UpdateShoppingcartFunctions = function () {
                 $('#icon-vs').removeClass('hidden');
                 $('#icon-dc').removeClass('hidden');
             }
-            //update others
+            //update card form
             $('#form_card input[name="card"]').data('amex',cart.amex_only);
+            
+            //update cash form
             $('#form_cash input[name="pending"]').data('pending',cart.total);
             $('#form_cash input[name="pending"]').val(cart.total*-1);
+            if(cart.cash_breakdown)
+            {
+                if(!$('#form_cash div.desglose').hasClass('hidden'))
+                    $('#form_cash div.desglose').addClass('hidden');
+                $.each(cart.cash_breakdown,function(k, v) {
+                    $('#form_cash .desglose input[name="'+k+'"]').val(v).trigger('change');
+                });
+            }
+            else
+                $('#form_cash div.desglose').removeClass('hidden');
             CashFunctions.calculate();
             //update items in list
             var items_qty = (cart.items.length>1)? 'items' : 'item';
