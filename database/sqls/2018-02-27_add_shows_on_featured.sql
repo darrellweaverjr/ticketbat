@@ -1,2 +1,2 @@
-ALTER TABLE `shows` 
+#ALTER TABLE `shows`
 ADD COLUMN `on_featured` DATETIME NULL DEFAULT NULL AFTER `on_sale`;
