@@ -292,6 +292,8 @@ class VenueController extends Controller{
                 $venue->default_percent_pfee = $input['default_percent_pfee'];
                 $venue->default_fixed_commission = $input['default_fixed_commission'];
                 $venue->default_percent_commission = $input['default_percent_commission'];
+                $venue->disable_cash_breakdown = (!empty($input['disable_cash_breakdown']))? 1 : 0;
+                $venue->after_purchase_link = (!empty($input['after_purchase_link']))? 1 : 0;
                 if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
                 {
                     $venue->delete_image_file();

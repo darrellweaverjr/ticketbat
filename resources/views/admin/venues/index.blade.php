@@ -280,6 +280,25 @@
                                         </div>
                                         <div class="row">
                                             <label class="control-label">
+                                                <span class="required">Options to admin/seller</span>
+                                            </label><br><br>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-7">Disable cash breakdown on "shopping cart" page (hide it and fill it out by default)</label>
+                                                <div class="col-md-5">
+                                                    <input type="hidden" name="disable_cash_breakdown" value="0"/>
+                                                    <input type="checkbox" class="make-switch input-large" name="disable_cash_breakdown" value="1" data-on-text="Yes, do it" data-off-text="No, keep it" data-on-color="danger" data-off-color="primary">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-7">After purchase ("complete" page) enable link to return to "buy" page</label>
+                                                <div class="col-md-5">
+                                                    <input type="hidden" name="after_purchase_link" value="0"/>
+                                                    <input type="checkbox" class="make-switch input-large" name="after_purchase_link" value="1" data-on-text="Enable link" data-off-text="Disable link" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="control-label">
                                                 <span class="required">Ticket Info *</span>
                                             </label>
                                             <div class="form-group" >
