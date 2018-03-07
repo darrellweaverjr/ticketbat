@@ -43,32 +43,23 @@ class ReportFinancial extends Command
     public function handle()
     {
         try {
-            //start date
+            //parameters
             $start = $this->argument('start');
             if(empty($start) || !strtotime($start))
-                $start = date('Y-m-d', strtotime('-7 days'));
+                $start = date('Y-m-d', strtotime('yesterday'));
             else
                 $start = date('Y-m-d', strtotime($start));
-            //end date
             $end = $this->argument('end');
             if(empty($end) || !strtotime($end))
-                $end = date('Y-m-d', strtotime('now'));
+                $end = date('Y-m-d', strtotime('yesterday'));
             else
                 $end = date('Y-m-d', strtotime($end));
+            
             //init
-            $summary = $tables = [];
-            function calc_totals($table,$name)
+            $tables = [];
+            function create_table($start,$end,$name,$title)
             {
-                return array( 'name'=>$name,
-                              'tickets'=>array_sum(array_column($table,'tickets')),
-                              'purchases'=>array_sum(array_column($table,'purchases')),
-                              'paid'=>array_sum(array_column($table,'paid')),
-                              'commissions'=>array_sum(array_column($table,'commissions')),
-                              'fees'=>array_sum(array_column($table,'fees')),
-                              'amount'=>array_sum(array_column($table,'amount')));
-            }
-            //get all purchases totals grouped by venues that has to be include it in the report
-            $table1 = (array)DB::table('purchases')
+                $table = (array)DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=', 'show_times.show_id')
                         ->join('venues', 'venues.id', '=', 'shows.venue_id')
@@ -82,69 +73,67 @@ class ReportFinancial extends Command
                         ->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end)
                         ->groupBy('venues.id')->orderBy('venues.name')
                         ->distinct()->get()->toArray();
-            $tables[] = ['title'=>'Period: '.date('F j, Y', strtotime($start)).' to '.date('F j, Y', strtotime($end)),
-                         'data'=>$table1,'total'=>calc_totals($table1,'Total Tickets')];
-            //get all purchases totals grouped by month
-            $table2 = (array)DB::table('purchases')
-                        ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
-                        ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                        ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                        ->select(DB::raw('venues.id, venues.name,
-                                          COUNT(purchases.id) AS purchases, SUM(purchases.quantity) AS tickets, 
-                                          SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
-                                          SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.commission_percent)+SUM(purchases.processing_fee) AS amount'))
-                        ->where('venues.financial_report_emails','>',0)
-                        ->where('purchases.status','=','Active')
-                        ->whereDate('purchases.created','>=',date('Y-m',strtotime($start)).'-01')
-                        ->whereDate('purchases.created','<=',date('Y-m-t',strtotime($end)))
-                        ->groupBy('venues.id')->orderBy('venues.name')
-                        ->distinct()->get()->toArray();
-            $tables[] = ['title'=>'Month: '.date('F/Y', strtotime($end)),
-                         'data'=>$table2,'total'=>calc_totals($table2,'Total Month ('.date('M',strtotime($end)).')')];
-            //get all purchases totals YTD
-            $table3 = (array)DB::table('purchases')
-                        ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
-                        ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                        ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                        ->select(DB::raw('venues.id, venues.name,
-                                          COUNT(purchases.id) AS purchases, SUM(purchases.quantity) AS tickets, 
-                                          SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
-                                          SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.commission_percent)+SUM(purchases.processing_fee) AS amount'))
-                        ->where('venues.financial_report_emails','>',0)
-                        ->where('purchases.status','=','Active')
-                        ->whereDate('purchases.created','>=',date('Y',strtotime($start)).'-01-01')
-                        ->whereDate('purchases.created','<=',date('Y-m-d',strtotime($end)))
-                        ->groupBy('venues.id')->orderBy('venues.name')
-                        ->distinct()->get()->toArray();
-            $tables[] = ['title'=>'YTD: '.'January 1, '.date('Y',strtotime($start)).' to '.date('F j, Y',strtotime($end)),
-                         'data'=>$table3,'total'=>calc_totals($table3,'Total Tickets YTD')];
-            //get all purchases totals YOY same period
-            $table4 = (array)DB::table('purchases')
-                        ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
-                        ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                        ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                        ->select(DB::raw('venues.id, venues.name,
-                                          COUNT(purchases.id) AS purchases, SUM(purchases.quantity) AS tickets, 
-                                          SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
-                                          SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.commission_percent)+SUM(purchases.processing_fee) AS amount'))
-                        ->where('venues.financial_report_emails','>',0)
-                        ->where('purchases.status','=','Active')
-                        ->whereDate('purchases.created','>=',date('Y-m-d',strtotime('-1 year '.$start)))
-                        ->whereDate('purchases.created','<=',date('Y-m-d',strtotime('-1 year '.$end)))
-                        ->groupBy('venues.id')->orderBy('venues.name')
-                        ->distinct()->get()->toArray();
-            $tables[] = ['title'=>'YOY: '.date('F j, Y',strtotime('-1 year '.$start)).' to '.date('F j, Y',strtotime('-1 year '.$end)),
-                         'data'=>$table4,'total'=>calc_totals($table4,'YOY Same Period')];
-            //calc percent
-            $percent = ($tables[0]['total']['amount']>$tables[3]['total']['amount'])? ' <h3> +' : ' <h3> ';
-            $percent.= (round(($tables[0]['total']['amount']-$tables[3]['total']['amount'])/$tables[3]['total']['amount']*100,2));
-            $tables[3]['total']['name'].= $percent.' % profits compared with same period last year.</h3>';
+                $total = array( 'name'=>$name,
+                              'tickets'=>array_sum(array_column($table,'tickets')),
+                              'purchases'=>array_sum(array_column($table,'purchases')),
+                              'paid'=>array_sum(array_column($table,'paid')),
+                              'commissions'=>array_sum(array_column($table,'commissions')),
+                              'fees'=>array_sum(array_column($table,'fees')),
+                              'amount'=>array_sum(array_column($table,'amount')));
+                return ['title'=>$title, 'data'=>$table, 'total'=>$total];
+            }
+            function rollup_date($date)
+            {
+                $ts = strtotime($date);
+                $year = date('o', $ts) - 1; 
+                $week = date('W', $ts);
+                $day = date('N', $ts);
+                return strtotime($year.'W'.$week.$day);
+            }
+            
+            //table sales by period or daily by property    -0
+            $_start = $start;
+            $_end = $end;
+            $name = 'Total';
+            $title = ($start==$end)? 'DAILY BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_end)) : 'PERIOD BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_start)).' - '.date('D, F j, Y',strtotime($_end)) ;
+            $tables[] = create_table($_start,$_end,$name,$title);
+            
+            //table roll up month MTD   -1
+            $_start = date('Y-m-01',strtotime($end));
+            $_end = $end;
+            $name = 'Total MTD ('.date('F Y',strtotime($_end)).')';
+            $title = 'ROLL UP MTD CURRENT ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $tables[] = create_table($_start,$_end,$name,$title);
+            
+            //table roll up previous month MTD  -2
+            $_start = date('Y-m-d', rollup_date( date('Y-m-01',strtotime($end)) ));
+            $_end = date('Y-m-d', rollup_date($end));
+            $name = 'Total MTD ('.date('F Y',strtotime($_end)).')';
+            $title = 'ROLL UP MTD PERIOD ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $tables[] = create_table($_start,$_end,$name,$title);
+            
+            //table roll up year YTD    -3
+            $_start = date('Y-01-01',strtotime($end));
+            $_end = $end;
+            $name = 'Total YTD ('.date('Y',strtotime($_end)).')';
+            $title = 'ROLL UP YTD CURRENT ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $tables[] = create_table($_start,$_end,$name,$title);
+            
+            //table roll up previous year YTD   -4
+            $_start = date('Y-m-d', rollup_date( date('Y-01-01',strtotime($end)) ));
+            $_end = date('Y-m-d', rollup_date($end));
+            $name = 'Total YTD ('.date('Y',strtotime($_end)).')';
+            $title = 'ROLL UP YTD PERIOD ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $tables[] = create_table($_start,$_end,$name,$title);
+            
+            //percent MTD
+            $tables[1]['percent'] = round(( end($tables[1]['total']) - end($tables[2]['total']) ) / end($tables[2]['total']) * 100,1);
+            //percent YTD
+            $tables[3]['percent'] = round(( end($tables[3]['total']) - end($tables[4]['total']) ) / end($tables[4]['total']) * 100,1);
+            
             //create report
             $pdf_path = '/tmp/ReportFinancial_'.date('Y-m-d').'_'.date('U').'.pdf';
-            $view_email = View::make('command.report_financial', compact('summary','tables')); 
+            $view_email = View::make('command.report_financial', compact('tables'));             
             PDF::loadHTML($view_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
             
             //send the report
