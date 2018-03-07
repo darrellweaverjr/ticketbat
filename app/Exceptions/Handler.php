@@ -128,7 +128,7 @@ class Handler extends ExceptionHandler
      */
     public static function sendReport($excludeException=false)
     {
-        if(!preg_match('/\/admin/',url()->current()) && !preg_match('/\/api/',url()->current()))
+        if(!preg_match('/\/admin\//',url()->current()) && !preg_match('/\/api\//',url()->current()))
         {
             if(!$excludeException)
                 return (!($exception instanceof TokenMismatchException) && !($exception instanceof NotFoundHttpException));  
