@@ -41,7 +41,7 @@ class HomeController extends Controller
         try {
             //get categories
             $categs = Category::get_categories();
-            $cats = $categories = [];
+            $cats = $categories = $cities = $venues = [];
             //get sliders
             $sliders = Slider::orderBy('n_order')->get();
             foreach ($sliders as $s)
@@ -54,10 +54,11 @@ class HomeController extends Controller
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, shows.category_id,
+                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, locations.country, locations.state, shows.category_id,
                                           venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
                                           MIN(tickets.retail_price+tickets.processing_fee) AS price,
                                           shows.starting_at'))    
+                        ->where('venues.is_featured','>',0)
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where(function($query) {
                             $query->whereNull('shows.on_featured')
@@ -109,9 +110,23 @@ class HomeController extends Controller
                         ->distinct()->get();
             //get venues
             $venues = DB::table('venues')
+                        ->join('shows', 'venues.id', '=' ,'shows.venue_id')
+                        ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
+                        ->join('images', 'show_images.image_id', '=' ,'images.id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
+                        ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->select('venues.id','venues.name','locations.city')
                         ->where('venues.is_featured','>',0)
+                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where(function($query) {
+                            $query->whereNull('shows.on_featured')
+                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                        })
+                        ->where('images.image_type','=','Logo')
+                        ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
+                        ->where('show_times.is_active','=',1)
+                        ->whereNotNull('images.url')
                         ->orderBy('venues.name')->groupBy('venues.id')
                         ->distinct()->get();
             //return view
@@ -162,6 +177,7 @@ class HomeController extends Controller
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->select(DB::raw('shows.id, show_times.time_alternative,
                                           DATE_FORMAT(MIN(show_times.show_time),"%b %d, %Y @ %h:%i %p") AS date_venue_on'))    
+                        ->where('venues.is_featured','>',0)
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
                         ->where(function($query) {
                             $query->whereNull('shows.on_featured')
