@@ -42,12 +42,12 @@ var TableDatatablesButtons = function () {
                     customize: function ( win ) {
                         var graph = ($('#form_model_search input[name="replace_chart"]:checked').length)? 'Yes' : 'No';
                         var coupons = ($('#form_model_search input[name="coupon_report"]:checked').length)? 'Yes' : 'No';
-                        var t = '<hr><div style="font-size:12px;">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
+                        var t = '<hr><div style="font-size:12px;float:left">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
                                 'Show: '+$('#form_model_search select[name="show"] option:selected').text()+'<br>'+
                                 'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
                                 'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'<br>'+
                                 'Payment Types: '+$('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).attr('data-value'); } ).get().join(',')+'<br>'+
-                                'User: '+$('#form_model_search select[name="user"] option:selected').text()+'<br>'+
+                                '</div><div style="font-size:12px;float:left">User: '+$('#form_model_search select[name="user"] option:selected').text()+'<br>'+
                                 'Qty of mirror period: '+$('#form_model_search input[name="mirror_period"]').val()+'<br>'+
                                 'Show Graph instead of Table: '+graph+'<br>'+
                                 'Show Coupon\'s Report: '+coupons+'</div>';
