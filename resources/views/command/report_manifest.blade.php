@@ -30,7 +30,7 @@
     </head>
     <body>
         <h3 style="text-align:center">
-            <img alt="TicketBat.com" height="50" widtd="300" src="{{asset('/themes/img/logo-header-white.jpg')}}"/>
+            <img alt="TicketBat.com" height="50" widtd="300" src="http://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
             <br><br>MANIFEST REPORT
         </h3><hr>
         <p class="ttitle">The following tickets have been purchased for "{{$data['name']}}" on "{{date('m/d/Y g:ia',strtotime($data['show_time']))}}"</p>

@@ -28,7 +28,7 @@
     <meta charset="utf-8">
     <body>
         <h3 style="text-align:center">
-            <img alt="TicketBat.com" height="50" width="300" src="{{asset('/themes/img/logo-header-white.jpg')}}"/>
+            <img alt="TicketBat.com" height="50" width="300" src="http://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
             <br><br>FINANCIAL REPORT
         </h3><hr>
         @foreach($tables as $t)

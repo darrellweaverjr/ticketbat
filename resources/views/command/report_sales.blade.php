@@ -35,7 +35,7 @@
     <body>
         @if($format == 'referrer')
             <h3 style="text-align:center">
-                <img alt="TicketBat.com" height="50" width="300" src="{{asset('/themes/img/logo-header-white.jpg')}}"/>
+                <img alt="TicketBat.com" height="50" width="300" src="http://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
                 <br><br>REFERRER SALES REPORT
             </h3><hr>
             <p class="ttitle">Date: {{$date_report}}</p>
@@ -63,7 +63,7 @@
             @foreach($data as $d)
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
-                <img alt="TicketBat.com" height="50" width="300" src="{{asset('/themes/img/logo-header-white.jpg')}}"/>
+                <img alt="TicketBat.com" height="50" width="300" src="http://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
                 <br><br>FUTURE LIABILITIES REPORT
             </h3><hr>
             <p class="ttitle">@if($d['name'] == 'Totals') All venues @else Venue: "{{$d['name']}}" @endif - Starting on {{date('F j, Y')}}</p>
@@ -125,7 +125,7 @@
         @elseif($format == 'types')
             @if(isset($data[0]['types']))
               <h3 style="text-align:center">
-                    <img alt="TicketBat.com" height="50" width="300" src="{{asset('/themes/img/logo-header-white.jpg')}}"/>
+                    <img alt="TicketBat.com" height="50" width="300" src="http://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
                     <br><br>TOTAL SALES REPORT
                 </h3><hr>
                 <p class="ttitle">Date: {{$data[0]['date']}}</p>
@@ -165,7 +165,7 @@
             @foreach($data as $d)
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
-                    <img alt="TicketBat.com" height="50" width="300" src="{{asset('/themes/img/logo-header-white.jpg')}}"/>
+                    <img alt="TicketBat.com" height="50" width="300" src="http://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
                     <br><br>SALES REPORT
                 </h3><hr>
             <p class="ttitle">@if($d['name'] == 'Totals') All venues: @else @if($d['type']=='venue')Venue: @else Show: @endif "{{$d['name']}}" on @endif {{$d['date']}}</p>
