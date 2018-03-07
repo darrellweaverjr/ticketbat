@@ -133,7 +133,7 @@ class ReportFinancial extends Command
             
             //create report
             $pdf_path = '/tmp/ReportFinancial_'.date('Y-m-d').'_'.date('U').'.pdf';
-            $view_email = View::make('command.report_financial', compact('tables'));             
+            $view_email = View::make('command.report_financial', compact('tables')); 
             PDF::loadHTML($view_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
             
             //send the report
