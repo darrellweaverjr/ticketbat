@@ -271,8 +271,8 @@ class VenueController extends Controller{
                 $venue->location()->associate($location);
                 $venue->name = strip_tags($input['name']);
                 $venue->slug = strip_tags($input['slug']);
-                $venue->accounting_email = strip_tags($input['accounting_email']);
-                $venue->weekly_email = strip_tags($input['weekly_email']);
+                $venue->accounting_email = strip_tags(preg_replace('/\s+/','',$input['accounting_email']));
+                $venue->weekly_email = strip_tags(preg_replace('/\s+/','',$input['weekly_email'])); 
                 $venue->description = strip_tags($input['description'],'<p><a><br>');
                 $venue->ticket_info = strip_tags($input['ticket_info']);
                 $venue->is_featured = $input['is_featured'];

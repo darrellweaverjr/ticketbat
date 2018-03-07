@@ -360,8 +360,8 @@ class ShowController extends Controller{
                 $show->sponsor = strip_tags($input['sponsor']);
                 $show->short_description = strip_tags($input['short_description']);
                 $show->description = strip_tags($input['description'],'<p><a><br>');
-                $show->emails = strip_tags($input['emails']);
-                $show->accounting_email = strip_tags($input['accounting_email']);
+                $show->emails = strip_tags(preg_replace('/\s+/','',$input['emails'])); 
+                $show->accounting_email = strip_tags(preg_replace('/\s+/','',$input['accounting_email']));   
                 $show->url = strip_tags($input['url']);
                 $show->restrictions = $input['restrictions'];
                 $show->is_featured = $input['is_featured'];
