@@ -120,7 +120,7 @@
                             <div class="alert alert-warning">
                                 <center>
                                     <input type="hidden" name="purchase" value="0" />
-                                    <input type="checkbox" class="make-switch" name="purchase" checked="true" value="1"  data-size="mini" data-on-text="Make Purchase" data-off-text="Don't Purchase" data-on-color="primary" data-off-color="danger">
+                                    <input type="checkbox" class="make-switch" name="purchase" value="1"  data-size="mini" data-on-text="Make Purchase" data-off-text="Don't Purchase" data-on-color="primary" data-off-color="danger">
                                     <span style="color:red">You must make a purchase only if this show is one of ours. Otherwise you won't be able to print tickets.</span>
                                 </center>
                             </div>
