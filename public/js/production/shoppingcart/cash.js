@@ -1,29 +1,32 @@
 var CashFunctions = function () {
     
     var initFunctions = function () {
-        //on change bill
-        $('#tab_cash input[name^="x"]').bind('change','click', function(ev) {
-            var bill = parseFloat($(this).val()).toFixed();
-            var data_bill = parseInt($(this).data('bill'));
-            if(bill<0)
-                $(this).val(bill*-1);
-            else if(bill>parseInt($(this).attr('max')))
-                $(this).val($(this).attr('max'));
-            else
-                $(this).val(bill);
-            $('#tab_cash input[name^="r"]').each( function(k, v) {
-                if( parseInt($(this).data('bill')) == data_bill )
-                    $(this).val( (bill*data_bill).toFixed(2) );  
-            });
-            calcFunctions();
+        
+        //on button click
+        $('#form_cash button[name^="cash_"]').bind('click', function(ev) {
+            var value = $(this).val();
+            var cashed = $('#form_cash input[name="cashed"]').val();
+            if($.isNumeric(value))
+            {
+                if(value=='0')
+                    value = parseFloat(cashed*10).toFixed(2);
+                else
+                {
+                    cashed = cashed.replace('.','').replace(/\b0+/g, '')+value;
+                    value = (parseFloat(cashed)/100).toFixed(2);
+                }
+            }
+            else 
+                value = '0.00';
+            $('#form_cash input[name="cashed"]').val( value ).trigger('change');
         });
-        //on change change
-        $('#tab_cash input[name="change"]').bind('change','click', function(ev) {
-            var change = parseFloat($(this).val()).toFixed();
-            if(change<0 || change>parseInt($(this).attr('max')))
-                $(this).val($(this).attr('max'));
-            else
-                $(this).val(change);
+        
+        //on change cashed
+        $('#form_cash input[name="cashed"]').bind('change','click', function(ev) {
+            var cashed = parseFloat($(this).val()).toFixed(2);
+            if(cashed<0)
+                cashed = 0;
+            $('#form_cash input[name="cashed"]').val( cashed );
             calcFunctions();
         });
         
@@ -31,24 +34,25 @@ var CashFunctions = function () {
     
     var calcFunctions = function () {
         //function to calculate cash
-        var subtotal = 0;
-        $.each( $('#tab_cash input[name^="x"]'), function () {
-            subtotal += parseInt($(this).val()) * parseInt($(this).data('bill'));
-        });
-        subtotal += $('#tab_cash input[name="change"]').val()/100;
-        var pending = -1*parseFloat($('#cost_total').data('total')) + subtotal;
-        $('#tab_cash input[name="subtotal"]').val( subtotal.toFixed(2) );
-        $('#tab_cash input[name="pending"]').val( pending.toFixed(2) );
-        if(pending<0)
+        var cashed = parseFloat($('#form_cash input[name="cashed"]').val()).toFixed(2);
+        var pending = parseFloat($('#form_cash input[name="pending"]').val()).toFixed(2);
+        var total = parseFloat(pending-cashed).toFixed(2);
+        if(total>0)
         {
-            $('#collect_text').html('Collect');
-            $('#tab_cash input[name="pending"]').css('color','red');
+            $('#label_total').html('Due ($):');
+            $('#form_cash input[name="subtotal"]').css('color','red');
+        }
+        else if(total<0)
+        {
+            $('#label_total').html('Change ($):');
+            $('#form_cash input[name="subtotal"]').css('color','green');
         }
         else
         {
-            $('#collect_text').html('Change');
-            $('#tab_cash input[name="pending"]').css('color','green');
-        } 
+            $('#form_cash input[name="subtotal"]').css('color','black');
+        }
+        $('#form_cash input[name="subtotal"]').val(total*-1);
+        $('#form_cash input[name="subtotal"]').validate();
     }
     
     return {

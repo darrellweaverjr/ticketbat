@@ -298,25 +298,11 @@ class Shoppingcart extends Model
             $total += $printed_tickets['select'];
             $printed_tickets['details'] = count($items)-count($printed_tickets['shows']);
             $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
-            //cash form fill out
-            if($disable_cash_breakdown && $seller && $total>0)
-            {
-                $amount = Util::round($total);
-                $denominations = [ 'x100' => 100, 'x50' => 50, 'x20' => 20, 'x10' => 10, 'x5' => 5,  'x1' => 1, 'change' => 0.01 ];
-                arsort($denominations); // sort the denomination values from high to low
-                $cash_breakdown = array();
-                foreach ($denominations as $key=>$value) {
-                    while ($amount >= $value) {
-                        $amount = round($amount - $value,2); // decrement by the value of the denomination
-                        (!isset($cash_breakdown[$key]))? $cash_breakdown[$key] = 1 : $cash_breakdown[$key]++ ; // track the occurrence of each denomination(++)
-                    }
-                }
-            }
             //return
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,'banners'=>$banners,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
                     'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets,
-                    'cash_breakdown'=>(!empty($cash_breakdown))? $cash_breakdown : null];
+                    'cash_breakdown'=>(!empty($cash_breakdown))? 1 : 0];
 
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];

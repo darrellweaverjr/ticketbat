@@ -300,7 +300,7 @@ var CashValidation = function () {
                         digits: true,
                         required: false
                     },
-                    pending: {
+                    subtotal: {
                         min: 0,
                         number: true,
                         required: true
@@ -333,7 +333,7 @@ var CashValidation = function () {
                     form[0].submit(); // submit the form
                 }
             }).showErrors({
-                "pending": "You must collect at least the quantity required here to proceed."
+                "subtotal": "You must collect at least the quantity required here to proceed."
             });
     }
     return {

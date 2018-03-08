@@ -90,18 +90,14 @@ var UpdateShoppingcartFunctions = function () {
             $('#form_card input[name="card"]').data('amex',cart.amex_only);
             
             //update cash form
-            $('#form_cash input[name="pending"]').data('pending',cart.total);
-            $('#form_cash input[name="pending"]').val(cart.total*-1);
+            $('#form_cash input[name="pending"]').val(cart.total);
             if(cart.cash_breakdown)
             {
-                if(!$('#form_cash div.desglose').hasClass('hidden'))
-                    $('#form_cash div.desglose').addClass('hidden');
-                $.each(cart.cash_breakdown,function(k, v) {
-                    $('#form_cash .desglose input[name="'+k+'"]').val(v).trigger('change');
-                });
+                $('#form_cash input[name="cashed"]').val(cart.total);
+                $('#form_cash div.cash_breakdown').css('display','none');
             }
             else
-                $('#form_cash div.desglose').removeClass('hidden');
+                $('#form_cash div.cash_breakdown').css('display','block');
             CashFunctions.calculate();
             //update items in list
             var items_qty = (cart.items.length>1)? 'items' : 'item';

@@ -9,6 +9,21 @@
 <link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 <link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
+<style>
+    .cash_input div{
+        padding:5px;       
+    }
+    .cash_input button{
+        padding:5px;
+        font-size:40px!important;
+        font-weight:bold!important;
+    }
+    .cash_total input{
+        font-size:20px!important;
+        font-weight:bold!important;
+        min-width:50px;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -423,71 +438,42 @@
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some errors. Please check below.
                                     </div>
-                                    <div class="form-group desglose" style="padding-right:15px">
-                                        <label class="control-label col-sm-1 text-right">$100 x</label>
-                                        <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="100" value="0" name="x100" style="min-width:70px" value="{{old('x100')}}">
+                                    <div class="form-group cash_breakdown" style="text-align:center;padding-right:15px">
+                                        <div class="col-md-2"></div>
+                                        <div class="cash_input col-md-4">
+                                            <div class="col-md-4"><button name="cash_1" value="1" type="button" class="btn btn-info btn-lg btn-block">1</button></div>
+                                            <div class="col-md-4"><button name="cash_2" value="2" type="button" class="btn btn-info btn-lg btn-block">2</button></div>
+                                            <div class="col-md-4"><button name="cash_3" value="3" type="button" class="btn btn-info btn-lg btn-block">3</button></div>
+                                            
+                                            <div class="col-md-4"><button name="cash_4" value="4" type="button" class="btn btn-info btn-lg btn-block">4</button></div>
+                                            <div class="col-md-4"><button name="cash_5" value="5" type="button" class="btn btn-info btn-lg btn-block">5</button></div>
+                                            <div class="col-md-4"><button name="cash_6" value="6" type="button" class="btn btn-info btn-lg btn-block">6</button></div>
+                                            
+                                            <div class="col-md-4"><button name="cash_7" value="7" type="button" class="btn btn-info btn-lg btn-block">7</button></div>
+                                            <div class="col-md-4"><button name="cash_8" value="8" type="button" class="btn btn-info btn-lg btn-block">8</button></div>
+                                            <div class="col-md-4"><button name="cash_9" value="9" type="button" class="btn btn-info btn-lg btn-block">9</button></div>
+                                            
+                                            <div class="col-md-8"><button name="cash_0" value="0" type="button" class="btn btn-info btn-lg btn-block">0</button></div>
+                                            <div class="col-md-4"><button name="cash_x" value="" type="button" class="btn btn-danger btn-lg btn-block">X</button></div>
                                         </div>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" data-bill="100" value="0.00" name="r100" disabled="true">
+                                        <div class="cash_total col-md-4">
+                                            <label class="control-label col-sm-4 text-right">Total ($):</label>
+                                            <div class="col-sm-8 show-error">
+                                                <input type="text" class="form-control input-lg text-right" style="color:blue;" value="{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true" value="{{old('pending')}}">
+                                            </div>
+                                            
+                                            <label class="control-label col-sm-4 text-right">Cash ($):</label>
+                                            <div class="col-sm-8 show-error">
+                                                <input type="text" class="form-control input-lg text-right" value="0.00" name="cashed" value="{{old('change')}}">
+                                            </div>
+                                            
+                                            <label class="control-label col-sm-4 text-right" id="label_total">Due ($):</label>
+                                            <div class="col-sm-8 show-error">
+                                                <input type="text" class="form-control input-lg text-right" style="color:red;" value="-{{sprintf("%.2f",$cart['total'])}}" name="subtotal" readOnly="true" value="{{old('subtotal')}}">
+                                            </div>
                                         </div>
-
-                                        <label class="control-label col-sm-1 text-right">$50 x</label>
-                                        <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="50" value="0" name="x50" style="min-width:70px" value="{{old('x50')}}">
-                                        </div>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" data-bill="50" value="0.00" name="r50" disabled="true">
-                                        </div>
-
-                                        <label class="control-label col-sm-1 text-right">$20 x</label>
-                                        <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="20" value="0" name="x20" style="min-width:70px" value="{{old('x20')}}">
-                                        </div>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" data-bill="20" value="0.00" name="r20" disabled="true">
-                                        </div>
-                                    </div>
-                                    <div class="form-group desglose" style="padding-right:15px">
-                                        <label class="control-label col-sm-1 text-right">$10 x</label>
-                                        <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="10" value="0" name="x10" style="min-width:70px" value="{{old('x10')}}">
-                                        </div>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" data-bill="10" value="0.00" name="r10" disabled="true">
-                                        </div>
-
-                                        <label class="control-label col-sm-1 text-right">$5 x</label>
-                                        <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="5" value="0" name="x5" style="min-width:70px" value="{{old('x5')}}">
-                                        </div>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" data-bill="5" value="0.00" name="r5" disabled="true">
-                                        </div>
-
-                                        <label class="control-label col-sm-1 text-right">$1 x</label>
-                                        <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="100" step="1" data-bill="1" value="0" name="x1" style="min-width:70px" value="{{old('x1')}}">
-                                        </div>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="number" class="form-control" data-bill="1" value="0.00" name="r1" disabled="true">
-                                        </div>
-                                    </div>
-                                    <div class="form-group desglose" style="padding-right:15px">
-                                        <label class="control-label col-sm-1 text-right">Change</label>
-                                        <div class="col-sm-1 show-error">
-                                            <input type="number" class="form-control" min="0" max="99" step="1" value="00" name="change" style="min-width:70px" value="{{old('change')}}">
-                                        </div>
-                                        <div class="col-sm-2 show-error"></div>
-                                        <label class="control-label col-sm-2 text-right" id="collect_text">Collect</label>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="text" class="form-control" style="color:red;font-size:20px;font-weight:bold" data-pending="{{$cart['total']}}" value="-{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true" value="{{old('pending')}}">
-                                        </div>
-                                        <label class="control-label col-sm-2 text-right">Total</label>
-                                        <div class="col-sm-2 show-error">
-                                            <input type="text" class="form-control" style="color:blue;font-size:20px;font-weight:bold" value="0.00" name="subtotal" readOnly="true" value="{{old('subtotal')}}">
-                                        </div>
-                                    </div>
+                                        <div class="col-md-2"></div>
+                                    </div><hr>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="method" value="cash">
                                     <input type="hidden" name="newsletter" value="1">

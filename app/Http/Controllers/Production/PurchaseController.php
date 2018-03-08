@@ -111,17 +111,9 @@ class PurchaseController extends Controller
                         Session::forget('change');
                         if($shoppingcart['total']>0) 
                         {
-                            $paid = 0;
-                            if(!empty($info['x100'])) $paid += $info['x100']*100;
-                            if(!empty($info['x50'])) $paid += $info['x50']*50;
-                            if(!empty($info['x20'])) $paid += $info['x20']*20;
-                            if(!empty($info['x10'])) $paid += $info['x10']*10;
-                            if(!empty($info['x5'])) $paid += $info['x5']*5;
-                            if(!empty($info['x1'])) $paid += $info['x1'];
-                            if(!empty($info['change'])) $paid += $info['change']/100;
-                            if($paid < $shoppingcart['total'])
+                            if($info['subtotal']<0)
                                 return ['success'=>false, 'msg'=>'There is still money to collect.'];
-                            Session::put('change',$paid-$shoppingcart['total']);
+                            Session::put('change',$info['subtotal']);
                         }
                         else
                             return ['success'=>false, 'msg'=>'Incorrect payment method! Please, contact us.'];
