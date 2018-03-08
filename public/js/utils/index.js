@@ -113,10 +113,10 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
     $('#file_media_picture_upload').on('change', function(ev) {  
         //init
         var file = this.files[0];
-        if(file.size > 1048576)
+        if(file.size > 819200)
         {
             reset_form();
-            alert('ERROR: This file is larger than 1 Mb.');
+            alert('ERROR: This file is larger than 800 Kb.');
         }    
         else if(!(file.type==='image/jpg' || file.type==='image/png' || file.type==='image/jpeg' || file.type==='image/gif'))
         {
@@ -130,20 +130,20 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                 var currentWidth = this.width;
                 var currentHeight = this.height;
                 //max width and height permitted to the form
-                if(currentWidth > maxWidth || currentHeight > maxHeight)
-                {
-                    reset_form();
-                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be less or equal than '+maxWidth+' width x '+maxHeight+' height.');
-                }  
+//                if(currentWidth > maxWidth || currentHeight > maxHeight)
+//                {
+//                    reset_form();
+//                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be less or equal than '+maxWidth+' width x '+maxHeight+' height.');
+//                }  
                 //min width and height permitted according to the type of image to upload
-                else if(currentWidth < fixWidth || currentHeight < fixHeight)
-                {
-                    reset_form();
-                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be more or equal than '+fixWidth+' width x '+fixHeight+' height.');
-                }
+//                else if(currentWidth < fixWidth || currentHeight < fixHeight)
+//                {
+//                    reset_form();
+//                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be more or equal than '+fixWidth+' width x '+fixHeight+' height.');
+//                }
                 //if ok update form
-                else
-                {
+//                else
+//                {
                     //fill out the image info
                     $('#input_media_picture_name').html(file.name);
                     $('#form_media_picture_load [name="pic_size"]').val((file.size/1024).toFixed(1));
@@ -151,7 +151,7 @@ var FormImageUpload = function (image_type,modal_callback,image_callback) {
                     $('#form_media_picture_load [name="pic_height"]').val(currentHeight);
                     $('#form_media_picture_load [name="resize_width"]').val(fixWidth);
                     $('#form_media_picture_load [name="resize_height"]').val(fixHeight);
-                }
+                //}
             };
             if(file)
             {
