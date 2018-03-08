@@ -28,8 +28,7 @@ var CashFunctions = function () {
                 cashed = 0;
             $('#form_cash input[name="cashed"]').val( cashed );
             calcFunctions();
-        });
-        
+        });        
     }
     
     var calcFunctions = function () {

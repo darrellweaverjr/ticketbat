@@ -42,7 +42,7 @@
             </h4>
             <p class="margin-top-20">
             <center><b style="color:#578ebe">
-                    If you are attending this show with other people and would like to email them their ticket, please click on the
+                    If you are attending this event with other people and would like to email them their ticket, please click on the
                     <button type="button" disabled="true" class="btn btn-info"><i class="fa fa-share icon-share"></i></button> button below.
             </b></center>
             </p>
@@ -110,7 +110,7 @@
     </div>
     <!-- END ITEMS -->
 <!--     BEGIN PRINTED TICKETS -->
-    @if(count($cart['printed_tickets']['shows']))
+    @if(count($cart['printed_tickets']['shows']) && (!Auth::check() || Auth::user()->user_type_id!=7))
     <div class="row fixed-panel">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
@@ -159,7 +159,7 @@
     @endif
     <!-- END RESTRICTIONS -->
     <!-- BEGIN BANNERS -->
-    @if(count($cart['banners']))
+    @if(count($cart['banners']) && (!Auth::check() || Auth::user()->user_type_id!=7))
     <div class="row fixed-panel" >
         <div class="portlet light about-text">
             <!-- BEGIN BANNER -->
@@ -483,7 +483,9 @@
                                             <i class="required"> required</i>
                                         </label>
                                         <div class="col-sm-8 show-error">
-                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" value="{{old('customer')}}" autocomplete="on">
+                                            <input type="text" class="form-control" placeholder="Write your full name" name="customer" 
+                                                   @if(Auth::check() && Auth::user()->user_type_id==7) value="{{Auth::user()->first_name}} {{Auth::user()->last_name}}" @endif
+                                                   value="{{old('customer')}}" autocomplete="on">
                                         </div>
                                     </div>
                                     <div class="form-group">
