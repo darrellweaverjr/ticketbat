@@ -39,7 +39,7 @@ var LoginFunctions = function () {
                                 html: true,
                                 type: "error"
                             },function(){
-                                $('#form_login').modal('show');
+                                $('#modal_login').modal('show');
                             });
                         }
                     },
