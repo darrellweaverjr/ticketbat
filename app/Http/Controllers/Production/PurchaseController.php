@@ -162,7 +162,7 @@ class PurchaseController extends Controller
      */                          
     public function complete()
     {
-        $view_receipts=$receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=[];
+        $view_receipts=$receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
         $sent_to = $purchases = null;
         $send_welcome_email = $totals = $transaction = 0;
         $sent_receipts = $after_purchase_link = false;
@@ -177,7 +177,8 @@ class PurchaseController extends Controller
                 //send receipts
                 $data = $this->receipts($purchases);
                 //get data
-                $after_purchase_link = $data['after_purchase_link'];   
+                $after_purchase_note = $data['after_purchase_note'];  
+                $after_purchase_link = $data['after_purchase_link'];  
                 $view_receipts = $data['view_receipts'];   
                 $receipts = $data['receipts'];
                 $purchased = $data['purchased'];
@@ -196,7 +197,7 @@ class PurchaseController extends Controller
         } finally {
             //return
             return response() 
-                        ->view('production.shoppingcart.complete',compact('sent_to','view_receipts','sent_receipts','purchases','purchased','send_welcome_email','seller',
+                        ->view('production.shoppingcart.complete',compact('sent_to','view_receipts','sent_receipts','purchases','purchased','send_welcome_email','seller','after_purchase_note',
                                                                           'analytics','totals','transaction','conversion_code','ua_conversion_code','banners','after_purchase_link'))
                         ->withHeaders([
                             'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
@@ -211,7 +212,7 @@ class PurchaseController extends Controller
      */                          
     public function receipts($purchasex=null)
     {
-        $receipts=$view_receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=[];
+        $receipts=$view_receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
         $sent_to = null;
         $sent_receipts = $after_purchase_link = false;
         $totals = $transaction = 0;
@@ -225,9 +226,8 @@ class PurchaseController extends Controller
                 $p = Purchase::find($id);  
                 if($p)
                 {   
+                    //receipt
                     $receipts[] = $p->get_receipt();
-                    if(empty($after_purchase_link) && $p->show_time->show->venue->after_purchase_link>0)
-                        $after_purchase_link = '/buy/'.$p->show_time->show->slug.'/'.$p->show_time_id;
                     //load if only resubmit dont need this
                     if(!empty($purchasex))
                     {
@@ -260,6 +260,12 @@ class PurchaseController extends Controller
                         foreach ($banner as $b)
                             $b->file = Image::view_image($b->file);
                         $banners = array_merge($banners,$banner); 
+                        //after purchase notes
+                        if(empty($after_purchase_note[$p->show_time->show->id]) && !empty($p->show_time->show->after_purchase_note))
+                            $after_purchase_note[$p->show_time->show->id] = $p->show_time->show->after_purchase_note;
+                        //enable purchase link
+                        if(empty($after_purchase_link) && $p->show_time->show->venue->after_purchase_link>0)
+                            $after_purchase_link = '/buy/'.$p->show_time->show->slug.'/'.$p->show_time_id;
                     } 
                 }
             }   
@@ -271,7 +277,7 @@ class PurchaseController extends Controller
             
         } finally {
             if(!empty($purchasex))
-                return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,
+                return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,'after_purchase_note'=>$after_purchase_note,
                         'sent_receipts'=>$sent_receipts, 'analytics'=>$analytics, 'totals'=>$totals, 'transaction'=>$transaction,
                         'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code,'view_receipts'=>$view_receipts,'after_purchase_link'=>$after_purchase_link];
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];

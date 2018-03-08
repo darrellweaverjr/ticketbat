@@ -35,19 +35,25 @@
                 @foreach($purchased as $p)
                 <i style="padding-left:10px" class="fa fa-ticket"></i> <strong> {{$p['qty']}}</strong> @if($p['qty']>1) tickets @else ticket @endif for <strong>{{$p['event']}}</strong> on <strong>{{$p['schedule']}}</strong><br>
                 @endforeach
-            <hr>
-            @if($seller>0)
-            <center>
-                <a class="btn btn-danger btn-lg uppercase" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</a>
-                @if(!empty($after_purchase_link))
-                <a class="btn btn-info btn-lg uppercase" href="{{$after_purchase_link}}" ><i class="fa fa-backward icon-arrow-left"></i> Back to buy</a>
-                @endif
                 <hr>
-                <h4>Print tickets:</h4><br>
-                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-newspaper-o"></i> Regular Paper</a>
-                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
-                <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/W/{{$purchases}}" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
-            </center>
+                @if(!empty($after_purchase_note))
+                @foreach($after_purchase_note as $p)
+                <div class="alert alert-info" style="margin:20px">{{$p}}</div>
+                @endforeach
+                <hr>
+                @endif
+            @if($seller>0)
+                <center>
+                    <a class="btn btn-danger btn-lg uppercase" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</a>
+                    @if(!empty($after_purchase_link))
+                    <a class="btn btn-info btn-lg uppercase" href="{{$after_purchase_link}}" ><i class="fa fa-backward icon-arrow-left"></i> Back to buy</a>
+                    @endif
+                    <hr>
+                    <h4>Print tickets:</h4><br>
+                    <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-newspaper-o"></i> Regular Paper</a>
+                    <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
+                    <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/W/{{$purchases}}" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
+                </center>
             
             @else
             <center><a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
