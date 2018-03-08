@@ -206,17 +206,17 @@ class ShowController extends Controller{
                             $shows = DB::table('shows')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
-                                        /*->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
+                                        ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
                                         ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
                                                              FROM show_images si 
                                                              LEFT JOIN images i ON si.image_id = i.id 
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
-                                        })*/
+                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category'/*,'images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') */)
+                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->orderBy('shows.name')->groupBy('shows.id')
                                         ->distinct()->get();
@@ -384,6 +384,7 @@ class ShowController extends Controller{
                 $show->conversion_code = (!empty($input['conversion_code']))? $input['conversion_code'] : null;
                 $show->ua_conversion_code = (!empty($input['ua_conversion_code']))? $input['ua_conversion_code'] : null;
                 $show->ticket_limit = (!empty($input['ticket_limit']))? $input['ticket_limit'] : null;
+                $show->after_purchase_note = (!empty($input['after_purchase_note']))? $input['after_purchase_note'] : null;
                 if(isset($input['amex_only_start_date']) && $input['amex_only_start_date']!='' && isset($input['amex_only_end_date']) && $input['amex_only_end_date']!=''
                         && isset($input['ticket_types']) && count($input['ticket_types']))
                 {

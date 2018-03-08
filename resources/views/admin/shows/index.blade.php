@@ -520,6 +520,16 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row" style="padding:20px">
+                                            <label class="control-label">
+                                                    <span class="required">After purchase note to display on the "Complete" page</span>
+                                                </label>
+                                            <div class="form-group">
+                                                <div class="show-error">
+                                                    <textarea name="after_purchase_note" class="form-control" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_showtimes">
                                         <div class="btn-group">
