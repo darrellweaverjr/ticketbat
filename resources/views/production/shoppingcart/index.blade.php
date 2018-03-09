@@ -75,7 +75,7 @@
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>
                             <td style="text-align:right">${{number_format($i->processing_fee,2)}}</td>
                             @if(empty($i->consignment))
-                            <td><center><button type="button" class="btn btn-info"><i class="fa fa-share icon-share"></i></button></center></td>
+                            <td><center><button type="button" class="btn btn-info"><i class="fa fa-share icon-share share"></i></button></center></td>
                             @endif
                             <td><center><button type="button" class="btn btn-danger"><i class="fa fa-remove icon-ban"></i></button></center></td>
                         </tr>

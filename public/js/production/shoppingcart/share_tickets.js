@@ -3,7 +3,7 @@ var ShareFunctions = function () {
     var initFunctions = function () {
         
         //load share tickets
-        $('#tb_items tr > td:nth-child(6) button').on('click', function(ev) {
+        $('#tb_items tr > td:nth-child(6) button.share').on('click', function(ev) {
             var qty = parseInt($(this).closest('tr').data('qty'));
             var shoppingcart_id = $(this).closest('tr').attr('id'); 
             jQuery.ajax({
