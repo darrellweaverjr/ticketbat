@@ -121,8 +121,9 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'restaurants', 'RestaurantController@index')->middleware('permissions:RESTAURANTS');
 });
 
-//PRODUCTION ROUTES
-Route::group(['middleware' => ['forceSSL','check'],'namespace' => 'Production'], function () {
+
+// FRONTEND CUSTOMER SITE ROUTES
+Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'], function () {
     //home
     Route::get('/', 'HomeController@index')->name('index');
     Route::get('/home', function () { return redirect()->route('index'); });
