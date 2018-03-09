@@ -122,7 +122,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
 });
 
 //PRODUCTION ROUTES
-Route::group(['middleware' => ['forceSSL','check'],'namespace' => 'Production'], function () {
+Route::group(['middleware' => [/*'forceSSL',*/'check'],'namespace' => 'Production'], function () {
     //home
     Route::get('/', 'HomeController@index')->name('index');
     Route::get('/home', function () { return redirect()->route('index'); });
