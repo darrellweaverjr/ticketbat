@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\EmailSG;
 
 /**
@@ -184,60 +185,94 @@ class User extends Authenticatable
     {
         try {
             //init set 
-            $send_welcome_email = false;            
-            //set up user and customer
-            $user = User::where('email','=',trim($info['email']))->first();
-            if(!$user)
-            {
-                //send welcome email
-                $send_welcome_email = true;
-                //create user
-                $user = new User;
-                $user->user_type_id = 2;
-                $user->is_active = 1;
-                $user->force_password_reset = 0;
-                $user->email = trim($info['email']);
-                $user->audit_user_id = 2;
-                $location = new Location;
-                $location->created = $current;
+            $send_welcome_email = false;     
+            //if it is a seller/admin dont update the users table, only the customers one
+            if(Auth::check() && in_array(Auth::user()->user_type_id, [1,7]))
+            {   
+                //get customer
+                $customer = Customer::where('email',trim($info['email']))->first();
+                if(!$customer)
+                {
+                    $customer = new Customer;
+                    $customer->email = trim($info['email']);
+                    $location = new Location;  
+                    $location->address = Auth::user()->location->address;
+                    $location->city = Auth::user()->location->city;
+                    $location->state = Auth::user()->location->state;
+                    $location->zip = Auth::user()->location->zip;
+                    $location->country = Auth::user()->location->country;
+                    $location->lng = Auth::user()->location->lng;
+                    $location->lat = Auth::user()->location->lat;
+                    $location->created = Auth::user()->location->created;
+                    $location->updated = Auth::user()->location->updated;
+                    $location->save();
+                    $customer->location()->associate($location);
+                }
+                //create customer                
+                $customer->first_name = trim($info['first_name']);
+                $customer->last_name = trim($info['last_name']);
+                $customer->phone = (!empty($info['phone']))? $info['phone'] : null;
+                $customer->save();
+                if(empty($customer->id))
+                    return ['success'=>false, 'send_welcome_email'=>0, 'msg'=>'There is an error setting up the customer information.'];
+                return ['success'=>true, 'send_welcome_email'=>0, 'user_id'=>Auth::user()->id, 'customer_id'=>$customer->id];
             }
-            else
-                $location = $user->location;
-            //save location
-            if(!empty($info['address']) && !empty($info['city']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['country']))
+            else 
             {
-                $location->address = $info['address'];
-                $location->city = $info['city'];
-                $location->state = strtoupper($info['region']);
-                $location->zip = $info['zip'];
-                $location->country = $info['country'];
-                $location->set_lng_lat();
+                //set up user and customer
+                $user = User::where('email','=',trim($info['email']))->first();
+                if(!$user)
+                {
+                    //send welcome email
+                    $send_welcome_email = true;
+                    //create user
+                    $user = new User;
+                    $user->user_type_id = 2;
+                    $user->is_active = 1;
+                    $user->force_password_reset = 0;
+                    $user->email = trim($info['email']);
+                    $user->audit_user_id = 2;
+                    $location = new Location;
+                    $location->created = $current;
+                }
+                else
+                    $location = $user->location;
+                //save location
+                if(!empty($info['address']) && !empty($info['city']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['country']))
+                {
+                    $location->address = $info['address'];
+                    $location->city = $info['city'];
+                    $location->state = strtoupper($info['region']);
+                    $location->zip = $info['zip'];
+                    $location->country = $info['country'];
+                    $location->set_lng_lat();
+                }
+                else
+                {
+                    $location->address =  $location->city = 'Unknown';
+                    $location->state = 'NA';
+                    $location->country = 'US';
+                }
+                $location->save();
+                //save user
+                $user->location()->associate($location);
+                $user->first_name = $info['first_name'];
+                $user->last_name = $info['last_name'];
+                $user->phone = (!empty($info['phone']))? $info['phone'] : null;
+                $user->save();
+                //send email welcome
+                if($send_welcome_email)
+                    $send_welcome_email = ($user->welcome_email(true))? 1 : -1;
+                else
+                    $send_welcome_email = 0;
+                //erase temp pass
+                $user->set_slug();
+                //get customer
+                $customer_id = $user->update_customer();
+                if(!$customer_id)
+                    return ['success'=>false, 'send_welcome_email'=>$send_welcome_email, 'msg'=>'There is an error setting up the customer information.'];
+                return ['success'=>true, 'send_welcome_email'=>$send_welcome_email, 'user_id'=>$user->id, 'customer_id'=>$customer_id];
             }
-            else
-            {
-                $location->address =  $location->city = 'Unknown';
-                $location->state = 'NA';
-                $location->country = 'US';
-            }
-            $location->save();
-            //save user
-            $user->location()->associate($location);
-            $user->first_name = $info['first_name'];
-            $user->last_name = $info['last_name'];
-            $user->phone = (!empty($info['phone']))? $info['phone'] : null;
-            $user->save();
-            //send email welcome
-            if($send_welcome_email)
-                $send_welcome_email = ($user->welcome_email(true))? 1 : -1;
-            else
-                $send_welcome_email = 0;
-            //erase temp pass
-            $user->set_slug();
-            //get customer
-            $customer_id = $user->update_customer();
-            if(!$customer_id)
-                return ['success'=>false, 'send_welcome_email'=>$send_welcome_email, 'msg'=>'There is an error setting up the customer information.'];
-            return ['success'=>true, 'send_welcome_email'=>$send_welcome_email, 'user_id'=>$user->id, 'customer_id'=>$customer_id];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error setting up the customer information!'];
         }

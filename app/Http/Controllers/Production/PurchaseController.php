@@ -29,10 +29,10 @@ class PurchaseController extends Controller
             //init
             $info = Input::all();  
             $current = date('Y-m-d H:i:s');
-            $info['s_token'] = Util::s_token(false,true);
+            $info['s_token'] = Util::s_token(false,true);   
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
-            {
+            {   
                 //checking the email
                 $info['email'] = trim(strtolower($info['email']));
                 if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
@@ -50,7 +50,7 @@ class PurchaseController extends Controller
             else
                 return ['success'=>false, 'msg'=>'Fill the form out correctly!'];
             //get all items in shoppingcart
-            $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
+            $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true); 
             if(!$shoppingcart['success'])
                 return ['success'=>false, 'msg'=>$shoppingcart['msg']];
             if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
@@ -58,9 +58,9 @@ class PurchaseController extends Controller
             //remove unavailable items from shopingcart
             foreach($shoppingcart['items'] as $key=>$item)
                 if($item->unavailable)
-                    unset($shoppingcart['items'][$key]);
+                    unset($shoppingcart['items'][$key]);    
             //set up customer
-            $client = User::customer_set($info, $current);
+            $client = User::customer_set($info, $current); 
             if(!$client['success'])
                 return ['success'=>false, 'msg'=>$client['msg']];
             //check payment method
