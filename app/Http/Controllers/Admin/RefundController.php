@@ -307,6 +307,16 @@ class RefundController extends Controller{
                         }
                         return ['success'=>false, 'msg'=>'The amount to refund must be greater than $0.00 and less than $'.$purchase->price_paid];
                     }  
+                    else if($input['type']=='update_purchase')
+                    {
+                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Chargeback.';
+                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                        $purchase->status = 'Chargeback';
+                        $purchase->updated = $current;
+                        if($purchase->save())
+                            return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' status updated successfully!<br>'.$note];
+                        return ['success'=>false, 'msg'=>'There was an error trying to update the status of the purchase #'.$purchase->id.'<br>'.$note];
+                    }  
                     else 
                         return ['success'=>false,'msg'=>'There was an error refunding.<br>Invalid option.'];
                 }

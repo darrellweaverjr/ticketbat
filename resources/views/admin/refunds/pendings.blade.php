@@ -133,6 +133,13 @@
                                     <textarea name="description" class="form-control" rows="4"></textarea>
                                 </div>
                             </div>
+                            <div class="row" style="padding-left:15px">
+                                <div class="mt-radio-list">
+                                    <label class="mt-radio mt-radio-single mt-radio-outline" style="color:red;font-size:small;">
+                                        <input type="radio" name="type" value="update_purchase" />Select this option only if you want to update the status in the system and already did a manual refund.
+                                        <span></span>
+                                    </label>
+                            </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
