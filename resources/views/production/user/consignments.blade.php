@@ -5,6 +5,15 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<style>
+    .input_total {
+        background-color:black;
+        color:greenyellow;
+        font-weight:bold;
+        font-size:16px;
+        text-align:right;
+    }
+</style>
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -128,8 +137,8 @@
                             <br><span id="summary_shoppingcart"></span>
                         </div>
                         <div class="col-md-2">
-                            <input type="text" name="total_qty" style="background-color:black;color:greenyellow;font-weight:bold;font-size:16px;">
-                            <input type="text" name="total_money" style="background-color:black;color:greenyellow;font-weight:bold;font-size:16px;">
+                            <input type="text" name="total_qty" class="input_total">
+                            <input type="text" name="total_money" class="input_total">
                         </div>
                     </div>
                     <div class="form-body portlet-body flip-scroll" style="max-height:450px!important;overflow:auto;">
@@ -154,14 +163,55 @@
                 <!-- END FORM-->
             </div>
             <div class="modal-footer">
-                <a href="/shoppingcart/viewcart" class="btn bg-info btn-outline">Shopping cart</a>
                 <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
                 <button type="button" id="btn_update_consignment" class="btn bg-green btn-outline" title="Check the consignment tickets.">Purchase</button>
+                <a href="/shoppingcart/viewcart" class="btn bg-info btn-outline">Shopping cart</a>
             </div>
         </div>
     </div>
 </div>
 <!-- END SHARE TICKETS MODAL -->
+<!-- BEGIN SHARE CONFIRM MODAL -->
+<div id="modal_confirm_consignment" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:600px!important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3 class="modal-title">Confirm tickets</h3>
+            </div>
+            <div class="modal-body" id="confirm_body">
+                <div class="row form-body portlet-body">
+                    <div class="col-md-6">
+                        <input type="text" name="total_qty" class="input_total">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="total_money" class="input_total">
+                    </div>
+                </div>
+                <div class="form-body portlet-body flip-scroll" style="max-height:450px!important;overflow:auto;">
+                    <table class="table table-striped table-bordered table-hover table-header-fixed table-scrollable table-condensed flip-content" >
+                        <thead class="flip-content">
+                            <tr class="uppercase">
+                                <th width="10%">#</th>
+                                <th width="40%">Section/Row</th>
+                                <th width="30%">Seat</th>
+                                <th width="20%">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb_confirm_consignment_body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_confirm_cancel" class="btn dark btn-outline">Cancel</button>
+                <button type="button" id="btn_confirm_consignment" class="btn bg-green btn-outline" title="Check the consignment tickets.">Confirm & return</button>
+                <button type="button" id="btn_confirm_shoppingcart" class="btn bg-info btn-outline" title="Check the consignment tickets.">Confirm & pay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END SHARE CONFIRM MODAL -->
 <!-- BEGIN SIGN MODAL -->
 <div id="modal_sign_consignment" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width:60% !important;">

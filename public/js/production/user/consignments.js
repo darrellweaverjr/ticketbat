@@ -200,78 +200,68 @@ var ConsignmentsFunctions = function () {
             $('#form_update_consignment input[name="total_money"]').val(total.toFixed(2));
             ($(this).prop('checked'))? $(this).parents('tr').addClass('success') : $(this).parents('tr').removeClass('success');
         }); 
+                
+        //function confirm buy tickets
+        function confirm_tickets(consignment_id=false){
+            swal({
+                title: "Updating tickets...",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/user/consignments/save', 
+                data: $('#form_update_consignment').serializeArray(),
+                success: function(data) {
+                    if(data.success)
+                    {
+                        $('#modal_confirm_consignment').modal('hide');
+                        swal.close();
+                        ShoppingcartQtyItems.init();
+                        if(consignment_id!=false)
+                            modal_edit_consignments(consignment_id);
+                        else
+                            window.location.href = '/shoppingcart/viewcart';
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                        $('#modal_update_consignment').modal('show');
+                    });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error updating the ticket(s)!",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_update_consignment').modal('show');
+                    });
+                }
+            });
+        };
         //open confirm modal 
         $('#btn_update_consignment').on('click', function(ev) {
             var seats = $('#form_update_consignment input:checkbox:checked');
-            var consignment_id = $('#form_update_consignment input[name="consignment_id"]').val();
             $('#modal_update_consignment').modal('hide');
             if(seats.length>0)
             {
-                var qty = $('#form_update_consignment input[name="total_qty"]').val();
-                var total = $('#form_update_consignment input[name="total_money"]').val();
-                var list = $('<ol type="1"></ol>')
+                $('#confirm_body input[name="total_qty"]').val( $('#form_update_consignment input[name="total_qty"]').val() );
+                $('#confirm_body input[name="total_money"]').val( $('#form_update_consignment input[name="total_money"]').val() );
                 seats.each(function(k, v) {
                     var number = (parseInt(k)+1);
                     var section = $(this).closest('tr').find('td:nth-child(2)').text();
                     var seat = $(this).closest('tr').find('td:nth-child(3)').text();
                     var price = $(this).closest('tr').find('td:nth-child(6)').text();
-                    list.append('<li><b>'+number+'</b> - &emsp;Section:<b>'+section+'</b> &emsp;Seat:<b>'+seat+'</b> &emsp;Price:<b>'+price+'</b></li>');
+                    $('#tb_confirm_consignment_body').append('<tr><td>'+number+'</td><td>'+section+'</td><td>'+seat+'</td><td>'+price+'</td></tr>');
                 });
-                swal({
-                    title: "Please, confirm:<br>Quantity: <b>"+qty+"</b>&emsp;Total: <b>$ "+total+'</b>',
-                    text: '<div style="text-align:left;margin-left:40px">'+list.html()+'</div>',
-                    html: true,
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Confirm",
-                    cancelButtonText: "Cancel",
-                    closeOnConfirm: false,
-                    closeOnCancel: true
-                  },
-                  function(isConfirm) {
-                    if (isConfirm) {
-                        swal({
-                            title: "Updating tickets...",
-                            text: "Please, wait.",
-                            type: "info",
-                            showConfirmButton: false
-                        });
-                        jQuery.ajax({
-                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                            type: 'POST',
-                            url: '/user/consignments/save', 
-                            data: $('#form_update_consignment').serializeArray(),
-                            success: function(data) {
-                                if(data.success)
-                                {
-                                    ShoppingcartQtyItems.init();
-                                    modal_edit_consignments(consignment_id);
-                                }
-                                else swal({
-                                        title: "<span style='color:red;'>Error!</span>",
-                                        text: data.msg,
-                                        html: true,
-                                        type: "error"
-                                    },function(){
-                                    $('#modal_update_consignment').modal('show');
-                                });
-                            },
-                            error: function(){
-                                swal({
-                                    title: "<span style='color:red;'>Error!</span>",
-                                    text: "There was an error updating the ticket(s)!",
-                                    html: true,
-                                    type: "error"
-                                },function(){
-                                    $('#modal_update_consignment').modal('show');
-                                });
-                            }
-                        });
-                    } 
-                    else
-                        $('#modal_update_consignment').modal('show');
-                });
+                $('#modal_confirm_consignment').modal('show');
             }
             else
             {
@@ -285,7 +275,21 @@ var ConsignmentsFunctions = function () {
                 });
             }
         });
-        //open confirm modal 
+        //purchase and return to purchase modal
+        $('#btn_confirm_consignment').on('click', function(ev) {
+            var consignment_id = $('#form_update_consignment input[name="consignment_id"]').val();
+            confirm_tickets(consignment_id);
+        });
+        //purchase and go to shopping cart
+        $('#btn_confirm_shoppingcart').on('click', function(ev) {
+            confirm_tickets();
+        });
+        //cancel confirm modal
+        $('#btn_confirm_cancel').on('click', function () { 
+            $('#modal_confirm_consignment').modal('hide');
+            $('#modal_update_consignment').modal('show');
+        });
+        //sign consignment form
         $('#btn_sign_consignment').on('click', function(ev) {
             $('#modal_sign_consignment').modal('hide');
             var consignment_id = $('#btn_sign_consignment').data('id');
