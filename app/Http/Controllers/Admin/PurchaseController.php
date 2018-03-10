@@ -515,6 +515,7 @@ class PurchaseController extends Controller{
                     }
                     if(!empty($input['to_quantity']) && $purchase->quantity != $input['to_quantity'])
                     {
+                        $old_qty = $purchase->quantity;
                         $note.= ', qty from '.$purchase->quantity.' to '.$input['to_quantity'];
                         $purchase->quantity = $input['to_quantity'];
                     }
@@ -538,6 +539,13 @@ class PurchaseController extends Controller{
                         }                            
                     }
                     $purchase->save();
+                    //after save options
+                    if(!empty($input['to_quantity']) && isset($old_qty))
+                    {
+                        DB::table('ticket_number')->where('purchases_id',$purchase->id)->delete();
+                        $tickets = implode(',',range(1,$purchase->quantity));
+                        DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                    }
                     return ['success'=>true,'msg'=>'Purchase saved successfully!'];
                 }
                 else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>That purchase is not longer in the system.'];
