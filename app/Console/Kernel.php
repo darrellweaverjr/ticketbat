@@ -16,7 +16,6 @@ class Kernel extends ConsoleKernel
         Commands\ReportManifest::class,        
         Commands\ReportSales::class,
         Commands\ReportSalesReceipt::class,
-        Commands\ReportFinancial::class,
         Commands\ReportConsignment::class,
         
         Commands\PromoAnnounced::class,
