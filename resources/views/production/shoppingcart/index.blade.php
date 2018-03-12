@@ -506,7 +506,7 @@
                                 <!-- END FORM-->
                             </div>
                         </div>
-                        <div class="row" style="padding:20px">
+                        <div class="row @if(Auth::check() && Auth::user()->user_type_id==7) hidden @endif" style="padding:20px">
                             <hr>
                             <label class="control-label text-center">
                                 <i class="required"> You must accept the terms and conditions in order to checkout.</i>
@@ -522,6 +522,14 @@
                                 <button type="button" id="btn_loading" disabled="true" class="btn btn-primary btn-lg uppercase hidden">Please wait. Processing your items <i class="fa fa-refresh"></i></button>
                             </center>
                         </div>
+                        @if(Auth::check() && Auth::user()->user_type_id==7)
+                        <div class="row" style="padding:20px">
+                            <hr>
+                            <center>
+                                <button type="button" id="btn_check_pay" class="btn btn-primary btn-lg uppercase">Check form and process payment <i class="fa fa-money"></i></button>
+                            </center>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

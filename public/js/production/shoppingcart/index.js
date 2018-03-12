@@ -276,6 +276,14 @@ var SubmitFunctions = function () {
                 disabled_submit();
             }
         });
+        
+        //on seller button shorcut to check and process
+        $('#btn_check_pay').on('click', function(ev) {
+            $('#accept_terms').trigger('click');
+            if($('#btn_process').prop('disabled')==false)
+                $('#btn_process').trigger('click');
+        });
+        
         //on accept terms
         $('#accept_terms').bind('click','change', function(e){
             var proceed = false;
