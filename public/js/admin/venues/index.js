@@ -174,7 +174,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_banners"]').parent().css('display','block');
             $('a[href="#tab_model_update_videos"]').parent().css('display','block');
             $('a[href="#tab_model_update_ads"]').parent().css('display','block');
-            $('#modal_model_update_title').html('Edit Venue');
+            $('#modal_model_update_title').html(data.venue.name);
             //fill out defaults
             $('#form_model_update [name="id"]').val(data.venue.id).change();
             $('#form_model_venue_stages input[name="venue_id"]:hidden').val(data.venue.id).trigger('change');

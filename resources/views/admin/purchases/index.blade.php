@@ -480,7 +480,7 @@
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-purple">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Purchase</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title">Edit Purchase</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->

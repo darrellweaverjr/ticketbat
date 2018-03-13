@@ -83,8 +83,8 @@ class PackageController extends Controller{
                     $package->audit_user_id = Auth::user()->id;
                 }
                 //save package
-                $package->title = strip_tags($input['title']);
-                $package->description = strip_tags($input['description']);
+                $package->title = trim(strip_tags($input['title']));
+                $package->description = trim(strip_tags($input['description']));
                 $package->save();
                 //return
                 return ['success'=>true,'msg'=>'Package saved successfully!'];

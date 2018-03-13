@@ -169,7 +169,7 @@ class DiscountController extends Controller{
                     $discount->audit_user_id = Auth::user()->id;
                 }
                 //save discount                
-                $discount->code = $input['code'];
+                $discount->code = trim($input['code']);
                 $discount->description = strip_tags($input['description']);
                 $discount->discount_type = $input['discount_type'];
                 $discount->discount_scope = $input['discount_scope'];                
@@ -191,7 +191,7 @@ class DiscountController extends Controller{
                     $discount->effective_dates = 0;
                 }
                 $discount->coupon_type = $input['coupon_type'];
-                $discount->distributed_at = (!empty($input['distributed_at']))? $input['distributed_at'] : null;
+                $discount->distributed_at = (!empty($input['distributed_at']))? trim($input['distributed_at']) : null;
                 $discount->save();
                 //update intermediate table with tickets
                 if(isset($input['tickets']) && $input['tickets'] && count($input['tickets']))

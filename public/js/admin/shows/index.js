@@ -360,7 +360,7 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_sweepstakes"]').parent().css('display','block');
             $('#tb_sub_sweepstakes').empty();
             $('a[href="#tab_model_update_multimedia"]').parent().css('display','block');
-            $('#modal_model_update_title').html('Edit Show');
+            $('#modal_model_update_title').html(data.show.name);
             //fill out defaults
             $('#form_model_update [name="venue_id"]').val(data.show.venue_id);
             onVenueChange(false);

@@ -75,7 +75,7 @@ class CategoryController extends Controller{
                 else
                     $category = new Category;
                 //save category
-                $category->name = strip_tags($input['name']);
+                $category->name = trim(strip_tags($input['name']));
                 $category->id_parent = $input['id_parent'];
                 $category->save();
                 //return

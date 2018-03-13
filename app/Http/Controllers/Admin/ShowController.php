@@ -354,12 +354,12 @@ class ShowController extends Controller{
                 $show->venue_id = $input['venue_id'];
                 $show->stage_id = $input['stage_id'];
                 $show->category_id = $input['category_id'];
-                $show->name = strip_tags($input['name']);
+                $show->name = trim(strip_tags($input['name']));
                 $show->slug = strip_tags($input['slug']);
-                $show->presented_by = strip_tags($input['presented_by']);
-                $show->sponsor = strip_tags($input['sponsor']);
-                $show->short_description = strip_tags($input['short_description']);
-                $show->description = strip_tags($input['description'],'<p><a><br>');
+                $show->presented_by = trim(strip_tags($input['presented_by']));
+                $show->sponsor = trim(strip_tags($input['sponsor']));
+                $show->short_description = trim(strip_tags($input['short_description']));
+                $show->description = trim(strip_tags($input['description'],'<p><a><br>'));
                 $show->emails = strip_tags(preg_replace('/\s+/','',$input['emails'])); 
                 $show->accounting_email = strip_tags(preg_replace('/\s+/','',$input['accounting_email']));   
                 $show->url = strip_tags($input['url']);

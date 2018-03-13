@@ -59,7 +59,8 @@
                             <tr>
                                 <th width="2%"></th>
                                 <th width="1%"></th>
-                                <th width="20%">Show</th>
+                                <th width="2%">ID</th>
+                                <th width="18%">Show</th>
                                 <th width="13%">Show Time</th>
                                 <th width="13%">Created</th>
                                 <th width="15%">Seller</th>
@@ -78,15 +79,16 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="1%" class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>
-                                <td width="20%">{{$c->show_name}} </td>
-                                <td width="12%" data-order="{{strtotime($c->show_time)}}"><center>{{date('m/d/Y g:ia',strtotime($c->show_time))}}</center></td>
-                                <td width="12%" data-order="{{strtotime($c->created)}}"><center>{{date('m/d/Y g:ia',strtotime($c->created))}}</center></td>
-                                <td width="15%">{{$c->first_name}} {{$c->last_name}}</td>
-                                <td width="9%" data-order="{{strtotime($c->due_date)}}"><center>{{date('m/d/Y',strtotime($c->due_date))}}</center></td>
-                                <td width="6%"><center>{{number_format($c->qty,0)}}</center></td>
-                                <td width="10%" style="text-align:right"> $ {{number_format($c->total,2)}}</td>
-                                <td width="15%">
+                                <td class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>
+                                <td>{{$c->id}}</td>
+                                <td>{{$c->show_name}}</td>
+                                <td data-order="{{strtotime($c->show_time)}}"><center>{{date('m/d/Y g:ia',strtotime($c->show_time))}}</center></td>
+                                <td data-order="{{strtotime($c->created)}}"><center>{{date('m/d/Y g:ia',strtotime($c->created))}}</center></td>
+                                <td>{{$c->first_name}} {{$c->last_name}}</td>
+                                <td data-order="{{strtotime($c->due_date)}}"><center>{{date('m/d/Y',strtotime($c->due_date))}}</center></td>
+                                <td><center>{{number_format($c->qty,0)}}</center></td>
+                                <td style="text-align:right"> $ {{number_format($c->total,2)}}</td>
+                                <td>
                                     <select ref="{{$c->id}}" class="form-control" name="status">
                                         @foreach($status as $indexS=>$s)
                                         <option @if($indexS == $c->status) selected="true" @endif value="{{$indexS}}">{{$s}}</option>
@@ -295,7 +297,7 @@
         <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-yellow">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Consignment</center></h4>
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title">Edit Consignment</center></h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->

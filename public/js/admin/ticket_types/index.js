@@ -167,7 +167,6 @@ var TableDatatablesManaged = function () {
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#div_model_update_advanced').css('display','block');
-            $('#modal_model_update_title').html('Edit Type');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -176,6 +175,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        $('#modal_model_update_title').html(data.ticket_type.ticket_type);
                         for(var key in data.ticket_type)
                         {
                             var e = $('#form_model_update [name="'+key+'"]');

@@ -108,9 +108,9 @@ class AclController extends Controller{
                     $permission = new Permission;
                 }
                 //save permission
-                $permission->permission = strip_tags($input['permission']);
-                $permission->code = strip_tags($input['code']);
-                $permission->description = strip_tags($input['description']);
+                $permission->permission = trim(strip_tags($input['permission']));
+                $permission->code = trim(strip_tags($input['code']));
+                $permission->description = trim(strip_tags($input['description']));
                 $permission->save();
                 //update intermediate table with user_type_permissions
                 $permission->user_type_permissions()->detach();

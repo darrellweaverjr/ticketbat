@@ -195,9 +195,9 @@ class UserController extends Controller{
                 //save user
                 $user->location()->associate($location);
                 $user->user_type_id = $input['user_type_id'];
-                $user->email = $input['email'];
-                $user->first_name = strip_tags($input['first_name']);
-                $user->last_name = $input['last_name'];
+                $user->email = trim($input['email']);
+                $user->first_name = trim(strip_tags($input['first_name']));
+                $user->last_name = trim($input['last_name']);
                 $user->phone = $input['phone'];
                 $user->is_active = $input['is_active'];
                 //remove these fields from DB

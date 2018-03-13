@@ -86,7 +86,7 @@ class TicketTypeController extends Controller{
             //active/inactive      
             if($input && (isset($input['ticket_type']) && isset($input['active'])))
             {
-                $input['ticket_type'] = strip_tags($input['ticket_type']);
+                $input['ticket_type'] = trim(strip_tags($input['ticket_type']));
                 if($input['active'] == 'true')
                 {
                     $success = true;

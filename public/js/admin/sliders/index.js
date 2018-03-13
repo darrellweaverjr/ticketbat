@@ -127,7 +127,6 @@ var TableDatatablesManaged = function () {
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             $('#subform_sliders').css('display','block');
-            $('#modal_model_update_title').html('Edit Slider');
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -136,6 +135,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        $('#modal_model_update_title').html('Edit Slider # '+data.slider.n_order);
                         $('#form_model_update img[name="image_url"]').attr('src',data.slider.image_url);
                         for(var key in data.slider)
                             $('#form_model_update [name="'+key+'"]').val(data.slider[key]);

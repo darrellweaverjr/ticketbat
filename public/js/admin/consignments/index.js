@@ -390,6 +390,7 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        $('#modal_model_update_title').html('Edit Consignment # '+data.consignment.id);
                         for(var key in data.consignment)
                         {
                             var e = $('#form_model_update2 [name="'+key+'"]');

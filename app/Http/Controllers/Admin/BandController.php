@@ -124,9 +124,9 @@ class BandController extends Controller{
                 }
                 //save band
                 $band->category()->associate(Category::find($input['category_id']));
-                $band->name = strip_tags($input['name']);
-                $band->short_description = strip_tags($input['short_description']);
-                $band->description = strip_tags($input['description'],'<p><a><br>');
+                $band->name = trim(strip_tags($input['name']));
+                $band->short_description = trim(strip_tags($input['short_description']));
+                $band->description = trim(strip_tags($input['description'],'<p><a><br>'));
                 $band->youtube = strip_tags($input['youtube']);
                 $band->facebook = strip_tags($input['facebook']);
                 $band->twitter = strip_tags($input['twitter']);
