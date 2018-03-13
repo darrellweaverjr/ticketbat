@@ -108,7 +108,9 @@ class ReportSalesController extends Controller{
                 if(!empty($files))
                     $sent = $this->send_email($files,env('MAIL_REPORT_TO'),'TicketBat Totals');
             }
-            return true;
+            if(isset($sent))
+                return $sent;
+            return false;
         } catch (Exception $ex) {
             return false;
         }

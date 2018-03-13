@@ -3,10 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\View;
-use App\Mail\EmailSG;
-use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Controllers\Command\ReportSalesController;
 
 class ReportSales extends Command
@@ -50,12 +46,12 @@ class ReportSales extends Command
             $progressbar = $this->output->createProgressBar(1);
             //call controller
             $control = new ReportSalesController($days,$onlyadmin);
-            $control->init();
+            $response = $control->init();
             //advance progress bar
             $progressbar->advance(); 
             //finish progress bar
             $progressbar->finish(); 
-            return true;
+            return $response;
         } catch (Exception $ex) {
             throw new Exception('Error creating and sending emails with ReportSales Command: '.$ex->getMessage());
         }
