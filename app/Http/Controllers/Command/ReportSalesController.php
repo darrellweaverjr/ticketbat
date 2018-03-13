@@ -391,30 +391,30 @@ class ReportSalesController extends Controller{
     public function create_files($report,$name)
     {
         try {
-            
             $files = [];
+            
             //sales report pdf  
             $format = 'sales'; $data = $report['sales']; 
-            $manifest_email = View::make('command.report_sales', compact('data','format')); 
-            $pdf_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-            PDF::loadHTML($manifest_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_path);
-            $files[] = $pdf_path;
+            $view= View::make('command.report_sales', compact('data','format')); 
+            $file = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
+            PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
+            $files[] = $file;
             
             //future liabilities report pdf        
             $format = 'future_liabilities'; $data = $report['future']; 
-            $pdf_future_path = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-            $future_email = View::make('command.report_sales', compact('data','format')); 
-            PDF::loadHTML($future_email->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdf_future_path);
-            $files[] = $pdf_future_path;
+            $file = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
+            $view = View::make('command.report_sales', compact('data','format')); 
+            PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
+            $files[] = $file;
            
             //sales report csv
             if(!empty($report['sales'][0]['table_shows']))
             {
                 $format = 'csv'; $data = $report['sales'][0]['table_shows']; 
-                $manifest_csv = View::make('command.report_sales', compact('data','format'));
-                $csv_path = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.csv';
-                $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
-                $files[] = $csv_path;
+                $view = View::make('command.report_sales', compact('data','format'));
+                $url = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.csv';
+                $file= fopen($url, "w"); fwrite($file, $view->render()); fclose($file);
+                $files[] = $url;
             }
             //return files
             return $files;
