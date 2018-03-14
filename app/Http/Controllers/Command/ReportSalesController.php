@@ -43,7 +43,7 @@ class ReportSalesController extends Controller{
     {
         try {
             //init main variables
-            $report = ['sales'=>[],'future'=>[],'financial'=>[]];
+            $report = ['sales'=>[],'future'=>[]];
             
             //get all the venues with purchases and if admin add extra fields
             if($this->only_admin>0) //admin, get all data with values
@@ -126,14 +126,16 @@ class ReportSalesController extends Controller{
                 $types = $this->create_table_types();
                 $financial = $this->report_financial();
                 $shows = $this->create_table_shows();
+                $sellers = $this->create_table_sellers();
             }
             else
             {
                 $types = $this->create_table_types($venue);
                 $financial = $this->report_financial($venue);
                 $shows = $this->create_table_shows($venue);
+                $sellers = $this->create_table_sellers($venue);
             }
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_financial'=>$financial];
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_sellers'=>$sellers,'table_financial'=>$financial];
         } catch (Exception $ex) {
             return [];
         }
@@ -236,6 +238,35 @@ class ReportSalesController extends Controller{
             return [];
         }
     }     
+    /*
+     * table_selling_ways
+     */
+    public function create_table_sellers($venue_id=null)
+    {
+        try {
+            $table = DB::table('purchases')
+                        ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                        ->join('shows', 'shows.id', '=', 'show_times.show_id')
+                        ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                        ->join('users', 'users.id', '=', 'purchases.user_id')
+                        ->select(DB::raw('(CASE WHEN (users.user_type_id=7) THEN "POS" 
+                                            WHEN (purchases.session_id LIKE "app_%") THEN "App" 
+                                            ELSE "Web" END) AS seller,
+                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets, 
+                                          SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
+                                          SUM(purchases.processing_fee) AS fees,
+                                          SUM(purchases.commission_percent)+SUM(purchases.processing_fee) AS amount'))
+                        ->where('purchases.status','=','Active')
+                        ->whereDate('purchases.created','>=',$this->start_date)
+                        ->groupBy(DB::raw('seller'))->orderBy(DB::raw('seller'));
+            if(!empty($venue_id))
+                $table->where('venues.id',$venue_id);
+            $table = $table->distinct()->get()->toArray();
+            return ['data'=>$table, 'total'=> $this->calc_totals($table)];
+        } catch (Exception $ex) {
+            return [];
+        }
+    } 
     /*
      * table_sales_shows
      */

@@ -166,6 +166,45 @@
               </table>
               @endif
               
+              @if(isset($d['table_sellers']))
+              <hr><table>
+                  <tr class="ttitle">
+                      <td colspan="7">SELLING LOCATIONS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                </tr>
+                  <tr class="theader">
+                      <td>Location</td>
+                      <td style='text-align:center'>TRANSACTIONS</td>
+                      <td style='text-align:center'>TICKETS</td>
+                      <td style='text-align:right'>REVENUE</td>
+                      <td style='text-align:right'>FEES(F)</td>
+                      <td style='text-align:right'>COMMIS.(C)</td>
+                      <td style='text-align:right'>NET(C+F)</td>
+                  </tr>
+                  @foreach($d['table_sellers']['data'] as $e)  
+                    <tr>
+                        <td>{{$e->seller}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                  @endforeach 
+                  @if(count($d['table_sellers']['data'])>0)
+                  <tr class="ttotal">
+                        <td>Totals</td>
+                        <td style='text-align:center'>{{number_format($d['table_sellers']['total']['transactions'])}}</td>
+                        <td style='text-align:center'>{{number_format($d['table_sellers']['total']['tickets'])}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['paid'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['fees'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['commissions'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['amount'],2)}}</td>
+                    </tr>
+                    @endif
+              </table>
+              @endif
+              
               
               @if(isset($d['table_financial']))
               @foreach($d['table_financial'] as $t)
