@@ -22,13 +22,13 @@
 
 <!-- GTAG SCRIPT TICKETBAT -->
 <script type="text/javascript">
-    //google analytics for ticketbat 
+    //google analytics for ticketbat
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', {{env('GA_TRACKING_ID','UA-53779511-1')}});    
+    gtag('config', {{env('GA_TRACKING_ID','UA-53779511-1')}});
     gtag('event', 'page_view', { 'send_to': {{env('GA_TRACKING_ID','UA-53779511-1')}} });
-        
+
     //google analytics for ticketbat - purchase
     @if(!empty($analytics) && isset($transaction) && isset($totals))
         var items = [];
@@ -44,7 +44,7 @@
                 "quantity": {{$a['qty']}},
                 "price": '{{$a['price']}}'
             });
-        @endforeach        
+        @endforeach
         gtag('event', 'purchase', {
             "transaction_id": "{{$transaction}}",
             "affiliation": "TicketBat.com",
@@ -54,10 +54,10 @@
             "shipping": 0,
             "items": items
         });
-          
-        //google analytics for external funnel varible/page 
-        @if(!empty($ua_code))  
-            gtag('config', 'UA-{{$ua_code}}');    
+
+        //google analytics for external funnel varible/page
+        @if(!empty($ua_code))
+            gtag('config', 'UA-{{$ua_code}}');
             gtag('event', 'page_view', { 'send_to': 'UA-{{$ua_code}}'});
             gtag('event', 'purchase', {
                 "transaction_id": "{{$transaction}}",
@@ -68,10 +68,10 @@
                 "shipping": 0,
                 "items": items
               });
-        @endif 
-        
-        //google analytics for ua conversion code for defined shows 
-        @if(!empty($ua_conversion_code))  
+        @endif
+
+        //google analytics for ua conversion code for defined shows
+        @if(!empty($ua_conversion_code))
             @foreach($ua_conversion_code as $sc=>$cc)
                 var items = [];
                 @foreach($analytics as $k=>$a)
@@ -88,8 +88,8 @@
                             "price": '{{$a['price']}}'
                         });
                     @endif
-                @endforeach    
-                gtag('config', 'UA-{{$cc['ua']}}');    
+                @endforeach
+                gtag('config', 'UA-{{$cc['ua']}}');
                 gtag('event', 'page_view', { 'send_to': 'UA-{{$cc['ua']}}'});
                 gtag('event', 'purchase', {
                     "transaction_id": "{{$transaction}}",
@@ -101,8 +101,8 @@
                     "items": items
                   });
             @endforeach
-        @endif 
-        
+        @endif
+
     @endif
 </script>
 

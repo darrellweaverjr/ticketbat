@@ -7,6 +7,10 @@
     <!-- BEGIN HEAD -->
 
     <head>
+
+        <!-- GTM HEAD TAG -->
+        @includeIf('production.general.gtm-head')
+
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -29,12 +33,12 @@
         <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
         
         <!-- BEGIN GTAG VIEW -->
-        @includeIf('production.general.gtag',['ua_conversion_code'=>(!empty($ua_conversion_code))? $ua_conversion_code:null,
-                                              'ua_code'=>Session::get('ua_code',null),
-                                              'analytics'=>(!empty($analytics))? $analytics: null,
-                                              'transaction'=>(isset($transaction))? $transaction: null,
-                                              'totals'=>(isset($totals))? $totals: null,
-                                              'conversion_code'=>(!empty($conversion_code))? $conversion_code: null])
+        {{--@includeIf('production.general.gtag',['ua_conversion_code'=>(!empty($ua_conversion_code))? $ua_conversion_code:null,--}}
+                                              {{--'ua_code'=>Session::get('ua_code',null),--}}
+                                              {{--'analytics'=>(!empty($analytics))? $analytics: null,--}}
+                                              {{--'transaction'=>(isset($transaction))? $transaction: null,--}}
+                                              {{--'totals'=>(isset($totals))? $totals: null,--}}
+                                              {{--'conversion_code'=>(!empty($conversion_code))? $conversion_code: null])--}}
         <!-- END GTAG VIEW -->
         
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
@@ -64,6 +68,15 @@
     <!-- END HEAD -->
 
     <body class="page-header-fixed" style="background-color:black!important">
+
+    <!--  GTM BODY TAG  -->
+    @includeIf('production.general.gtm-body')
+    <!-- END BODY TAG -->
+
+    <!-- NEED TO BRING BACK ALL GA CONVERSION CODES  -->
+
+
+
             <!-- BEGIN HEADER -->
             <div class="page-header navbar navbar-inverse navbar-fixed-top" style="background-color:black!important">
                 <!-- BEGIN HEADER INNER -->
