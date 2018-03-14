@@ -154,7 +154,7 @@ class ReportSalesController extends Controller{
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->select(DB::raw('venues.name AS venue, shows.name, tickets.ticket_type, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
                                             (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                             ELSE purchases.payment_type END) AS payment_type,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets, 
                                           SUM(purchases.retail_price) AS retail_price, 
@@ -177,7 +177,7 @@ class ReportSalesController extends Controller{
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->select(DB::raw('shows.name, tickets.ticket_type, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
                                             (CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                             ELSE purchases.payment_type END) AS payment_type,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets, 
                                           SUM(purchases.savings) AS savings, 
@@ -209,7 +209,7 @@ class ReportSalesController extends Controller{
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->select(DB::raw('(CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                             ELSE purchases.payment_type END) AS payment_type,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets, 
                                           SUM(purchases.price_paid) AS paid, 

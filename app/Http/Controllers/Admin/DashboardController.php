@@ -325,7 +325,7 @@ class DashboardController extends Controller
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, customers.email,
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name,
                                           ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                             ELSE purchases.payment_type END ) AS method,
                                           COUNT(purchases.id) AS purchases, 
                                           SUM(purchases.quantity) AS tickets, 
@@ -439,7 +439,7 @@ class DashboardController extends Controller
                             ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                             ->select(DB::raw('( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                                WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                                 ELSE purchases.payment_type END ) AS method,
                                               COUNT(purchases.id) AS purchases, 
                                               SUM(purchases.quantity) AS tickets, 

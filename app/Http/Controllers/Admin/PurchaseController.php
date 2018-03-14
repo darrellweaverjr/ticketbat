@@ -52,7 +52,7 @@ class PurchaseController extends Controller{
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                                         ELSE purchases.payment_type END ) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
@@ -347,7 +347,7 @@ class PurchaseController extends Controller{
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                                         ELSE purchases.payment_type END ) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
@@ -388,7 +388,7 @@ class PurchaseController extends Controller{
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
                                                       ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
                                                         ELSE purchases.payment_type END ) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,

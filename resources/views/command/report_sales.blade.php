@@ -116,10 +116,10 @@
                       <td>TYPE</td>
                       <td style='text-align:center'>TRANSACTIONS</td>
                       <td style='text-align:center'>TICKETS</td>
-                      <td style='text-align:right'>REVENUE</td>
-                      <td style='text-align:right'>FEES</td>
-                      <td style='text-align:right'>COMMIS.</td>
-                      <td style='text-align:right'>NET</td>
+                      <td style='text-align:right'>REVENUE(R)</td>
+                      <td style='text-align:right'>FEES(F)</td>
+                      <td style='text-align:right'>COMMIS.(C)</td>
+                      <td style='text-align:right'>NET(R-C-F)</td>
                   </tr>
                   @foreach($d['table_types']['data'] as $e)  
                     <tr>
@@ -218,8 +218,8 @@
                     <td style='text-align:center'>TRANSACTIONS</td>
                     <td style='text-align:center'>TICKETS</td>
                     <td style='text-align:right'>REVENUE</td>
-                    <td style='text-align:right'>COMMIS.(C)</td>
                     <td style='text-align:right'>FEES(F)</td>
+                    <td style='text-align:right'>COMMIS.(C)</td>
                     <td style='text-align:right'>NET(C+F)</td>
                 </tr>
                 @foreach($t['data'] as $v)
@@ -229,8 +229,8 @@
                     <td style='text-align:center'>{{number_format($v->transactions)}}</td>
                     <td style='text-align:center'>{{number_format($v->tickets)}}</td>
                     <td style='text-align:right'>$ {{number_format($v->paid,2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($v->commissions,2)}}</td>
                     <td style='text-align:right'>$ {{number_format($v->fees,2)}}</td>
+                    <td style='text-align:right'>$ {{number_format($v->commissions,2)}}</td>
                     <td style='text-align:right'>$ {{number_format($v->amount,2)}}</td>
                 </tr>
                 @endif
@@ -241,8 +241,8 @@
                     <td style='text-align:center'>{{number_format($t['total']['transactions'])}}</td>
                     <td style='text-align:center'>{{number_format($t['total']['tickets'])}}</td>
                     <td style='text-align:right'>$ {{number_format($t['total']['paid'],2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($t['total']['commissions'],2)}}</td>
                     <td style='text-align:right'>$ {{number_format($t['total']['fees'],2)}}</td>
+                    <td style='text-align:right'>$ {{number_format($t['total']['commissions'],2)}}</td>
                     <td style='text-align:right'>$ {{number_format($t['total']['amount'],2)}}</td>
                 </tr>
                 @endif
