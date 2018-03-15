@@ -203,8 +203,8 @@ class User extends Authenticatable
                     $location->country = Auth::user()->location->country;
                     $location->lng = Auth::user()->location->lng;
                     $location->lat = Auth::user()->location->lat;
-                    $location->created = Auth::user()->location->created;
-                    $location->updated = Auth::user()->location->updated;
+                    $location->created = $current;
+                    $location->updated = $current;
                     $location->save();
                     $customer->location()->associate($location);
                 }
