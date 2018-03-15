@@ -1,4 +1,5 @@
 <!-- OLD SCRIPT -->
+<!--  THIS APPEARS TO BE AN OLD CRAZY EGG TRACKING SCRIPT -->
 <script type="text/javascript">
     setTimeout(function(){var a=document.createElement("script");
     var b=document.getElementsByTagName("script")[0];
