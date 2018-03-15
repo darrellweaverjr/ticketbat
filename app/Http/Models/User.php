@@ -155,7 +155,7 @@ class User extends Authenticatable
             $customer->last_name = $this->last_name;
             $customer->email = $this->email;
             $customer->phone = $this->phone;
-            $customer->updated = $this->updated;
+            $customer->updated = date('Y-m-d H:i:s');
             $customer->save();
             return $customer->id;
         } catch (Exception $ex) {
