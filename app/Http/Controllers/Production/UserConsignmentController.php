@@ -105,7 +105,7 @@ class UserConsignmentController extends Controller
                             ->leftJoin('tickets', 'tickets.id', '=', 'seats.ticket_id')
                             ->leftJoin('purchases', 'purchases.id', '=', 'seats.purchase_id')
                             ->select(DB::raw('consignments.id, shows.name AS show_name, venues.name AS venue_name, show_times.show_time, consignments.signed,
-                                             IF(show_times.show_time>' , \Carbon\Carbon::now()->addHours(5) , ',1,0) AS e_status,
+                                             IF(show_times.show_time>NOW(),1,0) AS e_status,
                                              IF(consignments.created = purchases.created,1,0) AS purchase, consignments.due_date,
                                              consignments.status AS a_status, COUNT(seats.id) AS qty, shows.cutoff_hours,
                                              ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
