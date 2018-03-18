@@ -22,3 +22,6 @@ composer.phar
 
 .env
 /.env
+/.env.save
+/composer.lock.bak
+/storage/

@@ -31,7 +31,6 @@
     RewriteRule ^ index.php [L]
 
 #   Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 #   Disable view files in the browser inside folder public, except from this urls
@@ -45,4 +44,8 @@
     RewriteCond %{HTTP_REFERER} !^https://(www\.)?ticketbat.com [NC]
     RewriteRule \.(gif|png|txt|psd|eot|svg|ttf|woff|woff2|js|css)$ - [F]
 
+#   Redirects robots.txt to robots-off.txt and turns off crawlers for staging site
+    RewriteCond %{HTTP_HOST} ^staging.*$ [NC]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*robots\.txt.*\ HTTP/ [NC]
+    RewriteRule ^robots\.txt /robots-off.txt [NC,L]
 
