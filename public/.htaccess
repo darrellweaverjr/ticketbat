@@ -31,12 +31,12 @@
     RewriteRule ^ index.php [L]
 
 #   Redirects robots.txt to robots-off.txt and turns off crawlers for staging site
-    RewriteCond %{HTTP_HOST} ^staging.*$ [NC]
-    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*robots\.txt.*\ HTTP/ [NC]
-    RewriteRule ^robots\.txt /robots-off.txt [NC,L]
+    # RewriteCond %{HTTP_HOST} ^staging.*$ [NC]
+    # RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*robots\.txt.*\ HTTP/ [NC]
+    # RewriteRule ^robots\.txt /robots-off.txt [NC,L]
 
 #   Handle Robots.txt for the live site
-    #RewriteRule ^ robots.txt [L]
+    RewriteRule ^robots.txt - [L]
 
 #   These rules below after all the [L] last rules
 #   Handle Authorization Header
