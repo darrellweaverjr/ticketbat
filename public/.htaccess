@@ -31,6 +31,7 @@
     RewriteRule ^ index.php [L]
 
 #   Handle Authorization Header
+    RewriteCond %{HTTP:Authorization}
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 #   Disable view files in the browser inside folder public, except from this urls
