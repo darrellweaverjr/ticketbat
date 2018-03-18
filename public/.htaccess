@@ -36,8 +36,8 @@
     RewriteRule ^robots\.txt /robots-off.txt [NC,L]
 
 #   Handle Robots.txt for the live site
-    RewriteRule ^ robots.txt [L]
-    
+    #RewriteRule ^ robots.txt [L]
+
 #   These rules below after all the [L] last rules
 #   Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
