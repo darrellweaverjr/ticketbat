@@ -51,7 +51,7 @@
     RewriteRule ^robots\.txt /robots-off.txt [NC,L]
 
     # Allows Crawlers to hit robots.txt files
-    RewriteCond %{REQUEST_URI} !^robots.txt$
+    RewriteCond %{REQUEST_URI} !^robots.txt$ [NC]
 
 
 
