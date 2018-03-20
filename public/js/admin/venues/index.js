@@ -1762,7 +1762,7 @@ var FormValidation = function () {
                         minlength: 5,
                         maxlength: 5,
                         digits: true,
-                        range: [10000, 99999],
+                        range: [00500, 99999],
                         required: true
                     }
                 },
