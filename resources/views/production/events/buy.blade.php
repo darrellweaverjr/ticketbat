@@ -25,7 +25,7 @@
             <div class="portlet light about-text">
                 <!-- BEGIN STAGE -->
                 <h4>
-                    <i class="fa fa-dashboard"></i> Seating Chart
+                    <i class="fa fa-street-view"></i> Seating Chart
                     <div class="actions pull-right">
                         <div class="btn-group">
                             <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>
