@@ -68,7 +68,7 @@
         <!-- BEGIN CORE PLUGINS -->
         <script src="{{config('app.theme')}}js/jquery.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="{{config('app.theme')}}js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/jquery.validate.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/login.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
     </body>
