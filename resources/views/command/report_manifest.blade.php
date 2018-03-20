@@ -72,7 +72,7 @@
             @endforeach
             @endif
         </table>
-        <p class="ttitle">Generated on: {{date('m/d/Y g:ia',strtotime($data['date_now']))}}</p>
+        <p class="ttitle">Generated on: {{date('m/d/Y g:ia')}}</p>
     </body>
 </html>
 @else

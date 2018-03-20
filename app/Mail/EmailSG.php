@@ -283,7 +283,7 @@ class EmailSG {
                         if (isset($data)) {
                             $body[] = array('variable' => ':type', 'value' => $data['type']);
                             $body[] = array('variable' => ':showname', 'value' => $data['name']);
-                            $body[] = array('variable' => ':showdate', 'value' => date('m/d/Y g:ia',strtotime($data['date_now'])));
+                            $body[] = array('variable' => ':showdate', 'value' => date('m/d/Y g:ia'));
                         }
                         break;
                     }

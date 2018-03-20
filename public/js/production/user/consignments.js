@@ -1,5 +1,6 @@
 var ConsignmentsFunctions = function () {    
     var initFunctions = function () {
+        
         //search consignments on checkbox change
         $('#form_search_consignments input:checkbox').on('change', function(ev) {
             swal({
@@ -187,6 +188,11 @@ var ConsignmentsFunctions = function () {
                 var consignment_id = $(this).data('sign');
                 modal_sign_consignments(consignment_id);
             }    
+        });
+        //check the row when click the body of the table
+        $('#tb_update_consignment_body').on('click', 'tr td:not(:last-child)', function () {
+            var action = $(this).parent().find('.checkboxes').is(':checked');
+            $(this).parent().find('.checkboxes').prop('checked',!action).trigger('change');
         });
         //checkbox tickets change update totals
         $(document).on('change', '#form_update_consignment input:checkbox', function(e){

@@ -30,6 +30,15 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
+#   Redirects robots.txt to robots-off.txt and turns off crawlers for staging site
+    # RewriteCond %{HTTP_HOST} ^staging.*$ [NC]
+    # RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*robots\.txt.*\ HTTP/ [NC]
+    # RewriteRule ^robots\.txt /robots-off.txt [NC,L]
+
+#   Handle Robots.txt for the live site
+    RewriteRule ^robots.txt - [L]
+
+#   These rules below after all the [L] last rules
 #   Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -39,10 +48,12 @@
     RewriteCond %{HTTP_REFERER} !^https://(www\.)?localhost [NC] 
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?admin.ticketbat.com [NC] 
     RewriteCond %{HTTP_REFERER} !^https://(www\.)?admin.ticketbat.com [NC] 
-    RewriteCond %{HTTP_REFERER} !^http://(www\.)?admindev.ticketbat.com [NC] 
-    RewriteCond %{HTTP_REFERER} !^https://(www\.)?admindev.ticketbat.com [NC] 
+    RewriteCond %{HTTP_REFERER} !^http://(www\.)?staging.ticketbat.com [NC]
+    RewriteCond %{HTTP_REFERER} !^https://(www\.)?staging.ticketbat.com [NC]
     RewriteCond %{HTTP_REFERER} !^http://(www\.)?ticketbat.com [NC]
     RewriteCond %{HTTP_REFERER} !^https://(www\.)?ticketbat.com [NC]
     RewriteRule \.(gif|png|txt|psd|eot|svg|ttf|woff|woff2|js|css)$ - [F]
+
+
 
 
