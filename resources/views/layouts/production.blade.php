@@ -231,7 +231,7 @@
         <script src="{{config('app.theme')}}js/jquery.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/bootstrap.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <script src="{{config('app.theme')}}js/jquery.validate.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/jquery.validate.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/additional-methods.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
 
