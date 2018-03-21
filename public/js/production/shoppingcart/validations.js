@@ -134,7 +134,7 @@ var CardValidation = function () {
                         minlength: 5,
                         maxlength: 5,
                         digits: true,
-                        range: [10000, 99999],
+                        range: [00100, 99999],
                         required: true
                     },
                     country: {

@@ -232,17 +232,20 @@
         <script src="{{config('app.theme')}}js/bootstrap.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/bootstrap-switch.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/additional-methods.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
+
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="{{config('app.theme')}}js/moment.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/moment-2.21.0.min.js" type="text/javascript"></script>
         <!-- SCRIPT FOR SWEET ALERT -->
         <script src="{{config('app.theme')}}js/sweetalert.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js//bootstrap-datetimepicker.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
+
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="{{config('app.theme')}}js/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
-        <script src="{{config('app.theme')}}js/additional-methods.min.js" type="text/javascript"></script>
+
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>

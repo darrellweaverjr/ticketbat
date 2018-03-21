@@ -611,7 +611,7 @@
         <script src="{{config('app.theme')}}js/bootstrap-switch.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="{{config('app.theme')}}js/moment.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/moment-2.21.0.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/daterangepicker.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/jquery.waypoints.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/jquery.counterup.min.js" type="text/javascript"></script>
