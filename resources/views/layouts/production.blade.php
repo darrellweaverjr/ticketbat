@@ -14,12 +14,12 @@
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.googletagmanager.com/gtm.js?id={{env('GTM_WORKSPACE_ID','GTM-KVH4W3K')}} https://www.google-analytics.com/analytics.js https://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ;
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.googletagmanager.com/gtm.js https://www.google-analytics.com/analytics.js https://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ;
                           img-src *  'self' blob: http://admindev.ticketbat.com {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
                           style-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://fonts.googleapis.com 'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
-                          script-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} https://www.googletagmanager.com/gtm.js?id={{env('GTM_WORKSPACE_ID','GTM-KVH4W3K')}} https://www.google-analytics.com/analytics.js http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js;">
+                          script-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} https://www.googletagmanager.com/gtm.js https://www.google-analytics.com/analytics.js http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js;">
         <title>@yield('title') - TicketBat</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
