@@ -19,7 +19,7 @@
                           style-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://fonts.googleapis.com 'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
-                          script-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} https://www.google-analytics.com/analytics.js http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js; https://www.googletagmanager.com/gtm.js 'unsafe-inline' 'unsafe-eval ">
+                          script-src 'self' 'unsafe-inline' 'unsafe-eval' {{env('IMAGE_URL_OLDTB_SERVER')}} https://www.google-analytics.com/analytics.js http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js; https://www.googletagmanager.com/gtm.js ">
         <title>@yield('title') - TicketBat</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
