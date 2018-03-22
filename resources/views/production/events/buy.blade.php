@@ -43,13 +43,13 @@
                         </div>
                     </div>
                 </h4> 
-                <p class="margin-top-20">
-                    <center id="stage_images">
+                <p class="margin-top-20 text-center">
+                    <span id="stage_images">
                         <img style="width:93%" src="{{$event->image_url}}" data-type="default"/>
                         @foreach($event->stage_images as $i)
                         <img style="width:93%; display:none;" src="{{$i->url}}" data-type="{{$i->ticket_type}}"/>
                         @endforeach
-                    </center><br>
+                    </span><br>
                 </p>
                 <!-- END STAGE -->
             </div>
@@ -63,19 +63,19 @@
                         <i class="fa fa-ticket"></i> Tickets
                     </h4> 
                     <div class="portlet-body">
-                        <center><h4>{{$event->show_time}}</h4></center>
+                        <h4 class="text-center">{{$event->show_time}}</h4>
                         @if(!empty($event->ticket_limit))
-                        <div class="alert alert-danger display-block" style="margin-bottom:-0px">
-                            <center> You can buy only {{$event->ticket_limit}} ticket(s) for this event. </center>
+                        <div class="alert alert-danger display-block text-center" style="margin-bottom:-0px">
+                            You can buy only {{$event->ticket_limit}} ticket(s) for this event.
                         </div>
                         @endif
                         @if(!empty($event->ticket_limit) && empty($event->ticket_left))
                         <div class="bg-red bg-font-red">
-                            <hr><center><h1>You have reach the limit of tickets for this event.</h1></center><br>
+                            <hr><h1 class="text-center">You have reach the limit of tickets for this event.</h1><br>
                         </div>
                         @elseif(empty($event->for_sale))
                         <div class="bg-red bg-font-red">
-                            <hr><center><h1>Tickets are currently not for sale.</h1></center><br>
+                            <hr><h1 class="text-center">Tickets are currently not for sale.</h1><br>
                         </div>
                         @else
                         <div class="panel-group accordion" id="tickets_accordion">
@@ -91,8 +91,8 @@
                                 <div id="collapse_{{$index}}" class="panel-collapse @if($selected) in @else collapse @endif">
                                     <div class="panel-body" style="margin-bottom: -20px">
                                         @if(!empty($t['amex_only']))
-                                        <div class="alert alert-danger display-block">
-                                            <center>These tickets can only purchased with an American Express Card:</center>
+                                        <div class="alert alert-danger display-block text-center">
+                                            These tickets can only purchased with an American Express Card:
                                         </div>
                                         @endif
                                         <div class="mt-radio-list">
@@ -160,7 +160,13 @@
                             </p>
                         </div>
                         @endif
-                        <a id="btn_add_shoppingcart" class="btn btn-danger btn-block btn-lg uppercase"><i class="fa fa-plus-square"></i> Add to cart</a>
+
+                            @if(in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
+                                <a id="btn_add_shoppingcart" class="btn btn-danger btn-block btn-lg uppercase"><i class="fa fa-plus-square"></i> Checkout Now</a>
+                            @elseif
+                                <a id="btn_add_shoppingcart" class="btn btn-danger btn-block btn-lg uppercase"><i class="fa fa-plus-square"></i> Add to cart</a>
+                            @endif
+
                     </div>
                 </div>
                 <!-- END ADD TO -->

@@ -735,7 +735,7 @@
         <div class="modal-dialog" style="width:400px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
+                    <h4 class="modal-title bold uppercase text-center" style="color:white;">Filter Panel</h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->

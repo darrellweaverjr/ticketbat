@@ -203,8 +203,6 @@ class VenueController extends Controller{
                 foreach ($images as $i)
                     $i->url = Image::view_image($i->url);
                 $stage_images = DB::table('images')
-                                ->join('stage_image_ticket_type', 'stage_image_ticket_type.image_id', '=' ,'images.id')
-                                ->join('stages', 'stages.id', '=' ,'stage_image_ticket_type.stage_id')
                                 ->join('venues', 'venues.id', '=' ,'stages.venue_id')
                                 ->select(DB::raw('images.*,stage_image_ticket_type.*,stages.name'))->where('venues.id','=',$venue->id)->distinct()->get();
                 foreach ($stage_images as $i)
