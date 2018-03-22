@@ -1264,7 +1264,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_move').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_F').trigger('reset')">Cancel</button>
                                     <button type="button" id="submit_model_show_times_move" class="btn sbold purple">Save</button>
                                 </div>
                             </div>

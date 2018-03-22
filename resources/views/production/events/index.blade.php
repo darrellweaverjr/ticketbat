@@ -16,10 +16,9 @@
 @section('content')
 
 <!-- BEGIN TOP HEADER -->
-src="small.jpg" srcset="medium.jpg 1000w, large.jpg 2000w"
 @if(!empty($event->mobile_header->url))
 <div class="row">
-    <img class="event-main-img text-center" src="{{$event->mobile_header->url}}" srcset="{{$event->header->url}} 500w" alt="{{$event->header->caption}}">
+    <img class="event-main-img text-center" src="{{$event->mobile_header->url}}" srcset="{{$event->mobile_header->url}} 500w, {{$event->header->url}} 1350w" alt="{{$event->header->caption}}">
 </div>
 @else
 <div class="row">
