@@ -16,9 +16,16 @@
 @section('content')
 
 <!-- BEGIN TOP HEADER -->
+src="small.jpg" srcset="medium.jpg 1000w, large.jpg 2000w"
+@if(!empty($event->mobile_header->url))
 <div class="row">
-    <center><img style="margin:auto;width:100%" src="{{$event->header->url}}" alt="{{$event->header->caption}}"></center>
+    <img class="event-main-img text-center" src="{{$event->mobile_header->url}}" srcset="{{$event->header->url}} 500w" alt="{{$event->header->caption}}">
 </div>
+@else
+<div class="row">
+    <img class="event-main-img text-center" src="{{$event->header->url}}" alt="{{$event->header->caption}}">
+</div>
+@endif
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
 <div class="row widget-row">

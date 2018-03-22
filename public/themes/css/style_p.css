@@ -233,6 +233,10 @@ html, body {
 }
 /* EVENT */
 /* BEGIN ABOUt AND VIDEO */
+.event-main-img {
+    margin:auto;
+    width:100%
+}
 .about-text {
     height: auto;
     padding: 0 !important; 
