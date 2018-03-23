@@ -31,14 +31,14 @@
     <div class="col-lg-12 ml-15 mr-15">
 
         <div class="row fixed-panel">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                <p class="event-low-price">Prices starting @ $50.00</p>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-6 col-sm-push-6">
                 <div class="event-main-title uppercase">
                     @if(!empty($event->presented_by))<p class="presented-by">{{$event->presented_by}} PRESENTS</p>@endif
                     <p class="event-name">{{$event->name}}</p>
                 </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-sm-pull-6">
+                <p class="event-low-price">Prices starting @ $50.00</p>
             </div>
         </div>
 
@@ -48,108 +48,7 @@
 <div class="page-content color-panel pt-10">
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
-        <div class="col-lg-6">
-            <div class="portlet light about-text">
-                <!-- BEGIN DESCRIPTION -->
-                <h4 title="Click on the time to view event's details.">
-                    <i class="fa fa-check icon-info"></i> Event Details
-                    <div class="actions pull-right">
-
-                        {{--<div class="btn-group">--}}
-                            {{--<a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>--}}
-                            {{--<ul class="dropdown-menu" role="menu">--}}
-                                {{--<li><a href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank">--}}
-                                        {{--<i class="social-icon social-icon-color twitter"></i> Twitter--}}
-                                    {{--</a></li>--}}
-                                {{--<li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">--}}
-                                        {{--<i class="social-icon social-icon-color googleplus"></i> Google+--}}
-                                    {{--</a></li>--}}
-                                {{--<li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">--}}
-                                        {{--<i class="social-icon social-icon-color facebook"></i> Facebook--}}
-                                    {{--</a></li>--}}
-                            {{--</ul>--}}
-                        {{--</div>--}}
-
-
-                    </div>
-                </h4>
-                <div style="text-align:center;padding-top:10px">
-                    <input id="show_id" type="hidden" value="{{$event->show_id}}"/>
-                    <div class="form-inline has-warning">
-                        @php $rating = $event->reviews['rating'] @endphp
-                        @for($i=0;$i<5;$i++)
-                        <label class="fa fa-star {{($rating>$i && $rating<$i+1)? 'fa-star-half-full' : ( ($rating>$i)? '' : 'fa-star-o' )}}"></label>
-                        @endfor
-                        <a href="#review_panel"> (<b id="posts_reviews">{{$event->reviews['posts']}}</b> @if($event->reviews['posts']<2) review @else reviews @endif) </a>
-                        <a class="btn btn-outline sbold dark btn-sm" data-toggle="modal" title="You must log in to write a review for this event." @if(!Auth::check()) href="#modal_login" @else href="#modal_write_reviewx" @endif>
-                            <i class="icon-pencil"></i> Write a review
-                        </a>
-                    </div>
-                </div>
-                <p class="margin-top-20" title="Description of the event.">
-                    {!! $event->description !!}<br><br>
-                </p>
-                <!-- END DESCRIPTION -->
-
-
-
-                @if(count($event->bands))
-                <!-- BEGIN BANDS -->
-                <div class="timeline" style="margin:5px;padding-bottom:10px">
-                    @foreach($event->bands as $b)
-                    <!-- BAND ITEM -->
-                    <div class="timeline-item" title="{!! $b->short_description !!}">
-                        <div class="timeline-badge">
-                            <a @if(!empty($b->website)) href="{{$b->website}}" target="_blank" @endif >
-                                <img height="90px" width="90px" src="{{$b->image_url}}"> 
-                            </a>
-                        </div>
-                        <div class="timeline-body">
-                            <div class="timeline-body-arrow"> </div>
-                            <div class="timeline-body-head">
-                                <div class="timeline-body-head-caption">
-                                    <a @if(!empty($b->website)) href="{{$b->website}}" target="_blank" @endif class="timeline-body-title font-blue-madison">{{$b->name}}</a>
-                                    <span class="timeline-body-time font-grey-cascade">({{$b->category}})</span>
-                                </div>
-                                <div class="timeline-body-head-actions">
-                                    <div class="btn-group">
-                                        @if(!empty($b->twitter)) <a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a> @endif
-                                        @if(!empty($b->my_space)) <a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a> @endif
-                                        @if(!empty($b->facebook)) <a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a> @endif
-                                        @if(!empty($b->flickr)) <a class="social-icon social-icon-color flickr" href="{{$b->flickr}}" target="_blank"></a> @endif
-                                        @if(!empty($b->instagram)) <a class="social-icon social-icon-color instagram" href="{{$b->instagram}}" target="_blank"></a> @endif
-                                        @if(!empty($b->youtube)) <a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a> @endif
-                                        @if(!empty($b->soundcloud)) <a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a> @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="timeline-body-content">
-                                <span class="font-grey-cascade">{!! $b->short_description !!}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END BAND ITEM -->
-                    @endforeach
-                </div>
-                <!-- ENDS BANDS -->
-                @endif
-
-                <div>
-                    <p style="margin-top:-25px;max-height:30px">
-                        @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
-                        @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
-                        @if(!empty($event->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$event->facebook}}" target="_blank"></a> @endif
-                        @if(!empty($event->yelpbadge)) <a class="social-icon social-icon-color yahoo " href="http://yelp.com/biz/{{$event->yelpbadge}}" target="_blank"></a> @endif
-                        @if(!empty($event->instagram)) <a class="social-icon social-icon-color instagram" href="http://instagram.com/{{$event->instagram}}" target="_blank"></a> @endif
-                        @if(!empty($event->youtube)) <a class="social-icon social-icon-color youtube" href="http://www.youtube.com/user/{{$event->youtube}}" target="_blank"></a> @endif
-                    </p>
-                </div>
-
-            </div>
-
-
-        </div>
-        <div class="col-lg-6">
+        <div class="col-xs-12 col-sm-6 col-sm-push-6">
             <div class="portlet light about-text">
                 <!-- BEGIN DESCRIPTION -->
                 <h4 title="Click on the time to view ticket's details.">
@@ -229,6 +128,107 @@
                 </p>
                 <!-- END PRESENTED BY -->
             </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-sm-pull-6">
+            <div class="portlet light about-text">
+                <!-- BEGIN DESCRIPTION -->
+                <h4 title="Click on the time to view event's details.">
+                    <i class="fa fa-check icon-info"></i> Event Details
+                    <div class="actions pull-right">
+
+                        {{--<div class="btn-group">--}}
+                        {{--<a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>--}}
+                        {{--<ul class="dropdown-menu" role="menu">--}}
+                        {{--<li><a href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank">--}}
+                        {{--<i class="social-icon social-icon-color twitter"></i> Twitter--}}
+                        {{--</a></li>--}}
+                        {{--<li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">--}}
+                        {{--<i class="social-icon social-icon-color googleplus"></i> Google+--}}
+                        {{--</a></li>--}}
+                        {{--<li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">--}}
+                        {{--<i class="social-icon social-icon-color facebook"></i> Facebook--}}
+                        {{--</a></li>--}}
+                        {{--</ul>--}}
+                        {{--</div>--}}
+
+
+                    </div>
+                </h4>
+                <div style="text-align:center;padding-top:10px">
+                    <input id="show_id" type="hidden" value="{{$event->show_id}}"/>
+                    <div class="form-inline has-warning">
+                        @php $rating = $event->reviews['rating'] @endphp
+                        @for($i=0;$i<5;$i++)
+                            <label class="fa fa-star {{($rating>$i && $rating<$i+1)? 'fa-star-half-full' : ( ($rating>$i)? '' : 'fa-star-o' )}}"></label>
+                        @endfor
+                        <a href="#review_panel"> (<b id="posts_reviews">{{$event->reviews['posts']}}</b> @if($event->reviews['posts']<2) review @else reviews @endif) </a>
+                        <a class="btn btn-outline sbold dark btn-sm" data-toggle="modal" title="You must log in to write a review for this event." @if(!Auth::check()) href="#modal_login" @else href="#modal_write_reviewx" @endif>
+                            <i class="icon-pencil"></i> Write a review
+                        </a>
+                    </div>
+                </div>
+                <p class="margin-top-20" title="Description of the event.">
+                    {!! $event->description !!}<br><br>
+                </p>
+                <!-- END DESCRIPTION -->
+
+
+
+            @if(count($event->bands))
+                <!-- BEGIN BANDS -->
+                    <div class="timeline" style="margin:5px;padding-bottom:10px">
+                    @foreach($event->bands as $b)
+                        <!-- BAND ITEM -->
+                            <div class="timeline-item" title="{!! $b->short_description !!}">
+                                <div class="timeline-badge">
+                                    <a @if(!empty($b->website)) href="{{$b->website}}" target="_blank" @endif >
+                                        <img height="90px" width="90px" src="{{$b->image_url}}">
+                                    </a>
+                                </div>
+                                <div class="timeline-body">
+                                    <div class="timeline-body-arrow"> </div>
+                                    <div class="timeline-body-head">
+                                        <div class="timeline-body-head-caption">
+                                            <a @if(!empty($b->website)) href="{{$b->website}}" target="_blank" @endif class="timeline-body-title font-blue-madison">{{$b->name}}</a>
+                                            <span class="timeline-body-time font-grey-cascade">({{$b->category}})</span>
+                                        </div>
+                                        <div class="timeline-body-head-actions">
+                                            <div class="btn-group">
+                                                @if(!empty($b->twitter)) <a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a> @endif
+                                                @if(!empty($b->my_space)) <a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a> @endif
+                                                @if(!empty($b->facebook)) <a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a> @endif
+                                                @if(!empty($b->flickr)) <a class="social-icon social-icon-color flickr" href="{{$b->flickr}}" target="_blank"></a> @endif
+                                                @if(!empty($b->instagram)) <a class="social-icon social-icon-color instagram" href="{{$b->instagram}}" target="_blank"></a> @endif
+                                                @if(!empty($b->youtube)) <a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a> @endif
+                                                @if(!empty($b->soundcloud)) <a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a> @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-body-content">
+                                        <span class="font-grey-cascade">{!! $b->short_description !!}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END BAND ITEM -->
+                        @endforeach
+                    </div>
+                    <!-- ENDS BANDS -->
+                @endif
+
+                <div>
+                    <p style="margin-top:-25px;max-height:30px">
+                        @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
+                        @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
+                        @if(!empty($event->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$event->facebook}}" target="_blank"></a> @endif
+                        @if(!empty($event->yelpbadge)) <a class="social-icon social-icon-color yahoo " href="http://yelp.com/biz/{{$event->yelpbadge}}" target="_blank"></a> @endif
+                        @if(!empty($event->instagram)) <a class="social-icon social-icon-color instagram" href="http://instagram.com/{{$event->instagram}}" target="_blank"></a> @endif
+                        @if(!empty($event->youtube)) <a class="social-icon social-icon-color youtube" href="http://www.youtube.com/user/{{$event->youtube}}" target="_blank"></a> @endif
+                    </p>
+                </div>
+
+            </div>
+
+
         </div>
     </div>
     <!-- END DESCRIPTION AND CALENDAR -->
