@@ -27,24 +27,25 @@
 @endif
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
-<div class="row widget-row">
-    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the event">
-        <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">
-            @if(!empty($event->presented_by))<div style="font-size:14px;margin-bottom:-70px">{{$event->presented_by}} PRESENTS</div><br>@endif
-            {{$event->name}}
-            <p style="margin-top:-25px;max-height:30px">
-                @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
-                @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
-                @if(!empty($event->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$event->facebook}}" target="_blank"></a> @endif
-                @if(!empty($event->yelpbadge)) <a class="social-icon social-icon-color yahoo " href="http://yelp.com/biz/{{$event->yelpbadge}}" target="_blank"></a> @endif
-                @if(!empty($event->instagram)) <a class="social-icon social-icon-color instagram" href="http://instagram.com/{{$event->instagram}}" target="_blank"></a> @endif
-                @if(!empty($event->youtube)) <a class="social-icon social-icon-color youtube" href="http://www.youtube.com/user/{{$event->youtube}}" target="_blank"></a> @endif
-            </p>
+<div class="row widget-row event-top-row">
+    <div class="col-lg-12">
+
+        <div class="row fixed-panel">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <p class="event-low-price">Prices starting @ $50.00</p>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="event-main-title uppercase">
+                    @if(!empty($event->presented_by))<p class="presented-by">{{$event->presented_by}} PRESENTS</p>@endif
+                    <p class="event-name">{{$event->name}}</p>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 <!-- END NAME BAR-->
-<div class="page-content color-panel">
+<div class="page-content color-panel pt-10">
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
         <div class="col-lg-6">
@@ -53,20 +54,23 @@
                 <h4 title="Click on the time to view event's details.">
                     <i class="fa fa-check icon-info"></i> Event Details
                     <div class="actions pull-right">
-                        <div class="btn-group">
-                            <a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank">
-                                        <i class="social-icon social-icon-color twitter"></i> Twitter
-                                    </a></li>
-                                <li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">
-                                        <i class="social-icon social-icon-color googleplus"></i> Google+
-                                    </a></li>
-                                <li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">
-                                        <i class="social-icon social-icon-color facebook"></i> Facebook
-                                    </a></li>
-                            </ul>
-                        </div>
+
+                        {{--<div class="btn-group">--}}
+                            {{--<a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>--}}
+                            {{--<ul class="dropdown-menu" role="menu">--}}
+                                {{--<li><a href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank">--}}
+                                        {{--<i class="social-icon social-icon-color twitter"></i> Twitter--}}
+                                    {{--</a></li>--}}
+                                {{--<li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">--}}
+                                        {{--<i class="social-icon social-icon-color googleplus"></i> Google+--}}
+                                    {{--</a></li>--}}
+                                {{--<li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">--}}
+                                        {{--<i class="social-icon social-icon-color facebook"></i> Facebook--}}
+                                    {{--</a></li>--}}
+                            {{--</ul>--}}
+                        {{--</div>--}}
+
+
                     </div>
                 </h4>
                 <div style="text-align:center;padding-top:10px">
@@ -86,6 +90,9 @@
                     {!! $event->description !!}<br><br>
                 </p>
                 <!-- END DESCRIPTION -->
+
+
+
                 @if(count($event->bands))
                 <!-- BEGIN BANDS -->
                 <div class="timeline" style="margin:5px;padding-bottom:10px">
@@ -126,7 +133,21 @@
                 </div>
                 <!-- ENDS BANDS -->
                 @endif
+
+                <div>
+                    <p style="margin-top:-25px;max-height:30px">
+                        @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
+                        @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
+                        @if(!empty($event->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$event->facebook}}" target="_blank"></a> @endif
+                        @if(!empty($event->yelpbadge)) <a class="social-icon social-icon-color yahoo " href="http://yelp.com/biz/{{$event->yelpbadge}}" target="_blank"></a> @endif
+                        @if(!empty($event->instagram)) <a class="social-icon social-icon-color instagram" href="http://instagram.com/{{$event->instagram}}" target="_blank"></a> @endif
+                        @if(!empty($event->youtube)) <a class="social-icon social-icon-color youtube" href="http://www.youtube.com/user/{{$event->youtube}}" target="_blank"></a> @endif
+                    </p>
+                </div>
+
             </div>
+
+
         </div>
         <div class="col-lg-6">
             <div class="portlet light about-text">
