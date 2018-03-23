@@ -29,9 +29,152 @@ use Illuminate\Support\Facades\Storage;
  * Manage Shows
  *
  * @author ivan
+ * @edits  william
  */
 class ShowController extends Controller{
-    
+
+    /**
+     * Builds the query to search the database for shows based on options.
+     *
+     * @return mixed
+     */
+    public function buildShowsQuery()
+    {
+        // HAPPY
+        $showsQuery = DB::table('shows')
+            ->join('categories', 'categories.id', '=' ,'shows.category_id')
+            ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
+            ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
+            ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
+                                                             FROM show_images si 
+                                                             LEFT JOIN images i ON si.image_id = i.id 
+                                                             WHERE i.image_type = "Logo") as images')
+                ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
+                                                             FROM show_images si 
+                                                             LEFT JOIN images i ON si.image_id = i.id 
+                                                             WHERE i.image_type = "Thumb") as thumb'),
+                    function($join){
+                        $join->on('shows.id','=','images.show_id');
+                    })
+                ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
+                    'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+                    'categories.name AS category','images.url AS image_url','thumb.url AS thumb_url',DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+                ->where($where)
+                ->where(function($query)
+                {
+                    $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
+                        ->orWhere('shows.audit_user_id','=',Auth::user()->id);
+                })
+                ->orderBy('shows.name')->groupBy('shows.id')
+                ->distinct();
+
+
+                // SAD
+
+//        $shows = DB::table('shows')
+//            ->join('categories', 'categories.id', '=' ,'shows.category_id')
+//            ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
+//            ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
+//            ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+//                                                             FROM show_images si
+//                                                             LEFT JOIN images i ON si.image_id = i.id
+//                                                             WHERE i.image_type = "Logo") as images')
+//                ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+//                                                             FROM show_images si
+//                                                             LEFT JOIN images i ON si.image_id = i.id
+//                                                             WHERE i.image_type = "Thumb") as thumb'),
+//                    function($join){
+//                        $join->on('shows.id','=','images.show_id');
+//                    })
+//                ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
+//                    'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+//                    'categories.name AS category','images.url AS image_url','thumb.url AS thumb_url',DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+//                ->where($where)
+//                ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
+//                ->where(function($query)
+//                {
+//                    $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
+//                        ->orWhere('shows.audit_user_id','=',Auth::user()->id);
+//                })
+//                ->whereNull('images.url')
+//                ->orWhereNull('tickets.id')
+//                ->orWhereNull('show_times.id')
+//                ->orWhereNull('shows.short_description')
+//                ->orderBy('shows.name')->groupBy('shows.id')
+//                ->distinct()->get();
+
+
+
+
+
+
+
+
+        // PROUD
+
+//        $shows = DB::table('shows')
+//            ->join('categories', 'categories.id', '=' ,'shows.category_id')
+//            ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
+//            ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
+//            ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+//                                                             FROM show_images si
+//                                                             LEFT JOIN images i ON si.image_id = i.id
+//                                                             WHERE i.image_type = "Logo") as images')
+//                ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+//                                                             FROM show_images si
+//                                                             LEFT JOIN images i ON si.image_id = i.id
+//                                                             WHERE i.image_type = "Thumb") as thumb'),
+//                    function($join){
+//                        $join->on('shows.id','=','images.show_id');
+//                    })
+//                ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
+//                    'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+//                    'categories.name AS category','images.url AS image_url','thumb.url AS thumb_url',DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+//                ->where($where)
+//                ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
+//                ->whereNull('images.url')
+//                ->orWhereNull('tickets.id')
+//                ->orWhereNull('show_times.id')
+//                ->orWhereNull('shows.short_description')
+//                ->orderBy('shows.name')->groupBy('shows.id')
+//                ->distinct()->get();
+
+
+
+
+        // GRACEFULL
+//        $shows = DB::table('shows')
+//            ->join('categories', 'categories.id', '=' ,'shows.category_id')
+//            ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
+//            ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
+//            ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+//                                                             FROM show_images si
+//                                                             LEFT JOIN images i ON si.image_id = i.id
+//                                                             WHERE i.image_type = "Logo") as images')
+//                ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+//                                                             FROM show_images si
+//                                                             LEFT JOIN images i ON si.image_id = i.id
+//                                                             WHERE i.image_type = "Thumb") as thumb'),
+//                    function($join){
+//                        $join->on('shows.id','=','images.show_id');
+//                    })
+//                ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
+//                    'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+//                    'categories.name AS category','images.url AS image_url','thumb.url AS thumb_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+//                ->where($where)
+//                ->orderBy('shows.name')->groupBy('shows.id')
+//                ->distinct()->get();
+
+
+
+
+
+
+            return $showsQuery->get();
+    }
+
+
+
     /**
      * List all shows and return default view.
      *
@@ -39,6 +182,8 @@ class ShowController extends Controller{
      */
     public function index()
     {
+        dd("DIE RIGHT NOW!");
+
         try {  
             //init
             $input = Input::all(); 
@@ -113,60 +258,30 @@ class ShowController extends Controller{
                         if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors'] == 1)
                         {
                             $onlyerrors = 1;
-                            $shows = DB::table('shows')
-                                        ->join('categories', 'categories.id', '=' ,'shows.category_id')
-                                        ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
-                                        ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
-                                        ->where($where)
-                                        ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
-                                        ->where(function($query)
-                                        {
-                                            $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
-                                                  ->orWhere('shows.audit_user_id','=',Auth::user()->id);
-                                        })
-                                        ->whereNull('images.url')
-                                        ->orWhereNull('tickets.id')
-                                        ->orWhereNull('show_times.id')
-                                        ->orWhereNull('shows.short_description')
-                                        ->orderBy('shows.name')->groupBy('shows.id')
-                                        ->distinct()->get();
+                            //
+                            //
+                            //
+                            //
+                            //
+                            die("sad");
+                            //
+                            //
+                            //
                         }
                         else
                         {
                             $onlyerrors = 0;
-                            //get all records        
-                            $shows = DB::table('shows')
-                                        ->join('categories', 'categories.id', '=' ,'shows.category_id')
-                                        ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
-                                        ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
-                                        ->where($where)
-                                        ->where(function($query)
-                                        {
-                                            $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
-                                                  ->orWhere('shows.audit_user_id','=',Auth::user()->id);
-                                        })
-                                        ->orderBy('shows.name')->groupBy('shows.id')
-                                        ->distinct()->get();
+                            //get all records
+                            //
+                            //
+                            die("happy");
+                            //
+                            //
+                            //
+                            $shows = buildShowsQuery();
+
+
+
                         }
                         $venues = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
                     }  
@@ -176,50 +291,38 @@ class ShowController extends Controller{
                         if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors'] == 1)
                         {
                             $onlyerrors = 1;
-                            $shows = DB::table('shows')
-                                        ->join('categories', 'categories.id', '=' ,'shows.category_id')
-                                        ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
-                                        ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })                                     
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
-                                        ->where($where)
-                                        ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
-                                        ->whereNull('images.url')
-                                        ->orWhereNull('tickets.id')
-                                        ->orWhereNull('show_times.id')
-                                        ->orWhereNull('shows.short_description')
-                                        ->orderBy('shows.name')->groupBy('shows.id')
-                                        ->distinct()->get();
+                            //
+                            //
+                            //
+                            //
+                            //
+                            die("proud");
+                            //
+                            //
+                            //
+                            //
+                            //
+                            //
+                            //
                         }
                         else
                         {   //dd($input);
                             $onlyerrors = 0;
-                            //get all records        
-                            $shows = DB::table('shows')
-                                        ->join('categories', 'categories.id', '=' ,'shows.category_id')
-                                        ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
-                                        ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })
-                                        ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
-                                        ->where($where)
-                                        ->orderBy('shows.name')->groupBy('shows.id')
-                                        ->distinct()->get();
+                            //get all records
+                            //
+                            //
+                            //
+                            //
+                            //
+                            die("graceful");
+                            //
+                            //
+                            //
+                            //
+                            //
+                            //
+                            //
+
                         }
                         $venues = Venue::orderBy('name')->get(['id','name','restrictions']);
                     }  
@@ -250,6 +353,11 @@ class ShowController extends Controller{
                         $s->image_url = Image::view_image($s->image_url);
                     else
                         $s->image_url = '';
+                    //check thumb
+                    if(!empty($s->thumb_url))
+                        $s->thumb_url = Image::view_image($s->thumb_url);
+                    else
+                        $s->thumb_url = '';
                     //set errors
                     $s->errors = '';
                     if(empty($s->image_url))

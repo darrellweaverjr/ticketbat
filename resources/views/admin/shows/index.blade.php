@@ -66,8 +66,8 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="10%">Logo</th>
-                                <th width="60%">Description</th>
+                                <th width="8%">Logo</th>
+                                <th width="62%">Description</th>
                                 <th width="10%">Category</th>
                                 <th width="3%">Featured</th>
                                 <th width="5%">Status</th>
@@ -84,7 +84,11 @@
                                     </label>
                                 </td>
                                 <td data-order="{{$s->name}}" style="text-align:center;color:red" title="Click on the image to go to the website.">
-                                    <a target="_blank" href="{{$s->url}}"><img alt="- No image -" height="110px" width="110px" src="{{$s->image_url}}"/>
+                                    @if(!empty($s->thumb_url))
+                                        <a target="_blank" href="{{$s->url}}"><img alt="- No image -" height="60px" width="60px" src="{{$s->thumb_url}}"/>
+                                    @else
+                                         <a target="_blank" href="{{$s->url}}"><img alt="- No image -" height="60px" width="60px" src="{{config('app.theme')}}img/no-thumb.jpg"/>
+                                    @endif
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
@@ -92,11 +96,9 @@
                                     </div>
                                     <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$s->short_description}}</div>
                                 </td>
-                                <td><center>{{$s->category}}</center></td>
-                                <td><center>{{$s->is_featured}}</center></span>
-                                </td>
-                                <td><center>{{$s->is_active}}</center></span>
-                                </td>
+                                <td class="text-center">{{$s->category}}</td>
+                                <td class="text-center">{{$s->is_featured}}</td>
+                                <td class="text-center">{{$s->is_active}}</td>
                                 <td class="search-content" style="font-style:italic;font-size:smaller;color:red">@php echo $s->errors @endphp</td>
                             </tr>
                             @endforeach
@@ -735,7 +737,7 @@
         <div class="modal-dialog" style="width:400px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
-                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
+                    <h4 class="modal-title bold uppercase text-center" style="color:white;">Filter Panel</h4>
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
