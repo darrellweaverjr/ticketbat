@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Slider;
 use App\Http\Models\Image;
 use App\Http\Models\Category;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -46,6 +48,16 @@ class HomeController extends Controller
             $sliders = Slider::orderBy('n_order')->get();
             foreach ($sliders as $s)
                 $s->image_url = Image::view_image($s->image_url);
+
+
+            // Don't hide shows for Seller accounts hack
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+            {
+                $nowVar = Carbon::now()->subDay()->toDateTimeString();
+            }else{
+                $nowVar = Carbon::now()->toDateTimeString();
+            }
+
             //get shows
             $shows = DB::table('shows')
                         ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
@@ -60,17 +72,20 @@ class HomeController extends Controller
                                           shows.starting_at'))    
                         ->where('venues.is_featured','>',0)
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
-                        ->where(function($query) {
+                        ->where(function($query) use ($nowVar) {
                             $query->whereNull('shows.on_featured')
-                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                                  ->orWhere('shows.on_featured','<=', $nowVar );
                         })
                         ->where('images.image_type','=','Logo')
-                        ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
+                        ->where(function($query) use ($nowVar) {
+                            $query->where('show_times.show_time','>=', $nowVar );
+                        })
                         ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                         ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
                         ->distinct()->get();
+
             foreach ($shows as $s)
             {
                 if(!empty($s->url))
@@ -119,16 +134,19 @@ class HomeController extends Controller
                         ->select('venues.id','venues.name','locations.city')
                         ->where('venues.is_featured','>',0)
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
-                        ->where(function($query) {
+                        ->where(function($query) use ($nowVar) {
                             $query->whereNull('shows.on_featured')
-                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                                ->orWhere('shows.on_featured','<=' , $nowVar );
                         })
                         ->where('images.image_type','=','Logo')
-                        ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
+                        ->where(function($query) use ($nowVar) {
+                            $query->where('show_times.show_time','>=', $nowVar );
+                        })
                         ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                         ->orderBy('venues.name')->groupBy('venues.id')
                         ->distinct()->get();
+
             //return view
             return view('production.home.index',compact('sliders','shows','categories','cities','venues'));
            
@@ -168,6 +186,17 @@ class HomeController extends Controller
             }
             else 
                 unset($input['category']);
+
+
+            // Don't hide shows for Seller accounts hack
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+            {
+                $nowVar = Carbon::now()::yesterday()->toDateTimeString();
+            }else{
+                $nowVar = Carbon::now()->toDateTimeString();
+            }
+
+
             //get shows
             $shows = DB::table('shows')
                         ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
@@ -179,11 +208,14 @@ class HomeController extends Controller
                                           DATE_FORMAT(MIN(show_times.show_time),"%b %d, %Y @ %h:%i %p") AS date_venue_on'))    
                         ->where('venues.is_featured','>',0)
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->where(function($query) {
+                        ->where(function($query) use ($nowVar) {
                             $query->whereNull('shows.on_featured')
-                                  ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
+                                ->orWhere('shows.on_featured','<=',$nowVar);
                         })
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())->where('show_times.is_active','=',1)
+                        ->where(function($query) use ($nowVar) {
+                            $query->where('show_times.show_time','>=', $nowVar );
+                        })
+                        ->where('show_times.is_active','=',1)
                         ->whereNotNull('images.url')
                     //custom
                         ->when(!empty($input['city']), function($shows) use ($input){
