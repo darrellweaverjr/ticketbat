@@ -7,7 +7,13 @@ html, body {
 
 /* BOOTSTRAP 4 SHIM STYLES */
 .mt-0 {
-    margin-top: 0 !important;
+    margin-top: 0px !important;
+}
+.mr-15 {
+    margin-right: 15px !important;
+}
+.ml-15 {
+    margin-left: 15px !important;
 }
 .pt-10 {
     padding-top: 10px !important;
@@ -210,11 +216,13 @@ html, body {
 }
 .event-main-title p.presented-by {
     text-align: center;
-    font-size:14px
+    font-size:14px;
+    margin: 10px 0px 0px 0px;
 }
 .event-main-title p.event-name{
     text-align: center;
-    font-size:30px
+    font-size:30px;
+    margin: 10px 0px 20px 0px;
 }
 .event-main-img {
     margin:auto;
@@ -338,6 +346,12 @@ html, body {
 @media (min-width: 767px ) {
     .event-main-title {
         font-size:44px
+    }
+    .event-main-title p.presented-by {
+        text-align: right;
+    }
+    .event-main-title p.event-name{
+        text-align: right;
     }
 }
 

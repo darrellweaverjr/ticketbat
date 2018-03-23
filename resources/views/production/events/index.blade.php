@@ -28,7 +28,7 @@
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
 <div class="row widget-row event-top-row">
-    <div class="col-lg-12">
+    <div class="col-lg-12 ml-15 mr-15">
 
         <div class="row fixed-panel">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
