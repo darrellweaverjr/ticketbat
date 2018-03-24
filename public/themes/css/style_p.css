@@ -206,9 +206,15 @@ html, body {
 }
 
 
-/* EVENT PAGES ===================================================== */
+/* ================================================================= */
+/* EVENT PAGES    ================================================== */
 /* ================================================================= */
 
+
+.event-main-img {
+    margin:auto;
+    width:100%
+}
 .event-top-row {
     background-color: #ffffff;
     border-bottom: 4px solid #bfbfbf;
@@ -218,15 +224,31 @@ html, body {
     text-align: center;
     font-size:14px;
     margin: 10px 0px 0px 0px;
+    text-transform: uppercase;
 }
 .event-main-title p.event-name{
     text-align: center;
     font-size:30px;
+    line-height: 34px;
     margin: 10px 0px 20px 0px;
+    text-transform: uppercase;
 }
-.event-main-img {
-    margin:auto;
-    width:100%
+.event-main-title p.event-low-price {
+    text-align: center;
+}
+
+.event-main-title p.event-low-price {
+    color: #138e13;
+    font-size: 48px;
+    line-height: 35px;
+    font-weight: 700;
+    margin: 0px;
+    text-align: center;
+}
+.event-main-title p.event-low-price span {
+    color: #bfbfbf;
+    font-size: 22px;
+    font-weight: 700;
 }
 .about-text {
     height: auto;
@@ -329,6 +351,19 @@ html, body {
     .active > div { display:none; }
     .active > div:first-child { display:block; }
 
+    /* mobile calendar fixes */
+    .table td, .table th {
+        font-size: 11px;
+    }
+    table.dataTable tbody td {
+        padding: 5px 5px;
+    }
+
+    .btn {
+        padding: 3px 6px;
+        font-size: 12px;
+    }
+
 }
 
 @media screen and (max-width: 1130px) {
@@ -344,17 +379,36 @@ html, body {
 /* DESKTOP STYLES */
 
 @media (min-width: 767px ) {
-    .event-main-title {
-        font-size:44px
-    }
     .event-main-title p.presented-by {
         text-align: right;
     }
-    .event-main-title p.event-name{
+    .event-main-title p.event-name {
         text-align: right;
     }
+    .event-main-title div.event-price-wrap{
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+    }
+    .event-main-title div.event-price-wrap.extra-wrap-height{
+        height: 100px;
+    }
+    .event-main-title p.event-low-price {
+        color: #138e13;
+        font-size: 48px;
+        line-height: 35px;
+        font-weight: 700;
+        margin: 0px;
+        flex: 1;
+        align-self: flex-end;
+        margin-left: auto;
+    }
+    .event-main-title p.event-low-price span {
+        color: #bfbfbf;
+        font-size: 22px;
+        font-weight: 700;
+    }
 }
-
 
 @media (min-width: 767px) and (max-width: 992px ) {
     .carousel-inner .active.left { left: -50%; }

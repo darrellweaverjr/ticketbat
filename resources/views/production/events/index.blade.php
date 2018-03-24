@@ -29,19 +29,19 @@
 <!-- BEGIN NAME BAR-->
 <div class="row widget-row event-top-row">
     <div class="col-lg-12 ml-15 mr-15">
-
-        <div class="row fixed-panel">
+        <div class="row fixed-panel event-main-title">
             <div class="col-xs-12 col-sm-6 col-sm-push-6">
-                <div class="event-main-title uppercase">
                     @if(!empty($event->presented_by))<p class="presented-by">{{$event->presented_by}} PRESENTS</p>@endif
                     <p class="event-name">{{$event->name}}</p>
-                </div>
             </div>
             <div class="col-xs-12 col-sm-6 col-sm-pull-6">
-                <p class="event-low-price">Prices starting @ $50.00</p>
+                {{--@if(!empty($event->presented_by))extra-wrap-height@endif--}}
+                {{-- <?php if($s->starting_at): ?> $<?php echo e($s->starting_at); ?> <?php else: ?> $<?php echo e($s->price); ?> <?php endif; ?> --}}
+                <div class="event-price-wrap">
+                    <p class="event-low-price"><span>FROM</span> $50.00</p>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 <!-- END NAME BAR-->
