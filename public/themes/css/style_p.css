@@ -387,11 +387,10 @@ html, body {
     }
     .event-main-title div.event-price-wrap{
         display: flex;
-        flex-direction: column;
         margin-top: 10px;
     }
     .event-main-title div.event-price-wrap.extra-wrap-height{
-        height: 100px;
+        height: 77px;
     }
     .event-main-title p.event-low-price {
         color: #138e13;
@@ -401,7 +400,7 @@ html, body {
         margin: 0px;
         flex: 1;
         align-self: flex-end;
-        margin-left: auto;
+        text-align: right;
     }
     .event-main-title p.event-low-price span {
         color: #bfbfbf;
