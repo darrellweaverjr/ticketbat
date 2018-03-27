@@ -6,6 +6,7 @@
        RequestHeader unset Proxy
     </IfModule>
 
+
 #   Options +SymLinksIfOwnerMatch
     RewriteEngine On
 
@@ -15,6 +16,27 @@
 
 #   Blocking urls to old uploads folder for images
     RewriteRule (^|/)uploads(/|$) - [F]
+
+     RewriteCond %{HTTP_HOST} ^example.com [NC]
+     RewriteRule ^(.*)$ http://www.example.com/$1 [R=301,L]
+
+#            Redirect 301 /administrator/manifests/files/joomla.xml https://www.ticketbat.com/ [L]
+#            Redirect 301 /wp-login.php https://www.ticketbat.com/ [L]
+#            Redirect 301 /api/.DS_Store https://www.ticketbat.com/ [L]
+#            Redirect 301 /api/info.php https://www.ticketbat.com/ [L]
+#            Redirect 301 /admin/phpinfo.php https://www.ticketbat.com/ [L]
+#            Redirect 301 /js/admin/commands/axis/DirectDownload.jsp https://www.ticketbat.com/ [L]
+#            Redirect 301 /phpMyAdmin/scripts/setup.php https://www.ticketbat.com/ [L]
+#            Redirect 301 /PhpMyAdmin/scripts/setup.php https://www.ticketbat.com/ [L]
+#            Redirect 301 /MyAdmin/scripts/setup.php https://www.ticketbat.com/ [L]
+#            Redirect 301 /phpmyadmin/scripts/_setup.php https://www.ticketbat.com [L]
+#            Redirect 301 /pma/scripts/setup.php https://www.ticketbat.com/ [L]
+#            Redirect 301 /cgi-sys/suspendedpage.cgi https://www.ticketbat.com/ [L]
+#            Redirect 301 /scripts/setup.php https://www.ticketbat.com/ [L]
+#            Redirect 301  /admin/scripts/setup.php https://www.ticketbat.com/ [L]
+#            Redirect 301  /dbadmin/scripts/setup.php https://www.ticketbat.com/ [L]
+#            Redirect 301  mysql/scripts/setup.php https://www.ticketbat.com/ [L]
+
 
 #   Force connections to https in ticketbat.com public site
     RewriteCond %{HTTP_HOST} ^ticketbat\.com [NC]
@@ -32,25 +54,6 @@
 
 #   Handle Robots.txt for the live site
     RewriteRule ^robots.txt - [L]
-
-
-#   Anti Hack
-    Redirect 301 /administrator/manifests/files/joomla.xml https://www.ticketbat.com/
-    Redirect 301 /wp-login.php https://www.ticketbat.com/
-    Redirect 301 /api/.DS_Store https://www.ticketbat.com/
-    Redirect 301 /api/info.php https://www.ticketbat.com/
-    Redirect 301 /admin/phpinfo.php https://www.ticketbat.com/
-    Redirect 301 /js/admin/commands/axis/DirectDownload.jsp https://www.ticketbat.com/
-    Redirect 301 /phpMyAdmin/scripts/setup.php https://www.ticketbat.com/
-    Redirect 301 /PhpMyAdmin/scripts/setup.php https://www.ticketbat.com/
-    Redirect 301 /MyAdmin/scripts/setup.php https://www.ticketbat.com/
-    Redirect 301 /phpmyadmin/scripts/_setup.php https://www.ticketbat.com
-    Redirect 301 /pma/scripts/setup.php https://www.ticketbat.com/
-    Redirect 301 /cgi-sys/suspendedpage.cgi https://www.ticketbat.com/
-    Redirect 301 /scripts/setup.php https://www.ticketbat.com/
-    Redirect 301  /admin/scripts/setup.php https://www.ticketbat.com/
-    Redirect 301  /dbadmin/scripts/setup.php https://www.ticketbat.com/
-    Redirect 301  mysql/scripts/setup.php https://www.ticketbat.com/
 
 #   These rules below after all the [L] last rules
 #   Handle Authorization Header
