@@ -30,13 +30,27 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
-#   Redirects robots.txt to robots-off.txt and turns off crawlers for staging site
-    # RewriteCond %{HTTP_HOST} ^staging.*$ [NC]
-    # RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*robots\.txt.*\ HTTP/ [NC]
-    # RewriteRule ^robots\.txt /robots-off.txt [NC,L]
-
 #   Handle Robots.txt for the live site
     RewriteRule ^robots.txt - [L]
+
+
+#   Anti Hack
+    Redirect 301 /administrator/manifests/files/joomla.xml https://www.ticketbat.com/
+    Redirect 301 /wp-login.php https://www.ticketbat.com/
+    Redirect 301 /api/.DS_Store https://www.ticketbat.com/
+    Redirect 301 /api/info.php https://www.ticketbat.com/
+    Redirect 301 /admin/phpinfo.php https://www.ticketbat.com/
+    Redirect 301 /js/admin/commands/axis/DirectDownload.jsp https://www.ticketbat.com/
+    Redirect 301 /phpMyAdmin/scripts/setup.php https://www.ticketbat.com/
+    Redirect 301 /PhpMyAdmin/scripts/setup.php https://www.ticketbat.com/
+    Redirect 301 /MyAdmin/scripts/setup.php https://www.ticketbat.com/
+    Redirect 301 /phpmyadmin/scripts/_setup.php https://www.ticketbat.com
+    Redirect 301 /pma/scripts/setup.php https://www.ticketbat.com/
+    Redirect 301 /cgi-sys/suspendedpage.cgi https://www.ticketbat.com/
+    Redirect 301 /scripts/setup.php https://www.ticketbat.com/
+    Redirect 301  /admin/scripts/setup.php https://www.ticketbat.com/
+    Redirect 301  /dbadmin/scripts/setup.php https://www.ticketbat.com/
+    Redirect 301  mysql/scripts/setup.php https://www.ticketbat.com/
 
 #   These rules below after all the [L] last rules
 #   Handle Authorization Header
