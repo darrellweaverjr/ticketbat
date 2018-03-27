@@ -35,9 +35,11 @@
                     <p class="event-name">{{$event->name}}</p>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-sm-pull-6">
-                 <div class="event-price-wrap @if(!empty($event->presented_by)) extra-wrap-height @endif">
-                        <p class="event-low-price"><span>FROM</span> $50.00</p>
-                    </div>
+                    @if(!empty($event->starting_at))
+                        <div class="event-price-wrap @if(!empty($event->presented_by)) extra-wrap-height @endif">
+                            <p class="event-low-price"><span class="asterisk">*</span></span><span class="from">FROM</span> {{$event->starting_at}}</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -50,7 +52,7 @@
                 <div class="portlet light about-text">
                     <!-- BEGIN DESCRIPTION -->
                     <h4 title="Click on the time to view ticket's details.">
-                        <i class="fa fa-check icon-calendar"></i> Show Times
+                        <i class="fa fa-calendar"></i> Show Times
                         @if(count($event->showtimes))
                             <div class="actions pull-right">
                                 <div class="btn-group">
@@ -59,7 +61,7 @@
                                             <a href="#showtimes_list" class="btn-info" data-toggle="tab"><i class="fa fa-list icon-list"></i></a>
                                         </li>
                                         <li @if(count($event->showtimes)>7) class="active" @endif>
-                                            <a href="#showtimes_calendar" class="btn-info" data-toggle="tab"><i class="fa fa-calendar icon-calendar"></i></a>
+                                            <a href="#showtimes_calendar" class="btn-info" data-toggle="tab"><i class="fa fa-calendar"></i></a>
                                         </li>
                                     </ul>
                                 </div>
@@ -93,8 +95,8 @@
                                                 <td>@if(!empty($st->time_alternative)) {{$st->time_alternative}} @else {{$st->show_hour}} @endif</td>
                                                 <td class="text-center">
                                                     <a @if($st->ext_slug) href="{{$st->ext_slug}}" @else href="/buy/{{$event->slug}}/{{$st->id}}" @endif style="color:white!important" class="btn bg-blue">
-                                                            BUY TICKETS <i class="fa fa-arrow-circle-right"></i>
-                                                        </a>
+                                                        BUY TICKETS <i class="fa fa-arrow-circle-right"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -117,16 +119,14 @@
                         <!-- END CUTOFF TEXT -->
                 @endif
                 <!-- BEGIN PRESENTED BY -->
-                    <p class="uppercase text-center" style="margin-top: 30px">
-                    <div class="col-md-3">
-                        @if(!empty($event->sponsor_logo_id))<img class="timeline-badge-userpic" src="{{$event->sponsor_logo_id}}">@endif
+                    <div class="col-md-3 uppercase text-center">
+                        @if(!empty($event->sponsor_logo_id))<img class="timeline-badge-userpic mt-30" src="{{$event->sponsor_logo_id}}">@endif
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 uppercase text-center">
                         {{-- WE SHOULD KILL THIS --}}
                         {{--@if(!empty($event->presented_by))<label class="control-label">PRESENTED BY: <b>{{$event->presented_by}}</b></label><br>@endif--}}
                         {{--@if(!empty($event->sponsor))<label class="control-label">SPONSOR: <b>{{$event->sponsor}}</b></label>@endif--}}
                     </div>
-                    </p>
                     <!-- END PRESENTED BY -->
                 </div>
             </div>
@@ -134,26 +134,7 @@
                 <div class="portlet light about-text">
                     <!-- BEGIN DESCRIPTION -->
                     <h4 title="Click on the time to view event's details.">
-                        <i class="fa fa-check icon-info"></i> Event Details
-                        <div class="actions pull-right">
-
-                            {{--<div class="btn-group">--}}
-                            {{--<a data-toggle="dropdown"><i class="fa fa-share icon-share"></i></a>--}}
-                            {{--<ul class="dropdown-menu" role="menu">--}}
-                            {{--<li><a href="https://twitter.com/intent/tweet?text={{$event->name}} {{url()->current()}}" target="_blank">--}}
-                            {{--<i class="social-icon social-icon-color twitter"></i> Twitter--}}
-                            {{--</a></li>--}}
-                            {{--<li><a href="https://plus.google.com/share?url={{url()->current()}}" target="_blank">--}}
-                            {{--<i class="social-icon social-icon-color googleplus"></i> Google+--}}
-                            {{--</a></li>--}}
-                            {{--<li><a href="http://www.facebook.com/sharer/sharer.php?u={{url()->current()}}" target="_blank">--}}
-                            {{--<i class="social-icon social-icon-color facebook"></i> Facebook--}}
-                            {{--</a></li>--}}
-                            {{--</ul>--}}
-                            {{--</div>--}}
-
-
-                        </div>
+                        <i class="fa fa-info-circle"></i> Event Details
                     </h4>
                     <div style="text-align:center;padding-top:10px">
                         <input id="show_id" type="hidden" value="{{$event->show_id}}"/>
@@ -216,8 +197,8 @@
                         <!-- ENDS BANDS -->
                     @endif
 
-                    <div>
-                        <p style="margin-top:-25px;max-height:30px">
+                    <div class="ml-20 events-social-icons">
+                        <p>
                             @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
                             @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif
                             @if(!empty($event->facebook)) <a class="social-icon social-icon-color facebook" href="http://www.facebook.com/{{$event->facebook}}" target="_blank"></a> @endif

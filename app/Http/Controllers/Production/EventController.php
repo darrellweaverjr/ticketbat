@@ -25,15 +25,16 @@ class EventController extends Controller
     public function index($slug)
     {
         try {
-            if (empty($slug))
+            if (empty($slug)) {
                 return redirect()->route('index');
+            }
             //get all records
             $event = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('locations', 'locations.id', '=', 'venues.location_id')
                 ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url,
                                           shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram,
-                                          venues.name as venue, shows.name, locations.*, shows.presented_by, shows.sponsor,
+                                          venues.name as venue, shows.name, locations.*, shows.presented_by, shows.starting_at, shows.regular_price, shows.sponsor,
                                           shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id, shows.ua_conversion_code,
                                           IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
                 ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
@@ -42,15 +43,17 @@ class EventController extends Controller
                         ->orWhere('shows.on_featured', '<=', \Carbon\Carbon::now());
                 })
                 ->where('shows.slug', $slug)->first();
-            if (!$event)
+            if (!$event) {
                 return redirect()->route('index');
+            }
             //funnel
             $input = Input::all();
             if (!empty($input['funnel']) && in_array($input['funnel'], [0, 1])) {
                 Session::put('funnel', $input['funnel']);
                 Session::put('slug', $event->slug . '?funnel=' . $input['funnel']);
-                if (!empty($event->ua_conversion_code))
+                if (!empty($event->ua_conversion_code)) {
                     Session::put('ua_code', $event->ua_conversion_code);
+                }
             } else {
                 Session::forget('funnel');
                 Session::forget('slug');
@@ -65,23 +68,26 @@ class EventController extends Controller
                 ->select(DB::raw('images.url, images.caption'))
                 ->where('show_images.show_id', $event->show_id)->where('images.image_type', '=', 'Header')->first();
             //set header of venue if not show header
-            if (!$event->header)
+            if (!$event->header) {
                 $event->header = DB::table('images')
                     ->join('venue_images', 'venue_images.image_id', '=', 'images.id')
                     ->select(DB::raw('images.url, images.caption'))
                     ->where('venue_images.venue_id', $event->venue_id)->where('images.image_type', '=', 'Header')->first();
-            if ($event->header)
+            }
+            if ($event->header) {
                 $event->header->url = Image::view_image($event->header->url);
-            else
+            } else {
                 return redirect()->route('index');
+            }
 
             //get mobile header
             $event->mobile_header = DB::table('images')
                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
                 ->select(DB::raw('images.url, images.caption'))
                 ->where('show_images.show_id', $event->show_id)->where('images.image_type', '=', 'Mobile Header')->first();
-            if ($event->mobile_header)
+            if ($event->mobile_header) {
                 $event->mobile_header->url = Image::view_image($event->mobile_header->url);
+            }
 
 
             //get images
@@ -89,8 +95,9 @@ class EventController extends Controller
                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
                 ->select(DB::raw('images.url, images.caption'))
                 ->where('show_images.show_id', $event->show_id)->where('images.image_type', '=', 'Image')->get();
-            foreach ($event->images as $i)
+            foreach ($event->images as $i) {
                 $i->url = Image::view_image($i->url);
+            }
             //get banners
             $event->banners = DB::table('banners')
                 ->select(DB::raw('banners.id, banners.url, banners.file'))
@@ -99,8 +106,9 @@ class EventController extends Controller
                         ->orWhereRaw('banners.parent_id = ' . $event->venue_id . ' AND banners.belongto="venue" ');
                 })
                 ->where('banners.type', 'like', '%Show Page%')->get();
-            foreach ($event->banners as $b)
+            foreach ($event->banners as $b) {
                 $b->file = Image::view_image($b->file);
+            }
             //get videos
             $event->videos = DB::table('videos')
                 ->join('show_videos', 'show_videos.video_id', '=', 'videos.id')
@@ -118,8 +126,9 @@ class EventController extends Controller
                 ->join('show_bands', 'show_bands.band_id', '=', 'bands.id')
                 ->select(DB::raw('bands.*, categories.name AS category'))
                 ->where('show_bands.show_id', $event->show_id)->orderBy('show_bands.n_order')->get();
-            foreach ($event->bands as $b)
+            foreach ($event->bands as $b) {
                 $b->image_url = Image::view_image($b->image_url);
+            }
             //get showtimes
             $event->showtimes = DB::table('show_times')
                 ->join('shows', 'show_times.show_id', '=', 'shows.id')
@@ -133,18 +142,20 @@ class EventController extends Controller
                 ->where('show_times.show_id', $event->show_id)->where('show_times.is_active', '>', 0)
                 ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
                 ->where(function ($query) {
-                    if (Auth::check() && !in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+                    if (Auth::check() && !in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
                         $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
+                    }
                 })
                 ->orderBy('show_times.show_time')->get();
             //get reviews
             $reviews = DB::table('show_reviews')
                 ->select(DB::raw('COUNT(id) AS posts, AVG(rating) AS rating'))
                 ->where('show_id', $event->show_id)->groupBy('show_id')->first();
-            if ($reviews)
+            if ($reviews) {
                 $event->reviews = ['posts' => $reviews->posts, 'rating' => $reviews->rating];
-            else
+            } else {
                 $event->reviews = ['posts' => 0, 'rating' => 0];
+            }
             $event->reviews['comments'] = DB::table('show_reviews')
                 ->join('users', 'show_reviews.user_id', '=', 'users.id')
                 ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name, show_reviews.review, show_reviews.rating, show_reviews.created'))
@@ -166,8 +177,9 @@ class EventController extends Controller
     {
         try {
             $qty_tickets_sell = 20;
-            if (empty($slug) || empty($product))
+            if (empty($slug) || empty($product)) {
                 return redirect()->route('index');
+            }
             //get all records
             $event = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
@@ -186,12 +198,14 @@ class EventController extends Controller
                 ->where('shows.slug', $slug)->where('show_times.id', $product)->where('show_times.is_active', '>', 0)
                 ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
                 ->where(function ($query) {
-                    if (Auth::check() && !in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+                    if (Auth::check() && !in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
                         $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
+                    }
                 })
                 ->first();
-            if (!$event)
+            if (!$event) {
                 return redirect()->route('index');
+            }
             //formats
             $event->image_url = Image::view_image($event->image_url);
             $event->amex_only_ticket_types = (!empty($event->amex_only_ticket_types)) ? explode(',', $event->amex_only_ticket_types) : [];
@@ -200,8 +214,9 @@ class EventController extends Controller
                 ->join('stage_image_ticket_type', 'stage_image_ticket_type.image_id', '=', 'images.id')
                 ->select(DB::raw('images.url, stage_image_ticket_type.ticket_type'))
                 ->where('stage_image_ticket_type.stage_id', $event->stage_id)->get();
-            foreach ($event->stage_images as $i)
+            foreach ($event->stage_images as $i) {
                 $i->url = Image::view_image($i->url);
+            }
             //passwords
             $passwords = DB::table('show_passwords')
                 ->select(DB::raw('show_passwords.ticket_types'))
@@ -217,12 +232,15 @@ class EventController extends Controller
                 $event->ticket_reserved = 0;
                 $email_guest = Session::get('email_guest', null);
                 $user_id = null;
-                if (Auth::check())
+                if (Auth::check()) {
                     $user_id = Auth::user()->id;
-                else if (!empty($email_guest)) {
-                    $user = User::where('email', $email_guest)->first(['id']);
-                    if ($user)
-                        $user_id = $user->id;
+                } else {
+                    if (!empty($email_guest)) {
+                        $user = User::where('email', $email_guest)->first(['id']);
+                        if ($user) {
+                            $user_id = $user->id;
+                        }
+                    }
                 }
                 //get previous purchases by user
                 if (!empty($user_id)) {
@@ -267,13 +285,15 @@ class EventController extends Controller
             foreach ($tickets as $t) {
 
                 //limit ticket purchase by user
-                if (!empty($event->ticket_limit))
+                if (!empty($event->ticket_limit)) {
                     $t->max_available = ($event->ticket_left < $t->max_available - $event->ticket_reserved) ? $event->ticket_left : $t->max_available - $event->ticket_reserved;
+                }
                 //if there is tickets availables
                 if ($t->max_available > 0) {
                     //max available
-                    if ($t->max_available > $qty_tickets_sell)
+                    if ($t->max_available > $qty_tickets_sell) {
                         $t->max_available = $qty_tickets_sell;
+                    }
                     //id
                     $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
                     //amex
@@ -290,15 +310,18 @@ class EventController extends Controller
                     if (in_array($t->ticket_id, $coupon)) {
                         $t->coupon = 1;
                         $has_coupon = 1;
-                    } else
+                    } else {
                         $t->coupon = 0;
+                    }
                     //fill out tickets
-                    if (isset($event->tickets[$id]))
+                    if (isset($event->tickets[$id])) {
                         $event->tickets[$id]['tickets'][] = $t;
-                    else
+                    } else {
                         $event->tickets[$id] = ['type' => $t->ticket_type, 'class' => $t->ticket_type_class, 'amex_only' => $amex_only, 'password' => $pass, 'tickets' => [$t]];
-                } else
+                    }
+                } else {
                     unset($t);
+                }
             }
             //order the ticket types according to the stage order
             if (!empty($event->ticket_order)) {
@@ -316,11 +339,13 @@ class EventController extends Controller
             //checkings for sale
             if ($event->for_sale) {
                 if (!empty($event->on_sale) && strtotime($event->on_sale) != false) {
-                    if (strtotime($event->on_sale) > strtotime('now'))
+                    if (strtotime($event->on_sale) > strtotime('now')) {
                         $event->for_sale = 0;
+                    }
                 }
-                if (empty($event->tickets))
+                if (empty($event->tickets)) {
                     $event->for_sale = 0;
+                }
             }
             //get styles from cloud
             $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER') . '/' . $this->style_url);

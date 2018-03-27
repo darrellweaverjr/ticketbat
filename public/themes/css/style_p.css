@@ -9,11 +9,23 @@ html, body {
 .mt-0 {
     margin-top: 0px !important;
 }
+.mt-10 {
+    margin-top: 10px !important;
+}
+.mt-30 {
+    margin-top: 30px !important;
+}
 .mr-15 {
     margin-right: 15px !important;
 }
+.mr-20 {
+    margin-right: 20px !important;
+}
 .ml-15 {
     margin-left: 15px !important;
+}
+.ml-20 {
+    margin-left: 20px !important;
 }
 .pt-10 {
     padding-top: 10px !important;
@@ -236,7 +248,6 @@ html, body {
 .event-main-title p.event-low-price {
     text-align: center;
 }
-
 .event-main-title p.event-low-price {
     color: #138e13;
     font-size: 48px;
@@ -245,10 +256,20 @@ html, body {
     margin: 0px;
     text-align: center;
 }
-.event-main-title p.event-low-price span {
+.event-main-title p.event-low-price span.from {
     color: #bfbfbf;
     font-size: 22px;
     font-weight: 700;
+}
+.event-main-title p.event-low-price span.asterisk {
+    color: #bfbfbf;
+    font-size: 14px;
+    font-weight: 700;
+    vertical-align: 6px;
+}
+
+.events-social-icons {
+    height: 25px;
 }
 .about-text {
     height: auto;
@@ -377,6 +398,11 @@ html, body {
 
 
 /* DESKTOP STYLES */
+@media (min-width: 600px ) {
+    .events-social-icons {
+        height: 45px;
+    }
+}
 
 @media (min-width: 767px ) {
     .event-main-title p.presented-by {
@@ -402,7 +428,7 @@ html, body {
         align-self: flex-end;
         text-align: right;
     }
-    .event-main-title p.event-low-price span {
+    .event-main-title p.event-low-price span.from {
         color: #bfbfbf;
         font-size: 22px;
         font-weight: 700;
