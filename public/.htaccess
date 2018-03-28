@@ -17,35 +17,39 @@
 #   Blocking urls to old uploads folder for images
     RewriteRule (^|/)uploads(/|$) - [F]
 
-    RewriteCond %{REQUEST_URI} /wp-login.php
+#   Anti Hacker
+    RewriteCond %{REQUEST_URI} /wp-login.php [NC]
     RewriteRule ^ - [F,L]
-
-    RewriteCond %{REQUEST_URI} /administrator/manifests/files/joomla.xml
+    RewriteCond %{REQUEST_URI} /administrator/manifests/files/joomla.xml [NC]
     RewriteRule ^ - [F,L]
-
-    RewriteCond %{REQUEST_URI} /wp-settings.php/index.php
+    RewriteCond %{REQUEST_URI} /wp-settings.php/index.php [NC]
     RewriteRule ^ - [F,L]
-
-#            Redirect 301 /administrator/manifests/files/joomla.xml https://www.ticketbat.com/ [L]
-#            Redirect 301 /wp-login.php https://www.ticketbat.com/ [L]
-#            Redirect 301 /wp-settings.php/index.php https://www.ticketbat.com/ [L]
-
-
-#            Redirect 301 /api/.DS_Store https://www.ticketbat.com/ [L]
-#            Redirect 301 /api/info.php https://www.ticketbat.com/ [L]
-#            Redirect 301 /admin/phpinfo.php https://www.ticketbat.com/ [L]
-#            Redirect 301 /js/admin/commands/axis/DirectDownload.jsp https://www.ticketbat.com/ [L]
-#            Redirect 301 /phpMyAdmin/scripts/setup.php https://www.ticketbat.com/ [L]
-#            Redirect 301 /PhpMyAdmin/scripts/setup.php https://www.ticketbat.com/ [L]
-#            Redirect 301 /MyAdmin/scripts/setup.php https://www.ticketbat.com/ [L]
-#            Redirect 301 /phpmyadmin/scripts/_setup.php https://www.ticketbat.com [L]
-#            Redirect 301 /pma/scripts/setup.php https://www.ticketbat.com/ [L]
-#            Redirect 301 /cgi-sys/suspendedpage.cgi https://www.ticketbat.com/ [L]
-#            Redirect 301 /scripts/setup.php https://www.ticketbat.com/ [L]
-#            Redirect 301  /admin/scripts/setup.php https://www.ticketbat.com/ [L]
-#            Redirect 301  /dbadmin/scripts/setup.php https://www.ticketbat.com/ [L]
-#            Redirect 301  mysql/scripts/setup.php https://www.ticketbat.com/ [L]
-
+    RewriteCond %{REQUEST_URI} /api/.DS_Store [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /api/info.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /admin/phpinfo.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /js/admin/commands/axis/DirectDownload.jsp [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /phpMyAdmin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /phpMyAdmin/scripts/_setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /MyAdmin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /pma/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /cgi-sys/suspendedpage.cgi [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /admin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /dbadmin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /mysql/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
 
 #   Force connections to https in ticketbat.com public site
     RewriteCond %{HTTP_HOST} ^ticketbat\.com [NC]
