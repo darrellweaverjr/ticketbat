@@ -153,7 +153,7 @@ class Shoppingcart extends Model
                         $i->seat = $opt['seats'];
                     }
                 }
-            } 
+            }
         }
         //return
         return $items;
@@ -228,7 +228,7 @@ class Shoppingcart extends Model
                             //if valid showtimes for coupon
                             if(empty($coupon['showtimes']) || (!empty($coupon['showtimes']) && in_array($i->item_id, explode(',', $coupon['showtimes']))) )
                             {
-                                //loop tickets 
+                                //loop tickets
                                 foreach ($coupon['tickets'] as $dt)
                                 {
                                     if($dt['ticket_id'] == $i->ticket_id)
@@ -239,7 +239,7 @@ class Shoppingcart extends Model
                                             $i->total_cost = $i->cost_per_product * $i->number_of_items;
                                         $s = $couponObj->calculate_savings($i->number_of_items,$i->total_cost,$dt['start_num'],$dt['end_num']);
                                         //write savings or suming
-                                        
+
                                         if(($coupon['discount_scope']=='Total' && $coupon['discount_type']=='Dollar'))
                                         {
                                             //add total savings if doesnt exist
@@ -276,7 +276,7 @@ class Shoppingcart extends Model
                         $i->processing_fee= Util::round($i->processing_fee*$qty_item_pay) ;
                         $fee += Util::round($i->processing_fee);
                         //calculate commission for item
-                        $i->commission = ($i->c_fixed)? Util::round($i->c_fixed*$qty_item_pay) : Util::round($i->c_percent*$qty_item_pay*$p/100);
+                        $i->commission = ($i->c_fixed)? Util::round($i->c_fixed*$qty_item_pay) : Util::round($i->c_percent*$i->cost_per_product/100*$qty_item_pay);
                     }
                 }
             }
@@ -536,7 +536,7 @@ class Shoppingcart extends Model
                     $item->product_type = $ticket->ticket_type;
                     $item->options = json_encode([]);
                 }
-                
+
             }
             $item->coupon = ($i && !empty($i->coupon))? $i->coupon : Session::get('coup',null);
             $qty_item_pay = $item->number_of_items;
