@@ -50,6 +50,8 @@
     RewriteRule ^ - [F,L]
     RewriteCond %{REQUEST_URI} /mysql/scripts/setup.php [NC]
     RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /webdav [NC]
+    RewriteRule ^ - [F,L]
 
 #   Force connections to https in ticketbat.com public site
     RewriteCond %{HTTP_HOST} ^ticketbat\.com [NC]
