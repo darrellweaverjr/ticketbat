@@ -6,6 +6,7 @@
        RequestHeader unset Proxy
     </IfModule>
 
+
 #   Options +SymLinksIfOwnerMatch
     RewriteEngine On
 
@@ -15,6 +16,42 @@
 
 #   Blocking urls to old uploads folder for images
     RewriteRule (^|/)uploads(/|$) - [F]
+
+#   Anti Hacker
+    RewriteCond %{REQUEST_URI} /wp-login.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /administrator/manifests/files/joomla.xml [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /wp-settings.php/index.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /api/.DS_Store [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /api/info.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /admin/phpinfo.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /js/admin/commands/axis/DirectDownload.jsp [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /phpMyAdmin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /phpMyAdmin/scripts/_setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /MyAdmin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /pma/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /cgi-sys/suspendedpage.cgi [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /admin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /dbadmin/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /mysql/scripts/setup.php [NC]
+    RewriteRule ^ - [F,L]
+    RewriteCond %{REQUEST_URI} /webdav [NC]
+    RewriteRule ^ - [F,L]
 
 #   Force connections to https in ticketbat.com public site
     RewriteCond %{HTTP_HOST} ^ticketbat\.com [NC]
@@ -29,11 +66,6 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
-
-#   Redirects robots.txt to robots-off.txt and turns off crawlers for staging site
-    # RewriteCond %{HTTP_HOST} ^staging.*$ [NC]
-    # RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*robots\.txt.*\ HTTP/ [NC]
-    # RewriteRule ^robots\.txt /robots-off.txt [NC,L]
 
 #   Handle Robots.txt for the live site
     RewriteRule ^robots.txt - [L]
