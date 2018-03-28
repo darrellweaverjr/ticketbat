@@ -277,7 +277,7 @@ html, body {
     color: #808a94;
 }
 .event-regular-price {
-    right: 180px;
+    right: 175px;
     position: absolute;
 }
 .event-regular-price span{
@@ -401,11 +401,13 @@ html, body {
         font-size: 12px;
     }
     .event-regular-price {
-        right: 300px;
-        position: absolute;
-        top: -20px;
+        margin-top: -45px;
+        text-align: right;
+        position: static;
+        float: left;
+        width: 50%;
+        margin-left: -60px;
     }
-
 }
 
 @media screen and (max-width: 1130px) {
