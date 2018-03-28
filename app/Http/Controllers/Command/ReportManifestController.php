@@ -12,9 +12,9 @@ use App\Http\Models\Manifest;
  * @author ivan
  */
 class ReportManifestController extends Controller{
-    
-    protected $manifests = ['Preliminary','Primary','LastMinute']; 
-    
+
+    protected $manifests = ['Preliminary','Primary','LastMinute'];
+
     /**
      * Create a new controller instance.
      *
@@ -22,8 +22,8 @@ class ReportManifestController extends Controller{
      */
     public function __construct()
     {
-        
-    }    
+
+    }
     /*
      * get sales report pdf
      */
@@ -33,36 +33,36 @@ class ReportManifestController extends Controller{
             //init
             $current = date('Y-m-d');
             //send reports for each type of manifest
-            foreach ($this->manifests as $type) 
+            foreach ($this->manifests as $type)
             {
                 //create report
-                $info = $this->create_report($type,$current);       
+                $info = $this->create_report($type,$current);
                 if(!empty($info['dates']))
                 {
                     //create and send report for each date
                     foreach($info['dates'] as $date)
-                    {   
+                    {
                         $date->type = $type;
-                        $data = $this->create_data($date);  
-                        $manifest = $this->save_data($data);   //dd($manifest) ;
+                        $data = $this->create_data($date);
+                        $manifest = $this->save_data($data);
                         if($manifest && $data['s_manifest_emails']>0 && !empty($data['emails']))
-                        {   
-                            $sent = $manifest->send ($data['emails'], $info['subject']); 
+                        {
+                            $sent = $manifest->send($data['emails'], $info['subject']);
                             //storage if email was sent successfully
                             $data['sent'] = ($sent)? 1 : 0;
                             $manifest->email = json_encode($data);
                             $manifest->save();
-                        }         
+                        }
                     }
                 }
-            } 
+            }
             if(isset($sent))
                 return $sent;
             return false;
         } catch (Exception $ex) {
             return false;
         }
-    }  
+    }
     /*
      * create data to storage on DB
      */
@@ -70,26 +70,26 @@ class ReportManifestController extends Controller{
     {
         try {
             $info = ['dates'=>[],'type'=>'','subject'=>''];
-            //init variables    
-            switch ($type) 
+            //init variables
+            switch ($type)
             {
                 case 'Preliminary':
                     $dates = DB::table('show_times')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->select(DB::raw('show_times.id, show_times.show_time, 
+                            ->select(DB::raw('show_times.id, show_times.show_time,
                                             shows.emails, shows.name, shows.manifest_emails AS s_manifest_emails,
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','>',$current)
+                            ->whereDate('show_times.show_time','>=',$current)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
                                       ->whereRaw('show_times.id = manifest_emails.show_time_id')
                                       ->where('manifest_type','=','Preliminary');
                             })
-                            ->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) < NOW()')
+                            ->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) < NOW()')  
                             ->groupBy('show_times.id')
                             ->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Preliminary','subject'=>'Preliminary Manifest for '];
@@ -98,12 +98,12 @@ class ReportManifestController extends Controller{
                     $dates = DB::table('show_times')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->select(DB::raw('show_times.id, show_times.show_time, 
+                            ->select(DB::raw('show_times.id, show_times.show_time,
                                             shows.emails, shows.name, shows.manifest_emails AS s_manifest_emails,
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','>',$current)
+                            ->whereDate('show_times.show_time','>=',$current)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
@@ -124,7 +124,7 @@ class ReportManifestController extends Controller{
                                 $join->on('manifest_emails.show_time_id', '=' ,'show_times.id')
                                      ->on('manifest_emails.manifest_type', '=', 'Primary');
                             })
-                            ->select(DB::raw('show_times.id, show_times.show_time, 
+                            ->select(DB::raw('show_times.id, show_times.show_time,
                                             shows.emails, shows.name, shows.manifest_emails AS s_manifest_emails,
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
@@ -134,31 +134,31 @@ class ReportManifestController extends Controller{
                             ->groupBy('show_times.id')
                             ->distinct()->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
-                    break;    
+                    break;
                 default:break;
-            }  
+            }
             //return files
             return $info;
         } catch (Exception $ex) {
-            
+
         } finally {
             return $info;
-        }        
-    }  
+        }
+    }
     /*
      * create data to storage on DB
      */
     public function create_data($data)
     {
-        try {   
-            //get purchases   
+        try {
+            //get purchases
             $purchases = DB::table('purchases')
                             ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                             ->join('locations', 'locations.id', '=' ,'customers.location_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                            ->select(DB::raw('purchases.id, shows.name AS event_name, show_times.show_time, 
+                            ->select(DB::raw('purchases.id, shows.name AS event_name, show_times.show_time,
                                             CONCAT(customers.last_name,",",customers.first_name) AS customer_name,
                                             locations.address, customers.phone, customers.email,
                                             purchases.quantity, purchases.ticket_type AS description, purchases.price_paid AS amount, purchases.savings,
@@ -167,7 +167,7 @@ class ReportManifestController extends Controller{
                             ->where('show_times.id','=',$data->id)
                             ->groupBy('purchases.id')->orderBy('customers.last_name')
                             ->distinct()->get()->toArray();
-            //get gifts   
+            //get gifts
             $gifts = DB::table('ticket_number')
                             ->join('purchases', 'purchases.id', '=' ,'ticket_number.purchases_id')
                             ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -180,7 +180,7 @@ class ReportManifestController extends Controller{
                                             GROUP_CONCAT( DISTINCT CONCAT(customers.last_name,",",customers.first_name) ORDER BY customers.last_name SEPARATOR "//") AS customers'))
                             ->where('show_times.id','=',$data->id)
                             ->groupBy('ticket_number.purchases_id')
-                            ->distinct()->get()->toArray();                            
+                            ->distinct()->get()->toArray();
             //add purchases and gifts to data
             foreach ($purchases as $p)
             {
@@ -193,11 +193,11 @@ class ReportManifestController extends Controller{
             }
             $data->purchases = $purchases;
         } catch (Exception $ex) {
-            
+
         } finally {
             return get_object_vars($data);
-        }        
-    } 
+        }
+    }
     /*
      * save data into DB
      */
@@ -217,7 +217,7 @@ class ReportManifestController extends Controller{
             return null;
         } catch (Exception $ex) {
             return null;
-        }      
-    }     
-    
+        }
+    }
+
 }

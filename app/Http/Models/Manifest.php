@@ -13,7 +13,7 @@ use Barryvdh\DomPDF\Facade as PDF;
  * @author ivan
  */
 class Manifest extends Model
-{    
+{
     /**
      * The table associated with the model.
      *
@@ -42,13 +42,13 @@ class Manifest extends Model
     {
         //data
         $data = json_decode($this->email,true);
-       
+
         if(!empty($mailer))
             $data['emails'] = $mailer;
         if(empty($subject))
             $subject = 'Re-send '.$data['type'].' Manifest for ';
-        
-        //create pdf  
+
+        //create pdf
         $format = 'pdf';
         $pdf_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.pdf';
         $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
@@ -68,12 +68,9 @@ class Manifest extends Model
         $email->template('89890051-c3ba-4d94-a2ff-ac237f8295ba');
 
         //if the email was sent successfully delete files
-        if($email->send())
-        {
-            unlink($csv_path);
-            unlink($pdf_path);
-            return true;
-        }   
-        return false;
+        $response = $email->send();
+        unlink($csv_path);
+        unlink($pdf_path);
+        return $response;
     }
 }
