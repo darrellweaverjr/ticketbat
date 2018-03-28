@@ -298,18 +298,18 @@ class Purchase extends Model
                 $rows_html = $totals_html = '';
                 $view_receipts = $pdf_receipts = $pdf_tickets = $purchases = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
-                $top = $banners = '';   
+                $top = $banners = '';
                 //set customer
-                $customer = $receipts[0]['customer'];       
+                $customer = $receipts[0]['customer'];
                 //loop receipts
                 foreach ($receipts as $receipt)
                 {
                     if($receipt['purchase']->qty>0)
                     {
                         $purchases[] = $receipt['purchase'];
-                    
+
                         //receipt
-                        $purchase = array_merge((array)$receipt['purchase'],(array)$receipt['customer']);
+                        $purchase = array_merge((array)$receipt['customer'],(array)$receipt['purchase']);
                         $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
 
                         //print copy of receipt
