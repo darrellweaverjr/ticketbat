@@ -129,6 +129,12 @@
                                         <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true">General</a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_descriptions" data-toggle="tab" aria-expanded="true">Descriptions & Notes</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_social" data-toggle="tab" aria-expanded="true">Social Media</a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_sponsor" data-toggle="tab" aria-expanded="true">Sponsorship</a>
                                     </li>
                                     <li class="">
@@ -147,41 +153,31 @@
                                         <a href="#tab_model_update_bands" data-toggle="tab" aria-expanded="true">Bands</a>
                                     </li>
                                     <li class="">
+                                        <a href="#tab_model_update_contracts" data-toggle="tab" aria-expanded="true">Contracts</a>
+                                    </li>
+                                    <li class="">
                                         <a href="#tab_model_update_sweepstakes" data-toggle="tab" aria-expanded="true">Sweepstakes</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_contracts" data-toggle="tab" aria-expanded="true">Contracts</a>
+                                        <a href="#tab_model_update_images" data-toggle="tab">Images</a>
                                     </li>
-                                    <li class="dropdown">
-                                        <a href="#tab_model_update_multimedia" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Media
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                        <ul class="dropdown-menu pull-right">
-                                            <li class="">
-                                                <a href="#tab_model_update_images" data-toggle="tab">Images</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="#tab_model_update_banners" data-toggle="tab">Banners</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="#tab_model_update_videos" data-toggle="tab">Videos</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="#tab_model_update_reviews" data-toggle="tab">Reviews</a>
-                                            </li><!--
-                                            <li class="">
-                                                <a href="#tab_model_update_awards" data-toggle="tab"> Awards </a>
-                                            </li>-->
-                                        </ul>
+                                    <li class="">
+                                        <a href="#tab_model_update_banners" data-toggle="tab">Banners</a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_videos" data-toggle="tab">Videos</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_reviews" data-toggle="tab">Reviews</a>
+                                    </li><!--
+                                    <li class="">
+                                        <a href="#tab_model_update_awards" data-toggle="tab"> Awards </a>
+                                    </li>-->
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_model_update_general">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label class="control-label">
-                                                    <span class="required"> General </span>
-                                                </label>
                                                 <div class="form-group">
                                                     <label class="control-label col-md-3">Name
                                                         <span class="required"> * </span>
@@ -250,8 +246,13 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <label class="control-label col-md-3">On sale</label>
-                                                    <div class="col-md-9">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-5">On sale</label>
+                                                    <div class="col-md-7">
                                                         <div id="on_sale_date" class="input-group date form_datetime dtpicker">
                                                             <input size="16" readonly="" class="form-control" type="text" name="on_sale" value="{{date('Y-m-d H:i')}}">
                                                             <span class="input-group-btn">
@@ -264,32 +265,91 @@
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <label class="control-label col-md-3">Cutoff Hours</label>
-                                                    <div class="col-md-9">
+                                                    <label class="control-label col-md-5">Cutoff Hours</label>
+                                                    <div class="col-md-7">
                                                         <input type="number" value="1" name="cutoff_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
-                                                    <label class="control-label col-md-3">Sequence</label>
-                                                    <div class="col-md-9">
+                                                    <label class="control-label col-md-5">Sequence</label>
+                                                    <div class="col-md-7">
                                                         <input type="number" value="10000" name="sequence" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
-                                                    <label class="control-label col-md-3">Starting $</label>
-                                                    <div class="col-md-9">
+                                                    <label class="control-label col-md-5">Starting price $</label>
+                                                    <div class="col-md-7">
                                                         <input type="number" value="" name="starting_at" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
-                                                    <label class="control-label col-md-3">Full Reg Price $</label>
-                                                    <div class="col-md-9">
+                                                    <label class="control-label col-md-5">Full Reg Price $</label>
+                                                    <div class="col-md-7">
                                                         <input type="number" value="" name="regular_price" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
-                                                    <label class="control-label col-md-3">Tickets by customer</label>
-                                                    <div class="col-md-9">
+                                                    <label class="control-label col-md-5">Tickets by customer</label>
+                                                    <div class="col-md-7">
                                                         <input type="number" value="" name="ticket_limit" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label class="control-label">
-                                                    <span class="required"> Social Media & Others </span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Featured</label>
+                                                <div class="col-md-2">
+                                                    <input type="hidden" name="is_featured" value="0"/>
+                                                    <input type="checkbox" class="make-switch input-large" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div id="on_featured_date" class="input-group date form_datetime dtpicker">
+                                                        <input size="16" readonly="" class="form-control" type="text" name="on_featured" value="">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default date-set" type="button">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </button>
+                                                            <button class="btn default" type="button" id="clear_onfeatured_date">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Mail printed tickets</label>
+                                                <div class="col-md-7">
+                                                    <input type="hidden" name="printed_tickets" value="0"/>
+                                                    <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="Yes, mail them" data-off-text="No, e-tickets" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Status</label>
+                                                <div class="col-md-7">
+                                                    <input type="hidden" name="is_active" value="0"/>
+                                                    <input type="checkbox" class="make-switch input-large" name="is_active" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_descriptions">
+                                        <div class="row" style="padding: 0px 40px">
+                                            <div class="form-group">
+                                                <label class="control-label">Short Description:
+                                                    <span class="required"> *</span>
                                                 </label>
+                                                <div class="show-error">
+                                                    <textarea name="short_description" class="form-control" rows="3"></textarea>
+                                                </div>
+                                                <label class="control-label">Description:</label>
+                                                <div class="show-error">
+                                                    <textarea name="description" class="form-control" rows="6"></textarea>
+                                                </div>
+
+                                                <label class="control-label">After purchase note to display on the "Complete" page:</label>
+                                                <div class="show-error">
+                                                    <textarea name="after_purchase_note" class="form-control" rows="3"></textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_social">
+                                        <div class="row">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <div class="col-md-1"><a data-original-title="rss" class="social-icon social-icon-color rss"></a>
                                                     </div>
@@ -299,7 +359,11 @@
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-11 show-error">
                                                         <button type="button" id="btn_load_social_media" class="btn btn-block sbold dark btn-outline">Get Media From Web Site</button>
-                                                    </div><br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
                                                     <div class="col-md-1"><a data-original-title="youtube" class="social-icon social-icon-color youtube"></a>
                                                     </div>
                                                     <div class="col-md-11 show-error">
@@ -331,52 +395,6 @@
                                                         <input type="text" name="instagram" class="form-control" placeholder="https://www.instagram.com/myshow" />
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-2">Featured</label>
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" name="is_featured" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="is_featured" value="100" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                    <div class="col-md-7">
-                                                        <div id="on_featured_date" class="input-group date form_datetime dtpicker">
-                                                            <input size="16" readonly="" class="form-control" type="text" name="on_featured" value="">
-                                                            <span class="input-group-btn">
-                                                                <button class="btn default date-set" type="button">
-                                                                    <i class="fa fa-calendar"></i>
-                                                                </button>
-                                                                <button class="btn default" type="button" id="clear_onfeatured_date">
-                                                                    <i class="fa fa-remove"></i>
-                                                                </button>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-5">Mail printed tickets</label>
-                                                    <div class="col-md-7">
-                                                        <input type="hidden" name="printed_tickets" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="Yes, mail them" data-off-text="No, e-tickets" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-5">Status</label>
-                                                    <div class="col-md-7">
-                                                        <input type="hidden" name="is_active" value="0"/>
-                                                        <input type="checkbox" class="make-switch input-large" name="is_active" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row" style="padding:0 20px">
-                                            <label class="control-label">Short Description:
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="show-error">
-                                                <textarea name="short_description" class="form-control" rows="2"></textarea>
-                                            </div>
-                                            <label class="control-label">Description:</label>
-                                            <div class="show-error">
-                                                <textarea name="description" class="form-control" rows="4"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -430,23 +448,27 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-7">
-                                                <label class="control-label col-md-9">Send individual order emails</label>
-                                                <div class="col-md-3">
+                                                <label class="control-label col-md-5">Send individual order emails</label>
+                                                <div class="col-md-7">
                                                     <input type="hidden" name="individual_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="individual_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-9">Send manifest emails</label>
-                                                <div class="col-md-3">
+                                                <label class="control-label col-md-5">Send manifest emails</label>
+                                                <div class="col-md-2">
                                                     <input type="hidden" name="manifest_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="manifest_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-9">Send daily sales emails</label>
-                                                <div class="col-md-3">
+                                                <label class="control-label col-md-2">Prelim.H</label>
+                                                <div class="col-md-2">
+                                                    <input type="number" class="form-control" name="prelim_hours" value="4"/>
+                                                </div>
+                                                <label class="control-label col-md-5">Send daily sales emails</label>
+                                                <div class="col-md-7">
                                                     <input type="hidden" name="daily_sales_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="daily_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-9">Send financial report emails</label>
-                                                <div class="col-md-3">
+                                                <label class="control-label col-md-5">Send financial report emails</label>
+                                                <div class="col-md-7">
                                                     <input type="hidden" name="financial_report_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
@@ -521,16 +543,6 @@
                                                             </tbody>
                                                         </table>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row" style="padding:20px">
-                                            <label class="control-label">
-                                                    <span class="required">After purchase note to display on the "Complete" page</span>
-                                                </label>
-                                            <div class="form-group">
-                                                <div class="show-error">
-                                                    <textarea name="after_purchase_note" class="form-control" rows="2"></textarea>
                                                 </div>
                                             </div>
                                         </div>

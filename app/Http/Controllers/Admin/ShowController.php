@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Storage;
  * @author ivan
  */
 class ShowController extends Controller{
-    
+
     /**
      * List all shows and return default view.
      *
@@ -39,9 +39,9 @@ class ShowController extends Controller{
      */
     public function index()
     {
-        try {  
+        try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(isset($input) && isset($input['id']))
             {
                 return $this->get($input['id']);
@@ -57,7 +57,7 @@ class ShowController extends Controller{
                 return ['success'=>false];
             }
             else
-            {      
+            {
                 $current = date('Y-m-d H:i:s');
                 //conditions to search
                 $where = [['shows.id','>',0]];
@@ -89,7 +89,7 @@ class ShowController extends Controller{
                         $where[] = ['shows.is_active','=',$status];
                 }
                 else
-                    $status = '';                
+                    $status = '';
                 //SEARCH
                 $categories = [];
                 $venues = [];
@@ -117,9 +117,9 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+                                                             FROM show_images si
+                                                             LEFT JOIN images i ON si.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
@@ -144,14 +144,14 @@ class ShowController extends Controller{
                         else
                         {
                             $onlyerrors = 0;
-                            //get all records        
+                            //get all records
                             $shows = DB::table('shows')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+                                                             FROM show_images si
+                                                             LEFT JOIN images i ON si.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
@@ -169,8 +169,8 @@ class ShowController extends Controller{
                                         ->distinct()->get();
                         }
                         $venues = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
-                    }  
-                    else 
+                    }
+                    else
                     {
                         //search with error
                         if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors'] == 1)
@@ -180,13 +180,13 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+                                                             FROM show_images si
+                                                             LEFT JOIN images i ON si.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
-                                        })                                     
+                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
                                                  'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
@@ -202,14 +202,14 @@ class ShowController extends Controller{
                         else
                         {   //dd($input);
                             $onlyerrors = 0;
-                            //get all records        
+                            //get all records
                             $shows = DB::table('shows')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url 
-                                                             FROM show_images si 
-                                                             LEFT JOIN images i ON si.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
+                                                             FROM show_images si
+                                                             LEFT JOIN images i ON si.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('shows.id','=','images.show_id');
@@ -222,7 +222,7 @@ class ShowController extends Controller{
                                         ->distinct()->get();
                         }
                         $venues = Venue::orderBy('name')->get(['id','name','restrictions']);
-                    }  
+                    }
                     //other enum
                     $categories = Category::get_categories('-&emsp;&emsp;');
                     $stages = Stage::all('id','name','venue_id');
@@ -267,7 +267,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error Shows Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get show by id.
      *
@@ -275,13 +275,13 @@ class ShowController extends Controller{
      */
     private function get($id)
     {
-        try {   
+        try {
             //init
             if(!empty($id) && is_numeric($id))
             {
                 $current = date('Y-m-d');
                 //get selected record
-                $show = Show::find($id);  
+                $show = Show::find($id);
                 if(!$show)
                     return ['success'=>false,'msg'=>'There was an error getting the show.<br>Maybe it is not longer in the system.'];
                 // change relative url uploads for real one
@@ -318,7 +318,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error Shows Get: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Save new or updated show or subtable related with show.
      *
@@ -328,8 +328,8 @@ class ShowController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
-            //save all record      
+            $input = Input::all();
+            //save all record
             if($input)
             {
                 $current = date('Y-m-d H:i:s');
@@ -339,11 +339,11 @@ class ShowController extends Controller{
                         return ['success'=>false,'msg'=>'There was an error saving the show.<br>That slug is already in the system.','errors'=>'slug'];
                     $show = Show::find($input['id']);
                     $show->updated = $current;
-                    if(preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
+                    if(preg_match('/media\/preview/',$input['sponsor_logo_id']))
                         $show->delete_image_file();
-                }                    
+                }
                 else
-                {                    
+                {
                     if(Show::where('slug','=',$input['slug'])->count())
                         return ['success'=>false,'msg'=>'There was an error saving the show.<br>That slug is already in the system.','errors'=>'slug'];
                     $show = new Show;
@@ -360,12 +360,13 @@ class ShowController extends Controller{
                 $show->sponsor = trim(strip_tags($input['sponsor']));
                 $show->short_description = trim(strip_tags($input['short_description']));
                 $show->description = trim(strip_tags($input['description'],'<p><a><br>'));
-                $show->emails = strip_tags(preg_replace('/\s+/','',$input['emails'])); 
-                $show->accounting_email = strip_tags(preg_replace('/\s+/','',$input['accounting_email']));   
+                $show->emails = strip_tags(preg_replace('/\s+/','',$input['emails']));
+                $show->accounting_email = strip_tags(preg_replace('/\s+/','',$input['accounting_email']));
                 $show->url = strip_tags($input['url']);
                 $show->restrictions = $input['restrictions'];
                 $show->is_featured = $input['is_featured'];
                 $show->cutoff_hours = $input['cutoff_hours'];
+                $show->prelim_hours = (!empty($input['prelim_hours']))? $input['prelim_hours'] : 4;
                 $show->sequence = $input['sequence'];
                 $show->is_active = $input['is_active'];
                 $show->facebook = strip_tags($input['facebook']);
@@ -399,7 +400,7 @@ class ShowController extends Controller{
                     $show->amex_only_start_date = null;
                     $show->amex_only_end_date = null;
                 }
-                if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
+                if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id']))
                 {
                     $show->delete_image_file();
                     $show->set_sponsor_logo_id($input['sponsor_logo_id']);
@@ -411,7 +412,7 @@ class ShowController extends Controller{
                 $show->save();
                 //order shows
                 $shows = Show::where('sequence','<',10000)->orderBy('sequence')->get(['id']);
-                foreach($shows as $key=>$s) 
+                foreach($shows as $key=>$s)
                     Show::where('id',$s->id)->update(['sequence'=>$key+1]);
                 //return
                 if(isset($input['id']) && $input['id'])
@@ -432,8 +433,8 @@ class ShowController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
-            //get all record      
+            $input = Input::all();
+            //get all record
             if($input && !empty(strip_tags($input['name'])) && isset($input['venue_id']) && isset($input['show_id']))
                 return Util::generate_slug(strip_tags($input['name']), $input['venue_id'], $input['show_id']);
             return '';
@@ -451,8 +452,8 @@ class ShowController extends Controller{
         try {
             //init
             $input = Input::all();
-            $msg = $msg1 = ''; 
-            //delete all records   
+            $msg = $msg1 = '';
+            //delete all records
             foreach ($input['id'] as $id)
             {
                 //get show
@@ -535,7 +536,7 @@ class ShowController extends Controller{
                             if($msg1=='')
                                 $msg1 = 'The following shows have problems deleting them:<br><br><ol style="max-height:200px;overflow:auto;text-align:left;">';
                             $msg1 .= '<li style="color:red;">'.$show->name.'</li>';
-                        } 
+                        }
                     }
                 }
             }
@@ -544,7 +545,7 @@ class ShowController extends Controller{
                 if($msg!='') $msg .= '</ol><br> Please, contact an administrator if you want a force delete.';
                 if($msg1!='') $msg1 .= '</ol><br> Please, contact an administrator.';
                 return ['success'=>false,'msg'=>$msg.$msg1];
-            }  
+            }
             return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Shows Remove: '.$ex->getMessage());
@@ -557,9 +558,9 @@ class ShowController extends Controller{
      */
     public function passwords()
     {
-        try {   
+        try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             //get
             if(isset($input) && isset($input['action']) && $input['action']==0)
             {
@@ -583,19 +584,19 @@ class ShowController extends Controller{
             {
                 $tt = Ticket::where('show_id','=',$input['show_id'])->whereIn('id',$input['ticket_types'])->distinct()->get()->implode('ticket_type',',');
                 $show_password = ['show_id'=>$input['show_id'],'start_date'=>$input['start_date'],'end_date'=>$input['end_date'],'password'=>$input['password'],'ticket_types'=>$tt];
-               
+
                 //update
                 if(isset($input['id']) && $input['id'])
                 {
                     $password = DB::table('show_passwords')->where('id','=',$input['id'])->update($show_password);
-                    if($password>=0) 
+                    if($password>=0)
                         $password = DB::table('show_passwords')->where('id','=',$input['id'])->first();
-                } 
+                }
                 //add
                 else
                 {
                     $password = DB::table('show_passwords')->insertGetId($show_password);
-                    if($password) 
+                    if($password)
                         $password = DB::table('show_passwords')->where('id','=',$password)->first();
                 }
                 if($password)
@@ -608,7 +609,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowPasswords Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit ticket for show
      *
@@ -616,9 +617,9 @@ class ShowController extends Controller{
      */
     public function tickets()
     {
-        try {   
+        try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             //get
             if(isset($input) && isset($input['action']) && $input['action']==0)
             {
@@ -642,9 +643,9 @@ class ShowController extends Controller{
                 if(isset($input['id']) && $input['id'])
                 {
                     $ticket = Ticket::find($input['id']);
-                }                    
+                }
                 else
-                {                    
+                {
                     $ticket = new Ticket;
                     $ticket->audit_user_id = Auth::user()->id;
                 }
@@ -669,7 +670,7 @@ class ShowController extends Controller{
                             $t->save();
                             $ticket->is_default = 0;
                         }
-                        else 
+                        else
                             $ticket->is_default = 1;
                     }
                     //mark active
@@ -716,15 +717,15 @@ class ShowController extends Controller{
      */
     public function bands()
     {
-        try {   
+        try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             //update
             if(isset($input) && isset($input['action']) && $input['action']==0)
             {
                 if(isset($input['show_id']) && isset($input['order']))
                 {
-                    $order = $input['order']; 
+                    $order = $input['order'];
                     $bands = [];
                     for ($i=0, $pos = min($order); $i<count($order); $i++, $pos++)
                     {
@@ -751,12 +752,12 @@ class ShowController extends Controller{
                         {
                             DB::table('show_bands')->where('show_id',$b->show_id)->where('n_order',$b->n_order)->update(['n_order'=>$input['order']]);
                             $input['order']++;
-                        } 
+                        }
                         $bands = DB::table('bands')->join('show_bands', 'show_bands.band_id', '=' ,'bands.id')
                                 ->select('bands.name','show_bands.*')->where('show_bands.show_id','=',$input['show_id'])
                                 ->orderBy('show_bands.n_order')->distinct()->get();
                         return ['success'=>true,'bands'=>$bands];
-                    } 
+                    }
                     else
                         return ['success'=>false,'msg'=>'There was an error deleting the band.<br>The server could not retrieve the data.'];
                 }
@@ -777,7 +778,7 @@ class ShowController extends Controller{
                                 ->where('show_bands.show_id','=',$input['show_id'])
                                 ->where('show_bands.n_order','=',$order)->first();
                         return ['success'=>true,'band'=>$band];
-                    } 
+                    }
                     else
                         return ['success'=>false,'msg'=>'There was an error adding the band.<br>The server could not retrieve the data.'];
                 }
@@ -798,7 +799,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowBands Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove showtimes for show
      *
@@ -806,9 +807,9 @@ class ShowController extends Controller{
      */
     public function showtimes()
     {
-        try {   
+        try {
             //init
-            $input = Input::all();                  
+            $input = Input::all();
             $current = date('Y-m-d H:i:s');
             //get events for change/cancel
             if(isset($input) && isset($input['action']) && in_array($input['action'],['cc_show_times','cc_show_time_info','change','move']))
@@ -889,7 +890,7 @@ class ShowController extends Controller{
                     {
                         if(strtotime($input['start_date'])>strtotime($current))
                             $dates[] = $input['start_date'].' '.$input['time'];
-                    }    
+                    }
                     else if(strtotime($input['start_date']) < strtotime($input['end_date']))
                     {
                         $period = new \DatePeriod(
@@ -948,10 +949,10 @@ class ShowController extends Controller{
                                     $dates[$key] = ['showtime'=>$d,'available'=>true];
                                 else
                                     $dates[$key] = ['showtime'=>$d,'available'=>false];
-                            } 
+                            }
                             else
                                 unset($dates[$key]);
-                        }    
+                        }
                         return ['success'=>true,'dates'=>$dates];
                     }
                     else
@@ -985,7 +986,7 @@ class ShowController extends Controller{
                                     if(!$exists)
                                         DB::table('soldout_tickets')->insert(['show_time_id'=>$showtime->id,'ticket_id'=>$tt,'created'=>$current]);
                                 }
-                            }  
+                            }
                             else DB::table('soldout_tickets')->where('show_time_id',$showtime->id)->delete();
                             //return showtime
                             $showtimes[] = $showtime;
@@ -1074,7 +1075,7 @@ class ShowController extends Controller{
                             if(!$exists)
                                 DB::table('soldout_tickets')->insert(['show_time_id'=>$showtime->id,'ticket_id'=>$tt,'created'=>$current]);
                         }
-                    }  
+                    }
                     else DB::table('soldout_tickets')->where('show_time_id',$showtime->id)->delete();
                     return ['success'=>true,'showtime'=>$showtime];
                 }
@@ -1096,7 +1097,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowTimes Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Edit, Remove sweepstakes for show
      *
@@ -1104,9 +1105,9 @@ class ShowController extends Controller{
      */
     public function sweepstakes()
     {
-        try {   
+        try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             $resp = DB::table('show_sweepstakes')->where('show_id',$input['show_id'])->update(['selected' => 0]);
             if($resp>=0)
             {
@@ -1118,14 +1119,14 @@ class ShowController extends Controller{
                     return ['success'=>false,'msg'=>'Error updating all sweepstakes. Check the user input value.'];
                 }
                 return ['success'=>true];
-            }   
+            }
             else
                 return ['success'=>false,'msg'=>'Error updating all sweepstakes. Check the show input value.'];
-        } 
+        }
         catch (Exception $ex) {
             throw new Exception('Error ShowSweepstakes Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove contracts for show
      *
@@ -1133,9 +1134,9 @@ class ShowController extends Controller{
      */
     public function contracts($format=null,$id=null)
     {
-        try {   
+        try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             $file = null;
             if(Input::hasFile('file'))
                 $file = Input::file('file');
@@ -1154,13 +1155,13 @@ class ShowController extends Controller{
                         $exists = Storage::disk('s3')->exists($file);
                         if($exists)
                         {
-                            $file = Storage::disk('s3')->get($file); 
+                            $file = Storage::disk('s3')->get($file);
                             return Response::make($file, 200, [
                                 'Content-Type' => 'application/pdf',
                                 'Content-Disposition' => 'inline; filename="Contract_'.$id.'" filename*="Contract_'.$id.'"'
                             ]);
                         }
-                        else 
+                        else
                             return '<script>alert("The system could not load the information from the DB. It does not exists.");window.close();</script>';
                     }
                     else
@@ -1188,7 +1189,7 @@ class ShowController extends Controller{
                     if($contract->delete())
                         return ['success'=>true];
                     return ['success'=>false,'msg'=>'There was an error deleting the contract.<br>The server could not retrieve the data.'];
-                }    
+                }
                 else
                     return ['success'=>true];
             }
@@ -1198,7 +1199,7 @@ class ShowController extends Controller{
                 $contract = new ShowContract;
                 if($file)
                     $contract->set_file($file);
-                else 
+                else
                     return ['success'=>false,'msg'=>'There was an error saving the contract.<br>There is no file to upload.'];
                 $contract->show_id = $input['show_id'];
                 $contract->effective_date = $input['effective_date'];
@@ -1215,7 +1216,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowPasswords Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove images for show
      *
@@ -1223,7 +1224,7 @@ class ShowController extends Controller{
      */
     public function images()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -1260,7 +1261,7 @@ class ShowController extends Controller{
             {
                 $image = new Image;
                 $image->created = $current;
-                if(preg_match('/media\/preview/',$input['url'])) 
+                if(preg_match('/media\/preview/',$input['url']))
                     $image->set_url($input['url']);
                 $image->image_type = $input['image_type'];
                 $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
@@ -1270,7 +1271,7 @@ class ShowController extends Controller{
                     DB::table('show_images')->insert(['show_id'=>$input['show_id'],'image_id'=>$image->id]);
                     $image->url = Image::view_image($image->url);
                     return ['success'=>true,'action'=>1,'image'=>$image];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error adding the image.<br>The server could not retrieve the data.'];
             }
             //get
@@ -1278,10 +1279,10 @@ class ShowController extends Controller{
             {
                 $image = Image::find($input['id']);
                 if($image)
-                {   
+                {
                     $image->url = Image::view_image($image->url);
                     return ['success'=>true,'image'=>$image];
-                }  
+                }
                 return ['success'=>false,'msg'=>'There was an error getting the image.<br>The server could not retrieve the data.'];
             }
             else
@@ -1289,7 +1290,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowImages Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove banners for show
      *
@@ -1297,7 +1298,7 @@ class ShowController extends Controller{
      */
     public function banners()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             //update
@@ -1330,7 +1331,7 @@ class ShowController extends Controller{
             else if(isset($input) && isset($input['action']) && $input['action']==1)
             {
                 $banner = new Banner;
-                if(preg_match('/media\/preview/',$input['file'])) 
+                if(preg_match('/media\/preview/',$input['file']))
                     $banner->set_file($input['file']);
                 $banner->type = (isset($input['type']) && count($input['type']))? implode($input['type'],',') : null;
                 $banner->url = strip_tags($input['url']);
@@ -1341,7 +1342,7 @@ class ShowController extends Controller{
                 {
                     $banner->file = Image::view_image($banner->file);
                     return ['success'=>true,'action'=>1,'banner'=>$banner];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error adding the banner.<br>The server could not retrieve the data.'];
             }
             //get
@@ -1349,10 +1350,10 @@ class ShowController extends Controller{
             {
                 $banner = Banner::find($input['id']);
                 if($banner)
-                {   
+                {
                     $banner->file = Image::view_image($banner->file);
                     return ['success'=>true,'banner'=>$banner];
-                }  
+                }
                 return ['success'=>false,'msg'=>'There was an error getting the banner.<br>The server could not retrieve the data.'];
             }
             else
@@ -1360,7 +1361,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowBanners Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove videos for show
      *
@@ -1368,7 +1369,7 @@ class ShowController extends Controller{
      */
     public function videos()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -1413,7 +1414,7 @@ class ShowController extends Controller{
                 {
                     DB::table('show_videos')->insert(['show_id'=>$input['show_id'],'video_id'=>$video->id]);
                     return ['success'=>true,'action'=>1,'video'=>$video];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error adding the video.<br>The server could not retrieve the data.'];
             }
             //get
@@ -1429,7 +1430,7 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowVideos Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit reviews for show
      *
@@ -1437,7 +1438,7 @@ class ShowController extends Controller{
      */
     public function reviews()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -1460,5 +1461,5 @@ class ShowController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error ShowReviews Index: '.$ex->getMessage());
         }
-    } 
+    }
 }
