@@ -2953,6 +2953,7 @@ var TableDatatablesManaged = function () {
         $('input[name="ticket_limit"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:999 });
         $('input[name="retail_price"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('input[name="starting_at"]').TouchSpin({ min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
+        $('input[name="regular_price"]').TouchSpin({ min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('input[name="processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('input[name="percent_pf"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
         $('input[name="percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
