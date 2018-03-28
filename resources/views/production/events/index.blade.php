@@ -37,7 +37,12 @@
                 <div class="col-xs-12 col-sm-6 col-sm-pull-6">
                     @if(!empty($event->starting_at))
                         <div class="event-price-wrap @if(!empty($event->presented_by)) extra-wrap-height @endif">
-                            <p class="event-low-price"><span class="asterisk">*</span></span><span class="from">FROM</span> {{$event->starting_at}}</p>
+                            <p class="event-low-price"><span class="asterisk">*</span></span><span class="from">FROM</span>&nbsp;<span class="usd">$</span>{{$event->starting_at}}</p>
+                            @if(!empty($event->regular_price))
+                                <div class="event-regular-price">
+                                    <span>${{$event->regular_price}}</span>
+                                </div>
+                            @endif
                         </div>
                     @endif
                 </div>
@@ -138,17 +143,6 @@
                     </h4>
                     <div style="text-align:center;padding-top:10px">
                         <input id="show_id" type="hidden" value="{{$event->show_id}}"/>
-                        <div class="form-inline has-warning">
-                            @php $rating = $event->reviews['rating'] @endphp
-                            @for($i=0;$i<5;$i++)
-                                <label class="fa fa-star {{($rating>$i && $rating<$i+1)? 'fa-star-half-full' : ( ($rating>$i)? '' : 'fa-star-o' )}}"></label>
-                            @endfor
-                            <a href="#review_panel"> (<b id="posts_reviews">{{$event->reviews['posts']}}</b> @if($event->reviews['posts']<2) review @else reviews @endif) </a>
-                            <a class="btn btn-outline sbold dark btn-sm" data-toggle="modal" title="You must log in to write a review for this event." @if(!Auth::check()) href="#modal_login"
-                               @else href="#modal_write_reviewx" @endif>
-                                <i class="icon-pencil"></i> Write a review
-                            </a>
-                        </div>
                     </div>
                     <p class="margin-top-20" title="Description of the event.">
                         {!! $event->description !!}<br><br>
@@ -156,7 +150,7 @@
                     <!-- END DESCRIPTION -->
 
 
-                @if(count($event->bands))
+                    @if(count($event->bands))
                     <!-- BEGIN BANDS -->
                         <div class="timeline" style="margin:5px;padding-bottom:10px">
                         @foreach($event->bands as $b)
@@ -197,7 +191,26 @@
                         <!-- ENDS BANDS -->
                     @endif
 
-                    <div class="ml-20 events-social-icons">
+                    @if(!empty($event->starting_at))
+                        <div class="events-price-disclaimer ml-20 mr-20">
+                            <p class="disclaimer">*Price subject to availability, taxes, and fees</p>
+                        </div>
+                    @endif
+
+                    <div class="event-rating form-inline has-warning ml-20 mr-20">
+                        @php $rating = $event->reviews['rating'] @endphp
+                        @for($i=0;$i<5;$i++)
+                            <label class="fa fa-star {{($rating>$i && $rating<$i+1)? 'fa-star-half-full' : ( ($rating>$i)? '' : 'fa-star-o' )}}"></label>
+                        @endfor
+                        <a href="#review_panel"> (<b id="posts_reviews">{{$event->reviews['posts']}}</b> @if($event->reviews['posts']<2) review @else reviews @endif) </a>
+                        <a class="btn btn-outline sbold dark btn-sm" data-toggle="modal" title="You must log in to write a review for this event." @if(!Auth::check()) href="#modal_login"
+                           @else href="#modal_write_reviewx" @endif>
+                            <i class="icon-pencil"></i> Write a review
+                        </a>
+                    </div>
+
+
+                    <div class="events-social-icons ml-20 mr-20">
                         <p>
                             @if(!empty($event->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$event->twitter}}" target="_blank"></a> @endif
                             @if(!empty($event->googleplus)) <a class="social-icon social-icon-color googleplus" href="https://plus.google.com/{{$event->googleplus}}" target="_blank"></a> @endif

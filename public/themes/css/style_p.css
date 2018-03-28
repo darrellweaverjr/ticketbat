@@ -261,13 +261,30 @@ html, body {
     font-size: 22px;
     font-weight: 700;
 }
+.event-main-title p.event-low-price span.usd {
+    font-size: 36px;
+}
 .event-main-title p.event-low-price span.asterisk {
     color: #bfbfbf;
-    font-size: 14px;
+    font-size: 9px;
     font-weight: 700;
-    vertical-align: 6px;
+    vertical-align: 9px;
 }
-
+.event-rating {
+    text-align: right;
+}
+.disclaimer {
+    color: #808a94;
+}
+.event-regular-price {
+    right: 180px;
+    position: absolute;
+}
+.event-regular-price span{
+    font-size: 15px;
+    text-decoration: line-through;
+    color: #e49797;
+}
 .events-social-icons {
     height: 25px;
 }
@@ -379,10 +396,14 @@ html, body {
     table.dataTable tbody td {
         padding: 5px 5px;
     }
-
     .btn {
         padding: 3px 6px;
         font-size: 12px;
+    }
+    .event-regular-price {
+        right: 300px;
+        position: absolute;
+        top: -20px;
     }
 
 }
