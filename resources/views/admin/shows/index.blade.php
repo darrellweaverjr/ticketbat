@@ -1634,5 +1634,5 @@
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-timepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
-<script src="/js/admin/shows/index.js" type="text/javascript"></script>
+<script src="/js/admin/shows/index.js?v=1522346192" type="text/javascript"></script>
 @endsection

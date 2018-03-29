@@ -423,6 +423,11 @@ html, body {
         padding: 6px 6px;
     }
 
+    table.dataTable.event-table tbody td {
+        padding: 8px 5px;
+        vertical-align: middle;
+    }
+
 }
 
 @media screen and (max-width: 1130px) {
