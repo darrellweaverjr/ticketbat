@@ -739,16 +739,16 @@
                                             <div class="form-group">
                                                 <label class="control-label col-md-4">Add extra FEE options on "BUY" page</label>
                                                 <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_fee[]"/>
+                                                    <input type="number" class="form-control" name="pos_optional_fees[0]"/>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_fee[]"/>
+                                                    <input type="number" class="form-control" name="pos_optional_fees[1]"/>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_fee[]"/>
+                                                    <input type="number" class="form-control" name="pos_optional_fees[2]"/>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_fee[]"/>
+                                                    <input type="number" class="form-control" name="pos_optional_fees[3]"/>
                                                 </div>
                                             </div>
                                         </div>

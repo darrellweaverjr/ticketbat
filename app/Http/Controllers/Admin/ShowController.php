@@ -284,6 +284,8 @@ class ShowController extends Controller{
                 $show = Show::find($id);
                 if(!$show)
                     return ['success'=>false,'msg'=>'There was an error getting the show.<br>Maybe it is not longer in the system.'];
+                //POS fees extra format
+                $show->pos_optional_fees = (empty($show->pos_optional_fees))? [] : explode(',',$show->pos_optional_fees);
                 // change relative url uploads for real one
                 $show->sponsor_logo_id = Image::view_image($show->sponsor_logo_id);
                 //search sub elements
@@ -313,7 +315,7 @@ class ShowController extends Controller{
                     $b->file = Image::view_image($b->file);
                 $videos = DB::table('videos')->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
                                 ->select('videos.*')->where('show_videos.show_id','=',$show->id)->distinct()->get();
-                return ['success'=>true,'show'=>array_merge($show->getAttributes()),'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'sweepstakes'=>$sweepstakes,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+                return ['success'=>true,'show'=>$show,'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'sweepstakes'=>$sweepstakes,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
             }
         } catch (Exception $ex) {
             throw new Exception('Error Shows Get: '.$ex->getMessage());
@@ -331,7 +333,7 @@ class ShowController extends Controller{
             $input = Input::all();
             //save all record
             if($input)
-            {   
+            {
                 $current = date('Y-m-d H:i:s');
                 if(isset($input['id']) && $input['id'])
                 {
@@ -387,7 +389,7 @@ class ShowController extends Controller{
                 $show->ua_conversion_code = (!empty($input['ua_conversion_code']))? $input['ua_conversion_code'] : null;
                 $show->ticket_limit = (!empty($input['ticket_limit']))? $input['ticket_limit'] : null;
                 $show->after_purchase_note = (!empty($input['after_purchase_note']))? $input['after_purchase_note'] : null;
-                $show->pos_optional_fees = (!empty(array_filter($input['pos_fee'])))? implode(',',array_filter($input['pos_fee'])) : null;
+                $show->pos_optional_fees = (!empty(array_filter($input['pos_optional_fees'])))? implode(',',array_filter($input['pos_optional_fees'])) : null;
                 if(isset($input['amex_only_start_date']) && $input['amex_only_start_date']!='' && isset($input['amex_only_end_date']) && $input['amex_only_end_date']!=''
                         && isset($input['ticket_types']) && count($input['ticket_types']))
                 {
