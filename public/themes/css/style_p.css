@@ -288,6 +288,11 @@ html, body {
 .events-social-icons {
     height: 25px;
 }
+.event-add-to-cart {
+    margin-top: 30px;
+}
+
+
 .about-text {
     height: auto;
     padding: 0 !important; 
@@ -408,6 +413,16 @@ html, body {
         width: 50%;
         margin-left: -60px;
     }
+    .event-add-to-cart a {
+        padding: 10px 0px;
+    }
+    .event-continue {
+        padding: 6px 6px;
+    }
+    .event-checkout {
+        padding: 6px 6px;
+    }
+
 }
 
 @media screen and (max-width: 1130px) {
@@ -455,6 +470,9 @@ html, body {
         color: #bfbfbf;
         font-size: 22px;
         font-weight: 700;
+    }
+    .event-add-to-cart {
+        margin-top: 50px;
     }
 }
 
