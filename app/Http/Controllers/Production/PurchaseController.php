@@ -27,12 +27,12 @@ class PurchaseController extends Controller
     {
         try {
             //init
-            $info = Input::all();  
+            $info = Input::all();
             $current = date('Y-m-d H:i:s');
-            $info['s_token'] = Util::s_token(false,true);   
+            $info['s_token'] = Util::s_token(false,true);
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
-            {   
+            {
                 //checking the email
                 $info['email'] = trim(strtolower($info['email']));
                 if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
@@ -45,12 +45,12 @@ class PurchaseController extends Controller
                     return ['success'=>false, 'msg'=>'You must enter your full name.'];
                 $info['customer'] = explode(' ',trim($info['customer']),2);
                 $info['first_name'] = $info['customer'][0];
-                $info['last_name'] = $info['customer'][1];    
+                $info['last_name'] = $info['customer'][1];
             }
             else
                 return ['success'=>false, 'msg'=>'Fill the form out correctly!'];
             //get all items in shoppingcart
-            $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true); 
+            $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
             if(!$shoppingcart['success'])
                 return ['success'=>false, 'msg'=>$shoppingcart['msg']];
             if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
@@ -58,9 +58,9 @@ class PurchaseController extends Controller
             //remove unavailable items from shopingcart
             foreach($shoppingcart['items'] as $key=>$item)
                 if($item->unavailable)
-                    unset($shoppingcart['items'][$key]);    
+                    unset($shoppingcart['items'][$key]);
             //set up customer
-            $client = User::customer_set($info, $current); 
+            $client = User::customer_set($info, $current);
             if(!$client['success'])
                 return ['success'=>false, 'msg'=>$client['msg']];
             //check payment method
@@ -69,7 +69,7 @@ class PurchaseController extends Controller
                 switch ($info['method'])
                 {
                     case 'card':
-                        if($shoppingcart['total']>0) 
+                        if($shoppingcart['total']>0)
                         {
                             if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
                                 return ['success'=>false, 'msg'=>'There is no payment method for your item(s).'];
@@ -86,7 +86,7 @@ class PurchaseController extends Controller
                         {
                             if(!(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE')))))
                                 return ['success'=>false, 'msg'=>'You are now allow to perfom this operation.'];
-                            if($shoppingcart['total']>0) 
+                            if($shoppingcart['total']>0)
                             {
                                 if(empty($info['UMmagstripe']) || empty($info['customer']) || empty($info['card']) || empty($info['month']) || empty($info['year']))
                                     return ['success'=>false, 'msg'=>'You must swipe a valid card.'];
@@ -101,7 +101,7 @@ class PurchaseController extends Controller
                         if(!$transaction['success'])
                             return ['success'=>false, 'msg'=>$transaction['msg']];
                         //remove hide credit card number
-                        $info['card'] = '...'.substr($info['card'], -4); 
+                        $info['card'] = '...'.substr($info['card'], -4);
                         $shoppingcart['transaction_id'] = $transaction['transaction_id'];
                         $shoppingcart['payment_type'] = 'Credit';
                         break;
@@ -109,7 +109,7 @@ class PurchaseController extends Controller
                         if(!(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE')))))
                             return ['success'=>false, 'msg'=>'You are now allow to perfom this operation.'];
                         Session::forget('change');
-                        if($shoppingcart['total']>0) 
+                        if($shoppingcart['total']>0)
                         {
                             if($info['subtotal']<0)
                                 return ['success'=>false, 'msg'=>'There is still money to collect.'];
@@ -120,7 +120,7 @@ class PurchaseController extends Controller
                         $shoppingcart['payment_type'] = 'Cash';
                         break;
                     case 'skip':
-                        if($shoppingcart['total']>0) 
+                        if($shoppingcart['total']>0)
                             return ['success'=>false, 'msg'=>'Incorrect payment method! Please, contact us.'];
                         $shoppingcart['payment_type'] = 'None';
                         break;
@@ -155,11 +155,11 @@ class PurchaseController extends Controller
             $email->send();
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
-    } 
-    
+    }
+
     /*
      * complete the purchase showing receipts pag
-     */                          
+     */
     public function complete()
     {
         $view_receipts=$receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
@@ -169,7 +169,7 @@ class PurchaseController extends Controller
         $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(!empty($input['purchases']) && isset($input['send_welcome_email']))
             {
                 $purchases = $input['purchases'];
@@ -177,9 +177,9 @@ class PurchaseController extends Controller
                 //send receipts
                 $data = $this->receipts($purchases);
                 //get data
-                $after_purchase_note = $data['after_purchase_note'];  
-                $after_purchase_link = $data['after_purchase_link'];  
-                $view_receipts = $data['view_receipts'];   
+                $after_purchase_note = $data['after_purchase_note'];
+                $after_purchase_link = $data['after_purchase_link'];
+                $view_receipts = $data['view_receipts'];
                 $receipts = $data['receipts'];
                 $purchased = $data['purchased'];
                 $sent_to = $data['sent_to'];
@@ -193,39 +193,39 @@ class PurchaseController extends Controller
                 Session::forget('change');
             }
         } catch (Exception $ex) {
-            
+
         } finally {
             //return
-            return response() 
+            return response()
                         ->view('production.shoppingcart.complete',compact('sent_to','view_receipts','sent_receipts','purchases','purchased','send_welcome_email','seller','after_purchase_note',
                                                                           'analytics','totals','transaction','conversion_code','ua_conversion_code','banners','after_purchase_link'))
                         ->withHeaders([
                             'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
                             'Pragma' => 'no-cache',
                             'Expires' => 'Sun, 02 Jan 1990 00:00:00 GMT',
-                        ]); 
+                        ]);
         }
     }
-    
+
     /*
      * resend receipts
-     */                          
+     */
     public function receipts($purchasex=null)
     {
         $receipts=$view_receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
         $sent_to = null;
         $sent_receipts = $after_purchase_link = false;
         $totals = $transaction = 0;
-        $input = Input::all(); 
-        //load input 
+        $input = Input::all();
+        //load input
         $purchases = (empty($purchasex) && !empty($input['purchases']))? explode(',', $input['purchases']) : explode(',', $purchasex);
-        try {  
+        try {
             //send receipts
             foreach ($purchases as $id)
             {
-                $p = Purchase::find($id);  
+                $p = Purchase::find($id);
                 if($p)
-                {   
+                {
                     //receipt
                     $receipts[] = $p->get_receipt();
                     //load if only resubmit dont need this
@@ -259,22 +259,22 @@ class PurchaseController extends Controller
                                     ->where('banners.type','like','%Thank you Page%')->get()->toArray();
                         foreach ($banner as $b)
                             $b->file = Image::view_image($b->file);
-                        $banners = array_merge($banners,$banner); 
+                        $banners = array_merge($banners,$banner);
                         //after purchase notes
                         if(empty($after_purchase_note[$p->show_time->show->id]) && !empty($p->show_time->show->after_purchase_note))
                             $after_purchase_note[$p->show_time->show->id] = $p->show_time->show->after_purchase_note;
                         //enable purchase link
-                        if(empty($after_purchase_link) && $p->show_time->show->venue->after_purchase_link>0)
+                        if(empty($after_purchase_link) && Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))
                             $after_purchase_link = '/buy/'.$p->show_time->show->slug.'/'.$p->show_time_id;
-                    } 
+                    }
                 }
-            }   
+            }
             //sent email
             $response = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true,true);
             $sent_receipts = $response['success'];
             $view_receipts = $response['receipts'];
         } catch (Exception $ex) {
-            
+
         } finally {
             if(!empty($purchasex))
                 return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,'after_purchase_note'=>$after_purchase_note,
@@ -283,15 +283,15 @@ class PurchaseController extends Controller
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];
         }
     }
-    
+
     /*
      * resend welcome email
-     */                          
+     */
     public function welcome()
     {
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(!empty($input['user_id']))
             {
                 $p = Purchase::find($user_id);
@@ -308,5 +308,5 @@ class PurchaseController extends Controller
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
-       
+
 }

@@ -23,14 +23,14 @@
 @section('content')
 
 <!-- BEGIN TOP HEADER -->
-<div class="page-content color-panel">  
+<div class="page-content color-panel">
 <!--     BEGIN RECEIPTS -->
     <div class="row fixed-panel">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Items in the shopping cart.">
-                <i class="fa fa-thumbs-up"></i> Thank you for purchasing tickets on TicketBat.com! 
-            </h4>  
+                <i class="fa fa-thumbs-up"></i> Thank you for purchasing tickets on TicketBat.com!
+            </h4>
             <p class="margin-top-20">
                 @foreach($purchased as $p)
                 <i style="padding-left:10px" class="fa fa-ticket"></i> <strong> {{$p['qty']}}</strong> @if($p['qty']>1) tickets @else ticket @endif for <strong>{{$p['event']}}</strong> on <strong>{{$p['schedule']}}</strong><br>
@@ -54,10 +54,10 @@
                     <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
                     <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/W/{{$purchases}}" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
                 </center>
-            
+
             @else
             <center><a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
-            @endif    
+            @endif
                 @if(!empty($send_welcome_email))
                     @if($send_welcome_email>0)
                     <div class="alert alert-success" style="margin:20px">
@@ -93,7 +93,7 @@
     <div class="row fixed-panel" >
         <div class="portlet light about-text">
             <!-- BEGIN BANNER -->
-            <div class="portfolio-content color-panel"> 
+            <div class="portfolio-content color-panel">
                 <div id="myBanners" class="cbp text-center">
                     @foreach($banners as $index=>$i)
                     <div class="cbp-item show_section1" style="margin-right:20px">

@@ -21,7 +21,7 @@ use App\Http\Models\Util;
  * @author ivan
  */
 class VenueController extends Controller{
-    
+
     /**
      * List all Venues and return default view.
      *
@@ -29,15 +29,15 @@ class VenueController extends Controller{
      */
     public function index()
     {
-        try {   
+        try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(isset($input) && isset($input['id']))
             {
                 return $this->get($input['id']);
             }
             else
-            {      
+            {
                 $restrictions = [];
                 $image_types = [];
                 $banner_types = [];
@@ -52,13 +52,13 @@ class VenueController extends Controller{
                         if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
                         {
                             $onlyerrors = 1;
-                            //get all records        
+                            //get all records
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
-                                                             FROM venue_images vi 
-                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
+                                                             FROM venue_images vi
+                                                             LEFT JOIN images i ON vi.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
@@ -77,13 +77,13 @@ class VenueController extends Controller{
                         else
                         {
                             $onlyerrors = 0;
-                            //get all records        
+                            //get all records
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
-                                                             FROM venue_images vi 
-                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
+                                                             FROM venue_images vi
+                                                             LEFT JOIN images i ON vi.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
@@ -97,18 +97,18 @@ class VenueController extends Controller{
                                         ->distinct()->get();
                         }
                     }  //all elements
-                    else 
+                    else
                     {
                         if(isset($input) && isset($input['onlyerrors']) && $input['onlyerrors']==1)
                         {
                             $onlyerrors = 1;
-                            //get all records        
+                            //get all records
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
-                                                             FROM venue_images vi 
-                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
+                                                             FROM venue_images vi
+                                                             LEFT JOIN images i ON vi.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
@@ -126,13 +126,13 @@ class VenueController extends Controller{
                         else
                         {
                             $onlyerrors = 0;
-                            //get all records        
+                            //get all records
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url 
-                                                             FROM venue_images vi 
-                                                             LEFT JOIN images i ON vi.image_id = i.id 
+                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
+                                                             FROM venue_images vi
+                                                             LEFT JOIN images i ON vi.image_id = i.id
                                                              WHERE i.image_type = "Logo") as images'),
                                         function($join){
                                             $join->on('venues.id','=','images.venue_id');
@@ -144,7 +144,7 @@ class VenueController extends Controller{
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
                         }
-                    }  
+                    }
                     //other enum
                     $restrictions = Util::getEnumValues('venues','restrictions');
                     $image_types = Util::getEnumValues('images','image_type');
@@ -167,14 +167,14 @@ class VenueController extends Controller{
                     if(empty($v->description))
                         $v->errors .= '<br>- No short description.';
                 }
-                    
+
                 //return view
                 return view('admin.venues.index',compact('venues','restrictions','ticket_types','banner_types','image_types','video_types','ads_types','onlyerrors'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error Venues Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get venue by id.
      *
@@ -182,12 +182,12 @@ class VenueController extends Controller{
      */
     private function get($id)
     {
-        try {   
+        try {
             //init
             if(!empty($id) && is_numeric($id))
             {
                 $current = date('Y-m-d');
-                //get selected record 
+                //get selected record
                 $venue = DB::table('venues')
                                 ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                 ->select('venues.*','locations.address','locations.city','locations.state','locations.zip','locations.country')
@@ -225,7 +225,7 @@ class VenueController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error Venues Get: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Save new or updated Venues or subtable related with Venues.
      *
@@ -235,8 +235,8 @@ class VenueController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
-            //save all record      
+            $input = Input::all();
+            //save all record
             if($input)
             {
                 $current = date('Y-m-d H:i:s');
@@ -248,9 +248,9 @@ class VenueController extends Controller{
                     $venue->updated = $current;
                     $location = $venue->location;
                     $location->updated = $current;
-                }                    
+                }
                 else
-                {                    
+                {
                     if(Venue::where('slug','=',$input['slug'])->count())
                         return ['success'=>false,'msg'=>'There was an error saving the venue.<br>That slug is already in the system.','errors'=>'slug'];
                     $venue = new Venue;
@@ -272,7 +272,7 @@ class VenueController extends Controller{
                 $venue->name = trim(strip_tags($input['name']));
                 $venue->slug = strip_tags($input['slug']);
                 $venue->accounting_email = strip_tags(preg_replace('/\s+/','',$input['accounting_email']));
-                $venue->weekly_email = strip_tags(preg_replace('/\s+/','',$input['weekly_email'])); 
+                $venue->weekly_email = strip_tags(preg_replace('/\s+/','',$input['weekly_email']));
                 $venue->description = trim(strip_tags($input['description'],'<p><a><br>'));
                 $venue->ticket_info = trim(strip_tags($input['ticket_info']));
                 $venue->is_featured = $input['is_featured'];
@@ -293,8 +293,7 @@ class VenueController extends Controller{
                 $venue->default_fixed_commission = $input['default_fixed_commission'];
                 $venue->default_percent_commission = $input['default_percent_commission'];
                 $venue->disable_cash_breakdown = (!empty($input['disable_cash_breakdown']))? 1 : 0;
-                $venue->after_purchase_link = (!empty($input['after_purchase_link']))? 1 : 0;
-                if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id'])) 
+                if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id']))
                 {
                     $venue->delete_image_file();
                     $venue->set_sponsor_logo_id($input['sponsor_logo_id']);
@@ -319,8 +318,8 @@ class VenueController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
-            //get all record      
+            $input = Input::all();
+            //get all record
             if($input && isset($input['name']) && isset($input['venue_id']))
                 return Util::generate_slug($input['name'], $input['venue_id']);
             return '';
@@ -338,8 +337,8 @@ class VenueController extends Controller{
         try {
             //init
             $input = Input::all();
-            $msg = $msg1 = ''; 
-            //delete all records   
+            $msg = $msg1 = '';
+            //delete all records
             foreach ($input['id'] as $id)
             {
                 //get venue
@@ -351,7 +350,7 @@ class VenueController extends Controller{
                     $shows = Show::where('shows.venue_id','=',$venue->id)->count();
                     if($shows)
                     {
-                        $dependences = true; 
+                        $dependences = true;
                         if($msg=='')
                             $msg = 'The following venues have dependences (shows) and the system cannot delete them:<br><br><ol style="max-height:200px;overflow:auto;text-align:left;">';
                         $msg .= '<li style="color:red;">'.$venue->name.'</li>';
@@ -392,7 +391,7 @@ class VenueController extends Controller{
                             if($msg1=='')
                                 $msg1 = 'The following venues have problems deleting them:<br><br><ol style="max-height:200px;overflow:auto;text-align:left;">';
                             $msg1 .= '<li style="color:red;">'.$venue->name.'</li>';
-                        } 
+                        }
                     }
                 }
             }
@@ -401,7 +400,7 @@ class VenueController extends Controller{
                 if($msg!='') $msg .= '</ol><br> Please, contact an administrator if you want a force delete.';
                 if($msg1!='') $msg1 .= '</ol><br> Please, contact an administrator.';
                 return ['success'=>false,'msg'=>$msg.$msg1];
-            }  
+            }
             return ['success'=>true,'msg'=>'All records deleted successfully!'];
         } catch (Exception $ex) {
             throw new Exception('Error Venues Remove: '.$ex->getMessage());
@@ -414,7 +413,7 @@ class VenueController extends Controller{
      */
     public function stages()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -424,11 +423,11 @@ class VenueController extends Controller{
                 $stage = Stage::find($input['id']);
                 if($stage)
                 {
-                    if(preg_match('/media\/preview/',$input['image_url'])) 
+                    if(preg_match('/media\/preview/',$input['image_url']))
                     {
                         Image::remove_image($stage->image_url);
                         $stage->set_image_url($input['image_url']);
-                    }  
+                    }
                     $stage->name = strip_tags($input['name']);
                     $stage->description = strip_tags($input['description']);
                     if(!empty($input['ticket_type']) && count($input['ticket_type']))
@@ -491,7 +490,7 @@ class VenueController extends Controller{
                 {
                     $stage->image_url = Image::view_image($stage->image_url);
                     return ['success'=>true,'action'=>1,'stage'=>$stage];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error adding the stage.<br>The server could not retrieve the data.'];
             }
             //get
@@ -499,14 +498,14 @@ class VenueController extends Controller{
             {
                 $stage = Stage::find($input['id']);
                 if($stage)
-                {   
+                {
                     $stage->image_url = Image::view_image($stage->image_url);
                     if(!empty($stage->ticket_order))
                         $stage->ticket_order = explode(',', $stage->ticket_order);
                     else
                         $stage->ticket_order = [];
                     return ['success'=>true,'stage'=>$stage];
-                }  
+                }
                 return ['success'=>false,'msg'=>'There was an error getting the stage.<br>The server could not retrieve the data.'];
             }
             else
@@ -514,7 +513,7 @@ class VenueController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error VenueStages Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove images for Venues
      *
@@ -522,7 +521,7 @@ class VenueController extends Controller{
      */
     public function images()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -559,7 +558,7 @@ class VenueController extends Controller{
             {
                 $image = new Image;
                 $image->created = $current;
-                if(preg_match('/media\/preview/',$input['url'])) 
+                if(preg_match('/media\/preview/',$input['url']))
                     $image->set_url($input['url']);
                 $image->image_type = $input['image_type'];
                 $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
@@ -569,7 +568,7 @@ class VenueController extends Controller{
                     DB::table('venue_images')->insert(['venue_id'=>$input['venue_id'],'image_id'=>$image->id]);
                     $image->url = Image::view_image($image->url);
                     return ['success'=>true,'action'=>1,'image'=>$image];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error adding the image.<br>The server could not retrieve the data.'];
             }
             //get
@@ -577,10 +576,10 @@ class VenueController extends Controller{
             {
                 $image = Image::find($input['id']);
                 if($image)
-                {   
+                {
                     $image->url = Image::view_image($image->url);
                     return ['success'=>true,'image'=>$image];
-                }  
+                }
                 return ['success'=>false,'msg'=>'There was an error getting the image.<br>The server could not retrieve the data.'];
             }
             else
@@ -588,7 +587,7 @@ class VenueController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error VenueImages Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove images for Venues
      *
@@ -596,7 +595,7 @@ class VenueController extends Controller{
      */
     public function stage_images()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -621,7 +620,7 @@ class VenueController extends Controller{
                 {
                     $image = new Image;
                     $image->created = $current;
-                    if(preg_match('/media\/preview/',$input['url'])) 
+                    if(preg_match('/media\/preview/',$input['url']))
                         $image->set_url($input['url']);
                     $image->image_type = $input['image_type'];
                     $image->caption = (!empty(strip_tags($input['caption'])))? strip_tags($input['caption']) : null;
@@ -636,7 +635,7 @@ class VenueController extends Controller{
                                 ->select(DB::raw('images.*,stage_image_ticket_type.*,stages.name'))->where('images.id','=',$image->id)->distinct()->first();
                         $stage_images->url = Image::view_image($stage_images->url);
                         return ['success'=>true,'action'=>1,'stage_images'=>$stage_images];
-                    } 
+                    }
                     return ['success'=>false,'msg'=>'There was an error adding the image.<br>The server could not retrieve the data.'];
                 }
                 return ['success'=>false,'msg'=>'There was an error adding the image.<br>There is already a ticket type image for that stage.'];
@@ -646,7 +645,7 @@ class VenueController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error VenueImages Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove banners for Venues
      *
@@ -654,7 +653,7 @@ class VenueController extends Controller{
      */
     public function banners()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             //update
@@ -687,7 +686,7 @@ class VenueController extends Controller{
             else if(isset($input) && isset($input['action']) && $input['action']==1)
             {
                 $banner = new Banner;
-                if(preg_match('/media\/preview/',$input['file'])) 
+                if(preg_match('/media\/preview/',$input['file']))
                     $banner->set_file($input['file']);
                 $banner->type = (isset($input['type']) && count($input['type']))? implode($input['type'],',') : null;
                 $banner->url = strip_tags($input['url']);
@@ -698,7 +697,7 @@ class VenueController extends Controller{
                 {
                     $banner->file = Image::view_image($banner->file);
                     return ['success'=>true,'action'=>1,'banner'=>$banner];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error adding the banner.<br>The server could not retrieve the data.'];
             }
             //get
@@ -706,10 +705,10 @@ class VenueController extends Controller{
             {
                 $banner = Banner::find($input['id']);
                 if($banner)
-                {   
+                {
                     $banner->file = Image::view_image($banner->file);
                     return ['success'=>true,'banner'=>$banner];
-                }  
+                }
                 return ['success'=>false,'msg'=>'There was an error getting the banner.<br>The server could not retrieve the data.'];
             }
             else
@@ -717,7 +716,7 @@ class VenueController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error VenueBanners Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove videos for Venues
      *
@@ -725,7 +724,7 @@ class VenueController extends Controller{
      */
     public function videos()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -770,7 +769,7 @@ class VenueController extends Controller{
                 {
                     DB::table('venue_videos')->insert(['venue_id'=>$input['venue_id'],'video_id'=>$video->id]);
                     return ['success'=>true,'action'=>1,'video'=>$video];
-                } 
+                }
                 return ['success'=>false,'msg'=>'There was an error adding the video.<br>The server could not retrieve the data.'];
             }
             //get
@@ -786,7 +785,7 @@ class VenueController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error VenueVideos Index: '.$ex->getMessage());
         }
-    } 
+    }
     /**
      * Get, Edit, Remove ads for Venues
      *
@@ -794,7 +793,7 @@ class VenueController extends Controller{
      */
     public function ads()
     {
-        try {   
+        try {
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
@@ -803,7 +802,7 @@ class VenueController extends Controller{
             {
                 if(empty($input['image']) || empty($input['price']) || empty($input['url']))
                     return ['success'=>false,'msg'=>'There was an error with the Ads.<br>You must fill out correctly the form.'];
-            }   
+            }
             function calcPosition($input)
             {
                 $ads = DB::table('venue_ads')->select('venue_ads.*')
@@ -826,10 +825,10 @@ class VenueController extends Controller{
                     if((!empty($input['id']) && $input['id'] != $a->id) || empty($input['id']))
                     {
                         if($a->order!=$position)
-                            DB::table('venue_ads')->where('id',$a->id)->update(['order'=>$position]); 
+                            DB::table('venue_ads')->where('id',$a->id)->update(['order'=>$position]);
                         $position++;
                     }
-                }                
+                }
                 if($input['order']>$position)
                     $input['order'] = $position;
                 return $input['order'];
@@ -852,7 +851,7 @@ class VenueController extends Controller{
                 {
                     validate($input);
                     $input['order'] = calcPosition($input);
-                    if(preg_match('/media\/preview/',$input['image'])) 
+                    if(preg_match('/media\/preview/',$input['image']))
                     {
                         if(!(empty($ads->image)))
                             Image::remove_image($ads->image);
@@ -872,7 +871,7 @@ class VenueController extends Controller{
                 $ads = DB::table('venue_ads')->select('venue_ads.*')->where('venue_ads.id',$input['id'])->first();
                 if($ads)
                 {
-                    $input = (array)$ads;                    
+                    $input = (array)$ads;
                     Image::remove_image($ads->image);
                     DB::table('venue_ads')->where('venue_ads.id',$ads->id)->delete();
                     //change order for others
@@ -891,7 +890,7 @@ class VenueController extends Controller{
                 if(preg_match('/media\/preview/',$input['image']))
                     $input['image'] = Image::stablish_image($image_folder_s3,$input['image']);
                 else
-                    return ['success'=>false,'msg'=>'There was an error.<br>You have to insert the image for the Ad.'];                
+                    return ['success'=>false,'msg'=>'There was an error.<br>You have to insert the image for the Ad.'];
                 $id = DB::table('venue_ads')->insertGetId(
                     ['venue_id'=>$input['venue_id'],'image'=>$input['image'],'url'=>$input['url'],'type'=>$input['type'],'order'=>$input['order'],
                      'price'=>$input['price'],'clicks'=>$input['clicks'],'start_date'=>$input['start_date'],'end_date'=>$input['end_date'],'updated'=>$current]
@@ -905,10 +904,10 @@ class VenueController extends Controller{
             {
                 $ads = DB::table('venue_ads')->select('venue_ads.*')->where('venue_ads.id',$input['ads_id'])->first();
                 if($ads)
-                {   
+                {
                     $ads->image = Image::view_image($ads->image);
                     return ['success'=>true,'ads'=>$ads];
-                }  
+                }
                 return ['success'=>false,'msg'=>'There was an error getting the Ad.<br>The server could not retrieve the data.'];
             }
             else
@@ -916,6 +915,6 @@ class VenueController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error VenueAds Index: '.$ex->getMessage());
         }
-    } 
-    
+    }
+
 }

@@ -388,13 +388,6 @@
                                                     <input type="checkbox" class="make-switch input-large" name="disable_cash_breakdown" value="1" data-on-text="Yes, do it" data-off-text="No, keep it" data-on-color="danger" data-off-color="primary">
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-md-7">After purchase ("complete" page) enable link to return to "buy" page</label>
-                                                <div class="col-md-5">
-                                                    <input type="hidden" name="after_purchase_link" value="0"/>
-                                                    <input type="checkbox" class="make-switch input-large" name="after_purchase_link" value="1" data-on-text="Enable link" data-off-text="Disable link" data-on-color="primary" data-off-color="danger">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_stages">
@@ -697,7 +690,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                         <div class="form-actions">
@@ -1015,7 +1008,7 @@
                                             <img name="image" alt="- No image -" src="" width="200px" height="200px" />
                                         </center>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group col-md-6" style="margin-bottom:60px;">
                                     <label class="control-label col-md-3">Type
                                         <span class="required">*</span>
@@ -1026,7 +1019,7 @@
                                                 <option value="{{$index}}">{{$at}}</option>
                                             @endforeach
                                         </select>
-                                    </div> 
+                                    </div>
                                     <label class="col-md-3 control-label">Order
                                         <span class="required">*</span>
                                     </label>
@@ -1039,7 +1032,7 @@
                                     <div class="col-md-9 show-error">
                                         <input class="form-control" type="url" name="url" required="true">
                                        <i><small>If the URL link is in Ticketbat set this like: "/event/my-slug". Otherwise put the whole URL: "http://venue.com/mylink".</small></i>
-                                    </div>                               
+                                    </div>
                                     <label class="col-md-3 control-label">Price
                                         <span class="required">*</span>
                                     </label>
