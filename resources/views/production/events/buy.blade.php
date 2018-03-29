@@ -139,7 +139,7 @@
                     </div>
                 @if(!empty($event->for_sale) && !empty($event->tickets))
                     <!-- BEGIN ADD TO -->
-                        <div class="portlet light about-text">
+                        <div class="portlet">
                             <!-- BEGIN DESCRIPTION -->
                             <div class="event-add-to-cart">
                                 @if($has_coupon>0)
@@ -159,12 +159,14 @@
                         <!-- END ADD TO -->
                 @endif
                 <!-- BEGIN SHORTCUT FORM -->
-                    <div class="portlet light about-text" id="continue_buy_checkout_msg" style="display:none">
-                        <div class="col-md-6">
-                            <a href="/home" class="btn btn-info btn-block btn-lg uppercase"><i class="fa fa-suitcase"></i> Continue shopping </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a href="/shoppingcart/viewcart" class="btn btn-success btn-block btn-lg uppercase"><i class="fa fa-shopping-cart"></i> Checkout </a>
+                    <div class="portlet" id="continue_buy_checkout_msg" style="display:none">
+                        <div class="row">
+                            <div class="col-xs-7 col-sm-6">
+                                <a href="/home" class="btn btn-info btn-block btn-lg uppercase event-continue"><i class="fa fa-suitcase"></i> Continue shopping </a>
+                            </div>
+                            <div class="col-xs-5 col-sm-6">
+                                <a href="/shoppingcart/viewcart" class="btn btn-success btn-block btn-lg uppercase event-checkout"><i class="fa fa-shopping-cart"></i> Checkout </a>
+                            </div>
                         </div>
                     </div>
                     <!-- END SHORTCUT FORM -->

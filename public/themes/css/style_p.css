@@ -416,6 +416,12 @@ html, body {
     .event-add-to-cart a {
         padding: 10px 0px;
     }
+    .event-continue {
+        padding: 6px 6px;
+    }
+    .event-checkout {
+        padding: 6px 6px;
+    }
 
 }
 
