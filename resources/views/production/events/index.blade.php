@@ -376,5 +376,5 @@
     <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
     <script src="https://maps.google.com/maps/api/js?key=AIzaSyC7sODsH3uUz_lBbYH16eOCJU9igquCjzI" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/gmaps.min.js" type="text/javascript"></script>
-    <script src="/js/production/events/index.js?v=1522346192" type="text/javascript"></script>
+    <script src="/js/production/events/index.js?v=1522346199" type="text/javascript"></script>
 @endsection
