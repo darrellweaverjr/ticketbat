@@ -62,10 +62,10 @@
                             <div class="actions pull-right">
                                 <div class="btn-group">
                                     <ul class="nav nav-tabs">
-                                        <li @if(count($event->showtimes)<8) class="active" @endif>
+                                        <li class="active">
                                             <a href="#showtimes_list" class="btn-info" data-toggle="tab"><i class="fa fa-list icon-list"></i></a>
                                         </li>
-                                        <li @if(count($event->showtimes)>7) class="active" @endif>
+                                        <li>
                                             <a href="#showtimes_calendar" class="btn-info" data-toggle="tab"><i class="fa fa-calendar"></i></a>
                                         </li>
                                     </ul>
@@ -81,12 +81,12 @@
                     @if(count($event->showtimes))
                         <div class="tab-content">
                             <!-- SHOW TIMES AS LIST -->
-                            <div class="tab-pane @if(count($event->showtimes)<8) active @endif" id="showtimes_list" style="margin:5px;padding-bottom:10px">
+                            <div class="tab-pane active " id="showtimes_list" style="margin:5px;padding-bottom:10px">
                                 <div class="portlet-body light portlet-fit" style="margin-top:-30px;">
-                                    <table class="table table-hover table-responsive" id="tb_model">
+                                    <table class="event-table table table-hover table-responsive" id="tb_model">
                                         <thead>
                                         <tr>
-                                            <th></th>
+                                            <th>Day</th>
                                             <th>Date</th>
                                             <th>Time</th>
                                             <th></th>
@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                             <!-- SHOW TIMES AS CALENDAR -->
-                            <div class="tab-pane @if(count($event->showtimes)>7) active @endif" id="showtimes_calendar" style="margin:5px;padding-bottom:10px">
+                            <div class="tab-pane" id="showtimes_calendar" style="margin:5px;padding-bottom:10px">
                                 <div class="portlet-body light portlet-fit calendar">
                                     <div id="cal_model" class="has-toolbar" data-info='{!! $event->showtimes !!}' data-slug="/buy/{{$event->slug}}"></div>
                                 </div>
@@ -376,5 +376,5 @@
     <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
     <script src="https://maps.google.com/maps/api/js?key=AIzaSyC7sODsH3uUz_lBbYH16eOCJU9igquCjzI" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/gmaps.min.js" type="text/javascript"></script>
-    <script src="/js/production/events/index.js" type="text/javascript"></script>
+    <script src="/js/production/events/index.js?v=1522346199" type="text/javascript"></script>
 @endsection

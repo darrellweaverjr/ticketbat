@@ -20,6 +20,48 @@
     <div class="modal-dialog" title="Login or continue as guest to proceed to the shopping cart">
         <div class="modal-content col-md-6">
             <div class="modal-header">
+                <h3 class="modal-title">Checkout as Guest</h3>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="form_guest_login" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="alert alert-danger display-hide">
+                            <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                        <div class="alert alert-success display-hide">
+                            <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                        <div class="form-group" title="Write your username (email).">
+                            <label class="control-label">Email
+                                <span class="required"> * </span>
+                            </label>
+                            <div class="show-error">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-envelope"></i>
+                                    </span>
+                                    <input type="email" name="username" class="form-control" placeholder="mail@server.com" required="true" autocomplete="on">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <label class="control-label">
+                                <span class="required">
+                                    <a id="switch_register">Create a new account</a>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="modal-footer">
+                                <button type="button" id="btn_guest_login" class="btn bg-green btn-outline btn-block" title="Continue as guest to see your items in the shopping cart.">Continue as guest</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-content col-md-6">
+            <div class="modal-header">
                 <h3 class="modal-title">Login</h3>
             </div>
             <div class="modal-body">
@@ -73,48 +115,7 @@
                 </form>
             </div>
         </div>
-        <div class="modal-content col-md-6">
-            <div class="modal-header">
-                <h3 class="modal-title">Continue as guest</h3>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="form_guest_login" class="form-horizontal">
-                    <div class="form-body">
-                        <div class="alert alert-danger display-hide">
-                            <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
-                        <div class="alert alert-success display-hide">
-                            <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        <div class="form-group" title="Write your username (email).">
-                            <label class="control-label">Email
-                                <span class="required"> * </span>
-                            </label>
-                            <div class="show-error">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-envelope"></i>
-                                    </span>
-                                    <input type="email" name="username" class="form-control" placeholder="mail@server.com" required="true" autocomplete="on">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group text-center">
-                            <label class="control-label">
-                                <span class="required">
-                                    <a id="switch_register">Create a new account</a>
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <div class="row">
-                            <div class="modal-footer">
-                                <button type="button" id="btn_guest_login" class="btn bg-green btn-outline btn-block" title="Continue as guest to see your items in the shopping cart.">Continue as guest</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+
     </div>
 </div>
 <!-- END LOGIN/GUEST MODAL -->

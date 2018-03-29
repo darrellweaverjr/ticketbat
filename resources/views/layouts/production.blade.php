@@ -58,7 +58,7 @@
         <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="{{config('app.theme')}}css/layout.min.css" rel="stylesheet" type="text/css" />
-        <link href="{{config('app.theme')}}css/style_p.css?v=1522218755" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/style_p.css?v=1522346199" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 
         <link rel="apple-touch-icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 

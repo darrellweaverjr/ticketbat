@@ -24,23 +24,23 @@
     <!-- END NAME BAR-->
     <div class="page-content color-panel " style="padding-top: 30px">
         <div class="row fixed-panel">
-            <div class="col-lg-6">
-                <div class="portlet light about-text">
+            <div class="col-xs-12 col-sm-6">
+                <div class="portlet light event-seating">
                     <!-- BEGIN STAGE -->
                     <h4>
                         <i class="fa fa-street-view"></i> Seating Chart
                     </h4>
-                    <p id="stage_images" class="margin-top-20 text-center">
-                        <img style="width:93%" src="{{$event->image_url}}" data-type="default"/>
+                    <div id="stage_images" class="p-15 text-center">
+                        <img class="img-responsive" src="{{$event->image_url}}" data-type="default"/>
                         @foreach($event->stage_images as $i)
-                            <img style="width:93%; display:none;" src="{{$i->url}}" data-type="{{$i->ticket_type}}"/>
+                            <br>
+                            <img class="img-responsive" style="display:none;" src="{{$i->url}}" data-type="{{$i->ticket_type}}"/>
                         @endforeach
-                    <br>
-                    </p>
+                    </div>
                     <!-- END STAGE -->
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-xs-12 col-sm-6">
                 <form method="post" id="form_model_update" class="form-horizontal">
                     <input name="show_time_id" type="hidden" value="{{$event->show_time_id}}"/>
                     <input name="password" type="hidden" value=""/>
@@ -48,7 +48,7 @@
                         <h4>
                             <i class="fa fa-ticket"></i> Tickets
                         </h4>
-                        <div class="portlet-body">
+                        <div class="portlet-body p-15">
                             <h4 center="text-center">{{$event->show_time}}</h4>
                             @if(!empty($event->ticket_limit))
                                 <div class="alert alert-danger display-block text-center" style="margin-bottom:-0px">
@@ -73,13 +73,13 @@
                                     @php $selected = true @endphp
                                     @foreach($event->tickets as $index=>$t)
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <h4 class="panel-title {{$t['class']}}">
-                                                    <a class="accordion-toggle accordion-toggle-styled @if(!$selected) collapsed @endif" data-type="{{$t['type']}}" data-toggle="collapse" data-parent="#tickets_accordion"
-                                                       href="#collapse_{{$index}}"> <b>{{$t['type']}}</b> </a>
+                                            <div class="panel-heading p-3">
+                                                <h4 class="panel-title {{$t['class']}} event-ticket-type">
+                                                    <a class="accordion data-type="{{$t['type']}}" data-toggle="collapse" data-parent="#tickets_accordion"
+                                                       href="#collapse_{{$index}}"> <strong class="lh-25">{{$t['type']}}</strong> </a>
                                                 </h4>
                                             </div>
-                                            <div id="collapse_{{$index}}" class="panel-collapse @if($selected) in @else collapse @endif">
+                                            <div id="collapse_{{$index}}" class="panel">
                                                 <div class="panel-body" style="margin-bottom: -20px">
                                                     @if(!empty($t['amex_only']))
                                                         <div class="alert alert-danger display-block text-center">
@@ -120,7 +120,7 @@
                         </div>
                     @if(!empty($event->for_sale) && !empty($event->tickets))
                         <!-- BEGIN TOTALS -->
-                            <div class="row ml-15 mr-15 mt-30">
+                            <div class="row ml-15 mr-15 mt-5">
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label class="control-label col-md-3">QTY</label>

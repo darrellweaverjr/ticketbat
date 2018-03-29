@@ -18,7 +18,7 @@ var TableDatatablesManaged = function () {
                 }
             },
             "bStateSave": false,
-            "pageLength": 7,
+            "pageLength": 10,
             "pagingType": "bootstrap_full_number",
             "info" : false,
             "lengthChange": false,
@@ -65,7 +65,7 @@ var AppCalendar = function() {
                 var display = (v.time_alternative)? v.time_alternative : v.show_hour;
                 calendarEvents.push( {
                     id: v.id,
-                    title: '<center><b>'+display+' <i class="fa fa-arrow-circle-right"></i></b></center>',
+                    title: '<strong class="text-center">'+display+' <i class="fa fa-arrow-circle-right"></i></strong>',
                     start: v.show_time,
                     backgroundColor: 'bg-blue',
                     allDay: false,
@@ -75,7 +75,7 @@ var AppCalendar = function() {
             //predefined events
             $('#cal_model').fullCalendar('destroy'); // destroy the calendar
             $('#cal_model').fullCalendar({ //re-initialize the calendar
-                header: { left: 'title', center: '', right: 'prev,next, agendaDay, agendaWeek, month, today' },
+                header: { left: 'title', center: '', right: 'prev,next, month, today' },
                 defaultView: 'month', // change default view with available options from http://arshaw.com/fullcalendar/docs/views/Available_Views/
                 slotMinutes: 15,
                 editable: false,
