@@ -173,9 +173,6 @@
                                         {{--<h4 style="color:red;margin-top:5px;margin-bottom:-20px"><b>Clearance</b></h4><br><b style="text-decoration:line-through;color:#d43f3a">${{$s->regular_price}}</b><br><h4--}}
                                                 {{--style="margin-top:-2px;color:green;font-weight:bold">${{$s->starting_at}}</h4>--}}
                                     {{--</div>--}}
-
-                                @else
-                                    <div class="btn green uppercase show_section_btnbuy">Tickets</div>
                                 @endif
                                 <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
                                 <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">Next
