@@ -885,18 +885,19 @@ class ShowController extends Controller{
                 {
                     //change time format to compare
                     $input['time'] = date('H:i',strtotime($input['time']));
+                    $start_date = $input['start_date'].' '.$input['time'];
                     //get all date/time
                     if($input['start_date'] == $input['end_date'])
                     {
-                        if(strtotime($input['start_date'])>strtotime($current))
-                            $dates[] = $input['start_date'].' '.$input['time'];
+                        if(strtotime($start_date)>=strtotime($current))
+                            $dates[] = $start_date;
                     }
                     else if(strtotime($input['start_date']) < strtotime($input['end_date']))
                     {
                         $period = new \DatePeriod(
-                            \DateTime::createFromFormat('Y-m-d H:i',$input['start_date'].$input['time']),
+                            \DateTime::createFromFormat('Y-m-d H:i',$start_date),
                             new \DateInterval('P1D'),
-                            \DateTime::createFromFormat('Y-m-d H:i',$input['end_date'].'23:59')
+                            \DateTime::createFromFormat('Y-m-d H:i',$input['end_date'].' 23:59')
                         );
                         foreach($period as $date){
                             if(in_array($date->format('w'),$input['weekdays']))
