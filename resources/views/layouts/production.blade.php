@@ -174,7 +174,7 @@
                 </div>
                 <!-- END HEADER INNER -->
                 
-                <div id="timerClockPanel">
+                <div id="timerClockPanel" class="hidden-xs">
                     <span class="uppercase text-justify">Please complete your purchase in</span>
                     <span id="timerClock" data-countdown="{{Session::get('countdown','')}}"></span>
                     <span class="uppercase text-justify">minutes : seconds</span>
