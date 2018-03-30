@@ -12,7 +12,7 @@ class ReportManifest extends Command
      *
      * @var string
      */
-    protected $signature = 'Report:manifest  {reportdate = NULL} {onlyadmin = NULL}';
+    protected $signature = 'Report:manifest  {reportdate?} {onlyadmin?}';
 
     /**
      * The console command description.

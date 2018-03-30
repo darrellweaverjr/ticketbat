@@ -28,12 +28,8 @@ class ReportManifestController extends Controller
      */
     public function __construct($reportDate, $onlyAdmin)
     {
-        $this->report_date = is_null($reportDate) ? date('Y-m-d') : $reportDate;
-        $this->only_admin = $onlyAdmin;
-        echo $this->report_date;
-        echo "  ";
-        echo $this->only_admin;
-        die();
+        $this->report_date = is_null($reportDate) || (isset($reportDate) && $reportDate = 'today')  ? date('Y-m-d') : $reportDate;
+        $this->only_admin = is_null($onlyAdmin) ? 0 : $onlyAdmin;
     }
 
     /*
@@ -53,7 +49,14 @@ class ReportManifestController extends Controller
                         $data = $this->create_data($date);
                         $manifest = $this->save_data($data);
                         if ($manifest && $data['s_manifest_emails'] > 0 && !empty($data['emails'])) {
-                            $sent = $manifest->send($data['emails'], $info['subject']);
+
+                            //send admin email
+                            if($this->only_admin>0) {
+                                $sent = $manifest->send(env('MAIL_REPORT_TO'), $info['subject']);
+                            }else{
+                                $sent = $manifest->send($data['emails'], $info['subject']);
+                            }
+
                             //storage if email was sent successfully
                             $data['sent'] = ($sent) ? 1 : 0;
                             $manifest->email = json_encode($data);
