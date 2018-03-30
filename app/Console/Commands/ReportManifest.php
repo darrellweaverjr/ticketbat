@@ -12,7 +12,7 @@ class ReportManifest extends Command
      *
      * @var string
      */
-    protected $signature = 'Report:manifest';
+    protected $signature = 'Report:manifest  {reportdate = NULL} {onlyadmin = NULL}';
 
     /**
      * The console command description.
@@ -39,10 +39,13 @@ class ReportManifest extends Command
     public function handle()
     {
         try {
+            $report_date = $this->argument('reportdate');
+            $only_admin = $this->argument('onlyadmin');
+
             //create progress bar
             $progressbar = $this->output->createProgressBar(1);
             //call controller
-            $control = new ReportManifestController();
+            $control = new ReportManifestController($report_date,$only_admin);
             $response = $control->init();
             //advance progress bar
             $progressbar->advance(); 
