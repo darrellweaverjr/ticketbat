@@ -372,16 +372,6 @@ var TableDatatablesManaged = function () {
             $('#form_model_show_videos input[name="show_id"]:hidden').val(data.show.id).trigger('change');
             $('#form_model_show_contracts input[name="show_id"]:hidden').val(data.show.id).trigger('change');
             //fill out shows
-            if(data.show.pos_optional_fees.length>0)
-            {
-                $.each(data.show.pos_optional_fees,function(k, v) {
-                    //alert(v);
-                    $('#form_model_update input[name="pos_optional_fees['+k+']"]').val(v);
-                });
-            }
-
-
-            //$('#form_model_update input[mame="pos_optional_fees[]"]').val(data.show.pos_optional_fees);
             for(var key in data.show)
             {
                 //checking

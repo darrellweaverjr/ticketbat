@@ -1,7 +1,7 @@
 /* global venue_id */
 
 var TableDatatablesManaged = function () {
-    
+
     var initTable = function () {
         var table = $('#tb_model');
         // begin first table
@@ -33,13 +33,13 @@ var TableDatatablesManaged = function () {
                 [5, 10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 5,            
+            "pageLength": 5,
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
                     'orderable': false,
                     'targets': [0]
-                }, 
+                },
                 {
                     "searchable": false,
                     "targets": [0]
@@ -52,7 +52,7 @@ var TableDatatablesManaged = function () {
                 [1, "asc"]
             ] // set first column as a default sort by asc
         });
-        
+
         table.find('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
@@ -65,9 +65,9 @@ var TableDatatablesManaged = function () {
                     $(this).parents('tr').removeClass("active");
                 }
             });
-            check_models(); 
-        });   
-        
+            check_models();
+        });
+
         table.on('click', 'tbody tr td:not(:first-child)', function () {
             var action = $(this).parent().find('.checkboxes').is(':checked');
             if(!action)
@@ -75,9 +75,9 @@ var TableDatatablesManaged = function () {
             $(this).parent().find('.checkboxes').prop('checked',!action);
             check_models();
         });
-        
+
         table.on('change', 'tbody tr .checkboxes', function () {
-            check_models();             
+            check_models();
             $(this).parents('tr').toggleClass("active");
         });
         //PERSONALIZED FUNCTIONS
@@ -98,11 +98,11 @@ var TableDatatablesManaged = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/admin/venues/slug', 
+                        url: '/admin/venues/slug',
                         data: {
                             name:$('#form_model_update [name="name"]').val(),
                             venue_id:$('#form_model_update [name="id"]').val()
-                        }, 
+                        },
                         success: function(data) {
                             if(data) $('#form_model_update [name="slug"]').val(data);
                             else $('#form_model_update [name="slug"]').val('');
@@ -138,7 +138,7 @@ var TableDatatablesManaged = function () {
                 $('#btn_model_remove').prop("disabled",true);
             }
             $('#btn_model_add').prop("disabled",false);
-        } 
+        }
         //function full reset form
         var fullReset = function(){
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
@@ -199,13 +199,13 @@ var TableDatatablesManaged = function () {
             {
                 var html = '';
                 $.each(data.stages,function(k, v) {
-                    html = html + fn_venue_stages(v); 
+                    html = html + fn_venue_stages(v);
                     $('#form_model_venue_stage_images select[name="stage_id"]').append('<option value="'+v.id+'">'+v.name+'</option>');
                 });
                 $('#grid_venue_stages').cubeportfolio('appendItems', html);
                 $('#grid_venue_stages').trigger('resize.cbp');
             }
-            
+
             //fill out stage images
             $('#grid_venue_stage_images .cbp-item').remove();
             $('#grid_venue_stage_images').trigger('resize.cbp');
@@ -213,7 +213,7 @@ var TableDatatablesManaged = function () {
             {
                 var html = '';
                 $.each(data.stage_images,function(k, v) {
-                    html = html + fn_venue_stage_images(v); 
+                    html = html + fn_venue_stage_images(v);
                 });
                 $('#grid_venue_stage_images').cubeportfolio('appendItems', html);
                 $('#grid_venue_stage_images').trigger('resize.cbp');
@@ -225,7 +225,7 @@ var TableDatatablesManaged = function () {
             {
                 var html = '';
                 $.each(data.images,function(k, v) {
-                    html = html + fn_venue_images(v); 
+                    html = html + fn_venue_images(v);
                 });
                 $('#grid_venue_images').cubeportfolio('appendItems', html);
                 $('#grid_venue_images').trigger('resize.cbp');
@@ -237,7 +237,7 @@ var TableDatatablesManaged = function () {
             {
                 var html = '';
                 $.each(data.banners,function(k, v) {
-                    html = html + fn_venue_banners(v); 
+                    html = html + fn_venue_banners(v);
                 });
                 $('#grid_venue_banners').cubeportfolio('appendItems', html);
                 $('#grid_venue_banners').trigger('resize.cbp');
@@ -249,36 +249,36 @@ var TableDatatablesManaged = function () {
             {
                 var html = '';
                 $.each(data.videos,function(k, v) {
-                    html = html + fn_venue_videos(v); 
+                    html = html + fn_venue_videos(v);
                 });
                 $('#grid_venue_videos').cubeportfolio('appendItems', html);
                 $('#grid_venue_videos').trigger('resize.cbp');
-            }            
+            }
             //fill out ads
             if(data.ads && data.ads.length)
             {
-                update_ads(data.ads);      
+                update_ads(data.ads);
             }
             //show modal
             $('#modal_model_update').modal('show');
         }
         //function preview
-        $('#btn_model_preview').on('click', function(ev) {      
+        $('#btn_model_preview').on('click', function(ev) {
             var set = $('.group-checkable').attr("data-set");
-            var link = $(set+"[type=checkbox]:checked:first").data('preview'); 
+            var link = $(set+"[type=checkbox]:checked:first").data('preview');
             window.open(link, '_blank');
         });
         //function edit
-        $('#btn_model_edit').on('click', function(ev) {            
+        $('#btn_model_edit').on('click', function(ev) {
             var set = $('.group-checkable').attr("data-set");
-            var id = $(set+"[type=checkbox]:checked")[0].id;            
+            var id = $(set+"[type=checkbox]:checked")[0].id;
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues', 
-                data: {id:id}, 
+                url: '/admin/venues',
+                data: {id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         loadModal(data);
                     }
@@ -313,10 +313,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/save', 
-                    data: $('#form_model_update').serializeArray(), 
+                    url: '/admin/venues/save',
+                    data: $('#form_model_update').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             if(typeof(data.venue) != 'undefined' && data.venue !== null)
                                 loadModal(data);
@@ -354,8 +354,8 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_update').modal('show');
                         });
                     }
-                }); 
-            } 
+                });
+            }
             else
             {
                 var tabs = $('#form_model_update .has-error').closest('.tab-pane');
@@ -371,7 +371,7 @@ var TableDatatablesManaged = function () {
                 },function(){
                     $('#modal_model_update').modal('show');
                 });
-            }        
+            }
         });
         //function remove
         $('#btn_model_remove').on('click', function(ev) {
@@ -382,7 +382,7 @@ var TableDatatablesManaged = function () {
             jQuery(checked).each(function (key, item) {
                 html += '<li>'+item.value+'</li>';
                 ids.push(item.id);
-            });             
+            });
             swal({
                 title: "The following venue(s) will be removed, please confirm action: ",
                 text: "<span style='text-align:left;color:red;'>"+html+"</span>",
@@ -401,8 +401,8 @@ var TableDatatablesManaged = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/admin/venues/remove', 
-                        data: {id:ids}, 
+                        url: '/admin/venues/remove',
+                        data: {id:ids},
                         success: function(data) {
                             if(data.success)
                             {
@@ -414,7 +414,7 @@ var TableDatatablesManaged = function () {
                                     type: "success",
                                     showConfirmButton: false
                                 });
-                                location.reload(); 
+                                location.reload();
                             }
                             else swal({
                                     title: "<span style='color:red;'>Error!</span>",
@@ -432,9 +432,9 @@ var TableDatatablesManaged = function () {
                             });
                         }
                     });
-                } 
-            });            
-        });     
+                }
+            });
+        });
         //function with venue_stages  *****************************************************************************************************   VENUE STAGES BEGIN
         // init images
         $('#grid_venue_stages').cubeportfolio({
@@ -490,10 +490,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/stages', 
-                data: {id:id}, 
+                url: '/admin/venues/stages',
+                data: {id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#form_model_venue_stages [name="name"]').val(data.stage.name);
                         $('#form_model_venue_stages [name="description"]').val(data.stage.description);
@@ -503,13 +503,13 @@ var TableDatatablesManaged = function () {
                         {
                             $.each(data.stage.ticket_order,function(k, v) {
                                 $('#form_model_venue_stages select[name="ticket_type['+parseInt(k+1)+']"]').val(v);
-                            }); 
+                            });
                         }
                         $('#modal_model_venue_stages').modal('show');
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -521,7 +521,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to get the stage's information!<br>The request could not be sent to the server.",
@@ -531,7 +531,7 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update').modal('show');
                     });
                 }
-            }); 
+            });
         });
         //remove
         $(document).on('click', '#grid_venue_stages a.delete', function(){
@@ -540,16 +540,16 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/stages', 
-                data: {action:-1,id:id,venue_id:venue_id}, 
+                url: '/admin/venues/stages',
+                data: {action:-1,id:id,venue_id:venue_id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#grid_venue_stages .stage_'+id).remove();
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -561,7 +561,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to delete the stage's information!<br>The request could not be sent to the server.",
@@ -581,10 +581,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/stages', 
-                    data: $('#form_model_venue_stages').serializeArray(), 
+                    url: '/admin/venues/stages',
+                    data: $('#form_model_venue_stages').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             //delete or update
                             if(data.action <= 0)
@@ -595,13 +595,13 @@ var TableDatatablesManaged = function () {
                             //add or update
                             if(data.action >= 0)
                             {
-                                var html = fn_venue_stages(data.stage); 
+                                var html = fn_venue_stages(data.stage);
                                 $('#grid_venue_stages').cubeportfolio('appendItems', html);
                                 $('#grid_venue_stages').trigger('resize.cbp');
                             }
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -614,7 +614,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the stage's information!<br>The request could not be sent to the server.",
@@ -625,11 +625,11 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_venue_stages').modal('show');
                         });
                     }
-                }); 
+                });
             }
-            else 
+            else
             {
-                $('#modal_model_update').modal('hide');	   	
+                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
@@ -643,8 +643,8 @@ var TableDatatablesManaged = function () {
         });
         //function load form to upload image
         $('#btn_venue_upload_stages').on('click', function(ev) {
-            FormImageUpload('stages.image_url','#modal_model_venue_stages','#form_model_venue_stages [name="image_url"]');       
-        }); 
+            FormImageUpload('stages.image_url','#modal_model_venue_stages','#form_model_venue_stages [name="image_url"]');
+        });
         //function with venue_stages  *****************************************************************************************************   VENUE STAGES END
         ////function with venue_stage_images  *****************************************************************************************************   VENUE STAGE IMAGES BEGIN
         // init images
@@ -695,16 +695,16 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/stage_images', 
-                data: {action:-1,id:id}, 
+                url: '/admin/venues/stage_images',
+                data: {action:-1,id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#grid_venue_stage_images .stage_images_'+id).remove();
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -716,7 +716,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to delete the stage images's information!<br>The request could not be sent to the server.",
@@ -736,27 +736,27 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/stage_images', 
-                    data: $('#form_model_venue_stage_images').serializeArray(), 
+                    url: '/admin/venues/stage_images',
+                    data: $('#form_model_venue_stage_images').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
-                            //delete 
+                            //delete
                             if(data.action < 0)
                             {
                                 var id = $('#form_model_venue_stage_images [name="id"]:hidden').val();
                                 $('#grid_venue_stage_images .stage_images_'+id).remove();
                             }
-                            //add 
+                            //add
                             if(data.action > 0)
                             {
-                                var html = fn_venue_stage_images(data.stage_images); 
+                                var html = fn_venue_stage_images(data.stage_images);
                                 $('#grid_venue_stage_images').cubeportfolio('appendItems', html);
                                 $('#grid_venue_stage_images').trigger('resize.cbp');
                             }
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -769,7 +769,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the stage images's information!<br>The request could not be sent to the server.",
@@ -780,11 +780,11 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_venue_stage_images').modal('show');
                         });
                     }
-                }); 
+                });
             }
-            else 
+            else
             {
-                $('#modal_model_update').modal('hide');	   	
+                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
@@ -798,8 +798,8 @@ var TableDatatablesManaged = function () {
         });
         //function load form to upload image
         $('#btn_venue_upload_stage_images').on('click', function(ev) {
-            FormImageUpload('stages.url','#modal_model_venue_stage_images','#form_model_venue_stage_images [name="url"]');       
-        }); 
+            FormImageUpload('stages.url','#modal_model_venue_stage_images','#form_model_venue_stage_images [name="url"]');
+        });
         //function with venue_stage_images  *****************************************************************************************************   VENUE STAGES IMAGES END
         //function with venue_images  *****************************************************************************************************   VENUE IMAGES BEGIN
         // init images
@@ -863,10 +863,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/images', 
-                data: {id:id}, 
+                url: '/admin/venues/images',
+                data: {id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#form_model_venue_images [name="caption"]').val(data.image.caption);
                         $('#form_model_venue_images [name="image_type"]').val(data.image.image_type);
@@ -874,7 +874,7 @@ var TableDatatablesManaged = function () {
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -886,7 +886,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to get the image's information!<br>The request could not be sent to the server.",
@@ -896,7 +896,7 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update').modal('show');
                     });
                 }
-            }); 
+            });
         });
         //remove
         $(document).on('click', '#grid_venue_images a.delete', function(){
@@ -905,16 +905,16 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/images', 
-                data: {action:-1,id:id,venue_id:venue_id}, 
+                url: '/admin/venues/images',
+                data: {action:-1,id:id,venue_id:venue_id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#grid_venue_images .image_'+id).remove();
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -926,7 +926,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to delete the image's information!<br>The request could not be sent to the server.",
@@ -946,10 +946,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/images', 
-                    data: $('#form_model_venue_images').serializeArray(), 
+                    url: '/admin/venues/images',
+                    data: $('#form_model_venue_images').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             //delete or update
                             if(data.action <= 0)
@@ -960,13 +960,13 @@ var TableDatatablesManaged = function () {
                             //add or update
                             if(data.action >= 0)
                             {
-                                var html = fn_venue_images(data.image); 
+                                var html = fn_venue_images(data.image);
                                 $('#grid_venue_images').cubeportfolio('appendItems', html);
                                 $('#grid_venue_images').trigger('resize.cbp');
                             }
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -979,7 +979,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the image's information!<br>The request could not be sent to the server.",
@@ -990,11 +990,11 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_venue_images').modal('show');
                         });
                     }
-                }); 
+                });
             }
-            else 
+            else
             {
-                $('#modal_model_update').modal('hide');	   	
+                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
@@ -1010,10 +1010,10 @@ var TableDatatablesManaged = function () {
         $('#btn_venue_upload_images').on('click', function(ev) {
             var type = $('#form_model_venue_images [name="image_type"]').val().toLowerCase();
             if(type=='logo')
-                FormImageUpload('venues.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');   
+                FormImageUpload('venues.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');
             else
-                FormImageUpload('images.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');       
-        }); 
+                FormImageUpload('images.'+type,'#modal_model_venue_images','#form_model_venue_images [name="url"]');
+        });
         //function with venue_images  *****************************************************************************************************   VENUE IMAGES END
         //function with venue_banners  ****************************************************************************************************   VENUE BANNERS BEGIN
         // init banners
@@ -1041,13 +1041,13 @@ var TableDatatablesManaged = function () {
         var fn_venue_banners = function(image)
         {
             if(!image.type) image.type = '';
-            if(!image.url) 
+            if(!image.url)
             {
-                image.url = ''; 
+                image.url = '';
                 var link = '';
             }
             else
-                var link = '<a href="'+image.url+'" target="_blank">'+(image.url.substr(0,47)+'...')+'</a>'; 
+                var link = '<a href="'+image.url+'" target="_blank">'+(image.url.substr(0,47)+'...')+'</a>';
             return  '<div class="cbp-item banner_'+image.id+'" style="padding:5px"><div class="cbp-caption" style="width:290px;"><div class="cbp-caption-defaultWrap"><img src="'+image.file+'" alt="'+image.file+'<br>"></div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '</div></div></div></div>'+
@@ -1071,7 +1071,7 @@ var TableDatatablesManaged = function () {
         //edit
         $(document).on('click', '#grid_venue_banners a.edit', function(){
             var id = $(this).attr('rel');
-            $('#form_model_venue_banners').trigger('reset');            
+            $('#form_model_venue_banners').trigger('reset');
             $('#form_model_venue_banners input[name="id"]:hidden').val(id).trigger('change');
             $('#form_model_venue_banners input[name="action"]:hidden').val('0').trigger('change');
             $('#form_model_venue_banners input[name="file"]:hidden').val('').trigger('change');
@@ -1080,10 +1080,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/banners', 
-                data: {id:id}, 
+                url: '/admin/venues/banners',
+                data: {id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         //banners
                         $('#form_model_venue_banners [name="url"]').val(data.banner.url);
@@ -1091,14 +1091,14 @@ var TableDatatablesManaged = function () {
                         {
                             data.banner.type = data.banner.type.split(',');
                             $.each(data.banner.type,function(k, t) {
-                                $('#form_model_venue_banners :checkbox[value="'+t+'"]').prop('checked',true);   
+                                $('#form_model_venue_banners :checkbox[value="'+t+'"]').prop('checked',true);
                             });
                         }
                         $('#modal_model_venue_banners').modal('show');
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -1110,7 +1110,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to get the banner's information!<br>The request could not be sent to the server.",
@@ -1120,7 +1120,7 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update').modal('show');
                     });
                 }
-            }); 
+            });
         });
         //remove
         $(document).on('click', '#grid_venue_banners a.delete', function(){
@@ -1129,16 +1129,16 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/banners', 
-                data: {action:-1,id:id,parent_id:show_id}, 
+                url: '/admin/venues/banners',
+                data: {action:-1,id:id,parent_id:show_id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#grid_venue_banners .banner_'+id).remove();
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -1150,7 +1150,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to delete the banner's information!<br>The request could not be sent to the server.",
@@ -1170,10 +1170,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/banners', 
-                    data: $('#form_model_venue_banners').serializeArray(), 
+                    url: '/admin/venues/banners',
+                    data: $('#form_model_venue_banners').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             //delete or update
                             if(data.action <= 0)
@@ -1184,13 +1184,13 @@ var TableDatatablesManaged = function () {
                             //add or update
                             if(data.action >= 0)
                             {
-                                var html = fn_venue_banners(data.banner); 
+                                var html = fn_venue_banners(data.banner);
                                 $('#grid_venue_banners').cubeportfolio('appendItems', html);
                                 $('#grid_venue_banners').trigger('resize.cbp');
                             }
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1203,7 +1203,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the banner's information!<br>The request could not be sent to the server.",
@@ -1214,11 +1214,11 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_venue_banners').modal('show');
                         });
                     }
-                }); 
+                });
             }
-            else 
+            else
             {
-                $('#modal_model_update').modal('hide');	   	
+                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
@@ -1232,8 +1232,8 @@ var TableDatatablesManaged = function () {
         });
         //function load form to upload banners
         $('#btn_venue_upload_banners').on('click', function(ev) {
-            FormImageUpload('banners.file','#modal_model_venue_banners','#form_model_venue_banners [name="file"]');       
-        }); 
+            FormImageUpload('banners.file','#modal_model_venue_banners','#form_model_venue_banners [name="file"]');
+        });
         //function with venue_banners  ****************************************************************************************************   VENUE IMAGES END
         //function with venue_videos  *****************************************************************************************************   VENUE VIDEOS BEGIN
         // init videos
@@ -1261,7 +1261,7 @@ var TableDatatablesManaged = function () {
         var fn_venue_videos = function(video)
         {
             if(!video.description) video.description = '';
-            var vid = $($.parseHTML(video.embed_code)); vid.width(310); vid.height(200); 
+            var vid = $($.parseHTML(video.embed_code)); vid.width(310); vid.height(200);
             return  '<div class="cbp-item video_'+video.id+'" style="padding:5px;width:290px;"><div class="cbp-caption"><div class="cbp-caption-defaultWrap">'+vid.prop('outerHTML')+'</div>'+
                     '<div class="cbp-caption-activeWrap"><div class="cbp-l-caption-alignCenter"><div class="cbp-l-caption-body">'+
                     '</div></div></div></div>'+
@@ -1291,10 +1291,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/videos', 
-                data: {id:id}, 
+                url: '/admin/venues/videos',
+                data: {id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#form_model_venue_videos [name="video_type"]').val(data.video.video_type);
                         $('#form_model_venue_videos [name="embed_code"]').val(data.video.embed_code);
@@ -1303,7 +1303,7 @@ var TableDatatablesManaged = function () {
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -1315,7 +1315,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to get the video's information!<br>The request could not be sent to the server.",
@@ -1325,7 +1325,7 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update').modal('show');
                     });
                 }
-            }); 
+            });
         });
         //remove
         $(document).on('click', '#grid_venue_videos a.delete', function(){
@@ -1334,16 +1334,16 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/venues/videos', 
-                data: {action:-1,id:id,venue_id:venue_id}, 
+                url: '/admin/venues/videos',
+                data: {action:-1,id:id,venue_id:venue_id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#grid_venue_videos .video_'+id).remove();
                     }
                     else
                     {
-                        $('#modal_model_update').modal('hide');						
+                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -1355,7 +1355,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_update').modal('hide');	   	
+                    $('#modal_model_update').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to delete the video's information!<br>The request could not be sent to the server.",
@@ -1375,10 +1375,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/videos', 
-                    data: $('#form_model_venue_videos').serializeArray(), 
+                    url: '/admin/venues/videos',
+                    data: $('#form_model_venue_videos').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             //delete or update
                             if(data.action <= 0)
@@ -1389,13 +1389,13 @@ var TableDatatablesManaged = function () {
                             //add or update
                             if(data.action >= 0)
                             {
-                                var html = fn_venue_videos(data.video); 
+                                var html = fn_venue_videos(data.video);
                                 $('#grid_venue_videos').cubeportfolio('appendItems', html);
                                 //$('#grid_venue_videos').trigger('resize.cbp');
                             }
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1408,7 +1408,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the video's information!<br>The request could not be sent to the server.",
@@ -1419,11 +1419,11 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_venue_videos').modal('show');
                         });
                     }
-                }); 
+                });
             }
-            else 
+            else
             {
-                $('#modal_model_update').modal('hide');	   	
+                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form.",
@@ -1437,7 +1437,7 @@ var TableDatatablesManaged = function () {
         });
         //function with venue_videos  *****************************************************************************************************   VENUE VIDEOS END
         //function with venue_ads  *******************************************************************************************************    VENUE ADS BEGIN
-        
+
         function update_ads(items)
         {
             $('#tb_venue_ads').empty();
@@ -1452,8 +1452,8 @@ var TableDatatablesManaged = function () {
                 else if(type=='V')
                     size = ' width="50px" height="100px" ';
                 $('#tb_venue_ads').append('<tr class="'+v.id+'"><td><img '+size+' src="'+v.image+'"></td><td>'+type+'</td><td>'+v.url+'</td><td>'+v.order+'</td><td>'+v.price+'</td><td>'+v.clicks+'</td><td>'+start_date+'</td><td>'+end_date+'</td>'+row_edit+'</tr>');
-            }); 
-        }        
+            });
+        }
         $('#ads_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
                 format: 'YYYY-MM-DD HH:mm',
@@ -1466,7 +1466,7 @@ var TableDatatablesManaged = function () {
                 $('#ads_date input[name="start_date"]').val(start.format('YYYY-MM-DD HH:mm'));
                 $('#ads_date input[name="end_date"]').val(end.format('YYYY-MM-DD HH:mm'));
             }
-        );  
+        );
         $('#form_model_venue_ads select[name="type"]').on('change',function(e){
             var type = $(this).val();
             var width = height = '200px';
@@ -1489,10 +1489,10 @@ var TableDatatablesManaged = function () {
             $('#form_model_venue_ads input[name="action"]:hidden').val(1);
             $('#modal_model_venue_ads').modal('show');
         });
-        $('#tb_venue_ads').on('click', 'button', function(e){            
+        $('#tb_venue_ads').on('click', 'button', function(e){
             var row = $(this).closest('tr');
             //edit
-            if($(this).hasClass('edit')) 
+            if($(this).hasClass('edit'))
             {
                 $('#form_model_venue_ads input[name="id"]:hidden').val('');
                 $('#form_model_venue_ads').trigger('reset');
@@ -1502,10 +1502,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/ads', 
-                    data: {ads_id:row.prop('class')}, 
+                    url: '/admin/venues/ads',
+                    data: {ads_id:row.prop('class')},
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             $('#form_model_venue_ads').trigger('reset');
                             $('#form_model_venue_ads input[name="id"]:hidden').val(data.ads.id);
@@ -1517,7 +1517,7 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_venue_ads').modal('show');
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1529,7 +1529,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to get the Ad's information!<br>The request could not be sent to the server.",
@@ -1542,20 +1542,20 @@ var TableDatatablesManaged = function () {
                 });
             }
             //remove
-            else if($(this).hasClass('delete')) 
+            else if($(this).hasClass('delete'))
             {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/ads', 
-                    data: {action:-1,id:row.prop('class')}, 
+                    url: '/admin/venues/ads',
+                    data: {action:-1,id:row.prop('class')},
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             update_ads(data.ads);
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1567,7 +1567,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to remove the Ad!<br>The request could not be sent to the server.",
@@ -1579,9 +1579,9 @@ var TableDatatablesManaged = function () {
                     }
                 });
             }
-            else 
+            else
             {
-                $('#modal_model_update').modal('hide');	   	
+                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "Invalid Option",
@@ -1600,15 +1600,15 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/venues/ads', 
-                    data: $('#form_model_venue_ads').serializeArray(), 
+                    url: '/admin/venues/ads',
+                    data: $('#form_model_venue_ads').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
-                            update_ads(data.ads);      
+                            update_ads(data.ads);
                         }
                         else{
-			    $('#modal_model_update').modal('hide');						
+			    $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1621,7 +1621,7 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-			$('#modal_model_update').modal('hide');	   	
+			$('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to save the Ad's information!<br>The request could not be sent to the server.",
@@ -1632,11 +1632,11 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_venue_ads').modal('show');
                         });
                     }
-                }); 
+                });
             }
-            else 
+            else
             {
-                $('#modal_model_update').modal('hide');	   	
+                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "You must fill out correctly the form",
@@ -1646,26 +1646,89 @@ var TableDatatablesManaged = function () {
                     $('#modal_model_update').modal('show');
                     $('#modal_model_venue_ads').modal('show');
                 });
-            }    
+            }
         });
         //function load form to upload image
         $('#btn_venue_upload_ads').on('click', function(ev) {
             var type = $('#form_model_venue_ads [name="type"]').val().toLowerCase();
-            FormImageUpload('ads.'+type,'#modal_model_venue_ads','#form_model_venue_ads [name="image"]');       
-        }); 
+            FormImageUpload('ads.'+type,'#modal_model_venue_ads','#form_model_venue_ads [name="image"]');
+        });
         //function with venue_ads   *******************************************************************************************************   VENUE ADS END
-        
+
+        //function with venue_pos  **************************************************************************************************   VENUE POS BEGIN
+        //function overwrite pos fee for all sub shows
+        $('#btn_pos_fee').on('click', function(ev) {
+            var venue_id = $('#form_model_update input[name="id"]').val();
+            var pos_fee = $('#form_model_update input[name="pos_fee"]').val();
+            if(venue_id)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/venues/pos',
+                    data: {action:'pos_fee', venue_id:venue_id, pos_fee:pos_fee},
+                    success: function(data) {
+                        if(data.success) {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                        }
+                        else{
+                            $('#modal_model_update').modal('hide');
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        $('#modal_model_update').modal('hide');
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to update the fees's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                $('#modal_model_update').modal('hide');
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "There is an error. Please, contact an administrator.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
+        });
+        //function with venue_pos  **************************************************************************************************   VENUE POS END
+
         //init functions
-        check_models(); 
+        check_models();
         $('#form_model_update [name="default_processing_fee"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_update [name="default_percent_pfee"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
         $('#form_model_update [name="default_fixed_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_update [name="default_percent_commission"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:100.00,postfix:'%' });
-        
+
         $('#form_model_venue_ads [name="order"]').TouchSpin({ initval:1,min:1,step:1,decimals:0,max:10,prefix:'#' });
         $('#form_model_venue_ads [name="price"]').TouchSpin({ initval:0.00,min:0.00,step:0.01,decimals:2,max:1000000,prefix:'$' });
         $('#form_model_venue_ads [name="clicks"]').TouchSpin({ initval:0,min:0,step:1,decimals:0,max:1000000,prefix:'*' });
-        
+
     }
     return {
         //main function to initiate the module
@@ -1673,7 +1736,7 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable();        
+            initTable();
         }
     };
 }();
@@ -1681,7 +1744,7 @@ var TableDatatablesManaged = function () {
 var FormValidation = function () {
     // advance validation
     var handleValidation = function() {
-        // for more info visit the official plugin documentation: 
+        // for more info visit the official plugin documentation:
         // http://docs.jquery.com/Plugins/Validation
             var form = $('#form_model_update');
             var error = $('.alert-danger', form);
@@ -1707,12 +1770,12 @@ var FormValidation = function () {
                         minlength: 5,
                         maxlength: 2000,
                         required: true
-                    },  
+                    },
                     description: {
                         minlength: 5,
                         maxlength: 2000,
                         required: false
-                    },  
+                    },
                     youtube: {
                         minlength: 5,
                         maxlength: 500,
@@ -1766,7 +1829,7 @@ var FormValidation = function () {
                         required: true
                     }
                 },
-                invalidHandler: function (event, validator) { //display error alert on form submit   
+                invalidHandler: function (event, validator) { //display error alert on form submit
                     success.hide();
                     error.show();
                     App.scrollTo(error, -200);

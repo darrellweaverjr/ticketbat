@@ -737,18 +737,9 @@
                                                 <span class="required">Options to seller</span>
                                             </label><br><br>
                                             <div class="form-group">
-                                                <label class="control-label col-md-4">Add extra FEE options on "BUY" page</label>
+                                                <label class="control-label col-md-5">Fee for tickets (Only POS system)</label>
                                                 <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_optional_fees[0]"/>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_optional_fees[1]"/>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_optional_fees[2]"/>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_optional_fees[3]"/>
+                                                    <input type="number" class="form-control" name="pos_fee"/>
                                                 </div>
                                             </div>
                                         </div>

@@ -31,6 +31,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('bands/remove', 'BandController@remove')->middleware('permissions:BANDS');
     Route::match(['get','post'], 'bands/{autopen?}', 'BandController@index')->middleware('permissions:BANDS');
     //venues
+    Route::post('venues/pos', 'VenueController@pos')->middleware('permissions:VENUES');
     Route::post('venues/images', 'VenueController@images')->middleware('permissions:VENUES');
     Route::post('venues/banners', 'VenueController@banners')->middleware('permissions:VENUES');
     Route::post('venues/videos', 'VenueController@videos')->middleware('permissions:VENUES');

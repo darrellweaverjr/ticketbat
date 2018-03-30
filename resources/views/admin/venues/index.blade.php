@@ -133,9 +133,6 @@
                                         <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false"> Reports </a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_pos" data-toggle="tab" aria-expanded="false"> POS </a>
-                                    </li>
-                                    <li class="">
                                         <a href="#tab_model_update_stages" data-toggle="tab" aria-expanded="true"> Stages </a>
                                     </li>
                                     <li class="">
@@ -152,6 +149,9 @@
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_ads" data-toggle="tab" aria-expanded="true"> Ads </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_pos" data-toggle="tab" aria-expanded="false"> POS </a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
@@ -376,20 +376,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane" id="tab_model_update_pos">
-                                        <div class="row">
-                                            <label class="control-label">
-                                                <span class="required">Options to admin/seller</span>
-                                            </label><br><br>
-                                            <div class="form-group">
-                                                <label class="control-label col-md-7">Disable cash breakdown on "shopping cart" page (hide it and fill it out by default)</label>
-                                                <div class="col-md-5">
-                                                    <input type="hidden" name="disable_cash_breakdown" value="0"/>
-                                                    <input type="checkbox" class="make-switch input-large" name="disable_cash_breakdown" value="1" data-on-text="Yes, do it" data-off-text="No, keep it" data-on-color="danger" data-off-color="primary">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="tab-pane" id="tab_model_update_stages">
                                         <div class="btn-group">
                                             <button type="button" id="btn_model_stage_add" class="btn sbold bg-green"> Add
@@ -465,6 +451,29 @@
                                                 <tbody id="tb_venue_ads">
                                                 </tbody>
                                             </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_pos">
+                                        <div class="row" style="padding: 0px 40px">
+                                            <label class="control-label">
+                                                <span class="required">Options to admin/seller</span>
+                                            </label><br><br>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Disable cash breakdown on "shopping cart" page (hide it and fill it out by default)</label>
+                                                <div class="col-md-7">
+                                                    <input type="hidden" name="disable_cash_breakdown" value="0"/>
+                                                    <input type="checkbox" class="make-switch input-large" name="disable_cash_breakdown" value="1" data-on-text="Yes, do it" data-off-text="No, keep it" data-on-color="danger" data-off-color="primary">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Fee for tickets (Only POS system)</label>
+                                                <div class="col-md-2">
+                                                    <input type="number" class="form-control" name="pos_fee"/>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <button type="button" id="btn_pos_fee" class="btn sbold bg-red">Override fee for all the shows in this venue</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
