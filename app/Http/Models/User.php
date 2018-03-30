@@ -12,7 +12,7 @@ use App\Mail\EmailSG;
  * @author ivan
  */
 class User extends Authenticatable
-{    
+{
     protected $fillable = [
         'email', 'password',
     ];
@@ -109,7 +109,7 @@ class User extends Authenticatable
             $length = 10;
             $new_password = substr(bcrypt(bin2hex(uniqid())),-1*$length);
             $this->slug = $new_password;
-        }        
+        }
         $this->password = md5($new_password);
     }
     /**
@@ -121,7 +121,7 @@ class User extends Authenticatable
     }
     //PERSONALIZED FUNCTIONS
     /*
-     * send welcome email 
+     * send welcome email
      */
     public function update_customer($customer=null)
     {
@@ -132,7 +132,7 @@ class User extends Authenticatable
             {
                 $customer = new Customer;
                 $customer->email = $this->email;
-                $location = new Location;                
+                $location = new Location;
             }
             else
             {
@@ -161,9 +161,9 @@ class User extends Authenticatable
         } catch (Exception $ex) {
             return false;
         }
-    }  
+    }
     /*
-     * send welcome email 
+     * send welcome email
      */
     public function welcome_email($first_purchase=false)
     {
@@ -177,25 +177,25 @@ class User extends Authenticatable
         } catch (Exception $ex) {
             return false;
         }
-    }   
+    }
     /*
      * set new user when purchase
      */
     public static function customer_set($info,$current)
     {
         try {
-            //init set 
-            $send_welcome_email = false;     
+            //init set
+            $send_welcome_email = false;
             //if it is a seller/admin dont update the users table, only the customers one
-            if(Auth::check() && in_array(Auth::user()->user_type_id, [1,7]))
-            {   
+            if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
+            {
                 //get customer
                 $customer = Customer::where('email',trim($info['email']))->first();
                 if(!$customer)
                 {
                     $customer = new Customer;
                     $customer->email = trim($info['email']);
-                    $location = new Location;  
+                    $location = new Location;
                     $location->address = Auth::user()->location->address;
                     $location->city = Auth::user()->location->city;
                     $location->state = Auth::user()->location->state;
@@ -208,7 +208,7 @@ class User extends Authenticatable
                     $location->save();
                     $customer->location()->associate($location);
                 }
-                //create customer                
+                //create customer
                 $customer->first_name = trim($info['first_name']);
                 $customer->last_name = trim($info['last_name']);
                 $customer->phone = (!empty($info['phone']))? $info['phone'] : null;
@@ -217,7 +217,7 @@ class User extends Authenticatable
                     return ['success'=>false, 'send_welcome_email'=>0, 'msg'=>'There is an error setting up the customer information.'];
                 return ['success'=>true, 'send_welcome_email'=>0, 'user_id'=>Auth::user()->id, 'customer_id'=>$customer->id];
             }
-            else 
+            else
             {
                 //set up user and customer
                 $user = User::where('email','=',trim($info['email']))->first();
@@ -276,5 +276,5 @@ class User extends Authenticatable
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error setting up the customer information!'];
         }
-    }   
+    }
 }

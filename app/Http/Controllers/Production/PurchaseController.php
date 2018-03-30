@@ -264,7 +264,7 @@ class PurchaseController extends Controller
                         if(empty($after_purchase_note[$p->show_time->show->id]) && !empty($p->show_time->show->after_purchase_note))
                             $after_purchase_note[$p->show_time->show->id] = $p->show_time->show->after_purchase_note;
                         //enable purchase link
-                        if(empty($after_purchase_link) && Auth::check() && in_array(Auth::user()->user_type_id,[1,7]))
+                        if(empty($after_purchase_link) && Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
                             $after_purchase_link = '/buy/'.$p->show_time->show->slug.'/'.$p->show_time_id;
                     }
                 }
