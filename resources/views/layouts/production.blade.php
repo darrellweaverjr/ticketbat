@@ -32,15 +32,7 @@
         <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
         <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
         
-        <!-- BEGIN GTAG VIEW -->
-        {{--@includeIf('production.general.gtag',['ua_conversion_code'=>(!empty($ua_conversion_code))? $ua_conversion_code:null,--}}
-                                              {{--'ua_code'=>Session::get('ua_code',null),--}}
-                                              {{--'analytics'=>(!empty($analytics))? $analytics: null,--}}
-                                              {{--'transaction'=>(isset($transaction))? $transaction: null,--}}
-                                              {{--'totals'=>(isset($totals))? $totals: null,--}}
-                                              {{--'conversion_code'=>(!empty($conversion_code))? $conversion_code: null])--}}
-        <!-- END GTAG VIEW -->
-        
+         
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -58,7 +50,7 @@
         <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="{{config('app.theme')}}css/layout.min.css" rel="stylesheet" type="text/css" />
-        <link href="{{config('app.theme')}}css/style_p.css?v=1522346199" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/style_p.css?v=1522349999" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 
         <link rel="apple-touch-icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 

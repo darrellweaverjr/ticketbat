@@ -3,7 +3,7 @@ var PurchaseFunctions = function () {
     var initFunctions = function () {
 
         //remove item
-        $('#tb_items tr > td:last-child button').on('click', function(ev) {
+        $('#tb_items tr > td.rm-tix').on('click', function(ev) {
             var row = $(this).closest('tr');
             var id = row.attr('id');
             jQuery.ajax({
