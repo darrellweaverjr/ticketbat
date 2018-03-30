@@ -15,6 +15,9 @@ html, body {
 .mt-10 {
     margin-top: 10px !important;
 }
+.mt-15-mobile {
+    margin-top: 15px !important;
+}
 .mt-30 {
     margin-top: 30px !important;
 }
@@ -30,6 +33,18 @@ html, body {
 .ml-20 {
     margin-left: 20px !important;
 }
+.mb-5 {
+    margin-bottom: 5px !important;
+}
+.mb-15 {
+    margin-bottom: 15px !important;
+}
+.mb-15-mobile {
+    margin-bottom: 15px !important;
+}
+.mb-25 {
+    margin-bottom: 25px !important;
+}
 .p-3 {
     padding: 3px 3px 3px 3px !important;
 }
@@ -38,6 +53,9 @@ html, body {
 }
 .pt-10 {
     padding-top: 10px !important;
+}
+.pl-0 {
+    padding-left: 0px !important;
 }
 .lh-25 {
     line-height: 25px;
@@ -362,6 +380,35 @@ html, body {
     padding: 0 !important;
 }
 
+/* ================================================================= */
+/* SHOPPING CART    ================================================ */
+/* ================================================================= */
+
+
+#modal_cvv div.modal-dialog {
+    width: 95%;
+}
+#modal_share_tickets div.modal-dialog {
+    width: 95%;
+}
+.cash_input div {
+    padding: 5px;
+}
+
+.cash_input button {
+    padding: 5px;
+    font-size: 40px !important;
+    font-weight: bold !important;
+}
+.cash_total input {
+    font-size: 20px !important;
+    font-weight: bold !important;
+    min-width: 50px;
+}
+.cart-item-count{
+    float: left!important;
+}
+
 
 /* BEGIN RESPONSIVE  ======================================================  */
 /* NOTE - ALL RESPONSIVE STYLES GO HERE - Do not duplicate media queries!    */
@@ -448,6 +495,12 @@ html, body {
 
 }
 
+@media screen and (max-width: 992px) {
+    .nav>li>a {
+        padding: 10px 5px;
+    }
+}
+
 @media screen and (max-width: 1130px) {
     .home-page-panel{
         width: 100%;
@@ -466,6 +519,13 @@ html, body {
 }
 
 @media (min-width: 767px ) {
+
+    .mt-15-mobile {
+        margin-top: 0px !important;
+    }
+    .mb-15-mobile {
+        margin-bottom: 0px !important;
+    }
     .event-main-title p.presented-by {
         text-align: right;
     }
@@ -496,6 +556,15 @@ html, body {
     }
     .event-add-to-cart {
         margin-top: 50px;
+    }
+    #modal_cvv div.modal-dialog {
+        width: 50%;
+    }
+    #modal_share_tickets div.modal-dialog {
+        width: 60%;
+    }
+    .cart-item-count{
+        float: right!important;
     }
 }
 
