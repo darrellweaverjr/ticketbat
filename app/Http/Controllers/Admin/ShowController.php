@@ -313,7 +313,9 @@ class ShowController extends Controller{
                     $b->file = Image::view_image($b->file);
                 $videos = DB::table('videos')->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
                                 ->select('videos.*')->where('show_videos.show_id','=',$show->id)->distinct()->get();
-                return ['success'=>true,'show'=>$show,'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'sweepstakes'=>$sweepstakes,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+                $pos = DB::table('venues')
+                                ->select('venues.pos_fee')->where('venues.id','=',$show->venue_id)->pluck('pos_fee');
+                return ['success'=>true,'show'=>$show,'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'sweepstakes'=>$sweepstakes,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos,'pos'=>$pos];
             }
         } catch (Exception $ex) {
             throw new Exception('Error Shows Get: '.$ex->getMessage());

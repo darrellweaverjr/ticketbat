@@ -741,6 +741,7 @@
                                                 <div class="col-md-2">
                                                     <input type="number" class="form-control" name="pos_fee"/>
                                                 </div>
+                                                <div class="col-md-5 venue_fee_default"></div>
                                             </div>
                                         </div>
                                     </div>

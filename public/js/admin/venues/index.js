@@ -1660,6 +1660,7 @@ var TableDatatablesManaged = function () {
         $('#btn_pos_fee').on('click', function(ev) {
             var venue_id = $('#form_model_update input[name="id"]').val();
             var pos_fee = $('#form_model_update input[name="pos_fee"]').val();
+            $('#modal_model_update').modal('hide');
             if(venue_id)
             {
                 jQuery.ajax({
@@ -1677,9 +1678,9 @@ var TableDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
+                            $('#modal_model_update').modal('show');
                         }
                         else{
-                            $('#modal_model_update').modal('hide');
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
                                 text: data.msg,
@@ -1691,7 +1692,6 @@ var TableDatatablesManaged = function () {
                         }
                     },
                     error: function(){
-                        $('#modal_model_update').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: "There was an error trying to update the fees's information!<br>The request could not be sent to the server.",
@@ -1705,7 +1705,6 @@ var TableDatatablesManaged = function () {
             }
             else
             {
-                $('#modal_model_update').modal('hide');
                 swal({
                     title: "<span style='color:red;'>Error!</span>",
                     text: "There is an error. Please, contact an administrator.",
