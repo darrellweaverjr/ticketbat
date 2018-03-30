@@ -613,11 +613,11 @@
     <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
-    <script src="/js/production/shoppingcart/update.js?v=1522346199" type="text/javascript"></script>
-    <script src="/js/production/general/share_tickets.js?v=1522346199" type="text/javascript"></script>
-    <script src="/js/production/shoppingcart/share_tickets.js?v=1522346199" type="text/javascript"></script>
-    <script src="/js/production/shoppingcart/cash.js?v=1522346199" type="text/javascript"></script>
-    <script src="/js/production/shoppingcart/swipe.js?v=1522346199" type="text/javascript"></script>
-    <script src="/js/production/shoppingcart/validations.js?v=1522346199" type="text/javascript"></script>
-    <script src="/js/production/shoppingcart/index.js?v=1522346199" type="text/javascript"></script>
+    <script src="/js/production/shoppingcart/update.js?v=1522349999" type="text/javascript"></script>
+    <script src="/js/production/general/share_tickets.js?v=1522349999" type="text/javascript"></script>
+    <script src="/js/production/shoppingcart/share_tickets.js?v=1522349999" type="text/javascript"></script>
+    <script src="/js/production/shoppingcart/cash.js?v=1522349999" type="text/javascript"></script>
+    <script src="/js/production/shoppingcart/swipe.js?v=1522349999" type="text/javascript"></script>
+    <script src="/js/production/shoppingcart/validations.js?v=1522349999" type="text/javascript"></script>
+    <script src="/js/production/shoppingcart/index.js?v=1522349999" type="text/javascript"></script>
 @endsection
