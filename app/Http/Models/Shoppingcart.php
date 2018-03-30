@@ -60,7 +60,7 @@ class Shoppingcart extends Model
                             ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id, shoppingcart.options, shows.printed_tickets,
                                               shoppingcart.product_type, shoppingcart.cost_per_product, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, shoppingcart.number_of_items, shoppingcart.item_id,
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent, shows.slug, show_times.id AS show_time_id,
-                                              tickets.processing_fee AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
+                                              tickets.processing_fee AS processing_fee, COALESCE(shows.pos_fee,venues.pos_fee) AS pos_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
                                               (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date, shows.id AS show_id,
                                               (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date, shows.venue_id,
                                               (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty, shows.ticket_limit, tickets.max_tickets,
@@ -72,6 +72,9 @@ class Shoppingcart extends Model
         //search for availables items
         foreach ($items as $key=>$i)
         {
+            //POS system
+            if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))) && !empty($i->pos_fee))
+                $i->processing_fee = $i->pos_fee;
             //recalculate availables tickets
             if($i->max_tickets>0 && $i->available_qty<-1)
                 $i->available_qty = 0;
@@ -119,7 +122,7 @@ class Shoppingcart extends Model
                 $i->unavailable = 1;
             else if($i->available_qty!=-1 && $i->available_qty-$i->number_of_items<0)   //available qty of items to buy
             {
-                if($i->available_qty>0)
+                if($i->available_qty>0 && $i->number_of_items>0)
                 {
                     $qty_item_pay = $i->number_of_items;
                     $coupon = json_decode($i->coupon,true);
@@ -494,8 +497,8 @@ class Shoppingcart extends Model
                 $ticket = DB::table('seats')
                         ->join('tickets', 'seats.ticket_id', '=' ,'tickets.id')
                         ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat, tickets.ticket_type,
-                                          COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0)) AS retail_price,
-                                          COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0)) AS processing_fee'))
+                                          COALESCE(seats.retail_price,tickets.retail_price,0) AS retail_price,
+                                          COALESCE(seats.processing_fee,tickets.processing_fee,0) AS processing_fee'))
                         ->where('seats.id','=',$seat_id)->where('seats.status','=','Created')->first();
             }
             if(!$ticket)

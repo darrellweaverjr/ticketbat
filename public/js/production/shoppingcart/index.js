@@ -14,6 +14,8 @@ var PurchaseFunctions = function () {
                 success: function(data) {
                     if(data.success)
                     {
+                        UpdateShoppingcartFunctions.init( data.cart );
+                        row.remove();
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
                             html: true,
@@ -21,8 +23,6 @@ var PurchaseFunctions = function () {
                             type: "success",
                             showConfirmButton: false
                         });
-                        row.remove();
-                        UpdateShoppingcartFunctions.init( data.cart );
                     }
                 },
                 error: function(){
@@ -214,7 +214,7 @@ var PurchaseFunctions = function () {
             });
         });
 
-        //functio to update shoppingcart
+        //function to update shoppingcart
         function update_shoppingcart()
         {
             jQuery.ajax({
@@ -276,14 +276,14 @@ var SubmitFunctions = function () {
                 disabled_submit();
             }
         });
-        
+
         //on seller button shorcut to check and process
         $('#btn_check_pay').on('click', function(ev) {
             $('#accept_terms').trigger('click');
             if($('#btn_process').prop('disabled')==false)
                 $('#btn_process').trigger('click');
         });
-        
+
         //on accept terms
         $('#accept_terms').bind('click','change', function(e){
             var proceed = false;
@@ -442,11 +442,11 @@ var GalleryImages = function () {
             showPagination: false,
             rewindNav: true
         });
-        
+
         //check for broken images to change
         function check_images(){
             $('#myBanners .cbp-item.filtered:not(.hidden) img').each(function(){
-                if((typeof this.naturalWidth != "undefined" && this.naturalWidth < 1 ) || this.readyState == 'uninitialized' || this.naturalWidth == "undefined" ) 
+                if((typeof this.naturalWidth != "undefined" && this.naturalWidth < 1 ) || this.readyState == 'uninitialized' || this.naturalWidth == "undefined" )
                     $(this).attr('src', $('meta[name="broken-image"]').attr('content') );
             });
         }
@@ -454,7 +454,7 @@ var GalleryImages = function () {
         $(window).load(function(){
             check_images();
         });
-        
+
     }
     return {
         //main function to initiate map samples
