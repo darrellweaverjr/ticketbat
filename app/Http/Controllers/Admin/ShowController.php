@@ -114,6 +114,7 @@ class ShowController extends Controller{
                         {
                             $onlyerrors = 1;
                             $shows = DB::table('shows')
+                                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
@@ -125,7 +126,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
                                                  'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
@@ -146,6 +147,7 @@ class ShowController extends Controller{
                             $onlyerrors = 0;
                             //get all records
                             $shows = DB::table('shows')
+                                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
@@ -157,7 +159,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
                                                  'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where(function($query)
@@ -177,6 +179,7 @@ class ShowController extends Controller{
                         {
                             $onlyerrors = 1;
                             $shows = DB::table('shows')
+                                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
@@ -188,7 +191,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
                                                  'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
@@ -204,6 +207,7 @@ class ShowController extends Controller{
                             $onlyerrors = 0;
                             //get all records
                             $shows = DB::table('shows')
+                                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
@@ -215,7 +219,7 @@ class ShowController extends Controller{
                                             $join->on('shows.id','=','images.show_id');
                                         })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
-                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code',
+                                                 'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
                                                  'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->orderBy('shows.name')->groupBy('shows.id')

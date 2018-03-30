@@ -88,7 +88,7 @@
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
-                                        <h4><b>{{$s->name}}&emsp;</b></h4>
+                                        <h4><b>{{$s->name}}&emsp;<small><i>({{$s->venue}})</i></small></b></h4>
                                     </div>
                                     <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$s->short_description}}</div>
                                 </td>
