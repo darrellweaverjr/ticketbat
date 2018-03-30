@@ -63,7 +63,7 @@
                       <td style='text-align:right'>NET(F+C)</td>
                       @endif
                   </tr>
-                  @foreach($d['table_future'] as $e)  
+                  @foreach($d['table_future'] as $e)
                     <tr>
                         <td>{{$e->show_time}}</td>
                         @if($d['type'] == 'venue')
@@ -98,7 +98,7 @@
               </table>
             </div>
             @endforeach
-            
+
         @elseif($format == 'sales')
             @foreach($data as $d)
             <div style="page-break-after:always;">
@@ -107,6 +107,53 @@
                     <br><br>SALES REPORT
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
+
+            @if(isset($d['table_financial']))
+            <hr>
+                @foreach($d['table_financial'] as $t)
+              <hr><table>
+                  <tr class="ttitle">
+                      <td colspan="5">{{$t['title']}}</td>
+                      <td colspan="2" style='text-align:right'>@if(!empty($t['percent'])) @if($t['percent']>0)+ @endif {{$t['percent']}}% NET (C+F) @endif</td>
+                  </tr>
+                  <tr class="theader">
+                      <td width="25%">VENUES</td>
+                      <td style='text-align:center'>TRANSACTIONS</td>
+                      <td style='text-align:center'>TICKETS</td>
+                      <td style='text-align:right'>REVENUE</td>
+                      <td style='text-align:right'>FEES(F)</td>
+                      <td style='text-align:right'>COMMIS.(C)</td>
+                      <td style='text-align:right'>NET(C+F)</td>
+                  </tr>
+                  @foreach($t['data'] as $v)
+                  @if($d['type'] == 'admin' || $d['type'] != 'admin' && $v->name == $d['title'])
+                  <tr>
+                      <td width="25%" style='text-align:left'>{{$v->name}}</td>
+                      <td style='text-align:center'>{{number_format($v->transactions)}}</td>
+                      <td style='text-align:center'>{{number_format($v->tickets)}}</td>
+                      <td style='text-align:right'>$ {{number_format($v->paid,2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($v->fees,2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($v->commissions,2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($v->amount,2)}}</td>
+                  </tr>
+                  @endif
+                  @endforeach
+                  @if($d['type'] == 'admin')
+                  <tr class="ttotal">
+                      <td width="25%" style='text-align:left'>Totals</td>
+                      <td style='text-align:center'>{{number_format($t['total']['transactions'])}}</td>
+                      <td style='text-align:center'>{{number_format($t['total']['tickets'])}}</td>
+                      <td style='text-align:right'>$ {{number_format($t['total']['paid'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($t['total']['fees'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($t['total']['commissions'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($t['total']['amount'],2)}}</td>
+                  </tr>
+                  @endif
+              </table>
+              @endforeach
+            @endif
+
+            <hr>
              @if(isset($d['table_types']))
               <hr><table>
                   <tr class="ttitle">
@@ -121,7 +168,7 @@
                       <td style='text-align:right'>COMMIS.(C)</td>
                       <td style='text-align:right'>NET(R-C-F)</td>
                   </tr>
-                  @foreach($d['table_types']['data'] as $e)  
+                  @foreach($d['table_types']['data'] as $e)
                     <tr>
                         <td>{{$e->payment_type}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
@@ -131,7 +178,7 @@
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
                     </tr>
-                  @endforeach 
+                  @endforeach
                   @if(count($d['table_types']['others']))
                   <tr class="ttotal">
                         <td>Subtotals</td>
@@ -142,7 +189,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['commissions'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['amount'],2)}}</td>
                     </tr>
-                  @foreach($d['table_types']['others'] as $e)  
+                  @foreach($d['table_types']['others'] as $e)
                     <tr>
                         <td>{{$e->payment_type}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
@@ -152,7 +199,7 @@
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
                     </tr>
-                  @endforeach 
+                  @endforeach
                   @endif
                   <tr class="ttotal">
                         <td>Totals</td>
@@ -165,7 +212,7 @@
                     </tr>
               </table>
               @endif
-              
+
               @if(isset($d['table_sellers']))
               <hr><table>
                   <tr class="ttitle">
@@ -180,7 +227,7 @@
                       <td style='text-align:right'>COMMIS.(C)</td>
                       <td style='text-align:right'>NET(C+F)</td>
                   </tr>
-                  @foreach($d['table_sellers']['data'] as $e)  
+                  @foreach($d['table_sellers']['data'] as $e)
                     <tr>
                         <td>{{$e->seller}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
@@ -190,7 +237,7 @@
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
                     </tr>
-                  @endforeach 
+                  @endforeach
                   @if(count($d['table_sellers']['data'])>0)
                   <tr class="ttotal">
                         <td>Totals</td>
@@ -204,52 +251,7 @@
                     @endif
               </table>
               @endif
-              
-              
-              @if(isset($d['table_financial']))
-              @foreach($d['table_financial'] as $t)
-            <hr><table>
-                <tr class="ttitle">
-                    <td colspan="5">{{$t['title']}}</td>
-                    <td colspan="2" style='text-align:right'>@if(!empty($t['percent'])) @if($t['percent']>0)+ @endif {{$t['percent']}}% NET (C+F) @endif</td>
-                </tr>
-                <tr class="theader">
-                    <td width="25%">VENUES</td>
-                    <td style='text-align:center'>TRANSACTIONS</td>
-                    <td style='text-align:center'>TICKETS</td>
-                    <td style='text-align:right'>REVENUE</td>
-                    <td style='text-align:right'>FEES(F)</td>
-                    <td style='text-align:right'>COMMIS.(C)</td>
-                    <td style='text-align:right'>NET(C+F)</td>
-                </tr>
-                @foreach($t['data'] as $v)
-                @if($d['type'] == 'admin' || $d['type'] != 'admin' && $v->name == $d['title'])
-                <tr>
-                    <td width="25%" style='text-align:left'>{{$v->name}}</td>
-                    <td style='text-align:center'>{{number_format($v->transactions)}}</td>
-                    <td style='text-align:center'>{{number_format($v->tickets)}}</td>
-                    <td style='text-align:right'>$ {{number_format($v->paid,2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($v->fees,2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($v->commissions,2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($v->amount,2)}}</td>
-                </tr>
-                @endif
-                @endforeach
-                @if($d['type'] == 'admin')
-                <tr class="ttotal">
-                    <td width="25%" style='text-align:left'>Totals</td>
-                    <td style='text-align:center'>{{number_format($t['total']['transactions'])}}</td>
-                    <td style='text-align:center'>{{number_format($t['total']['tickets'])}}</td>
-                    <td style='text-align:right'>$ {{number_format($t['total']['paid'],2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($t['total']['fees'],2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($t['total']['commissions'],2)}}</td>
-                    <td style='text-align:right'>$ {{number_format($t['total']['amount'],2)}}</td>
-                </tr>
-                @endif
-            </table>
-            @endforeach
-              @endif
-              
+
               @if(isset($d['table_shows']))
               <hr><table>
                   <tr class="ttitle">
@@ -266,7 +268,7 @@
                         <td style='text-align:right'>COMMIS.(C)</td>
                         <td style='text-align:right'>NET (R-F-C)</td>
                   </tr>
-                  @foreach($d['table_shows'] as $e)  
+                  @foreach($d['table_shows'] as $e)
                       <tr>
                             <td width="25%" align='left'>{{$e->name}}</td>
                             <td style='text-align:center'>{{$e->show_time}}</td>
