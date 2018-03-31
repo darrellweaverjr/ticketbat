@@ -153,6 +153,9 @@ class EventController extends Controller
                 ->where(function ($query) use ($nowVar) {
                     $query->where('show_times.show_time', '>=', $nowVar);
                 })
+                ->where(function ($query) use ($nowVar) {
+                    $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)', '>=', $nowVar ));
+                })
                 ->orderBy('show_times.show_time')->get();
             //get reviews
             $reviews = DB::table('show_reviews')
