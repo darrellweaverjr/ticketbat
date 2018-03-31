@@ -11,6 +11,7 @@ use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\User;
 use App\Http\Models\Util;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
@@ -129,7 +130,16 @@ class EventController extends Controller
             foreach ($event->bands as $b) {
                 $b->image_url = Image::view_image($b->image_url);
             }
+
+
             //get showtimes
+            // Don't hide shows for Seller accounts hack
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
+                $nowVar = Carbon::now()->subDay()->toDateTimeString();
+            } else {
+                $nowVar = Carbon::now()->toDateTimeString();
+            }
+
             $event->showtimes = DB::table('show_times')
                 ->join('shows', 'show_times.show_id', '=', 'shows.id')
                 ->select(DB::raw('show_times.id, show_times.time_alternative,
@@ -140,11 +150,11 @@ class EventController extends Controller
                                                  IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
                                                  IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
                 ->where('show_times.show_id', $event->show_id)->where('show_times.is_active', '>', 0)
-                ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
-                ->where(function ($query) {
-                    if (Auth::check() && !in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
-                        $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
-                    }
+                ->where(function ($query) use ($nowVar) {
+                    $query->where('show_times.show_time', '>=', $nowVar);
+                })
+                ->where(function ($query) use ($nowVar) {
+                    $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)', '>=', $nowVar ));
                 })
                 ->orderBy('show_times.show_time')->get();
             //get reviews
@@ -180,6 +190,14 @@ class EventController extends Controller
             if (empty($slug) || empty($product)) {
                 return redirect()->route('index');
             }
+
+            // Don't hide shows for Seller accounts hack
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
+                $nowVar = Carbon::now()->subDay()->toDateTimeString();
+            } else {
+                $nowVar = Carbon::now()->toDateTimeString();
+            }
+
             //get all records
             $event = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
@@ -191,16 +209,17 @@ class EventController extends Controller
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                 ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
-                ->where(function ($query) {
+                ->where(function ($query) use ($nowVar) {
                     $query->whereNull('shows.on_featured')
-                        ->orWhere('shows.on_featured', '<=', \Carbon\Carbon::now());
+                        ->orWhere('shows.on_featured', '<=', $nowVar);
                 })
-                ->where('shows.slug', $slug)->where('show_times.id', $product)->where('show_times.is_active', '>', 0)
-                ->whereRaw(DB::raw('show_times.show_time >= CURDATE()'))
-                ->where(function ($query) {
-                    if (Auth::check() && !in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
-                        $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR) > NOW()'));
-                    }
+                ->where('shows.slug', $slug)->where('show_times.id', $product)
+                ->where('show_times.is_active', '>', 0)
+                ->where(function ($query) use ($nowVar) {
+                    $query->where('show_times.show_time', '>=', $nowVar);
+                })
+                ->where(function ($query) use ($nowVar) {
+                    $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)', '>=', $nowVar ));
                 })
                 ->first();
             if (!$event) {
@@ -274,10 +293,9 @@ class EventController extends Controller
             $event->tickets = [];
 
             // Don't hide shows for Seller accounts hack
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
-            {
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
                 $showGAdoor = "WillNeverEqualthisValue";
-            }else{
+            } else {
                 $showGAdoor = "GA DOOR";
             }
 
