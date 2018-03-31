@@ -76,7 +76,7 @@
                                             <div class="panel-heading p-3">
                                                 <h4 class="panel-title {{$t['class']}} event-ticket-type">
                                                     <a class="accordion data-type="{{$t['type']}}" data-toggle="collapse" data-parent="#tickets_accordion"
-                                                       href="#collapse_{{$index}}"> <strong class="lh-25">{{$t['type']}}</strong> </a>
+                                                    href="#collapse_{{$index}}"> <strong class="lh-25">{{$t['type']}}</strong> </a>
                                                 </h4>
                                             </div>
                                             <div id="collapse_{{$index}}" class="panel">
