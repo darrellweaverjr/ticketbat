@@ -14,15 +14,26 @@ use App\Http\Models\Manifest;
 class ReportManifestController extends Controller{
 
     protected $manifests = ['Preliminary','Primary','LastMinute'];
+    protected $date_manifest;
+    protected $previous_date;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($date=null)
     {
-
+        if((!empty($date) && strtotime($date)))
+        {
+            $this->date_manifest = date('Y-m-d H:i',strtotime($date));
+            $this->previous_date = true;
+        }
+        else
+        {
+            $this->date_manifest = date('Y-m-d H:i',strtotime('now'));
+            $this->previous_date = false;
+        }
     }
     /*
      * get sales report pdf
@@ -30,13 +41,11 @@ class ReportManifestController extends Controller{
     public function init()
     {
         try {
-            //init
-            $current = date('Y-m-d');
             //send reports for each type of manifest
             foreach ($this->manifests as $type)
             {
                 //create report
-                $info = $this->create_report($type,$current);
+                $info = $this->create_report($type);
                 if(!empty($info['dates']))
                 {
                     //create and send report for each date
@@ -66,7 +75,7 @@ class ReportManifestController extends Controller{
     /*
      * create data to storage on DB
      */
-    public function create_report($type,$current)
+    public function create_report($type)
     {
         try {
             $info = ['dates'=>[],'type'=>'','subject'=>''];
@@ -82,16 +91,16 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','>=',$current)
+                            ->whereDate('show_times.show_time','=',$this->date_manifest)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
                                       ->whereRaw('show_times.id = manifest_emails.show_time_id')
                                       ->where('manifest_type','=','Preliminary');
-                            })
-                            ->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) < NOW()')  
-                            ->groupBy('show_times.id')
-                            ->distinct()->take(1)->get()->toArray();
+                            });
+                    if(!$this->previous_date)
+                        $dates = $dates->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) <= "'.$this->date_manifest.'"');
+                    $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Preliminary','subject'=>'Preliminary Manifest for '];
                     break;
                 case 'Primary':
@@ -103,16 +112,16 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','>=',$current)
+                            ->whereDate('show_times.show_time','=',$this->date_manifest)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
                                       ->whereRaw('show_times.id = manifest_emails.show_time_id')
                                       ->where('manifest_type','=','Primary');
-                            })
-                            ->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) < NOW()')
-                            ->groupBy('show_times.id')
-                            ->distinct()->take(1)->get()->toArray();
+                            });
+                    if(!$this->previous_date)
+                        $dates = $dates->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) <= "'.$this->date_manifest.'"');
+                    $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Primary Manifest for '];
                     break;
                 case 'LastMinute':

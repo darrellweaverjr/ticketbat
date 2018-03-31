@@ -37,6 +37,9 @@
                             <button id="btn_model_pdf" class="btn sbold bg-yellow" disabled="true">PDF
                                 <i class="fa fa-file-pdf-o"></i>
                             </button>
+                            <a data-toggle="modal" href="#modal_generate_manifest" class="btn sbold bg-purple">Generate
+                                <i class="fa fa-settings"></i>
+                            </a>
                             <button id="btn_model_resend" class="btn sbold bg-purple" disabled="true">Re-send
                                 <i class="fa fa-send"></i>
                             </button>
@@ -142,7 +145,7 @@
                                         <span></span>
                                     </label><hr>
                                     <label class="mt-radio mt-radio-single mt-radio-outline col-md-2">
-                                        <input type="radio" name="action" value="2" />To: 
+                                        <input type="radio" name="action" value="2" />To:
                                         <span></span>
                                     </label>
                                     <div class="col-md-10">
@@ -166,6 +169,46 @@
         </div>
     </div>
     <!-- END RESEND MODAL-->
+    <!-- BEGIN GENERATE MODAL-->
+    <div id="modal_generate_manifest" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:500px !important;">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-purple">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Generate Manifest</center></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN FORM-->
+                    <form method="post" id="form_generate_manifest" class="form-horizontal">
+                        <input name="id" type="hidden" value=""/>
+                        <div class="form-body">
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                            <div class="alert alert-success display-hide">
+                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                            <div class="row" style="padding-left:15px">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Date</label>
+                                    <div class="col-md-8 show-error">
+                                        <input type="text" name="date" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="modal-footer">
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="button" id="btn_model_generate" class="btn sbold bg-purple">Generate</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END GENERATE MODAL-->
 @endsection
 
 @section('scripts')

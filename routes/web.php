@@ -83,6 +83,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     //commands
     Route::match(['get','post'], 'commands', 'CommandController@index')->middleware('permissions:ACLS');
     //manifests emails
+    Route::post('manifests/generate', 'ManifestController@generate')->middleware('permissions:MANIFESTS');
     Route::post('manifests/send', 'ManifestController@send')->middleware('permissions:MANIFESTS');
     Route::get('manifests/view/{format}/{id}', 'ManifestController@view')->middleware('permissions:MANIFESTS');
     Route::match(['get','post'], 'manifests', 'ManifestController@index')->middleware('permissions:MANIFESTS');

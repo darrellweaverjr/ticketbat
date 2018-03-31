@@ -1,5 +1,5 @@
 var TableDatatablesManaged = function () {
-    
+
     var initTable = function () {
         var table = $('#tb_model');
         // begin first table
@@ -31,13 +31,13 @@ var TableDatatablesManaged = function () {
                 [5, 10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 10,            
+            "pageLength": 10,
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
                     'orderable': false,
                     'targets': [0]
-                }, 
+                },
                 {
                     "searchable": false,
                     "targets": [0]
@@ -50,15 +50,15 @@ var TableDatatablesManaged = function () {
                 [0, "desc"]
             ] // set first column as a default sort by asc
         });
-        
+
         table.on('click', 'tbody tr', function () {
             $(this).find('[name="radios"]').prop('checked',true).trigger('change');
         });
-        
+
         table.on('change', 'tbody tr .radios', function () {
             $(this).parents('tr').toggleClass("active");
         });
-        
+
         //PERSONALIZED FUNCTIONS
         //start_end_date
         $('#start_end_date').daterangepicker({
@@ -98,24 +98,72 @@ var TableDatatablesManaged = function () {
                 $( "#form_model_search" ).submit();
         });
         $('#start_end_date span').html(moment($('#form_model_search [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_search [name="end_date"]').val()).format('MMMM D, YYYY'));
-        $('#start_end_date').show(); 
+        $('#start_end_date').show();
         //function csv
         $('#btn_model_csv').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
             window.open('/admin/manifests/view/csv/'+id);
-        });  
+        });
         //function pdf
         $('#btn_model_pdf').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
             window.open('/admin/manifests/view/pdf/'+id);
-        }); 
+        });
         //function resend
         $('#btn_model_resend').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
             $('#form_model_resend').trigger('reset');
             $('#form_model_resend [name="id"]').val(id);
             $('#modal_model_resend').modal('show');
-        }); 
+        });
+        //function generate
+        $('#btn_model_generate').on('click', function(ev) {
+            $('#modal_generate_manifest').modal('hide');
+            swal({
+                title: "Generating manifest",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/manifests/generate',
+                data: $('#form_generate_manifest').serializeArray(),
+                success: function(data) {
+                    if(data.success)
+                    {
+                        swal({
+                            title: "<span style='color:green;'>Saved!</span>",
+                            text: data.msg,
+                            html: true,
+                            timer: 1500,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                        location.reload();
+                    }
+                    else swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_generate_manifest').modal('show');
+                        });
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to generate the manifest!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_generate_manifest').modal('show');
+                    });
+                }
+            });
+        });
         //function send
         $('#btn_model_save').on('click', function(ev) {
             $('#modal_model_resend').modal('hide');
@@ -128,10 +176,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/manifests/send', 
-                data: $('#form_model_resend').serializeArray(), 
+                url: '/admin/manifests/send',
+                data: $('#form_model_resend').serializeArray(),
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         swal({
                             title: "<span style='color:green;'>Saved!</span>",
@@ -163,13 +211,13 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
-        //enable function buttons on check radio 
+        //enable function buttons on check radio
         $('input:radio[name=radios]').change(function () {
             if($('input:radio[name=radios]:checked').length > 0)
             {
                 $('#btn_model_csv').prop('disabled',false);
                 $('#btn_model_pdf').prop('disabled',false);
-                $('#btn_model_resend').prop('disabled',false);
+                $('#btn_model_generate').prop('disabled',false);
             }
         });
     }
@@ -179,7 +227,7 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable();        
+            initTable();
         }
     };
 }();
