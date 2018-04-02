@@ -26,7 +26,7 @@ class ReportManifestController extends Controller{
     {
         if((!empty($date) && strtotime($date)))
         {
-            $this->date_manifest = date('Y-m-d H:i',strtotime($date));
+            $this->date_manifest = date('Y-m-d',strtotime($date));
             $this->previous_date = true;
         }
         else

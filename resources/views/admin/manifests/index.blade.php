@@ -5,6 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="{{config('app.theme')}}css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -37,9 +38,9 @@
                             <button id="btn_model_pdf" class="btn sbold bg-yellow" disabled="true">PDF
                                 <i class="fa fa-file-pdf-o"></i>
                             </button>
-                            <a data-toggle="modal" href="#modal_generate_manifest" class="btn sbold bg-purple">Generate
+                            <button data-toggle="modal" href="#modal_generate_manifest" class="btn sbold bg-purple">Generate
                                 <i class="fa fa-settings"></i>
-                            </a>
+                            </button>
                             <button id="btn_model_resend" class="btn sbold bg-purple" disabled="true">Re-send
                                 <i class="fa fa-send"></i>
                             </button>
@@ -187,9 +188,16 @@
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <div class="row" style="padding-left:15px">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Date</label>
-                                    <div class="col-md-8 show-error">
-                                        <input type="text" name="date" class="form-control"/>
+                                    <label class="control-label col-md-5">Manifest date</label>
+                                    <div class="col-md-6 show-error">
+                                        <div id="date_generate" class="input-group date dtpicker">
+                                            <input size="16" readonly="" class="form-control" type="text" name="date" value="{{date('m/d/Y')}}">
+                                            <span class="input-group-btn">
+                                                <button class="btn default date-set" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -212,5 +220,6 @@
 @endsection
 
 @section('scripts')
+<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/manifests/index.js" type="text/javascript"></script>
 @endsection

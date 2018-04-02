@@ -99,6 +99,13 @@ var TableDatatablesManaged = function () {
         });
         $('#start_end_date span').html(moment($('#form_model_search [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_search [name="end_date"]').val()).format('MMMM D, YYYY'));
         $('#start_end_date').show();
+        //date_generate
+        $('#date_generate').datepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "mm/dd/yyyy",
+            maxDate: moment()
+        });
         //function csv
         $('#btn_model_csv').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();

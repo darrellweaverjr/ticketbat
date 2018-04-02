@@ -200,7 +200,7 @@ class ManifestController extends Controller{
             $input = Input::all();
             if(isset($input) && !empty($input['date']) && strtotime($input['date']))
             {
-                $control = new ReportManifestController();  
+                $control = new ReportManifestController($input['date']);
                 $response = $control->init();
                 if($response)
                     return ['success'=>true,'msg'=>'The manifest was generated!'];
