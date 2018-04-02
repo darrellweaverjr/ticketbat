@@ -119,11 +119,10 @@
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            <div class="alert alert-warning">
+                            <div class="alert alert-danger">
                                 <center>
-                                    <input type="hidden" name="purchase" value="0" />
-                                    <input type="checkbox" class="make-switch" name="purchase" value="1"  data-size="mini" data-on-text="Make Purchase" data-off-text="Don't Purchase" data-on-color="primary" data-off-color="danger">
-                                    <span style="color:red">You must make a purchase only if this show is one of ours. Otherwise you won't be able to print tickets.</span>
+                                    <input type="hidden" name="purchase" value="1" />
+                                    <h2 style="color:red">This option is ONLY for pre-sales that create tickets now.<br>For other options use the POS system.</h2>
                                 </center>
                             </div>
                             <div class="row">
