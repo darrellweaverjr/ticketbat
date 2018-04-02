@@ -169,6 +169,9 @@
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_reviews" data-toggle="tab">Reviews</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_codes" data-toggle="tab">Conversion Codes</a>
                                     </li><!--
                                     <li class="">
                                         <a href="#tab_model_update_awards" data-toggle="tab"> Awards </a>
@@ -435,28 +438,30 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reports">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label class="control-label" style="padding-left:30px">Email for Individual Sales and Manifests Reports:
-                                                    </label>
-                                                    <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="emails" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
-                                                    </div>
-                                                    <label class="control-label" style="padding-left:30px">Email for Daily Accounting:
-                                                    </label>
-                                                    <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
-                                                    </div>
+                                        <div class="row" style="padding-right:30px">
+                                            <div class="form-group">
+                                                <label class="control-label" style="padding-left:30px">Email for Individual Sales and Manifests Reports <span class="required">(splitted by commas)</span>
+                                                </label>
+                                                <div class="show-error" style="padding-left:30px">
+                                                    <input type="text" name="emails" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
                                                 </div>
                                             </div>
-                                            <div class="col-md-7">
-                                                <label class="control-label col-md-5">Send individual order emails</label>
-                                                <div class="col-md-7">
+                                            <div class="form-group">
+                                                <label class="control-label" style="padding-left:30px">Email for Daily Accounting <span class="required">(splitted by commas)</span>
+                                                </label>
+                                                <div class="show-error" style="padding-left:30px">
+                                                    <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
+                                                </div>
+                                            </div>
+                                        </div><hr>
+                                        <div class="row">
+                                            <div class="col-md-7 form-group">
+                                                <label class="control-label col-md-6">Send individual order emails</label>
+                                                <div class="col-md-6">
                                                     <input type="hidden" name="individual_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="individual_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-5">Send manifest emails</label>
+                                                <label class="control-label col-md-6">Send manifest emails</label>
                                                 <div class="col-md-2">
                                                     <input type="hidden" name="manifest_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="manifest_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
@@ -465,27 +470,17 @@
                                                 <div class="col-md-2">
                                                     <input type="number" class="form-control" name="prelim_hours" value="4"/>
                                                 </div>
-                                                <label class="control-label col-md-5">Send daily sales emails</label>
-                                                <div class="col-md-7">
+                                            </div>
+                                            <div class="col-md-5 form-group">
+                                                <label class="control-label col-md-7">Send daily sales emails</label>
+                                                <div class="col-md-5">
                                                     <input type="hidden" name="daily_sales_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="daily_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-5">Send financial report emails</label>
-                                                <div class="col-md-7">
+                                                <label class="control-label col-md-7">Send financial report emails</label>
+                                                <div class="col-md-5">
                                                     <input type="hidden" name="financial_report_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row" style="padding:0 45px">
-                                            <div class="form-group">
-                                                <label class="control-label">Conversion Code:</label>
-                                                <div class="show-error">
-                                                    <textarea name="conversion_code" class="form-control" placeholder="<script>Place here the Conversion Code. For the Thank You Page</script>" rows="5"></textarea>
-                                                </div>
-                                                <label class="control-label">UA CC:</label>
-                                                <div class="show-error">
-                                                    <input type="text" name="ua_conversion_code" class="form-control" placeholder="53779511-1"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -725,6 +720,20 @@
                                                 <tbody id="tb_show_reviews">
                                                 </tbody>
                                             </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_codes">
+                                        <div class="row" style="padding:0 45px">
+                                            <div class="form-group">
+                                                <label class="control-label">Conversion Code:</label>
+                                                <div class="show-error">
+                                                    <textarea name="conversion_code" class="form-control" placeholder="<script>Place here the Conversion Code. For the Thank You Page</script>" rows="10"></textarea>
+                                                </div>
+                                                <label class="control-label">UA CC:</label>
+                                                <div class="show-error">
+                                                    <input type="text" name="ua_conversion_code" class="form-control" placeholder="53779511-1"/>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!--

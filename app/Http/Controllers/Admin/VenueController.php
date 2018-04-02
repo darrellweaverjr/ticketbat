@@ -408,6 +408,27 @@ class VenueController extends Controller{
         }
     }
     /**
+     * Manage values for Reports
+     *
+     * @return view
+     */
+    public function reports()
+    {
+        try {
+            //init
+            $input = Input::all();
+            if($input && !empty($input['action']) && in_array($input['action'],['emails','accounting_email']) && isset($input['value']) && !empty($input['venue_id']))
+            {
+                DB::table('shows')->where('venue_id',$input['venue_id'])->update([$input['action']=>(!empty($input['value']))? $input['value'] : null]);
+                return ['success'=>true,'msg'=>'Emails updated successfully.'];
+            }
+            else
+                return ['success'=>false,'msg'=>'Invalid Option.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error VenueReport Index: '.$ex->getMessage());
+        }
+    }
+    /**
      * Get, Edit, Remove stages for Venues
      *
      * @return view
@@ -917,7 +938,6 @@ class VenueController extends Controller{
             throw new Exception('Error VenueAds Index: '.$ex->getMessage());
         }
     }
-
     /**
      * Manage values for POS sytem POS
      *

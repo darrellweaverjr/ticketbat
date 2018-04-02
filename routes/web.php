@@ -38,6 +38,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('venues/stages', 'VenueController@stages')->middleware('permissions:VENUES');
     Route::post('venues/stage_images', 'VenueController@stage_images')->middleware('permissions:VENUES');
     Route::post('venues/ads', 'VenueController@ads')->middleware('permissions:VENUES');
+    Route::post('venues/reports', 'VenueController@reports')->middleware('permissions:VENUES');
     Route::post('venues/slug', 'VenueController@slug')->middleware('permissions:VENUES');
     Route::post('venues/save', 'VenueController@save')->middleware('permissions:VENUES');
     Route::post('venues/remove', 'VenueController@remove')->middleware('permissions:VENUES');

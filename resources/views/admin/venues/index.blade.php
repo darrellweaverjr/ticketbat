@@ -337,39 +337,46 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_model_update_reports">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label class="control-label" style="padding-left:30px">Email for Weekly Sales Reports:
+                                        <div class="row" style="padding:0px 30px">
+                                            <div class="form-group">
+                                                <div class="show-error col-md-7">
+                                                    <label class="control-label" >Email for Weekly Sales Reports <span class="required">(splitted by commas)</span>
                                                     </label>
-                                                    <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="weekly_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
-                                                    </div>
-                                                    <label class="control-label" style="padding-left:30px">Email for Accounting:
-                                                    </label>
-                                                    <div class="show-error" style="padding-left:30px">
-                                                        <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
-                                                    </div>
+                                                    <input type="text" name="weekly_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
+                                                </div>
+                                                <div class="col-md-5" style="padding-top:30px">
+                                                    <button type="button" id="btn_report_email_weekly" class="btn sbold bg-red">Override email for all the shows in this venue</button>
                                                 </div>
                                             </div>
-                                            <div class="col-md-7">
-                                                <label class="control-label col-md-9">Send weekly sales emails</label>
-                                                <div class="col-md-3">
+                                            <div class="form-group">
+                                                <div class="show-error col-md-7">
+                                                    <label class="control-label">Email for Accounting <span class="required">(splitted by commas)</span>
+                                                    </label>
+                                                    <input type="text" name="accounting_email" class="form-control" placeholder="abc@ticketbat.com,def@redmercuryent.com" />
+                                                </div>
+                                                <div class="col-md-5" style="padding-top:30px">
+                                                    <button type="button" id="btn_report_email_accounting" class="btn sbold bg-red">Override email for all the shows in this venue</button>
+                                                </div>
+                                            </div>
+                                        </div><hr>
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-8">Send weekly sales emails</label>
+                                                <div class="col-md-4">
                                                     <input type="hidden" name="weekly_sales_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="weekly_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-9">Send daily sales emails</label>
-                                                <div class="col-md-3">
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-8">Send daily sales emails</label>
+                                                <div class="col-md-4">
                                                     <input type="hidden" name="daily_sales_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="daily_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-9">Send financial report emails</label>
-                                                <div class="col-md-3">
-                                                    <input type="hidden" name="financial_report_emails" value="0"/>
-                                                    <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                </div>
-                                                <label class="control-label col-md-9">Send weekly promotions</label>
-                                                <div class="col-md-3">
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-8">Send weekly promotions</label>
+                                                <div class="col-md-4">
                                                     <input type="hidden" name="enable_weekly_promos" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="enable_weekly_promos" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>

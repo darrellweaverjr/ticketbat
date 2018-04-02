@@ -435,6 +435,79 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
+
+        //function with venue_reports  *****************************************************************************************************   VENUE REPORTS BEGIN
+        //function overwrite pos fee for all sub shows
+        $('#btn_report_email_weekly, #btn_report_email_accounting').on('click', function(ev) {
+            var venue_id = $('#form_model_update input[name="id"]').val();
+            if($(this).attr('id')=='btn_report_email_weekly')
+            {
+                var value = $('#form_model_update input[name="weekly_email"]').val();
+                var action = 'emails';
+            }
+            else if($(this).attr('id')=='btn_report_email_accounting')
+            {
+                var value = $('#form_model_update input[name="accounting_email"]').val();
+                var action = 'accounting_email';
+            }
+            else venue_id = false;
+            $('#modal_model_update').modal('hide');
+            if(venue_id)
+            {
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/venues/reports',
+                    data: {action:action, venue_id:venue_id, value:value},
+                    success: function(data) {
+                        if(data.success) {
+                            swal({
+                                title: "<span style='color:green;'>Saved!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                            $('#modal_model_update').modal('show');
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_update').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to update the email's information!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "There is an error. Please, contact an administrator.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_update').modal('show');
+                });
+            }
+        });
+        //function with venue_reports  *****************************************************************************************************   VENUE REPORTS BEGIN
+
         //function with venue_stages  *****************************************************************************************************   VENUE STAGES BEGIN
         // init images
         $('#grid_venue_stages').cubeportfolio({
