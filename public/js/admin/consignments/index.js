@@ -1,5 +1,5 @@
 var TableDatatablesManaged = function () {
-    
+
     var initTable = function () {
         var table = $('#tb_model');
         // begin first table
@@ -31,13 +31,13 @@ var TableDatatablesManaged = function () {
                 [10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 15,            
+            "pageLength": 15,
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
                     'orderable': false,
                     'targets': [0]
-                }, 
+                },
                 {
                     "searchable": false,
                     "targets": [0]
@@ -49,21 +49,21 @@ var TableDatatablesManaged = function () {
             "order": [
                 [4, "desc"]
             ] // set first column as a default sort by asc
-        }); 
-        
+        });
+
         table.on('click', 'tbody tr', function () {
             $(this).find('[name="radios"]').prop('checked',true).trigger('change');
         });
-        
+
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
         });
-        
+
         $('#group-checkable').change(function () {
             $('#tb_seats_consignment_edit .checkboxes').prop("checked",$(this).is(":checked"));
-        });   
-        
-        //PERSONALIZED FUNCTIONS  
+        });
+
+        //PERSONALIZED FUNCTIONS
         //function search
         $('#btn_model_search').on('click', function(ev) {
             $('#modal_model_search').modal('show');
@@ -78,13 +78,13 @@ var TableDatatablesManaged = function () {
                 $('#form_model_search input[name="showtime_start_date"]').val(start.format('YYYY-MM-DD'));
                 $('#form_model_search input[name="showtime_end_date"]').val(end.format('YYYY-MM-DD'));
             }
-        ); 
+        );
         //clear show_times_date
         $('#clear_show_times_date').on('click', function(ev) {
             $('#form_model_search [name="showtime_start_date"]').val('');
             $('#form_model_search [name="showtime_end_date"]').val('');
-            $('#show_times_date').datetimepicker('update');
-        }); 
+            $('#show_times_date').daterangepicker('update');
+        });
         //created_date
         $('#created_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
@@ -95,13 +95,13 @@ var TableDatatablesManaged = function () {
                 $('#form_model_search input[name="created_start_date"]').val(start.format('YYYY-MM-DD'));
                 $('#form_model_search input[name="created_end_date"]').val(end.format('YYYY-MM-DD'));
             }
-        ); 
+        );
         //clear created_date
         $('#clear_created_date').on('click', function(ev) {
             $('#form_model_search [name="created_start_date"]').val('');
             $('#form_model_search [name="created_end_date"]').val('');
-            $('#created_date').datetimepicker('update');
-        }); 
+            $('#created_date').daterangepicker('update');
+        });
         //search venue on select search
         $('#form_model_search select[name="venue"]').bind('change click', function() {
             var venue = $(this).val();
@@ -114,7 +114,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_search select[name="show"]').append('<option value="'+v.id+'">'+v.name+'</option>');
                 });
             }
-        });   
+        });
         //on venue select
         $('#form_model_update select[name="venue_id"]').bind('change click', function() {
             var venue = $(this).val();
@@ -134,7 +134,7 @@ var TableDatatablesManaged = function () {
                 $('#modal_model_update [name="fixed_commission"]').val(0);
                 $('#tb_seats').empty();
             }
-        });   
+        });
         //on show select
         $('#modal_model_update [name="show_id"]').on('change', function () {
             var show_id = $('#modal_model_update [name="show_id"] option:selected').val();
@@ -143,10 +143,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/consignments', 
-                    data: {show_id:show_id}, 
+                    url: '/admin/consignments',
+                    data: {show_id:show_id},
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             $('#modal_model_update [name="show_time_id"]').empty().append('<option disabled selected value=""></option>');
                             $.each(data.show_times,function(key, value) {
@@ -209,10 +209,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/consignments', 
-                    data: {ticket_type:ticket_type,show_id:show_id}, 
+                    url: '/admin/consignments',
+                    data: {ticket_type:ticket_type,show_id:show_id},
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             $('#modal_model_update [name="retail_price"]').val(data.retail_price);
                             $('#modal_model_update [name="processing_fee"]').val(data.processing_fee);
@@ -270,7 +270,7 @@ var TableDatatablesManaged = function () {
                     var row_show_seat = '<span class="label label-sm sbold label-warning">H</span>';
                 }
                 //fill out rows
-                for (var i = start_seat; i <= end_seat; i++) 
+                for (var i = start_seat; i <= end_seat; i++)
                 {
                     var id = section.val()+'_'+i;
                     var value = {};
@@ -312,7 +312,7 @@ var TableDatatablesManaged = function () {
                     $('#modal_model_update').modal('show');
                 });
             }
-        });  
+        });
         //on delete seat rows
         $('#tb_seats').on('click', 'input[type="button"]', function(e){
             $(this).closest('tr').remove();
@@ -338,10 +338,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/consignments/save', 
-                data: {consignment_id:id,status:status}, 
+                url: '/admin/consignments/save',
+                data: {consignment_id:id,status:status},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
@@ -375,7 +375,7 @@ var TableDatatablesManaged = function () {
             $("#form_model_update").trigger('reset');
             //show modal
             $('#modal_model_update').modal('show');
-        });  
+        });
         //function edit
         $('#btn_model_edit').on('click', function(ev) {
             $("#form_model_update2 input[name='id']:hidden").val('').trigger('change');
@@ -385,10 +385,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/consignments', 
-                data: {id:id}, 
+                url: '/admin/consignments',
+                data: {id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#modal_model_update_title').html('Edit Consignment # '+data.consignment.id);
                         for(var key in data.consignment)
@@ -398,27 +398,27 @@ var TableDatatablesManaged = function () {
                         }
                         for(var key in data.seats)
                         {
-                            var e = data.seats[key]; 
+                            var e = data.seats[key];
                             switch(e.status)
                             {
                                 case 'Created':
-                                    var checkable = ''; 
+                                    var checkable = '';
                                     var style = 'label-primary';
                                     break;
                                 case 'Voided':
-                                    var checkable = ''; 
+                                    var checkable = '';
                                     var style = 'label-danger';
                                     break;
                                 case 'Sold':
-                                    var checkable = ''; 
+                                    var checkable = '';
                                     var style = 'label-warning';
                                     break;
                                 case 'Checked':
-                                    var checkable = ''; 
+                                    var checkable = '';
                                     var style = 'label-success';
                                     break;
                                 default:
-                                    var checkable = 'disabled'; 
+                                    var checkable = 'disabled';
                                     var style = 'label-info';
                             }
                             var check_col = '<td><label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" name="seat[]" class="checkboxes" '+checkable+' value="'+e.id+'" /><span></span></label></td>';
@@ -465,7 +465,7 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
-        //function save 
+        //function save
         function save_consignment(modal,form) {
             $('#'+modal).modal('hide');
             if($('#'+form).valid())
@@ -479,11 +479,11 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/consignments/save', 
-                    data: new FormData($('#'+form)[0]), 
-                    cache: false, 
+                    url: '/admin/consignments/save',
+                    data: new FormData($('#'+form)[0]),
+                    cache: false,
                     contentType: false,
-                    processData:false, 
+                    processData:false,
                     success: function(data) {
                         if(data.success)
                         {
@@ -495,7 +495,7 @@ var TableDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            location.reload(); 
+                            location.reload();
                         }
                         else{
                             swal({
@@ -516,7 +516,7 @@ var TableDatatablesManaged = function () {
                             type: "error"
                         });
                     }
-                }); 
+                });
             }
             else
             {
@@ -528,12 +528,12 @@ var TableDatatablesManaged = function () {
                 },function(){
                     $('#'+modal).modal('show');
                 });
-            }       
+            }
         };
         $('#btn_model_file').on('click', function(ev) {
             var id = $("#form_model_update2 input[name='id']:hidden").val();
             window.open('/admin/consignments/view/file/'+id);
-        });  
+        });
         //function tickets
         $('#btn_model_tickets').on('click', function(ev) {
             var qty = parseInt($("#tb_model [name=radios]:checked").attr("data-qty"));
@@ -550,22 +550,22 @@ var TableDatatablesManaged = function () {
             $('#range_options').html(range);
             $('#range_options input:radio[name="range_tickets"]:first').attr('checked',true);
             $('#modal_model_tickets').modal('show');
-        }); 
+        });
         $('#btn_tickets_standard').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
             var range = $('#range_options input:radio[name="range_tickets"]:checked').val();
             window.open('/admin/consignments/tickets/C/'+id+range);
-        }); 
+        });
         $('#btn_tickets_boca').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
             var range = $('#range_options input:radio[name="range_tickets"]:checked').val();
             window.open('/admin/consignments/tickets/S/'+id+range);
-        }); 
+        });
         //function generate contract
         $('#btn_model_contract').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
             window.open('/admin/consignments/contract/'+id);
-        });  
+        });
         //function save on add
         $('#btn_model_save').on('click', function(ev) {
             //if shows not ours you must add tickets, if our shows, you can add and purchase later
@@ -580,15 +580,15 @@ var TableDatatablesManaged = function () {
                 },function(){
                     $('#modal_model_update').modal('show');
                 });
-            } 
-            else save_consignment('modal_model_update','form_model_update');      
+            }
+            else save_consignment('modal_model_update','form_model_update');
         });
         //function save on edit
         $('#btn_model_save2').on('click', function(ev) {
-            save_consignment('modal_model_update2','form_model_update2');     
+            save_consignment('modal_model_update2','form_model_update2');
         });
         //init functions
-        //enable function buttons on check radio 
+        //enable function buttons on check radio
         $('input:radio[name=radios]').change(function () {
             if($('input:radio[name=radios]:checked').length > 0)
             {
@@ -604,7 +604,7 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable();        
+            initTable();
         }
     };
 }();
@@ -612,7 +612,7 @@ var TableDatatablesManaged = function () {
 var FormValidation = function () {
     // advance validation
     var handleValidation = function() {
-        // for more info visit the official plugin documentation: 
+        // for more info visit the official plugin documentation:
         // http://docs.jquery.com/Plugins/Validation
 
             var form = $('#form_model_update');
@@ -676,7 +676,7 @@ var FormValidation = function () {
                         required: true
                     }
                 },
-                invalidHandler: function (event, validator) { //display error alert on form submit   
+                invalidHandler: function (event, validator) { //display error alert on form submit
                     success.hide();
                     error.show();
                     App.scrollTo(error, -200);

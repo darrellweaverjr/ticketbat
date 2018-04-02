@@ -58,8 +58,7 @@
                         <thead>
                             <tr>
                                 <th width="2%"></th>
-                                <th width="1%"></th>
-                                <th width="2%">ID</th>
+                                <th width="3%">ID</th>
                                 <th width="18%">Show</th>
                                 <th width="13%">Show Time</th>
                                 <th width="13%">Created</th>
@@ -73,14 +72,13 @@
                         <tbody>
                             @foreach($consignments as $index=>$c)
                             <tr>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
                                         <input type="radio" name="radios" value="{{$c->id}}" data-qty="{{$c->qty}}"/>
                                         <span></span>
                                     </label>
                                 </td>
-                                <td class="@if($c->purchase || $c->qty==0) success @else danger @endif"></td>
-                                <td>{{$c->id}}</td>
+                                <td class="@if($c->purchase || $c->qty==0) success @else danger @endif">{{$c->id}}</td>
                                 <td>{{$c->show_name}}</td>
                                 <td data-order="{{strtotime($c->show_time)}}"><center>{{date('m/d/Y g:ia',strtotime($c->show_time))}}</center></td>
                                 <td data-order="{{strtotime($c->created)}}"><center>{{date('m/d/Y g:ia',strtotime($c->created))}}</center></td>
