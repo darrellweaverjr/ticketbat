@@ -12,7 +12,7 @@ class ReportManifest extends Command
      *
      * @var string
      */
-    protected $signature = 'Report:manifest';
+    protected $signature = 'Report:manifest {date=0}';
 
     /**
      * The console command description.
@@ -39,18 +39,20 @@ class ReportManifest extends Command
     public function handle()
     {
         try {
+            $date = $this->argument('date');
+            
             //create progress bar
             $progressbar = $this->output->createProgressBar(1);
             //call controller
-            $control = new ReportManifestController();
+            $control = new ReportManifestController($date);
             $response = $control->init();
             //advance progress bar
-            $progressbar->advance(); 
+            $progressbar->advance();
             //finish progress bar
-            $progressbar->finish(); 
+            $progressbar->finish();
             return $response;
         } catch (Exception $ex) {
             throw new Exception('Error creating, saving and sending emails with ReportManifest Command: '.$ex->getMessage());
-        }        
+        }
     }
 }

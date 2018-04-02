@@ -21,10 +21,10 @@ class CommandController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             $commands = [];
-                
-            $commands[] = ['command'=>'Report:manifest','values'=>[]];
+
+            $commands[] = ['command'=>'Report:manifest','values'=>['date'=>0]];
             $commands[] = ['command'=>'Report:sales','values'=>['days'=>1,'onlyadmin'=>0]];
             $commands[] = ['command'=>'Report:sales_receipt','values'=>['days'=>1]];
             $commands[] = ['command'=>'Report:consignment','values'=>[]];
@@ -36,7 +36,7 @@ class CommandController extends Controller{
             $commands[] = ['command'=>'Shoppingcart:recover','values'=>['hours'=>4]];
             $commands[] = ['command'=>'Contract:update_tickets','values'=>[]];
             $commands[] = ['command'=>'Consignments:check','values'=>[]];
-              
+
             if(isset($input) && isset($input['command']))
             {
                 foreach ($commands as $c)
@@ -64,5 +64,5 @@ class CommandController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error Command Index: '.$ex->getMessage());
         }
-    } 
+    }
 }
