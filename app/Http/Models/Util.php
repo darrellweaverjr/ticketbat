@@ -17,7 +17,7 @@ use Illuminate\Http\File;
  * @author ivan
  */
 class Util extends Model
-{        
+{
     /**
      * Search for enum values in the DB.
      *
@@ -83,7 +83,7 @@ class Util extends Model
         try {
             header('Content-Type: application/csv');
             header('Content-Disposition: attachment; filename="'.$name.'.csv";');
-            $f = fopen('php://output', 'w'); 
+            $f = fopen('php://output', 'w');
             fwrite($f, $view->render());
         } catch (Exception $ex) {
             throw new Exception('Error Util downloadCSV: '.$ex->getMessage());
@@ -114,7 +114,7 @@ class Util extends Model
             if(!empty($name))
             {
                 $show = (!empty($show_id))? Show::find($show_id) : null;
-                $venue = (!empty($venue_id))? Show::find($venue_id) : null;            
+                $venue = (!empty($venue_id))? Show::find($venue_id) : null;
                 //replace white spaces
                 $name = preg_replace('/\s+/','-',$name);
                 //replace strange characters for "_"
@@ -147,7 +147,7 @@ class Util extends Model
                         if($venue && !empty($venue->slug))
                         {
                             $venue_slug = $venue->slug;
-                            if (strpos($slug,$venue_slug) === false) 
+                            if (strpos($slug,$venue_slug) === false)
                             {
                                 $slug.='-'.$venue_slug;
                                 $skip = true;
@@ -165,7 +165,7 @@ class Util extends Model
                         $slug = implode('-',$subslugs);
                     }
                 }
-            }            
+            }
             return $slug;
         } catch (Exception $ex) {
             return '';
@@ -176,14 +176,14 @@ class Util extends Model
      */
     public static function upload_file($file,$folder)
     {
-        try {  
+        try {
             //init
-            $originalName = $file->getClientOriginalName();  
+            $originalName = $file->getClientOriginalName();
             $originalExt = $file->getClientOriginalExtension();
             //get file
                 //if file exists in the server create this like a new copy (_c)
                 while(Storage::disk('s3')->exists($folder.'/'.$originalName.'.'.$originalExt))
-                    $originalName .= '_c';  
+                    $originalName .= '_c';
                 //move file to amazon s3
                 //Storage::disk('s3')->put($folder.$$originalName.'.'.$originalExt, new File($file->getRealPath()), 'public');
                 Storage::disk('s3')->putFileAs($folder, new File($file->getRealPath()),$originalName.'.'.$originalExt);
@@ -200,12 +200,12 @@ class Util extends Model
      */
     public static function remove_file($file_url)
     {
-        try { 
+        try {
             //init
             $originalName = pathinfo($file_url, PATHINFO_FILENAME);
             $originalExt = pathinfo($file_url, PATHINFO_EXTENSION);
             //check if is in s3 server (the new server)
-            if(preg_match('/\/s3\//',$file_url) || strpos($file_url,env('IMAGE_URL_AMAZON_SERVER')) !== false) 
+            if(preg_match('/\/s3\//',$file_url) || strpos($file_url,env('IMAGE_URL_AMAZON_SERVER')) !== false)
             {
                 $file_url = substr(strrchr(dirname($file_url,1), '/'), 1).'/'.$originalName.'.'.$originalExt;
                 if(Storage::disk('s3')->exists($file_url))
@@ -226,52 +226,52 @@ class Util extends Model
      */
     public static function view_file($file_url)
     {
-        try { 
+        try {
             //init
-            if(preg_match('/\/s3\//',$file_url)) 
+            if(preg_match('/\/s3\//',$file_url))
                 return env('IMAGE_URL_AMAZON_SERVER').str_replace('/s3/','/',$file_url);
             return '';
         } catch (Exception $ex) {
             return '';
         }
     }
-    
+
     /**
      * Generates a json response checking numbers
      */
     public static function json($response)
     {
-        try { 
-            return Response::json($response,200,[],JSON_NUMERIC_CHECK);
+        try {
+            return Response::json($response,201,[],JSON_NUMERIC_CHECK);
         } catch (Exception $ex) {
             json_encode($response);
         }
     }
-    
+
     /**
      * round price
      */
     public static function round($number)
     {
-        try { 
+        try {
             return round($number,2, PHP_ROUND_HALF_UP);
         } catch (Exception $ex) {
             return $number;
         }
     }
-    
+
     /**
      * get system info
      */
     public static function system_info()
     {
-        try { 
+        try {
             return 'IP('.Request::getClientIp().') - '.Request::header('User-Agent');
         } catch (Exception $ex) {
             return '';
         }
     }
-    
+
     /**
      * generate uniq session_id
      */
@@ -281,7 +281,7 @@ class Util extends Model
         {
             $s_token = $store_token;
             Session::put('s_token', $s_token);
-        } 
+        }
         else
         {
             $s_token = Session::get('s_token',null);
@@ -318,5 +318,5 @@ class Util extends Model
             return [];
         }
     }
-    
+
 }
