@@ -319,7 +319,10 @@ var TableDatatablesManaged = function () {
                         if(data.success)
                         {
                             if(typeof(data.venue) != 'undefined' && data.venue !== null)
+                            {
+                                swal.close();
                                 loadModal(data);
+                            }
                             else
                             {
                                 swal({

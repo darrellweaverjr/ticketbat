@@ -285,7 +285,6 @@ class VenueController extends Controller{
                 $venue->instagram = strip_tags($input['instagram']);
                 $venue->cutoff_text = (!empty(strip_tags($input['cutoff_text'])))? strip_tags($input['cutoff_text']) : null;
                 $venue->daily_sales_emails = $input['daily_sales_emails'];
-                $venue->financial_report_emails = $input['financial_report_emails'];
                 $venue->weekly_sales_emails = $input['weekly_sales_emails'];
                 $venue->enable_weekly_promos = $input['enable_weekly_promos'];
                 $venue->default_processing_fee = $input['default_processing_fee'];
