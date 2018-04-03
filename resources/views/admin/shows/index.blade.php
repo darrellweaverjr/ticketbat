@@ -477,11 +477,6 @@
                                                     <input type="hidden" name="daily_sales_emails" value="0"/>
                                                     <input type="checkbox" class="make-switch" name="daily_sales_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                 </div>
-                                                <label class="control-label col-md-7">Send financial report emails</label>
-                                                <div class="col-md-5">
-                                                    <input type="hidden" name="financial_report_emails" value="0"/>
-                                                    <input type="checkbox" class="make-switch" name="financial_report_emails" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

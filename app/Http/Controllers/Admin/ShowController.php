@@ -50,7 +50,7 @@ class ShowController extends Controller{
             {
                 //search default values for that venue
                 $default = DB::table('venues')
-                                ->select('venues.accounting_email','venues.weekly_email','venues.daily_sales_emails','venues.financial_report_emails')
+                                ->select('venues.accounting_email','venues.weekly_email','venues.daily_sales_emails')
                                 ->where('venues.id','=',$input['venue_id'])->first();
                 if($default)
                     return ['success'=>true,'default'=>$default];
@@ -386,7 +386,6 @@ class ShowController extends Controller{
                 $show->individual_emails = $input['individual_emails'];
                 $show->manifest_emails = $input['manifest_emails'];
                 $show->daily_sales_emails = $input['daily_sales_emails'];
-                $show->financial_report_emails = $input['financial_report_emails'];
                 $show->starting_at = (!empty($input['starting_at']))? $input['starting_at'] : null;
                 $show->regular_price = (!empty($input['regular_price']))? $input['regular_price'] : null;
                 $show->conversion_code = (!empty($input['conversion_code']))? $input['conversion_code'] : null;
