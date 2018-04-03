@@ -178,6 +178,7 @@ class PurchaseController extends Controller{
                 $search['payment_types']['Free'] = 'Free';
                 $search['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
                 $search['status'] = Util::getEnumValues('purchases','status');
+                $search['sellers'] = ['Web','App','POS'];
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search venue
@@ -211,8 +212,8 @@ class PurchaseController extends Controller{
                 }
                 if($search['showtime_start_date'] != '' && $search['showtime_end_date'] != '')
                 {
-                    $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$search['showtime_start_date']];
-                    $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$search['showtime_end_date']];
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',date('Y-m-d',strtotime($search['showtime_start_date']))];
+                    $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',date('Y-m-d',strtotime($search['showtime_end_date']))];
                 }
                 //search soldtime
                 if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
@@ -222,15 +223,15 @@ class PurchaseController extends Controller{
                 }
                 else
                 {
-                    $search['soldtime_start_date'] = date('Y-m-d', strtotime('-7 DAY'));
-                    $search['soldtime_end_date'] = date('Y-m-d');
+                    $search['soldtime_start_date'] = date('n/d/Y', strtotime('-7 DAY'));
+                    $search['soldtime_end_date'] = date('n/d/Y');
                 }
                 if($search['soldtime_start_date'] != '' && $search['soldtime_end_date'] != '')
                 {
-                    $where[] = [DB::raw('DATE(purchases.created)'),'>=',$search['soldtime_start_date']];
-                    $where[] = [DB::raw('DATE(purchases.created)'),'<=',$search['soldtime_end_date']];
+                    $where[] = [DB::raw('DATE(purchases.created)'),'>=',date('Y-m-d',strtotime($search['soldtime_start_date']))];
+                    $where[] = [DB::raw('DATE(purchases.created)'),'<=',date('Y-m-d',strtotime($search['soldtime_end_date']))];
                 }
-                //search date range
+                //search amount range
                 if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
                 {
                     $search['start_amount'] = trim($input['start_amount']);
@@ -257,6 +258,16 @@ class PurchaseController extends Controller{
                 else
                 {
                     $search['payment_type'] = array_values($search['payment_types']);
+                }
+                //search seller
+                if(isset($input) && isset($input['seller']) && !empty($input['seller']))
+                {
+                    $search['seller'] = $input['seller'];
+                    //$where[] = [DB::raw('seller = "'.$search['seller'].'"')];
+                }
+                else
+                {
+                    $search['seller'] = '';
                 }
                 //search ticket_type
                 if(isset($input) && !empty($input['ticket_type']))
@@ -349,6 +360,9 @@ class PurchaseController extends Controller{
                                                       ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
                                                         WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
                                                         ELSE purchases.payment_type END ) AS method,
+                                                    (CASE WHEN (users.user_type_id=7) THEN "POS"
+                                                                        WHEN (purchases.session_id LIKE "app_%") THEN "App"
+                                                                        ELSE "Web" END) AS seller,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,

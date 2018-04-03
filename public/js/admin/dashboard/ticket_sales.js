@@ -32,9 +32,9 @@ var TableDatatablesButtons = function () {
                     action: function () {
                         $('#modal_model_search').modal('show');
                     }
-                },                          
-                { 
-                    extend: 'print', 
+                },
+                {
+                    extend: 'print',
                     text:      'Print <i class="fa fa-print"></i>',
                     titleAttr: 'Print',
                     className: 'btn sbold yellow',
@@ -51,20 +51,20 @@ var TableDatatablesButtons = function () {
                                 'Qty of mirror period: '+$('#form_model_search input[name="mirror_period"]').val()+'<br>'+
                                 'Show Graph instead of Table: '+graph+'<br>'+
                                 'Show Coupon\'s Report: '+coupons+'</div>';
-                        t = t + '<hr>'+$('#tb_summary').html(); 
+                        t = t + '<hr>'+$('#tb_summary').html();
                         if(graph=='Yes')
                         {
-                            t = t + '<hr>'+$('#ticket_sales_chart_sales').addClass('compact').html(); 
+                            t = t + '<hr>'+$('#ticket_sales_chart_sales').addClass('compact').html();
                             $(win.document.body).find('table').addClass('compact').css('display','none');
-                        } 
+                        }
                         if(coupons=='Yes')
-                            t = t + '<hr>'+$('#tb_coupon').addClass('compact').html(); 
+                            t = t + '<hr>'+$('#tb_coupon').addClass('compact').html();
                         $(win.document.body).find('h1').append(t);
-                        $(win.document.body).find('table').addClass('compact').css('font-size','9pt');                            
+                        $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
                     }
                 },
-                { 
-                    extend: 'copy', 
+                {
+                    extend: 'copy',
                     text:      'Copy <i class="fa fa-files-o"></i>',
                     titleAttr: 'Copy',
                     className: 'btn sbold blue'
@@ -101,8 +101,8 @@ var TableDatatablesButtons = function () {
                         } );
                     }
                 },
-                { 
-                    extend: 'csv', 
+                {
+                    extend: 'csv',
                     text:      'CSV <i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'CSV',
                     className: 'btn sbold bg-green',
@@ -157,37 +157,37 @@ var TableDatatablesButtons = function () {
         //show_times_date
         $('#show_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'YYYY-MM-DD',
+                format: 'M/DD/YYYY',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="showtime_start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_search input[name="showtime_end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="showtime_start_date"]').val(start.format('M/DD/YYYY'));
+                $('#form_model_search input[name="showtime_end_date"]').val(end.format('M/DD/YYYY'));
             }
-        ); 
+        );
         //clear show_times_date
         $('#clear_show_times_date').on('click', function(ev) {
             $('#form_model_search [name="showtime_start_date"]').val('');
             $('#form_model_search [name="showtime_end_date"]').val('');
             $('#show_times_date').datetimepicker('update');
-        }); 
+        });
         //sold_times_date
         $('#sold_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'YYYY-MM-DD',
+                format: 'M/DD/YYYY',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('M/DD/YYYY'));
+                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('M/DD/YYYY'));
             }
-        ); 
+        );
         //clear sold_times_date
         $('#clear_sold_times_date').on('click', function(ev) {
             $('#form_model_search [name="soldtime_start_date"]').val('');
             $('#form_model_search [name="soldtime_end_date"]').val('');
             $('#sold_times_date').datetimepicker('update');
-        }); 
+        });
         //venue on select
         $('#form_model_search select[name="venue"]').bind('change click', function() {
             var venue = $(this).val();
@@ -201,7 +201,7 @@ var TableDatatablesButtons = function () {
                 });
             }
         });
-        
+
         // charts totals
         var graph = $('#ticket_sales_chart_sales').data('info');
         var purchased=[],qty=[],amount=[];
@@ -227,7 +227,7 @@ var TableDatatablesButtons = function () {
                     data: amount
             }]
 	});
-        
+
     }
     return {
         //main function to initiate the module

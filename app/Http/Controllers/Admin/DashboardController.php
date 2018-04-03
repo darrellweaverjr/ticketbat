@@ -32,8 +32,8 @@ class DashboardController extends Controller
     public function index()
     {
         //load first and default module depending of permission, logout if none or not valid user
-        if(Auth::check() 
-            && in_array(Auth::user()->user_type_id,explode(',',env('ADMIN_LOGIN_USER_TYPE'))) 
+        if(Auth::check()
+            && in_array(Auth::user()->user_type_id,explode(',',env('ADMIN_LOGIN_USER_TYPE')))
             && !empty(Auth::user()->user_type->getACLs()) )
         {
             $permits = Auth::user()->user_type->getACLs();
@@ -72,7 +72,7 @@ class DashboardController extends Controller
         }
         return redirect()->route('logout');
     }
-    
+
     /**
      * Makes where for queries in all report and search values.
      *
@@ -88,6 +88,7 @@ class DashboardController extends Controller
         $data['search']['payment_types']['Free'] = 'Free';
         $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
         $data['search']['status'] = Util::getEnumValues('purchases','status');
+        $data['search']['sellers'] = ['Web','App','POS'];
         //search venue
         if(isset($input) && isset($input['venue']))
         {
@@ -118,9 +119,9 @@ class DashboardController extends Controller
         }
         if($data['search']['showtime_start_date'] != '' && $data['search']['showtime_end_date'] != '')
         {
-            $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'>=',$data['search']['showtime_start_date']];
-            $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'<=',$data['search']['showtime_end_date']];
-        } 
+            $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'>=',date('Y-m-d',strtotime($data['search']['showtime_start_date']))];
+            $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'<=',date('Y-m-d',strtotime($data['search']['showtime_end_date']))];
+        }
         //search soldtime
         if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
         {
@@ -131,20 +132,20 @@ class DashboardController extends Controller
         {
             if($custom=='future')
             {
-                $data['search']['soldtime_start_date'] = $data['search']['soldtime_end_date'] = '';           
+                $data['search']['soldtime_start_date'] = $data['search']['soldtime_end_date'] = '';
             }
             else
             {
-                $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('Y-m-d', strtotime('-7 DAY')) : date('Y-m-d', strtotime('-7 DAY'));
-                $data['search']['soldtime_end_date'] = date('Y-m-d');
+                $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('n/d/Y', strtotime('-7 DAY')) : date('n/d/Y', strtotime('-7 DAY'));
+                $data['search']['soldtime_end_date'] = date('n/d/Y');
             }
         }
         if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '' && $custom!='coupons')
         {
-            $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',$data['search']['soldtime_start_date']];
-            $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',$data['search']['soldtime_end_date']];
-        }  
-        //search payment types        
+            $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',date('Y-m-d',strtotime($data['search']['soldtime_start_date']))];
+            $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',date('Y-m-d',strtotime($data['search']['soldtime_end_date']))];
+        }
+        //search payment types
         if(isset($input) && isset($input['payment_type']) && !empty($input['payment_type']))
         {
             $data['search']['payment_type'] = $input['payment_type'];
@@ -152,6 +153,16 @@ class DashboardController extends Controller
         else
         {
             $data['search']['payment_type'] = array_values($data['search']['payment_types']);
+        }
+        //search seller
+        if(isset($input) && isset($input['seller']) && !empty($input['seller']))
+        {
+            $data['search']['seller'] = $input['seller'];
+            //$data['where'][] = [DB::raw('seller = "'.$search['seller'].'"')];
+        }
+        else
+        {
+            $data['search']['seller'] = '';
         }
         //search date range
         if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
@@ -172,7 +183,7 @@ class DashboardController extends Controller
         {
             $data['search']['end_amount'] = '';
         }
-        //search ticket_type      
+        //search ticket_type
         if(isset($input) && !empty($input['ticket_type']))
         {
             $data['search']['ticket_type'] = $input['ticket_type'];
@@ -180,7 +191,7 @@ class DashboardController extends Controller
         }
         else
             $data['search']['ticket_type'] = '';
-        //search status      
+        //search status
         if(isset($input) && !empty($input['statu']))
         {
             $data['search']['statu'] = $input['statu'];
@@ -188,7 +199,7 @@ class DashboardController extends Controller
         }
         else
             $data['search']['statu'] = '';
-        //search user      
+        //search user
         if(isset($input) && !empty($input['user']))
         {
             $data['search']['user'] = trim($input['user']);
@@ -203,7 +214,7 @@ class DashboardController extends Controller
         {
             $data['search']['user'] = '';
         }
-        //search customer      
+        //search customer
         if(isset($input) && !empty($input['customer']))
         {
             $data['search']['customer'] = trim($input['customer']);
@@ -218,7 +229,7 @@ class DashboardController extends Controller
         {
             $data['search']['customer'] = '';
         }
-        //search order_id      
+        //search order_id
         if(isset($input) && !empty($input['order_id']) && is_numeric($input['order_id']))
         {
             $data['search']['order_id'] = trim($input['order_id']);
@@ -228,44 +239,44 @@ class DashboardController extends Controller
         {
             $data['search']['order_id'] = '';
         }
-        //search authcode    
+        //search authcode
         if(isset($input) && !empty($input['authcode']))
         {
             $data['search']['authcode'] = trim($input['authcode']);
             $data['where'][] = ['transactions.authcode','=',$data['search']['authcode']];
         }
         else
-            $data['search']['authcode'] = ''; 
-        //search refnum    
+            $data['search']['authcode'] = '';
+        //search refnum
         if(isset($input) && !empty($input['refnum']))
         {
             $data['search']['refnum'] = trim($input['refnum']);
             $data['where'][] = ['transactions.refnum','=',$data['search']['refnum']];
         }
         else
-            $data['search']['refnum'] = ''; 
+            $data['search']['refnum'] = '';
         //search printing
         if(isset($input) && isset($input['mirror_type']) && !empty($input['mirror_type']))
             $data['search']['mirror_type'] = $input['mirror_type'];
         else
             $data['search']['mirror_type'] = 'previous_period';
-        
+
         if(isset($input) && isset($input['mirror_period']) && !empty($input['mirror_period']) && is_numeric($input['mirror_period']))
             $data['search']['mirror_period'] = $input['mirror_period'];
         else
             $data['search']['mirror_period'] = 0;
-        
+
         if(isset($input) && isset($input['replace_chart']) && !empty($input['replace_chart']))
             $data['search']['replace_chart'] = 1;
         else
             $data['search']['replace_chart'] = 1;
-        
+
         if(isset($input) && isset($input['coupon_report']) && !empty($input['coupon_report']))
             $data['search']['coupon_report'] = 1;
         else
             $data['search']['coupon_report'] = 0;
         //PERMISSIONS
-        //if user has permission to view        
+        //if user has permission to view
         if(in_array('View',Auth::user()->user_type->getACLs()['REPORTS']['permission_types']))
         {
             if(Auth::user()->user_type->getACLs()['REPORTS']['permission_scope'] != 'All')
@@ -276,24 +287,24 @@ class DashboardController extends Controller
                     //add shows and venues for search
                     $data['search']['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
                     $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
-                } 
-                else 
+                }
+                else
                     $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
-            }  
+            }
             //all
-            else 
+            else
             {
                 //add shows and venues for search
                 $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
                 $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
-            }  
+            }
         }
         else
             $data['where'][] = ['purchases.id','=',0];
-        //return     
+        //return
         return $data;
     }
-    
+
     /**
      * Show the ticket sales report on the dashboard.
      *
@@ -313,7 +324,7 @@ class DashboardController extends Controller
             //coupon's report
             if(!empty($search['coupon_report']))
                 $coupons = $this->coupons($data);
-            //get all records        
+            //get all records
             $data = DB::table('purchases')
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -324,16 +335,16 @@ class DashboardController extends Controller
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, customers.email,
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name,
-                                          ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
+                                          ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
+                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
                                             ELSE purchases.payment_type END ) AS method,
-                                          COUNT(purchases.id) AS purchases, 
-                                          SUM(purchases.quantity) AS tickets, 
-                                          SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit, 
-                                          SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue, 
-                                          SUM(ROUND(purchases.savings,2)) AS discounts, 
-                                          SUM(ROUND(purchases.processing_fee,2)) AS fees, 
-                                          SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show, 
+                                          COUNT(purchases.id) AS purchases,
+                                          SUM(purchases.quantity) AS tickets,
+                                          SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
+                                          SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                          SUM(ROUND(purchases.savings,2)) AS discounts,
+                                          SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                          SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                           SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')
@@ -415,7 +426,7 @@ class DashboardController extends Controller
                             }
                         }
                         else return ['title'=>$title,'table'=>[]];
-                        
+
                         //remove previous date comparison
                         $where = clear_date_sold($where);
                         //set up new date period
@@ -424,9 +435,9 @@ class DashboardController extends Controller
                         $title = 'Period <i>'.date('m/d/Y',strtotime($start_date)).' to '.date('m/d/Y',strtotime($end_date)).'</i>';
                     }
                     else return ['title'=>$title,'table'=>[]];
-                } 
+                }
                 else $title = 'Current <i>'.date('m/d/Y',strtotime($search['soldtime_start_date'])).' to '.date('m/d/Y',strtotime($search['soldtime_end_date'])).'</i>';
-                
+
                 $summary_table = [];
                 $subtotals = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
                 $consignment = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
@@ -438,21 +449,21 @@ class DashboardController extends Controller
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                            ->select(DB::raw('( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
+                            ->select(DB::raw('( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
+                                                WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
                                                 ELSE purchases.payment_type END ) AS method,
-                                              COUNT(purchases.id) AS purchases, 
-                                              SUM(purchases.quantity) AS tickets, 
-                                              SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit, 
-                                              SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue, 
-                                              SUM(ROUND(purchases.savings,2)) AS discounts, 
-                                              SUM(ROUND(purchases.processing_fee,2)) AS fees, 
-                                              SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show, 
+                                              COUNT(purchases.id) AS purchases,
+                                              SUM(purchases.quantity) AS tickets,
+                                              SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
+                                              SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                              SUM(ROUND(purchases.savings,2)) AS discounts,
+                                              SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                              SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                               SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                             ->where($where)
                             ->orderBy('method')->groupBy('method')
                             ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
-                            ->get()->toArray();            
+                            ->get()->toArray();
                 foreach ($summary_info as $d)
                 {
                     $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'revenue'=>$d->revenue,'discounts'=>$d->discounts,
@@ -483,18 +494,18 @@ class DashboardController extends Controller
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('users', 'users.id', '=' ,'purchases.user_id')
                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
-                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased, 
+                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased,
                                     SUM(purchases.quantity) AS qty, SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
                     ->where($where)
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
-                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();            
+                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
             //return view
             return view('admin.dashboard.ticket_sales',compact('data','total','graph','summary','coupons','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Ticket Sales: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Show the coupons report on the dashboard.
      *
@@ -511,26 +522,26 @@ class DashboardController extends Controller
             $where = $data['where'];
             $where[] = ['discounts.id','!=',1];
             $search = $data['search'];
-            //get all records        
+            //get all records
             $data = DB::table('discounts')
                     ->leftJoin('purchases', 'discounts.id', '=' ,'purchases.discount_id')
                     ->leftJoin('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->leftJoin('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->leftJoin('venues', 'venues.id', '=' ,'shows.venue_id')
-                    ->select(DB::raw('COALESCE(shows.name,"-") AS show_name, COUNT(purchases.id) AS purchases, 
+                    ->select(DB::raw('COALESCE(shows.name,"-") AS show_name, COUNT(purchases.id) AS purchases,
                                     COALESCE(venues.name,"-") AS venue_name, discounts.code,
                                     discounts.distributed_at, discounts.description,discounts.start_date,discounts.end_date, purchases.id,
-                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
+                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
                                               AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
-                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
+                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
                                               AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 7 DAY)),0) AS tickets_seven,
-                                    SUM(purchases.quantity) AS tickets, 
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
-                                    SUM(ROUND(purchases.savings,2)) AS discounts, 
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                    SUM(purchases.quantity) AS tickets,
+                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
+                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    SUM(ROUND(purchases.savings,2)) AS discounts,
+                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
@@ -539,17 +550,17 @@ class DashboardController extends Controller
                               ->orWhereNull('purchases.id');
                     })
                     ->groupBy('venues.id','shows.id','discounts.id')->orderBy('tickets','DESC')->orderBy('discounts.code','ASC')->orderBy('show_name','ASC');
-            //conditions            
+            //conditions
             if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
             {
-                $data->where(DB::raw('DATE(discounts.end_date)'),'>=',$search['soldtime_start_date']);
+                $data->where(DB::raw('DATE(discounts.end_date)'),'>=',date('Y-m-d',strtotime($search['soldtime_end_date'])));
                 $data->where(function($query) use ($search) {
-                    $query->where(DB::raw('DATE(purchases.created)'),'>=',$search['soldtime_start_date'])
+                    $query->where(DB::raw('DATE(purchases.created)'),'>=',date('Y-m-d',strtotime($search['soldtime_start_date'])))
                           ->orWhereNull('purchases.id');
                 });
-                $data->where(DB::raw('DATE(discounts.start_date)'),'<=',$search['soldtime_end_date']);
+                $data->where(DB::raw('DATE(discounts.start_date)'),'<=',date('Y-m-d',strtotime($search['soldtime_start_date'])));
                 $data->where(function($query) use ($search) {
-                    $query->where(DB::raw('DATE(purchases.created)'),'<=',$search['soldtime_end_date'])
+                    $query->where(DB::raw('DATE(purchases.created)'),'<=',date('Y-m-d',strtotime($search['soldtime_end_date'])))
                           ->orWhereNull('purchases.id');
                 });
             }
@@ -576,7 +587,7 @@ class DashboardController extends Controller
             throw new Exception('Error Dashboard Coupons: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Show the chargeback report on the dashboard.
      *
@@ -593,15 +604,15 @@ class DashboardController extends Controller
             $where = $data['where'];
             $where[] = ['purchases.status','=','Chargeback'];
             $search = $data['search'];
-            //get all records        
+            //get all records
             $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
-                        ->select(DB::raw('purchases.id, COALESCE(transactions.card_holder,CONCAT(customers.first_name," ",customers.last_name)) AS card_holder, 
-                                          COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,0) AS amount, COALESCE(transactions.authcode,0) AS authcode, 
+                        ->select(DB::raw('purchases.id, COALESCE(transactions.card_holder,CONCAT(customers.first_name," ",customers.last_name)) AS card_holder,
+                                          COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,0) AS amount, COALESCE(transactions.authcode,0) AS authcode,
                                           shows.name AS show_name, show_times.show_time, purchases.status AS status, venues.name AS venue_name,
                                           purchases.quantity AS tickets, purchases.transaction_id, purchases.ticket_type, purchases.created, purchases.note '))
                         ->where($where)
@@ -615,7 +626,7 @@ class DashboardController extends Controller
             throw new Exception('Error Dashboard Chargebacks: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Show the future_liabilities report on the dashboard.
      *
@@ -634,17 +645,17 @@ class DashboardController extends Controller
             $where[] = ['purchases.status','=','Active'];
             $where[] = ['show_times.show_time','>',$current];
             $search = $data['search'];
-            //get all records        
+            //get all records
             $data = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
-                                    SUM(purchases.quantity) AS tickets, 
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
-                                    SUM(ROUND(purchases.savings,2)) AS discounts, 
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                    SUM(purchases.quantity) AS tickets,
+                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
+                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    SUM(ROUND(purchases.savings,2)) AS discounts,
+                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions '))
                         ->where($where)
@@ -664,7 +675,7 @@ class DashboardController extends Controller
             throw new Exception('Error Dashboard Future Liabilities: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Show the Trend and Pace report on the dashboard.
      *
@@ -681,32 +692,32 @@ class DashboardController extends Controller
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
-            //get all records        
+            //get all records
             $data = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, show_times.show_time, venues.name AS venue_name,
-                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
+                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
-                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id 
+                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 2 DAY)),0) AS tickets_two,
-                                    SUM(purchases.quantity) AS tickets, 
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
-                                    SUM(ROUND(purchases.savings,2)) AS discounts, 
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                    SUM(purchases.quantity) AS tickets,
+                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
+                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    SUM(ROUND(purchases.savings,2)) AS discounts,
+                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
                     ->orderBy('shows.name','show_times.show_time desc')->groupBy('show_times.id')->get()->toArray();
-            //info for the graph 
+            //info for the graph
             $start = date('Y-m-d', strtotime('-1 year'));
             $where[] = ['purchases.created','>=',$start];
             $graph = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased, 
+                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased,
                                     SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases, SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
                     ->where($where)
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
@@ -726,7 +737,7 @@ class DashboardController extends Controller
             throw new Exception('Error Dashboard Trend and Pace: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Show the Referrals report on the dashboard.
      *
@@ -749,7 +760,7 @@ class DashboardController extends Controller
                 $order = 'url';
                 $groupby = 'referral_url,show_name';
                 $orderby = 'referral_url,show_name';
-            }    
+            }
             else
             {
                 $order = 'show';
@@ -763,17 +774,17 @@ class DashboardController extends Controller
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                     COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
-                                    SUM(purchases.quantity) AS tickets, 
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids, 
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices, 
-                                    SUM(ROUND(purchases.savings,2)) AS discounts, 
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees, 
+                                    SUM(purchases.quantity) AS tickets,
+                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
+                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    SUM(ROUND(purchases.savings,2)) AS discounts,
+                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
                     ->whereNotNull('purchases.referrer_url')
                     ->groupBy(DB::raw($groupby))->orderBy(DB::raw($orderby))->get()->toArray();
-            //info for the graph 
+            //info for the graph
             if($order=='url')
                 $groupby = 'referral_url';
             else
@@ -808,5 +819,5 @@ class DashboardController extends Controller
             throw new Exception('Error Dashboard Referrals: '.$ex->getMessage());
         }
     }
-    
+
 }

@@ -113,7 +113,7 @@
     <div id="tb_summary" class="portlet-body" style="display:none;" >
         @foreach($summary as $summ)
         <h5>@php echo $summ['title'] @endphp</h5>
-        <table width="100% class="table table-striped table-bordered table-hover">
+        <table width="100%" class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
                     <th>TYPE</th>
@@ -123,7 +123,7 @@
                     <th style='text-align:right'>DISCOUNTS</th>
                     <th style='text-align:right'>TO SHOW</th>
                     <th style='text-align:right'>COMMISSIONS</th>
-                    <th style='text-align:right'>P.FEES</th>                    
+                    <th style='text-align:right'>P.FEES</th>
                     <th style='text-align:right'>GROSS PROFIT</th>
                   </tr>
                 </tr>
@@ -139,7 +139,7 @@
                     <td style="text-align:right">$ {{number_format($d['discounts'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['to_show'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['commissions'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($d['fees'],2)}}</td>                    
+                    <td style="text-align:right">$ {{number_format($d['fees'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['profit'],2)}}</td>
                 </tr>
                 @endforeach
@@ -155,7 +155,7 @@
             <tbody>
                 @foreach($coupons['descriptions'] as $k=>$d)
                 <tr>
-                    <td><b>{{$k}}*</b></td>                  
+                    <td><b>{{$k}}*</b></td>
                     <td> => {{$d}}</td>
                 </tr>
                 @endforeach
@@ -274,7 +274,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:500px !important;">
+        <div class="modal-dialog" style="width:1000px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
@@ -284,74 +284,175 @@
                     <form method="post" action="/admin/dashboard/ticket_sales" id="form_model_search">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="form-body">
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Venue:</label>
-                                    <div class="col-md-9 show-error">
-                                        <div class="input-group">
-                                            <select class="form-control" name="venue" style="width: 321px !important">
-                                                <option selected value="">All</option>
-                                                @foreach($search['venues'] as $index=>$v)
-                                                <option @if($v->id==$search['venue']) selected @endif value="{{$v->id}}">{{$v->name}}</option>
-                                                @endforeach
-                                            </select>
+                            <div class="row" style="padding-right:40px">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Venue:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group">
+                                                <select class="form-control" name="venue" style="width: 321px !important">
+                                                    <option selected value="">All</option>
+                                                    @foreach($search['venues'] as $index=>$v)
+                                                    <option @if($v->id==$search['venue']) selected @endif value="{{$v->id}}">{{$v->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Show:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group">
+                                                <select class="form-control" name="show" style="width: 321px !important" data-content='@php echo str_replace("'"," ",json_encode($search["shows"]));@endphp'>
+                                                    <option selected value="">All</option>
+                                                    @foreach($search['shows'] as $index=>$s)
+                                                        @if($s->venue_id == $search['venue'])
+                                                        <option @if($s->id==$search['show']) selected @endif value="{{$s->id}}">{{$s->name}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Show Time:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group" id="show_times_date">
+                                                <input type="text" class="form-control" name="showtime_start_date" value="{{$search['showtime_start_date']}}" readonly="true">
+                                                <span class="input-group-addon"> to </span>
+                                                <input type="text" class="form-control" name="showtime_end_date" value="{{$search['showtime_end_date']}}" readonly="true">
+                                                <span class="input-group-btn">
+                                                    <button class="btn default date-range-toggle" type="button">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </button>
+                                                    <button class="btn default" type="button" id="clear_show_times_date">
+                                                        <i class="fa fa-remove"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Sold Date:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group" id="sold_times_date">
+                                                <input type="text" class="form-control" name="soldtime_start_date" value="{{$search['soldtime_start_date']}}" readonly="true">
+                                                <span class="input-group-addon"> to </span>
+                                                <input type="text" class="form-control" name="soldtime_end_date" value="{{$search['soldtime_end_date']}}" readonly="true">
+                                                <span class="input-group-btn">
+                                                    <button class="btn default date-range-toggle" type="button">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </button>
+                                                    <button class="btn default" type="button" id="clear_sold_times_date">
+                                                        <i class="fa fa-remove"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Sellers:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group">
+                                                <select class="form-control" name="seller" style="width: 321px !important">
+                                                    <option selected value="">All</option>
+                                                    @foreach($search['sellers'] as $p)
+                                                        <option @if(!empty($search['seller']) && $p==$search['seller']) selected @endif value="{{$p}}">{{$p}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Ticket Type:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group">
+                                                <select class="form-control" name="ticket_type" style="width: 321px !important">
+                                                    <option selected value="">All</option>
+                                                    @foreach($search['ticket_types'] as $index=>$tt)
+                                                        <option @if(!empty($search['ticket_type']) && $index==$search['ticket_type']) selected @endif value="{{$index}}">{{$tt}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Status:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group">
+                                                <select class="form-control" name="statu" style="width: 321px !important">
+                                                    <option selected value="">All</option>
+                                                    @foreach($search['status'] as $index=>$s)
+                                                        <option @if(!empty($search['statu']) && $index==$search['statu']) selected @endif value="{{$index}}">{{$s}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Show:</label>
-                                    <div class="col-md-9 show-error">
-                                        <div class="input-group">
-                                            <select class="form-control" name="show" style="width: 321px !important" data-content='@php echo str_replace("'"," ",json_encode($search["shows"]));@endphp'>
-                                                <option selected value="">All</option>
-                                                @foreach($search['shows'] as $index=>$s)
-                                                    @if($s->venue_id == $search['venue'])
-                                                    <option @if($s->id==$search['show']) selected @endif value="{{$s->id}}">{{$s->name}}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">Amount start:</label>
+                                        <div class="col-md-8 show-error">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control input-large" name="start_amount" step="0.01" value="{{$search['start_amount']}}" placeholder="Price paid start range" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">Amount ends:</label>
+                                        <div class="col-md-8 show-error">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control input-large" name="end_amount" step="0.01" value="{{$search['end_amount']}}" placeholder="Price paid end range" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">User:</label>
+                                        <div class="col-md-8 show-error">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="ID/Email of the user" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">Customer:</label>
+                                        <div class="col-md-8 show-error">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control input-large" name="customer" value="{{$search['customer']}}" placeholder="ID/Email of the customer" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">Order id:</label>
+                                        <div class="col-md-8 show-error">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" placeholder="ID of the order (purchase id)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">AuthCode:</label>
+                                        <div class="col-md-8 show-error">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control input-large" name="authcode" value="{{$search['authcode']}}" placeholder="AuthCode of the transaction" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">RefNum:</label>
+                                        <div class="col-md-8 show-error">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" placeholder="RefNum of the transaction" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row" style="padding:15px">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Show Time:</label>
-                                    <div class="col-md-9 show-error">
-                                        <div class="input-group" id="show_times_date">
-                                            <input type="text" class="form-control" name="showtime_start_date" value="{{$search['showtime_start_date']}}" readonly="true">
-                                            <span class="input-group-addon"> to </span>
-                                            <input type="text" class="form-control" name="showtime_end_date" value="{{$search['showtime_end_date']}}" readonly="true">
-                                            <span class="input-group-btn">
-                                                <button class="btn default date-range-toggle" type="button">
-                                                    <i class="fa fa-calendar"></i>
-                                                </button>
-                                                <button class="btn default" type="button" id="clear_show_times_date">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Sold Date:</label>
-                                    <div class="col-md-9 show-error">
-                                        <div class="input-group" id="sold_times_date">
-                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$search['soldtime_start_date']}}" readonly="true">
-                                            <span class="input-group-addon"> to </span>
-                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$search['soldtime_end_date']}}" readonly="true">
-                                            <span class="input-group-btn">
-                                                <button class="btn default date-range-toggle" type="button">
-                                                    <i class="fa fa-calendar"></i>
-                                                </button>
-                                                <button class="btn default" type="button" id="clear_sold_times_date">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Payment Type:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <label class="control-label col-md-2">Payment Type:</label>
+                                    <div class="col-md-10 show-error">
                                         <div class="input-group mt-checkbox-inline">
                                             @foreach($search['payment_types'] as $index=>$p)
                                             @php if($p=='None') $p='Comp.' @endphp
@@ -363,95 +464,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Amount start:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <input type="number" class="form-control input-large" name="start_amount" step="0.01" value="{{$search['start_amount']}}" placeholder="Price paid start range" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Amount ends:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <input type="number" class="form-control input-large" name="end_amount" step="0.01" value="{{$search['end_amount']}}" placeholder="Price paid end range" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Ticket Type:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <select class="form-control" name="ticket_type" style="width: 321px !important">
-                                                <option selected value="">All</option>
-                                                @foreach($search['ticket_types'] as $index=>$tt)
-                                                    <option @if(!empty($search['ticket_type']) && $index==$search['ticket_type']) selected @endif value="{{$index}}">{{$tt}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Status:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <select class="form-control" name="statu" style="width: 321px !important">
-                                                <option selected value="">All</option>
-                                                @foreach($search['status'] as $index=>$s)
-                                                    <option @if(!empty($search['statu']) && $index==$search['statu']) selected @endif value="{{$index}}">{{$s}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">User:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="ID/Email of the user" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Customer:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="customer" value="{{$search['customer']}}" placeholder="ID/Email of the customer" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Order id:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" placeholder="ID of the order (purchase id)" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">AuthCode:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="authcode" value="{{$search['authcode']}}" placeholder="AuthCode of the transaction" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">RefNum:</label>
-                                    <div class="col-md-9 show-error"> 
-                                        <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" placeholder="RefNum of the transaction" />
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                            <div class="row" style="margin-top:20px;padding:20px">
+                            <div class="row" style="padding:0 20px">
                                 <label class="control-label">
                                     <span class="required">Printing Settings</span>
-                                </label><br>
-                                <div class="form-group">
-                                    <div class="show-error"> 
+                                </label><hr>
+                                <div class="col-md-6">
+                                    <div class="form-group show-error">
                                         <div class="input-group mt-radio-list">
                                             <label class="mt-radio">
                                                 <input type="radio" @if((!empty($search['mirror_type']) && $search['mirror_type']=='previous_period') || empty($search['mirror_type'])) checked="true" @endif name="mirror_type" value="previous_period" />Previous mirror type (default)
@@ -464,8 +483,10 @@
                                             <input type="text" name="mirror_period" style="width:20px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " @if(!empty($search['mirror_period'])) value="{{$search['mirror_period']}}" @else value="0" @endif />
                                             <label class="control-label">&nbsp;&nbsp;&nbsp;Qty of mirrors prior sold date period</label>
                                         </div>
-                                    </div><br>
-                                    <div class="show-error"> 
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group show-error">
                                         <div class="input-group mt-checkbox-single">
                                             <label class="mt-checkbox">
                                                 <input type="checkbox" @if(!empty($search['replace_chart'])) checked="true" @endif name="replace_chart" value="1" />
@@ -473,7 +494,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="show-error"> 
+                                    <div class="form-group show-error">
                                         <div class="input-group mt-checkbox-single">
                                             <label class="mt-checkbox">
                                                 <input type="checkbox" @if(!empty($search['coupon_report'])) checked="true" @endif name="coupon_report" value="1" />
@@ -503,7 +524,7 @@
             </div>
         </div>
     </div>
-    <!-- END SEARCH MODAL-->    
+    <!-- END SEARCH MODAL-->
 @endsection
 
 @section('scripts')

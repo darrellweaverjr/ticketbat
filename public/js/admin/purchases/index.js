@@ -1,5 +1,5 @@
 var TableDatatablesManaged = function () {
-    
+
     var initTable = function () {
         var table = $('#tb_model');
         // begin first table
@@ -31,13 +31,13 @@ var TableDatatablesManaged = function () {
                 [10, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 10,            
+            "pageLength": 10,
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
                     'orderable': false,
                     'targets': [0]
-                }, 
+                },
                 {
                     "searchable": false,
                     "targets": [0]
@@ -50,7 +50,7 @@ var TableDatatablesManaged = function () {
                 [5, "desc"]
             ]
         });
-        
+
         table.find('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
@@ -63,9 +63,9 @@ var TableDatatablesManaged = function () {
                     $(this).parents('tr').removeClass("active");
                 }
             });
-            check_models(); 
-        });        
-        
+            check_models();
+        });
+
         table.on('click', 'tbody tr td:not(:first-child)', function () {
             var action = $(this).parent().find('.checkboxes').is(':checked');
             if(!action)
@@ -73,14 +73,14 @@ var TableDatatablesManaged = function () {
             $(this).parent().find('.checkboxes').prop('checked',!action);
             check_models();
         });
-        
+
         table.on('change', 'tbody tr .checkboxes', function () {
-            check_models();             
+            check_models();
             $(this).parents('tr').toggleClass("active");
         });
-        
+
         //PERSONALIZED FUNCTIONS
-        
+
         //check/uncheck all
         var check_models = function(){
             var set = $('.group-checkable').attr("data-set");
@@ -91,7 +91,7 @@ var TableDatatablesManaged = function () {
                 {
                     $('button[id*="btn_model_"]').prop("disabled",false);
                 }
-                else 
+                else
                 {
                     $('button[id*="btn_model_"]').prop("disabled",true);
                     $('#btn_model_email').prop("disabled",false);
@@ -102,8 +102,8 @@ var TableDatatablesManaged = function () {
                 $('button[id*="btn_model_"]').prop("disabled",true);
             }
             $('#btn_model_search').prop("disabled",false);
-        } 
-        
+        }
+
         //reset all selects
         function reset_purchase_status()
         {
@@ -113,8 +113,8 @@ var TableDatatablesManaged = function () {
         }
         $('#tb_model td:not(:nth-child(8))').click(function() {
             reset_purchase_status();
-        }) 
-        
+        })
+
         //create editable status for purchase
         $('#tb_model td:nth-child(8)').click(function() {
             var status = $(this);
@@ -132,8 +132,8 @@ var TableDatatablesManaged = function () {
             });
             select+= '</select>';
             status.html(select);
-        }) 
-        
+        })
+
         //function to change status to purchase
         function change_status(id,status)
         {
@@ -146,14 +146,14 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/purchases/save', 
-                data: {id:id,status:status}, 
+                url: '/admin/purchases/save',
+                data: {id:id,status:status},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#tb_model select[name="status"]').parent('td').data('status',status);
                         $('#tb_model select[name="status"]').val(  status  );
-                        $('#note_'+id).html(data.note);                        
+                        $('#note_'+id).html(data.note);
                         swal({
                             title: "<span style='color:green;'>Updated!</span>",
                             text: data.msg,
@@ -184,7 +184,7 @@ var TableDatatablesManaged = function () {
                 }
             });
         }
-        
+
         //view details
         $(document).on('click', 'td.modal_details_view', function(ev){
             var id = $(this).data('id');
@@ -199,10 +199,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/purchases', 
-                    data: {id:id,action:0}, 
+                    url: '/admin/purchases',
+                    data: {id:id,action:0},
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             //fill out shows
                             for(var key in data.purchase)
@@ -245,7 +245,7 @@ var TableDatatablesManaged = function () {
                 });
             }
         });
-        
+
         //function on status select
         $(document).on('change', '#tb_model select[name="status"]', function(ev){
             var id = $(this).data('id');
@@ -254,7 +254,7 @@ var TableDatatablesManaged = function () {
             if(old_status != status)
             {
                 if(status.substring(0,7) == 'Pending')
-                {                    
+                {
                     swal({
                         title: "Are you sure to change the status from <b>"+old_status+"</b> to <b>"+status+"</b>?",
                         text: "An email will be sent to the admin to complete the action.",
@@ -333,37 +333,37 @@ var TableDatatablesManaged = function () {
         //show_times_date
         $('#show_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'YYYY-MM-DD',
+                format: 'M/DD/YYYY',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="showtime_start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_search input[name="showtime_end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="showtime_start_date"]').val(start.format('M/DD/YYYY'));
+                $('#form_model_search input[name="showtime_end_date"]').val(end.format('M/DD/YYYY'));
             }
-        ); 
+        );
         //clear show_times_date
         $('#clear_show_times_date').on('click', function(ev) {
             $('#form_model_search [name="showtime_start_date"]').val('');
             $('#form_model_search [name="showtime_end_date"]').val('');
             $('#show_times_date').datetimepicker('update');
-        }); 
+        });
         //sold_times_date
         $('#sold_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'YYYY-MM-DD',
+                format: 'M/DD/YYYY',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('M/DD/YYYY'));
+                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('M/DD/YYYY'));
             }
-        ); 
+        );
         //clear sold_times_date
         $('#clear_sold_times_date').on('click', function(ev) {
             $('#form_model_search [name="soldtime_start_date"]').val('');
             $('#form_model_search [name="soldtime_end_date"]').val('');
             $('#sold_times_date').datetimepicker('update');
-        }); 
+        });
         //search venue on select
         $('#form_model_search select[name="venue"]').bind('change click', function() {
             var venue = $(this).val();
@@ -386,10 +386,10 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/purchases', 
-                data: {id:id}, 
+                url: '/admin/purchases',
+                data: {id:id},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#modal_model_update_title').html('Edit purchase # '+id);
                         //fill out current
@@ -397,9 +397,9 @@ var TableDatatablesManaged = function () {
                             if(key == 'show_time')
                                 data.current[key] = moment(data.current[key]).format('M/D/YY h:mma');
                             $('#form_model_edit input[name="'+key+'"]').val(data.current[key]);
-                        }     
+                        }
                         //fill out showtimes
-                        $('#form_model_edit select[name="to_show_time_id"]').html('<option selected value=""></option>');                        
+                        $('#form_model_edit select[name="to_show_time_id"]').html('<option selected value=""></option>');
                         $.each(data.showtimes,function(k, v) {
                             $('#form_model_edit select[name="to_show_time_id"]').append('<option value="'+v.id+'">'+moment(v.show_time).format('MM/DD/YYYY @ h:mma')+' - Active</option>');
                         });
@@ -442,7 +442,7 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/purchases', 
+                url: '/admin/purchases',
                 data: {purchase_id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_discount_id:to_discount_id,to_quantity:to_quantity},
                 success: function(data) {
                     if(data.success) {
@@ -453,7 +453,7 @@ var TableDatatablesManaged = function () {
                             if(key == 't_show_time')
                                 data.target[key] = moment(data.target[key]).format('M/D/YY h:mma');
                             $('#form_model_edit input[name="'+key+'"]').val(data.target[key]);
-                        } 
+                        }
                         //hightlight changes
                         if(parseFloat($('#form_model_edit input[name="t_quantity"]').val()) != parseFloat($('#form_model_edit input[name="quantity"]').val()))
                             $('#form_model_edit input[name="t_quantity"]').css('border-color','blue');
@@ -478,9 +478,9 @@ var TableDatatablesManaged = function () {
                             $('#form_model_edit input[name="t_price_paid"]').css('background','#C9F9C4').css('font-weight','bold');
                         else if(from_price < to_price)
                             $('#form_model_edit input[name="t_price_paid"]').css('background','#F7D9D8').css('font-weight','bold');
-                    }  
+                    }
                     else{
-                        $('#modal_model_edit').modal('hide');					
+                        $('#modal_model_edit').modal('hide');
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -493,7 +493,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_edit').modal('hide');	
+                    $('#modal_model_edit').modal('hide');
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",
@@ -504,7 +504,7 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_edit').modal('show');
                     });
                 }
-            }); 
+            });
         });
         //function save
         $('#btn_model_save').on('click', function(ev) {
@@ -526,10 +526,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/purchases/save', 
-                    data: $('#form_model_edit').serializeArray(), 
+                    url: '/admin/purchases/save',
+                    data: $('#form_model_edit').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             swal({
                                 title: "<span style='color:green;'>Saved!</span>",
@@ -539,7 +539,7 @@ var TableDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             });
-                            location.reload(); 
+                            location.reload();
                         }
                         else{
                             swal({
@@ -562,8 +562,8 @@ var TableDatatablesManaged = function () {
                             $('#modal_model_edit').modal('show');
                         });
                     }
-                }); 
-            } 
+                });
+            }
             else
             {
                 swal({
@@ -574,7 +574,7 @@ var TableDatatablesManaged = function () {
                 },function(){
                     $('#modal_model_edit').modal('show');
                 });
-            }        
+            }
         });
         //function email
         $('#btn_model_email').on('click', function(ev) {
@@ -604,10 +604,10 @@ var TableDatatablesManaged = function () {
                         jQuery.ajax({
                             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             type: 'POST',
-                            url: '/admin/purchases/email', 
-                            data: {id:id,action:'receipt'}, 
+                            url: '/admin/purchases/email',
+                            data: {id:id,action:'receipt'},
                             success: function(data) {
-                                if(data.success) 
+                                if(data.success)
                                 {
                                     swal({
                                         title: "<span style='color:green;'>Email Sent Successfully!</span>",
@@ -657,7 +657,7 @@ var TableDatatablesManaged = function () {
             var checked = $(set+"[type=checkbox]:checked");
             jQuery(checked).each(function (key, item) {
                 ids.push(item.id);
-            });  
+            });
             $('#modal_model_email').modal('hide');
             if(ids)
             {
@@ -670,10 +670,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/admin/purchases/email', 
-                    data: {ids:ids,search:$('#form_model_search').serializeArray(),email:$('#form_model_email').serializeArray(),action:'custom'},  
+                    url: '/admin/purchases/email',
+                    data: {ids:ids,search:$('#form_model_search').serializeArray(),email:$('#form_model_email').serializeArray(),action:'custom'},
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             swal({
                                 title: "<span style='color:green;'>Email Sent Successfully!</span>",
@@ -745,10 +745,10 @@ var TableDatatablesManaged = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/admin/purchases/save', 
-                        data: {id:id,note:inputNote}, 
+                        url: '/admin/purchases/save',
+                        data: {id:id,note:inputNote},
                         success: function(data) {
-                            if(data.success) 
+                            if(data.success)
                             {
                                 $('#note_'+id).html(data.note);
                                 $('#note_'+id).removeClass('hidden');
@@ -802,7 +802,7 @@ var TableDatatablesManaged = function () {
                     window.open('/admin/purchases/tickets/C/'+id);
                 }
             });
-        });  
+        });
         //function share tickets
         $('#btn_model_share').on('click', function(ev) {
             $('#form_model_edit').trigger('reset');
@@ -814,13 +814,13 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/user/purchases/share', 
-                data: { id: purchase_id }, 
+                url: '/user/purchases/share',
+                data: { id: purchase_id },
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#form_share_tickets input[name="purchases_id"]').val(purchase_id);
-                        ShareTicketsFunctions.load(data,qty); 
+                        ShareTicketsFunctions.load(data,qty);
                         $('#modal_share_tickets').modal('show');
                     }
                     else{
@@ -842,14 +842,14 @@ var TableDatatablesManaged = function () {
                         showConfirmButton: true
                     });
                 }
-            }); 
+            });
         });
-        
+
         //function save
         $('#btn_share_tickets').on('click', function(ev) {
             //submit values of tickets
             if( ShareTicketsFunctions.check() )
-            {  
+            {
                 $('#modal_share_tickets').modal('hide');
                 swal({
                     title: "Sharing your tickets...",
@@ -860,10 +860,10 @@ var TableDatatablesManaged = function () {
                 jQuery.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '/user/purchases/share', 
-                    data: $('#form_share_tickets').serializeArray(), 
+                    url: '/user/purchases/share',
+                    data: $('#form_share_tickets').serializeArray(),
                     success: function(data) {
-                        if(data.success) 
+                        if(data.success)
                         {
                             swal({
                                 title: "<span style='color:green;'>Saved!</span>",
@@ -895,13 +895,13 @@ var TableDatatablesManaged = function () {
                             $('#modal_share_tickets').modal('show');
                         });
                     }
-                }); 
-            }  
+                });
+            }
         });
-        
+
         //init functions
         $('#form_model_email [name="body"]').summernote({height:150});
-        check_models(); 
+        check_models();
         //function autoshow modal search
         if(parseInt($('#modal_model_search').data('modal')) > 0)
             $('#modal_model_search').modal('show');
@@ -912,7 +912,7 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable();        
+            initTable();
         }
     };
 }();

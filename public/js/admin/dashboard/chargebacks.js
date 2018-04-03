@@ -33,8 +33,8 @@ var TableDatatablesButtons = function () {
                         $('#modal_model_search').modal('show');
                     }
                 },
-                { 
-                    extend: 'print', 
+                {
+                    extend: 'print',
                     text:      'Print <i class="fa fa-print"></i>',
                     titleAttr: 'Print',
                     className: 'btn sbold yellow',
@@ -48,13 +48,13 @@ var TableDatatablesButtons = function () {
                         $.each($('#totals .details').clone(),function(k, v) {
                             t = t + '<th valign="top" style="text-align:right" width="16.5%">'+v.innerHTML+'</th>';
                         });
-                        t = t + '</tr></thead></table><hr>';                        
+                        t = t + '</tr></thead></table><hr>';
                         $(win.document.body).find('h1').append(t);
                         $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
                     }
                 },
-                { 
-                    extend: 'copy', 
+                {
+                    extend: 'copy',
                     text:      'Copy <i class="fa fa-files-o"></i>',
                     titleAttr: 'Copy',
                     className: 'btn sbold blue'
@@ -66,8 +66,8 @@ var TableDatatablesButtons = function () {
                     className: 'btn sbold red',
                     orientation: 'landscape'
                 },
-                { 
-                    extend: 'csv', 
+                {
+                    extend: 'csv',
                     text:      'CSV <i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'CSV',
                     className: 'btn sbold bg-green'
@@ -90,37 +90,37 @@ var TableDatatablesButtons = function () {
         //show_times_date
         $('#show_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'YYYY-MM-DD',
+                format: 'M/DD/YYYY',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="showtime_start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_search input[name="showtime_end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="showtime_start_date"]').val(start.format('M/DD/YYYY'));
+                $('#form_model_search input[name="showtime_end_date"]').val(end.format('M/DD/YYYY'));
             }
-        ); 
+        );
         //clear show_times_date
         $('#clear_show_times_date').on('click', function(ev) {
             $('#form_model_search [name="showtime_start_date"]').val('');
             $('#form_model_search [name="showtime_end_date"]').val('');
             $('#show_times_date').datetimepicker('update');
-        }); 
+        });
         //sold_times_date
         $('#sold_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'YYYY-MM-DD',
+                format: 'M/DD/YYYY',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('YYYY-MM-DD'));
-                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('M/DD/YYYY'));
+                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('M/DD/YYYY'));
             }
-        ); 
+        );
         //clear sold_times_date
         $('#clear_sold_times_date').on('click', function(ev) {
             $('#form_model_search [name="soldtime_start_date"]').val('');
             $('#form_model_search [name="soldtime_end_date"]').val('');
             $('#sold_times_date').datetimepicker('update');
-        }); 
+        });
         //venue on select
         $('#form_model_search select[name="venue"]').bind('change click', function() {
             var venue = $(this).val();
