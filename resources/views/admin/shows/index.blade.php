@@ -212,7 +212,7 @@
                                                     <div class="col-md-9 show-error">
                                                         <select class="form-control" name="category_id">
                                                             @foreach($categories as $index=>$c)
-                                                            <option value="{{$c->id}}" @if($c->disabled>0) disabled @endif>{{$c->name}}</option>
+                                                            <option value="{{$c->id}}" @if($c->disabled>0) disabled @endif>{{html_entity_decode($c->name)}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>

@@ -62,11 +62,11 @@
                             <tr>
                                 <td width="2%">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" id="{{$c->id}}" value="{{$c->name}}" />
+                                        <input type="checkbox" class="checkboxes" id="{{$c->id}}" value="{{html_entity_decode($c->name)}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="88%">{{$c->name}}</td>
+                                <td width="88%">{{html_entity_decode($c->name)}}</td>
                                 <td width="10%"><input type="checkbox" class="make-switch" name="active" value="{{$c->id}}" @if($c->disabled<1) checked="checked" @endif data-size="mini" data-on-text="Enabled" data-off-text="Disabled" data-on-color="primary" data-off-color="danger"></td>
                             </tr>
                             @endforeach
@@ -108,7 +108,7 @@
                                     <select class="form-control" name="id_parent">
                                         <option value="0">No parent</option>
                                         @foreach($categories as $index=>$c)
-                                        <option value="{{$c->id}}">{{$c->name}}</option>
+                                        <option value="{{$c->id}}">{{html_entity_decode($c->name)}}</option>
                                         @endforeach
                                     </select>
                                 </div>

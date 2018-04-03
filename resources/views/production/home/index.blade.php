@@ -56,7 +56,7 @@
                                     <span class="widget-thumb-subtitle"><i class="icon-magnifier"></i> Search</span>
                                     <span class="widget-thumb-body-stat">
                                         <input type="text" class="form-control" name="filter_name" placeholder="Find an event">
-                                   
+
                                 </span>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                                     <select class="form-control" name="filter_category">
                                         <option selected value="">All</option>
                                         @foreach($categories as $index=>$c)
-                                            <option value="{{$c->id}}" data-parent="{{$c->id_parent}}">{{$c->name}} {{$c->subs}}</option>
+                                            <option value="{{$c->id}}" data-parent="{{$c->id_parent}}">{{html_entity_decode($c->name)}} {{$c->subs}}</option>
                                         @endforeach
                                     </select>
                                 </span>
