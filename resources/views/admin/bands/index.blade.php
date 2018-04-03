@@ -74,7 +74,7 @@
                                     </label>
                                 </td>
                                 <td data-order="{{$b->name}}" style="text-align:center;color:red" title="Click on the image to go to the website.">
-                                    <a href="{{$b->website}}" target="_blank"><img alt="- No image -" height="110px" width="110px" src="{{$b->image_url}}"/></a>
+                                    <a href="{{$b->website}}" target="_blank"><img class="lazy" alt="- No image -" height="110px" width="110px" src="{{config('app.theme')}}img/no-image.jpg" data-src="{{$b->image_url}}"/></a>
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
@@ -272,5 +272,6 @@
 @endsection
 
 @section('scripts')
+<script src="{{config('app.theme')}}js/jquery.lazy.min.js" type="text/javascript"></script>
 <script src="/js/admin/bands/index.js" type="text/javascript"></script>
 @endsection
