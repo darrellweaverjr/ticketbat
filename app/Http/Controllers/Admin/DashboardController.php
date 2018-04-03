@@ -88,7 +88,7 @@ class DashboardController extends Controller
         $data['search']['payment_types']['Free'] = 'Free';
         $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
         $data['search']['status'] = Util::getEnumValues('purchases','status');
-        $data['search']['sellers'] = ['Web','App','POS'];
+        $data['search']['sellers'] = Util::getEnumValues('purchases','seller');
         //search venue
         if(isset($input) && isset($input['venue']))
         {
@@ -158,7 +158,7 @@ class DashboardController extends Controller
         if(isset($input) && isset($input['seller']) && !empty($input['seller']))
         {
             $data['search']['seller'] = $input['seller'];
-            //$data['where'][] = [DB::raw('seller = "'.$search['seller'].'"')];
+            $data['where'][] = ['purchases.seller','=',$data['search']['seller']];
         }
         else
         {

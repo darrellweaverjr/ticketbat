@@ -178,7 +178,7 @@ class PurchaseController extends Controller{
                 $search['payment_types']['Free'] = 'Free';
                 $search['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
                 $search['status'] = Util::getEnumValues('purchases','status');
-                $search['sellers'] = ['Web','App','POS'];
+                $search['sellers'] = Util::getEnumValues('purchases','seller');
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search venue
@@ -263,7 +263,7 @@ class PurchaseController extends Controller{
                 if(isset($input) && isset($input['seller']) && !empty($input['seller']))
                 {
                     $search['seller'] = $input['seller'];
-                    //$where[] = [DB::raw('seller = "'.$search['seller'].'"')];
+                    $where[] = ['purchases.seller','=',$search['seller']];
                 }
                 else
                 {
@@ -360,9 +360,6 @@ class PurchaseController extends Controller{
                                                       ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
                                                         WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
                                                         ELSE purchases.payment_type END ) AS method,
-                                                    (CASE WHEN (users.user_type_id=7) THEN "POS"
-                                                                        WHEN (purchases.session_id LIKE "app_%") THEN "App"
-                                                                        ELSE "Web" END) AS seller,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,

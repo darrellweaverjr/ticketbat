@@ -476,6 +476,7 @@ class Purchase extends Model
                 $purchase->updated = $current;
                 $purchase->created = $current;
                 $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;
+                $purchase->seller = ($app)? 'App' : ((Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE')))? 'POS' : 'Web'));
                 if($purchase->save())
                 {
                     //get id for receipts
