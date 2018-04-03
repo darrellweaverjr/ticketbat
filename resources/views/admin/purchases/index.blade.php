@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model" 
+                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model"
                            data-status="{{json_encode($search['status'],true)}}"
                            @if(in_array('Edit',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types'])) data-edit="1" @else data-edit="0" @endif>
                         <thead>
@@ -83,7 +83,7 @@
                                         <span></span>
                                     </label>
                                 </td>
-                                <td title="Click here to see details" class="modal_details_view" 
+                                <td title="Click here to see details" class="modal_details_view"
                                     data-id="{{$p->id}}" style="text-align:center;background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;">
                                     <i class="fa fa-search"></i>
                                 </td>
@@ -136,8 +136,8 @@
                                     <div class="message">
                                         <span class="arrow"> </span>
                                         <span class="body" style="height:50px">
-                                            <div class="col-md-6">Customer: <b class="first_name"></b> <b class="last_name"></b><br> Email: <b class="email"></b><br> Phone: <b class="phone"></b></div>
-                                            <div class="col-md-6">User: <b class="u_first_name"></b> <b class="u_last_name"></b><br> Email: <b class="u_email"></b><br> Phone: <b class="u_phone"></b></div>
+                                            <div class="col-md-6">Customer: <b class="first_name"></b> <b class="last_name"></b> (<b class="customer_id"></b>)<br>Email: <b class="email"></b><br>Phone: <b class="phone"></b></div>
+                                            <div class="col-md-6">User: <b class="u_first_name"></b> <b class="u_last_name"></b><br>Email: <b class="u_email"></b><br>Phone: <b class="u_phone"></b></div>
                                         </span>
                                     </div>
                                 </li>
@@ -145,7 +145,10 @@
                                     <div class="avatar">Event Info</div>
                                     <div class="message">
                                         <span class="arrow"> </span>
-                                        <span class="body" style="margin-left:15px"> Show: <b class="show_name"></b><br> Time: <b class="show_time"></b><br> Venue: <b class="venue_name"></b>  </span>
+                                        <span class="body" style="height:50px">
+                                            <div class="col-md-6">Show: <b class="show_name"></b><br>Time: <b class="show_time"></b><br>Venue: <b class="venue_name"></b></div>
+                                            <div class="col-md-6">Show ID: <b class="show_id"></b><br>ShowTime ID: <b class="show_time_id"></b><br>Venue ID: <b class="venue_id"></b></div>
+                                        </span>
                                     </div>
                                 </li>
                                 <li class="in">
@@ -153,8 +156,8 @@
                                     <div class="message">
                                         <span class="arrow"> </span>
                                         <span class="body" style="height:50px">
-                                            <div class="col-md-6"> ID: <b class="id"></b><br> Qty: <b class="quantity"></b><br> Ticket Type: <b class="ticket_type_type"></b></div>
-                                            <div class="col-md-6"> Status: <b class="status"></b><br> Package: <b class="title"></b><br> Coupon: <b class="code"></b></div>
+                                            <div class="col-md-6">ID: <b class="id"></b><br>Qty: <b class="quantity"></b><br>Ticket Type: <b class="ticket_type_type"></b></div>
+                                            <div class="col-md-6">Status: <b class="status"></b><br>Package: <b class="title"></b><br>Coupon: <b class="code"></b></div>
                                         </span>
                                     </div>
                                 </li>
@@ -170,8 +173,8 @@
                                     <div class="message">
                                         <span class="arrow"> </span>
                                         <span class="body" style="height:50px">
-                                            <div class="col-md-6"> ID:<b class="transaction_id"></b><br> AuthCode: <b class="authcode"></b><br> RefNum: <b class="refnum"></b></div>
-                                            <div class="col-md-6"> Cardholder: <b class="card_holder"></b><br> Payment: <b class="method"></b><br> Card: ...<b class="last_4"></b></div>
+                                            <div class="col-md-6">ID:<b class="transaction_id"></b><br>AuthCode: <b class="authcode"></b><br>RefNum: <b class="refnum"></b></div>
+                                            <div class="col-md-6">Cardholder: <b class="card_holder"></b><br>Payment: <b class="method"></b><br>Card: ...<b class="last_4"></b></div>
                                         </span>
                                     </div>
                                 </li>
@@ -180,8 +183,8 @@
                                     <div class="message">
                                         <span class="arrow"> </span>
                                         <span class="body" style="height:50px">
-                                            <div class="col-md-6"> Retail Price: <b class="retail_price"></b><br> Fees: <b class="processing_fee"></b><br> Commission: <b class="commission_percent"></b></div>
-                                            <div class="col-md-6"> Savings: <b class="savings"></b><br> Amount: <b class="amount"></b></div>
+                                            <div class="col-md-6">Retail Price: <b class="retail_price"></b><br>Fees: <b class="processing_fee"></b><br>Commission: <b class="commission_percent"></b></div>
+                                            <div class="col-md-6">Savings: <b class="savings"></b><br>Amount: <b class="amount"></b></div>
                                         </span>
                                     </div>
                                 </li>
@@ -291,7 +294,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Payment Type:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group mt-checkbox-inline">
                                             @foreach($search['payment_types'] as $index=>$p)
                                             <label class="mt-checkbox">
@@ -304,7 +307,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Amount start:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="number" class="form-control input-large" name="start_amount" step="0.01" value="{{$search['start_amount']}}" placeholder="Price paid start range" />
                                         </div>
@@ -312,7 +315,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Amount ends:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="number" class="form-control input-large" name="end_amount" step="0.01" value="{{$search['end_amount']}}" placeholder="Price paid end range" />
                                         </div>
@@ -320,7 +323,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Ticket Type:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <select class="form-control" name="ticket_type" style="width: 321px !important">
                                                 <option selected value="">All</option>
@@ -333,7 +336,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Status:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <select class="form-control" name="statu" style="width: 321px !important">
                                                 <option selected value="">All</option>
@@ -346,7 +349,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">User:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="ID/Email of the user" />
                                         </div>
@@ -354,7 +357,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Customer:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="text" class="form-control input-large" name="customer" value="{{$search['customer']}}" placeholder="ID/Email of the customer" />
                                         </div>
@@ -362,7 +365,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Order id:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" placeholder="ID of the order (purchase id)" />
                                         </div>
@@ -370,7 +373,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">AuthCode:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="text" class="form-control input-large" name="authcode" value="{{$search['authcode']}}" placeholder="AuthCode of the transaction" />
                                         </div>
@@ -378,7 +381,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">RefNum:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" placeholder="RefNum of the transaction" />
                                         </div>
@@ -525,7 +528,7 @@
                                             <label class="control-label col-md-4">Comm(%):</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" name="percent_commission" type="number" readonly="true"/>
-                                            </div>       
+                                            </div>
                                             <label class="control-label col-md-4">Active:</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" name="is_active" type="number" readonly="true"/>

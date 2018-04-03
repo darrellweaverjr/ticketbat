@@ -26,7 +26,7 @@ use App\Mail\EmailSG;
  * @author ivan
  */
 class PurchaseController extends Controller{
-    
+
     /**
      * List all purchases and return default view.
      *
@@ -36,7 +36,7 @@ class PurchaseController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(isset($input) && !empty($input['id']) && isset($input['action']) && $input['action']==0)
             {
                 $purchase = DB::table('purchases')
@@ -50,10 +50,10 @@ class PurchaseController extends Controller{
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
-                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
-                                                        ELSE purchases.payment_type END ) AS method,
+                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
+                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
+                                                        ELSE purchases.payment_type END ) AS method, shows.venue_id, purchases.show_time_id, show_times.show_id,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
@@ -65,7 +65,7 @@ class PurchaseController extends Controller{
                     $purchase->tickets = DB::table('ticket_number')
                             ->join('customers', 'customers.id', '=', 'ticket_number.customers_id')
                             ->join('purchases', 'purchases.id', '=', 'ticket_number.purchases_id')
-                            ->select(DB::raw('ticket_number.id, ticket_number.tickets, 
+                            ->select(DB::raw('ticket_number.id, ticket_number.tickets,
                                               customers.first_name, customers.last_name, customers.email'))
                             ->whereColumn('ticket_number.customers_id','<>','purchases.customer_id')
                             ->where('ticket_number.purchases_id', $purchase->id)
@@ -112,13 +112,13 @@ class PurchaseController extends Controller{
                     $st_id = (!empty($input['to_show_time_id']))? $input['to_show_time_id'] : $purchase->show_time_id;
                     $t_id = (!empty($input['to_ticket_id']))? $input['to_ticket_id'] : $purchase->ticket_id;
                     $d_id = (!empty($input['to_discount_id']))? $input['to_discount_id'] : $purchase->discount_id;
-                    $qty = (!empty($input['to_quantity']) && $input['to_quantity']>0)? ceil($input['to_quantity']) : $purchase->quantity;                    
+                    $qty = (!empty($input['to_quantity']) && $input['to_quantity']>0)? ceil($input['to_quantity']) : $purchase->quantity;
                     $showtime = ShowTime::find($st_id);
                     $ticket = Ticket::find($t_id);
                     $discount = Discount::find($d_id);
                     if($showtime && $ticket && $qty && $discount)
                     {
-                        $ticket_o = null;                        
+                        $ticket_o = null;
                         $contracts = DB::table('show_contracts')->select('data')
                                     ->where('show_id','=',$showtime->show_id)
                                     ->where('effective_date','<=',date('Y-m-d',strtotime($showtime->show_time)))->where('effective_date','>=',date('Y-m-d'))
@@ -161,7 +161,7 @@ class PurchaseController extends Controller{
                         $target['t_price_paid'] = $target['t_p_retail_price'] + $target['t_p_processing_fee'] - $target['t_savings'];
                         return ['success'=>true,'target'=>$target];
                     }
-                    else 
+                    else
                         return ['success'=>false,'msg'=>'There was an error.<br>That event date/ticket/qty is not longer in the system.'];
                 }
                 else
@@ -213,7 +213,7 @@ class PurchaseController extends Controller{
                 {
                     $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$search['showtime_start_date']];
                     $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$search['showtime_end_date']];
-                } 
+                }
                 //search soldtime
                 if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
                 {
@@ -229,7 +229,7 @@ class PurchaseController extends Controller{
                 {
                     $where[] = [DB::raw('DATE(purchases.created)'),'>=',$search['soldtime_start_date']];
                     $where[] = [DB::raw('DATE(purchases.created)'),'<=',$search['soldtime_end_date']];
-                } 
+                }
                 //search date range
                 if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
                 {
@@ -249,7 +249,7 @@ class PurchaseController extends Controller{
                 {
                     $search['end_amount'] = '';
                 }
-                //search payment types        
+                //search payment types
                 if(isset($input) && isset($input['payment_type']) && !empty($input['payment_type']))
                 {
                     $search['payment_type'] = $input['payment_type'];
@@ -258,7 +258,7 @@ class PurchaseController extends Controller{
                 {
                     $search['payment_type'] = array_values($search['payment_types']);
                 }
-                //search ticket_type      
+                //search ticket_type
                 if(isset($input) && !empty($input['ticket_type']))
                 {
                     $search['ticket_type'] = $input['ticket_type'];
@@ -266,7 +266,7 @@ class PurchaseController extends Controller{
                 }
                 else
                     $search['ticket_type'] = '';
-                //search status      
+                //search status
                 if(isset($input) && !empty($input['statu']))
                 {
                     $search['statu'] = $input['statu'];
@@ -274,7 +274,7 @@ class PurchaseController extends Controller{
                 }
                 else
                     $search['statu'] = '';
-                //search user      
+                //search user
                 if(isset($input) && !empty($input['user']))
                 {
                     $search['user'] = trim($input['user']);
@@ -287,7 +287,7 @@ class PurchaseController extends Controller{
                 }
                 else
                     $search['user'] = '';
-                //search customer      
+                //search customer
                 if(isset($input) && !empty($input['customer']))
                 {
                     $search['customer'] = trim($input['customer']);
@@ -300,36 +300,36 @@ class PurchaseController extends Controller{
                 }
                 else
                     $search['customer'] = '';
-                //search order id      
+                //search order id
                 if(isset($input) && !empty($input['order_id']) && is_numeric($input['order_id']))
                 {
                     $search['order_id'] = trim($input['order_id']);
                     $where[] = ['purchases.id','=',$search['order_id']];
                 }
                 else
-                    $search['order_id'] = ''; 
-                //search authcode    
+                    $search['order_id'] = '';
+                //search authcode
                 if(isset($input) && !empty($input['authcode']))
                 {
                     $search['authcode'] = trim($input['authcode']);
                     $where[] = ['transactions.authcode','=',$search['authcode']];
                 }
                 else
-                    $search['authcode'] = ''; 
-                //search refnum    
+                    $search['authcode'] = '';
+                //search refnum
                 if(isset($input) && !empty($input['refnum']))
                 {
                     $search['refnum'] = trim($input['refnum']);
                     $where[] = ['transactions.refnum','=',$search['refnum']];
                 }
                 else
-                    $search['refnum'] = ''; 
-                //if user has permission to view                
+                    $search['refnum'] = '';
+                //if user has permission to view
                 if(in_array('View',Auth::user()->user_type->getACLs()['PURCHASES']['permission_types']))
                 {
                     if(Auth::user()->user_type->getACLs()['PURCHASES']['permission_scope'] != 'All')
                     {
-                        if(count($input)) 
+                        if(count($input))
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('users', 'users.id', '=' ,'purchases.user_id')
@@ -345,9 +345,9 @@ class PurchaseController extends Controller{
                                              ->on('ticket_number.customers_id','!=','customers.id');
                                     })
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
-                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
+                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
+                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
                                                         ELSE purchases.payment_type END ) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
@@ -370,7 +370,7 @@ class PurchaseController extends Controller{
                     }//all
                     else
                     {
-                        if(count($input)) 
+                        if(count($input))
                         $purchases = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('users', 'users.id', '=' ,'purchases.user_id')
@@ -386,9 +386,9 @@ class PurchaseController extends Controller{
                                              ->on('ticket_number.customers_id','!=','customers.id');
                                     })
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount, 
-                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event" 
+                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
+                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
+                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
                                                         ELSE purchases.payment_type END ) AS method,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
@@ -402,7 +402,7 @@ class PurchaseController extends Controller{
                                     ->get();
                         $search['venues'] = Venue::orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
-                    }   
+                    }
                 }
                 $modal = (count($input))? 0 : 1;
                 return view('admin.purchases.index',compact('purchases','search','modal'));
@@ -422,7 +422,7 @@ class PurchaseController extends Controller{
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
-            //save all record      
+            //save all record
             if($input && isset($input['id']))
             {
                 $purchase = Purchase::find($input['id']);
@@ -433,7 +433,7 @@ class PurchaseController extends Controller{
                     $purchase->status = $input['status'];
                     $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
                     $note.= ' status from '.$old_status.' to '.$input['status'];
-                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                     $purchase->updated = $current;
                     $purchase->save();
                     //send emails for pending status
@@ -453,15 +453,15 @@ class PurchaseController extends Controller{
                             return ['success'=>false,'msg'=>'The purchase changed the status.<br>But the email could not be sent to the customer and the venue.'];
                     }
                     return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
-                }                    
+                }
                 else if(isset($input['note']))
-                {                    
+                {
                     $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b>'.strip_tags($input['note']).'&nbsp;';
                     $purchase->note = $purchase->note.$note;
                     $purchase->updated = $current;
                     $purchase->save();
                     return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
-                }               
+                }
                 else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>Invalid data.'];
             }
             else if($input && isset($input['purchase_id']))
@@ -519,7 +519,7 @@ class PurchaseController extends Controller{
                         $note.= ', qty from '.$purchase->quantity.' to '.$input['to_quantity'];
                         $purchase->quantity = $input['to_quantity'];
                     }
-                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;                     
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                     $purchase->retail_price = $input['t_p_retail_price'];
                     $purchase->processing_fee = $input['t_p_processing_fee'];
                     $purchase->savings = $input['t_savings'];
@@ -536,7 +536,7 @@ class PurchaseController extends Controller{
                                 $transaction->amount = $purchase->price_paid;
                                 $transaction->save();
                             }
-                        }                            
+                        }
                     }
                     $purchase->save();
                     //after save options
@@ -565,7 +565,7 @@ class PurchaseController extends Controller{
         try {
             //init
             $input = Input::all();
-            //save all record      
+            //save all record
             if($input && isset($input['action']))
             {
                 if($input['action']=='receipt' && isset($input['id']))
@@ -574,7 +574,7 @@ class PurchaseController extends Controller{
                     $sent = Purchase::email_receipts('Re-sending: TicketBat Purchase',[$receipt],'receipt');
                     if($sent)
                         return ['success'=>true,'msg'=>'Email sent successfully!'];
-                    return ['success'=>false,'msg'=>'There was an error sending the email.']; 
+                    return ['success'=>false,'msg'=>'There was an error sending the email.'];
                 }
                 else if($input['action']=='custom')
                 {
@@ -586,7 +586,7 @@ class PurchaseController extends Controller{
                                     ->select('customers.email')
                                     ->whereIn('purchases.id', $input['ids'])->distinct()->get();
                     }
-                    else 
+                    else
                     {
                         $where =[['purchases.id','>',0]];
                         //by venue
@@ -600,13 +600,13 @@ class PurchaseController extends Controller{
                         {
                             $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$input['search'][3]['value']];
                             $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$input['search'][4]['value']];
-                        }  
+                        }
                         //by created date
                         if($input['search'][5]['value'] != '' && $input['search'][6]['value'] != '')
                         {
                             $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',$input['search'][5]['value']];
                             $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',$input['search'][6]['value']];
-                        }  
+                        }
                         $to = DB::table('purchases')
                                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -620,7 +620,7 @@ class PurchaseController extends Controller{
                         $msg = '';
                         foreach ($to as $t)
                         {
-                            //send email           
+                            //send email
                             $email = new EmailSG(null, $t->email, strip_tags($input['email'][2]['value']));
                             $email->category('Custom');
                             $email->body('custom',['body'=>$input['email'][3]['value']]);
@@ -655,12 +655,12 @@ class PurchaseController extends Controller{
         try {
             //init
             $input = Input::all();
-            //save all record      
+            //save all record
             if($input && isset($input['action']))
             {
-            
+
             }
-            //check input values    
+            //check input values
             if(in_array($type,['C','S']))
             {
                 $tickets = [];
@@ -672,7 +672,7 @@ class PurchaseController extends Controller{
                 }
                 //create pdf tickets
                 $format = 'pdf';
-                $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format')); 
+                $pdf_receipt = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));
                 if($type == 'S')
                     return PDF::loadHTML($pdf_receipt->render())->setPaper([0,0,396,144],'portrait')->setWarnings(false)->download('TicketBat Admin - tickets - '.$ids.'.pdf');
                 return PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->download('TicketBat Admin - tickets - '.$ids.'.pdf');
@@ -683,9 +683,9 @@ class PurchaseController extends Controller{
                 $tickets = '<script>alert("The system could not load the information from the DB. These are not valid purchases.");window.close();</script>';
                 return View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'))->render();
             }
-            
-        } catch (Exception $ex) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+
+        } catch (Exception $ex) {
             throw new Exception('Error Purchases tickets: '.$ex->getMessage());
         }
     }
-}                    
+}
