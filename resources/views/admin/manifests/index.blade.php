@@ -54,11 +54,12 @@
                             <tr>
                                 <th width="2%"></th>
                                 <th width="1%"></th>
-                                <th width="25%">Show Time</th>
+                                <th width="25%">Event Name</th>
                                 <th width="10%">Type</th>
                                 <th width="6%">Purchases</th>
                                 <th width="6%">Tickets Sold</th>
-                                <th width="40%">Receipts</th>
+                                <th width="30%">Receipts</th>
+                                <th width="10%">Event Date</th>
                                 <th width="10%">Sent At</th>
                             </tr>
                         </thead>
@@ -66,7 +67,7 @@
                             @php $previous_show_time_id = '0' @endphp
                             @foreach($manifests as $index=>$m)
                                 @php $color = substr(dechex(crc32($m->show_time_id.date('mdYgi',strtotime($m->show_time)))),0,6) @endphp
-                            <tr>
+                            <tr class="text-center">
                                 <td>
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
                                         <input type="radio" name="radios" id="{{$m->id}}" value="{{$m->id}}" />
@@ -76,28 +77,25 @@
                                 <td style="background-color:#{{$color}};border-top:thick solid @if($previous_show_time_id==$m->show_time_id) #{{$color}} @else #ffffff @endif !important;"></td>
                                 <td>
                                     @if($previous_show_time_id != $m->show_time_id)
-                                    <center>
-                                        <b>{{$m->name}}</b><br>{{date('m/d/Y g:ia',strtotime($m->show_time))}}
-                                    </center>
+                                    <b>{{$m->name}}</b>
                                     @endif
                                 </td>
                                 <td>
-                                    <center>
                                         <span class="label label-sm sbold
                                         @if($m->manifest_type=='Preliminary') label-success
                                         @elseif($m->manifest_type=='Primary') label-info
                                         @else label-warning
                                         @endif
                                     "> {{$m->manifest_type}} </span>
-                                    </center>
                                 </td>
-                                <td><center>{{$m->num_purchases}}</center></td>
-                                <td><center>{{$m->num_people}}</center></td>
+                                <td>{{$m->num_purchases}}</td>
+                                <td>{{$m->num_people}}</td>
                                 <td style="text-align:left">
                                     @php $emails = explode(',',$m->recipients) @endphp
                                     ({{count($emails)}}): @foreach($emails as $e) <a href="mailto:{{$e}}" target="_top">{{$e}}</a> @endforeach
                                 </td>
-                                <td class="text-center" data-order="{{strtotime($m->created)}}"> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}}
+                                <td>{{date('m/d/Y',strtotime($m->show_time))}}<br>{{date('g:ia',strtotime($m->show_time))}}</td>
+                                <td data-order="{{strtotime($m->created)}}"> {{date('m/d/Y',strtotime($m->created))}}<br>{{date('g:ia',strtotime($m->created))}}
                                     @if(isset($m->sent)) @if(!empty($m->sent)) <span class="label label-success"><i class="fa fa-send"></i></span> @else <span class="label label-danger"><i class="fa fa-send"></i></span> @endif @endif
                                 </td>
                             </tr>

@@ -58,8 +58,8 @@ class ManifestController extends Controller{
                                                   ->orWhere('shows.audit_user_id','=',Auth::user()->id);
                                         })
                                         ->groupBy('show_times.id','manifest_emails.created')
-                                        ->orderBy(DB::raw('DATE_FORMAT(manifest_emails.created,"%Y-%m-%d")'),'desc')
-                                        ->orderBy('manifest_emails.show_time_id','desc')
+                                        ->orderBy('show_times.show_time','desc')
+                                        ->orderBy('manifest_emails.created','desc')
                                         ->get();
                 }//all
                 else
@@ -70,8 +70,8 @@ class ManifestController extends Controller{
                                         ->select('manifest_emails.*', 'shows.name', 'show_times.show_time')
                                         ->whereBetween('manifest_emails.created', [$start_date,$end_date])
                                         ->groupBy('show_times.id','manifest_emails.created')
-                                        ->orderBy(DB::raw('DATE_FORMAT(manifest_emails.created,"%Y-%m-%d")'),'desc')
-                                        ->orderBy('manifest_emails.show_time_id','desc')
+                                        ->orderBy('show_times.show_time','desc')
+                                        ->orderBy('manifest_emails.created','desc')
                                         ->get();
                 }
                 //search if email was sent or not
