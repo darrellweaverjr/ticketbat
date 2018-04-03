@@ -88,7 +88,7 @@ class PurchaseController extends Controller{
                                           'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
                                 ->where('purchases.id','=',$input['id'])->first();
                 $showtimes = DB::table('show_times')->select('id','show_time')
-                                ->where('show_id','=',$current->show_id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s'))
+                                ->where('show_id','=',$current->show_id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s',strtotime('-2 months')))
                                 ->orderBy('show_times.show_time')->get();
                 $tickets = DB::table('tickets')
                                 ->join('packages','packages.id','=','tickets.package_id')
