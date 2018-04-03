@@ -225,6 +225,7 @@ var TableDatatablesManaged = function () {
                 $('#btn_model_csv').prop('disabled',false);
                 $('#btn_model_pdf').prop('disabled',false);
                 $('#btn_model_generate').prop('disabled',false);
+                $('#btn_model_resend').prop('disabled',false);
             }
         });
     }
