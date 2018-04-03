@@ -388,6 +388,7 @@ class ConsignmentController extends Controller{
                                         $purchaseTo->merchandise = 0;
                                         $purchaseTo->updated = $current;
                                         $purchaseTo->created = $current;
+                                        $purchaseTo->channel = 'Consignment';
                                         $purchaseTo->save();
                                     }
                                 }
@@ -522,6 +523,7 @@ class ConsignmentController extends Controller{
                         $purchase->merchandise = 0;
                         $purchase->updated = $current;
                         $purchase->created = $current;
+                        $purchase->channel = 'Consignment';
                         $purchase->save();
                     }
                     //create consignments seats
