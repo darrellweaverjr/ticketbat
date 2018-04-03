@@ -126,16 +126,16 @@ class ReportSalesController extends Controller{
                 $types = $this->create_table_types();
                 $financial = $this->report_financial();
                 $shows = $this->create_table_shows();
-                $sellers = $this->create_table_sellers();
+                $channels = $this->create_table_channels();
             }
             else
             {
                 $types = $this->create_table_types($venue);
                 $financial = $this->report_financial($venue);
                 $shows = $this->create_table_shows($venue);
-                $sellers = $this->create_table_sellers($venue);
+                $channels = $this->create_table_channels($venue);
             }
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_sellers'=>$sellers,'table_financial'=>$financial];
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,'table_financial'=>$financial];
         } catch (Exception $ex) {
             return [];
         }
@@ -241,20 +241,20 @@ class ReportSalesController extends Controller{
     /*
      * table_selling_ways
      */
-    public function create_table_sellers($venue_id=null)
+    public function create_table_channels($venue_id=null)
     {
         try {
             $table = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                        ->select(DB::raw('purchases.seller,
+                        ->select(DB::raw('purchases.channel,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
                                           SUM(purchases.commission_percent)+SUM(purchases.processing_fee) AS amount'))
                         ->where('purchases.status','=','Active')
                         ->whereDate('purchases.created','>=',$this->start_date)
-                        ->groupBy('purchases.seller')->orderBy('purchases.seller'));
+                        ->groupBy('purchases.channel')->orderBy('purchases.channel');
             if(!empty($venue_id))
                 $table->where('shows.venue_id',$venue_id);
             $table = $table->distinct()->get()->toArray();

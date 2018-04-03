@@ -178,7 +178,7 @@ class PurchaseController extends Controller{
                 $search['payment_types']['Free'] = 'Free';
                 $search['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
                 $search['status'] = Util::getEnumValues('purchases','status');
-                $search['sellers'] = Util::getEnumValues('purchases','seller');
+                $search['channels'] = Util::getEnumValues('purchases','channel');
                 $purchases = [];
                 $where = [['purchases.id','>',0]];
                 //search venue
@@ -259,15 +259,15 @@ class PurchaseController extends Controller{
                 {
                     $search['payment_type'] = array_values($search['payment_types']);
                 }
-                //search seller
-                if(isset($input) && isset($input['seller']) && !empty($input['seller']))
+                //search channels
+                if(isset($input) && isset($input['channel']) && !empty($input['channel']))
                 {
-                    $search['seller'] = $input['seller'];
-                    $where[] = ['purchases.seller','=',$search['seller']];
+                    $search['channel'] = $input['channel'];
+                    $where[] = ['purchases.channel','=',$search['channel']];
                 }
                 else
                 {
-                    $search['seller'] = '';
+                    $search['channel'] = '';
                 }
                 //search ticket_type
                 if(isset($input) && !empty($input['ticket_type']))

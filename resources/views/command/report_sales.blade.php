@@ -213,13 +213,13 @@
               </table>
               @endif
 
-              @if(isset($d['table_sellers']))
+              @if(isset($d['table_channels']))
               <hr><table>
                   <tr class="ttitle">
-                      <td colspan="7">SELLING LOCATIONS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                      <td colspan="7">CHANNEL SALES:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
-                      <td>Location</td>
+                      <td>Channel</td>
                       <td style='text-align:center'>TRANSACTIONS</td>
                       <td style='text-align:center'>TICKETS</td>
                       <td style='text-align:right'>REVENUE</td>
@@ -227,7 +227,7 @@
                       <td style='text-align:right'>COMMIS.(C)</td>
                       <td style='text-align:right'>NET(C+F)</td>
                   </tr>
-                  @foreach($d['table_sellers']['data'] as $e)
+                  @foreach($d['table_channels']['data'] as $e)
                     <tr>
                         <td>{{$e->seller}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
@@ -238,15 +238,15 @@
                         <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
                     </tr>
                   @endforeach
-                  @if(count($d['table_sellers']['data'])>0)
+                  @if(count($d['table_channels']['data'])>0)
                   <tr class="ttotal">
                         <td>Totals</td>
-                        <td style='text-align:center'>{{number_format($d['table_sellers']['total']['transactions'])}}</td>
-                        <td style='text-align:center'>{{number_format($d['table_sellers']['total']['tickets'])}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['paid'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['fees'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['commissions'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['amount'],2)}}</td>
+                        <td style='text-align:center'>{{number_format($d['table_channels']['total']['transactions'])}}</td>
+                        <td style='text-align:center'>{{number_format($d['table_channels']['total']['tickets'])}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['paid'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['fees'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['commissions'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['amount'],2)}}</td>
                     </tr>
                     @endif
               </table>

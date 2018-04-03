@@ -88,7 +88,7 @@ class DashboardController extends Controller
         $data['search']['payment_types']['Free'] = 'Free';
         $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
         $data['search']['status'] = Util::getEnumValues('purchases','status');
-        $data['search']['sellers'] = Util::getEnumValues('purchases','seller');
+        $data['search']['channels'] = Util::getEnumValues('purchases','channel');
         //search venue
         if(isset($input) && isset($input['venue']))
         {
@@ -154,15 +154,15 @@ class DashboardController extends Controller
         {
             $data['search']['payment_type'] = array_values($data['search']['payment_types']);
         }
-        //search seller
-        if(isset($input) && isset($input['seller']) && !empty($input['seller']))
+        //search channel
+        if(isset($input) && isset($input['channel']) && !empty($input['channel']))
         {
-            $data['search']['seller'] = $input['seller'];
-            $data['where'][] = ['purchases.seller','=',$data['search']['seller']];
+            $data['search']['channel'] = $input['channel'];
+            $data['where'][] = ['purchases.channel','=',$data['search']['channel']];
         }
         else
         {
-            $data['search']['seller'] = '';
+            $data['search']['channel'] = '';
         }
         //search date range
         if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))

@@ -351,13 +351,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Sellers:</label>
+                                        <label class="control-label col-md-3">Channels:</label>
                                         <div class="col-md-9 show-error">
                                             <div class="input-group">
-                                                <select class="form-control" name="seller" style="width: 321px !important">
+                                                <select class="form-control" name="channel" style="width: 321px !important">
                                                     <option selected value="">All</option>
-                                                    @foreach($search['sellers'] as $p)
-                                                        <option @if(!empty($search['seller']) && $p==$search['seller']) selected @endif value="{{$p}}">{{$p}}</option>
+                                                    @foreach($search['channels'] as $p)
+                                                        <option @if(!empty($search['channel']) && $p==$search['channel']) selected @endif value="{{$p}}">{{$p}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
