@@ -148,7 +148,7 @@ class EventController extends Controller
                                                  DATE_FORMAT(show_times.show_time,"%b %D") AS show_date,
                                                  DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,
                                                  IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
-                                                 IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
+                                                 IF(NOW() > DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
                 ->where('show_times.show_id', $event->show_id)->where('show_times.is_active', '>', 0)
                 ->where(function ($query) use ($nowVar) {
                     $query->where('show_times.show_time', '>=', $nowVar);
@@ -206,7 +206,7 @@ class EventController extends Controller
                 ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, shows.ticket_limit,
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time,
                                           show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id, stages.ticket_order,
-                                          CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
+                                          CASE WHEN ( NOW() > shows.amex_only_start_date) && NOW() < shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                 ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
                 ->where(function ($query) use ($nowVar) {
@@ -239,8 +239,10 @@ class EventController extends Controller
             //passwords
             $passwords = DB::table('show_passwords')
                 ->select(DB::raw('show_passwords.ticket_types'))
-                ->whereRaw(DB::raw('NOW()>show_passwords.start_date'))->whereRaw(DB::raw('NOW()<show_passwords.end_date'))
-                ->where('show_passwords.show_id', $event->show_id)->groupBy('show_passwords.id')->orderBy('show_passwords.id', 'DESC')->get();
+                ->whereRaw(DB::raw('NOW()>show_passwords.start_date'))
+                ->whereRaw(DB::raw('NOW()<show_passwords.end_date'))
+                ->where('show_passwords.show_id', $event->show_id)
+                ->groupBy('show_passwords.id')->orderBy('show_passwords.id', 'DESC')->get();
             //get tickets/coupon in shoppingcart and session
             $s_token = Util::s_token(false, true);
             $coupon = array_merge(Shoppingcart::tickets_coupon($s_token), Util::tickets_coupon());
