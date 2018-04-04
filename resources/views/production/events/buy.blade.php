@@ -24,7 +24,7 @@
     <!-- END NAME BAR-->
     <div class="page-content color-panel " style="padding-top: 30px">
         <div class="row fixed-panel">
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-5 col-md-6">
                 <div class="portlet light event-seating">
                     <!-- BEGIN STAGE -->
                     <h4>
@@ -40,7 +40,7 @@
                     <!-- END STAGE -->
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-7 col-md-6">
                 <form method="post" id="form_model_update" class="form-horizontal">
                     <input name="show_time_id" type="hidden" value="{{$event->show_time_id}}"/>
                     <input name="password" type="hidden" value=""/>
@@ -161,10 +161,10 @@
                 <!-- BEGIN SHORTCUT FORM -->
                     <div class="portlet" id="continue_buy_checkout_msg" style="display:none">
                         <div class="row">
-                            <div class="col-xs-7 col-sm-6">
+                            <div class="col-xs-7 col-sm-7 col-md-6">
                                 <a href="/home" class="btn btn-info btn-block btn-lg uppercase event-continue"><i class="fa fa-suitcase"></i> Continue shopping </a>
                             </div>
-                            <div class="col-xs-5 col-sm-6">
+                            <div class="col-xs-5 col-sm-5 col-md-6">
                                 <a href="/shoppingcart/viewcart" class="btn btn-success btn-block btn-lg uppercase event-checkout"><i class="fa fa-shopping-cart"></i> Checkout </a>
                             </div>
                         </div>
