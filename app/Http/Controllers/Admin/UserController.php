@@ -21,7 +21,7 @@ use App\Http\Models\Transaction;
  * @author ivan
  */
 class UserController extends Controller{
-    
+
     /**
      * List all users and return default view.
      *
@@ -31,11 +31,11 @@ class UserController extends Controller{
     {
         try {
             //init
-            $input = Input::all(); 
+            $input = Input::all();
             if(isset($input) && isset($input['id']))
             {
                 //get selected record
-                $user = User::find($input['id']);  
+                $user = User::find($input['id']);
                 if(!$user)
                     return ['success'=>false,'msg'=>'There was an error getting the user.<br>Maybe it is not longer in the system.'];
                 $location = Location::find($user->location_id);
@@ -75,7 +75,7 @@ class UserController extends Controller{
                         $where[] = ['users.last_name','like','%'.$input['last_name'].'%'];
                 }
                 else
-                    $search['last_name'] = '';                
+                    $search['last_name'] = '';
                 //search email
                 if(isset($input) && isset($input['email']))
                 {
@@ -109,8 +109,8 @@ class UserController extends Controller{
                 {
                     if(Auth::user()->user_type->getACLs()['USERS']['permission_scope'] != 'All')
                     {
-                        //get audit user records        
-                        if(count($input)) 
+                        //get audit user records
+                        if(count($input))
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
                                 ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
@@ -118,18 +118,18 @@ class UserController extends Controller{
                                 ->where('users.audit_user_id','=',Auth::user()->id)
                                 ->orderBy('users.last_name')
                                 ->get();
-                    }  
-                    else 
+                    }
+                    else
                     {
-                        //get all records        
-                        if(count($input)) 
+                        //get all records
+                        if(count($input))
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
                                 ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
                                 ->where($where)
                                 ->orderBy('users.last_name')
                                 ->get();
-                    }  
+                    }
                     //other enum
                     $user_types = UserType::orderBy('user_type')->get(['id','user_type','description']);
                     $discounts = Discount::orderBy('code')->get(['id','code','description']);
@@ -154,7 +154,7 @@ class UserController extends Controller{
         try {
             //init
             $input = Input::all();
-            //save all record      
+            //save all record
             if($input)
             {
                 $current = date('Y-m-d H:i:s');
@@ -170,9 +170,9 @@ class UserController extends Controller{
                     if(isset($input['password']) && $input['password'])
                         $user->password = md5($input['password']);
                     $customer = Customer::where('email',$user->email)->first();
-                }                    
+                }
                 else
-                {                    
+                {
                     if(User::where('email','=',$input['email'])->count())
                         return ['success'=>false,'msg'=>'There was an error saving the user.<br>That email is already in the system.','errors'=>'email'];
                     $user = new User;
@@ -196,8 +196,8 @@ class UserController extends Controller{
                 $user->location()->associate($location);
                 $user->user_type_id = $input['user_type_id'];
                 $user->email = trim($input['email']);
-                $user->first_name = trim(strip_tags($input['first_name']));
-                $user->last_name = trim($input['last_name']);
+                $user->first_name = ucwords(trim(strip_tags($input['first_name'])));
+                $user->last_name = ucwords(trim($input['last_name']));
                 $user->phone = $input['phone'];
                 $user->is_active = $input['is_active'];
                 //remove these fields from DB
@@ -251,7 +251,7 @@ class UserController extends Controller{
         try {
             //init
             $input = Input::all();
-            //delete all records   
+            //delete all records
             if(User::destroy($input['id']))
                 return ['success'=>true,'msg'=>'All records deleted successfully!'];
             return ['success'=>false,'msg'=>'There was an error deleting the user(s)!<br>They might have some dependences.'];
@@ -270,7 +270,7 @@ class UserController extends Controller{
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
-            //save all record      
+            //save all record
             if($input)
             {
                 $user = User::find(Auth::user()->id);
@@ -302,7 +302,7 @@ class UserController extends Controller{
             throw new Exception('Error Users Profile: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Code for impersonate.
      *
@@ -346,7 +346,7 @@ class UserController extends Controller{
                 return ['success'=>false,'msg'=>'There was an error.<br>You must select a valid user to impersonate.'];
             }
             return ['success'=>false,'msg'=>'There was an error.<br>You must be logged as an administrator to use this option.'];
-            
+
         } catch (Exception $ex) {
             throw new Exception('Error Users Impersonate: '.$ex->getMessage());
         }

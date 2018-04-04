@@ -209,8 +209,8 @@ class User extends Authenticatable
                     $customer->location()->associate($location);
                 }
                 //create customer
-                $customer->first_name = trim($info['first_name']);
-                $customer->last_name = trim($info['last_name']);
+                $customer->first_name = ucwords(trim($info['first_name']));
+                $customer->last_name = ucwords(trim($info['last_name']));
                 $customer->phone = (!empty($info['phone']))? $info['phone'] : null;
                 $customer->save();
                 if(empty($customer->id))
@@ -256,8 +256,8 @@ class User extends Authenticatable
                 $location->save();
                 //save user
                 $user->location()->associate($location);
-                $user->first_name = $info['first_name'];
-                $user->last_name = $info['last_name'];
+                $user->first_name = ucwords(trim($info['first_name']));
+                $user->last_name = ucwords(trim($info['last_name']));
                 $user->phone = (!empty($info['phone']))? $info['phone'] : null;
                 $user->save();
                 //send email welcome
