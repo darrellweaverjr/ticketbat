@@ -81,7 +81,7 @@ class GeneralController extends Controller{
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, shows.logo_url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))
+                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, shows.logo_url AS url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where(function($query) {
                             $query->whereNull('shows.on_featured')
@@ -94,7 +94,7 @@ class GeneralController extends Controller{
                         ->groupBy('shows.id')
                         ->distinct()->get();
             foreach ($shows as $s)
-                $s->logo_url = Image::view_image($s->logo_url);
+                $s->url = Image::view_image($s->url);
             return $shows;
         } catch (Exception $ex) {
             return [];
@@ -112,7 +112,7 @@ class GeneralController extends Controller{
                         ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                        ->select('venues.id','venues.name','venues.logo_url','locations.city')
+                        ->select('venues.id','venues.name','venues.logo_url AS url','locations.city')
                         ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where(function($query) {
                             $query->whereNull('shows.on_featured')
@@ -125,7 +125,7 @@ class GeneralController extends Controller{
                         ->orderBy('venues.name')->groupBy('venues.id')
                         ->distinct()->get();
             foreach ($venues as $v)
-                $v->logo_url = Image::view_image($v->logo_url);
+                $v->url = Image::view_image($v->url);
             return $venues;
         } catch (Exception $ex) {
             return [];
