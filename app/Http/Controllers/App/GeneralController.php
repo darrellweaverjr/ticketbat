@@ -15,29 +15,29 @@ use App\Http\Models\Util;
  * @author ivan
  */
 class GeneralController extends Controller{
-    
+
     /*
      * return arrays of all init values in json format
      */
     public function init()
     {
-        try {   
+        try {
             return Util::json(['success'=>true,'countries'=>$this->countries(),'cities'=>$this->cities(),'shows'=>$this->shows(),'venues'=>$this->venues(),'s_token'=> Util::s_token(true)]);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
-    }  
-    
+    }
+
     /*
      * return cutoff_date for checking the showtime
      */
     public function cutoff_date()
     {
         return 'DATE_FORMAT(show_times.show_time + INTERVAL 1 DAY,"%Y-%m-%d 04:00:00")';
-    }  
-    
+    }
+
     /*
-     * return arrays of all countries 
+     * return arrays of all countries
      */
     private function countries()
     {
@@ -50,20 +50,18 @@ class GeneralController extends Controller{
             return [];
         }
     }
-    
+
     /*
-     * return arrays of all cities 
+     * return arrays of all cities
      */
     private function cities()
     {
         try {
             $cities = DB::table('venues')
-                        ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                        ->join('images', 'venue_images.image_id', '=' ,'images.id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->select('locations.city')
-                        ->where('venues.is_featured','>',0)->where('images.image_type','=','Logo')
-                        ->whereNotNull('images.url')
+                        ->where('venues.is_featured','>',0)
+                        ->whereNotNull('venues.logo_url')
                         ->orderBy('locations.city')->groupBy('locations.city')
                         ->distinct()->get();
             return $cities;
@@ -71,55 +69,50 @@ class GeneralController extends Controller{
             return [];
         }
     }
-    
+
     /*
-     * return arrays of all shows 
+     * return arrays of all shows
      */
     private function shows()
     {
         try {
             $shows = DB::table('shows')
-                        ->join('show_images', 'show_images.show_id', '=' ,'shows.id')
-                        ->join('images', 'show_images.image_id', '=' ,'images.id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))    
-                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('images.image_type','=','Logo')
+                        ->select(DB::raw('shows.id, shows.venue_id, shows.name, shows.logo_url, locations.city, MIN(tickets.retail_price+tickets.processing_fee) AS price'))
+                        ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where(function($query) {
                             $query->whereNull('shows.on_featured')
                                   ->orWhere('shows.on_featured','<=',\Carbon\Carbon::now());
                         })
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('show_times.is_active','=',1)
-                        ->whereNotNull('images.url')
+                        ->whereNotNull('shows.logo_url')
                         ->orderBy('shows.sequence','ASC')->orderBy('show_times.show_time','ASC')
                         ->groupBy('shows.id')
                         ->distinct()->get();
             foreach ($shows as $s)
-                if(!empty($s->url))
-                    $s->url = Image::view_image($s->url);
+                $s->logo_url = Image::view_image($s->logo_url);
             return $shows;
         } catch (Exception $ex) {
             return [];
         }
     }
-    
+
     /*
-     * return arrays of all venues 
+     * return arrays of all venues
      */
     public function venues()
     {
         try {
             $venues = DB::table('venues')
-                        ->join('venue_images', 'venue_images.venue_id', '=' ,'venues.id')
-                        ->join('images', 'venue_images.image_id', '=' ,'images.id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
-                        ->select('venues.id','venues.name','images.url','locations.city')
+                        ->select('venues.id','venues.name','venues.logo_url','locations.city')
                         ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where(function($query) {
                             $query->whereNull('shows.on_featured')
@@ -127,25 +120,25 @@ class GeneralController extends Controller{
                         })
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
-                        ->where('images.image_type','=','Logo')->where('tickets.is_active','>',0)
-                        ->whereNotNull('images.url')
+                        ->where('tickets.is_active','>',0)
+                        ->whereNotNull('venues.logo_url')
                         ->orderBy('venues.name')->groupBy('venues.id')
                         ->distinct()->get();
             foreach ($venues as $v)
-                $v->url = Image::view_image($v->url);
+                $v->logo_url = Image::view_image($v->logo_url);
             return $venues;
         } catch (Exception $ex) {
             return [];
         }
     }
-    
+
     /*
      * return arrays of all shows (or by id, or by venue id) in json format
      */
     public function show()
     {
         try {
-            $info = Input::all();  
+            $info = Input::all();
             if(!empty($info['show_id']) && is_numeric($info['show_id']))
             {
                 //get show
@@ -153,7 +146,7 @@ class GeneralController extends Controller{
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue, shows.restrictions, 
+                        ->select(DB::raw('shows.id, shows.name, shows.description, shows.slug, venues.name AS venue, shows.restrictions, shows.header_url AS header, venues.header_url,
                                           locations.address, locations.city, locations.state, locations.zip, locations.lat, locations.lng'))
                         ->where('shows.is_active','>',0)->where('shows.is_featured','>',0)->where('shows.id','=',$info['show_id'])
                         ->where(function($query) {
@@ -162,7 +155,7 @@ class GeneralController extends Controller{
                         })
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
-                        ->orderBy('shows.name')->groupBy('shows.id')->first(); 
+                        ->orderBy('shows.name')->groupBy('shows.id')->first();
                 if($show)
                 {
                     //get show times
@@ -174,7 +167,7 @@ class GeneralController extends Controller{
                             ->where('shows.id','=',$show->id)
                             ->where('tickets.is_active','>',0)->where('show_times.is_active','>',0)->where('shows.is_active','>',0)
                             ->orderBy('show_times.show_time')
-                            ->distinct()->take(30)->get(); 
+                            ->distinct()->take(30)->get();
                     //get videos
                     $show->videos = DB::table('videos')
                                 ->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
@@ -186,15 +179,9 @@ class GeneralController extends Controller{
                         $part1 = explode('src="',$v->embed_code);
                         $part2 = explode('"',$part1[1]);
                         $v->embed_code = $part2[0];
-                    } 
+                    }
                     //get header
-                    $header = DB::table('images')
-                                ->join('show_images', 'show_images.image_id', '=' ,'images.id')
-                                ->select('images.url')
-                                ->where('show_images.show_id','=',$show->id)
-                                ->whereIn('images.image_type',['Header'])
-                                ->distinct()->first();
-                    $show->header = ($header)? Image::view_image($header->url) : null;
+                    $show->header = (!empty($show->header))? Image::view_image($show->header) : Image::view_image($show->header_url);
                     //get images
                     $show->images = DB::table('images')
                                 ->join('show_images', 'show_images.image_id', '=' ,'images.id')
@@ -206,21 +193,21 @@ class GeneralController extends Controller{
                         $i->url = Image::view_image($i->url);
                     return Util::json(['success'=>true, 'show'=>$show]);
                 }
-                return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']);             
-            } 
+                return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']);
+            }
             return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
     }
-    
+
     /*
      * return event details in json format
      */
     public function event()
     {
         try {
-            $info = Input::all();  
+            $info = Input::all();
             if(!empty($info['show_id']) && is_numeric($info['show_id']) && !empty($info['date']) && strtotime($info['date']))
             {
                 $id = $info['show_id'];
@@ -234,7 +221,7 @@ class GeneralController extends Controller{
                 if($event)
                 {
                     //get times
-                    $times = DB::table('show_times')        
+                    $times = DB::table('show_times')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('tickets', 'tickets.show_id', '=' ,'shows.id')
                         ->leftJoin('purchases', 'purchases.ticket_id', '=' ,'tickets.id')
@@ -242,12 +229,12 @@ class GeneralController extends Controller{
                         ->whereDate('show_times.show_time',$info['date'])->where('show_times.show_id','=',$id)
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
-                        ->distinct()->get(); 
+                        ->distinct()->get();
                     $event->times = $times;
                     //parse url image
                     $event->url = Image::view_image($event->url);
                     //get tickets
-                    $types = []; 
+                    $types = [];
                     $tickets = DB::table('tickets')
                                 ->join('shows', 'tickets.show_id', '=' ,'shows.id')
                                 ->join('packages', 'tickets.package_id', '=' ,'packages.id')
@@ -264,7 +251,7 @@ class GeneralController extends Controller{
                                           ->from('soldout_tickets')
                                           ->where('show_time_id','=',$id);
                                 })
-                                ->having('max_available','>',0)->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get(); 
+                                ->having('max_available','>',0)->groupBy('tickets.id')->orderBy('tickets.is_default','DESC')->get();
                     foreach ($tickets as $t)
                     {
                         if(isset($types[$t->ticket_type]))
@@ -273,17 +260,17 @@ class GeneralController extends Controller{
                             $types[$t->ticket_type] = ['type'=>$t->ticket_type,'class'=>$t->ticket_type_class,'default'=>$t->is_default,'tickets'=>[$t]];
                     }
                     //asign tickets and return event
-                    $event->types = array_values($types);  
+                    $event->types = array_values($types);
                     return Util::json(['success'=>true, 'event'=>$event]);
                 }
-                return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']); 
+                return Util::json(['success'=>false, 'msg'=>'That show does not exist on the system!']);
             }
             return Util::json(['success'=>false, 'msg'=>'You must fill out correctly the form!']);
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
-    } 
-    
+    }
+
     /*
      * send email for contact us
      */
@@ -291,7 +278,7 @@ class GeneralController extends Controller{
     {
         try {
             $info = Input::all();
-            if(!empty($info['name']) && !empty($info['email']) && !empty($info['phone']) 
+            if(!empty($info['name']) && !empty($info['email']) && !empty($info['phone'])
             && !empty($info['show_name']) && !empty($info['message']) && !empty($info['system_info']))
             {
                 //create entry on table
@@ -311,6 +298,6 @@ class GeneralController extends Controller{
         } catch (Exception $ex) {
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
-    }    
-    
+    }
+
 }

@@ -56,20 +56,14 @@ class VenueController extends Controller{
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
-                                                             FROM venue_images vi
-                                                             LEFT JOIN images i ON vi.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('venues.id','=','images.venue_id');
-                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
+                                                 'venues.logo_url','venues.header_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->where('venues.audit_user_id','=',Auth::user()->id)
                                         ->whereNull('stages.id')
-                                        ->orWhereNull('images.url')
+                                        ->orWhereNull('venues.logo_url')
+                                        ->orWhereNull('venues.header_url')
                                         ->orWhereNull('venues.description')
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
@@ -81,16 +75,9 @@ class VenueController extends Controller{
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
-                                                             FROM venue_images vi
-                                                             LEFT JOIN images i ON vi.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('venues.id','=','images.venue_id');
-                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
+                                                 'venues.logo_url','venues.header_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->where('venues.audit_user_id','=',Auth::user()->id)
                                         ->orderBy('venues.name')->groupBy('venues.id')
@@ -106,19 +93,13 @@ class VenueController extends Controller{
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
-                                                             FROM venue_images vi
-                                                             LEFT JOIN images i ON vi.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('venues.id','=','images.venue_id');
-                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
+                                                 'venues.logo_url','venues.header_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->whereNull('stages.id')
-                                        ->orWhereNull('images.url')
+                                        ->orWhereNull('venues.logo_url')
+                                        ->orWhereNull('venues.header_url')
                                         ->orWhereNull('venues.description')
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
@@ -130,16 +111,9 @@ class VenueController extends Controller{
                             $venues = DB::table('venues')
                                         ->join('locations', 'locations.id', '=' ,'venues.location_id')
                                         ->leftJoin('stages', 'stages.venue_id', '=' ,'venues.id')
-                                        ->leftJoin(DB::raw('(SELECT vi.venue_id, i.url
-                                                             FROM venue_images vi
-                                                             LEFT JOIN images i ON vi.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('venues.id','=','images.venue_id');
-                                        })
                                         ->select('venues.id','venues.name','venues.slug','venues.description',DB::raw('IF(venues.is_featured>0,"Yes","No") AS is_featured'),
                                                  'venues.facebook','venues.twitter','venues.googleplus','venues.yelpbadge','venues.youtube','venues.instagram',
-                                                 'images.url AS image_url', DB::raw('COUNT(stages.id) AS stages') ,
+                                                 'venues.logo_url','venues.header_url', DB::raw('COUNT(stages.id) AS stages') ,
                                                  'locations.address','locations.city','locations.state','locations.zip','locations.country')
                                         ->orderBy('venues.name')->groupBy('venues.id')
                                         ->distinct()->get();
@@ -157,11 +131,14 @@ class VenueController extends Controller{
                 foreach ($venues as $v)
                 {
                     //check image
-                    $v->image_url = Image::view_image($v->image_url);
+                    $v->logo_url = Image::view_image($v->logo_url);
+                    $v->header_url = Image::view_image($v->header_url);
                     //set errors
                     $v->errors = '';
-                    if(empty($v->image_url))
+                    if(empty($v->logo_url))
                         $v->errors .= '<br>- No logo image.';
+                    if(empty($v->header_url))
+                        $v->errors .= '<br>- No header image.';
                     if(empty($v->stages))
                         $v->errors .= '<br>- No stages.';
                     if(empty($v->description))
@@ -194,6 +171,9 @@ class VenueController extends Controller{
                                 ->where('venues.id','=',$id)->first();
                 if(!$venue)
                     return ['success'=>false,'msg'=>'There was an error getting the venue.<br>Maybe it is not longer in the system.'];
+                // change relative url uploads for real one
+                $venue->logo_url = Image::view_image($venue->logo_url);
+                $venue->header_url = Image::view_image($venue->header_url);
                 //search sub elements
                 $stages = Stage::where('venue_id',$venue->id)->get();
                 foreach ($stages as $s)
@@ -293,11 +273,26 @@ class VenueController extends Controller{
                 $venue->default_percent_commission = $input['default_percent_commission'];
                 $venue->disable_cash_breakdown = (!empty($input['disable_cash_breakdown']))? 1 : 0;
                 $venue->pos_fee = (!empty($input['pos_fee']))? $input['pos_fee'] : null;
-                if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id']))
+                if(!empty($input['logo_url']))
                 {
-                    $venue->delete_image_file();
-                    $venue->set_sponsor_logo_id($input['sponsor_logo_id']);
+                    if(preg_match('/media\/preview/',$input['logo_url']))
+                    {
+                        $venue->delete_image_file('logo');
+                        $venue->set_image_file('logo',$input['logo_url']);
+                    }
                 }
+                else
+                    return ['success'=>false,'msg'=>'There was an error saving the venue.<br>You must set up a logo for it.'];
+                if(!empty($input['header_url']))
+                {
+                    if(preg_match('/media\/preview/',$input['header_url']))
+                    {
+                        $venue->delete_image_file('header');
+                        $venue->set_image_file('header',$input['header_url']);
+                    }
+                }
+                else
+                    return ['success'=>false,'msg'=>'There was an error saving the venue.<br>You must set up a header for it.'];
                 $venue->save();
                 //return
                 if(isset($input['id']) && $input['id'])
@@ -385,7 +380,8 @@ class VenueController extends Controller{
                             DB::table('videos')->where('id',$v->video_id)->delete();
                         $venue_videos = DB::table('venue_videos')->where('venue_id',$venue->id)->delete();
                         //try to delete final show if it has not dependences
-                        $venue->delete_image_file();
+                        $venue->delete_image_file('logo');
+                        $venue->delete_image_file('header');
                         if(!$venue->delete())
                         {
                             if($msg1=='')

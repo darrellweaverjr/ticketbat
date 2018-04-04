@@ -50,7 +50,10 @@ var TableDatatablesManaged = function () {
             ],
             "order": [
                 [1, "asc"]
-            ] // set first column as a default sort by asc
+            ],
+            "drawCallback": function(){
+                $('.lazy').lazy();
+            }
         });
 
         table.find('.group-checkable').change(function () {
@@ -377,16 +380,19 @@ var TableDatatablesManaged = function () {
                 if(key=='on_sale' || key=='amex_only_start_date' || key=='amex_only_end_date')
                     if(data.show[key]=='0000-00-00 00:00:00')
                         data.show[key] = '';
-                if(key=='stage_id')
+                else if(key=='stage_id')
                 {
                     $('#form_model_update select[name="stage_id"] option').prop('selected',false);
                     $('#form_model_update select[name="stage_id"]').val(data.show.stage_id).trigger('change');
                 }
+                else if(key=='logo_url' || key=='header_url' || key=='sponsor_logo_id')
+                {
+                    $('#form_model_update img[name="'+key+'"]').attr('src',data.show[key]);
+                    $('#form_model_update input[name="'+key+'"]').val(data.show[key]);
+                }
                 //fill out
                 var e = $('#form_model_update [name="'+key+'"]');
-                if(e.is('img'))
-                    e.attr('src',data.show[key]);
-                else if(e.is('input:checkbox'))
+                if(e.is('input:checkbox'))
                     $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key]>0)? true : false, true);
                 else if(key!='venue_id' && key!='stage_id')
                     e.val(data.show[key]);
@@ -698,6 +704,15 @@ var TableDatatablesManaged = function () {
                 }
             });
         });
+        //function load form to upload logo
+        $('#btn_shows_upload_logo_url').on('click', function(ev) {
+            FormImageUpload('shows.logo_url','#modal_model_update','#form_model_update [name="logo_url"]');
+        });
+        //function load form to upload header
+        $('#btn_shows_upload_header_url').on('click', function(ev) {
+            FormImageUpload('shows.header_url','#modal_model_update','#form_model_update [name="header_url"]');
+        });
+
         //function with show_passwords  *****************************************************************************************************   SHOW PASSWORD BEGIN
         $('#btn_model_password_add').on('click', function(ev) {
             $('#form_model_show_passwords input[name="id"]:hidden').val('').trigger('change');

@@ -60,13 +60,11 @@ class HomeController extends Controller
 
             //get shows
             $shows = DB::table('shows')
-                ->join('show_images', 'show_images.show_id', '=', 'shows.id')
-                ->join('images', 'show_images.image_id', '=', 'images.id')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('locations', 'locations.id', '=', 'venues.location_id')
                 ->join('show_times', 'shows.id', '=', 'show_times.show_id')
                 ->join('tickets', 'tickets.show_id', '=', 'shows.id')
-                ->select(DB::raw('shows.id, shows.venue_id, shows.name, images.url, locations.city, locations.country, locations.state, shows.category_id,
+                ->select(DB::raw('shows.id, shows.venue_id, shows.name, shows.logo_url, locations.city, locations.country, locations.state, shows.category_id,
                                           venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
                                           MIN(tickets.retail_price+tickets.processing_fee) AS price, shows.starting_at, shows.regular_price'))
                 ->where('venues.is_featured', '>', 0)
@@ -75,19 +73,18 @@ class HomeController extends Controller
                     $query->whereNull('shows.on_featured')
                         ->orWhere('shows.on_featured', '<=', $nowVar);
                 })
-                ->where('images.image_type', '=', 'Logo')
                 ->where(function ($query) use ($nowVar) {
                     $query->where('show_times.show_time', '>=', $nowVar);
                 })
                 ->where('show_times.is_active', '=', 1)
-                ->whereNotNull('images.url')
+                ->whereNotNull('shows.logo_url')
                 ->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')
                 ->groupBy('shows.id')
                 ->distinct()->get();
 
             foreach ($shows as $s) {
-                if (!empty($s->url)) {
-                    $s->url = Image::view_image($s->url);
+                if (!empty($s->logo_url)) {
+                    $s->logo_url = Image::view_image($s->logo_url);
                 }
                 //category filter 1
                 if (!in_array($s->category_id, $cats)) {
@@ -114,19 +111,15 @@ class HomeController extends Controller
             }
             //get cities
             $cities = DB::table('venues')
-                ->join('venue_images', 'venue_images.venue_id', '=', 'venues.id')
-                ->join('images', 'venue_images.image_id', '=', 'images.id')
                 ->join('locations', 'locations.id', '=', 'venues.location_id')
                 ->select('locations.city', 'locations.state', 'locations.country')
-                ->where('venues.is_featured', '>', 0)->where('images.image_type', '=', 'Logo')
-                ->whereNotNull('images.url')
+                ->where('venues.is_featured', '>', 0)
+                ->whereNotNull('venues.logo_url')
                 ->orderBy('locations.city')->groupBy('locations.city')
                 ->distinct()->get();
             //get venues
             $venues = DB::table('venues')
                 ->join('shows', 'venues.id', '=', 'shows.venue_id')
-                ->join('show_images', 'show_images.show_id', '=', 'shows.id')
-                ->join('images', 'show_images.image_id', '=', 'images.id')
                 ->join('locations', 'locations.id', '=', 'venues.location_id')
                 ->join('show_times', 'shows.id', '=', 'show_times.show_id')
                 ->join('tickets', 'tickets.show_id', '=', 'shows.id')
@@ -137,12 +130,11 @@ class HomeController extends Controller
                     $query->whereNull('shows.on_featured')
                         ->orWhere('shows.on_featured', '<=', $nowVar);
                 })
-                ->where('images.image_type', '=', 'Logo')
                 ->where(function ($query) use ($nowVar) {
                     $query->where('show_times.show_time', '>=', $nowVar);
                 })
                 ->where('show_times.is_active', '=', 1)
-                ->whereNotNull('images.url')
+                ->whereNotNull('venues.logo_url')
                 ->orderBy('venues.name')->groupBy('venues.id')
                 ->distinct()->get();
 
@@ -164,7 +156,7 @@ class HomeController extends Controller
         try {
             //init
             $input = Input::all();
-            //calculate subcategories 
+            //calculate subcategories
             if (!empty($input['category']) && is_numeric($input['category'])) {
                 $result = [];
                 function subCategories($result, $category)
@@ -200,15 +192,13 @@ class HomeController extends Controller
 
             //get shows
             $shows = DB::table('shows')
-                ->join('show_images', 'show_images.show_id', '=', 'shows.id')
-                ->join('images', 'show_images.image_id', '=', 'images.id')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('locations', 'locations.id', '=', 'venues.location_id')
                 ->join('show_times', 'shows.id', '=', 'show_times.show_id')
                 ->select(DB::raw('shows.id, show_times.time_alternative,
                                           DATE_FORMAT(MIN(show_times.show_time),"%b %d, %Y @ %h:%i %p") AS date_venue_on'))
                 ->where('venues.is_featured', '>', 0)
-                ->where('shows.is_active', '>', 0)->where('shows.is_featured', '>', 0)->where('images.image_type', '=', 'Logo')
+                ->where('shows.is_active', '>', 0)->where('shows.is_featured', '>', 0)
                 ->where(function ($query) use ($nowVar) {
                     $query->whereNull('shows.on_featured')
                         ->orWhere('shows.on_featured', '<=', $nowVar);
@@ -217,7 +207,7 @@ class HomeController extends Controller
                     $query->where('show_times.show_time', '>=', $nowVar);
                 })
                 ->where('show_times.is_active', '=', 1)
-                ->whereNotNull('images.url')
+                ->whereNotNull('shows.logo_url')
                 //custom
                 ->when(!empty($input['city']), function ($shows) use ($input) {
                     return $shows->where('locations.city', 'LIKE', $input['city']);

@@ -118,16 +118,9 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
-                                                             FROM show_images si
-                                                             LEFT JOIN images i ON si.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+                                                 'categories.name AS category','shows.logo_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
                                         ->where(function($query)
@@ -135,7 +128,7 @@ class ShowController extends Controller{
                                             $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
                                                   ->orWhere('shows.audit_user_id','=',Auth::user()->id);
                                         })
-                                        ->whereNull('images.url')
+                                        ->whereNull('shows.logo_url')
                                         ->orWhereNull('tickets.id')
                                         ->orWhereNull('show_times.id')
                                         ->orWhereNull('shows.short_description')
@@ -151,16 +144,9 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
-                                                             FROM show_images si
-                                                             LEFT JOIN images i ON si.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+                                                 'categories.name AS category','shows.logo_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where(function($query)
                                         {
@@ -183,19 +169,12 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
-                                                             FROM show_images si
-                                                             LEFT JOIN images i ON si.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+                                                 'categories.name AS category','shows.logo_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->where('tickets.is_active','>',0)->where('tickets.is_default','>',0)->where('show_times.is_active','>',0)
-                                        ->whereNull('images.url')
+                                        ->whereNull('shows.logo_url')
                                         ->orWhereNull('tickets.id')
                                         ->orWhereNull('show_times.id')
                                         ->orWhereNull('shows.short_description')
@@ -211,16 +190,9 @@ class ShowController extends Controller{
                                         ->join('categories', 'categories.id', '=' ,'shows.category_id')
                                         ->leftJoin('show_times', 'show_times.show_id', '=' ,'shows.id')
                                         ->leftJoin('tickets', 'tickets.show_id', '=' ,'shows.id')
-                                        ->leftJoin(DB::raw('(SELECT si.show_id, i.url
-                                                             FROM show_images si
-                                                             LEFT JOIN images i ON si.image_id = i.id
-                                                             WHERE i.image_type = "Logo") as images'),
-                                        function($join){
-                                            $join->on('shows.id','=','images.show_id');
-                                        })
                                         ->select('shows.id','shows.name','shows.slug','shows.short_description','shows.url',DB::raw('IF(shows.is_active>0,"Active","Inactive") AS is_active'),DB::raw('IF(shows.is_featured>0,"Yes","No") AS is_featured'),
                                                  'shows.facebook','shows.twitter','shows.googleplus','shows.youtube','shows.instagram','shows.yelpbadge','shows.conversion_code', 'venues.name AS venue',
-                                                 'categories.name AS category','images.url AS image_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
+                                                 'categories.name AS category','shows.logo_url', DB::raw('COUNT(tickets.id) AS tickets') ,DB::raw('COUNT(show_times.id) AS show_times') )
                                         ->where($where)
                                         ->orderBy('shows.name')->groupBy('shows.id')
                                         ->distinct()->get();
@@ -250,13 +222,11 @@ class ShowController extends Controller{
                 foreach ($shows as $s)
                 {
                     //check image
-                    if(!empty($s->image_url))
-                        $s->image_url = Image::view_image($s->image_url);
-                    else
-                        $s->image_url = '';
+                    if(!empty($s->logo_url))
+                        $s->logo_url = Image::view_image($s->logo_url);
                     //set errors
                     $s->errors = '';
-                    if(empty($s->image_url))
+                    if(empty($s->logo_url))
                         $s->errors .= '<br>- No logo image.';
                     if(empty($s->tickets))
                         $s->errors .= '<br>- No active/default tickets.';
@@ -289,6 +259,8 @@ class ShowController extends Controller{
                 if(!$show)
                     return ['success'=>false,'msg'=>'There was an error getting the show.<br>Maybe it is not longer in the system.'];
                 // change relative url uploads for real one
+                $show->logo_url = Image::view_image($show->logo_url);
+                $show->header_url = Image::view_image($show->header_url);
                 $show->sponsor_logo_id = Image::view_image($show->sponsor_logo_id);
                 //search sub elements
                 $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')
@@ -408,8 +380,23 @@ class ShowController extends Controller{
                 }
                 if(!empty($input['sponsor_logo_id']) && preg_match('/media\/preview/',$input['sponsor_logo_id']))
                 {
-                    $show->delete_image_file();
-                    $show->set_sponsor_logo_id($input['sponsor_logo_id']);
+                    $show->delete_image_file('sponsor');
+                    $show->set_image_file('sponsor',$input['sponsor_logo_id']);
+                }
+                if(!empty($input['logo_url']))
+                {
+                    if(preg_match('/media\/preview/',$input['logo_url']))
+                    {
+                        $show->delete_image_file('logo');
+                        $show->set_image_file('logo',$input['logo_url']);
+                    }
+                }
+                else
+                    return ['success'=>false,'msg'=>'There was an error saving the show.<br>You must set up a logo for it.'];
+                if(!empty($input['header_url']) && preg_match('/media\/preview/',$input['header_url']))
+                {
+                    $show->delete_image_file('header');
+                    $show->set_image_file('header',$input['header_url']);
                 }
                 if(!empty($input['ext_slug']) && preg_match('/^http(s)?:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i',$input['ext_slug']))
                     $show->ext_slug = $input['ext_slug'];
@@ -536,7 +523,9 @@ class ShowController extends Controller{
                         //show_times
                         $show_times = DB::table('show_times')->where('show_id',$show->id)->delete();
                         //try to delete final show if it has not dependences
-                        $show->delete_image_file();
+                        $show->delete_image_file('logo');
+                        $show->delete_image_file('header');
+                        $show->delete_image_file('sponsor');
                         if(!$show->delete())
                         {
                             if($msg1=='')

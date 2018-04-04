@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @author ivan
  */
 class Show extends Model
-{    
+{
     /**
      * The table associated with the model.
      *
@@ -80,7 +80,7 @@ class Show extends Model
     public function show_videos()
     {
         return $this->belongsToMany('App\Http\Models\Video','show_videos','show_id','video_id');
-    } 
+    }
     /**
      * The discount_shows that belong to the show.
      */
@@ -92,20 +92,35 @@ class Show extends Model
     /**
      * Set the image_url for the current show.
      */
-    public function set_sponsor_logo_id($sponsor_logo_id)
+    public function set_image_file($type,$image)
     {
-        $this->sponsor_logo_id = Image::stablish_image('shows',$sponsor_logo_id);
+        if($type=='logo')
+            $this->logo_url = Image::stablish_image('shows',$image);
+        else if($type=='header')
+            $this->header_url = Image::stablish_image('shows',$image);
+        else if($type=='sponsor')
+            $this->sponsor_logo_id = Image::stablish_image('shows',$image);
     }
     /**
      * Remove the image file for the current band.
      */
-    public function delete_image_file()
+    public function delete_image_file($type)
     {
-        if(Image::remove_image($this->sponsor_logo_id))
+        if($type=='logo' && Image::remove_image($this->logo_url))
+        {
+            $this->logo_url = null;
+            return true;
+        }
+        else if($type=='header' && Image::remove_image($this->header_url))
+        {
+            $this->header_url = null;
+            return true;
+        }
+        else if($type=='sponsor' && Image::remove_image($this->sponsor_logo_id))
         {
             $this->sponsor_logo_id = '';
             return true;
         }
-        return true;   
+        return true;
     }
 }

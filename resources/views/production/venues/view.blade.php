@@ -13,12 +13,12 @@
 
 <!-- BEGIN TOP HEADER -->
 <div class="row">
-    <center><img style="margin:auto; width:100%;" src="{{$venue->header->url}}" alt="{{$venue->header->caption}}"></center>
+    <center><img style="margin:auto; width:100%;" src="{{$venue->header_url}}"></center>
 </div>
 <!-- END TOP HEADER -->
 <!-- BEGIN NAME BAR-->
 <div class="row widget-row">
-    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the venue">                
+    <div class="widget-thumb widget-bg-color-white text-uppercase" title="Name of the venue">
         <div class="widget-thumb-wrap text-center uppercase" style="font-size:44px">{{$venue->name}}
             <p style="margin-top:-25px;max-height:30px">
                 @if(!empty($venue->twitter)) <a class="social-icon social-icon-color twitter" href="https://twitter.com/{{$venue->twitter}}" target="_blank"></a> @endif
@@ -32,7 +32,7 @@
     </div>
 </div>
 <!-- END NAME BAR-->
-<div class="page-content color-panel">  
+<div class="page-content color-panel">
     <!-- BEGIN DESCRIPTION AND CALENDAR -->
     <div class="row fixed-panel">
         <div class="portlet light about-text">
@@ -55,7 +55,7 @@
                         </ul>
                     </div>
                 </div>
-            </h4>  
+            </h4>
             <p class="margin-top-20" style="padding-bottom:20px">{!! $venue->description !!}</p>
             <!-- END DESCRIPTION -->
         </div>
@@ -66,7 +66,7 @@
             <!-- BEGIN DESCRIPTION -->
             <h4>
                 <i class="fa fa-globe icon-globe"></i> Events
-            </h4> 
+            </h4>
             <!-- BEGIN EVENTS -->
             <div class="timeline" style="margin:10px;padding-bottom:10px;">
                 @foreach($venue->events as $e)
@@ -74,7 +74,7 @@
                 <div class="timeline-item">
                     <div class="timeline-badge">
                         <a href="/event/{{$e->slug}}">
-                            <img height="100px" width="150px" src="{{$e->url}}">
+                            <img height="100px" width="150px" src="{{$e->logo_url}}">
                         </a>
                     </div>
                     <div class="timeline-body" style="margin-left:170px">
@@ -139,7 +139,7 @@
                  ></div>
     </div>
     <!-- END MAPS -->
-    
+
 </div>
 @endsection
 

@@ -10,6 +10,26 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             var fixWidth = 600;
             var fixHeight = 600;
             break;
+        case 'venues.logo':
+            var fixWidth = 600;
+            var fixHeight = 200;
+            break;
+        case 'venues.logo_url':
+            var fixWidth = 200;
+            var fixHeight = 200;
+            break;
+        case 'venues.header_url':
+            var fixWidth = 1350;
+            var fixHeight = 270;
+            break;
+        case 'shows.logo_url':
+            var fixWidth = 200;
+            var fixHeight = 200;
+            break;
+        case 'shows.header_url':
+            var fixWidth = 1350;
+            var fixHeight = 270;
+            break;
         case 'shows.sponsor_logo_id':
             var fixWidth = 100;
             var fixHeight = 50;
@@ -17,10 +37,6 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
         case 'images.logo':
             var fixWidth = 600;
             var fixHeight = 300;
-            break;
-        case 'venues.logo':
-            var fixWidth = 600;
-            var fixHeight = 200;
             break;
         case 'images.image':
             var fixWidth = 800;
@@ -122,9 +138,9 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
     $('#file_media_picture_upload').on('change', function (ev) {
         //init
         var file = this.files[0];
-        if (file.size > 819200) {
+        if (file.size > 204800) {
             reset_form();
-            alert('ERROR: This file is larger than 800 Kb.');
+            alert('ERROR: This file is larger than 200 Kb.');
         }
         else if (!(file.type === 'image/jpg' || file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/gif')) {
             reset_form();
@@ -135,21 +151,6 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             image.onload = function () {
                 var currentWidth = this.width;
                 var currentHeight = this.height;
-                //max width and height permitted to the form
-//                if(currentWidth > maxWidth || currentHeight > maxHeight)
-//                {
-//                    reset_form();
-//                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be less or equal than '+maxWidth+' width x '+maxHeight+' height.');
-//                }  
-                //min width and height permitted according to the type of image to upload
-//                else if(currentWidth < fixWidth || currentHeight < fixHeight)
-//                {
-//                    reset_form();
-//                    alert('ERROR: This file has '+currentWidth+' width x '+currentHeight+' height. The required values must be more or equal than '+fixWidth+' width x '+fixHeight+' height.');
-//                }
-                //if ok update form
-//                else
-//                {
                 //fill out the image info
                 $('#input_media_picture_name').html(file.name);
                 $('#form_media_picture_load [name="pic_size"]').val((file.size / 1024).toFixed(1));
@@ -157,7 +158,6 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
                 $('#form_media_picture_load [name="pic_height"]').val(currentHeight);
                 $('#form_media_picture_load [name="resize_width"]').val(fixWidth);
                 $('#form_media_picture_load [name="resize_height"]').val(fixHeight);
-                //}
             };
             if (file) {
                 $('#image_preview').empty();

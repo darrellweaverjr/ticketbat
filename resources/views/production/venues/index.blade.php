@@ -18,7 +18,7 @@
   width: 23%!important;
 }
 </style>
-<div class="page-content">  
+<div class="page-content">
         <!-- BEGIN SHOWS GRID-->
         @foreach($venues as $index=>$vv)
         <div class="container">
@@ -29,7 +29,7 @@
                 <div class="cbp-item  filtered" data-id="{{$v->venue_id}}" data-search="{{$v->name}}" data-href="/venue/{{$v->slug}}">
                     <div class="cbp-caption">
                         <div class="venue-pic">
-                            <a class="cbp-caption-defaultWrap"><img src="{{$v->url}}" alt="{{$v->name}}"></a>
+                            <a class="cbp-caption-defaultWrap"><img src="{{$v->logo_url}}" alt="{{$v->name}}"></a>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -44,7 +44,7 @@
 
                 @endforeach
             </div>
-        </div>    
+        </div>
         @endforeach
         <!-- END SHOWS GRID-->
 </div>

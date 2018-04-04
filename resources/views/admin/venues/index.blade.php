@@ -80,7 +80,7 @@
                                     </label>
                                 </td>
                                 <td data-order="{{$v->name}}" style="text-align:center;color:red" title="Click on the image to go to the website.">
-                                    <a><img alt="- No image -" height="110px" width="110px" src="{{$v->image_url}}"/></a>
+                                    <a><img class="lazy" alt="- No image -" height="110px" width="110px" src="{{config('app.theme')}}img/no-image.jpg" data-src="{{$v->logo_url}}"/></a>
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
@@ -121,37 +121,40 @@
                             <div class="tabbable-line">
                                 <ul class="nav nav-tabs">
                                     <li class="active">
-                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true"> General </a>
+                                        <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true">General</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="false"> Tickets </a>
+                                        <a href="#tab_model_update_logo_header" data-toggle="tab" aria-expanded="false">Logo&Header</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_location" data-toggle="tab" aria-expanded="false"> Location </a>
+                                        <a href="#tab_model_update_tickets" data-toggle="tab" aria-expanded="false">Tickets</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false"> Reports </a>
+                                        <a href="#tab_model_update_location" data-toggle="tab" aria-expanded="false">Location</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_stages" data-toggle="tab" aria-expanded="true"> Stages </a>
+                                        <a href="#tab_model_update_reports" data-toggle="tab" aria-expanded="false">Reports</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_stage_images" data-toggle="tab" aria-expanded="true"> Stages Images </a>
+                                        <a href="#tab_model_update_stages" data-toggle="tab" aria-expanded="true">Stages</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_images" data-toggle="tab" aria-expanded="true"> Images </a>
+                                        <a href="#tab_model_update_stage_images" data-toggle="tab" aria-expanded="true">Stages Images</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_banners" data-toggle="tab" aria-expanded="true"> Banners </a>
+                                        <a href="#tab_model_update_images" data-toggle="tab" aria-expanded="true">Images</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_videos" data-toggle="tab" aria-expanded="true"> Videos </a>
+                                        <a href="#tab_model_update_banners" data-toggle="tab" aria-expanded="true">Banners</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_ads" data-toggle="tab" aria-expanded="true"> Ads </a>
+                                        <a href="#tab_model_update_videos" data-toggle="tab" aria-expanded="true">Videos</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_pos" data-toggle="tab" aria-expanded="false"> POS </a>
+                                        <a href="#tab_model_update_ads" data-toggle="tab" aria-expanded="true">Ads</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_pos" data-toggle="tab" aria-expanded="false">POS</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
@@ -240,6 +243,36 @@
                                             <label class="control-label">Description:</label>
                                             <div class="show-error">
                                                 <textarea name="description" class="form-control" rows="5"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_logo_header" style="padding:0 40px">
+                                        <div class="row">
+                                            <div class="col-md-3" style="padding-right:40px">
+                                                <div class="form-group">
+                                                    <label class="control-label">Logo
+                                                    </label>
+                                                    <div class="show-error" >
+                                                        <center>
+                                                            <input type="hidden" name="logo_url"/>
+                                                            <button type="button" id="btn_venues_upload_logo_url" class="btn btn-block sbold dark btn-outline" >Upload New Logo</button>
+                                                            <img name="logo_url" alt="- No image -" src="" width="200px" height="200px" />
+                                                        </center>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="form-group">
+                                                    <label class="control-label">Header
+                                                    </label>
+                                                    <div class="show-error" >
+                                                        <center>
+                                                            <input type="hidden" name="header_url"/>
+                                                            <button type="button" id="btn_venues_upload_header_url" class="btn btn-block sbold dark btn-outline" >Upload New Header</button>
+                                                            <img name="header_url" alt="- No image -" src="" width="680px" height="200px" />
+                                                        </center>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1096,5 +1129,6 @@
 @section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/jquery.lazy.min.js" type="text/javascript"></script>
 <script src="/js/admin/venues/index.js" type="text/javascript"></script>
 @endsection

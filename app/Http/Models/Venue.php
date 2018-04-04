@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @author ivan
  */
 class Venue extends Model
-{    
+{
     /**
      * The table associated with the model.
      *
@@ -64,20 +64,28 @@ class Venue extends Model
     /**
      * Set the image_url for the current venue.
      */
-    public function set_sponsor_logo_id($sponsor_logo_id)
+    public function set_image_file($type,$image)
     {
-        $this->sponsor_logo_id = Image::stablish_image('venues',$sponsor_logo_id);
+        if($type=='logo')
+            $this->logo_url = Image::stablish_image('venues',$image);
+        else if($type=='header')
+            $this->header_url = Image::stablish_image('venues',$image);
     }
     /**
      * Remove the image file for the current band.
      */
-    public function delete_image_file()
+    public function delete_image_file($type)
     {
-        if(Image::remove_image($this->sponsor_logo_id))
+        if($type=='logo' && Image::remove_image($this->logo_url))
         {
-            $this->sponsor_logo_id = '';
+            $this->logo_url = null;
             return true;
         }
-        return true;   
+        else if($type=='header' && Image::remove_image($this->header_url))
+        {
+            $this->header_url = null;
+            return true;
+        }
+        return true;
     }
 }

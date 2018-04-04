@@ -149,7 +149,7 @@
                             <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-category="{{$s->category_id}}" data-href="/event/{{$s->slug}}">
                                 <div class="cbp-caption">
                                     <a class="cbp-caption-defaultWrap">
-                                        <img src="{{$s->url}}" alt="{{$s->name}}"> </a>
+                                        <img src="{{$s->logo_url}}" alt="{{$s->name}}"> </a>
                                     <div class="cbp-caption-activeWrap">
                                         <div class="cbp-l-caption-alignCenter">
                                             <div class="cbp-l-caption-body">

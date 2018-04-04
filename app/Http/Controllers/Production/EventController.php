@@ -33,8 +33,8 @@ class EventController extends Controller
             $event = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('locations', 'locations.id', '=', 'venues.location_id')
-                ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url,
-                                          shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram,
+                ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url, shows.header_url AS header,
+                                          shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram, venues.header_url,
                                           venues.name as venue, shows.name, locations.*, shows.presented_by, shows.starting_at, shows.regular_price, shows.sponsor,
                                           shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id, shows.ua_conversion_code,
                                           IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
@@ -62,25 +62,10 @@ class EventController extends Controller
             }
             //format sponsor pic
             $event->sponsor_logo_id = Image::view_image($event->sponsor_logo_id);
-
-            //get header
-            $event->header = DB::table('images')
-                ->join('show_images', 'show_images.image_id', '=', 'images.id')
-                ->select(DB::raw('images.url, images.caption'))
-                ->where('show_images.show_id', $event->show_id)->where('images.image_type', '=', 'Header')->first();
-            //set header of venue if not show header
-            if (!$event->header) {
-                $event->header = DB::table('images')
-                    ->join('venue_images', 'venue_images.image_id', '=', 'images.id')
-                    ->select(DB::raw('images.url, images.caption'))
-                    ->where('venue_images.venue_id', $event->venue_id)->where('images.image_type', '=', 'Header')->first();
-            }
-            if ($event->header) {
-                $event->header->url = Image::view_image($event->header->url);
-            } else {
+            //set header of venue if not show header or return home if none
+            $event->header = (!empty($event->header))? Image::view_image($event->header) : Image::view_image($event->header_url);
+            if(empty($event->header))
                 return redirect()->route('index');
-            }
-
             //get mobile header
             $event->mobile_header = DB::table('images')
                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
@@ -89,8 +74,6 @@ class EventController extends Controller
             if ($event->mobile_header) {
                 $event->mobile_header->url = Image::view_image($event->mobile_header->url);
             }
-
-
             //get images
             $event->images = DB::table('images')
                 ->join('show_images', 'show_images.image_id', '=', 'images.id')
@@ -114,7 +97,7 @@ class EventController extends Controller
             $event->videos = DB::table('videos')
                 ->join('show_videos', 'show_videos.video_id', '=', 'videos.id')
                 ->select(DB::raw('videos.id, videos.embed_code, videos.description'))
-                ->where('show_videos.show_id', $event->show_id)/*->where('videos.video_type','=','Video')*/
+                ->where('show_videos.show_id', $event->show_id)
                 ->get();
             foreach ($event->videos as $v) {
                 $part1 = explode('src="', $v->embed_code);

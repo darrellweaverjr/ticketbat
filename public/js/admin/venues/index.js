@@ -50,7 +50,10 @@ var TableDatatablesManaged = function () {
             ],
             "order": [
                 [1, "asc"]
-            ] // set first column as a default sort by asc
+            ],
+            "drawCallback": function(){
+                $('.lazy').lazy();
+            }
         });
 
         table.find('.group-checkable').change(function () {
@@ -144,6 +147,8 @@ var TableDatatablesManaged = function () {
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
             $('#tb_venue_ads').empty();
+            $('#form_model_update img[name="logo_url"]').attr('src','');
+            $('#form_model_update img[name="header_url"]').attr('src','');
         };
         //function add
         $('#btn_model_add').on('click', function(ev) {
@@ -158,7 +163,6 @@ var TableDatatablesManaged = function () {
             $('a[href="#tab_model_update_banners"]').parent().css('display','none');
             $('a[href="#tab_model_update_videos"]').parent().css('display','none');
             $('a[href="#tab_model_update_ads"]').parent().css('display','none');
-            $("#form_model_update").trigger('reset');
             $('#modal_model_update').modal('show');
         });
         //funcion load modal by id
@@ -186,7 +190,12 @@ var TableDatatablesManaged = function () {
             {
                 //fill out
                 var e = $('#form_model_update [name="'+key+'"]');
-                if(e.is('input:checkbox'))
+                if(key=='logo_url' || key=='header_url')
+                {
+                    $('#form_model_update img[name="'+key+'"]').attr('src',data.venue[key]);
+                    $('#form_model_update input[name="'+key+'"]').val(data.venue[key]);
+                }
+                else if(e.is('input:checkbox'))
                     $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.venue[key]>0)? true : false, true);
                 else
                     e.val(data.venue[key]);
@@ -437,6 +446,14 @@ var TableDatatablesManaged = function () {
                     });
                 }
             });
+        });
+        //function load form to upload logo
+        $('#btn_venues_upload_logo_url').on('click', function(ev) {
+            FormImageUpload('venues.logo_url','#modal_model_update','#form_model_update [name="logo_url"]');
+        });
+        //function load form to upload header
+        $('#btn_venues_upload_header_url').on('click', function(ev) {
+            FormImageUpload('venues.header_url','#modal_model_update','#form_model_update [name="header_url"]');
         });
 
         //function with venue_reports  *****************************************************************************************************   VENUE REPORTS BEGIN
@@ -1901,6 +1918,14 @@ var FormValidation = function () {
                         maxlength: 5,
                         digits: true,
                         range: [00100, 99999],
+                        required: true
+                    },
+                    logo_url: {
+                        url: true,
+                        required: true
+                    },
+                    header_url: {
+                        url: true,
                         required: true
                     }
                 },

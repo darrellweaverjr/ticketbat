@@ -84,7 +84,7 @@
                                     </label>
                                 </td>
                                 <td data-order="{{$s->name}}" style="text-align:center;color:red" title="Click on the image to go to the website.">
-                                    <a target="_blank" href="{{$s->url}}"><img alt="- No image -" height="110px" width="110px" src="{{$s->image_url}}"/>
+                                    <a target="_blank" href="{{$s->url}}"><img class="lazy" alt="- No image -" height="110px" width="110px" src="{{config('app.theme')}}img/no-image.jpg" data-src="{{$s->logo_url}}"/></a>
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
@@ -129,7 +129,10 @@
                                         <a href="#tab_model_update_general" data-toggle="tab" aria-expanded="true">General</a>
                                     </li>
                                     <li class="">
-                                        <a href="#tab_model_update_descriptions" data-toggle="tab" aria-expanded="true">Descriptions & Notes</a>
+                                        <a href="#tab_model_update_logo_header" data-toggle="tab" aria-expanded="false">Logo&Header</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_model_update_descriptions" data-toggle="tab" aria-expanded="true">Descriptions&Notes</a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_model_update_social" data-toggle="tab" aria-expanded="true">Social Media</a>
@@ -327,6 +330,36 @@
                                                 <div class="col-md-7">
                                                     <input type="hidden" name="is_active" value="0"/>
                                                     <input type="checkbox" class="make-switch input-large" name="is_active" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_model_update_logo_header" style="padding:0 40px">
+                                        <div class="row">
+                                            <div class="col-md-3" style="padding-right:40px">
+                                                <div class="form-group">
+                                                    <label class="control-label">Logo
+                                                    </label>
+                                                    <div class="show-error" >
+                                                        <center>
+                                                            <input type="hidden" name="logo_url"/>
+                                                            <button type="button" id="btn_shows_upload_logo_url" class="btn btn-block sbold dark btn-outline" >Upload New Logo</button>
+                                                            <img name="logo_url" alt="- No image -" src="" width="200px" height="200px" />
+                                                        </center>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="form-group">
+                                                    <label class="control-label">Header
+                                                    </label>
+                                                    <div class="show-error" >
+                                                        <center>
+                                                            <input type="hidden" name="header_url"/>
+                                                            <button type="button" id="btn_shows_upload_header_url" class="btn btn-block sbold dark btn-outline" >Upload New Header</button>
+                                                            <img name="header_url" alt="- No image -" src="" width="680px" height="200px" />
+                                                        </center>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1655,5 +1688,6 @@
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-timepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/jquery.lazy.min.js" type="text/javascript"></script>
 <script src="/js/admin/shows/index.js" type="text/javascript"></script>
 @endsection
