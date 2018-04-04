@@ -409,6 +409,13 @@ html, body {
     float: left!important;
 }
 
+.pos-nav-pills.nav-pills>li>a {
+   background-color: #e5e5e5;
+   border: 2px solid #FFFFFF;
+}
+.pos-nav-pills.nav-pills>li.active>a {
+    background-color: #337ab7;
+}
 
 /* BEGIN RESPONSIVE  ======================================================  */
 /* NOTE - ALL RESPONSIVE STYLES GO HERE - Do not duplicate media queries!    */

@@ -17,7 +17,7 @@
     <div class="page-content color-panel">
         <!-- BEGIN ITEMS -->
         <div class="row fixed-panel">
-            <div class="portlet light about-text">
+            <div class="portlet light about-text mb-15">
                 <!-- BEGIN DESCRIPTION -->
                 <h4 title="Items in the shopping cart.">
                     <i class="fa fa-shopping-cart"></i> Shopping Cart
@@ -27,11 +27,7 @@
                 </h4>
                 <p class="mt-20 mb-25 text-center">
                     <strong style="color:#578ebe">
-                        If gifting or attending this event with other people,
-                        <br class="hidden-xs">
-                        click on the
-                        <button type="button" disabled="true" class="btn btn-info"><i class="fa fa-gift"></i></button>
-                        button below.
+                        If gifting or attending this event with other people, click on the <button type="button" disabled="true" class="btn btn-info"><i class="fa fa-gift"></i></button> button below.
                     </strong>
                 </p>
 
@@ -212,21 +208,22 @@
                 <div class="portlet light bordered">
                     <div class="portlet-body">
                         @if($cart['seller'] && $cart['total']>0)
-                            <ul class="nav nav-pills nav-justified">
+                            <ul class="pos-nav-pills nav nav-pills nav-justified">
                                 <li class="active">
                                     <a href="#tab_card" data-toggle="tab">ENTER CARD</a>
                                 </li>
                                 <li>
                                     <a href="#tab_swipe" data-toggle="tab">SWIPE CARD</a>
                                 </li>
-                                <li>
+                                <li >
                                     <a href="#tab_cash" data-toggle="tab">ENTER CASH</a>
                                 </li>
                             </ul>
                             <hr>
                         @endif
+                        <!-- Begin payment tabs -->
                         <div class="tab-content" id="tabs_payment">
-                            <div class="tab-pane fade active in @if($cart['total']>0) hidden @endif" id="tab_skip">
+                            <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) active @endif in @if($cart['total']>0) hidden @endif" id="tab_skip">
                                 <div class="row">
                                     <!-- BEGIN FORM-->
                                     <form method="post" id="form_skip" class="form-horizontal">
@@ -264,6 +261,7 @@
                                     <!-- END FORM-->
                                 </div>
                             </div>
+
                             <div class="tab-pane fade active in @if(!($cart['total']>0)) hidden @endif" id="tab_card">
                                 <div class="row">
                                     <div class="form-group text-center">
@@ -406,6 +404,7 @@
                                     <!-- END FORM-->
                                 </div>
                             </div>
+
                             <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) hidden @endif" id="tab_swipe">
                                 <div class="row">
                                     <!-- BEGIN FORM-->
@@ -456,6 +455,7 @@
                                     <!-- END FORM-->
                                 </div>
                             </div>
+
                             <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) hidden @endif" id="tab_cash">
                                 <div class="row">
                                     <!-- BEGIN FORM-->
@@ -465,46 +465,8 @@
                                             You have some errors. Please check below.
                                         </div>
                                         <div class="form-group cash_breakdown" style="text-align:center;padding-right:15px">
-                                            <div class="col-md-2"></div>
-                                            <div class="cash_input col-md-4">
-                                                <div class="col-md-4">
-                                                    <button name="cash_1" value="1" type="button" class="btn btn-info btn-lg btn-block">1</button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button name="cash_2" value="2" type="button" class="btn btn-info btn-lg btn-block">2</button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button name="cash_3" value="3" type="button" class="btn btn-info btn-lg btn-block">3</button>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <button name="cash_4" value="4" type="button" class="btn btn-info btn-lg btn-block">4</button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button name="cash_5" value="5" type="button" class="btn btn-info btn-lg btn-block">5</button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button name="cash_6" value="6" type="button" class="btn btn-info btn-lg btn-block">6</button>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <button name="cash_7" value="7" type="button" class="btn btn-info btn-lg btn-block">7</button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button name="cash_8" value="8" type="button" class="btn btn-info btn-lg btn-block">8</button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button name="cash_9" value="9" type="button" class="btn btn-info btn-lg btn-block">9</button>
-                                                </div>
-
-                                                <div class="col-md-8">
-                                                    <button name="cash_0" value="0" type="button" class="btn btn-info btn-lg btn-block">0</button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button name="cash_x" value="" type="button" class="btn btn-danger btn-lg btn-block">X</button>
-                                                </div>
-                                            </div>
-                                            <div class="cash_total col-md-4">
+                                            <div class="col-sm-1 col-md-2"></div>
+                                            <div class="cash_total col-sm-5 col-md-4">
                                                 <label class="control-label col-sm-4 text-right">Total ($):</label>
                                                 <div class="col-sm-8 show-error">
                                                     <input type="text" class="form-control input-lg text-right" style="color:blue;" value="{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true"
@@ -522,7 +484,45 @@
                                                            value="{{old('subtotal')}}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-2"></div>
+                                            <div class="cash_input col-sm-5 col-md-4">
+                                                <div class="col-sm-4">
+                                                    <button name="cash_1" value="1" type="button" class="btn btn-info btn-lg btn-block">1</button>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button name="cash_2" value="2" type="button" class="btn btn-info btn-lg btn-block">2</button>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button name="cash_3" value="3" type="button" class="btn btn-info btn-lg btn-block">3</button>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <button name="cash_4" value="4" type="button" class="btn btn-info btn-lg btn-block">4</button>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button name="cash_5" value="5" type="button" class="btn btn-info btn-lg btn-block">5</button>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button name="cash_6" value="6" type="button" class="btn btn-info btn-lg btn-block">6</button>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <button name="cash_7" value="7" type="button" class="btn btn-info btn-lg btn-block">7</button>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button name="cash_8" value="8" type="button" class="btn btn-info btn-lg btn-block">8</button>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button name="cash_9" value="9" type="button" class="btn btn-info btn-lg btn-block">9</button>
+                                                </div>
+
+                                                <div class="col-sm-8">
+                                                    <button name="cash_0" value="0" type="button" class="btn btn-info btn-lg btn-block">0</button>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <button name="cash_x" value="" type="button" class="btn btn-danger btn-lg btn-block">X</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-1 col-md-2"></div>
                                         </div>
                                         <hr>
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -557,6 +557,7 @@
                                     <!-- END FORM-->
                                 </div>
                             </div>
+
                             <div class="row @if(Auth::check() && Auth::user()->user_type_id==7) hidden @endif" style="padding:20px">
                                 <hr>
                                 <label class="control-label text-center">
