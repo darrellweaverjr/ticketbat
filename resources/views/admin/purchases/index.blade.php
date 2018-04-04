@@ -512,9 +512,11 @@
                         <div class="form-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label class="control-label">
-                                        <span class="required">Current Info</span>
-                                    </label><hr>
+                                    <div>
+                                        <label class="control-label">
+                                            <span class="required">Current Info</span>
+                                        </label>
+                                    </div><hr>
                                     <div class="col-md-6">
                                         <label class="control-label">
                                             <span><b>Ticket:</b></span>
@@ -595,9 +597,14 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="control-label">
-                                        <span class="required">Target Info</span>
-                                    </label><hr>
+                                    <div>
+                                        <label class="control-label col-md-8">
+                                            <span class="required">Target Info</span>
+                                        </label>
+                                        <label class="mt-checkbox col-md-4">
+                                            <input type="checkbox" name="force_edit" value="1" />Force<span></span>
+                                        </label>
+                                    </div><hr>
                                     <div class="col-md-6">
                                         <label class="control-label">
                                             <span><b>Ticket:</b></span>

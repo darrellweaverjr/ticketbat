@@ -380,6 +380,7 @@ var TableDatatablesManaged = function () {
         //function show move modal window
         $('#btn_model_edit').on('click', function(ev) {
             $('#form_model_edit').trigger('reset');
+            $('#form_model_edit input[name="t_p_retail_price"], #form_model_edit input[name="t_p_processing_fee"], #form_model_edit input[name="t_savings"], #form_model_edit input[name="t_commission_percent"], #form_model_edit input[name="t_price_paid"]').prop('readonly', true);
             $('#form_model_edit input').css('border-color','').css('background','').css('font-weight','normal');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
@@ -431,6 +432,13 @@ var TableDatatablesManaged = function () {
                     });
                 }
             });
+        });
+        //enable/disable force edit purchase
+        $('#form_model_edit [name="force_edit"]').bind('click','change', function(ev) {
+            if($(this).is(':checked'))
+                $('#form_model_edit input[name^="t_p_"], #form_model_edit input[name="t_p_processing_fee"], #form_model_edit input[name="t_savings"], #form_model_edit input[name="t_commission_percent"], #form_model_edit input[name="t_price_paid"]').prop('readonly', false);
+            else
+                $('#form_model_edit input[name="t_p_retail_price"], #form_model_edit input[name="t_p_processing_fee"], #form_model_edit input[name="t_savings"], #form_model_edit input[name="t_commission_percent"], #form_model_edit input[name="t_price_paid"]').prop('readonly', true);
         });
         //on change edit field
         $('#form_model_edit select[name="to_show_time_id"], #form_model_edit select[name="to_ticket_id"], #form_model_edit select[name="to_discount_id"], #form_model_edit input[name="to_quantity"]').on('change', function() {

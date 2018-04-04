@@ -149,16 +149,16 @@ class PurchaseController extends Controller{
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
                                    't_p_retail_price'=>$ticket->retail_price*$qty,
-                                   't_p_processing_fee'=>(!empty($ticket->processing_fee))? $ticket->processing_fee*$qty_item_pay : $ticket->t_percent_pf/100*$ticket->retail_price*$qty_item_pay];
+                                   't_p_processing_fee'=>(!empty($ticket->processing_fee))? Util::round($ticket->processing_fee*$qty_item_pay) : Util::round($ticket->t_percent_pf/100*$ticket->retail_price*$qty_item_pay)];
                         //calculate savings result
-                        $target['t_savings'] = $discount->calculate_savings($qty,$target['t_p_retail_price'] + $target['t_p_processing_fee']);
+                        $target['t_savings'] = Util::round( $discount->calculate_savings($qty,$target['t_p_retail_price'] + $target['t_p_processing_fee']) );
                         //calculate commission result
                         $c = DB::table('discount_tickets')->select('fixed_commission')
                                     ->where('discount_id','=',$discount->id)->where('ticket_id','=',$ticket->id)->first();
                         $fixed_commission = (!empty($c->fixed_commission))? $c->fixed_commission : $ticket->fixed_commission;
-                        $target['t_commission_percent'] = (!empty($fixed_commission))? $fixed_commission*$qty_item_pay : $ticket->percent_commission/100*$ticket->retail_price*$qty_item_pay;
+                        $target['t_commission_percent'] = (!empty($fixed_commission))? Util::round($fixed_commission*$qty_item_pay) : Util::round($ticket->percent_commission/100*$ticket->retail_price*$qty_item_pay);
                         //calculate total result
-                        $target['t_price_paid'] = $target['t_p_retail_price'] + $target['t_p_processing_fee'] - $target['t_savings'];
+                        $target['t_price_paid'] = Util::round($target['t_p_retail_price'] + $target['t_p_processing_fee'] - $target['t_savings']);
                         return ['success'=>true,'target'=>$target];
                     }
                     else
@@ -530,11 +530,26 @@ class PurchaseController extends Controller{
                         $note.= ', qty from '.$purchase->quantity.' to '.$input['to_quantity'];
                         $purchase->quantity = $input['to_quantity'];
                     }
-                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                    $purchase->retail_price = $input['t_p_retail_price'];
-                    $purchase->processing_fee = $input['t_p_processing_fee'];
-                    $purchase->savings = $input['t_savings'];
-                    $purchase->commission_percent = $input['t_commission_percent'];
+                    if($purchase->retail_price != $input['t_p_retail_price'])
+                    {
+                        $note.= ', retail_price from '.$purchase->retail_price.' to '.$input['t_p_retail_price'];
+                        $purchase->retail_price = $input['t_p_retail_price'];
+                    }
+                    if($purchase->processing_fee != $input['t_p_processing_fee'])
+                    {
+                        $note.= ', processing_fee from '.$purchase->processing_fee.' to '.$input['t_p_processing_fee'];
+                        $purchase->processing_fee = $input['t_p_processing_fee'];
+                    }
+                    if($purchase->savings != $input['t_savings'])
+                    {
+                        $note.= ', savings from '.$purchase->savings.' to '.$input['t_savings'];
+                        $purchase->savings = $input['t_savings'];
+                    }
+                    if($purchase->commission_percent != $input['t_commission_percent'])
+                    {
+                        $note.= ', commission from '.$purchase->commission_percent.' to '.$input['t_commission_percent'];
+                        $purchase->commission_percent = $input['t_commission_percent'];
+                    }
                     if($purchase->price_paid != $input['t_price_paid'])
                     {
                         $note.= ', price paid from '.$purchase->price_paid.' to '.$input['t_price_paid'];
@@ -549,6 +564,8 @@ class PurchaseController extends Controller{
                             }
                         }
                     }
+                    //note and save
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                     $purchase->save();
                     //after save options
                     if(!empty($input['to_quantity']) && isset($old_qty))

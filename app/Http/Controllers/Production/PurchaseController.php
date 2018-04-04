@@ -43,7 +43,7 @@ class PurchaseController extends Controller
                 //check the correct name
                 if(strpos(trim($info['customer']), ' ') === false)
                     return ['success'=>false, 'msg'=>'You must enter your full name.'];
-                $info['customer'] = explode(' ',trim($info['customer']),2);
+                $info['customer'] = explode(' ',ucwords(trim($info['customer'])),2);
                 $info['first_name'] = $info['customer'][0];
                 $info['last_name'] = $info['customer'][1];
             }

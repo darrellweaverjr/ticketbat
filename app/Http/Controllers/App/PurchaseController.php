@@ -18,16 +18,16 @@ use App\Http\Models\User;
  * @author ivan
  */
 class PurchaseController extends Controller{
-        
+
     /*
      * buy all items in the cart
      */
     public function buy()
     {
         try {
-            $info = Input::all();  
+            $info = Input::all();
             $current = date('Y-m-d H:i:s');
-            if(!empty($info['cardholder']) && !empty($info['address']) && !empty($info['city']) && !empty($info['email']) 
+            if(!empty($info['cardholder']) && !empty($info['address']) && !empty($info['city']) && !empty($info['email'])
             && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['x_token']) && !empty($info['s_token']))
             {
                 //checking the email
@@ -35,9 +35,9 @@ class PurchaseController extends Controller{
                 if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
                     return ['success'=>false, 'msg'=>'Enter a valid email address.'];
                 //check the correct name
-                $info['cardholder'] = explode(' ',trim($info['cardholder']),2);
+                $info['cardholder'] = explode(' ',ucwords(trim($info['cardholder'])),2);
                 $info['first_name'] = $info['cardholder'][0];
-                $info['last_name'] = $info['cardholder'][1];    
+                $info['last_name'] = $info['cardholder'][1];
                 //get all items in shoppingcart
                 $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
                 if(!$shoppingcart['success'])
@@ -49,20 +49,20 @@ class PurchaseController extends Controller{
                     if($item->unavailable)
                         unset($shoppingcart['items'][$key]);
                 //check if it has to pay for the items or there are free
-                if($shoppingcart['total']>0)    
+                if($shoppingcart['total']>0)
                     if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
                         return Util::json(['success'=>false, 'msg'=>'There is no payment method for your items.']);
                 //set up customer
                 $client = User::customer_set($info, $current);
                 if(!$client['success'])
-                    return Util::json($client);                
+                    return Util::json($client);
                 //check payment type, if not free tickets
                 if($shoppingcart['total']>0)
                 {
                     //make transaction
                     $transaction = Transaction::usaepay($client,$info,$shoppingcart,$current);
                     //remove hide credit card number
-                    $info['card'] = '...'.substr($info['card'], -4); 
+                    $info['card'] = '...'.substr($info['card'], -4);
                     if(!$transaction['success'])
                         return Util::json($transaction);
                     $shoppingcart['transaction_id'] = $transaction['transaction_id'];
@@ -104,6 +104,6 @@ class PurchaseController extends Controller{
             $email->send();
             return Util::json(['success'=>false, 'msg'=>'There is an error with the server!']);
         }
-    } 
-    
+    }
+
 }
