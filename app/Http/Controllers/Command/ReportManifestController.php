@@ -54,13 +54,18 @@ class ReportManifestController extends Controller{
                         $date->type = $type;
                         $data = $this->create_data($date);
                         $manifest = $this->save_data($data);
-                        if($manifest && $data['s_manifest_emails']>0 && !empty($data['emails']))
+                        if($manifest)
                         {
-                            $sent = $manifest->send($data['emails'], $info['subject']);
-                            //storage if email was sent successfully
-                            $data['sent'] = ($sent)? 1 : 0;
-                            $manifest->email = json_encode($data);
-                            $manifest->save();
+                            if($data['s_manifest_emails']>0 && !empty($data['emails']))
+                            {
+                                $sent = $manifest->send($data['emails'], $info['subject']);
+                                //storage if email was sent successfully
+                                $data['sent'] = ($sent)? 1 : 0;
+                                $manifest->email = json_encode($data);
+                                $manifest->save();
+                            }
+                            else
+                                $sent = true;
                         }
                     }
                 }
