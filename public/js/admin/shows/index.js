@@ -398,7 +398,6 @@ var TableDatatablesManaged = function () {
                 }
                 else if(key!='venue_id' && key!='stage_id')
                     e.val(data.show[key]);
-
             }
             //fill out checking ticket
             if(data.tickets)
