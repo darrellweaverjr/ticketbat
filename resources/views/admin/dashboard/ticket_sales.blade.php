@@ -191,7 +191,7 @@
                     <td style="text-align:center">{{$d->tickets_one}}</td>
                     <td style="text-align:center">{{number_format($d->tickets)}} ({{number_format($d->purchases)}})</td>
                     <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
-                    <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
@@ -204,7 +204,7 @@
                     <td colspan="6">TOTALS</td>
                     <td style="text-align:center">{{number_format($coupons['total']['tickets'])}} ({{number_format($coupons['total']['purchases'])}})</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['discounts'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($coupons['total']['retail_prices']-$coupons['total']['discounts']+$coupons['total']['fees'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['revenue'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['to_show'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['commissions'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['fees'],2)}}</td>

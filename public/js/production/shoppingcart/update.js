@@ -1,7 +1,7 @@
 var UpdateShoppingcartFunctions = function () {
-    
+
     var initFunctions = function (cart) {
-        
+
         ShoppingcartQtyItems.init();
         if(cart && cart.success && cart.items.length>0)
         {
@@ -88,7 +88,7 @@ var UpdateShoppingcartFunctions = function () {
             }
             //update card form
             $('#form_card input[name="card"]').data('amex',cart.amex_only);
-            
+
             //update cash form
             $('#form_cash input[name="pending"]').val(cart.total);
             if(cart.cash_breakdown)
@@ -112,16 +112,19 @@ var UpdateShoppingcartFunctions = function () {
                     row.find('td:nth-child(2) input').prop('max',v.available_qty);
                 row.find('td:nth-child(3)').html('$'+((parseFloat(v.cost_per_product)).toFixed(2)));
                 row.find('td:nth-child(4)').html('$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2)));
-                row.find('td:nth-child(5)').html('$'+((parseFloat(v.processing_fee)).toFixed(2)));
+                if(v.inclusive_fee>0)
+                    row.find('td:nth-child(5)').html('$0.00');
+                else
+                    row.find('td:nth-child(5)').html('$'+((parseFloat(v.processing_fee)).toFixed(2)));
             });
         }
         else
-            location.reload(); 
+            location.reload();
     }
     return {
         //main function to initiate the module
         init: function (cart) {
-            initFunctions(cart);        
+            initFunctions(cart);
         }
     };
 }();

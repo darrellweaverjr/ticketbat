@@ -472,7 +472,9 @@ class Purchase extends Model
                 $purchase->retail_price = $i->retail_price;
                 $purchase->commission_percent = $i->commission;
                 $purchase->processing_fee = $i->processing_fee;
-                $purchase->price_paid = Util::round($purchase->retail_price+$purchase->processing_fee-$purchase->savings);
+                $purchase->price_paid = Util::round($purchase->retail_price-$purchase->savings);
+                if(!($i->inclusive_fee>0))
+                    $purchase->price_paid += Util::round($purchase->processing_fee);
                 $purchase->updated = $current;
                 $purchase->created = $current;
                 $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;

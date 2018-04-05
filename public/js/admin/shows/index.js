@@ -979,7 +979,7 @@ var TableDatatablesManaged = function () {
                 if(v.inclusive_fee>0)
                     v.inclusive_fee = '<span class="label label-sm sbold label-success">Incl.</span>';
                 else
-                    v.inclusive_fee = '<span class="label label-sm sbold label-danger">Over p. </span>';
+                    v.inclusive_fee = '<span class="label label-sm sbold label-danger">Over p.</span>';
                 //commission$
                 if(!v.fixed_commission) v.fixed_commission = '0.00';
                 $('#tb_show_tickets').append('<tr class="'+v.id+'"><td>'+v.ticket_type+'</td><td>'+v.title+'</td><td>$'+v.retail_price+'</td><td>$'+v.processing_fee+'</td><td>'+v.percent_pf+'%</td><td>$'+v.fixed_commission+'</td><td>'+v.percent_commission+'%</td><td><center>'+v.is_default+'</center></td><td><center>'+v.max_tickets+'</center></td><td><center>'+v.is_active+'</center></td><td><center>'+v.inclusive_fee+'</center></td>'+row_edit+'</tr>');
@@ -1043,7 +1043,7 @@ var TableDatatablesManaged = function () {
                             }
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_default"]').bootstrapSwitch('state', (data.ticket.is_default>0)? true : false, true);
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.ticket.is_active>0)? true : false, true);
-                            $('#form_model_show_tickets .make-switch:checkbox[name="inclusive_fee"]').bootstrapSwitch('state', (data.ticket.is_active>0)? true : false, true);
+                            $('#form_model_show_tickets .make-switch:checkbox[name="inclusive_fee"]').bootstrapSwitch('state', (data.ticket.inclusive_fee>0)? true : false, true);
                             $('#modal_model_show_tickets').modal('show');
                         }
                         else{

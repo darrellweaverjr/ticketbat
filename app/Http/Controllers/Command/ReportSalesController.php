@@ -52,12 +52,13 @@ class ReportSalesController extends Controller{
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                             ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->select(DB::raw('venues.id, venues.name, venues.accounting_email, venues.daily_sales_emails,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                           SUM(purchases.price_paid) AS paid,
                                           SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.price_paid)-SUM(purchases.commission_percent)-SUM(purchases.processing_fee) AS amount'))
+                                          IF(tickets.inclusive_fee>0, SUM(purchases.price_paid-purchases.commission_percent) , SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) ) AS amount'))
                             ->where('purchases.status','=','Active')
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->orderBy('venues.name')
@@ -162,7 +163,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.price_paid) AS paid,
                                           SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.price_paid)-SUM(purchases.commission_percent)-SUM(purchases.processing_fee) AS amount'))
+                                          IF(tickets.inclusive_fee>0, SUM(purchases.price_paid-purchases.commission_percent) , SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) ) AS amount'))
                             ->where('purchases.status','=','Active')
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.ticket_type')->groupBy(DB::raw('payment_type'))
@@ -184,7 +185,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.price_paid) AS paid,
                                           SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.price_paid)-SUM(purchases.commission_percent)-SUM(purchases.processing_fee) AS amount'))
+                                          IF(tickets.inclusive_fee>0, SUM(purchases.price_paid-purchases.commission_percent) , SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) ) AS amount'))
                             ->where('purchases.status','=','Active')->where('venues.id','=',$venue_id)
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy('shows.id')->groupBy('show_times.show_time')->orderBy('shows.name')
@@ -215,7 +216,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.price_paid) AS paid,
                                           SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.price_paid)-SUM(purchases.commission_percent)-SUM(purchases.processing_fee) AS amount'))
+                                          IF(tickets.inclusive_fee>0, SUM(purchases.price_paid-purchases.commission_percent) , SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) ) AS amount'))
                             ->where($where)
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy(DB::raw('payment_type'))->orderBy(DB::raw('payment_type'))
@@ -298,7 +299,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.price_paid) AS paid,
                                           SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.price_paid)-SUM(purchases.commission_percent)-SUM(purchases.processing_fee) AS amount'))
+                                          IF(tickets.inclusive_fee>0, SUM(purchases.price_paid-purchases.commission_percent) , SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) ) AS amount'))
                             ->where($where)
                             ->where('show_times.show_time','>',date('Y-m-d H:i'))
                             ->groupBy('show_times.show_time')->groupBy('shows.id')

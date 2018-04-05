@@ -334,14 +334,14 @@ class DashboardController extends Controller
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, customers.email,
-                                          tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name,
+                                          tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
                                           ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
                                             WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
                                             ELSE purchases.payment_type END ) AS method,
                                           COUNT(purchases.id) AS purchases,
                                           SUM(purchases.quantity) AS tickets,
                                           SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
-                                          SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                          IF(tickets.inclusive_fee>0, SUM(ROUND(purchases.retail_price-purchases.savings,2)) , SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                           SUM(ROUND(purchases.savings,2)) AS discounts,
                                           SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                           SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
@@ -455,7 +455,7 @@ class DashboardController extends Controller
                                               COUNT(purchases.id) AS purchases,
                                               SUM(purchases.quantity) AS tickets,
                                               SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
-                                              SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                              IF(tickets.inclusive_fee>0, SUM(ROUND(purchases.retail_price-purchases.savings,2)) , SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                               SUM(ROUND(purchases.savings,2)) AS discounts,
                                               SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                               SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
@@ -495,7 +495,8 @@ class DashboardController extends Controller
                     ->join('users', 'users.id', '=' ,'purchases.user_id')
                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                     ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased,
-                                    SUM(purchases.quantity) AS qty, SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
+                                    SUM(purchases.quantity) AS qty,
+                                    SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
                     ->where($where)
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
                     ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
@@ -528,6 +529,7 @@ class DashboardController extends Controller
                     ->leftJoin('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->leftJoin('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->leftJoin('venues', 'venues.id', '=' ,'shows.venue_id')
+                    ->leftJoin('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->select(DB::raw('COALESCE(shows.name,"-") AS show_name, COUNT(purchases.id) AS purchases,
                                     COALESCE(venues.name,"-") AS venue_name, discounts.code,
                                     discounts.distributed_at, discounts.description,discounts.start_date,discounts.end_date, purchases.id,
@@ -540,6 +542,7 @@ class DashboardController extends Controller
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    IF(tickets.inclusive_fee>0, SUM(ROUND(purchases.retail_price-purchases.savings,2)) , SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
@@ -570,6 +573,7 @@ class DashboardController extends Controller
                             'tickets'=>array_sum(array_column($data,'tickets')),
                             'price_paids'=>array_sum(array_column($data,'price_paids')),
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
@@ -650,10 +654,12 @@ class DashboardController extends Controller
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                         ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    IF(tickets.inclusive_fee>0, SUM(ROUND(purchases.retail_price-purchases.savings,2)) , SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
@@ -665,6 +671,7 @@ class DashboardController extends Controller
                             'tickets'=>array_sum(array_column($data,'tickets')),
                             'price_paids'=>array_sum(array_column($data,'price_paids')),
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
@@ -697,6 +704,7 @@ class DashboardController extends Controller
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                    ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, show_times.show_time, venues.name AS venue_name,
                                     COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
@@ -705,6 +713,7 @@ class DashboardController extends Controller
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    IF(tickets.inclusive_fee>0, SUM(ROUND(purchases.retail_price-purchases.savings,2)) , SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
@@ -727,6 +736,7 @@ class DashboardController extends Controller
                             'tickets'=>array_sum(array_column($data,'tickets')),
                             'price_paids'=>array_sum(array_column($data,'price_paids')),
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
@@ -772,11 +782,13 @@ class DashboardController extends Controller
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                    ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                     COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    IF(tickets.inclusive_fee>0, SUM(ROUND(purchases.retail_price-purchases.savings,2)) , SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM(ROUND(purchases.processing_fee,2)) AS fees,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
@@ -809,6 +821,7 @@ class DashboardController extends Controller
                             'tickets'=>array_sum(array_column($data,'tickets')),
                             'price_paids'=>array_sum(array_column($data,'price_paids')),
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
+                            'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees'=>array_sum(array_column($data,'fees')),
                             'to_show'=>array_sum(array_column($data,'to_show')),

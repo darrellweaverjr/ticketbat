@@ -62,7 +62,7 @@ class Shoppingcart extends Model
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent, shows.slug, show_times.id AS show_time_id,
                                               tickets.processing_fee AS processing_fee, COALESCE(shows.pos_fee,venues.pos_fee) AS pos_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
                                               (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date, shows.id AS show_id,
-                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date, shows.venue_id,
+                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date, shows.venue_id, tickets.inclusive_fee,
                                               (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty, shows.ticket_limit, tickets.max_tickets,
                                               venues.disable_cash_breakdown'))
                             ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
@@ -132,7 +132,9 @@ class Shoppingcart extends Model
                         if($couponObj)
                             $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
                     }
-                    $i->total_cost = $i->cost_per_product*$i->number_of_items + $i->processing_fee*$qty_item_pay;
+                    $i->total_cost = $i->cost_per_product*$i->number_of_items;
+                    if($i->inclusive_fee>0)
+                        $i->total_cost += $i->processing_fee*$qty_item_pay;
                     Shoppingcart::where('id', $i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost]);
                 }
                 else
@@ -276,8 +278,8 @@ class Shoppingcart extends Model
                         //calculate savings for item
                         $i->savings = Util::round($s);
                         //calculate fee for item/total
-                        $i->processing_fee= Util::round($i->processing_fee*$qty_item_pay) ;
-                        $fee += Util::round($i->processing_fee);
+                        $i->processing_fee= Util::round($i->processing_fee*$qty_item_pay);
+                        $fee += (!($i->inclusive_fee>0))? Util::round($i->processing_fee) : 0;
                         //calculate commission for item
                         $i->commission = ($i->c_fixed)? Util::round($i->c_fixed*$qty_item_pay) : Util::round($i->c_percent*$i->cost_per_product/100*$qty_item_pay);
                     }
@@ -489,14 +491,14 @@ class Shoppingcart extends Model
             if(empty($seat_id))
             {
                 $ticket = DB::table('tickets')
-                        ->select(DB::raw('id AS ticket_id, retail_price, processing_fee, ticket_type'))
+                        ->select(DB::raw('id AS ticket_id, retail_price, processing_fee, ticket_type, inclusive_fee'))
                         ->where('id','=',$ticket_id)->where('is_active','>',0)->first();
             }
             else
             {
                 $ticket = DB::table('seats')
                         ->join('tickets', 'seats.ticket_id', '=' ,'tickets.id')
-                        ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat, tickets.ticket_type,
+                        ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat, tickets.ticket_type, inclusive_fee,
                                           COALESCE(seats.retail_price,tickets.retail_price,0) AS retail_price,
                                           COALESCE(seats.processing_fee,tickets.processing_fee,0) AS processing_fee'))
                         ->where('seats.id','=',$seat_id)->where('seats.status','=','Created')->first();
@@ -550,7 +552,9 @@ class Shoppingcart extends Model
                 if($couponObj)
                     $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
             }
-            $item->total_cost = Util::round($item->cost_per_product*$item->number_of_items + $ticket->processing_fee*$qty_item_pay);
+            $item->total_cost = Util::round($item->cost_per_product*$item->number_of_items);
+            if(!($ticket->inclusive_fee>0))
+                $item->total_cost += Util::round($ticket->processing_fee*$qty_item_pay);
             $item->save();
             //overwrite default values for all items into shoppingcart
             Shoppingcart::where('session_id','=',$s_token)->update(['user_id'=>$item->user_id,'coupon'=>$item->coupon]);
@@ -605,7 +609,9 @@ class Shoppingcart extends Model
                     if($couponObj)
                         $qty_item_pay -= $couponObj->free_tickets($item->number_of_items);
                 }
-                $item->total_cost = Util::round($item->cost_per_product*$item->number_of_items + $item->ticket->processing_fee*$qty_item_pay);
+                $item->total_cost = Util::round($item->cost_per_product*$item->number_of_items);
+                if(!(Ticket::find($item->ticket_id)->inclusive_fee > 0))
+                    $item->total_cost += Util::round($item->ticket->processing_fee*$qty_item_pay);
                 $item->save();
                 return ['success'=>true, 'msg'=>'Tickets updated successfully!'];
             }

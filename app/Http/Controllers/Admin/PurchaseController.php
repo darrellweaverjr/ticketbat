@@ -82,7 +82,7 @@ class PurchaseController extends Controller{
                                 ->join('tickets','purchases.ticket_id','=','tickets.id')
                                 ->join('packages','packages.id','=','tickets.package_id')
                                 ->join('discounts','discounts.id','=','purchases.discount_id')
-                                ->select('tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_pf','tickets.fixed_commission',
+                                ->select('tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_pf','tickets.fixed_commission', 'tickets.inclusive_fee',
                                           'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price', 'tickets.is_active',
                                           'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid','discounts.code',
                                           'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
@@ -145,7 +145,7 @@ class PurchaseController extends Controller{
                         $qty_item_pay = $qty-$free_tickets;
                         //calculate target result
                         $target = ['t_ticket_type'=>$ticket->ticket_type,'t_title'=>$ticket->package->title,'t_retail_price'=>$ticket->retail_price,
-                                   't_is_active'=>$ticket->is_active,'t_code'=>$discount->code,
+                                   't_is_active'=>$ticket->is_active,'t_inclusive_fee'=>$ticket->inclusive_fee,'t_code'=>$discount->code,
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
                                    't_p_retail_price'=> Util::round($ticket->retail_price*$qty),
@@ -158,7 +158,9 @@ class PurchaseController extends Controller{
                         $fixed_commission = (!empty($c->fixed_commission))? $c->fixed_commission : $ticket->fixed_commission;
                         $target['t_commission_percent'] = (!empty($fixed_commission))? Util::round($fixed_commission*$qty_item_pay) : Util::round($ticket->percent_commission/100*$ticket->retail_price*$qty_item_pay);
                         //calculate total result
-                        $target['t_price_paid'] = Util::round($target['t_p_retail_price'] + $target['t_p_processing_fee'] - $target['t_savings']);
+                        $target['t_price_paid'] = Util::round($target['t_p_retail_price'] - $target['t_savings']);
+                        if(!($ticket->inclusive_fee>0))
+                            $target['t_price_paid'] += Util::round($target['t_p_processing_fee']);
                         return ['success'=>true,'target'=>$target];
                     }
                     else
@@ -359,7 +361,7 @@ class PurchaseController extends Controller{
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
                                                       ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
                                                         WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
-                                                        ELSE purchases.payment_type END ) AS method,
+                                                        ELSE purchases.payment_type END ) AS method, tickets.inclusive_fee,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
@@ -400,7 +402,7 @@ class PurchaseController extends Controller{
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
                                                       ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
                                                         WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
-                                                        ELSE purchases.payment_type END ) AS method,
+                                                        ELSE purchases.payment_type END ) AS method, tickets.inclusive_fee,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,

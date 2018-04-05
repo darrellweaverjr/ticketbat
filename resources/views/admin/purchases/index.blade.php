@@ -98,7 +98,7 @@
                                         <br><small><i>Method: <b>{{$p->method}}</b>, @if($p->transaction_id)AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>,@endif</i></small><br>
                                         @endif
                                         <small><i>ID: <b>{{$p->id}}</b>, Qty: <b>{{$p->quantity}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
-                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}}</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>
+                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}} @if($p->inclusive_fee>0) (Inclusive) @endif</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>
                                         </i></small>
                                         <div id="note_{{$p->id}}" class="note note-info @if(empty(trim($p->note))) hidden @endif" style="font-style:italic;font-size:smaller">@php echo trim($p->note) @endphp</div>
                                     </div>
@@ -511,12 +511,15 @@
                         <input type="hidden" name="purchase_id" value="" />
                         <div class="form-body">
                             <div class="row">
+                                <label class="mt-checkbox">
+                                    <input type="checkbox" name="force_edit" value="1" />Force<span></span>
+                                </label>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <div>
-                                        <label class="control-label">
-                                            <span class="required">Current Info</span>
-                                        </label>
-                                    </div><hr>
+                                    <label class="control-label">
+                                        <span class="required">Current Info</span>
+                                    </label><hr>
                                     <div class="col-md-6">
                                         <label class="control-label">
                                             <span><b>Ticket:</b></span>
@@ -553,6 +556,10 @@
                                             <label class="control-label col-md-4">Active:</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" name="is_active" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Inclusive fee:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="inclusive_fee" type="number" readonly="true"/>
                                             </div>
                                         </div>
                                     </div>
@@ -597,14 +604,9 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div>
-                                        <label class="control-label col-md-8">
-                                            <span class="required">Target Info</span>
-                                        </label>
-                                        <label class="mt-checkbox col-md-4">
-                                            <input type="checkbox" name="force_edit" value="1" />Force<span></span>
-                                        </label>
-                                    </div><hr>
+                                    <label class="control-label">
+                                        <span class="required">Target Info</span>
+                                    </label><hr>
                                     <div class="col-md-6">
                                         <label class="control-label">
                                             <span><b>Ticket:</b></span>
@@ -641,6 +643,10 @@
                                             <label class="control-label col-md-4">Active:</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" name="t_is_active" type="number" readonly="true"/>
+                                            </div>
+                                            <label class="control-label col-md-4">Inclusive fee:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" name="t_inclusive_fee" type="number" readonly="true"/>
                                             </div>
                                         </div>
                                     </div>

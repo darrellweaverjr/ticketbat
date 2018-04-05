@@ -159,7 +159,7 @@
                                 <td style="text-align:center">{{$d->tickets_one}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:center">{{number_format($d->purchases)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->retail_prices-$d->discounts+$d->fees,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                                 @if(Auth::user()->user_type_id != 5)
                                 <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
                                 @endif

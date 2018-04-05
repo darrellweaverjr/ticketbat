@@ -65,7 +65,7 @@
                                 </td>
                                 <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>
                                 <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>
-                                <td style="text-align:right">${{number_format($i->processing_fee,2)}}</td>
+                                <td style="text-align:right">@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif</td>
                                 @if(empty($i->consignment))
                                     <td class="gift-tix text-center">
                                         <button type="button" class="btn btn-info"><i class="fa fa-gift"></i></button>
