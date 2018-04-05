@@ -249,6 +249,8 @@ var TableDatatablesManaged = function () {
         var fullReset = function(){
             $("#form_model_update input[name='id']:hidden").val('').trigger('change');
             $("#form_model_update").trigger('reset');
+            $('#form_model_update img[name="logo_url"]').attr('src','');
+            $('#form_model_update img[name="header_url"]').attr('src','');
         };
         //function add
         $('#btn_model_add').on('click', function(ev) {
@@ -385,17 +387,18 @@ var TableDatatablesManaged = function () {
                     $('#form_model_update select[name="stage_id"] option').prop('selected',false);
                     $('#form_model_update select[name="stage_id"]').val(data.show.stage_id).trigger('change');
                 }
+                //fill out
+                var e = $('#form_model_update [name="'+key+'"]');
+                if(e.is('input:checkbox'))
+                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key]>0)? true : false, true);
                 else if(key=='logo_url' || key=='header_url' || key=='sponsor_logo_id')
                 {
                     $('#form_model_update img[name="'+key+'"]').attr('src',data.show[key]);
                     $('#form_model_update input[name="'+key+'"]').val(data.show[key]);
                 }
-                //fill out
-                var e = $('#form_model_update [name="'+key+'"]');
-                if(e.is('input:checkbox'))
-                    $('#form_model_update .make-switch:checkbox[name="'+key+'"]').bootstrapSwitch('state', (data.show[key]>0)? true : false, true);
                 else if(key!='venue_id' && key!='stage_id')
                     e.val(data.show[key]);
+
             }
             //fill out checking ticket
             if(data.tickets)
