@@ -396,12 +396,11 @@ class ReportSalesController extends Controller{
                         ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=', 'show_times.show_id')
                         ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                        ->select(DB::raw('venues.id, venues.name, venues.financial_report_emails,
+                        ->select(DB::raw('venues.id, venues.name,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
                                           SUM(purchases.commission_percent)+SUM(purchases.processing_fee) AS amount'))
-                        //->where('venues.financial_report_emails','>',0)
                         ->where('purchases.status','=','Active')
                         ->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end)
                         ->groupBy('venues.id')->orderBy('venues.name');

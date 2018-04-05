@@ -170,9 +170,9 @@ class Purchase extends Model
                                     show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng,
                                     shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets,
                                     shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails,
-                                    shows.daily_sales_emails AS s_daily_sales_emails, shows.financial_report_emails AS s_financial_report_emails,
+                                    shows.daily_sales_emails AS s_daily_sales_emails,
                                     venues.name AS venue_name, venues.ticket_info, venues.daily_sales_emails AS v_daily_sales_emails,
-                                    venues.financial_report_emails AS v_financial_report_emails, venues.weekly_sales_emails AS v_weekly_sales_emails,
+                                    venues.weekly_sales_emails AS v_weekly_sales_emails,
                                     IF(ticket_number.id IS NULL, 0, 1) as section'))
                             ->where('purchases.id', '=', $this->id)
                             ->distinct()->first();
