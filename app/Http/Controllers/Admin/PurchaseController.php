@@ -148,7 +148,7 @@ class PurchaseController extends Controller{
                                    't_is_active'=>$ticket->is_active,'t_code'=>$discount->code,
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
-                                   't_p_retail_price'=>$ticket->retail_price*$qty,
+                                   't_p_retail_price'=> Util::round($ticket->retail_price*$qty),
                                    't_p_processing_fee'=>(!empty($ticket->processing_fee))? Util::round($ticket->processing_fee*$qty_item_pay) : Util::round($ticket->t_percent_pf/100*$ticket->retail_price*$qty_item_pay)];
                         //calculate savings result
                         $target['t_savings'] = Util::round( $discount->calculate_savings($qty,$target['t_p_retail_price'] + $target['t_p_processing_fee']) );
