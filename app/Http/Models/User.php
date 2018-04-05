@@ -126,6 +126,7 @@ class User extends Authenticatable
     public function update_customer($customer=null)
     {
         try {
+            $current = date('Y-m-d H:i:s');
             //get customer
             $customer = (!empty($customer))? $customer : Customer::where('email',$this->email)->first();
             if(!$customer)
@@ -133,6 +134,7 @@ class User extends Authenticatable
                 $customer = new Customer;
                 $customer->email = $this->email;
                 $location = new Location;
+                $location->created = $current;
             }
             else
             {
@@ -146,8 +148,7 @@ class User extends Authenticatable
             $location->country = $this->location->country;
             $location->lng = $this->location->lng;
             $location->lat = $this->location->lat;
-            $location->created = $this->location->created;
-            $location->updated = $this->location->updated;
+            $location->updated = $current;
             $location->save();
             //update customer
             $customer->location()->associate($location);
@@ -155,7 +156,7 @@ class User extends Authenticatable
             $customer->last_name = $this->last_name;
             $customer->email = $this->email;
             $customer->phone = $this->phone;
-            $customer->updated = date('Y-m-d H:i:s');
+            $customer->updated =$current;
             $customer->save();
             return $customer->id;
         } catch (Exception $ex) {
