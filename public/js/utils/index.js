@@ -11,7 +11,7 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             var fixHeight = 600;
             break;
         case 'venues.logo':
-            var fixWidth = 600;
+            var fixWidth = 200;
             var fixHeight = 200;
             break;
         case 'venues.logo_url':
@@ -23,7 +23,7 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             var fixHeight = 270;
             break;
         case 'shows.logo_url':
-            var fixWidth = 200;
+            var fixWidth = 600;
             var fixHeight = 200;
             break;
         case 'shows.header_url':
