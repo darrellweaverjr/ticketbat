@@ -165,7 +165,7 @@ class PurchaseController extends Controller
         $view_receipts=$receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
         $sent_to = $purchases = null;
         $send_welcome_email = $totals = $transaction = 0;
-        $sent_receipts = $after_purchase_link = false;
+        $sent_receipts = false;
         $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
         try {
             //init
@@ -175,10 +175,9 @@ class PurchaseController extends Controller
                 $purchases = $input['purchases'];
                 $send_welcome_email = $input['send_welcome_email'];
                 //send receipts
-                $data = $this->receipts($purchases);
+                $data = $this->receipts($purchases,$seller);
                 //get data
                 $after_purchase_note = $data['after_purchase_note'];
-                $after_purchase_link = $data['after_purchase_link'];
                 $view_receipts = $data['view_receipts'];
                 $receipts = $data['receipts'];
                 $purchased = $data['purchased'];
@@ -198,7 +197,7 @@ class PurchaseController extends Controller
             //return
             return response()
                         ->view('production.shoppingcart.complete',compact('sent_to','view_receipts','sent_receipts','purchases','purchased','send_welcome_email','seller','after_purchase_note',
-                                                                          'analytics','totals','transaction','conversion_code','ua_conversion_code','banners','after_purchase_link'))
+                                                                          'analytics','totals','transaction','conversion_code','ua_conversion_code','banners'))
                         ->withHeaders([
                             'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
                             'Pragma' => 'no-cache',
@@ -210,11 +209,11 @@ class PurchaseController extends Controller
     /*
      * resend receipts
      */
-    public function receipts($purchasex=null)
+    public function receipts($purchasex=null,$seller=0)
     {
         $receipts=$view_receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
         $sent_to = null;
-        $sent_receipts = $after_purchase_link = false;
+        $sent_receipts = false;
         $totals = $transaction = 0;
         $input = Input::all();
         //load input
@@ -234,7 +233,7 @@ class PurchaseController extends Controller
                         if(empty($sent_to))
                             $sent_to = ['id'=>$p->user_id, 'email'=>$p->customer->email];
                         $purchased[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'schedule'=>date('l, F j, Y @ g:i A', strtotime($p->show_time->show_time)),
-                                        'slug'=>$p->ticket->show->slug,'show_time_id'=>$p->show_time->id];
+                                        'slug'=>$p->ticket->show->slug,'show_time_id'=>$p->show_time->id,'ticket_id'=>$p->ticket->id];
                         $analytics[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'ticket_type'=>$p->ticket->ticket_type,'ticket_id'=>$p->ticket->id,
                                         'show_id'=>$p->ticket->show->id,'venue'=>$p->ticket->show->venue->name,'price'=>$p->price_paid,'id'=>$p->id];
                         $totals += $p->price_paid;
@@ -263,9 +262,6 @@ class PurchaseController extends Controller
                         //after purchase notes
                         if(empty($after_purchase_note[$p->show_time->show->id]) && !empty($p->show_time->show->after_purchase_note))
                             $after_purchase_note[$p->show_time->show->id] = $p->show_time->show->after_purchase_note;
-                        //enable purchase link
-                        if(empty($after_purchase_link) && Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
-                            $after_purchase_link = '/buy/'.$p->show_time->show->slug.'/'.$p->show_time_id;
                     }
                 }
             }
@@ -279,7 +275,7 @@ class PurchaseController extends Controller
             if(!empty($purchasex))
                 return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,'after_purchase_note'=>$after_purchase_note,
                         'sent_receipts'=>$sent_receipts, 'analytics'=>$analytics, 'totals'=>$totals, 'transaction'=>$transaction,
-                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code,'view_receipts'=>$view_receipts,'after_purchase_link'=>$after_purchase_link];
+                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code,'view_receipts'=>$view_receipts];
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];
         }
     }
