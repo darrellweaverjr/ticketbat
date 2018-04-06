@@ -11,12 +11,12 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             var fixHeight = 600;
             break;
         case 'venues.logo':
-            var fixWidth = 200;
-            var fixHeight = 200;
+            var fixWidth = 300;
+            var fixHeight = 300;
             break;
         case 'venues.logo_url':
-            var fixWidth = 200;
-            var fixHeight = 200;
+            var fixWidth = 300;
+            var fixHeight = 300;
             break;
         case 'venues.header_url':
             var fixWidth = 1350;
@@ -24,7 +24,7 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             break;
         case 'shows.logo_url':
             var fixWidth = 600;
-            var fixHeight = 200;
+            var fixHeight = 300;
             break;
         case 'shows.header_url':
             var fixWidth = 1350;
@@ -56,7 +56,7 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             break;
         case 'images.header medium':
             var fixWidth = 1350;
-            var fixHeight = 372;
+            var fixHeight = 270;
             break;
         case 'banners.file':
             var fixWidth = 768;
@@ -64,7 +64,7 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             break;
         case 'sliders.image_url':
             var fixWidth = 1350;
-            var fixHeight = 372;
+            var fixHeight = 270;
             break;
         case 'stages.image_url':
             var fixWidth = 518;
