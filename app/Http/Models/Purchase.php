@@ -167,7 +167,7 @@ class Purchase extends Model
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                             ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
                             ->select(DB::raw('purchases.*, purchases.quantity AS qty, tickets.ticket_type AS ticket_type_type, show_times.time_alternative,
-                                    show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng,
+                                    show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng, tickets.inclusive_fee,
                                     shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets,
                                     shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails,
                                     shows.daily_sales_emails AS s_daily_sales_emails,
@@ -337,6 +337,8 @@ class Purchase extends Model
 
                         if($type_email != 'reminder')
                         {
+                            if($receipt['purchase']->inclusive_fee>0)
+                                $purchase['processing_fee']=0;
                             //row on email to each purchase
                             $rows_html.='<tr>'
                                             . '<td align="center">'.$receipt['purchase']->ticket_type_type.' For '.$receipt['purchase']->show_name.'<br/>On '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).'</td> '
@@ -346,7 +348,7 @@ class Purchase extends Model
                                             . '<td align="center">'.number_format($purchase['processing_fee'],2).'</td> </tr>';
                             //sum values to show
                             $totals['qty']+=$receipt['purchase']->quantity;
-                            $totals['processing_fee']+=$receipt['purchase']->processing_fee;
+                            $totals['processing_fee']+=$purchase['processing_fee'];
                             $totals['retail_price']+=$receipt['purchase']->retail_price;
                             $totals['discount']+=$receipt['purchase']->savings;
                             //show on top if change date
