@@ -271,25 +271,19 @@ class EventController extends Controller
                 $event->ticket_left = ($event->ticket_left < 0) ? 0 : $event->ticket_left;
             }
 
-
             //get tickets types
             $event->tickets = [];
-
-            // Don't hide shows for Seller accounts hack
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
-                $showGAdoor = "WillNeverEqualthisValue";
-            } else {
-                $showGAdoor = "GA DOOR";
-            }
-
             $tickets = DB::table('tickets')
                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                 ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                   tickets.retail_price,
                                                   (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = ' . $event->show_time_id . ')) ELSE ' . $qty_tickets_sell . ' END) AS max_available'))
                 ->where('tickets.show_id', $event->show_id)->where('tickets.is_active', '>', 0)
-                ->where(function ($query) use ($showGAdoor) {
-                    $query->where('tickets.ticket_type', '!=', $showGAdoor);
+                ->where(function ($query) {
+                    if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+                        $query->where('tickets.only_pos', '>=', 0);
+                    else
+                        $query->where('tickets.only_pos', '=', 0);
                 })
                 ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = ' . $event->show_time_id . ')'))
                 ->where(function ($query) use ($event) {
