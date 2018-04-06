@@ -85,7 +85,6 @@ class DashboardController extends Controller
         $data['search']['venues'] = [];
         $data['search']['shows'] = [];
         $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
-        $data['search']['payment_types']['Free'] = 'Free';
         $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
         $data['search']['status'] = Util::getEnumValues('purchases','status');
         $data['search']['channels'] = Util::getEnumValues('purchases','channel');
@@ -335,9 +334,9 @@ class DashboardController extends Controller
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, customers.email,
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
-                                          ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
-                                            WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
-                                            ELSE purchases.payment_type END ) AS method,
+                                          ( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
+                                                 WHEN (purchases.payment_type="None") THEN "Comp."
+                                                 ELSE purchases.payment_type END ) AS method, purchases.channel,
                                           COUNT(purchases.id) AS purchases,
                                           SUM(purchases.quantity) AS tickets,
                                           SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
@@ -449,9 +448,9 @@ class DashboardController extends Controller
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                            ->select(DB::raw('( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
-                                                WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
-                                                ELSE purchases.payment_type END ) AS method,
+                            ->select(DB::raw('( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
+                                                     WHEN (purchases.payment_type="None") THEN "Comp."
+                                                     ELSE purchases.payment_type END ) AS method, purchases.channel,
                                               COUNT(purchases.id) AS purchases,
                                               SUM(purchases.quantity) AS tickets,
                                               SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
@@ -461,18 +460,19 @@ class DashboardController extends Controller
                                               SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                               SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                             ->where($where)
-                            ->orderBy('method')->groupBy('method')
+                            ->groupBy('channel','method')
+                            ->orderBy('channel','method')
                             ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
                             ->get()->toArray();
                 foreach ($summary_info as $d)
                 {
                     $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'revenue'=>$d->revenue,'discounts'=>$d->discounts,
                                                 'to_show'=>$d->to_show,'commissions'=>$d->commissions,'fees'=>$d->fees,'profit'=>$d->profit];
-                    if($d->method == 'Consignment')
+                    if($d->channel == 'Consignment')
                         $consignment = calc_totals([$consignment,$current]);
                     else
                     {
-                        $summary_table[$d->method] = $current;
+                        $summary_table[$d->channel.' - '.$d->method] = $current;
                         $subtotals = calc_totals([$subtotals,$current]);
                     }
                 }

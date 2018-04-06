@@ -116,7 +116,7 @@
         <table width="100%" class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
-                    <th>TYPE</th>
+                    <th>CHANNEL - TYPE</th>
                     <th style='text-align:center'>TRANSACTIONS</th>
                     <th style='text-align:center'>TICKETS</th>
                     <th style='text-align:right'>TOTAL REVENUE</th>
@@ -130,7 +130,6 @@
             </thead>
             <tbody>
                @foreach($summ['table'] as $k=>$d)
-               @php if($k=='None') $k='Comp.' @endphp
                 <tr @if($k=='Subtotals' || $k=='Totals') style="font-weight:bold" @endif>
                     <td>{{$k}}</td>
                     <td style="text-align:center">{{number_format($d['purchases'])}}</td>

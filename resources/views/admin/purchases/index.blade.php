@@ -107,7 +107,7 @@
                                 <td data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}}</center></td>
                                 <td data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}}</center></td>
                                 <td style="text-align:right">
-                                    @if($previous_color != $color) @if($p->amount > 0) $ {{number_format($p->amount,2)}} @elseif($p->method=='Free') @php echo '(Free)' @endphp @else @php echo '(Comp)' @endphp @endif @endif
+                                    @if($previous_color != $color) @if($p->amount > 0) $ {{number_format($p->amount,2)}} @elseif($p->method=='Free event') @php echo '(Free event)' @endphp @else @php echo '(Comp)' @endphp @endif @endif
                                 </td>
                                 <td data-status="{{$p->status}}"><center>{{$p->status}}</center></td>
                             </tr>

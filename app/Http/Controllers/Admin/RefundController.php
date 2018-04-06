@@ -27,7 +27,7 @@ use App\Mail\EmailSG;
  * @author ivan
  */
 class RefundController extends Controller{
-    
+
     /**
      * List all purchases and return default view.
      *
@@ -38,7 +38,7 @@ class RefundController extends Controller{
         try {
             //init
             $refunds = [];
-            //if user has permission to view                
+            //if user has permission to view
             if(in_array('View',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
             {
                 if(Auth::user()->user_type->getACLs()['REFUNDS']['permission_scope'] != 'All')
@@ -57,10 +57,8 @@ class RefundController extends Controller{
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
-                                                  users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, 
-                                                  ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
-                                                        ELSE purchases.payment_type END ) AS method,
+                                                  users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email,
+                                                  purchases.payment_type AS method,
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
                                 >whereIn('shows.venue_id',[Auth::user()->venues_edit])
@@ -84,23 +82,21 @@ class RefundController extends Controller{
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
-                                                  users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, 
-                                                  ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
-                                                        ELSE purchases.payment_type END ) AS method, 
+                                                  users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email,
+                                                  purchases.payment_type AS method,
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
                                 ->orderBy('purchases.created','DESC')->orderBy('transaction_refunds.created','DESC')
                                 ->groupBy('transaction_refunds.id')
                                 ->get();
-                }   
+                }
             }
             return view('admin.refunds.index',compact('refunds'));
         } catch (Exception $ex) {
             throw new Exception('Error Refunds Index: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * List all purchases and return default view.
      *
@@ -111,7 +107,7 @@ class RefundController extends Controller{
         try {
             //init
             $purchases = [];
-            //if user has permission to view                
+            //if user has permission to view
             if(in_array('View',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
             {
                 if(Auth::user()->user_type->getACLs()['REFUNDS']['permission_scope'] != 'All')
@@ -127,10 +123,8 @@ class RefundController extends Controller{
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                  transactions.amount AS amount, 
-                                                  ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                    WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
-                                                    ELSE purchases.payment_type END ) AS method,
+                                                  transactions.amount AS amount,
+                                                  purchases.payment_type AS method,
                                                   transactions.id AS color,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
@@ -155,10 +149,8 @@ class RefundController extends Controller{
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                 ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                  transactions.amount AS amount, 
-                                                  ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type 
-                                                    WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free" 
-                                                    ELSE purchases.payment_type END ) AS method,
+                                                  transactions.amount AS amount,
+                                                  purchases.payment_type AS method,
                                                   transactions.id AS color,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
@@ -168,14 +160,14 @@ class RefundController extends Controller{
                                 ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
                                 ->groupBy('purchases.id')
                                 ->get();
-                }   
+                }
             }
             return view('admin.refunds.pendings',compact('purchases'));
         } catch (Exception $ex) {
             throw new Exception('Error Refunds Pendings: '.$ex->getMessage());
         }
     }
-    
+
     /**
      * Refund purchase.
      *
@@ -193,7 +185,7 @@ class RefundController extends Controller{
                 if($purchase->payment_type != 'Credit')
                 {
                     $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Chargeback.';
-                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                     $purchase->status = 'Chargeback';
                     $purchase->updated = $current;
                     $purchase->save();
@@ -207,7 +199,7 @@ class RefundController extends Controller{
                         if($refunded['success'])
                         {
                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount.'/ $'.$purchase->price_paid;
-                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                             if($partial)
                             {
                                 $purchase->status = 'Active';
@@ -224,7 +216,7 @@ class RefundController extends Controller{
                         else
                         {
                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount.'/ $'.$purchase->price_paid;
-                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note; 
+                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                             $purchase->save();
                             return ['success'=>false, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
                         }
@@ -234,7 +226,7 @@ class RefundController extends Controller{
                 else
                     return ['success'=>false, 'id'=>$purchase->id, 'msg'=>'That purchase has not a valid transaction to refund from'];
             }
-            //save all record      
+            //save all record
             if($input && isset($input['id']) && isset($input['type']))
             {
                 $purchase = Purchase::find($input['id']);
@@ -248,7 +240,7 @@ class RefundController extends Controller{
                         if($refunded['success'])
                             return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' refunded successfully!<br>'.$refunded['msg']];
                         return ['success'=>false, 'msg'=>'There was an error trying to refund the purchase #'.$purchase->id.'<br>'.$refunded['msg']];
-                    }  
+                    }
                     else if($input['type']=='full_transaction')
                     {
                         $msg = '';
@@ -295,7 +287,7 @@ class RefundController extends Controller{
                             return ['success'=>false, 'msg'=>$msg];
                         }
                         return ['success'=>false, 'msg'=>'That Transaction has no Purchases associates'];
-                    }  
+                    }
                     else if($input['type']=='custom_amount')
                     {
                         if(!empty($input['amount']) && $input['amount']<$purchase->price_paid  && $input['amount']>0)
@@ -306,18 +298,18 @@ class RefundController extends Controller{
                             return ['success'=>false, 'msg'=>'There was an error trying to refund the purchase #'.$purchase->id.'<br>'.$refunded['msg']];
                         }
                         return ['success'=>false, 'msg'=>'The amount to refund must be greater than $0.00 and less than $'.$purchase->price_paid];
-                    }  
+                    }
                     else if($input['type']=='update_purchase')
                     {
                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Chargeback.';
-                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;  
+                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                         $purchase->status = 'Chargeback';
                         $purchase->updated = $current;
                         if($purchase->save())
                             return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' status updated successfully!<br>'.$note];
                         return ['success'=>false, 'msg'=>'There was an error trying to update the status of the purchase #'.$purchase->id.'<br>'.$note];
-                    }  
-                    else 
+                    }
+                    else
                         return ['success'=>false,'msg'=>'There was an error refunding.<br>Invalid option.'];
                 }
                 return ['success'=>false,'msg'=>'There was an error refunding.<br>That purchase is not longer available to refund.'];
@@ -327,4 +319,4 @@ class RefundController extends Controller{
             throw new Exception('Error Purchases Save: '.$ex->getMessage());
         }
     }
-}                    
+}

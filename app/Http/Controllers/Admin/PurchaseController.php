@@ -51,9 +51,7 @@ class PurchaseController extends Controller{
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
-                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
-                                                        ELSE purchases.payment_type END ) AS method, shows.venue_id, purchases.show_time_id, show_times.show_id,
+                                                      purchases.payment_type AS method, shows.venue_id, purchases.show_time_id, show_times.show_id,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
@@ -177,7 +175,6 @@ class PurchaseController extends Controller{
                 $search['venues'] = [];
                 $search['shows'] = [];
                 $search['payment_types'] = Util::getEnumValues('purchases','payment_type');
-                $search['payment_types']['Free'] = 'Free';
                 $search['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
                 $search['status'] = Util::getEnumValues('purchases','status');
                 $search['channels'] = Util::getEnumValues('purchases','channel');
@@ -359,9 +356,7 @@ class PurchaseController extends Controller{
                                     })
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
-                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
-                                                        ELSE purchases.payment_type END ) AS method, tickets.inclusive_fee,
+                                                      purchases.payment_type AS method, tickets.inclusive_fee,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
@@ -400,9 +395,7 @@ class PurchaseController extends Controller{
                                     })
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
-                                                      ( CASE WHEN (purchases.ticket_type = "Consignment") THEN purchases.ticket_type
-                                                        WHEN (purchases.ticket_type != "Consignment") AND (tickets.retail_price<0.01) THEN "Free event"
-                                                        ELSE purchases.payment_type END ) AS method, tickets.inclusive_fee,
+                                                      purchases.payment_type AS method, tickets.inclusive_fee,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,

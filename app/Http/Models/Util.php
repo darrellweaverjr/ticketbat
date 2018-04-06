@@ -38,8 +38,6 @@ class Util extends Model
                   $v = trim( $value, "'" );
                   $enum = array_add($enum, $v, $v);
                 }
-                if($table=='purchases'&& $column=='payment_type')
-                    $enum = array_add($enum, 'Consignment', 'Consignment');
             }
             return $enum;
         } catch (Exception $ex) {

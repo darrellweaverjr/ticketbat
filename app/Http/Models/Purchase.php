@@ -459,7 +459,6 @@ class Purchase extends Model
                 $purchase->user_id = $client['user_id'];
                 $purchase->customer_id = $client['customer_id'];
                 $purchase->transaction_id = (!empty($shoppingcart['transaction_id']))? $shoppingcart['transaction_id'] : null;
-                $purchase->payment_type = (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None';
                 $purchase->discount_id = $i->discount_id;
                 $purchase->ticket_id = $i->ticket_id;
                 $purchase->show_time_id = $i->item_id;
@@ -475,6 +474,7 @@ class Purchase extends Model
                 $purchase->price_paid = Util::round($purchase->retail_price-$purchase->savings);
                 if(!($i->inclusive_fee>0))
                     $purchase->price_paid += Util::round($purchase->processing_fee);
+                $purchase->payment_type = ($purchase->retail_price<0.01 && $purchase->price_paid<0.01)? 'Free event' : ( (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None' );
                 $purchase->updated = $current;
                 $purchase->created = $current;
                 $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;
