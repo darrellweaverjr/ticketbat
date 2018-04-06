@@ -693,7 +693,8 @@ class ShowController extends Controller{
                     $ticket->percent_commission = $input['percent_commission'];
                     $ticket->fixed_commission = null;
                 }
-                $ticket->inclusive_fee = $input['inclusive_fee'];
+                $ticket->inclusive_fee = (!empty($input['inclusive_fee']))? 1 : 0;
+                $ticket->only_pos = (!empty($input['only_pos']))? 1 : 0;
                 $ticket->save();
                 //return
                 $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')

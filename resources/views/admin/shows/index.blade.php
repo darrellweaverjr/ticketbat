@@ -1036,6 +1036,12 @@
                                     <div class="col-md-7 show-error">
                                         <input type="number" value="0" name="avail_hours" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
                                     </div>
+                                    <label class="control-label col-md-5">POS only
+                                    </label>
+                                    <div class="col-md-7">
+                                        <input type="hidden" name="only_pos" value="0"/>
+                                        <input type="checkbox" class="make-switch" name="only_pos" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                    </div>
                                 </div>
                             </div>
                         </div>
