@@ -40,7 +40,7 @@
                 <img alt="TicketBat.com" height="50" width="300" src="http://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
                 <br><br>FUTURE LIABILITIES REPORT
             </h3><hr>
-            <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( starting on {{$d['date']}} )</p>
+            <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( starting on {{$d['date']}} )</p>
                 <table>
                   <tr class="theader">
                       <td>DATE/TIME</td>
@@ -113,7 +113,7 @@
                 @foreach($d['table_financial'] as $t)
               <hr><table>
                   <tr class="ttitle">
-                      <td colspan="5">{{$t['title']}}</td>
+                      <td colspan="5">{{html_entity_decode($t['title'])}}</td>
                       <td colspan="2" style='text-align:right'>@if(!empty($t['percent'])) @if($t['percent']>0)+ @endif {{$t['percent']}}% NET (C+F) @endif</td>
                   </tr>
                   <tr class="theader">
@@ -219,7 +219,7 @@
                       <td colspan="7">CHANNEL SALES:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
-                      <td>Channel</td>
+                      <td>CHANNEL</td>
                       <td style='text-align:center'>TRANSACTIONS</td>
                       <td style='text-align:center'>TICKETS</td>
                       <td style='text-align:right'>REVENUE</td>
@@ -229,7 +229,7 @@
                   </tr>
                   @foreach($d['table_channels']['data'] as $e)
                     <tr>
-                        <td>{{$e->seller}}</td>
+                        <td>{{$e->channel}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
