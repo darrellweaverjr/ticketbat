@@ -10,9 +10,6 @@ Artisan::command('ReportSales {days=1} {onlyadmin=1}', function ($days, $onlyadm
 Artisan::command('ReportSalesReceipt {days=1}', function ($days) {
     $this->call('Report:sales_receipt',['days'=>$days]);
 });
-Artisan::command('ReportFinancial {start=0} {end=0}', function ($start,$end) {
-    $this->call('Report:financial',['start'=>$start,'end'=>$end]);
-});
 Artisan::command('ReportConsignment', function () {
     $this->call('Report:consignment');
 });
