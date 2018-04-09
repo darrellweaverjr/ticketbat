@@ -447,6 +447,7 @@ class DashboardController extends Controller
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->select(DB::raw('( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
                                                      WHEN (purchases.payment_type="None") THEN "Comp."
                                                      ELSE purchases.payment_type END ) AS method, purchases.channel,
