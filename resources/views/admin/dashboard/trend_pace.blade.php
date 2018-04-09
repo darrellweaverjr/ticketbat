@@ -178,7 +178,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:470px !important;">
+        <div class="modal-dialog" style="width:570px !important;">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
@@ -193,7 +193,7 @@
                                     <label class="control-label col-md-3">Venue:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
-                                            <select class="form-control" name="venue" style="width: 321px !important">
+                                            <select class="form-control" name="venue" style="width: 397px !important">
                                                 <option selected value="">All</option>
                                                 @foreach($search['venues'] as $index=>$v)
                                                 <option @if($v->id==$search['venue']) selected @endif value="{{$v->id}}">{{$v->name}}</option>
@@ -206,7 +206,7 @@
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
-                                            <select class="form-control" name="show" style="width: 321px !important" data-content='@php echo str_replace("'"," ",json_encode($search["shows"]));@endphp'>
+                                            <select class="form-control" name="show" style="width: 397px !important" data-content='@php echo str_replace("'"," ",json_encode($search["shows"]));@endphp'>
                                                 <option selected value="">All</option>
                                                 @foreach($search['shows'] as $index=>$s)
                                                     @if($s->venue_id == $search['venue'])
