@@ -10,7 +10,7 @@
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self';
                           img-src 'self' blob: http://admindev.ticketbat.com {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com;
                           style-src 'self' https://fonts.googleapis.com  'unsafe-inline';
@@ -48,11 +48,11 @@
         <link href="{{config('app.theme')}}css/datatables.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
-        
+
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 
-        <link rel="apple-touch-icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 
-        <link rel="apple-touch-icon-precomposed" href="{{ asset('/themes/img/favicon.ico') }}" /> 
+        <link rel="shortcut icon" href="{{ asset('/themes/img/favicon.ico') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('/themes/img/favicon.ico') }}" />
+        <link rel="apple-touch-icon-precomposed" href="{{ asset('/themes/img/favicon.ico') }}" />
         @yield('styles')
     </head>
     <!-- END HEAD -->
@@ -133,14 +133,14 @@
                                         <a href="/admin/dashboard/ticket_sales" class="nav-link">
                                             <i class="icon-bar-chart"></i>
                                             <span class="title">Ticket Sales</span>
-                                            
+
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
                                         <a href="/admin/dashboard/coupons" class="nav-link">
                                             <i class="icon-wallet"></i>
                                             <span class="title">Coupons</span>
-                                            
+
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
@@ -242,12 +242,14 @@
                                     <span class="title">ACLs</span>
                                 </a>
                             </li>
+                            @if(in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/commands')===false)) active @endif">
                                 <a href="/admin/commands" class="nav-link nav-toggle">
                                     <i class="icon-settings"></i>
                                     <span class="title">Commands</span>
                                 </a>
                             </li>
+                            @endif
                             @endif
                             @if(array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/manifests')===false)) active @endif">
@@ -339,7 +341,7 @@
                     <!-- BEGIN CONTENT BODY -->
                     <div class="page-content">
                     	@yield('content')
-                            <!-- BEGIN MEDIA PICTURE UPLOAD MODAL--> 
+                            <!-- BEGIN MEDIA PICTURE UPLOAD MODAL-->
                             <div id="modal_media_picture_load" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
                                 <div class="modal-dialog" style="width:1400px !important;">
                                     <div class="modal-content portlet">
@@ -355,14 +357,14 @@
                                                         <div class="row">
                                                             <div class="col-md-1">
                                                                 <center><span class="btn btn-lg green fileinput-button"><i class="fa fa-plus"></i><span> Add </span>
-                                                                    <input type="file" name="image" id="file_media_picture_upload" accept="image/*"> 
+                                                                    <input type="file" name="image" id="file_media_picture_upload" accept="image/*">
                                                                 </span></center><hr>
                                                                 <button type="button" id="btn_reset_image" class="btn btn-lg sbold dark btn-outline"> Reset </button>
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <div class="mt-widget-3">
                                                                     <div class="mt-head bg-green-hoki">
-                                                                        <div class="mt-head-desc" id="input_media_picture_name"> 
+                                                                        <div class="mt-head-desc" id="input_media_picture_name">
                                                                             - No image yet -
                                                                         </div>
                                                                     </div>
@@ -419,7 +421,7 @@
                                                             <div class="col-md-3">
                                                                 <div class="mt-widget-3">
                                                                     <div class="mt-head bg-yellow">
-                                                                        <div class="mt-head-desc"> 
+                                                                        <div class="mt-head-desc">
                                                                             <label class="mt-radio">
                                                                                 <input type="radio" name="action" value="resize"> Resize Image
                                                                                 <span></span>
@@ -445,16 +447,16 @@
                                                                 <button type="button" id="btn_close_image" class="btn btn-lg sbold dark btn-outline">Cancel</button>
                                                             </div>
                                                         </div>
-                                                    </form>    
+                                                    </form>
                                                     <div class="fileinput-preview thumbnail" style="width:1360px; height: 810px; line-height: 810px; text-align: center" id="image_preview"></div>
-                                                </div> 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- END MEDIA PICTURE UPLOAD MODAL--> 
-                            <!-- BEGIN UPDATE PROFILE MODAL--> 
+                            <!-- END MEDIA PICTURE UPLOAD MODAL-->
+                            <!-- BEGIN UPDATE PROFILE MODAL-->
                             <div id="modal_model_update_profile" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
                                 <div class="modal-dialog" style="width:800px !important;">
                                     <div class="modal-content portlet">
@@ -477,7 +479,7 @@
                                                                         <input class="form-control" name="first_name" value="{{Auth::user()->first_name}}" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div>   
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">Last Name:
                                                                     <span class="required"> * </span>
@@ -487,7 +489,7 @@
                                                                         <input class="form-control" name="last_name" value="{{Auth::user()->last_name}}" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div>   
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">Email:
                                                                     <span class="required"> * </span>
@@ -497,7 +499,7 @@
                                                                         <input class="form-control" name="email" value="{{Auth::user()->email}}" readonly="true" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div> 
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">Phone:
                                                                     <span class="required"> * </span>
@@ -507,7 +509,7 @@
                                                                         <input class="form-control" name="phone" value="{{Auth::user()->phone}}" required="false"/>
                                                                     </div>
                                                                 </div>
-                                                            </div> 
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">Password:
                                                                     <span class="required"> * </span>
@@ -517,7 +519,7 @@
                                                                         <input class="form-control" type="password" name="password" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div> 
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
@@ -529,7 +531,7 @@
                                                                         <input class="form-control" name="address" value="{{Auth::user()->location->address}}" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div>   
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">City:
                                                                     <span class="required"> * </span>
@@ -539,7 +541,7 @@
                                                                         <input class="form-control" name="city" value="{{Auth::user()->location->city}}" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div>   
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">State:
                                                                     <span class="required"> * </span>
@@ -549,7 +551,7 @@
                                                                         <input class="form-control" name="state" value="{{Auth::user()->location->state}}" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div> 
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">Zip:
                                                                     <span class="required"> * </span>
@@ -559,7 +561,7 @@
                                                                         <input class="form-control" name="zip" value="{{Auth::user()->location->zip}}" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div> 
+                                                            </div>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-4">Country:
                                                                     <span class="required"> * </span>
@@ -569,7 +571,7 @@
                                                                         <input class="form-control" name="country" value="{{Auth::user()->location->country}}" readonly="true" required="true"/>
                                                                     </div>
                                                                 </div>
-                                                            </div> 
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -581,14 +583,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </form> 
+                                            </form>
                                             <!-- END FORM-->
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- END UPDATE PROFILE MODAL-->  
-                    </div>    
+                            <!-- END UPDATE PROFILE MODAL-->
+                    </div>
                     <!-- END CONTENT BODY -->
                 </div>
                 <!-- END CONTENT -->
@@ -597,7 +599,7 @@
             <!-- BEGIN FOOTER -->
             <div class="page-footer">
                 <div class="page-footer-inner"> {{date('Y')}} &copy; {{ config('app.name', 'TicketBat Admin') }} By
-                    <a target="_blank" href="https://ticketbat.com">TicketBat.com</a> 
+                    <a target="_blank" href="https://ticketbat.com">TicketBat.com</a>
                 </div>
                 <div class="scroll-to-top">
                     <i class="icon-arrow-up"></i>

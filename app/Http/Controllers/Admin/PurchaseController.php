@@ -74,6 +74,7 @@ class PurchaseController extends Controller{
             }
             else if(isset($input) && isset($input['id']))
             {
+                $root_setting = (Auth::check() && in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))? '-2 months' : 'yesterday';
                 $current = DB::table('purchases')
                                 ->join('show_times', 'purchases.show_time_id', '=', 'show_times.id')
                                 ->join('shows', 'shows.id', '=', 'show_times.show_id')
@@ -86,7 +87,7 @@ class PurchaseController extends Controller{
                                           'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
                                 ->where('purchases.id','=',$input['id'])->first();
                 $showtimes = DB::table('show_times')->select('id','show_time')
-                                ->where('show_id','=',$current->show_id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s',strtotime('-2 months')))
+                                ->where('show_id','=',$current->show_id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s',strtotime($root_setting)))
                                 ->orderBy('show_times.show_time')->get();
                 $tickets = DB::table('tickets')
                                 ->join('packages','packages.id','=','tickets.package_id')

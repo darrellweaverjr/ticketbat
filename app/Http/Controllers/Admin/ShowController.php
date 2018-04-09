@@ -254,6 +254,7 @@ class ShowController extends Controller{
             if(!empty($id) && is_numeric($id))
             {
                 $current = date('Y-m-d');
+                $root_setting = (Auth::check() && in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))? date('Y-m-d',strtotime('-2 months')) : $current;
                 //get selected record
                 $show = Show::find($id);
                 if(!$show)
@@ -266,7 +267,7 @@ class ShowController extends Controller{
                 $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')
                                 ->select('tickets.*','packages.title')->where('tickets.show_id','=',$show->id)->distinct()->get();
                 $tt_inactive = DB::table('ticket_types_inactive')->select('ticket_types_inactive.*')->distinct()->implode('ticket_types_inactive.ticket_type',',');
-                $show_times = ShowTime::where('show_id','=',$show->id)->where('show_time','>=',$current)->distinct()->get();
+                $show_times = ShowTime::where('show_id','=',$show->id)->where('show_time','>=',$root_setting)->distinct()->get();
                 $passwords = DB::table('show_passwords')->select('show_passwords.*')
                                 ->where('show_passwords.show_id','=',$show->id)->distinct()->get();
                 $bands = DB::table('bands')->join('show_bands', 'show_bands.band_id', '=' ,'bands.id')

@@ -499,11 +499,13 @@
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <input type="hidden" name="purchase_id" value="" />
                         <div class="form-body">
+                            @if(Auth::check() && in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))
                             <div class="row">
                                 <label class="mt-checkbox">
                                     <input type="checkbox" name="force_edit" value="1" />Force<span></span>
                                 </label>
                             </div>
+                            @endif
                             <div class="row">
                                 <div class="col-md-6">
                                     <label class="control-label">
