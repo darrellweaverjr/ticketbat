@@ -66,29 +66,31 @@
                                         <span></span>
                                     </label>
                                 </th>
-                                <th width="20%"> Email </th>
-                                <th width="100"> First Name </th>
-                                <th width="100"> Last Name </th>
-                                <th width="20%"> Phone </th>
-                                <th width="15%"> Role </th>
-                                <th width="10%"> Status </th>
+                                <th width="5%">ID</th>
+                                <th width="20%">Email</th>
+                                <th width="100">First Name</th>
+                                <th width="100">Last Name</th>
+                                <th width="15%">Phone</th>
+                                <th width="10%">Role</th>
+                                <th width="10%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($users as $index=>$u)
                             <tr @if($u->is_active=='Inactive') class="danger" @endif>
-                                <td width="2%">
+                                <td>
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                         <input type="checkbox" class="checkboxes" id="{{$u->id}}" value="{{$u->email}} * {{$u->first_name}} {{$u->last_name}}" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td width="20%"><a href="mailto:{{$u->email}}" target="_top">{{$u->email}}</a></td>
-                                <td width="100">{{$u->first_name}}</td>
-                                <td width="100">{{$u->last_name}}</td>
-                                <td width="20%">{{$u->phone}}</td>
-                                <td width="15%">{{$u->user_type}}</td>
-                                <td width="10%">{{$u->is_active}}</td>
+                                <td>{{$u->id}}</td>
+                                <td><a href="mailto:{{$u->email}}" target="_top">{{$u->email}}</a></td>
+                                <td>{{$u->first_name}}</td>
+                                <td>{{$u->last_name}}</td>
+                                <td>{{$u->phone}}</td>
+                                <td>{{$u->user_type}}</td>
+                                <td>{{$u->is_active}}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -129,7 +131,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Email:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="text" name="email" class="form-control input-large" value="{{$search['email']}}" />
                                         </div>
@@ -137,7 +139,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Role:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <select class="form-control input-large" name="user_type_id">
                                                 <option @if(empty($search['user_type_id'])) selected @endif value="0">All</option>
@@ -150,7 +152,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Status:</label>
-                                    <div class="col-md-9 show-error"> 
+                                    <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <select class="form-control  input-large" name="is_active">
                                                 <option @if(empty($search['is_active'])) selected @endif value="0">All</option>
