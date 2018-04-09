@@ -135,14 +135,14 @@ class DashboardController extends Controller
             }
             else
             {
-                $data['search']['soldtime_start_date'] = ($custom!='coupons')? date('n/d/Y', strtotime('-7 DAY')) : date('n/d/Y', strtotime('-7 DAY'));
-                $data['search']['soldtime_end_date'] = date('n/d/Y');
+                $data['search']['soldtime_start_date'] = date('n/d/yy 12:00 AM', strtotime('-7 DAY'));
+                $data['search']['soldtime_end_date'] = date('n/d/yy 11:59 PM');
             }
         }
         if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '' && $custom!='coupons')
         {
-            $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',date('Y-m-d',strtotime($data['search']['soldtime_start_date']))];
-            $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',date('Y-m-d',strtotime($data['search']['soldtime_end_date']))];
+            $data['where'][] = [DB::raw('purchases.created'),'>=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_start_date']))];
+            $data['where'][] = [DB::raw('purchases.created'),'<=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_end_date']))];
         }
         //search payment types
         if(isset($input) && isset($input['payment_type']) && !empty($input['payment_type']))
@@ -219,7 +219,7 @@ class DashboardController extends Controller
             $data['search']['customer'] = trim($input['customer']);
             if(is_numeric($data['search']['customer']))
                 $data['where'][] = ['customers.id','=',$data['search']['customer']];
-            else if(filter_var($data['search']['user'], FILTER_VALIDATE_EMAIL))
+            else if(filter_var($data['search']['customer'], FILTER_VALIDATE_EMAIL))
                 $data['where'][] = ['customers.email','=',$data['search']['customer']];
             else
                 $data['search']['customer'] = '';

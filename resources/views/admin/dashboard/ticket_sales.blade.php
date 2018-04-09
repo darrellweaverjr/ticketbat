@@ -316,7 +316,7 @@
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Show Time:</label>
                                         <div class="col-md-9 show-error">
-                                            <div class="input-group" id="show_times_date">
+                                            <div class="input-group input-large" id="show_times_date">
                                                 <input type="text" class="form-control" name="showtime_start_date" value="{{$search['showtime_start_date']}}" readonly="true">
                                                 <span class="input-group-addon"> to </span>
                                                 <input type="text" class="form-control" name="showtime_end_date" value="{{$search['showtime_end_date']}}" readonly="true">
@@ -334,14 +334,11 @@
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Sold Date:</label>
                                         <div class="col-md-9 show-error">
-                                            <div class="input-group" id="sold_times_date">
+                                            <div class="input-group input-large" id="sold_times_date">
                                                 <input type="text" class="form-control" name="soldtime_start_date" value="{{$search['soldtime_start_date']}}" readonly="true">
-                                                <span class="input-group-addon"> to </span>
+                                                <span class="input-group-addon"></span>
                                                 <input type="text" class="form-control" name="soldtime_end_date" value="{{$search['soldtime_end_date']}}" readonly="true">
                                                 <span class="input-group-btn">
-                                                    <button class="btn default date-range-toggle" type="button">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </button>
                                                     <button class="btn default" type="button" id="clear_sold_times_date">
                                                         <i class="fa fa-remove"></i>
                                                     </button>
@@ -391,75 +388,67 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">Amount start:</label>
-                                        <div class="col-md-8 show-error">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control input-large" name="start_amount" step="0.01" value="{{$search['start_amount']}}" placeholder="Price paid start range" />
+                                        <label class="control-label col-md-3">Amount:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group input-large">
+                                                <input type="number" class="form-control" name="start_amount" step="0.01" value="{{$search['start_amount']}}" placeholder="Start" />
+                                                <span class="input-group-addon"> to </span>
+                                                <input type="number" class="form-control" name="end_amount" step="0.01" value="{{$search['end_amount']}}" placeholder="End" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">Amount ends:</label>
-                                        <div class="col-md-8 show-error">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control input-large" name="end_amount" step="0.01" value="{{$search['end_amount']}}" placeholder="Price paid end range" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-4">User:</label>
-                                        <div class="col-md-8 show-error">
+                                        <label class="control-label col-md-3">User:</label>
+                                        <div class="col-md-9 show-error">
                                             <div class="input-group">
                                                 <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="ID/Email of the user" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">Customer:</label>
-                                        <div class="col-md-8 show-error">
+                                        <label class="control-label col-md-3">Customer:</label>
+                                        <div class="col-md-9 show-error">
                                             <div class="input-group">
                                                 <input type="text" class="form-control input-large" name="customer" value="{{$search['customer']}}" placeholder="ID/Email of the customer" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">Order id:</label>
-                                        <div class="col-md-8 show-error">
+                                        <label class="control-label col-md-3">Order id:</label>
+                                        <div class="col-md-9 show-error">
                                             <div class="input-group">
                                                 <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" placeholder="ID of the order (purchase id)" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">AuthCode:</label>
-                                        <div class="col-md-8 show-error">
+                                        <label class="control-label col-md-3">AuthCode:</label>
+                                        <div class="col-md-9 show-error">
                                             <div class="input-group">
                                                 <input type="text" class="form-control input-large" name="authcode" value="{{$search['authcode']}}" placeholder="AuthCode of the transaction" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-4">RefNum:</label>
-                                        <div class="col-md-8 show-error">
+                                        <label class="control-label col-md-3">RefNum:</label>
+                                        <div class="col-md-9 show-error">
                                             <div class="input-group">
                                                 <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" placeholder="RefNum of the transaction" />
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row" style="padding:15px">
-                                <div class="form-group">
-                                    <label class="control-label col-md-2">Payment Type:</label>
-                                    <div class="col-md-10 show-error">
-                                        <div class="input-group mt-checkbox-inline">
-                                            @foreach($search['payment_types'] as $index=>$p)
-                                            @php if($p=='None') $p='Comp.' @endphp
-                                            <label class="mt-checkbox">
-                                                <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" data-value="{{$p}}" value="{{$index}}" />{{$p}}
-                                                <span></span>
-                                            </label>
-                                            @endforeach
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Payment Type:</label>
+                                        <div class="col-md-9 show-error">
+                                            <div class="input-group mt-checkbox-inline">
+                                                @foreach($search['payment_types'] as $index=>$p)
+                                                @php if($p=='None') $p='Comp.' @endphp
+                                                <label class="mt-checkbox">
+                                                    <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" data-value="{{$p}}" value="{{$index}}" />{{$p}}
+                                                    <span></span>
+                                                </label>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

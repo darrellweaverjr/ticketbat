@@ -222,13 +222,13 @@ class PurchaseController extends Controller{
                 }
                 else
                 {
-                    $search['soldtime_start_date'] = date('n/d/Y', strtotime('-7 DAY'));
-                    $search['soldtime_end_date'] = date('n/d/Y');
+                    $search['soldtime_start_date'] = date('n/d/yy 12:00 AM', strtotime('-7 DAY'));
+                    $search['soldtime_end_date'] = date('n/d/yy 11:59 PM');
                 }
                 if($search['soldtime_start_date'] != '' && $search['soldtime_end_date'] != '')
                 {
-                    $where[] = [DB::raw('DATE(purchases.created)'),'>=',date('Y-m-d',strtotime($search['soldtime_start_date']))];
-                    $where[] = [DB::raw('DATE(purchases.created)'),'<=',date('Y-m-d',strtotime($search['soldtime_end_date']))];
+                    $where[] = [DB::raw('purchases.created'),'>=',date('Y-m-d H:i:s',strtotime($search['soldtime_start_date']))];
+                    $where[] = [DB::raw('purchases.created'),'<=',date('Y-m-d H:i:s',strtotime($search['soldtime_end_date']))];
                 }
                 //search amount range
                 if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
@@ -303,7 +303,7 @@ class PurchaseController extends Controller{
                     $search['customer'] = trim($input['customer']);
                     if(is_numeric($search['customer']))
                         $where[] = ['customers.id','=',$search['customer']];
-                    else if(filter_var($search['user'], FILTER_VALIDATE_EMAIL))
+                    else if(filter_var($search['customer'], FILTER_VALIDATE_EMAIL))
                         $where[] = ['customers.email','=',$search['customer']];
                     else
                         $search['customer'] = '';

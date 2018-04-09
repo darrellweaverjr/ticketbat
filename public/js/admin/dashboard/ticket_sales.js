@@ -174,12 +174,14 @@ var TableDatatablesButtons = function () {
         //sold_times_date
         $('#sold_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'M/DD/YYYY',
+                timePicker: true,
+                timePickerIncrement: 15,
+                format: 'M/DD/YY h:mm A',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('M/DD/YYYY'));
-                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('M/DD/YYYY'));
+                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('M/DD/YY h:mm A'));
+                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('M/DD/YY h:mm A'));
             }
         );
         //clear sold_times_date
