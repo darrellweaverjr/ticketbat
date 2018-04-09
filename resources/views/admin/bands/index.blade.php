@@ -78,16 +78,7 @@
                                 </td>
                                 <td class="search-item clearfix">
                                     <div class="search-title">
-                                        <h4>
-                                            <b>{{$b->name}}&emsp;</b>
-                                            @if($b->youtube)<a class="social-icon social-icon-color youtube" href="{{$b->youtube}}" target="_blank"></a>@endif
-                                            @if($b->facebook)<a class="social-icon social-icon-color facebook" href="{{$b->facebook}}" target="_blank"></a>@endif
-                                            @if($b->twitter)<a class="social-icon social-icon-color twitter" href="{{$b->twitter}}" target="_blank"></a>@endif
-                                            @if($b->my_space)<a class="social-icon social-icon-color myspace" href="{{$b->my_space}}" target="_blank"></a>@endif
-                                            @if($b->flickr)<a class="social-icon social-icon-color flickr" href="{{$b->flickr}}" target="_blank"></a>@endif
-                                            @if($b->instagram)<a class="social-icon social-icon-color instagram" href="{{$b->instagram}}" target="_blank"></a>@endif
-                                            @if($b->soundcloud)<a class="social-icon social-icon-color jolicloud" href="{{$b->soundcloud}}" target="_blank"></a>@endif
-                                        </h4>
+                                        <h4><b>{{$b->name}}&emsp;</b></h4>
                                     </div>
                                     <div class="search-content note note-info" style="font-style:italic;font-size:smaller">{{$b->short_description}}</div>
                                 </td>
@@ -133,7 +124,7 @@
                                         <div class="col-md-9 show-error">
                                             <select class="form-control" name="category_id">
                                                 @foreach($categories as $index=>$c)
-                                                <option value="{{$c->id}}" @if($c->disabled>0) disabled @endif>{{$c->name}}</option>
+                                                <option value="{{$c->id}}" @if($c->disabled>0) disabled @endif>{{html_entity_decode($c->name)}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
