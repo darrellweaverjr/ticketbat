@@ -16,10 +16,12 @@ RewriteEngine on
 # Anti Hack Version 2 - VERY IMPORTANT
 # Disable everything except qualified routes
 # LocationMatch = routes to let through (ie. ignore these paths)
-Order allow,deny
+Order deny,allow
+Allow from 127.0.0.1
+Allow from ::1
 Deny from all
 
-<LocationMatch "/(admin|app|login|logout|feed|home)/">
+<LocationMatch "/(admin|app|login|logout|feed|home|events|general|user|shoppingcart|purchase|event|buy|venues|venue|merchandise|merchandises|pos|themes)/">
     Allow from all
 </LocationMatch>
 
