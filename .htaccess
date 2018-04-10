@@ -7,3 +7,33 @@ Options -Indexes
 Header append X-FRAME-OPTIONS "SAMEORIGIN"
 Header append X-XSS-PROTECTION "1; mode=block"
 Header append X-CONTENT-TYPE-OPTIONS "nosniff"
+
+
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+
+
+  # Anit Hack Version 2
+  # Disable everything except qualified routes
+  # stuff to let through (ignore)
+#  RewriteCond %{REQUEST_URI} "/admin/" [OR]
+#  RewriteCond %{REQUEST_URI} "/app/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/login/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/logout/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/feed/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/home/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/events/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/general/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/user/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/shoppingcart/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/purchase/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/event/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/buy/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/venues/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/venue/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/merchandise/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/merchandises/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/pos/"  [OR]
+#  RewriteCond %{REQUEST_URI} "/themes/"
+#  RewriteRule (.*) $1 [L]
+  #
