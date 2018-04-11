@@ -104,7 +104,7 @@ class ReportManifestController extends Controller{
                                       ->where('manifest_type','=','Preliminary');
                             });
                     if(!$this->previous_date)
-                        $dates = $dates->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) <= "'.$this->date_manifest.'"');
+                        $dates = $dates->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR)'),'<=',$this->date_manifest);
                     $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Preliminary','subject'=>'Preliminary Manifest for '];
                     break;
@@ -125,7 +125,7 @@ class ReportManifestController extends Controller{
                                       ->where('manifest_type','=','Primary');
                             });
                     if(!$this->previous_date)
-                        $dates = $dates->whereRaw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR) <= "'.$this->date_manifest.'"');
+                        $dates = $dates->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)'),'<=',$this->date_manifest);
                     $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Primary Manifest for '];
                     break;
@@ -143,10 +143,9 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->havingRaw('NOW() BETWEEN DATE_ADD(DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR), INTERVAL 15 MINUTE) AND show_times.show_time')
+                            ->havingRaw('DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) <= NOW()')
                             ->havingRaw('COUNT(purchases.id) != manifest_emails.num_purchases')
-                            ->groupBy('show_times.id')
-                            ->distinct()->get()->toArray();
+                            ->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
                     break;
                 default:break;
@@ -219,7 +218,9 @@ class ReportManifestController extends Controller{
     {
         try {
             //create record to save to DB
-            $manifest = new Manifest;
+            $manifest = Manifest::where('show_time_id',$data['id'])->where('manifest_type',$data['type'])->first();
+            if(empty($manifest))
+                $manifest = new Manifest;
             $manifest->show_time_id = $data['id'];
             $manifest->manifest_type = $data['type'];
             $manifest->num_purchases = $data['num_purchases'];
