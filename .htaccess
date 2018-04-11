@@ -1,6 +1,6 @@
 RewriteEngine on 
 
-#remove list indexes
+
 Options -Indexes
 
 #disabled iframe for external address
@@ -10,37 +10,36 @@ Header append X-CONTENT-TYPE-OPTIONS "nosniff"
 
 
 <IfModule mod_rewrite.c>
-RewriteEngine on
+    #remove list indexes
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    Options +FollowSymLinks
+    RewriteEngine On
+    RewriteBase /
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
 
 
-# Anti Hack Version 2 - VERY IMPORTANT
-# Disable everything except qualified routes
-# LocationMatch = routes to let through (ie. ignore these paths)
-Order deny,allow
-Allow from 127.0.0.1
-Allow from ::1
-Deny from all
+    # Anti Hack Version 2 - VERY IMPORTANT
+    # Disable everything except qualified routes
+    # LocationMatch = routes to let through (ie. ignore these paths)
+    Order deny,allow
+    Allow from 127.0.0.1
+    Allow from ::1
+    Deny from all
 
-<LocationMatch "/(admin|app|login|logout|feed|home|events|general|user|shoppingcart|purchase|event|buy|venues|venue|merchandise|merchandises|pos|themes)/">
-    Allow from all
-</LocationMatch>
+    <LocationMatch "/(admin|app|login|logout|feed|home|events|general|user|shoppingcart|purchase|event|buy|venues|venue|merchandise|merchandises|pos|themes)/">
+        Allow from all
+    </LocationMatch>
 
-#  RewriteCond %{REQUEST_URI} "/admin/" [OR]
-#  RewriteCond %{REQUEST_URI} "/app/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/login/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/logout/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/feed/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/home/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/events/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/general/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/user/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/shoppingcart/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/purchase/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/event/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/buy/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/venues/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/venue/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/merchandise/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/merchandises/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/pos/"  [OR]
-#  RewriteCond %{REQUEST_URI} "/themes/"
+</IfModule>
