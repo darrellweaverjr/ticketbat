@@ -75,26 +75,26 @@ var ShoppingcartQtyItems = function () {
                     $('#shoppingcart_qty_items').html(data.qty_items);
                     if(data.qty_items>0)
                     {
-                        if($('#timerClock'))
+                        if($('#timerClock').length>0)
                             Countdown.init();
                         $('#continue_buy_checkout_msg').css('display','block');
                     }
                     else
                     {
-                        if($('#timerClock') && $('#timerClock').data('countdown')!='')
+                        if($('#timerClock').length>0 && $('#timerClock').data('countdown')!='')
                             Countdown.close();
                     }
                 }
                 else
                 {
                     $('#shoppingcart_qty_items').html(0);
-                    if($('#timerClock') && $('#timerClock').data('countdown')!='')
+                    if($('#timerClock').length>0 && $('#timerClock').data('countdown')!='')
                         Countdown.close();
                 }
             },
             error: function(){
                 $('#shoppingcart_qty_items').html(0);
-                if($('#timerClock') && $('#timerClock').data('countdown')!='')
+                if($('#timerClock').length>0 && $('#timerClock').data('countdown')!='')
                     Countdown.close();
             }
         });
