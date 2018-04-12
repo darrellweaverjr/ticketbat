@@ -25,14 +25,14 @@
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <meta content="{{config('app.theme')}}img/no-image.jpg" name="broken-image" />
-        
+
         <meta content="{{Session::get('ua_code','')}}" name="ua-code" />
         <meta @if(!empty($ua_conversion_code)) content="{{json_encode($ua_conversion_code,true)}}" @else content="[]" @endif name="ua-conversion_code" />
         <meta @if(!empty($analytics)) content="{{json_encode($analytics,true)}}" @else content="[]" @endif name="analytics" />
         <meta @if(!empty($transaction)) content="{{$transaction}}" @else content="" @endif name="transaction" />
         <meta @if(!empty($totals)) content="{{$totals}}" @else content="" @endif name="totals" />
-        
-         
+
+
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -52,9 +52,9 @@
         <link href="{{config('app.theme')}}css/layout.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/style_p.css?v=1522349999" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 
-        <link rel="apple-touch-icon" href="{{ asset('/themes/img/favicon.ico') }}" /> 
-        <link rel="apple-touch-icon-precomposed" href="{{ asset('/themes/img/favicon.ico') }}" /> 
+        <link rel="shortcut icon" href="{{ asset('/themes/img/favicon.ico') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('/themes/img/favicon.ico') }}" />
+        <link rel="apple-touch-icon-precomposed" href="{{ asset('/themes/img/favicon.ico') }}" />
         @yield('styles')
     </head>
     <!-- END HEAD -->
@@ -86,26 +86,26 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
-                        </button>                        
-                    </div>                    
-                    <!-- END RESPONSIVE MENU TOGGLER -->    
+                        </button>
+                    </div>
+                    <!-- END RESPONSIVE MENU TOGGLER -->
                     <!-- BEGIN HORIZANTAL MENU -->
                     <div class="collapse navbar-collapse" style="background:#000">
                         <ul class="nav navbar-nav @if(!empty(Session::get('funnel',null))) hidden @endif">
                             <li @if( url()->current() == route('index') ) class="active" @endif>
                                 <a @if(!empty(Session::get('slug',null))) href="/event/{{Session::get('slug')}}" @else href="/home" @endif class="menu_nav" title="Go to home page">
-                                    <i class="icon-home"></i> Home 
-                                </a>                                
+                                    <i class="icon-home"></i> Home
+                                </a>
                             </li>
                             <li @if(preg_match('/\/venues/',url()->current())) class="active" @endif>
                                 <a href="/venues" class="menu_nav" title="View our venues">
-                                    <i class="icon-pointer"></i> Venues 
-                                </a>                                
+                                    <i class="icon-pointer"></i> Venues
+                                </a>
                             </li>
                             <li @if(preg_match('/\/merchandise/',url()->current())) class="active" @endif>
                                 <a href="/merchandises" class="menu_nav" title="View our merchandises in our venues">
                                     <i class="icon-bag"></i> Merchandise
-                                </a>                                
+                                </a>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
@@ -114,7 +114,7 @@
                                 <a data-toggle="modal" href="#modal_register" class="menu_nav" title="Create a new account with us">
                                     <i class="icon-user-follow"></i> Register
                                 </a>
-                            </li>      
+                            </li>
                             <li>
                                 <a data-toggle="modal" href="#modal_login" class="menu_nav" title="Log in to your account">
                                    <i class="icon-user"></i> Login
@@ -141,7 +141,7 @@
                                         <i class="icon-tag"></i>&nbsp;&nbsp;&nbsp;My Consignments</a>
                                     </li>
                                     @endif
-                                    <li>                                    
+                                    <li>
                                     <li>
                                         <a id="btn_logout" title="Log out session">
                                         <i class="icon-key"></i>&nbsp;&nbsp;&nbsp;Log Out</a>
@@ -165,14 +165,14 @@
                     <!-- END HORIZANTAL MENU -->
                 </div>
                 <!-- END HEADER INNER -->
-                
+                @if(!(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE')))))
                 <div id="timerClockPanel" class="hidden-xs">
                     <span class="uppercase text-justify">Please complete your purchase in</span>
                     <span id="timerClock" data-countdown="{{Session::get('countdown','')}}"></span>
                     <span class="uppercase text-justify">minutes : seconds</span>
-                    <a href="/shoppingcart/viewcart" style="font-size:10px;font-weight:bold" class="btn btn-success">checkout now</a> 
-                </div>  
-                
+                    <a href="/shoppingcart/viewcart" style="font-size:10px;font-weight:bold" class="btn btn-success">checkout now</a>
+                </div>
+                @endif
             </div>
             <!-- END HEADER -->
             <!-- BEGIN CONTAINER -->
@@ -188,7 +188,7 @@
                     <a class="menu_foot" data-toggle="modal" href="#modal_privacy" title="Watch out our privacy policy">Privacy</a> &nbsp;|&nbsp;
                     <a class="menu_foot" data-toggle="modal" href="#modal_terms" title="Check our terms of use">Terms</a> &nbsp;|&nbsp;
                     <a class="menu_foot" data-toggle="modal" href="#modal_contact_us" title="If you have any issues, please, let us know" >Contact Us</a>
-                </div>      
+                </div>
                 <div class="copyright pull-right">
                     &copy; 2015-{{date('Y')}}  TicketBat. All rights reserved.
                 </div>
@@ -218,7 +218,7 @@
             <!-- BEGIN RESET PASSWORD MODAL -->
             @includeIf('production.user.reset_password')
             <!-- END RECOVER RESET MODAL -->
-            
+
         <!-- BEGIN CORE PLUGINS -->
         <script src="{{config('app.theme')}}js/jquery.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/bootstrap.min.js" type="text/javascript"></script>
@@ -246,7 +246,7 @@
         <script src="/js/production/user/register.js" type="text/javascript"></script>
         <script src="/js/production/user/recover_password.js" type="text/javascript"></script>
         <script src="/js/production/user/reset_password.js" type="text/javascript"></script>
-        @if(Auth::check() && Auth::user()->force_password_reset>0) 
+        @if(Auth::check() && Auth::user()->force_password_reset>0)
         <script type="text/javascript">$('#modal_reset_password').modal('show');</script>
         @endif
         @yield('scripts')

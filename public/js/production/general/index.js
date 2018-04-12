@@ -1,4 +1,4 @@
-var ScrollToTop = function () {    
+var ScrollToTop = function () {
     var initScroll = function () {
         // When the user scrolls down 20px from the top of the document, show the button
         window.onscroll = function() {
@@ -9,28 +9,28 @@ var ScrollToTop = function () {
             }
         };
         $('.scroll-to-top').on('click',function(){
-            document.body.scrollTop = 0; // For Chrome, Safari and Opera 
+            document.body.scrollTop = 0; // For Chrome, Safari and Opera
             document.documentElement.scrollTop = 0; // For IE and Firefox
         });
     }
     return {
         //main function to initiate the module
         init: function () {
-            initScroll();        
+            initScroll();
         }
     };
 }();
 //*****************************************************************************************
-var Logout = function () {    
+var Logout = function () {
     var initLogout = function () {
         //function logout on close modal
         $('#btn_logout').on('click', function(ev) {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/user/logout', 
+                url: '/user/logout',
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                         location.reload();
                     else{
                         swal({
@@ -51,106 +51,106 @@ var Logout = function () {
                         showConfirmButton: true
                     });
                 }
-            }); 
+            });
         });
     }
     return {
         //main function to initiate the module
         init: function () {
-            initLogout();        
+            initLogout();
         }
     };
 }();
 //*****************************************************************************************
-var ShoppingcartQtyItems = function () {    
+var ShoppingcartQtyItems = function () {
     var initQty = function () {
         //function to autoload qty of items into session cart
-        var time = $('#timerClock').data('countdown');
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
-            url: '/shoppingcart/count', 
+            url: '/shoppingcart/count',
             success: function(data) {
-                if(data.success) 
+                if(data.success)
                 {
                     $('#shoppingcart_qty_items').html(data.qty_items);
                     if(data.qty_items>0)
                     {
-                        Countdown.init();
+                        if($('#timerClock'))
+                            Countdown.init();
                         $('#continue_buy_checkout_msg').css('display','block');
                     }
                     else
                     {
-                        if(time!='')
+                        if($('#timerClock') && $('#timerClock').data('countdown')!='')
                             Countdown.close();
                     }
                 }
                 else
                 {
                     $('#shoppingcart_qty_items').html(0);
-                    if(time!='')
+                    if($('#timerClock') && $('#timerClock').data('countdown')!='')
                         Countdown.close();
-                } 
+                }
             },
             error: function(){
                 $('#shoppingcart_qty_items').html(0);
-                if(time!='')
+                if($('#timerClock') && $('#timerClock').data('countdown')!='')
                     Countdown.close();
             }
-        }); 
+        });
     }
     return {
         //main function to initiate the module
         init: function () {
-            initQty();        
+            initQty();
         }
     };
 }();
 //*****************************************************************************************
-var Countdown = function () {    
+var Countdown = function () {
     var initCount = function () {
         var time = $('#timerClock').data('countdown');
         if(time!='')
         {
             $('#timerClock').html(time);
-            setTimeout(keepCount, 1000); 
-            
-            $('#timerClockPanel').css('display','block'); 
-        } 
+            setTimeout(keepCount, 1000);
+
+            $('#timerClockPanel').css('display','block');
+        }
         else
         {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/shoppingcart/countdown', 
-                data: {status:1}, 
+                url: '/shoppingcart/countdown',
+                data: {status:1},
                 success: function(data) {
-                    if(data.success) 
+                    if(data.success)
                     {
                         $('#timerClock').html(data.init);
-                        setTimeout(keepCount, 1000); 
-                        
-                        $('#timerClockPanel').css('display','block'); 
-                    }    
+                        setTimeout(keepCount, 1000);
+
+                        $('#timerClockPanel').css('display','block');
+                    }
                 }
-            }); 
+            });
         }
     }
     var resetCount = function () {
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
-            url: '/shoppingcart/countdown', 
-            data: {status:1}, 
+            url: '/shoppingcart/countdown',
+            data: {status:1},
             success: function(data) {
-                if(data.success) 
+                if(data.success)
                 {
                     $('#timerClock').html(data.init);
                     $('#timerClock').data('countdown',data.init);
-                    setTimeout(keepCount, 1000); 
-                }    
+                    setTimeout(keepCount, 1000);
+                }
             }
-        }); 
+        });
     }
     var keepCount = function () {
         var time = $('#timerClock').html();
@@ -164,10 +164,10 @@ var Countdown = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/shoppingcart/countdown', 
+                url: '/shoppingcart/countdown',
                 data: {status:0}
-            }); 
-            setTimeout(keepCount, 1000); 
+            });
+            setTimeout(keepCount, 1000);
         }
         else
         {
@@ -183,13 +183,13 @@ var Countdown = function () {
                 closeOnCancel: true
               },
               function(isConfirm) {
-                if (isConfirm) 
+                if (isConfirm)
                 {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/shoppingcart/countdown', 
-                        data: {status:1}, 
+                        url: '/shoppingcart/countdown',
+                        data: {status:1},
                         success: function(data) {
                             swal({
                                 title: "Information",
@@ -209,8 +209,8 @@ var Countdown = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/shoppingcart/countdown', 
-                        data: {status:-2}, 
+                        url: '/shoppingcart/countdown',
+                        data: {status:-2},
                         success: function(data) {
                             swal({
                                 title: "Information",
@@ -223,9 +223,9 @@ var Countdown = function () {
                                 window.location.href = '/home';
                             });
                         }
-                    }); 
+                    });
                 }
-            }); 
+            });
         }
     }
     var closeCount = function () {
@@ -233,24 +233,24 @@ var Countdown = function () {
         jQuery.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'POST',
-            url: '/shoppingcart/countdown', 
+            url: '/shoppingcart/countdown',
             data: {status:-1}
-        }); 
-        $('#timerClockPanel').css('display','none'); 
+        });
+        $('#timerClockPanel').css('display','none');
     }
     return {
         //main function to initiate the module
         init: function () {
-            initCount();        
+            initCount();
         },
         reset: function () {
-            resetCount();        
+            resetCount();
         },
         keep: function () {
-            keepCount();        
+            keepCount();
         },
         close: function () {
-            closeCount();        
+            closeCount();
         }
     };
 }();
