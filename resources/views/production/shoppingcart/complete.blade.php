@@ -111,6 +111,7 @@
     </div>
     @endif
     <!-- END BANNERS -->
+    @if($seller>0)
     <!-- BEGIN RECEIPT -->
     <div id="receipt_print" class="row hidden" style="text-align:center;" data-qty="{{count($view_receipts)}}">
         @foreach($view_receipts as $r)
@@ -118,6 +119,7 @@
         @endforeach
     </div>
     <!-- END RECEIPT -->
+    @endif
 </div>
 
 @endsection

@@ -3,7 +3,8 @@ var CompleteFunctions = function () {
     var initFunctions = function () {
 
         $(window).bind('beforeunload', function(e){
-            return "Are you sure you want to leave this page? This page will allow you to print your tickets.";
+            if(!($('#receipt_print').length>0))
+                return "Are you sure you want to leave this page? This page will allow you to print your tickets.";
         });
 
         //on resend email welcome
