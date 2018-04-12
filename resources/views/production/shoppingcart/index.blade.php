@@ -306,5 +306,6 @@
     <script src="/js/production/shoppingcart/update.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/general/share_tickets.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/share_tickets.js?v=1522349999" type="text/javascript"></script>
+    <script src="/js/production/shoppingcart/validations.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/index.js?v=1522349999" type="text/javascript"></script>
 @endsection
