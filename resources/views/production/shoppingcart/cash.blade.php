@@ -5,27 +5,46 @@
             <button class="close" data-close="alert"></button>
             You have some errors. Please check below.
         </div>
-        <div class="form-group cash_breakdown" style="text-align:center;padding-right:15px">
-            <div class="col-sm-1 col-md-2"></div>
-            <div class="cash_total col-sm-5 col-md-4">
-                <label class="control-label col-sm-4 text-right">Total ($):</label>
-                <div class="col-sm-8 show-error">
+        <div class="form-group cash_breakdown" style="text-align:center;padding:0px 15px">
+            <div class="cash_total col-sm-4 col-md-3">
+                <label class="control-label col-sm-5 text-right bold">Total ($):</label>
+                <div class="col-sm-7 show-error">
                     <input type="text" class="form-control input-lg text-right" style="color:blue;" value="{{sprintf("%.2f",$cart['total'])}}" name="pending" readOnly="true"
                            value="{{old('pending')}}">
                 </div>
 
-                <label class="control-label col-sm-4 text-right">Cash ($):</label>
-                <div class="col-sm-8 show-error">
-                    <input type="text" class="form-control input-lg text-right" value="0.00" name="cashed" value="{{old('change')}}">
+                <label class="control-label col-sm-5 text-right bold">Cash ($):</label>
+                <div class="col-sm-7 show-error">
+                    <input type="text" class="form-control input-lg text-right" value="0.00" name="cashed" value="{{old('change')}}" data-number="0">
                 </div>
 
-                <label class="control-label col-sm-4 text-right" id="label_total">Due ($):</label>
-                <div class="col-sm-8 show-error">
+                <label class="control-label col-sm-5 text-right bold" id="label_total">Due ($):</label>
+                <div class="col-sm-7 show-error">
                     <input type="text" class="form-control input-lg text-right" style="color:red;" value="-{{sprintf("%.2f",$cart['total'])}}" name="subtotal" readOnly="true"
                            value="{{old('subtotal')}}">
                 </div>
             </div>
-            <div class="cash_input col-sm-5 col-md-4">
+            <div class="cash_total col-sm-2 col-md-4">
+                <div class="col-md-6" style="padding-top:5px">
+                    <button name="plus_1" value="1" type="button" class="btn btn-info btn-lg btn-block">+1.00</button>
+                </div>
+                <div class="col-md-6" style="padding-top:5px">
+                    <button name="plus_5" value="5" type="button" class="btn btn-info btn-lg btn-block">+5.00</button>
+                </div>
+                <div class="col-md-6" style="padding-top:5px">
+                    <button name="plus_10" value="10" type="button" class="btn btn-info btn-lg btn-block">+10.00</button>
+                </div>
+                <div class="col-md-6" style="padding-top:5px">
+                    <button name="plus_20" value="20" type="button" class="btn btn-info btn-lg btn-block">+20.00</button>
+                </div>
+                <div class="col-md-6" style="padding-top:5px">
+                    <button name="plus_50" value="50" type="button" class="btn btn-info btn-lg btn-block">+50.00</button>
+                </div>
+                <div class="col-md-6" style="padding-top:5px">
+                    <button name="plus_100" value="100" type="button" class="btn btn-info btn-lg btn-block">+100.00</button>
+                </div>
+            </div>
+            <div class="cash_input col-sm-6 col-md-5">
                 <div class="col-sm-4">
                     <button name="cash_1" value="1" type="button" class="btn btn-info btn-lg btn-block">1</button>
                 </div>
@@ -56,14 +75,16 @@
                     <button name="cash_9" value="9" type="button" class="btn btn-info btn-lg btn-block">9</button>
                 </div>
 
-                <div class="col-sm-8">
+                <div class="col-sm-4">
                     <button name="cash_0" value="0" type="button" class="btn btn-info btn-lg btn-block">0</button>
+                </div>
+                <div class="col-sm-4">
+                    <button name="cash_d" value="." type="button" class="btn btn-info btn-lg btn-block">.</button>
                 </div>
                 <div class="col-sm-4">
                     <button name="cash_x" value="" type="button" class="btn btn-danger btn-lg btn-block">X</button>
                 </div>
             </div>
-            <div class="col-sm-1 col-md-2"></div>
         </div>
         <hr>
         <input type="hidden" name="_token" value="{{ csrf_token() }}">

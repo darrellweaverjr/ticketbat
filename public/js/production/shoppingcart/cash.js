@@ -2,22 +2,23 @@ var CashFunctions = function () {
 
     var initFunctions = function () {
 
-        //on button click
+        //on button click number
         $('#form_cash button[name^="cash_"]').bind('click', function(ev) {
             var value = $(this).val();
-            var cashed = $('#form_cash input[name="cashed"]').val();
-            if($.isNumeric(value))
-            {
-                if(value=='0')
-                    value = parseFloat(cashed*10).toFixed(2);
-                else
-                {
-                    cashed = cashed.replace('.','').replace(/\b0+/g, '')+value;
-                    value = (parseFloat(cashed)/100).toFixed(2);
-                }
-            }
+            var cashed = $('#form_cash input[name="cashed"]').data('number');
+            if(value=='')
+                cashed = '0';
             else
-                value = '0.00';
+                cashed = (cashed == '0')? ( (value=='.')? '0.' : value ) : ( cashed + value );
+            $('#form_cash input[name="cashed"]').data('number', cashed);
+            $('#form_cash input[name="cashed"]').val( parseFloat(cashed).toFixed(2) ).trigger('change');
+        });
+
+        //on button click plus
+        $('#form_cash button[name^="plus_"]').bind('click', function(ev) {
+            var value = $(this).val();
+            var cashed = $('#form_cash input[name="cashed"]').val();
+            value = (parseFloat(cashed)+parseFloat(value)).toFixed(2);
             $('#form_cash input[name="cashed"]').val( value ).trigger('change');
         });
 
@@ -50,7 +51,7 @@ var CashFunctions = function () {
         {
             $('#form_cash input[name="subtotal"]').css('color','black');
         }
-        $('#form_cash input[name="subtotal"]').val(total*-1);
+        $('#form_cash input[name="subtotal"]').val( (total*-1).toFixed(2) );
         $('#form_cash input[name="subtotal"]').validate();
     }
 
