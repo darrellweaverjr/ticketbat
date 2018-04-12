@@ -1,72 +1,57 @@
-var SwipeFunctions = function () {
+var CardFunctions = function () {
 
     var initFunctions = function () {
 
-        //on click swipe card
-        $('a[href="#tab_swipe"]').on('click', function(ev) {
-            //reset form here too
-            $('#modal_swipe_card').modal('show');
-            $('#modal_swipe_card input[name="stripe_card"]').val('');
-            $('#modal_swipe_card input[name="stripe_card"]').focus();
-        });
-        //on modal swipe card on click
-        $('#modal_swipe_card').on('click', function(ev) {
-            $('#modal_swipe_card input[name="stripe_card"]').val('');
-            $('#modal_swipe_card input[name="stripe_card"]').focus();
-        });
-        //swipe card
-        $('#modal_swipe_card input[name="stripe_card"]').blur(function (e) {
-            e.preventDefault();
-            $('#modal_swipe_card').modal('hide');
-            $('#tab_swipe input[name="customer"]').focus();
-        }).keyup(function (e) {
-            if($(this).val().length>=78 && $(this).val().substr($(this).val().length-1)=="?")
-            {
-                if(valid_swipe_credit_card($(this).val()))
-                {
-                    $('#modal_swipe_card').modal('hide');
-                    $('#tab_swipe input[name="customer"]').focus();
+        //on change country select
+        $('#form_card select[name="country"]').on('change', function(ev) {
+            var country_code = $(this).val();
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/general/region',
+                data: { country: country_code },
+                success: function(data) {
+                    if(data.success)
+                    {
+                        //fill out states
+                        $('select[name="state"]').find('option').not(':first').remove();
+                        $.each(data.regions,function(k, v) {
+                            $('select[name="state"]').append('<option value="'+v.code+'">'+v.name+'</option>');
+                        });
+                        $('select[name="state"]').val('');
+                        //check the zip code
+                        $('input[name="zip"]').rules('remove');
+                        if(country_code=='US' || country_code=='UM')
+                        {
+                            $('input[name="zip"]').rules('add', {
+                                minlength: 5,
+                                maxlength: 5,
+                                digits: true,
+                                range: [00500, 99999],
+                                required: true
+                            });
+                        }
+                        else
+                        {
+                            $('input[name="zip"]').rules('add', {
+                                minlength: 3,
+                                maxlength: 10,
+                                required: true
+                            });
+                        }
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to get the regions for that country. Please, select the first one",
+                        html: true,
+                        type: "error",
+                        showConfirmButton: true
+                    });
                 }
-            }
+            });
         });
-        //event to check swipe
-        function valid_swipe_credit_card(card_data)
-        {
-            var card_tracks = card_data.split("?");
-            var valid_track1 = /^%B[^\^\W]{0,19}\^[^\^]{2,26}\^\d{4}\w{3}[^?]+\?\w?$/.test(card_tracks[0]+'?');
-            var valid_track2 = /;[^=]{0,19}=\d{4}\w{3}[^?]+\?\w?/.test(card_tracks[1]+'?');
-            if(valid_track1 || valid_track2)
-            {
-                var details1 = card_data.split("^");
-                var card_number = details1[0];
-                card_number = card_number.substring(2);
-                if(details1[1].trim()=='')
-                {
-                    alert('That credit card has no client name on it.');
-                    return false;
-                }
-                var names = details1[1].split("/");
-                var first_name = names[1].trim();
-                var last_name = names[0].trim();
-                var details2 = details1[2].split(";");
-                details2 = details2[1].split("=");
-                var exp_date = details2[1];
-                exp_date = exp_date.substring(0, exp_date.length - 1);
-                var month = exp_date.substring(2, 4);
-                var year = exp_date.substring(0, 2);
-                $('#tab_swipe input[name="UMmagstripe"]').val(card_data);
-                $('#tab_swipe input[name="customer"]').val(first_name + ' ' + last_name);
-                $('#tab_swipe input[name="card"]').val(card_number);
-                $('#tab_swipe input[name="month"]').val(month);
-                $('#tab_swipe input[name="year"]').val(year);
-                return true;
-            }
-            else {
-                alert('Could not be correctly read the card.');
-                return false;
-            }
-        }
-
     }
     return {
         //main function to initiate the module
@@ -76,12 +61,12 @@ var SwipeFunctions = function () {
     };
 }();
 //*****************************************************************************************
-var SwipeValidation = function () {
+var CardValidation = function () {
     // advance validation
     var handleValidation = function() {
         // for more info visit the official plugin documentation:
         // http://docs.jquery.com/Plugins/Validation
-            var form = $('#form_swipe');
+            var form = $('#form_card');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
             form.validate({
@@ -108,9 +93,15 @@ var SwipeValidation = function () {
                         required: false
                     },
                     card: {
-                        minlength: 16,
+                        minlength: 15,
                         maxlength: 16,
                         creditcard: true,
+                        digits: true,
+                        required: true
+                    },
+                    cvv: {
+                        minlength: 3,
+                        maxlength: 4,
                         digits: true,
                         required: true
                     },
@@ -120,12 +111,30 @@ var SwipeValidation = function () {
                         required: true
                     },
                     year: {
-                        minlength: 2,
-                        maxlength: 4,
                         digits: true,
                         required: true
                     },
-                    UMmagstripe: {
+                    address: {
+                        minlength: 5,
+                        maxlength: 200,
+                        required: true
+                    },
+                    city: {
+                        minlength: 2,
+                        maxlength: 100,
+                        required: true
+                    },
+                    zip: {
+                        minlength: 5,
+                        maxlength: 5,
+                        digits: true,
+                        range: [00100, 99999],
+                        required: true
+                    },
+                    country: {
+                        required: true
+                    },
+                    state: {
                         required: true
                     }
                 },
@@ -164,8 +173,9 @@ var SwipeValidation = function () {
         }
     };
 }();
+
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    SwipeFunctions.init();
-    SwipeValidation.init();
+    CardFunctions.init();
+    CardValidation.init();
 });

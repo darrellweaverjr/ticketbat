@@ -124,56 +124,7 @@ var PurchaseFunctions = function () {
                 });
             }
         });
-        //on change country select
-        $('select[name="country"]').on('change', function(ev) {
-            var country_code = $(this).val();
-            jQuery.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '/general/region',
-                data: { country: country_code },
-                success: function(data) {
-                    if(data.success)
-                    {
-                        //fill out states
-                        $('select[name="state"]').find('option').not(':first').remove();
-                        $.each(data.regions,function(k, v) {
-                            $('select[name="state"]').append('<option value="'+v.code+'">'+v.name+'</option>');
-                        });
-                        $('select[name="state"]').val('');
-                        //check the zip code
-                        $('input[name="zip"]').rules('remove');
-                        if(country_code=='US' || country_code=='UM')
-                        {
-                            $('input[name="zip"]').rules('add', {
-                                minlength: 5,
-                                maxlength: 5,
-                                digits: true,
-                                range: [00500, 99999],
-                                required: true
-                            });
-                        }
-                        else
-                        {
-                            $('input[name="zip"]').rules('add', {
-                                minlength: 3,
-                                maxlength: 10,
-                                required: true
-                            });
-                        }
-                    }
-                },
-                error: function(){
-                    swal({
-                        title: "<span style='color:red;'>Error!</span>",
-                        text: "There was an error trying to get the regions for that country. Please, select the first one",
-                        html: true,
-                        type: "error",
-                        showConfirmButton: true
-                    });
-                }
-            });
-        });
+        
         //on change ticket printed options select
         $('select[name="printed_tickets"]').on('change', function(ev) {
             var printed_option = $(this).val();
