@@ -201,10 +201,7 @@ class ManifestController extends Controller{
             if(isset($input) && !empty($input['date']) && strtotime($input['date']))
             {
                 $control = new ReportManifestController($input['date']);
-                $response = $control->init();
-                if($response)
-                    return ['success'=>true,'msg'=>'The manifest was generated!'];
-                return ['success'=>false,'msg'=>'There was an error generating the manifest.'];
+                return $control->init(true);
             }
             return ['success'=>false,'msg'=>'There was an error.<br>Your must select all valid date.'];
 

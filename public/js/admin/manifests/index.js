@@ -142,17 +142,16 @@ var TableDatatablesManaged = function () {
                     {
                         swal({
                             title: "<span style='color:green;'>Saved!</span>",
-                            text: data.msg,
+                            text: "<div style='text-align:left'>"+data.msg+"</div>",
                             html: true,
-                            timer: 1500,
-                            type: "success",
-                            showConfirmButton: false
+                            type: "success"
+                        },function(){
+                            location.reload();
                         });
-                        location.reload();
                     }
                     else swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: data.msg,
+                            text: "<div style='text-align:left'>"+data.msg+"</div>",
                             html: true,
                             type: "error"
                         },function(){

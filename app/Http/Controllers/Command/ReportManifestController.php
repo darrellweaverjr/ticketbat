@@ -38,42 +38,71 @@ class ReportManifestController extends Controller{
     /*
      * get sales report pdf
      */
-    public function init()
+    public function init($log=false)
     {
+        $logs = '<b>Starting manifest controller...</b><br>';
         try {
             //send reports for each type of manifest
             foreach ($this->manifests as $type)
             {
                 //create report
+                $logs .= '<b><i>*  Creating reports manifest "'.$type.'"...</i></b><br>';
                 $info = $this->create_report($type);
                 if(!empty($info['dates']))
                 {
+                    $logs .= '* *  '.count($info['dates']).' showtimes with sales for date "'.$this->date_manifest.'"...<br>';
                     //create and send report for each date
-                    foreach($info['dates'] as $date)
+                    foreach($info['dates'] as $k=>$date)
                     {
+                        $logs .= '* * *  Creating manifest for showtime "'.$date->name.'" on "'.$date->show_time.'" ...<br>';
                         $date->type = $type;
                         $data = $this->create_data($date);
                         $manifest = $this->save_data($data);
                         if($manifest)
                         {
+                            $logs .= '* * * *  Manifest saved for showtime "'.$date->name.'" on "'.$date->show_time.'" ...<br>';
                             if($data['s_manifest_emails']>0 && !empty($data['emails']))
                             {
+                                $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" sending to email "'.$data['emails'].'" ...<br>';
                                 $sent = $manifest->send($data['emails'], $info['subject']);
                                 //storage if email was sent successfully
                                 $data['sent'] = ($sent)? 1 : 0;
                                 $manifest->email = json_encode($data);
                                 $manifest->save();
+                                if($sent)
+                                    $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" sent successfully ...<br>';
+                                else
+                                    $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" error sending to email ...<br>';
                             }
                             else
+                            {
+                                $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" not sent by email ...<br>';
                                 $sent = true;
+                            }
                         }
+                        else
+                            $logs .= '* * * *  Manifest error saving for showtime "'.$date->name.'" on "'.$date->show_time.'" ...<br>';
                     }
                 }
+                else
+                    $logs .= '* *  No showtimes with sales for date "'.$this->date_manifest.'"...<br>';
             }
-            if(isset($sent))
-                return $sent;
-            return false;
+            if($log)
+            {
+                $logs .= '<b>Finishing manifest controller...</b><br>';
+                if(isset($sent))
+                    return ['success'=>$sent,'msg'=>$logs];
+                return ['success'=>false,'msg'=>$logs];
+            }
+            else
+            {
+                if(isset($sent))
+                    return $sent;
+                return false;
+            }
         } catch (Exception $ex) {
+            if($log)
+                return ['success'=>false,'msg'=>$logs];
             return false;
         }
     }
@@ -143,7 +172,7 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->havingRaw('DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) <= NOW()')
+                            ->havingRaw('NOW() BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
                             ->havingRaw('COUNT(purchases.id) != manifest_emails.num_purchases')
                             ->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
