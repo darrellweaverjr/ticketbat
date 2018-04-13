@@ -17,9 +17,10 @@ var CashFunctions = function () {
         //on button click plus
         $('#form_cash button[name^="plus_"]').bind('click', function(ev) {
             var value = $(this).val();
-            var cashed = $('#form_cash input[name="cashed"]').val();
-            value = (parseFloat(cashed)+parseFloat(value)).toFixed(2);
-            $('#form_cash input[name="cashed"]').val( value ).trigger('change');
+            var cashed = $('#form_cash input[name="cashed"]').data('number');
+            cashed = (cashed == '0')? ( value ) : ( (parseFloat(cashed)+parseFloat(value)) );
+            $('#form_cash input[name="cashed"]').data('number', cashed);
+            $('#form_cash input[name="cashed"]').val( parseFloat(cashed).toFixed(2) ).trigger('change');
         });
 
         //on change cashed
