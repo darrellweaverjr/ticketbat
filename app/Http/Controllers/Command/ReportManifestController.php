@@ -37,7 +37,6 @@ class ReportManifestController extends Controller{
         {
             $this->date_manifest = date('Y-m-d H:i:s',strtotime($this->now_var));
             $this->previous_date = false;
-            echo $this->date_manifest;
         }
     }
     /*
