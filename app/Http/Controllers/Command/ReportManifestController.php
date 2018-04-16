@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Command;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Manifest;
+use Carbon\Carbon;
 
 /**
  * Manage ReportManifest options for the commands
@@ -16,6 +17,7 @@ class ReportManifestController extends Controller{
     protected $manifests = ['Preliminary','Primary','LastMinute'];
     protected $date_manifest;
     protected $previous_date;
+    protected $now_var;
 
     /**
      * Create a new controller instance.
@@ -24,6 +26,8 @@ class ReportManifestController extends Controller{
      */
     public function __construct($date=null)
     {
+        $this->now_var = Carbon::now();
+
         if((!empty($date) && strtotime($date)))
         {
             $this->date_manifest = date('Y-m-d',strtotime($date));
@@ -31,8 +35,9 @@ class ReportManifestController extends Controller{
         }
         else
         {
-            $this->date_manifest = date('Y-m-d H:i',strtotime('now'));
+            $this->date_manifest = date('Y-m-d H:i:s',strtotime($this->now_var));
             $this->previous_date = false;
+            echo $this->date_manifest;
         }
     }
     /*
@@ -172,7 +177,7 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->havingRaw('NOW() BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
+                            ->havingRaw( $this->now_var . ' BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
                             ->havingRaw('COUNT(purchases.id) != manifest_emails.num_purchases')
                             ->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
