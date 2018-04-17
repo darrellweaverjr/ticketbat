@@ -14,9 +14,10 @@
                 <i class="required"> required</i>
             </label>
             <div class="col-sm-8 show-error">
-                <input type="text" class="form-control" placeholder="Write your full name" name="customer" autocomplete="on">
+                <input type="text" class="form-control" placeholder="Write your full name" name="customer" autocomplete="on" readOnly="true">
             </div>
         </div>
+        @if($cart['seller']==0)
         <div class="form-group">
             <label class="control-label col-sm-3 text-right">Phone:</label>
             <div class="col-sm-8 show-error">
@@ -31,6 +32,7 @@
                 <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}" autocomplete="on">
             </div>
         </div>
+        @endif
         <div class="hidden">
             <input type="hidden" name="card" value="">
             <input type="hidden" name="month" value="0">

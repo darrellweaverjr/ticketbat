@@ -5,7 +5,7 @@
 @stop
 @section('styles')
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <style>@if($ticket_types_css) {{$ticket_types_css}} @endif</style>
+    @if($ticket_types_css)<style>{{$ticket_types_css}}</style>@endif
     <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 

@@ -82,7 +82,13 @@ class HomeController extends Controller
                 ->groupBy('shows.id')
                 ->distinct()->get();
 
+            //$link = (Auth::check() && Auth::user()->user_type_id==7)? 'pos/buy/' : 'event/';
+            $link = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 'pos/buy/' : 'event/';
+
             foreach ($shows as $s) {
+                //add link here
+                $s->link = '/'.$link.$s->slug;
+                //set up url
                 if (!empty($s->logo_url)) {
                     $s->logo_url = Image::view_image($s->logo_url);
                 }

@@ -146,7 +146,7 @@
 
                     <div id="myShows" class="cbp text-center">
                         @foreach($shows as $index=>$s)
-                            <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-category="{{$s->category_id}}" data-href="/event/{{$s->slug}}">
+                            <div class="cbp-item show_section filtered" data-id="{{$s->id}}" data-search="{{$s->name}}" data-category="{{$s->category_id}}" data-href="{{$s->link}}">
                                 <div class="cbp-caption">
                                     <a class="cbp-caption-defaultWrap">
                                         <img src="{{$s->logo_url}}" alt="{{$s->name}}"> </a>

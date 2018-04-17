@@ -223,25 +223,25 @@
                         <div class="tab-content" id="tabs_payment">
                             <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) active @endif in @if($cart['total']>0) hidden @endif" id="tab_skip">
                                 <!-- BEGIN SWIPE FORM -->
-                                @includeIf('production.shoppingcart.skip')
+                                @includeIf('production.shoppingcart.skip', ['cart' => $cart])
                                 <!-- END SWIPE FORM -->
                             </div>
 
                             <div class="tab-pane fade active in @if(!($cart['total']>0)) hidden @endif" id="tab_card">
                                 <!-- BEGIN SWIPE FORM -->
-                                @includeIf('production.shoppingcart.card')
+                                @includeIf('production.shoppingcart.card', ['cart' => $cart])
                                 <!-- END SWIPE FORM -->
                             </div>
 
                             <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) hidden @endif" id="tab_swipe">
                                 <!-- BEGIN SWIPE FORM -->
-                                @includeIf('production.shoppingcart.swipe')
+                                @includeIf('production.shoppingcart.swipe', ['cart' => $cart])
                                 <!-- END SWIPE FORM -->
                             </div>
 
                             <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) hidden @endif" id="tab_cash">
                                 <!-- BEGIN CASH FORM -->
-                                @includeIf('production.shoppingcart.cash')
+                                @includeIf('production.shoppingcart.cash', ['cart' => $cart])
                                 <!-- END CASH FORM -->
                             </div>
 

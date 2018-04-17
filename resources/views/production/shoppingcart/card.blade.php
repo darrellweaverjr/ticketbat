@@ -121,6 +121,7 @@
                 <input type="text" class="form-control" placeholder="#####" name="zip" style="min-width:75px" value="{{old('zip')}}" autocomplete="on">
             </div>
         </div>
+        @if($cart['seller']==0)
         <div class="form-group">
             <label class="control-label col-sm-3 text-right">Phone:</label>
             <div class="col-sm-8 show-error">
@@ -135,6 +136,7 @@
                 <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}" autocomplete="on">
             </div>
         </div>
+        @endif
     </form>
     <!-- END FORM-->
 </div>

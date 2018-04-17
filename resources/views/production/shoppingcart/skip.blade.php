@@ -9,6 +9,7 @@
         <input type="hidden" name="method" value="skip">
         <input type="hidden" name="newsletter" value="1">
         <div class="share_tickets_subform hidden"></div>
+        @if($cart['seller']==0)
         <div class="form-group">
             <label class="control-label col-sm-3 text-right">Customer:
                 <i class="required"> required</i>
@@ -31,6 +32,7 @@
                 <input type="email" class="form-control" placeholder="mail@server.com" name="email" value="{{$cart['email']}}" autocomplete="on">
             </div>
         </div>
+        @endif
     </form>
     <!-- END FORM-->
 </div>
