@@ -30,14 +30,6 @@ class PurchaseController extends Controller{
             if(!empty($info['cardholder']) && !empty($info['address']) && !empty($info['city']) && !empty($info['email'])
             && !empty($info['country']) && !empty($info['region']) && !empty($info['zip']) && !empty($info['x_token']) && !empty($info['s_token']))
             {
-                //checking the email
-                $info['email'] = trim(strtolower($info['email']));
-                if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
-                    return ['success'=>false, 'msg'=>'Enter a valid email address.'];
-                //check the correct name
-                $info['cardholder'] = explode(' ',ucwords(trim($info['cardholder'])),2);
-                $info['first_name'] = $info['cardholder'][0];
-                $info['last_name'] = $info['cardholder'][1];
                 //get all items in shoppingcart
                 $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
                 if(!$shoppingcart['success'])
@@ -52,6 +44,14 @@ class PurchaseController extends Controller{
                 if($shoppingcart['total']>0)
                     if(empty($info['card']) || empty($info['month']) || empty($info['year']) || empty($info['cvv']))
                         return Util::json(['success'=>false, 'msg'=>'There is no payment method for your items.']);
+                //checking the email
+                $info['email'] = trim(strtolower($info['email']));
+                if(!filter_var($info['email'], FILTER_VALIDATE_EMAIL))
+                    return ['success'=>false, 'msg'=>'Enter a valid email address.'];
+                //check the correct name
+                $info['cardholder'] = explode(' ',ucwords(trim($info['cardholder'])),2);
+                $info['first_name'] = $info['cardholder'][0];
+                $info['last_name'] = $info['cardholder'][1];
                 //set up customer
                 $client = User::customer_set($info, $current);
                 if(!$client['success'])

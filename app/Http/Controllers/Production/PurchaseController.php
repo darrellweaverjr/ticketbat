@@ -30,6 +30,16 @@ class PurchaseController extends Controller
             $info = Input::all();
             $current = date('Y-m-d H:i:s');
             $info['s_token'] = Util::s_token(false,true);
+            //get all items in shoppingcart
+            $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
+            if(!$shoppingcart['success'])
+                return ['success'=>false, 'msg'=>$shoppingcart['msg']];
+            if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
+                return ['success'=>false, 'msg'=>'There are no items to buy in the Shopping Cart.'];
+            //remove unavailable items from shopingcart
+            foreach($shoppingcart['items'] as $key=>$item)
+                if($item->unavailable)
+                    unset($shoppingcart['items'][$key]);
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
             {
@@ -47,18 +57,15 @@ class PurchaseController extends Controller
                 $info['first_name'] = $info['customer'][0];
                 $info['last_name'] = $info['customer'][1];
             }
+            else if($shoppingcart['seller']>0)
+            {
+                $info['first_name'] = Auth::user()->first_name;
+                $info['last_name'] = Auth::user()->last_name;
+                $info['email'] = Auth::user()->email;
+            }
             else
                 return ['success'=>false, 'msg'=>'Fill the form out correctly!'];
-            //get all items in shoppingcart
-            $shoppingcart = Shoppingcart::calculate_session($info['s_token'],true);
-            if(!$shoppingcart['success'])
-                return ['success'=>false, 'msg'=>$shoppingcart['msg']];
-            if(!count($shoppingcart['items']) || !$shoppingcart['quantity'])
-                return ['success'=>false, 'msg'=>'There are no items to buy in the Shopping Cart.'];
-            //remove unavailable items from shopingcart
-            foreach($shoppingcart['items'] as $key=>$item)
-                if($item->unavailable)
-                    unset($shoppingcart['items'][$key]);
+
             //set up customer
             $client = User::customer_set($info, $current);
             if(!$client['success'])
