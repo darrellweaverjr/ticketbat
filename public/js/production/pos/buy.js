@@ -26,6 +26,7 @@ var POSbuy = function () {
                     {
                         $('#t_t_transactions').html(cart.tally.transactions);
                         $('#t_t_tickets').html(cart.tally.tickets);
+                        $('#t_t_cash').html('$'+parseFloat(cart.tally.cash).toFixed(2));
                         $('#t_t_total').html('$'+parseFloat(cart.tally.total).toFixed(2));
                     }
                     //update payment tabs
@@ -146,13 +147,92 @@ var POSbuy = function () {
                 var id = $(this).closest('tr').data('id');
                 update_items(0,0,id,0);
             });
+            
+            //onclose modal complete
+            $('#modal_complete').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+
+            $('#modal_complete').modal('show');
 
         } // end init
 
     };
 
 }();
+//*****************************************************************************************
+var SubmitFunctions = function () {
 
+    var initFunctions = function () {
+               
+        //on submit
+        $('#btn_process').click( function(){
+            var form_id = $('#tabs_payment').find('.tab-pane.active:not(.hidden)').find('form').attr('id');
+            if( $('#'+form_id).valid() )
+            {
+                $('#btn_process').addClass('hidden');
+                $('#btn_loading').removeClass('hidden');
+                swal({
+                    title: "Processing your item(s)",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/purchase/process',
+                    data: $('#'+form_id).serializeArray(),
+                    success: function(data) {
+                        if(data.success)
+                        {
+                            $('#modal_complete a.ticket_regular').attr('href','/user/purchases/tickets/C/'+data.purchases);
+                            $('#modal_complete a.ticket_boca').attr('href','/user/purchases/tickets/S/'+data.purchases);
+                            $('#modal_complete a.ticket_wrist').attr('href','/user/purchases/tickets/W/'+data.purchases);
+                            swal.close();
+                            $('#modal_complete').modal('show');
+                        }
+                        else
+                        {
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#btn_loading').addClass('hidden');
+                                $('#btn_process').removeClass('hidden');
+                                $('#btn_process').prop('disabled',true);
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to process the item(s). Please, contact us.",
+                            html: true,
+                            type: "error",
+                            showConfirmButton: true
+                        },function(){
+                            $('#btn_loading').addClass('hidden');
+                            $('#btn_process').removeClass('hidden');
+                            $('#btn_process').prop('disabled',true);
+                        });
+                    }
+                });
+            }
+        });
+
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            initFunctions();
+        }
+    };
+}();
+//*****************************************************************************************
 jQuery(document).ready(function() {
    POSbuy.init();
+   SubmitFunctions.init();
 });

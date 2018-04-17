@@ -2,14 +2,6 @@ var ValidateFunctions = function () {
 
     var initFunctions = function () {
 
-        //function disabled submit
-        function disabled_submit()
-        {
-            $('#form_cash div.desglose input[name^="x"]').attr('readonly',false);
-            $('#form_cash div.desglose input[name="change"]').attr('readonly',false);
-            //submit
-            $('#btn_process').prop('disabled',true);
-        }
         //on change any element re-check
         $('a[href^="#tab_"]').on('click', function(ev) {
             $('#accept_terms').prop('checked', false);
@@ -21,7 +13,7 @@ var ValidateFunctions = function () {
             if(!$('#'+form_id).validate().element( $(this) ))
             {
                 $('#accept_terms').prop('checked', false);
-                disabled_submit();
+                $('#btn_process').prop('disabled',true);
             }
         });
 
@@ -73,8 +65,6 @@ var ValidateFunctions = function () {
                             proceed = true;
                             break;
                         case 'form_cash':
-                            $('#form_cash div.desglose input[name^="x"]').attr('readonly',true);
-                            $('#form_cash div.desglose input[name="change"]').attr('readonly',true);
                             proceed = true;
                             break;
                     }
@@ -91,7 +81,7 @@ var ValidateFunctions = function () {
                 }
             }
             else
-                disabled_submit();
+                $('#btn_process').prop('disabled',true);
         });
 
     }

@@ -178,17 +178,17 @@ class POSController extends Controller
             {
                 $tally = DB::table('purchases')
                             ->select(DB::raw('COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
+                                              SUM( IF(purchases.payment_type="Cash",purchases.price_paid,0) ) AS cash,
                                               SUM(purchases.price_paid) AS total'))
                             ->where('purchases.status','=','Active')
                             ->where('purchases.show_time_id','=',$show_time_id)
                             ->where('purchases.user_id','=',Auth::user()->id)
                             ->where('purchases.channel','=','POS')
-                            ->where('purchases.payment_type','=','Cash')
                             ->groupBy('purchases.show_time_id')->orderBy('purchases.show_time_id')->first();
                 if($tally)
-                    $cart['tally'] = ['transactions'=>$tally->transactions, 'tickets'=>$tally->tickets, 'total'=>$tally->total];
+                    $cart['tally'] = ['transactions'=>$tally->transactions, 'tickets'=>$tally->tickets, 'cash'=>$tally->cash, 'total'=>$tally->total];
                 else
-                    $cart['tally'] = ['transactions'=>0, 'tickets'=>0, 'total'=>0];
+                    $cart['tally'] = ['transactions'=>0, 'tickets'=>0, 'cash'=>0, 'total'=>0];
             }
             return $cart;
         } catch (Exception $ex) {
@@ -213,7 +213,7 @@ class POSController extends Controller
             {
                 return $this->remove($info['id'],$s_token);
             }
-            else if(!empty($info['show_time_id']) && !empty($info['ticket_id']))
+            else if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['show_time_id']))
             {
                 $item = Shoppingcart::where('item_id',$info['show_time_id'])->where('ticket_id',$info['ticket_id'])->where('session_id',$s_token)->first();
 
@@ -257,10 +257,10 @@ class POSController extends Controller
     /*
      * remove items in the cart
      */
-    public function remove($id,$s_token,$show_time_id)
+    public function remove($id,$s_token)
     {
         try {
-            if(!empty($id) && !empty($show_time_id))
+            if(!empty($id))
             {
                 //find and remove item
                 $success = Shoppingcart::remove_item($id, $s_token);

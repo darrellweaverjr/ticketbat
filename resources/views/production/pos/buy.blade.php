@@ -5,17 +5,7 @@
 @stop
 @section('styles')
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-    @if($ticket_types_css)<style>{{$ticket_types_css}}
-
-    #tb_items {
-        //width: 100px;
-        //height: 100px;
-        //background: red;
-        -webkit-transition: width 2s; /* Safari */
-        transition: width 2s;
-    }
-
-    </style>@endif
+    @if($ticket_types_css)<style>{{$ticket_types_css}}</style>@endif
     <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -199,7 +189,7 @@
     </div>
     <!-- END PAYMENT -->
 
-    <!-- BEGIN TERMS MODAL -->
+    <!-- BEGIN TALLY MODAL -->
     <div id="modal_tally" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -212,31 +202,31 @@
                         <h3 class="text-center"><b>{{Auth::user()->first_name}} {{Auth::user()->last_name}}</b><br>{{Auth::user()->email}}</h3>
                         <div class="row" style="padding:20px">
                             <h3 class="sbold required">Pending: </h3><hr>
-                            <div class="col-md-4 col-sm-4 col-xs-4 text-stat1">
-                                <h3 class="sbold label-primary">Transactions: </h3>
-                                <h3 class="text-center" id="t_p_transactions">1</h3>
-                            </div>
-                            <div class="col-md-4 col-sm-4 col-xs-4 text-stat1">
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-info">Tickets: </h3>
                                 <h3 class="text-center" id="t_p_tickets">{{$cart['quantity']}}</h3>
                             </div>
-                            <div class="col-md-4 col-sm-4 col-xs-4 text-stat1">
-                                <h3 class="sbold label-success">Cash: </h3>
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
+                                <h3 class="sbold label-success">Collect: </h3>
                                 <h3 class="text-right" id="t_p_total">${{number_format($cart['total'],2)}}</h3>
                             </div>
                         </div>
                         <div class="row" style="padding:20px">
                             <h3 class="sbold required">Totals: </h3><hr>
-                            <div class="col-md-4 col-sm-4 col-xs-4 text-stat1">
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-primary">Transactions: </h3>
                                 <h3 class="text-center" id="t_t_transactions">{{$cart['tally']['transactions']}}</h3>
                             </div>
-                            <div class="col-md-4 col-sm-4 col-xs-4 text-stat1">
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-info">Tickets: </h3>
                                 <h3 class="text-center" id="t_t_tickets">{{$cart['tally']['tickets']}}</h3>
                             </div>
-                            <div class="col-md-4 col-sm-4 col-xs-4 text-stat1">
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-success">Cash: </h3>
+                                <h3 class="text-right" id="t_t_cash">${{number_format($cart['tally']['cash'],2)}}</h3>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
+                                <h3 class="sbold label-success">Total: </h3>
                                 <h3 class="text-right" id="t_t_total">${{number_format($cart['tally']['total'],2)}}</h3>
                             </div>
                         </div>
@@ -248,7 +238,44 @@
             </div>
         </div>
     </div>
-    <!-- END TERMS MODAL -->
+    <!-- END TALLY MODAL -->
+    
+    <!-- BEGIN COMPLETE MODAL -->
+    <div id="modal_complete" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content text-center">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h3 class="modal-title">Purchase completed</h3>
+                </div>
+                <div class="modal-body" style="padding:30px">
+                    <div class="row">
+                        <a class="btn btn-danger btn-lg btn-block uppercase" disabled="true" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</a>
+                    </div><hr>
+                    <div class="row">
+                        <h4>Print tickets:</h4>
+                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_regular" href="/user/purchases/tickets/C/1" target="_blank"><i class="fa fa-newspaper-o"></i> Regular Paper</a>
+                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_boca" href="/user/purchases/tickets/S/1" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
+                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_wrist" href="/user/purchases/tickets/W/1" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
+                    </div><hr>
+                    <div class="row">
+                        <form method="post" id="form_receipt_email" class="form-horizontal">
+                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                <input type="email" value="" name="input_receipt_email" class="form-control input-lg" placeholder="abc@gmail.com">
+                            </div>
+                            <div class="col-md-5 col-sm-5 col-xs-12">
+                                <a class="btn btn-info btn-lg btn-block uppercase" id="btn_receipt_email"><i class="fa fa-send"></i> Email receipt</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-success btn-lg btn-block uppercase"><i class="fa fa-shopping-cart icon-basket"></i> Continue shopping</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END COMPLETE MODAL -->
 
 @endsection
 

@@ -40,6 +40,14 @@ class PurchaseController extends Controller
             foreach($shoppingcart['items'] as $key=>$item)
                 if($item->unavailable)
                     unset($shoppingcart['items'][$key]);
+            //pre-checks if seller
+            if($shoppingcart['seller']>0)
+            {
+                if(empty($info['email']))
+                    $info['email'] = Auth::user()->email;
+                if(empty($info['customer']))
+                    $info['customer'] = Auth::user()->first_name.' '.Auth::user()->last_name;
+            }
             //check required params
             if(!empty($info['customer']) && !empty($info['email']))
             {
@@ -57,15 +65,8 @@ class PurchaseController extends Controller
                 $info['first_name'] = $info['customer'][0];
                 $info['last_name'] = $info['customer'][1];
             }
-            else if($shoppingcart['seller']>0)
-            {
-                $info['first_name'] = Auth::user()->first_name;
-                $info['last_name'] = Auth::user()->last_name;
-                $info['email'] = Auth::user()->email;
-            }
             else
                 return ['success'=>false, 'msg'=>'Fill the form out correctly!'];
-
             //set up customer
             $client = User::customer_set($info, $current);
             if(!$client['success'])
