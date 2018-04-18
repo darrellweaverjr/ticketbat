@@ -129,14 +129,14 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','=',$this->date_manifest)
+                            ->whereDate('show_times.show_time','>=',$this->date_manifest)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
                                       ->whereRaw('show_times.id = manifest_emails.show_time_id')
                                       ->where('manifest_type','=','Preliminary');
                             });
-                    if(!$this->previous_date)
+                    if($this->previous_date==false)
                         $dates = $dates->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR)'),'<=',$this->date_manifest);
                     $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Preliminary','subject'=>'Preliminary Manifest for '];
@@ -150,14 +150,14 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','=',$this->date_manifest)
+                            ->whereDate('show_times.show_time','>=',$this->date_manifest)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
                                       ->whereRaw('show_times.id = manifest_emails.show_time_id')
                                       ->where('manifest_type','=','Primary');
                             });
-                    if(!$this->previous_date)
+                    if($this->previous_date==false)
                         $dates = $dates->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)'),'<=',$this->date_manifest);
                     $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Primary Manifest for '];
@@ -166,7 +166,6 @@ class ReportManifestController extends Controller{
                     $dates = DB::table('show_times')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->join('manifest_emails', 'manifest_emails.show_time_id', '=' ,'show_times.id')
                             ->join('manifest_emails', function ($join) {
                                 $join->on('manifest_emails.show_time_id', '=' ,'show_times.id')
                                      ->on('manifest_emails.manifest_type', '=', 'Primary');
