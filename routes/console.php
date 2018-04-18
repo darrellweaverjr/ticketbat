@@ -1,8 +1,8 @@
 <?php
 
 //REPORTS
-Artisan::command('ReportManifest', function () {
-    $this->call('Report:manifest');
+Artisan::command('ReportManifest {date=0}', function ($date) {
+    $this->call('Report:manifest',['date'=>$date]);
 });
 Artisan::command('ReportSales {days=1} {onlyadmin=1}', function ($days, $onlyadmin) {
     $this->call('Report:sales',['days'=>$days,'onlyadmin'=>$onlyadmin]);
