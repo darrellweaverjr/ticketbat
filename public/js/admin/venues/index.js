@@ -1921,11 +1921,11 @@ var FormValidation = function () {
                         required: true
                     },
                     logo_url: {
-                        url: true,
+                        //url: true,
                         required: true
                     },
                     header_url: {
-                        url: true,
+                        //url: true,
                         required: true
                     }
                 },

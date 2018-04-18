@@ -3076,6 +3076,14 @@ var FormValidation = function () {
                     },
                     category_id: {
                         required: true
+                    },
+                    logo_url: {
+                        //url: true,
+                        required: true
+                    },
+                    header_url: {
+                        //url: true,
+                        required: true
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit
