@@ -246,49 +246,50 @@
         <div style="text-align:center">
             <img src="http://www.ticketbat.com/themes/img/logo-header-white.jpg" width="280" alt="TicketBat Receipt">
         </div><hr>
-        @if($purchase['restrictions'] != 'None')
-        <b>Restrictions:</b> {{$purchase['restrictions']}}<br>
+        @if(!empty($printer['restrictions']))
+        <b>Restrictions:</b> {{implode(', ',$printer['restrictions'])}}<br>
         @endif
-        <b>Order ID:</b> {{$purchase['id']}}<br>
-        <b>Customer Name:</b> {{$purchase['first_name']}}  {{$purchase['last_name']}}<hr>
-        <table border="0" align="center" cellpadding="10" cellspacing="0">
+        <b>Order ID:</b> {{$printer['order_id']}}<hr>
+        <table border="0" align="center"  cellspacing="0">
             <thead>
                 <tr>
-                    <th width="80%">ITEMS</th>
-                    <th width="20%">PRICE</th>
+                    <th width="70%">ITEMS</th>
+                    <th width="30%">PRICE</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach($printer['items'] as $p)
                 <tr>
                     <td valign="top">
-                        {{$purchase['qty']}} {{$purchase['ticket_type_type']}} ticket(s)<br>
-                        {{$purchase['show_name']}} <br> 
-                        @if($purchase['time_alternative']) {{$purchase['time_alternative']}} @else {{date('m/d/Y g:ia',strtotime($purchase['show_time']))}} @endif     
-                        @if($purchase['title']!='None') Package: {{$purchase['title']}} @endif
+                        {{$p->quantity}} {{$p->ticket_type_type}} ticket(s)<br>
+                        {{$p->show_name}} <br> 
+                        @if($p->time_alternative) {{$p->time_alternative}} @else {{date('m/d/Y g:ia',strtotime($p->show_time))}} @endif     
+                        @if(!empty($p->title)) <br>Package: {{$p->title}} @endif
                     </td>
-                    <td valign="bottom">
-                        $ {{money_format('%(#10n',$purchase['price_each'])}}
+                    <td valign="bottom" style="text-align:right">
+                        ${{money_format('%(#10n',$p->price_paid)}}
                     </td>
                 </tr>
+                @endforeach
             </tbody>
-            <tbody>
+            <tfoot style="font-weight:bold;">
                 <tr>
-                    <td valign="bottom">Qty</td>
-                    <td valign="bottom">{{$purchase['qty']}}</td>
+                    <td valign="bottom">QTY</td>
+                    <td valign="bottom" style="text-align:right">{{$printer['qty']}}</td>
                 </tr>
                 <tr>
-                    <td valign="bottom">Totals</td>
-                    <td valign="bottom">$ {{money_format('%(#10n',$purchase['price_paid'])}}</td>
+                    <td valign="bottom">TOTALS</td>
+                    <td valign="bottom" style="text-align:right">${{money_format('%(#10n',$printer['total'])}}</td>
                 </tr>
                 <tr>
-                    <td valign="bottom">Paid</td>
-                    <td valign="bottom">$ {{money_format('%(#10n',$purchase['price_paid'])}}</td>
+                    <td valign="bottom">PAID</td>
+                    <td valign="bottom" style="text-align:right">${{money_format('%(#10n',$printer['total'])}}</td>
                 </tr>
                 <tr>
-                    <td valign="bottom">Pending</td>
-                    <td valign="bottom">$ 0.00</td>
+                    <td valign="bottom">PENDING</td>
+                    <td valign="bottom" style="text-align:right">$0.00</td>
                 </tr>
-            </tbody>
+            </tfoot>
         </table><hr>
-        <p>{{$purchase['ticket_info']}}</p>    
+        <p>{{implode('<br>',$printer['info'])}}</p>    
 @endif

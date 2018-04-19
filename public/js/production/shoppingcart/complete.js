@@ -3,7 +3,7 @@ var CompleteFunctions = function () {
     var initFunctions = function () {
 
         $(window).bind('beforeunload', function(e){
-            if(!($('#receipt_print').length>0))
+            if(!($('#btn_receipt_print').length>0))
                 return "Are you sure you want to leave this page? This page will allow you to print your tickets.";
         });
 
@@ -84,12 +84,10 @@ var CompleteFunctions = function () {
                 }
             });
         });
-
-        //on resend email welcome
+        
+        //on print receipt
         $('#btn_receipt_print').on('click', function(ev) {
-            var height = parseInt($('#receipt_print').data('qty'))*200+400;
-            var receiptWindow = window.open('','TicketBat Receipt','width=300,height='+height);
-            receiptWindow.document.write(document.getElementById("receipt_print").innerHTML);
+            var receiptWindow = window.open($(this).data('href'),'TicketBat Receipt','width=300,height=700');
             receiptWindow.print();
             receiptWindow.close();
         });

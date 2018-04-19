@@ -168,6 +168,7 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     Route::post('purchase/complete', 'PurchaseController@complete');
     Route::post('purchase/welcome', 'PurchaseController@welcome');
     Route::post('purchase/receipts', 'PurchaseController@receipts');
+    Route::get('purchase/printer/{purchases}', 'PurchaseController@printer');
     //event
     Route::post('event/reviews', 'EventController@reviews');
     Route::match(['get','post'], 'buy/{slug}/{product}', 'EventController@buy');
@@ -180,5 +181,6 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     //POS
     Route::match(['get','post'], 'pos/buy/{slug}', 'POSController@buy');
     Route::post('pos/update', 'POSController@update');
-    Route::post('pos/receipt', 'POSController@receipt');
+    Route::post('pos/email_receipt', 'POSController@email_receipt');
+    Route::get('pos/print_receipt/{purchases}', 'POSController@print_receipt');
 });

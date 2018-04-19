@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Image;
 
 class VenueController extends Controller
@@ -26,6 +27,17 @@ class VenueController extends Controller
         try {
             //get all records
             $venues = [];
+            
+            // Don't hide shows for Seller accounts hack
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
+                $venues_edit = Auth::user()->venues_check_ticket;
+                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
+                $link = 'pos/buy/';
+            } else {
+                $venues_check = null;
+                $link = 'event';
+            }
+            
             $_venues = DB::table('venues')
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
                         ->join('shows', 'venues.id', '=' ,'shows.venue_id')
@@ -38,8 +50,11 @@ class VenueController extends Controller
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('tickets.is_active','>',0)
-                        ->whereNotNull('venues.logo_url')
-                        ->groupBy('venues.id')->distinct()->get();
+                        ->whereNotNull('venues.logo_url');
+            if(!is_null($venues_check))
+                $_venues = $_venues->whereIn('venues.id',$venues_check);
+            $_venues = $_venues->groupBy('venues.id')->distinct()->get();
+            
             foreach ($_venues as $v)
             {
                 $v->logo_url = Image::view_image($v->logo_url);
@@ -66,13 +81,27 @@ class VenueController extends Controller
         try {
             if(empty($slug))
                 return redirect()->route('index');
+            
+            // Don't hide shows for Seller accounts hack
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
+                $venues_edit = Auth::user()->venues_check_ticket;
+                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
+                $link = 'pos/buy/';
+            } else {
+                $venues_check = null;
+                $link = 'event';
+            }
+            
             //get all records
             $venue = DB::table('venues')
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
                         ->select(DB::raw('venues.id as venue_id, venues.slug, venues.description, venues.name, venues.header_url,
                                           venues.facebook, venues.twitter, venues.googleplus, venues.yelpbadge, venues.youtube, venues.instagram,
                                           locations.*, IF(venues.restrictions!="None",venues.restrictions,"") AS restrictions'))
-                        ->where('venues.is_featured','>',0)->where('venues.slug', $slug)->first();
+                        ->where('venues.is_featured','>',0)->where('venues.slug', $slug);
+            if(!is_null($venues_check))
+                $venue = $venue->whereIn('venues.id',$venues_check);  
+            $venue= $venue->first();
             if(!$venue)
                 return redirect()->route('index');
             //get header
@@ -92,15 +121,16 @@ class VenueController extends Controller
                         ->where('shows.venue_id',$venue->venue_id)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
                         ->where('show_times.is_active','=',1)
                         ->where('show_times.show_time','>',\Carbon\Carbon::now())
-                        ->whereNotNull('shows.logo_url')
-                        ->orderBy('show_times.show_time','ASC')
-                        ->groupBy('shows.id')
-                        ->distinct()->get();
+                        ->whereNotNull('shows.logo_url');
+            if(!is_null($venues_check))
+                $venue->events = $venue->events->whereIn('venues.id',$venues_check); 
+            $venue->events = $venue->events->orderBy('show_times.show_time','ASC')->groupBy('shows.id')->distinct()->get();
+            
             foreach ($venue->events as $s)
                 if(!empty($s->logo_url))
                     $s->logo_url = Image::view_image($s->logo_url);
             //return view
-            return view('production.venues.view',compact('venue'));
+            return view('production.venues.view',compact('venue','link'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Venue View: '.$ex->getMessage());
         }
