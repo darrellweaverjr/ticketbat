@@ -180,4 +180,5 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     //POS
     Route::match(['get','post'], 'pos/buy/{slug}', 'POSController@buy');
     Route::post('pos/update', 'POSController@update');
+    Route::post('pos/receipt', 'POSController@receipt');
 });

@@ -149,11 +149,82 @@ var POSbuy = function () {
             });
             
             //onclose modal complete
-            $('#modal_complete').on('hidden.bs.modal', function () {
+            $('#btn_continue').on('click', function () {
                 location.reload();
             });
 
-            $('#modal_complete').modal('show');
+            //$('#modal_complete').modal('show');
+            
+            //function send receipt by email
+            $('#btn_receipt_email').on('click', function(ev) {
+                $('#modal_complete').modal('hide');
+                if($('#form_receipt_email').valid())
+                {
+                    swal({
+                        title: "Sending receipt by email",
+                        text: "Please, wait.",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/pos/receipt',
+                        data: $('#form_receipt_email').serializeArray(),
+                        success: function(data) {
+                            if(data.success)
+                            {
+                                swal({
+                                    title: "<span style='color:green;'>Saved!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    timer: 1500,
+                                    type: "success",
+                                    showConfirmButton: false
+                                });
+                                $('#modal_complete').modal('show');
+                            }
+                            else{
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                },function(){
+                                    $('#modal_complete').modal('show');
+                                });
+                            }
+                        },
+                        error: function(){
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_complete').modal('show');
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to send the email!<br>You must enter a valid email.",
+                        html: true,
+                        type: "error"
+                    },function(){
+                        $('#modal_complete').modal('show');
+                    });
+                }
+            });
+            
+            //on init
+            $('#form_cash').trigger('reset');
+            $('#form_swipe').trigger('reset');
+            $('#form_card').trigger('reset');
+            $('#form_skip').trigger('reset');
 
         } // end init
 
@@ -189,6 +260,7 @@ var SubmitFunctions = function () {
                             $('#modal_complete a.ticket_regular').attr('href','/user/purchases/tickets/C/'+data.purchases);
                             $('#modal_complete a.ticket_boca').attr('href','/user/purchases/tickets/S/'+data.purchases);
                             $('#modal_complete a.ticket_wrist').attr('href','/user/purchases/tickets/W/'+data.purchases);
+                            $('#form_receipt_email input[name="purchases"]').val(data.purchases);
                             swal.close();
                             $('#modal_complete').modal('show');
                         }
@@ -232,7 +304,71 @@ var SubmitFunctions = function () {
     };
 }();
 //*****************************************************************************************
+var FormValidation = function () {
+    // advance validation
+    var handleValidation = function() {
+        // for more info visit the official plugin documentation:
+        // http://docs.jquery.com/Plugins/Validation
+            var form = $('#form_receipt_email');
+            var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+            //IMPORTANT: update CKEDITOR textarea with actual content before submit
+            form.on('submit', function() {
+                for(var instanceName in CKEDITOR.instances) {
+                    CKEDITOR.instances[instanceName].updateElement();
+                }
+            })
+            form.validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block help-block-error', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "", // validate all fields including form hidden input
+                rules: {
+                    email: {
+                        minlength: 8,
+                        maxlength: 50,
+                        email: true,
+                        required: true
+                    }
+                },
+                invalidHandler: function (event, validator) { //display error alert on form submit
+                    success.hide();
+                    error.show();
+                    App.scrollTo(error, -200);
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                   $(element)
+                        .closest('.show-error').addClass('has-error'); // set error class to the control group
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    $(element)
+                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
+                },
+
+                submitHandler: function (form) {
+                    success.show();
+                    error.hide();
+                    form[0].submit(); // submit the form
+                }
+            });
+    }
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+}();
+//*****************************************************************************************
 jQuery(document).ready(function() {
    POSbuy.init();
    SubmitFunctions.init();
+   FormValidation.init();
 });

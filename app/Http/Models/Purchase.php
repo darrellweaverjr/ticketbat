@@ -289,7 +289,7 @@ class Purchase extends Model
     /**
      * Send by email given purchases receipts.
      */
-    public static function email_receipts($subject,$receipts,$type_email,$change=null,$promotor_copy=false,$receipt_view=false)
+    public static function email_receipts($subject,$receipts,$type_email,$change=null,$promotor_copy=false,$receipt_view=false,$resend_to=null,$only_receipt=false)
     {
         try {
             if(is_array($receipts) && count($receipts) && is_string($subject) && is_string($type_email))
@@ -378,9 +378,13 @@ class Purchase extends Model
                         $banners .= '<div><a href="'.$b->url.'"><img src="'.$b->file.'"/></a></div>';
 
                 //send email
-                $email = new EmailSG(null, $customer->email , $subject);
+                $send_to = ($resend_to && filter_var($resend_to, FILTER_VALIDATE_EMAIL))? $resend_to : $customer->email;
+                $email = new EmailSG(null, $send_to , $subject);
                 $email->category('Receipts');
-                $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
+                if($only_receipt)
+                    $email->attachment($pdf_receipts);
+                else
+                    $email->attachment(array_merge($pdf_receipts,$pdf_tickets));
                 //check type of email to send
                 if($type_email === 'reminder')
                 {

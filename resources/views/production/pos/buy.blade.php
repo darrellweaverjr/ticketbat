@@ -47,87 +47,83 @@
 
     <!-- BEGIN TICKETS AND SHOPPINGCART -->
     <div class="row portlet light" style="margin-top:-44px;margin-bottom:-30px">
-        <div class="col-xs-12 col-sm-5 col-md-5">
-            <div class="portlet light about-text">
-                <h4><i class="fa fa-ticket"></i> Tickets</h4>
-                <div class="portlet-body" id="pos_tickets">
-                    @if(empty($event->tickets))
-                        <div class="bg-red bg-font-red">
-                            <hr>
-                            <h1 class="text-center">Tickets are currently not for sale.</h1>
-                            <br>
-                        </div>
-                    @else
-                        <div class="panel-group" >
-                            <!-- BEGIN TICKETS -->
-                            @foreach($event->tickets as $index=>$t)
-                                <div class="panel">
-                                    <div class="panel-heading p-3">
-                                        <h4 class="panel-title {{$t['class']}} event-ticket-type"><strong class="lh-25">{{$t['type']}}</strong></h4>
-                                    </div>
-                                    <div class="panel-body" style="margin-bottom: -20px">
-                                        @foreach($t['tickets'] as $tt)
-                                        <div class="row form-section">
-                                            <center>
-                                                <span class="col-sm-5 col-md-5">
-                                                    <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b></h4>
-                                                </span>
-                                                <div class="col-sm-7 col-md-7 input-group input-group-lg">
-                                                    <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
-                                                </div>
-                                                @if($tt->title!='None')<small>{{$tt->title}}</small>@endif
-                                            </center>
-                                        </div>
-                                        @endforeach
-                                    </div>
+        <div class="portlet light about-text col-xs-12 col-sm-5 col-md-5">
+            <h4><i class="fa fa-ticket"></i> Tickets</h4>
+            <div class="portlet-body" id="pos_tickets" style="padding-right:5px">
+                @if(empty($event->tickets))
+                    <div class="bg-red bg-font-red">
+                        <hr>
+                        <h1 class="text-center">Tickets are currently not for sale.</h1>
+                        <br>
+                    </div>
+                @else
+                    <div class="panel-group">
+                        <!-- BEGIN TICKETS -->
+                        @foreach($event->tickets as $index=>$t)
+                            <div class="panel">
+                                <div class="panel-heading p-3">
+                                    <h4 class="panel-title {{$t['class']}} event-ticket-type"><strong class="lh-25">{{$t['type']}}</strong></h4>
                                 </div>
-                        @endforeach
-                        <!-- END TICKETS -->
-                        </div>
-                    @endif
-                </div>
+                                <div class="panel-body" style="margin-bottom: -20px;">
+                                    @foreach($t['tickets'] as $tt)
+                                    <div class="row form-section" style="padding-right:15px">
+                                        <center>
+                                            <span class="col-sm-5 col-md-5">
+                                                <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b></h4>
+                                            </span>
+                                            <div class="col-sm-7 col-md-7 input-group input-group-lg">
+                                                <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
+                                            </div>
+                                            @if($tt->title!='None')<small>{{$tt->title}}</small>@endif
+                                        </center>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                    @endforeach
+                    <!-- END TICKETS -->
+                    </div>
+                @endif
             </div>
         </div>
-        <div class="col-xs-12 col-sm-7 col-md-7">
-            <div class="portlet light event-seating">
-                <h4><i class="fa fa-shopping-cart"></i> Shopping Cart</h4>
-                <div class="portlet-body" id="pos_cart">
-                    <!-- BEGIN CART -->
-                    <table class="table table-hover table-responsive table-condensed table-header-fixed" id="tb_items">
-                        <thead>
-                        <tr>
-                            <th>Item(s)</th>
-                            <th class="text-center">Date<br>Time</th>
-                            <th class="text-right">Subt<br>Fees</th>
-                            <th class="text-center">Remove</th>
+        <div class="portlet light about-text col-xs-12 col-sm-7 col-md-7" >
+            <h4><i class="fa fa-shopping-cart"></i> Shopping Cart</h4>
+            <div class="portlet-body" id="pos_cart" style="padding-left:5px">
+                <!-- BEGIN CART -->
+                <table class="table table-hover table-responsive table-condensed table-header-fixed" id="tb_items">
+                    <thead>
+                    <tr>
+                        <th>Item(s)</th>
+                        <th class="text-center">Date<br>Time</th>
+                        <th class="text-right">Subt<br>Fees</th>
+                        <th class="text-center">Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($cart['items'] as $i)
+                        <tr data-id="{{$i->id}}">
+                            <td>
+                                <h4 class="bold">({{$i->number_of_items}}) {{$i->product_type}}
+                                    @if(!empty($i->package)) <br><i>{{$i->package}}</i> @endif</h4>
+                                @if($i->show_id != $event->show_id) <br><i class="label-warning">{{$i->name}}</i> @endif
+                            </td>
+                            <td @if($i->show_time_id != $show_time_id) class="label-warning" @endif style="text-align:center">{{date('M d, Y', strtotime($i->show_time))}}<br>{{date('g:i A', strtotime($i->show_time))}}</td>
+                            <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}<br>@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($cart['items'] as $i)
-                            <tr data-id="{{$i->id}}">
-                                <td>
-                                    <h4 class="bold">({{$i->number_of_items}}) {{$i->product_type}}
-                                        @if(!empty($i->package)) <br><i>{{$i->package}}</i> @endif</h4>
-                                    @if($i->show_id != $event->show_id) <br><i class="label-warning">{{$i->name}}</i> @endif
-                                </td>
-                                <td @if($i->show_time_id != $show_time_id) class="label-warning" @endif style="text-align:center">{{date('M d, Y', strtotime($i->show_time))}}<br>{{date('g:i A', strtotime($i->show_time))}}</td>
-                                <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}<br>@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                <!-- END CART -->
-                </div>
+                    @endforeach
+                    </tbody>
+                </table>
+            <!-- END CART -->
             </div>
         </div>
     </div>
     <!-- END TICKETS AND SHOPPINGCART -->
 
     <!-- BEGIN PAYMENT -->
-    <div class="row light fixed-panel">
+    <div class="row portlet light">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Payment methods.">
@@ -245,7 +241,6 @@
         <div class="modal-dialog">
             <div class="modal-content text-center">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                     <h3 class="modal-title">Purchase completed</h3>
                 </div>
                 <div class="modal-body" style="padding:30px">
@@ -254,23 +249,24 @@
                     </div><hr>
                     <div class="row">
                         <h4>Print tickets:</h4>
-                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_regular" href="/user/purchases/tickets/C/1" target="_blank"><i class="fa fa-newspaper-o"></i> Regular Paper</a>
-                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_boca" href="/user/purchases/tickets/S/1" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
-                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_wrist" href="/user/purchases/tickets/W/1" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
+                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_regular" href="/user/purchases/tickets/C/" target="_blank"><i class="fa fa-newspaper-o"></i> Regular Paper</a>
+                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_boca" href="/user/purchases/tickets/S/" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
+                        <a class="btn btn-outline sbold dark btn-lg uppercase ticket_wrist" href="/user/purchases/tickets/W/" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
                     </div><hr>
                     <div class="row">
                         <form method="post" id="form_receipt_email" class="form-horizontal">
+                            <input type="hidden" name="purchases" value="">
                             <div class="col-md-7 col-sm-7 col-xs-12">
-                                <input type="email" value="" name="input_receipt_email" class="form-control input-lg" placeholder="abc@gmail.com">
+                                <input type="email" value="" name="email" class="form-control input-lg" placeholder="abc@gmail.com">
                             </div>
                             <div class="col-md-5 col-sm-5 col-xs-12">
-                                <a class="btn btn-info btn-lg btn-block uppercase" id="btn_receipt_email"><i class="fa fa-send"></i> Email receipt</a>
+                                <button type="button" class="btn btn-info btn-lg btn-block uppercase" id="btn_receipt_email"><i class="fa fa-send"></i> Email receipt</button>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-success btn-lg btn-block uppercase"><i class="fa fa-shopping-cart icon-basket"></i> Continue shopping</button>
+                    <button type="button" data-dismiss="modal" id="btn_continue" class="btn btn-success btn-lg btn-block uppercase"><i class="fa fa-shopping-cart icon-basket"></i> Continue shopping</button>
                 </div>
             </div>
         </div>

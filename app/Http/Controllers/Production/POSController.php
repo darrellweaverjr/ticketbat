@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Purchase;
 use App\Http\Models\Country;
 use App\Http\Models\Region;
 use App\Http\Models\User;
@@ -274,6 +275,36 @@ class POSController extends Controller
                 return $success;
             }
             return ['success'=>false, 'msg'=>'You must select a valid item to remove!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
+    /*
+     * send the receipt of purchase by email
+     */
+    public function receipt()
+    {
+        try {
+            $input = Input::all();
+            $receipts = [];
+            if(!empty($input['purchases']) && !empty($input['email']) && filter_var($input['email'], FILTER_VALIDATE_EMAIL))
+            {
+                $purchases = explode(',', $input['purchases']);
+                //send receipts
+                foreach ($purchases as $id)
+                {
+                    $p = Purchase::find($id);
+                    if($p)
+                        $receipts[] = $p->get_receipt();
+                }
+                //sent email
+                $response = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,false,false,$input['email'],true);
+                if($response)
+                    return ['success'=>true,'msg'=>'The email was sent successfully!'];
+                return ['success'=>false,'msg'=>'The system could not sent the receipt to that email!'];
+            }
+            return ['success'=>false, 'msg'=>'You must enter a valid email in the form!'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
