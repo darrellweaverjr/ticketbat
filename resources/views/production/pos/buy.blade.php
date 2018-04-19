@@ -13,14 +13,14 @@
 
 
     <!-- BEGIN SHOWTIMES -->
-    <div class="row portlet light">
+    <div id="pos-header" class="row portlet mb-0">
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 dark">
                 <img src="{{$event->logo_url}}" alt="-No logo image-" style="width:200px;height:115px">
             </a>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-center">
-            <span class="caption-subject font-red sbold uppercase"><h3><b>{{$event->name}}</b></h3><samll>{{$event->venue}}</small></span>
+            <h3 id="pos-event-name" class="mt-10">{{$event->name}}</h3><h5 id="pos-venue">{{$event->venue}}</h5>
             <div class="text-center" id="pos_showtimes">
                 <select class="form-control input-lg" name="show_time_id" data-show="{{$event->show_id}}">
                     @foreach($event->showtimes as $st)
@@ -29,11 +29,8 @@
                 </select>
             </div>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" >
+        <div id="pos-tally" class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" >
             <a data-toggle="modal" href="#modal_tally" class="dashboard-stat dashboard-stat-v2 dark">
-                <div class="visual">
-                    <i class="fa fa-money"></i>
-                </div>
                 <div class="details sbold">
                     <div class="number sbold">
                         $ <span data-counter="counterup" id="cost_total" data-value="{{number_format($cart['total'],2)}}"></span>
@@ -46,10 +43,10 @@
     <!-- END SHOWTIMES -->
 
     <!-- BEGIN TICKETS AND SHOPPINGCART -->
-    <div class="row portlet light" style="margin-top:-44px;margin-bottom:-30px">
-        <div class="portlet light about-text col-xs-12 col-sm-5 col-md-5">
+    <div class="row portlet light" style="margin-bottom:-30px">
+        <div id="pos-ticket-wrapper" class="portlet about-text col-xs-12 col-sm-5 col-md-5">
             <h4><i class="fa fa-ticket"></i> Tickets</h4>
-            <div class="portlet-body" id="pos_tickets" style="padding-right:5px">
+            <div id="pos_tickets" class="portlet-body pr-15 mt-3">
                 @if(empty($event->tickets))
                     <div class="bg-red bg-font-red">
                         <hr>
@@ -86,7 +83,7 @@
                 @endif
             </div>
         </div>
-        <div class="portlet light about-text col-xs-12 col-sm-7 col-md-7" >
+        <div id="pos-cart-wrapper" class="portlet light about-text col-xs-12 col-sm-7 col-md-7" >
             <h4><i class="fa fa-shopping-cart"></i> Shopping Cart</h4>
             <div class="portlet-body" id="pos_cart" style="padding-left:5px">
                 <!-- BEGIN CART -->
@@ -94,8 +91,8 @@
                     <thead>
                     <tr>
                         <th>Item(s)</th>
-                        <th class="text-center">Date<br>Time</th>
-                        <th class="text-right">Subt<br>Fees</th>
+                        <th class="text-center">Time</th>
+                        <th class="text-right">Fees</th>
                         <th class="text-center">Remove</th>
                     </tr>
                     </thead>

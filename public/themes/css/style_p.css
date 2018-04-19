@@ -18,6 +18,9 @@ html, body {
 .mt-15-mobile {
     margin-top: 15px !important;
 }
+.mt-3 {
+    margin-top: 3px !important;
+}
 .mt-30 {
     margin-top: 30px !important;
 }
@@ -32,6 +35,9 @@ html, body {
 }
 .ml-20 {
     margin-left: 20px !important;
+}
+.mb-0 {
+    margin-bottom: 0px !important;
 }
 .mb-5 {
     margin-bottom: 5px !important;
@@ -53,6 +59,9 @@ html, body {
 }
 .pt-10 {
     padding-top: 10px !important;
+}
+.pr-15 {
+    padding-right: 15px !important;
 }
 .pl-0 {
     padding-left: 0px !important;
@@ -409,13 +418,63 @@ html, body {
     float: left!important;
 }
 
-.pos-nav-pills.nav-pills>li>a {
+/* ================================================================= */
+/* POS SHOPPING CART    ================================================ */
+/* ================================================================= */
+#pos-header {
+    background-color: #333;
+    color: #f7e1b6;
+}
+#pos-tally{
+    background-color: #333;
+}
+#pos-event-name {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+#pos-venue {
+    text-transform: uppercase;
+    font-weight: 600;
+}
+#pos-ticket-wrapper {
+    background-color: #f4f4f5 !important;
+}
+#pos-ticket-wrapper div, #pos_tickets > div > div {
+    background-color: transparent !important;
+}
+#pos-ticket-wrapper > h4 {
+    background-color: #e5e5e5;
+    padding: 10px 10px;
+    font-size: 16px;
+    color: #929297;
+    border: none;
+}
+#pos-ticket-wrapper > h4 > i {
+    color: #929297;
+}
+#pos-cart-wrapper > h4 {
+    background-color: #f4f4f5;
+    padding: 10px 10px;
+    font-size: 16px;
+    margin-left: 2px;
+    color: #929297;
+    border: none;
+}
+#pos-cart-wrapper > h4 > i {
+    color: #929297;
+}
+.pos-nav-pills.nav-pills > li > a {
    background-color: #e5e5e5;
    border: 2px solid #FFFFFF;
 }
-.pos-nav-pills.nav-pills>li.active>a {
+.pos-nav-pills.nav-pills > li.active > a {
     background-color: #337ab7;
 }
+.pos-nav-pills.nav > li > a {
+    padding: 10px 15px;
+}
+
+
 
 /* BEGIN RESPONSIVE  ======================================================  */
 /* NOTE - ALL RESPONSIVE STYLES GO HERE - Do not duplicate media queries!    */
