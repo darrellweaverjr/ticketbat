@@ -7,17 +7,6 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="{{config('app.theme')}}css/cubeportfolio.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
-<style type="text/css">
-      @media print {
-        body {
-          display:none;
-        }
-
-        #xxx {
-          display:block;
-        }
-      }
-    </style>
 @endsection
 
 @section('content')
@@ -49,7 +38,7 @@
                 @endif
             @if($seller>0)
                 <center>
-                    <a class="btn btn-danger btn-lg uppercase" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</a><hr>
+                    <button class="btn btn-danger btn-lg uppercase" data-href="/purchase/printer/{{$purchases}}" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</button><hr>
                     <h4>Print tickets:</h4><br>
                     <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-newspaper-o"></i> Regular Paper</a>
                     <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
@@ -111,15 +100,6 @@
     </div>
     @endif
     <!-- END BANNERS -->
-    @if($seller>0)
-    <!-- BEGIN RECEIPT -->
-    <div id="receipt_print" class="row hidden" style="text-align:center;" data-qty="{{count($view_receipts)}}">
-        @foreach($view_receipts as $r)
-            @php echo $r @endphp
-        @endforeach
-    </div>
-    <!-- END RECEIPT -->
-    @endif
 </div>
 
 @endsection

@@ -170,7 +170,7 @@ class PurchaseController extends Controller
      */
     public function complete()
     {
-        $view_receipts=$receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
+        $receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
         $sent_to = $purchases = null;
         $send_welcome_email = $totals = $transaction = 0;
         $sent_receipts = false;
@@ -186,7 +186,6 @@ class PurchaseController extends Controller
                 $data = $this->receipts($purchases,$seller);
                 //get data
                 $after_purchase_note = $data['after_purchase_note'];
-                $view_receipts = $data['view_receipts'];
                 $receipts = $data['receipts'];
                 $purchased = $data['purchased'];
                 $sent_to = $data['sent_to'];
@@ -204,7 +203,7 @@ class PurchaseController extends Controller
         } finally {
             //return
             return response()
-                        ->view('production.shoppingcart.complete',compact('sent_to','view_receipts','sent_receipts','purchases','purchased','send_welcome_email','seller','after_purchase_note',
+                        ->view('production.shoppingcart.complete',compact('sent_to','sent_receipts','purchases','purchased','send_welcome_email','seller','after_purchase_note',
                                                                           'analytics','totals','transaction','conversion_code','ua_conversion_code','banners'))
                         ->withHeaders([
                             'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
@@ -219,7 +218,7 @@ class PurchaseController extends Controller
      */
     public function receipts($purchasex=null,$seller=0)
     {
-        $receipts=$view_receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
+        $receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
         $sent_to = null;
         $sent_receipts = false;
         $totals = $transaction = 0;
@@ -274,16 +273,14 @@ class PurchaseController extends Controller
                 }
             }
             //sent email
-            $response = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true,true);
-            $sent_receipts = $response['success'];
-            $view_receipts = $response['receipts'];
+            $sent_receipts = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,true,true);
         } catch (Exception $ex) {
 
         } finally {
             if(!empty($purchasex))
                 return ['success'=>true, 'receipts'=>$receipts, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,'after_purchase_note'=>$after_purchase_note,
                         'sent_receipts'=>$sent_receipts, 'analytics'=>$analytics, 'totals'=>$totals, 'transaction'=>$transaction,
-                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code,'view_receipts'=>$view_receipts];
+                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code];
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];
         }
     }
@@ -310,6 +307,20 @@ class PurchaseController extends Controller
             return ['success'=>false, 'msg'=>'The system could not sent the email to the client!'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
+    /*
+     * print receipt by selected printer
+     */
+    public function printer($purchases)
+    {
+        try {
+            if(!empty($purchases))
+                return Purchase::print_receipts($purchases);
+            return '<script>alert("The system could not load the information from the DB. Invalid items.");window.close();</script>';
+        } catch (Exception $ex) {
+            return '<script>alert("The system could not load the information from the DB. Serever error.");window.close();</script>';
         }
     }
 

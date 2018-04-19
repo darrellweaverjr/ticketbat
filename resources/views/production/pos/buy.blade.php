@@ -245,7 +245,7 @@
                 </div>
                 <div class="modal-body" style="padding:30px">
                     <div class="row">
-                        <a class="btn btn-danger btn-lg btn-block uppercase" disabled="true" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</a>
+                        <button class="btn btn-danger btn-lg btn-block uppercase" data-href="/purchase/printer/" id="btn_receipt_print"><i class="fa fa-print icon-printer"></i> Print Receipt</button>
                     </div><hr>
                     <div class="row">
                         <h4>Print tickets:</h4>

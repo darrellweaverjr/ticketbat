@@ -296,7 +296,7 @@ class Purchase extends Model
             {
                 //init variables
                 $rows_html = $totals_html = '';
-                $view_receipts = $pdf_receipts = $pdf_tickets = $purchases = [];
+                $pdf_receipts = $pdf_tickets = $purchases = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
                 $top = $banners = '';
                 //set customer
@@ -311,13 +311,7 @@ class Purchase extends Model
                         //receipt
                         $purchase = array_merge((array)$receipt['customer'],(array)$receipt['purchase']);
                         $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
-
-                        //print copy of receipt
-                        if($receipt_view)
-                        {
-                            $format = 'printer';
-                            $view_receipts[] = View::make('command.report_sales_receipt', compact('purchase','format'));
-                        }
+                        
                         //create pdf receipt
                         $format = 'pdf';
                         $pdfUrlR = '/tmp/Receipt_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
@@ -440,13 +434,59 @@ class Purchase extends Model
                 //clean up and return
                 foreach(array_merge($pdf_receipts,$pdf_tickets) as $link)
                     if(file_exists($link)) unlink($link);
-                if($receipt_view)
-                    return ['success'=>$response,'receipts'=>$view_receipts];
                 return $response;
             }
             else return false;
         } catch (Exception $ex) {
             return false;
+        }
+    }
+    
+    /**
+     * Send by email given purchases receipts.
+     */
+    public static function print_receipts($purchases)
+    {
+        //init variables
+        $format = 'printer';
+        $printer = ['order_id'=>$purchases, 'restrictions'=>[], 'items'=>[], 'qty'=>0, 'total'=>0, 'info'=>[]];
+        try {
+            
+            if(!empty($purchases))
+            {
+                $purchases = explode(',', $purchases);
+                $items = DB::table('purchases')
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
+                            ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                            ->join('shows', 'shows.id', '=', 'show_times.show_id')
+                            ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                            ->select(DB::raw('purchases.id, purchases.quantity, purchases.price_paid, tickets.ticket_type AS ticket_type_type, show_times.time_alternative,
+                                    show_times.show_time, discounts.code, IF(packages.title!="None", packages.title, "") AS title, tickets.inclusive_fee,
+                                    shows.name AS show_name, shows.restrictions, 
+                                    venues.name AS venue_name, venues.ticket_info'))
+                            ->whereIn('purchases.id', $purchases)
+                            ->groupBy('purchases.id')->get(); 
+                
+                //get info
+                foreach ($items as $i)
+                {
+                    
+                    if(!empty($i->restrictions) && $i->restrictions != 'None' && !in_array($i->restrictions, $printer['restrictions']))
+                        $printer['restrictions'][] = $i->restrictions;
+                    $printer['qty'] += $i->quantity;
+                    $printer['total'] += $i->price_paid;
+                    if(!empty($i->ticket_info) && !in_array($i->ticket_info, $printer['info']))
+                        $printer['info'][] = $i->ticket_info;
+                    $printer['items'][] = $i;
+                }
+                //dd($printer);
+            }
+        } catch (Exception $ex) {
+            
+        } finally {
+            return View::make('command.report_sales_receipt', compact('printer','format'))->render();
         }
     }
 

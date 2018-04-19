@@ -283,7 +283,7 @@ class POSController extends Controller
     /*
      * send the receipt of purchase by email
      */
-    public function receipt()
+    public function email_receipt()
     {
         try {
             $input = Input::all();

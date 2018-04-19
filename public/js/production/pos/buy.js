@@ -169,7 +169,7 @@ var POSbuy = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/pos/receipt',
+                        url: '/pos/email_receipt',
                         data: $('#form_receipt_email').serializeArray(),
                         success: function(data) {
                             if(data.success)
@@ -220,6 +220,13 @@ var POSbuy = function () {
                 }
             });
             
+            //on print receipt
+            $('#btn_receipt_print').on('click', function(ev) {
+                var receiptWindow = window.open($(this).data('href'),'TicketBat Receipt','width=300,height=700');
+                receiptWindow.print();
+                receiptWindow.close();
+            });
+            
             //on init
             $('#form_cash').trigger('reset');
             $('#form_swipe').trigger('reset');
@@ -257,6 +264,7 @@ var SubmitFunctions = function () {
                     success: function(data) {
                         if(data.success)
                         {
+                            $('#btn_receipt_print').data('href','/purchase/printer/'+data.purchases);
                             $('#modal_complete a.ticket_regular').attr('href','/user/purchases/tickets/C/'+data.purchases);
                             $('#modal_complete a.ticket_boca').attr('href','/user/purchases/tickets/S/'+data.purchases);
                             $('#modal_complete a.ticket_wrist').attr('href','/user/purchases/tickets/W/'+data.purchases);
