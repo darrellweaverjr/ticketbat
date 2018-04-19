@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\Slider;
+use App\Http\Models\User;
 use App\Http\Models\Image;
 use App\Http\Models\Category;
 use Carbon\Carbon;
@@ -50,13 +51,49 @@ class HomeController extends Controller
                 $s->image_url = Image::view_image($s->image_url);
             }
 
-
             // Don't hide shows for Seller accounts hack
             if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
                 $nowVar = Carbon::now()->subDay()->toDateTimeString();
+                $venues_edit = Auth::user()->venues_check_ticket;
+                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
+                $link = 'pos/buy/';
             } else {
                 $nowVar = Carbon::now()->toDateTimeString();
+                $venues_check = null;
+                $link = 'event';
             }
+            
+            //get cities
+            $cities = DB::table('venues')
+                ->join('locations', 'locations.id', '=', 'venues.location_id')
+                ->select('locations.city', 'locations.state', 'locations.country')
+                ->where('venues.is_featured', '>', 0)
+                ->whereNotNull('venues.logo_url');
+            if(!is_null($venues_check))
+                $cities = $cities->whereIn('venues.id',$venues_check);
+            $cities = $cities->orderBy('locations.city')->groupBy('locations.city')->distinct()->get();
+            
+            //get venues
+            $venues = DB::table('venues')
+                ->join('shows', 'venues.id', '=', 'shows.venue_id')
+                ->join('locations', 'locations.id', '=', 'venues.location_id')
+                ->join('show_times', 'shows.id', '=', 'show_times.show_id')
+                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
+                ->select('venues.id', 'venues.name', 'locations.city')
+                ->where('venues.is_featured', '>', 0)
+                ->where('shows.is_active', '>', 0)->where('shows.is_featured', '>', 0)
+                ->where(function ($query) use ($nowVar) {
+                    $query->whereNull('shows.on_featured')
+                        ->orWhere('shows.on_featured', '<=', $nowVar);
+                })
+                ->where(function ($query) use ($nowVar) {
+                    $query->where('show_times.show_time', '>=', $nowVar);
+                })
+                ->where('show_times.is_active', '=', 1)
+                ->whereNotNull('venues.logo_url');
+            if(!is_null($venues_check))
+                $venues = $venues->whereIn('venues.id',$venues_check);
+            $venues = $venues->orderBy('venues.name')->groupBy('venues.id')->distinct()->get();
 
             //get shows
             $shows = DB::table('shows')
@@ -77,13 +114,10 @@ class HomeController extends Controller
                     $query->where('show_times.show_time', '>=', $nowVar);
                 })
                 ->where('show_times.is_active', '=', 1)
-                ->whereNotNull('shows.logo_url')
-                ->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')
-                ->groupBy('shows.id')
-                ->distinct()->get();
-
-            //$link = (Auth::check() && Auth::user()->user_type_id==7)? 'pos/buy/' : 'event/';
-            $link = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 'pos/buy/' : 'event/';
+                ->whereNotNull('shows.logo_url');
+            if(!is_null($venues_check))
+                $shows = $shows->whereIn('venues.id',$venues_check);
+            $shows = $shows->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')->groupBy('shows.id')->distinct()->get();
 
             foreach ($shows as $s) {
                 //add link here
@@ -114,35 +148,7 @@ class HomeController extends Controller
                 if (in_array($c->id, $cats)) {
                     $categories[] = $c;
                 }
-            }
-            //get cities
-            $cities = DB::table('venues')
-                ->join('locations', 'locations.id', '=', 'venues.location_id')
-                ->select('locations.city', 'locations.state', 'locations.country')
-                ->where('venues.is_featured', '>', 0)
-                ->whereNotNull('venues.logo_url')
-                ->orderBy('locations.city')->groupBy('locations.city')
-                ->distinct()->get();
-            //get venues
-            $venues = DB::table('venues')
-                ->join('shows', 'venues.id', '=', 'shows.venue_id')
-                ->join('locations', 'locations.id', '=', 'venues.location_id')
-                ->join('show_times', 'shows.id', '=', 'show_times.show_id')
-                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
-                ->select('venues.id', 'venues.name', 'locations.city')
-                ->where('venues.is_featured', '>', 0)
-                ->where('shows.is_active', '>', 0)->where('shows.is_featured', '>', 0)
-                ->where(function ($query) use ($nowVar) {
-                    $query->whereNull('shows.on_featured')
-                        ->orWhere('shows.on_featured', '<=', $nowVar);
-                })
-                ->where(function ($query) use ($nowVar) {
-                    $query->where('show_times.show_time', '>=', $nowVar);
-                })
-                ->where('show_times.is_active', '=', 1)
-                ->whereNotNull('venues.logo_url')
-                ->orderBy('venues.name')->groupBy('venues.id')
-                ->distinct()->get();
+            }            
 
             //return view
             return view('production.home.index', compact('sliders', 'shows', 'categories', 'cities', 'venues'));
@@ -187,14 +193,15 @@ class HomeController extends Controller
                 unset($input['category']);
             }
 
-
             // Don't hide shows for Seller accounts hack
             if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
-                $nowVar = Carbon::now()::yesterday()->toDateTimeString();
+                $nowVar = Carbon::now()->subDay()->toDateTimeString();
+                $venues_edit = Auth::user()->venues_check_ticket;
+                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
             } else {
                 $nowVar = Carbon::now()->toDateTimeString();
+                $venues_check = null;
             }
-
 
             //get shows
             $shows = DB::table('shows')
@@ -229,6 +236,9 @@ class HomeController extends Controller
                 })
                 ->when(!empty($input['category']) && is_array($input['category']), function ($shows) use ($input) {
                     return $shows->whereIn('shows.category_id', $input['category']);
+                })
+                ->when(!is_null($venues_check), function ($shows) use ($venues_check) {
+                    return $shows->whereIn('venues.id',$venues_check);
                 })
                 //custom
                 ->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')

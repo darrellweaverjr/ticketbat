@@ -211,19 +211,19 @@
                             <h3 class="sbold required">Totals: </h3><hr>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-primary">Transactions: </h3>
-                                <h3 class="text-center" id="t_t_transactions">{{$cart['tally']['transactions']}}</h3>
+                                <h3 class="text-center" id="t_t_transactions">@if(!empty($cart['tally'])){{$cart['tally']['transactions']}} @endif</h3>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-info">Tickets: </h3>
-                                <h3 class="text-center" id="t_t_tickets">{{$cart['tally']['tickets']}}</h3>
+                                <h3 class="text-center" id="t_t_tickets">@if(!empty($cart['tally'])){{$cart['tally']['tickets']}} @endif</h3>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-success">Cash: </h3>
-                                <h3 class="text-right" id="t_t_cash">${{number_format($cart['tally']['cash'],2)}}</h3>
+                                <h3 class="text-right" id="t_t_cash">@if(!empty($cart['tally']))${{number_format($cart['tally']['cash'],2)}} @endif</h3>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
                                 <h3 class="sbold label-success">Total: </h3>
-                                <h3 class="text-right" id="t_t_total">${{number_format($cart['tally']['total'],2)}}</h3>
+                                <h3 class="text-right" id="t_t_total">@if(!empty($cart['tally']))${{number_format($cart['tally']['total'],2)}} @endif</h3>
                             </div>
                         </div>
                     </div>

@@ -346,7 +346,7 @@
                                         <div class="form-group">
                                             <div class="col-md-6">
                                                 <label class="control-label">
-                                                    <span class="required">Permitted to check in guests at venue(s):</span>
+                                                    <span class="required">Permitted to <b>CHECK IN</b> guests and to <b>SELL TICKETS</b> at venue(s):</span>
                                                 </label>
                                                 <select class="form-control" name="venues_check_ticket[]" multiple="multiple" size="12">
                                                     @foreach($venues as $index=>$v)
