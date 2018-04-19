@@ -15,12 +15,11 @@
     <!-- BEGIN SHOWTIMES -->
     <div id="pos-header" class="row portlet mb-0">
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 dark">
-                <img src="{{$event->logo_url}}" alt="-No logo image-" style="width:200px;height:115px">
-            </a>
+            <img src="{{$event->logo_url}}" alt="-No logo image-" class="m-5" style="width:200px; height:115px">
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-center">
-            <h3 id="pos-event-name" class="mt-10">{{$event->name}}</h3><h5 id="pos-venue">{{$event->venue}}</h5>
+            <h3 id="pos-event-name" class="mt-10 mb-5">{{$event->name}}</h3>
+            <h5 id="pos-venue" class="mt-0">{{$event->venue}}</h5>
             <div class="text-center" id="pos_showtimes">
                 <select class="form-control input-lg" name="show_time_id" data-show="{{$event->show_id}}">
                     @foreach($event->showtimes as $st)
@@ -30,7 +29,7 @@
             </div>
         </div>
         <div id="pos-tally" class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" >
-            <a data-toggle="modal" href="#modal_tally" class="dashboard-stat dashboard-stat-v2 dark">
+            <a data-toggle="modal" href="#modal_tally" class="dashboard-stat dashboard-stat-v2">
                 <div class="details sbold">
                     <div class="number sbold">
                         $ <span data-counter="counterup" id="cost_total" data-value="{{number_format($cart['total'],2)}}"></span>

@@ -6,6 +6,9 @@ html, body {
 
 
 /* BOOTSTRAP 4 SHIM STYLES */
+.m-5 {
+    margin: 5px !important;
+}
 .m-15 {
     margin: 15px !important;
 }
@@ -422,8 +425,7 @@ html, body {
 /* POS SHOPPING CART    ================================================ */
 /* ================================================================= */
 #pos-header {
-    background-color: #333;
-    color: #f7e1b6;
+    background-color: #555;
 }
 #pos-tally{
     background-color: #333;
@@ -431,11 +433,18 @@ html, body {
 #pos-event-name {
     text-transform: uppercase;
     font-weight: bold;
+    color:#42ad28;
 }
 #pos-venue {
     text-transform: uppercase;
     font-weight: 600;
+    color:#bfbfbf;
 }
+
+#pos-tally .dashboard-stat .details {
+    position: inherit;
+}
+
 #pos-ticket-wrapper {
     background-color: #f4f4f5 !important;
 }
