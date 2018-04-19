@@ -129,7 +129,7 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','>=',$this->date_manifest)
+                            ->whereDate('show_times.show_time','=',$this->date_manifest)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
@@ -150,7 +150,7 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','>=',$this->date_manifest)
+                            ->whereDate('show_times.show_time','=',$this->date_manifest)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
