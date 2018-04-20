@@ -443,6 +443,7 @@ html, body {
 
 #pos-tally .dashboard-stat .details {
     position: inherit;
+    color: #FFFFFF;
 }
 
 #pos-ticket-wrapper {

@@ -126,13 +126,13 @@
                 <i class="fa fa-credit-card icon-credit-card"></i> Payment
                 <ul class="pull-right pos-nav-pills nav nav-pills ">
                     <li class="active">
-                        <a href="#tab_cash" data-toggle="tab"><i class="fa fa-money icon-money"></i> ENTER CASH</a>
+                        <a href="#tab_cash" data-toggle="tab"><i class="fa fa-money icon-money"></i> CASH </a>
                     </li>
                     <li>
-                        <a href="#tab_swipe" data-toggle="tab"><i class="fa fa-credit-card icon-credit-card"></i> SWIPE CARD</a>
+                        <a href="#tab_swipe" data-toggle="tab"><i class="fa fa-credit-card icon-credit-card"></i> SWIPE </a>
                     </li>
                     <li>
-                        <a href="#tab_card" data-toggle="tab"><i class="fa fa-credit-card icon-credit-card"></i> ENTER CARD</a>
+                        <a href="#tab_card" data-toggle="tab"><i class="fa fa-credit-card icon-credit-card"></i> ENTER </a>
                     </li>
                 </ul>
             </h4>

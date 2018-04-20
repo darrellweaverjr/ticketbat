@@ -60,7 +60,7 @@ class HomeController extends Controller
             } else {
                 $nowVar = Carbon::now()->toDateTimeString();
                 $venues_check = null;
-                $link = 'event';
+                $link = 'event/';
             }
             
             //get cities

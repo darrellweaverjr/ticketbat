@@ -47,8 +47,8 @@
         <div class="row">
             <div class="home-page-panel">
                 <div id="myFilter" class="row widget-row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2">
+                    <div class="hidden-xs hidden-sm col-md-1"></div>
+                    <div class="col-xs-6 col-sm-3 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by show's name">
                             <div class="widget-thumb-wrap">
 
@@ -56,13 +56,12 @@
                                     <span class="widget-thumb-subtitle"><i class="icon-magnifier"></i> Search</span>
                                     <span class="widget-thumb-body-stat">
                                         <input type="text" class="form-control" name="filter_name" placeholder="Find an event">
-
                                 </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xs-6 col-sm-3 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by location">
                             <div class="widget-thumb-wrap">
 
@@ -80,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xs-6 col-sm-3 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by venue">
                             <div class="widget-thumb-wrap">
 
@@ -98,7 +97,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xs-6 col-sm-3 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by genre">
                             <div class="widget-thumb-wrap">
 
@@ -133,7 +132,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-1"></div>
+                    <div class="hidden-xs hidden-sm col-md-1"></div>
                 </div>
             </div>
         </div>
@@ -170,8 +169,8 @@
                                     {{-- This feature is temp disabled , pending a redesign --}}
 
                                     {{--<div class="btn btn-warning uppercase show_section_btnbuy">--}}
-                                        {{--<h4 style="color:red;margin-top:5px;margin-bottom:-20px"><b>Clearance</b></h4><br><b style="text-decoration:line-through;color:#d43f3a">${{$s->regular_price}}</b><br><h4--}}
-                                                {{--style="margin-top:-2px;color:green;font-weight:bold">${{$s->starting_at}}</h4>--}}
+                                    {{--<h4 style="color:red;margin-top:5px;margin-bottom:-20px"><b>Clearance</b></h4><br><b style="text-decoration:line-through;color:#d43f3a">${{$s->regular_price}}</b><br><h4--}}
+                                    {{--style="margin-top:-2px;color:green;font-weight:bold">${{$s->starting_at}}</h4>--}}
                                     {{--</div>--}}
                                 @endif
                                 <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
