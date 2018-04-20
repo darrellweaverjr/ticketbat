@@ -424,6 +424,11 @@ html, body {
 /* ================================================================= */
 /* POS SHOPPING CART    ================================================ */
 /* ================================================================= */
+#pos-checkout-bottom button.btn-info {
+    color: #fff;
+    background-color: #2964b1;
+    border-color: #508edb;
+}
 #pos-header {
     background-color: #555;
 }
@@ -476,14 +481,17 @@ html, body {
 .pos-nav-pills.nav-pills > li > a {
    background-color: #e5e5e5;
    border: 2px solid #FFFFFF;
+   font-size: 25px;
+   margin-top: -8px;
+   color: #666;
 }
 .pos-nav-pills.nav-pills > li.active > a {
     background-color: #337ab7;
+    color: #FFFFFF;
 }
 .pos-nav-pills.nav > li > a {
     padding: 10px 15px;
 }
-
 
 
 /* BEGIN RESPONSIVE  ======================================================  */

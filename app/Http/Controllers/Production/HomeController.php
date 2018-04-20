@@ -55,7 +55,7 @@ class HomeController extends Controller
             if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
                 $nowVar = Carbon::now()->subDay()->toDateTimeString();
                 $venues_edit = Auth::user()->venues_check_ticket;
-                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
+                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [6];
                 $link = 'pos/buy/';
             } else {
                 $nowVar = Carbon::now()->toDateTimeString();
@@ -197,7 +197,7 @@ class HomeController extends Controller
             if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
                 $nowVar = Carbon::now()->subDay()->toDateTimeString();
                 $venues_edit = Auth::user()->venues_check_ticket;
-                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
+                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [6];
             } else {
                 $nowVar = Carbon::now()->toDateTimeString();
                 $venues_check = null;

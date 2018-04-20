@@ -42,7 +42,7 @@
     <!-- END SHOWTIMES -->
 
     <!-- BEGIN TICKETS AND SHOPPINGCART -->
-    <div class="row portlet light" style="margin-bottom:-30px">
+    <div id="pos-checkout-top" class="row portlet light" style="margin-bottom:-30px">
         <div id="pos-ticket-wrapper" class="portlet about-text col-xs-12 col-sm-5 col-md-5">
             <h4><i class="fa fa-ticket"></i> Tickets</h4>
             <div id="pos_tickets" class="portlet-body pr-15 mt-3">
@@ -119,7 +119,7 @@
     <!-- END TICKETS AND SHOPPINGCART -->
 
     <!-- BEGIN PAYMENT -->
-    <div class="row portlet light">
+    <div id="pos-checkout-bottom" class="row portlet light">
         <div class="portlet light about-text">
             <!-- BEGIN DESCRIPTION -->
             <h4 title="Payment methods.">
