@@ -155,11 +155,13 @@
                             </li>
                             @endif
                             @endif
+                            @if (!(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))))
                             <li class="dropdown-notification @if(preg_match('/\/shoppingcart/',url()->current())) active @endif">
                                 <a href="/shoppingcart/viewcart" class="menu_nav" title="View/pay you items in the shopping cart">
                                     <i class="icon-basket"></i> Shopping Cart <span class="badge badge-danger"><b id="shoppingcart_qty_items" style="font-size:14px">Loading</b></span>
                                 </a>
                             </li>
+                            @endif
                         </ul>
                     </div>
                     <!-- END HORIZANTAL MENU -->

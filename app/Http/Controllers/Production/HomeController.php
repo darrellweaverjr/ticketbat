@@ -51,8 +51,8 @@ class HomeController extends Controller
                 $s->image_url = Image::view_image($s->image_url);
             }
 
-            // Don't hide shows for Seller accounts hack
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
+            // Force use the POS system
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))) {
                 $nowVar = Carbon::now()->subDay()->toDateTimeString();
                 $venues_edit = Auth::user()->venues_check_ticket;
                 $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [6];
@@ -193,8 +193,8 @@ class HomeController extends Controller
                 unset($input['category']);
             }
 
-            // Don't hide shows for Seller accounts hack
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
+            // Force use the POS system
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))) {
                 $nowVar = Carbon::now()->subDay()->toDateTimeString();
                 $venues_edit = Auth::user()->venues_check_ticket;
                 $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [6];

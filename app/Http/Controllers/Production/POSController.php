@@ -40,7 +40,8 @@ class POSController extends Controller
             if (empty($slug)) {
                 return redirect()->route('index');
             }
-            if (!(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))))
+            //  Force use the POS system
+            if (!(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))))
                 return redirect('event/'.$slug);
             //get all records
             $event = DB::table('shows')

@@ -13,7 +13,6 @@ var POSbuy = function () {
             //update page
             function update_page(cart,show_time_id)
             {
-                ShoppingcartQtyItems.init();
                 if(cart && cart.success)
                 {
                     //update totals

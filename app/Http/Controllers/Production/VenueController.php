@@ -28,14 +28,12 @@ class VenueController extends Controller
             //get all records
             $venues = [];
             
-            // Don't hide shows for Seller accounts hack
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
+            // Force use the POS system
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))) {
                 $venues_edit = Auth::user()->venues_check_ticket;
                 $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
-                $link = 'pos/buy/';
             } else {
                 $venues_check = null;
-                $link = 'event';
             }
             
             $_venues = DB::table('venues')
@@ -82,14 +80,14 @@ class VenueController extends Controller
             if(empty($slug))
                 return redirect()->route('index');
             
-            // Don't hide shows for Seller accounts hack
+            // Force use the POS system
             if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
                 $venues_edit = Auth::user()->venues_check_ticket;
                 $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
                 $link = 'pos/buy/';
             } else {
                 $venues_check = null;
-                $link = 'event';
+                $link = 'event/';
             }
             
             //get all records
@@ -127,10 +125,14 @@ class VenueController extends Controller
             $venue->events = $venue->events->orderBy('show_times.show_time','ASC')->groupBy('shows.id')->distinct()->get();
             
             foreach ($venue->events as $s)
+            {
+                //add link here
+                $s->link = '/'.$link.$s->slug;
                 if(!empty($s->logo_url))
                     $s->logo_url = Image::view_image($s->logo_url);
+            }
             //return view
-            return view('production.venues.view',compact('venue','link'));
+            return view('production.venues.view',compact('venue'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Venue View: '.$ex->getMessage());
         }
