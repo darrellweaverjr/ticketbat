@@ -426,19 +426,25 @@ html, body {
 /* ================================================================= */
 #pos-checkout-bottom button.btn-info {
     color: #fff;
-    background-color: #2964b1;
+    background-color: #6a8cb9;
     border-color: #508edb;
 }
+#pos-checkout-bottom button.btn-quick-cash {
+    color: #fff;
+    background-color: #655286;
+    border-color: #8775a7;
+}
 #pos-header {
-    background-color: #555;
+    background-color: #2f353b;
+    border-top: 3px solid #666;
 }
 #pos-tally{
-    background-color: #333;
+    background-color: #3c4146;
 }
 #pos-event-name {
     text-transform: uppercase;
     font-weight: bold;
-    color:#42ad28;
+    color: #559e55;
 }
 #pos-venue {
     text-transform: uppercase;
@@ -448,7 +454,7 @@ html, body {
 
 #pos-tally .dashboard-stat .details {
     position: inherit;
-    color: #FFFFFF;
+    color: #c9cacb;
 }
 
 #pos-ticket-wrapper {

@@ -26,22 +26,22 @@
             </div>
             <div class="cash_total col-sm-2 col-md-4">
                 <div class="col-md-6" style="padding-top:5px">
-                    <button name="plus_1" value="1" type="button" class="btn btn-info btn-lg btn-block">+1.00</button>
+                    <button name="plus_1" value="1" type="button" class="btn btn-quick-cash btn-lg btn-block">+1.00</button>
                 </div>
                 <div class="col-md-6" style="padding-top:5px">
-                    <button name="plus_5" value="5" type="button" class="btn btn-info btn-lg btn-block">+5.00</button>
+                    <button name="plus_5" value="5" type="button" class="btn btn-quick-cash btn-lg btn-block">+5.00</button>
                 </div>
                 <div class="col-md-6" style="padding-top:5px">
-                    <button name="plus_10" value="10" type="button" class="btn btn-info btn-lg btn-block">+10.00</button>
+                    <button name="plus_10" value="10" type="button" class="btn btn-quick-cash btn-lg btn-block">+10.00</button>
                 </div>
                 <div class="col-md-6" style="padding-top:5px">
-                    <button name="plus_20" value="20" type="button" class="btn btn-info btn-lg btn-block">+20.00</button>
+                    <button name="plus_20" value="20" type="button" class="btn btn-quick-cash btn-lg btn-block">+20.00</button>
                 </div>
                 <div class="col-md-6" style="padding-top:5px">
-                    <button name="plus_50" value="50" type="button" class="btn btn-info btn-lg btn-block">+50.00</button>
+                    <button name="plus_50" value="50" type="button" class="btn btn-quick-cash btn-lg btn-block">+50.00</button>
                 </div>
                 <div class="col-md-6" style="padding-top:5px">
-                    <button name="plus_100" value="100" type="button" class="btn btn-info btn-lg btn-block">+100.00</button>
+                    <button name="plus_100" value="100" type="button" class="btn btn-quick-cash btn-lg btn-block">+100.00</button>
                 </div>
             </div>
             <div class="cash_input col-sm-6 col-md-5">
