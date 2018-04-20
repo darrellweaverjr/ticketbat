@@ -171,7 +171,7 @@
                         </center>
 
                         <div class="row text-center" style="padding:20px">
-                            <button type="button" id="btn_check_pay" class="btn btn-primary btn-lg uppercase">Check form and process payment <i class="fa fa-money"></i></button>
+                            <button type="button" id="btn_check_pay" class="btn btn-primary btn-lg btn-block uppercase">Check form and process payment <i class="fa fa-money"></i></button>
                         </div>
 
                     </div>
