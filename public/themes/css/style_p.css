@@ -589,6 +589,14 @@ html, body {
     .nav>li>a {
         padding: 10px 5px;
     }
+    .widget-thumb {
+        padding: 10px 10px;
+    }
+    #myFilter.row{
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
 }
 
 @media screen and (max-width: 1130px) {

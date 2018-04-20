@@ -61,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2">
+                    <div class="col-xs-6 col-sm-2 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by location">
                             <div class="widget-thumb-wrap">
 
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2">
+                    <div class="col-xs-6 col-sm-2 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by venue">
                             <div class="widget-thumb-wrap">
 
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2">
+                    <div class="col-xs-6 col-sm-2 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by genre">
                             <div class="widget-thumb-wrap">
 
@@ -115,7 +115,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xs-6 col-sm-3 col-md-2">
                         <div class="widget-thumb widget-bg-color-white text-uppercase" title="Filter by date range">
                             <div class="widget-thumb-wrap">
 
