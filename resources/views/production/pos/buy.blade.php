@@ -58,28 +58,28 @@
                     <div class="panel-group">
                         <!-- BEGIN TICKETS -->
                         @foreach($event->tickets as $index=>$t)
-                            <div class="panel">
-                                <div class="panel-heading p-3">
-                                    <h4 class="panel-title {{$t['class']}} event-ticket-type"><strong class="lh-25">{{$t['type']}}</strong></h4>
-                                </div>
-                                <div class="panel-body" style="margin-bottom: -20px;">
-                                    @foreach($t['tickets'] as $tt)
-                                    <div class="row form-section" style="padding-right:15px">
-                                        <center>
-                                            <span class="col-sm-5 col-md-5">
-                                                <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b></h4>
-                                            </span>
-                                            <div class="col-sm-7 col-md-7 input-group input-group-lg">
-                                                <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
-                                            </div>
-                                            @if($tt->title!='None')<small>{{$tt->title}}</small>@endif
-                                        </center>
-                                    </div>
-                                    @endforeach
-                                </div>
+                        <div class="panel">
+                            <div class="panel-heading p-3">
+                                <h4 class="panel-title {{$t['class']}} event-ticket-type"><strong class="lh-25">{{$t['type']}}</strong></h4>
                             </div>
-                    @endforeach
-                    <!-- END TICKETS -->
+                            <div class="panel-body" style="margin-bottom: -20px;">
+                                @foreach($t['tickets'] as $tt)
+                                <div class="row form-section" style="padding-right:15px">
+                                    <center>
+                                        <span class="col-sm-5 col-md-5">
+                                            <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b></h4>
+                                        </span>
+                                        <div class="col-sm-7 col-md-7 input-group input-group-lg">
+                                            <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
+                                        </div>
+                                        @if($tt->title!='None')<small>{{$tt->title}}</small>@endif
+                                    </center>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endforeach
+                        <!-- END TICKETS -->
                     </div>
                 @endif
             </div>
@@ -142,7 +142,7 @@
                 <div class="portlet-body">
                     <!-- Begin payment tabs -->
                     <div class="tab-content" id="tabs_payment">
-                        <div class="tab-pane fade @if(!($cart['total']>0) || $cart['seller']<1) active @endif in @if($cart['total']>0) hidden @endif" id="tab_skip">
+                        <div class="tab-pane fade @if($cart['total']>0 && $cart['quantity']>0) active in @else hidden @endif" id="tab_skip">
                             <!-- BEGIN SWIPE FORM -->
                             @includeIf('production.shoppingcart.skip', ['cart' => $cart])
                             <!-- END SWIPE FORM -->

@@ -82,7 +82,7 @@ class POSController extends Controller
                                                  IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
                 ->where('show_times.show_id', $event->show_id)->where('show_times.is_active', '>', 0)
                 ->where(function ($query) use ($current,$cutoff_hours) {
-                    $query->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL '.$cutoff_hours.' HOUR)'), '>=', $current );
+                    $query->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL '.$cutoff_hours.' HOUR)'), '<=', $current );
                 })
                 ->orderBy('show_times.show_time')->take($display_schedule)->get();
             $show_time_id = (!count($event->showtimes))? '' : ( (empty($show_time_id))? $event->showtimes[0]->id : $show_time_id );
@@ -221,7 +221,7 @@ class POSController extends Controller
 
                 if($item)
                 {
-                    if(empty($info['qty']) || !is_integer($info['qty']))
+                    if(empty($info['qty']))
                         return $this->remove($item->id,$s_token);
                     else
                     {
@@ -237,7 +237,7 @@ class POSController extends Controller
                     }
                 }
                 else if(!empty($info['qty']))
-                {
+                {   
                     $success = Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $s_token);
                     if($success['success'])
                     {
