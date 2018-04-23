@@ -21,11 +21,15 @@
             <h3 id="pos-event-name" class="mt-10 mb-5">{{$event->name}}</h3>
             <h5 id="pos-venue" class="mt-0">{{$event->venue}}</h5>
             <div class="text-center" id="pos_showtimes">
+                @if(empty($event->showtimes) || count($event->showtimes)<1)
+                    <h2 style="color:red"><b>This event is not for sale!</b></h2>
+                @else
                 <select class="form-control input-lg" name="show_time_id" data-show="{{$event->show_id}}">
                     @foreach($event->showtimes as $st)
                     <option value="{{$st->id}}" @if($show_time_id == $st->id) selected @endif>{{$st->show_day}} @ {{$st->show_hour}}</option>
                     @endforeach
                 </select>
+                @endif
             </div>
         </div>
         <div id="pos-tally" class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" >
@@ -46,12 +50,10 @@
         <div id="pos-ticket-wrapper" class="portlet about-text col-xs-12 col-sm-5 col-md-5">
             <h4><i class="fa fa-ticket"></i> Tickets</h4>
             <div id="pos_tickets" class="portlet-body pr-15 mt-3">
-                @if(empty($event->tickets))
-                    <div class="bg-red bg-font-red">
-                        <hr>
-                        <h1 class="text-center">Tickets are currently not for sale.</h1>
-                        <br>
-                    </div>
+                @if(empty($event->tickets) || count($event->tickets)<1 )
+                    <h1 class="text-center" style="color:red"><b>Tickets are currently not for sale!</b></h1>
+                @elseif(empty($event->showtimes) || count($event->showtimes)<1)
+                    <h1 class="text-center" style="color:red"><b>Tickets are not for availables!</b></h1>
                 @else
                     <div class="panel-group">
                         <!-- BEGIN TICKETS -->
