@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Image;
+use App\Http\Models\Util;
 
 class VenueController extends Controller
 {
@@ -28,13 +29,8 @@ class VenueController extends Controller
             //get all records
             $venues = [];
             
-            // Force use the POS system
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))) {
-                $venues_edit = Auth::user()->venues_check_ticket;
-                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
-            } else {
-                $venues_check = null;
-            }
+            //checkings by user
+            $options = Util::display_options_by_user();
             
             $_venues = DB::table('venues')
                         ->join('locations', 'locations.id', '=', 'venues.location_id')
@@ -49,8 +45,8 @@ class VenueController extends Controller
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('tickets.is_active','>',0)
                         ->whereNotNull('venues.logo_url');
-            if(!is_null($venues_check))
-                $_venues = $_venues->whereIn('venues.id',$venues_check);
+            if(!is_null($options['venues']))
+                $_venues = $_venues->whereIn('venues.id',$options['venues']);
             $_venues = $_venues->groupBy('venues.id')->distinct()->get();
             
             foreach ($_venues as $v)
@@ -80,15 +76,8 @@ class VenueController extends Controller
             if(empty($slug))
                 return redirect()->route('index');
             
-            // Force use the POS system
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
-                $venues_edit = Auth::user()->venues_check_ticket;
-                $venues_check = (!empty($venues_edit))? explode(',',$venues_edit) : [];
-                $link = 'pos/buy/';
-            } else {
-                $venues_check = null;
-                $link = 'event/';
-            }
+            //checkings by user
+            $options = Util::display_options_by_user();
             
             //get all records
             $venue = DB::table('venues')
@@ -97,8 +86,8 @@ class VenueController extends Controller
                                           venues.facebook, venues.twitter, venues.googleplus, venues.yelpbadge, venues.youtube, venues.instagram,
                                           locations.*, IF(venues.restrictions!="None",venues.restrictions,"") AS restrictions'))
                         ->where('venues.is_featured','>',0)->where('venues.slug', $slug);
-            if(!is_null($venues_check))
-                $venue = $venue->whereIn('venues.id',$venues_check);  
+            if(!is_null($options['venues']))
+                $venue = $venue->whereIn('venues.id',$options['venues']);
             $venue= $venue->first();
             if(!$venue)
                 return redirect()->route('index');
@@ -117,17 +106,17 @@ class VenueController extends Controller
                                           venues.name AS venue, show_times.show_time, shows.slug, show_times.time_alternative, shows.description,
                                           IF(shows.starting_at,shows.starting_at,MIN(tickets.retail_price+tickets.processing_fee)) AS price'))
                         ->where('shows.venue_id',$venue->venue_id)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where($options['where'])
                         ->where('show_times.is_active','=',1)
-                        ->where('show_times.show_time','>',\Carbon\Carbon::now())
                         ->whereNotNull('shows.logo_url');
-            if(!is_null($venues_check))
-                $venue->events = $venue->events->whereIn('venues.id',$venues_check); 
+            if(!is_null($options['venues']))
+                $venue->events = $venue->events->whereIn('venues.id',$options['venues']);
             $venue->events = $venue->events->orderBy('show_times.show_time','ASC')->groupBy('shows.id')->distinct()->get();
             
             foreach ($venue->events as $s)
             {
                 //add link here
-                $s->link = '/'.$link.$s->slug;
+                $s->link = '/'.$options['link'].$s->slug;
                 if(!empty($s->logo_url))
                     $s->logo_url = Image::view_image($s->logo_url);
             }

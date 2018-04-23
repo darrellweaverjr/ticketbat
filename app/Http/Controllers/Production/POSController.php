@@ -43,6 +43,10 @@ class POSController extends Controller
             //  Force use the POS system
             if (!(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))))
                 return redirect('event/'.$slug);
+            
+            //checkings by user
+            $options = Util::display_options_by_user();
+            
             //get all records
             $event = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
@@ -61,10 +65,7 @@ class POSController extends Controller
                 })
                 ->where('shows.slug', $slug)
                 ->where('show_times.is_active', '>', 0)
-                ->where(function ($query) use ($current) {
-                    $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)', '>=', $current ));
-                })
-                ->first();
+                ->where($options['where'])->first();
             if (!$event) {
                 return redirect()->route('index');
             }
@@ -75,15 +76,14 @@ class POSController extends Controller
             //show_times
             $event->showtimes = DB::table('show_times')
                 ->join('shows', 'show_times.show_id', '=', 'shows.id')
+                ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->select(DB::raw('show_times.id, show_times.time_alternative, show_times.show_time,
                                                  DATE_FORMAT(show_times.show_time,"%a, %b %d,%Y") AS show_day,
                                                  DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,
                                                  IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
                                                  IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
                 ->where('show_times.show_id', $event->show_id)->where('show_times.is_active', '>', 0)
-                ->where(function ($query) use ($current,$cutoff_hours) {
-                    $query->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL '.$cutoff_hours.' HOUR)'), '<=', $current );
-                })
+                ->where($options['where'])
                 ->orderBy('show_times.show_time')->take($display_schedule)->get();
             $show_time_id = (!count($event->showtimes))? '' : ( (empty($show_time_id))? $event->showtimes[0]->id : $show_time_id );
             //get tickets types

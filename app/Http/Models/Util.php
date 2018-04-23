@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\File;
 
 
@@ -312,6 +313,37 @@ class Util extends Model
                 }
             }
             return $tickets;
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    /**
+     * Return values that uses the pages to display events according to the user logged.
+     */
+    public static function display_options_by_user()
+    {
+        try {
+            $current = date('Y-m-d H:i:s');
+            $date_limit = date('Y-m-d H:i:s', strtotime('yesterday'));
+            $data = ['where'=>[['show_times.show_time','>=',$current]], 'venues'=>null, 'link'=>'event/'];
+            if(Auth::check())
+            {
+                if(in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE'))))
+                {
+                    $data['where'] = [['show_times.show_time','>=',$date_limit]];
+                    $data['where'][] = [DB::raw('DATE_SUB(show_times.show_time,INTERVAL venues.cutoff_hours_start HOUR)'),'<=',$current];
+                    $data['where'][] = [DB::raw('DATE_ADD(show_times.show_time,INTERVAL venues.cutoff_hours_end HOUR)'),'>=',$current];
+                    $venues_edit = Auth::user()->venues_check_ticket;
+                    $data['venues'] = (!empty($venues_edit))? explode(',',$venues_edit) : [0];
+                    $data['link'] = 'pos/buy/';
+                }
+                else if(in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+                {
+                    $data['where'] = [['show_times.show_time','>=',$date_limit]];
+                    $data['where'][] = [DB::raw('DATE_SUB(show_times.show_time,INTERVAL venues.cutoff_hours_start HOUR)'),'<=',$current];
+                }
+            }
+            return $data;
         } catch (Exception $ex) {
             return [];
         }
