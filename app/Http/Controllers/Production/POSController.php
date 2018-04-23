@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Production;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use App\Http\Models\Image;
@@ -28,9 +29,9 @@ class POSController extends Controller
     public function buy($slug)
     {
         try {
+            Cache::flush();
             //init
             $qty_tickets_sell = 100;
-            $cutoff_hours = 10;
             $display_schedule = 3;
             $current = date('Y-m-d H:i:s');
             $s_token = Util::s_token(false, true);

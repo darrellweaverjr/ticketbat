@@ -142,12 +142,7 @@
                 <div class="portlet-body">
                     <!-- Begin payment tabs -->
                     <div class="tab-content" id="tabs_payment">
-                        <div class="tab-pane fade @if($cart['total']>0 && $cart['quantity']>0) active in @else hidden @endif" id="tab_skip">
-                            <!-- BEGIN SWIPE FORM -->
-                            @includeIf('production.shoppingcart.skip', ['cart' => $cart])
-                            <!-- END SWIPE FORM -->
-                        </div>
-
+                        
                         <div class="tab-pane fade in active" id="tab_cash">
                             <!-- BEGIN CASH FORM -->
                             @includeIf('production.shoppingcart.cash', ['cart' => $cart])
@@ -163,6 +158,12 @@
                         <div class="tab-pane fade" id="tab_card">
                             <!-- BEGIN SWIPE FORM -->
                             @includeIf('production.shoppingcart.card', ['cart' => $cart])
+                            <!-- END SWIPE FORM -->
+                        </div>
+                        
+                        <div class="tab-pane fade @if($cart['total']>0 && $cart['quantity']>0) active in @else hidden @endif" id="tab_skip">
+                            <!-- BEGIN SWIPE FORM -->
+                            @includeIf('production.shoppingcart.skip', ['cart' => $cart])
                             <!-- END SWIPE FORM -->
                         </div>
 
