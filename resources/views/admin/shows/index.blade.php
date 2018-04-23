@@ -179,9 +179,6 @@
                                     <li class="">
                                         <a href="#tab_model_update_awards" data-toggle="tab"> Awards </a>
                                     </li>-->
-                                    <li class="">
-                                        <a href="#tab_model_update_pos" data-toggle="tab">POS</a>
-                                    </li>
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_model_update_general">
@@ -768,20 +765,6 @@
                                     <div class="tab-pane" id="tab_model_update_awards">
                                         <h1>Not Implemented!</h1>
                                     </div>-->
-                                    <div class="tab-pane" id="tab_model_update_pos">
-                                        <div class="row" style="padding: 0px 40px">
-                                            <label class="control-label">
-                                                <span class="required">Options to seller</span>
-                                            </label><br><br>
-                                            <div class="form-group">
-                                                <label class="control-label col-md-5">Fee for tickets (Only POS system)</label>
-                                                <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_fee"/>
-                                                </div>
-                                                <div class="col-md-5 venue_fee_default"></div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

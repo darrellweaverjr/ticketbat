@@ -270,9 +270,8 @@ class VenueController extends Controller{
                 $venue->default_processing_fee = $input['default_processing_fee'];
                 $venue->default_percent_pfee = $input['default_percent_pfee'];
                 $venue->default_fixed_commission = $input['default_fixed_commission'];
-                $venue->default_percent_commission = $input['default_percent_commission'];
-                $venue->disable_cash_breakdown = (!empty($input['disable_cash_breakdown']))? 1 : 0;
-                $venue->pos_fee = (!empty($input['pos_fee']))? $input['pos_fee'] : null;
+                $venue->cutoff_hours_start = intval($input['cutoff_hours_start']);
+                $venue->cutoff_hours_end = intval($input['cutoff_hours_end']);
                 if(!empty($input['logo_url']))
                 {
                     if(preg_match('/media\/preview/',$input['logo_url']))
@@ -931,27 +930,6 @@ class VenueController extends Controller{
                 return ['success'=>false,'msg'=>'Invalid Option.'];
         } catch (Exception $ex) {
             throw new Exception('Error VenueAds Index: '.$ex->getMessage());
-        }
-    }
-    /**
-     * Manage values for POS sytem POS
-     *
-     * @return view
-     */
-    public function pos()
-    {
-        try {
-            //init
-            $input = Input::all();
-            if($input && $input['action']=='pos_fee' && isset($input['pos_fee']) && !empty($input['venue_id']))
-            {
-                DB::table('shows')->where('venue_id',$input['venue_id'])->update(['pos_fee'=>(!empty($input['pos_fee']))? $input['pos_fee'] : null]);
-                return ['success'=>true,'msg'=>'Fees updated successfully.'];
-            }
-            else
-                return ['success'=>false,'msg'=>'Invalid Option.'];
-        } catch (Exception $ex) {
-            throw new Exception('Error VenuePOS Index: '.$ex->getMessage());
         }
     }
 

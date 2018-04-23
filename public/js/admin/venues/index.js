@@ -409,7 +409,6 @@ var TableDatatablesManaged = function () {
               },
               function(isConfirm) {
                 if (isConfirm) {
-                    var form_delete = $('#form_model_delete');
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
@@ -1747,68 +1746,6 @@ var TableDatatablesManaged = function () {
             FormImageUpload('ads.'+type,'#modal_model_venue_ads','#form_model_venue_ads [name="image"]');
         });
         //function with venue_ads   *******************************************************************************************************   VENUE ADS END
-
-        //function with venue_pos  **************************************************************************************************   VENUE POS BEGIN
-        //function overwrite pos fee for all sub shows
-        $('#btn_pos_fee').on('click', function(ev) {
-            var venue_id = $('#form_model_update input[name="id"]').val();
-            var pos_fee = $('#form_model_update input[name="pos_fee"]').val();
-            $('#modal_model_update').modal('hide');
-            if(venue_id)
-            {
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/admin/venues/pos',
-                    data: {action:'pos_fee', venue_id:venue_id, pos_fee:pos_fee},
-                    success: function(data) {
-                        if(data.success) {
-                            swal({
-                                title: "<span style='color:green;'>Saved!</span>",
-                                text: data.msg,
-                                html: true,
-                                timer: 1500,
-                                type: "success",
-                                showConfirmButton: false
-                            });
-                            $('#modal_model_update').modal('show');
-                        }
-                        else{
-                            swal({
-                                title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
-                                html: true,
-                                type: "error"
-                            },function(){
-                                $('#modal_model_update').modal('show');
-                            });
-                        }
-                    },
-                    error: function(){
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to update the fees's information!<br>The request could not be sent to the server.",
-                            html: true,
-                            type: "error"
-                        },function(){
-                            $('#modal_model_update').modal('show');
-                        });
-                    }
-                });
-            }
-            else
-            {
-                swal({
-                    title: "<span style='color:red;'>Error!</span>",
-                    text: "There is an error. Please, contact an administrator.",
-                    html: true,
-                    type: "error"
-                },function(){
-                    $('#modal_model_update').modal('show');
-                });
-            }
-        });
-        //function with venue_pos  **************************************************************************************************   VENUE POS END
 
         //init functions
         check_models();

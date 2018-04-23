@@ -509,11 +509,6 @@ var TableDatatablesManaged = function () {
                 $('#grid_show_videos').cubeportfolio('appendItems', html);
                 $('#grid_show_videos').trigger('resize.cbp');
             }
-            //fill out pos
-            if(data.pos && data.pos.length)
-                $('#form_model_update .venue_fee_default').html('<span class="label label-sm sbold label-info">Venue default POS fee is: $'+data.pos[0]+'</span>');
-            else
-                $('#form_model_update .venue_fee_default').html('');
             //show modal
             $('#modal_model_update').modal('show');
         }

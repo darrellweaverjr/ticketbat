@@ -499,20 +499,15 @@
                                                 <span class="required">Options to admin/seller</span>
                                             </label><br><br>
                                             <div class="form-group">
-                                                <label class="control-label col-md-5">Disable cash breakdown on "shopping cart" page (hide it and fill it out by default)</label>
-                                                <div class="col-md-7">
-                                                    <input type="hidden" name="disable_cash_breakdown" value="0"/>
-                                                    <input type="checkbox" class="make-switch input-large" name="disable_cash_breakdown" value="1" data-on-text="Yes, do it" data-off-text="No, keep it" data-on-color="danger" data-off-color="primary">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-md-5">Fee for tickets (Only POS system)</label>
+                                                <label class="control-label col-md-3">Cut off hours from </label>
                                                 <div class="col-md-2">
-                                                    <input type="number" class="form-control" name="pos_fee"/>
+                                                    <input type="number" class="form-control" name="cutoff_hours_start"/>
                                                 </div>
-                                                <div class="col-md-5">
-                                                    <button type="button" id="btn_pos_fee" class="btn sbold bg-red">Override fee for all the shows in this venue</button>
+                                                <label class="control-label col-md-3 text-center"> hours before the event, to </label>
+                                                <div class="col-md-2">
+                                                    <input type="number" class="form-control" name="cutoff_hours_end"/>
                                                 </div>
+                                                <label class="control-label col-md-2 text-left"> hours after. </label>
                                             </div>
                                         </div>
                                     </div>
