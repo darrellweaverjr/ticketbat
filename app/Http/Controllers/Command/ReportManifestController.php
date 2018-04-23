@@ -35,10 +35,12 @@ class ReportManifestController extends Controller{
         }
         else
         {
-            $this->date_manifest = date('Y-m-d H:i:s',strtotime($this->now_var));
+            $this->date_manifest = date('Y-m-d H:i:s',strtotime("now"));
             $this->previous_date = false;
         }
+        dd($this->date_manifest);
     }
+
     /*
      * get sales report pdf
      */
