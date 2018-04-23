@@ -170,7 +170,7 @@ class Shoppingcart extends Model
     {
         try {
             $price = $qty = $fee = $save = $saveAll = $total = 0;
-            $saveAllApplied = $disable_cash_breakdown = false;
+            $saveAllApplied = false;
             $coupon = $coupon_description = null;
             $restrictions = $banners = [];
             $amex_only = 0;
@@ -185,9 +185,6 @@ class Shoppingcart extends Model
                 //loop for all items to calculate
                 foreach ($items as $i)
                 {
-                    //pre-conditions cash fill out
-                    if(!$disable_cash_breakdown && $i->disable_cash_breakdown>0)
-                        $disable_cash_breakdown = true;
                     //printed tickets
                     if($i->printed_tickets>0)
                         $printed_tickets['shows'][] = $i->name;
@@ -306,8 +303,7 @@ class Shoppingcart extends Model
             //return
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,'banners'=>$banners,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
-                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets,
-                    'cash_breakdown'=>(!empty($cash_breakdown))? 1 : 0];
+                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
 
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
