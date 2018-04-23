@@ -53,7 +53,7 @@
                 @if(empty($event->tickets) || count($event->tickets)<1 )
                     <h1 class="text-center" style="color:red"><b>Tickets are currently not for sale!</b></h1>
                 @elseif(empty($event->showtimes) || count($event->showtimes)<1)
-                    <h1 class="text-center" style="color:red"><b>Tickets are not for availables!</b></h1>
+                    <h1 class="text-center" style="color:red"><b>Tickets are not availables!</b></h1>
                 @else
                     <div class="panel-group">
                         <!-- BEGIN TICKETS -->
