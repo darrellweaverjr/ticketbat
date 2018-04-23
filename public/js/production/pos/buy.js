@@ -95,38 +95,51 @@ var POSbuy = function () {
             function update_items(ticket_id=0,qty=0,id=0,update=0)
             {
                 var show_time_id = $('#pos_showtimes select[name="show_time_id"]').val();
-                jQuery.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '/pos/update',
-                    data: {show_time_id:show_time_id,ticket_id:ticket_id,qty:qty,id:id,update:update},
-                    success: function(data) {
-                        if(data.success)
-                        {
-                            update_page(data.cart,show_time_id);
-                        }
-                        else{
+                if(show_time_id)
+                {
+                    jQuery.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '/pos/update',
+                        data: {show_time_id:show_time_id,ticket_id:ticket_id,qty:qty,id:id,update:update},
+                        success: function(data) {
+                            if(data.success)
+                            {
+                                update_page(data.cart,show_time_id);
+                            }
+                            else{
+                                swal({
+                                    title: "<span style='color:red;'>Error!</span>",
+                                    text: data.msg,
+                                    html: true,
+                                    type: "error"
+                                },function(){
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error: function(){
                             swal({
                                 title: "<span style='color:red;'>Error!</span>",
-                                text: data.msg,
+                                text: "There was an error trying to add the ticket(s) to the cart.",
                                 html: true,
                                 type: "error"
                             },function(){
                                 location.reload();
                             });
                         }
-                    },
-                    error: function(){
-                        swal({
-                            title: "<span style='color:red;'>Error!</span>",
-                            text: "There was an error trying to add the ticket(s) to the cart.",
-                            html: true,
-                            type: "error"
-                        },function(){
-                            location.reload();
-                        });
-                    }
-                });
+                    });
+                }
+                else{
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: 'You must select a valid date/time event to sell tickets to.',
+                        html: true,
+                        type: "error"
+                    },function(){
+                        location.reload();
+                    });
+                }
             }
 
             //showtimes
@@ -151,8 +164,6 @@ var POSbuy = function () {
             $('#btn_continue').on('click', function () {
                 location.reload();
             });
-
-            //$('#modal_complete').modal('show');
             
             //function send receipt by email
             $('#btn_receipt_email').on('click', function(ev) {

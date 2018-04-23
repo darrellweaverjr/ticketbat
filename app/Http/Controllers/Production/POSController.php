@@ -215,13 +215,13 @@ class POSController extends Controller
             {
                 return $this->remove($info['id'],$s_token);
             }
-            else if(!empty($info['show_time_id']) && !empty($info['ticket_id']) && !empty($info['show_time_id']))
+            else if(!empty($info['show_time_id']) && !empty($info['ticket_id']))
             {
                 $item = Shoppingcart::where('item_id',$info['show_time_id'])->where('ticket_id',$info['ticket_id'])->where('session_id',$s_token)->first();
 
                 if($item)
                 {
-                    if(empty($info['qty']))
+                    if(empty($info['qty']) || !is_integer($info['qty']))
                         return $this->remove($item->id,$s_token);
                     else
                     {
@@ -250,7 +250,7 @@ class POSController extends Controller
                 }
                 return ['success'=>false, 'msg'=>'That item is not longer on the shopping cart!'];
             }
-            return ['success'=>false, 'msg'=>'You must do a valid action in the form!'];
+            return ['success'=>false, 'msg'=>'You must select a valid event date/time and ticket at the form!'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
