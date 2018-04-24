@@ -70,8 +70,8 @@
                                     <span class="widget-thumb-body-stat">
                                     <select class="form-control" name="filter_city">
                                         <option selected value="">All</option>
-                                        @foreach($cities as $index=>$c)
-                                            <option data-country="{{$c->country}}" data-state="{{$c->state}}" value="{{$c->city}}">{{$c->city}}</option>
+                                        @foreach($cities as $c)
+                                            <option data-country="{{$c['country']}}" data-state="{{$c['state']}}" value="{{$c['city']}}">{{$c['city']}}</option>
                                         @endforeach
                                      </select>
                                 </span>
@@ -88,8 +88,8 @@
                                     <span class="widget-thumb-body-stat">
                                     <select class="form-control" name="filter_venue" data-content='@php echo str_replace("'"," ",json_encode($venues));@endphp'>
                                         <option selected value="">All</option>
-                                        @foreach($venues as $index=>$v)
-                                            <option value="{{$v->id}}">{{$v->name}}</option>
+                                        @foreach($venues as $v)
+                                            <option value="{{$v['id']}}">{{$v['name']}}</option>
                                         @endforeach
                                     </select>
                                 </span>
@@ -106,7 +106,7 @@
                                     <span class="widget-thumb-body-stat">
                                     <select class="form-control" name="filter_category">
                                         <option selected value="">All</option>
-                                        @foreach($categories as $index=>$c)
+                                        @foreach($categories as $c)
                                             <option value="{{$c->id}}" data-parent="{{$c->id_parent}}">{{html_entity_decode($c->name)}} {{$c->subs}}</option>
                                         @endforeach
                                     </select>
@@ -152,9 +152,8 @@
                                     <div class="cbp-caption-activeWrap">
                                         <div class="cbp-l-caption-alignCenter">
                                             <div class="cbp-l-caption-body">
-                                                @if(!($s->price=='0.00' || ($s->starting_at && $s->starting_at=='0.00')))
-                                                    <span class="cbp-l-caption-buttonLeft btn info">@if($s->time_alternative) {{$s->time_alternative}} @else Starting at <b>@if($s->starting_at) ${{$s->starting_at}} @else
-                                                                ${{$s->price}} @endif</b> @endif</span>
+                                                @if(!($s->price=='0.00'))
+                                                    <span class="cbp-l-caption-buttonLeft btn info">@if($s->time_alternative) {{$s->time_alternative}} @else Starting at <b>${{$s->price}}</b> @endif</span>
                                                 @endif
                                                 <span class="cbp-l-caption-buttonRight btn info">GET TICKETS <i class="fa fa-arrow-circle-right"></i></span>
                                             </div>
@@ -162,16 +161,8 @@
                                     </div>
                                 </div>
 
-                                @if($s->price=='0.00' || ($s->starting_at && $s->starting_at=='0.00'))
+                                @if($s->price=='0.00')
                                     <div class="btn btn-warning uppercase show_section_btnbuy"><span style="color:#000;margin-top:5px;"><b>Free</b></span></div>
-                                @elseif($s->starting_at)
-
-                                    {{-- This feature is temp disabled , pending a redesign --}}
-
-                                    {{--<div class="btn btn-warning uppercase show_section_btnbuy">--}}
-                                    {{--<h4 style="color:red;margin-top:5px;margin-bottom:-20px"><b>Clearance</b></h4><br><b style="text-decoration:line-through;color:#d43f3a">${{$s->regular_price}}</b><br><h4--}}
-                                    {{--style="margin-top:-2px;color:green;font-weight:bold">${{$s->starting_at}}</h4>--}}
-                                    {{--</div>--}}
                                 @endif
                                 <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
                                 <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">Next

@@ -47,46 +47,14 @@ class HomeController extends Controller
             $categs = Category::get_categories();
             $cats = $categories = $cities = $venues = [];
             $current = date('Y-m-d H:i:s');
+            $options = Util::display_options_by_user();
+            
             //get sliders
             $sliders = Slider::orderBy('n_order')->get();
             foreach ($sliders as $s) {
                 $s->image_url = Image::view_image($s->image_url);
             }
             
-            //checkings by user
-            $options = Util::display_options_by_user();
-            
-            //get cities
-            $cities = DB::table('venues')
-                ->join('locations', 'locations.id', '=', 'venues.location_id')
-                ->select('locations.city', 'locations.state', 'locations.country')
-                ->where('venues.is_featured', '>', 0)
-                ->whereNotNull('venues.logo_url');
-            if(!is_null($options['venues']))
-                $cities = $cities->whereIn('venues.id',$options['venues']);
-            $cities = $cities->orderBy('locations.city')->groupBy('locations.city')->distinct()->get();
-            
-            //get venues
-            $venues = DB::table('venues')
-                ->join('shows', 'venues.id', '=', 'shows.venue_id')
-                ->join('locations', 'locations.id', '=', 'venues.location_id')
-                ->join('show_times', 'shows.id', '=', 'show_times.show_id')
-                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
-                ->select('venues.id', 'venues.name', 'locations.city')
-                ->where('venues.is_featured', '>', 0)
-                ->where('shows.is_active', '>', 0)->where('shows.is_featured', '>', 0)
-                ->where(function ($query) use ($current) {
-                    $query->whereNull('shows.on_featured')
-                        ->orWhere('shows.on_featured', '<=', $current);
-                })
-                ->where($options['where'])
-                ->where('show_times.is_active', '=', 1)
-                ->whereNotNull('venues.logo_url');
-                
-            if(!is_null($options['venues']))
-                $venues = $venues->whereIn('venues.id',$options['venues']);
-            $venues = $venues->orderBy('venues.name')->groupBy('venues.id')->distinct()->get();
-
             //get shows
             $shows = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
@@ -103,13 +71,20 @@ class HomeController extends Controller
                         ->orWhere('shows.on_featured', '<=', $current);
                 })
                 ->where($options['where'])
-                ->where('show_times.is_active', '=', 1)
+                ->where('show_times.is_active', '>', 0)
+                ->whereNotNull('venues.logo_url')
                 ->whereNotNull('shows.logo_url');
             if(!is_null($options['venues']))
                 $shows = $shows->whereIn('venues.id',$options['venues']);
             $shows = $shows->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')->groupBy('shows.id')->distinct()->get();
 
             foreach ($shows as $s) {
+                //venues
+                if(!isset($venues[$s->venue_id]))
+                    $venues[$s->venue_id] = ['id'=>$s->venue_id, 'name'=>$s->venue, 'city'=>$s->city];
+                //cities
+                if(!isset($cities[$s->city]))
+                    $cities[$s->city] = ['city'=>$s->city, 'state'=>$s->state, 'country'=>$s->country];                
                 //add link here
                 $s->link = '/'.$options['link'].$s->slug;
                 //set up url
@@ -159,6 +134,8 @@ class HomeController extends Controller
             //init
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
+            $options = Util::display_options_by_user();
+            
             //calculate subcategories
             if (!empty($input['category']) && is_numeric($input['category'])) {
                 $result = [];
@@ -183,9 +160,6 @@ class HomeController extends Controller
             } else {
                 unset($input['category']);
             }
-
-            //checkings by user
-            $options = Util::display_options_by_user();
 
             //get shows
             $shows = DB::table('shows')
