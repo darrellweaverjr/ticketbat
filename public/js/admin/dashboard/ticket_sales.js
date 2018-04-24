@@ -175,7 +175,7 @@ var TableDatatablesButtons = function () {
         $('#sold_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
                 timePicker: true,
-                timePickerIncrement: 15,
+                timePickerIncrement: 1,
                 format: 'M/DD/YY h:mm A',
                 separator: ' to '
             },
