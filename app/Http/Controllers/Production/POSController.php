@@ -5,18 +5,13 @@ namespace App\Http\Controllers\Production;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Session;
 use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Purchase;
 use App\Http\Models\Country;
 use App\Http\Models\Region;
-use App\Http\Models\User;
 use App\Http\Models\Util;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 
 class POSController extends Controller
 {
@@ -29,7 +24,6 @@ class POSController extends Controller
     public function buy($slug)
     {
         try {
-            Cache::flush();
             //init
             $qty_tickets_sell = 100;
             $display_schedule = 3;

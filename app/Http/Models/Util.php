@@ -274,7 +274,7 @@ class Util extends Model
     /**
      * generate uniq session_id
      */
-    public static function s_token($for_app=false,$insert_session=false,$store_token=null)
+    public static function s_token($for_app=false,$insert_session=false,$store_token=null,$reset_token=false)
     {
         if(!empty($store_token))
         {
@@ -284,7 +284,7 @@ class Util extends Model
         else
         {
             $s_token = Session::get('s_token',null);
-            if(empty($s_token))
+            if(empty($s_token) || $reset_token)
             {
                 $prefix = ($for_app)? 'app_' : 'web_';
                 $s_token = uniqid($prefix).mt_rand (10,99);

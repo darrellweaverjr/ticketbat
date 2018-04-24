@@ -154,6 +154,8 @@ class PurchaseController extends Controller
             }
             if(!count($purchase['ids']))
                 return ['success'=>false, 'msg'=>'The system could not save your purchases correctly! Please, contact us.'];
+            //reset the session token each time the purchase is success
+            Util::s_token(false,true,null,true);
             //return
             return ['success'=>true,'purchases'=>implode('-',$purchase['ids']),'send_welcome_email'=>$client['send_welcome_email'],'msg'=>'Item(s) processed successfully.'];
         } catch (Exception $ex) {
