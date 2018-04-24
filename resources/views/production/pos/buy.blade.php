@@ -240,7 +240,8 @@
         <div class="modal-dialog">
             <div class="modal-content text-center">
                 <div class="modal-header">
-                    <h3 class="modal-title">Purchase completed</h3>
+                    <img src="{{config('app.theme')}}img/checked.png" alt="">
+                    <h3 class="modal-title" style="font-weight:bold;color:green">Purchase completed successfully!</h3>
                 </div>
                 <div class="modal-body" style="padding:30px">
                     <div class="row">

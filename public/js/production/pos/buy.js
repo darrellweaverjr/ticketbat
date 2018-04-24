@@ -242,7 +242,7 @@ var POSbuy = function () {
             $('#form_swipe').trigger('reset');
             $('#form_card').trigger('reset');
             $('#form_skip').trigger('reset');
-
+            
         } // end init
 
     };
