@@ -243,6 +243,9 @@
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>
+        @if (!(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))))
+        <script src="/js/production/general/autostart.js" type="text/javascript"></script>
+        @endif
         <script src="/js/production/general/contact.js" type="text/javascript"></script>
         <script src="/js/production/user/login.js" type="text/javascript"></script>
         <script src="/js/production/user/register.js" type="text/javascript"></script>

@@ -258,5 +258,4 @@ var Countdown = function () {
 jQuery(document).ready(function() {
     ScrollToTop.init();
     Logout.init();
-    ShoppingcartQtyItems.init();
 });
