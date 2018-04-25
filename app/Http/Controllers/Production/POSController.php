@@ -47,7 +47,7 @@ class POSController extends Controller
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('stages', 'stages.id', '=', 'shows.stage_id')
                 ->join('show_times', 'show_times.show_id', '=', 'shows.id')
-                ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, shows.logo_url, stages.id AS stage_id, stages.ticket_order,
+                ->select(DB::raw('shows.id as show_id, shows.name, shows.logo_url, stages.id AS stage_id, stages.ticket_order,
                                           shows.on_sale, venues.name AS venue'))
                 ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
                 ->where(function ($query) use ($current) {
@@ -72,11 +72,9 @@ class POSController extends Controller
             $event->showtimes = DB::table('show_times')
                 ->join('shows', 'show_times.show_id', '=', 'shows.id')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                ->select(DB::raw('show_times.id, show_times.time_alternative, show_times.show_time,
+                ->select(DB::raw('show_times.id, show_times.time_alternative, 
                                                  DATE_FORMAT(show_times.show_time,"%a, %b %d,%Y") AS show_day,
-                                                 DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour,
-                                                 IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
-                                                 IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
+                                                 DATE_FORMAT(show_times.show_time,"%l:%i %p") AS show_hour'))
                 ->where('show_times.show_id', $event->show_id)->where('show_times.is_active', '>', 0)
                 ->where($options['where'])
                 ->orderBy('show_times.show_time')->take($display_schedule)->get();
@@ -87,12 +85,12 @@ class POSController extends Controller
                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                 ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                   tickets.retail_price,
-                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = ' . $event->show_time_id . ')) ELSE ' . $qty_tickets_sell . ' END) AS max_available'))
+                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$show_time_id.')) ELSE ' . $qty_tickets_sell . ' END) AS max_available'))
                 ->where('tickets.show_id', $event->show_id)->where('tickets.is_active', '>', 0)->where('tickets.only_pos', '>=', 0)
-                ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = ' . $event->show_time_id . ')'))
-                ->where(function ($query) use ($event) {
+                ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = '.$show_time_id.')'))
+                ->where(function ($query) use ($show_time_id) {
                     $query->where('tickets.max_tickets', '<=', 0)
-                        ->orWhereRaw('tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = ' . $event->show_time_id . ')', '>', 0);
+                        ->orWhereRaw('tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$show_time_id.')', '>', 0);
                 })
                 ->groupBy('tickets.id')->orderBy('tickets.is_default', 'DESC')->get();
             if(empty($event->showtimes) || empty($tickets))
