@@ -59,10 +59,10 @@ var POSbuy = function () {
                             {
                                 var qty = parseInt( $('#pos_tickets input[name="'+v.ticket_id+'"]').val() );
                                 $('#pos_tickets input[name="'+v.ticket_id+'"]').val( qty+v.number_of_items );
-                                var rowDate = '<td style="text-align:center">'+date.format('MMM D, YYYY')+'<br>'+date.format('H:mm A')+'</td>';
+                                var rowDate = '<td style="text-align:center">'+date.format('MMM D, YYYY')+'<br>'+date.format('h:mm A')+'</td>';
                             }
                             else {
-                                var rowDate = '<td class="label-warning" style="text-align:center">'+date.format('MMM D, YYYY')+'<br>'+date.format('H:mm A')+'</td>';
+                                var rowDate = '<td class="label-warning" style="text-align:center">'+date.format('MMM D, YYYY')+'<br>'+date.format('h:mm A')+'</td>';
                             }
                             //cart
                             var product = '<h4 class="bold">('+v.number_of_items+') '+v.product_type;
@@ -72,7 +72,6 @@ var POSbuy = function () {
                             if(show_id != v.show_id)
                                 product += '<br><i class="label-warning">'+v.name+'</i>';
                             var rowItem = '<td>'+product+'</td>';
-                            //var rowDate = '<td style="text-align:center">'+date.format('MMM D, YYYY')+'<br>'+date.format('H:mmA')+'</td>';
                             var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2))+'<br>$'+(parseFloat(v.processing_fee)).toFixed(2)+'</td>';
                             var rowBtn = '<td style="text-align:center"><button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button></td>';
                             $('#tb_items').append('<tr data-id="'+v.id+'">'+rowItem+rowDate+rowSubtotal+rowBtn+'</tr>');
@@ -271,7 +270,7 @@ var SubmitFunctions = function () {
                             $('#modal_complete a.ticket_boca').attr('href','/user/purchases/tickets/S/'+data.purchases);
                             $('#modal_complete a.ticket_wrist').attr('href','/user/purchases/tickets/W/'+data.purchases);
                             $('#form_receipt_email input[name="purchases"]').val(data.purchases);
-                            $('#pos_tickets input[type="number"]').val(0);
+                            //$('#pos_tickets input[type="number"]').val(0);
                             swal.close();
                             $('#modal_complete').modal('show');
                         }
