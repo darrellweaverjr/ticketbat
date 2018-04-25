@@ -282,7 +282,7 @@ var SubmitFunctions = function () {
                             $('#modal_complete a.ticket_boca').attr('href','/user/purchases/tickets/S/'+data.purchases);
                             $('#modal_complete a.ticket_wrist').attr('href','/user/purchases/tickets/W/'+data.purchases);
                             $('#form_receipt_email input[name="purchases"]').val(data.purchases);
-                            //$('#pos_tickets input[type="number"]').val(0);
+                            $('#pos_tickets input[type="number"]').val(0);
                             swal.close();
                             $('#modal_complete').modal('show');
                         }
