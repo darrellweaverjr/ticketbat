@@ -62,8 +62,10 @@ class Shoppingcart extends Model
                                               IF(packages.title="None","",packages.title) AS package, shoppingcart.total_cost, tickets.percent_commission AS c_percent, shows.slug, show_times.id AS show_time_id,
                                               tickets.processing_fee AS processing_fee, tickets.fixed_commission AS c_fixed, shoppingcart.coupon, shows.amex_only_ticket_types,
                                               (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date, shows.id AS show_id,
-                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, shows.amex_only_end_date, shows.venue_id, tickets.inclusive_fee,
-                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty, shows.ticket_limit, tickets.max_tickets'))
+                                              (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, 
+                                              (CASE WHEN NOW() < (DATE_SUB(show_times.show_time,INTERVAL venues.cutoff_hours_start HOUR)) THEN 0 ELSE 1 END) AS available_time_seller, 
+                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty, 
+                                              shows.amex_only_end_date, shows.venue_id, tickets.inclusive_fee, shows.ticket_limit, tickets.max_tickets'))
                             ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
                             ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
         //limit tickets by show
@@ -114,6 +116,8 @@ class Shoppingcart extends Model
             }
             //continue checking availables
             $i->unavailable = 0;    //availables by default
+            if(in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+                $i->available_time = $i->available_time_seller;
             if($i->available_event < 1 || $i->available_time < 1 || $i->available_qty==0) //available events and time
                 $i->unavailable = 1;
             else if($i->available_qty!=-1 && $i->available_qty-$i->number_of_items<0)   //available qty of items to buy

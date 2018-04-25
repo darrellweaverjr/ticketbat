@@ -24,11 +24,16 @@
                 @if(empty($event->showtimes) || count($event->showtimes)<1)
                     <h2 style="color:red"><b>This event is not for sale!</b></h2>
                 @else
-                <select class="form-control input-lg" name="show_time_id" data-show="{{$event->show_id}}">
-                    @foreach($event->showtimes as $st)
-                    <option value="{{$st->id}}" @if($show_time_id == $st->id) selected @endif>{{$st->show_day}} @ {{$st->show_hour}}</option>
-                    @endforeach
-                </select>
+                <!-- BEGIN FORM-->
+                <form method="post" action="{{url()->current()}}" id="form_model_event">
+                    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                    <select class="form-control input-lg" name="show_time_id" data-show="{{$event->show_id}}">
+                        @foreach($event->showtimes as $st)
+                        <option value="{{$st->id}}" @if($show_time_id == $st->id) selected @endif>{{$st->show_day}} @ {{$st->show_hour}}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <!-- END FORM-->
                 @endif
             </div>
         </div>

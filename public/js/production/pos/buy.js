@@ -83,7 +83,7 @@ var POSbuy = function () {
             }
 
             //submit value
-            function update_items(ticket_id=0,qty=0,id=0,update=0)
+            function update_items(ticket_id=0,qty=0,id=0)
             {
                 var show_time_id = $('#pos_showtimes select[name="show_time_id"]').val();
                 if(show_time_id)
@@ -92,7 +92,7 @@ var POSbuy = function () {
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '/pos/update',
-                        data: {show_time_id:show_time_id,ticket_id:ticket_id,qty:qty,id:id,update:update},
+                        data: {show_time_id:show_time_id,ticket_id:ticket_id,qty:qty,id:id},
                         success: function(data) {
                             if(data.success)
                             {
@@ -135,24 +135,36 @@ var POSbuy = function () {
 
             //showtimes
             $('#pos_showtimes select[name="show_time_id"]').bind('change',function() {
-                update_items(0,0,0,1);
+                swal({
+                    title: "Changing event date/time.",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                $('#form_model_event').submit();
             });
 
             //tickets
             $('#pos_tickets input').bind('change',function() {
                 var ticket_id = $(this).attr('name');
                 var qty = $(this).val();
-                update_items(ticket_id,qty,0,0);
+                update_items(ticket_id,qty,0);
             });
 
             //cart remove item
             $(document).on('click', '#pos_cart button', function(e){
                 var id = $(this).closest('tr').data('id');
-                update_items(0,0,id,0);
+                update_items(0,0,id);
             });
             
             //onclose modal complete
             $('#btn_continue').on('click', function () {
+                swal({
+                    title: "Cleaning...",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
                 location.reload();
             });
             

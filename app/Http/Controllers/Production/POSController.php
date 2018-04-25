@@ -201,12 +201,7 @@ class POSController extends Controller
         try {
             $info = Input::all();
             $s_token = Util::s_token(false,true);
-            if(!empty($info['update']) && !empty($info['show_time_id']))
-            {
-                $cart = $this->items($s_token,$info['show_time_id']);
-                return ['success'=>true,'msg'=>'', 'cart'=>$cart];
-            }
-            else if(!empty($info['id']))
+            if(!empty($info['id']))
             {
                 return $this->remove($info['id'],$s_token);
             }
