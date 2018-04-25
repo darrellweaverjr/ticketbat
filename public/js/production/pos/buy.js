@@ -29,30 +29,22 @@ var POSbuy = function () {
                         $('#t_t_total').html('$'+parseFloat(cart.tally.total).toFixed(2));
                     }
                     //update payment tabs
-                    if(cart.total>0)
+                    if(cart.total<0.01 && cart.quantity>0)
                     {
-                        $('#tab_skip').addClass('hidden');
-                        $('#tab_card').removeClass('hidden');
-                        if(cart.seller>0)
-                        {
-                            $('#tab_swipe').removeClass('hidden');
-                            $('#tab_cash').removeClass('hidden');
-                        }
-                        else
-                        {
-                            $('#tab_swipe').addClass('hidden');
-                            $('#tab_cash').addClass('hidden');
-                        }
+                        $('#tab_skip').removeClass('hidden');
+                        $('#tab_cash').addClass('hidden');
+                        $('#tab_swipe').addClass('hidden');
+                        $('#tab_card').addClass('hidden');
                     }
                     else
                     {
-                        $('#tab_skip').removeClass('hidden');
-                        $('#tab_card').addClass('hidden');
+                        $('#tab_skip').addClass('hidden');
+                        $('#tab_cash').removeClass('hidden');
                         $('#tab_swipe').addClass('hidden');
-                        $('#tab_cash').addClass('hidden');
+                        $('#tab_card').addClass('hidden');
                     }
                     //update cash form
-                    $('#form_cash input[name="pending"]').val(cart.total);
+                    $('#form_cash input[name="pending"]').val(parseFloat(cart.total).toFixed(2));
                     CashFunctions.calculate();
                     //update items in list
                     $('#tb_items tr:gt(0)').remove();

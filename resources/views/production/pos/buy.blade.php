@@ -143,7 +143,13 @@
                     <!-- Begin payment tabs -->
                     <div class="tab-content" id="tabs_payment">
                         
-                        <div class="tab-pane fade in active" id="tab_cash">
+                        <div class="tab-pane fade @if($cart['total']<0.01 && $cart['quantity']>0) active in @else hidden @endif" id="tab_skip">
+                            <!-- BEGIN SWIPE FORM -->
+                            @includeIf('production.shoppingcart.skip', ['cart' => $cart])
+                            <!-- END SWIPE FORM -->
+                        </div>
+                        
+                        <div class="tab-pane fade @if(!($cart['total']<0.01 && $cart['quantity']>0)) active in @endif" id="tab_cash">
                             <!-- BEGIN CASH FORM -->
                             @includeIf('production.shoppingcart.cash', ['cart' => $cart])
                             <!-- END CASH FORM -->
@@ -160,13 +166,7 @@
                             @includeIf('production.shoppingcart.card', ['cart' => $cart])
                             <!-- END SWIPE FORM -->
                         </div>
-                        
-                        <div class="tab-pane fade @if($cart['total']>0 && $cart['quantity']>0) active in @else hidden @endif" id="tab_skip">
-                            <!-- BEGIN SWIPE FORM -->
-                            @includeIf('production.shoppingcart.skip', ['cart' => $cart])
-                            <!-- END SWIPE FORM -->
-                        </div>
-
+                       
                         <center class="hidden">
                             <input type="checkbox" id="accept_terms" value="1"/>
                             <button type="button" id="btn_process" disabled="true" class="btn btn-primary btn-lg uppercase">Process payment <i class="fa fa-arrow-circle-right"></i></button>
