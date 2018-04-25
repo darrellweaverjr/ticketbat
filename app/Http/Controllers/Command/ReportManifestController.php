@@ -35,8 +35,6 @@ class ReportManifestController extends Controller{
             $this->date_manifest = date('Y-m-d H:i:s',strtotime(Carbon::now()));
             $this->previous_date = false;
         }
-        $this->date_manifest = date('Y-m-d H:i:s',strtotime(Carbon::now()));
-        $this->previous_date = false;
     }
 
     /*
