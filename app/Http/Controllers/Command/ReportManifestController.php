@@ -35,6 +35,8 @@ class ReportManifestController extends Controller{
             $this->date_manifest = date('Y-m-d H:i:s',strtotime(Carbon::now()));
             $this->previous_date = false;
         }
+        $this->date_manifest = date('Y-m-d H:i:s',strtotime(Carbon::now()));
+        $this->previous_date = false;
     }
 
     /*
@@ -42,56 +44,56 @@ class ReportManifestController extends Controller{
      */
     public function init($log=false)
     {
-        $logs = '<b>Starting manifest controller...</b><br>';
+        $logs = '';
         try {
             //send reports for each type of manifest
             foreach ($this->manifests as $type)
             {
                 //create report
-                $logs .= '<b><i>*  Creating reports manifest "'.$type.'"...</i></b><br>';
+                $logs .= '<b><i>*  Manifest "'.$type.'" has ';
                 $info = $this->create_report($type);
                 if(!empty($info['dates']))
                 {
-                    $logs .= '* *  '.count($info['dates']).' showtimes with sales for date "'.$this->date_manifest.'"...<br>';
+                    $logs .= count($info['dates']).' result(s) for "'.date('m/d/Y',strtotime($this->date_manifest)).'":</i></b><br>';
                     //create and send report for each date
                     foreach($info['dates'] as $k=>$date)
                     {
-                        $logs .= '* * *  Creating manifest for showtime "'.$date->name.'" on "'.$date->show_time.'" ...<br>';
+                        $logs .= '* * '.($k+1).'. <small>"'.$date->name.'" on "'.date('m/d/Y g:ia',strtotime($date->show_time)).'"<br>* * * => ';
                         $date->type = $type;
                         $data = $this->create_data($date);
                         $manifest = $this->save_data($data);
                         if($manifest)
                         {
-                            $logs .= '* * * *  Manifest saved for showtime "'.$date->name.'" on "'.$date->show_time.'" ...<br>';
+                            $logs .= ' Saved OK,';
                             if($data['s_manifest_emails']>0 && !empty($data['emails']))
                             {
-                                $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" sending to email "'.$data['emails'].'" ...<br>';
+                                $logs .= ' Sending to "'.$data['emails'].'",';
                                 $sent = $manifest->send($data['emails'], $info['subject']);
                                 //storage if email was sent successfully
                                 $data['sent'] = ($sent)? 1 : 0;
                                 $manifest->email = json_encode($data);
                                 $manifest->save();
                                 if($sent)
-                                    $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" sent successfully ...<br>';
+                                    $logs .= ' Sent OK.';
                                 else
-                                    $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" error sending to email ...<br>';
+                                    $logs .= ' Sent failure.';
                             }
                             else
                             {
-                                $logs .= '* * * * *  Manifest "'.$date->name.'" on "'.$date->show_time.'" not sent by email ...<br>';
+                                $logs .= ' No email';
                                 $sent = true;
                             }
                         }
                         else
-                            $logs .= '* * * *  Manifest error saving for showtime "'.$date->name.'" on "'.$date->show_time.'" ...<br>';
+                            $logs .= ' Saved failure.';
+                        $logs .= '</small><br>';
                     }
                 }
                 else
-                    $logs .= '* *  No showtimes with sales for date "'.$this->date_manifest.'"...<br>';
+                    $logs .= 'no results for "'.date('m/d/Y',strtotime($this->date_manifest)).'".</i></b><br>';
             }
             if($log)
             {
-                $logs .= '<b>Finishing manifest controller...</b><br>';
                 if(isset($sent))
                     return ['success'=>$sent,'msg'=>$logs];
                 return ['success'=>false,'msg'=>$logs];
@@ -115,8 +117,9 @@ class ReportManifestController extends Controller{
     {
         try {
             $info = ['dates'=>[],'type'=>'','subject'=>''];
+            $query_date = date('Y-m-d',strtotime($this->date_manifest));
             //init variables
-            switch ($type)
+            switch ($type)                      
             {
                 case 'Preliminary':
                     $dates = DB::table('show_times')
@@ -127,7 +130,7 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','=',$this->date_manifest)
+                            ->whereDate('show_times.show_time','=',$query_date)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
@@ -136,7 +139,7 @@ class ReportManifestController extends Controller{
                             });
                     if($this->previous_date==false)
                         $dates = $dates->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.prelim_hours HOUR)'),'<=',$this->date_manifest);
-                    $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
+                    $dates = $dates->groupBy('show_times.id')->distinct()->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Preliminary','subject'=>'Preliminary Manifest for '];
                     break;
                 case 'Primary':
@@ -148,7 +151,7 @@ class ReportManifestController extends Controller{
                                             COUNT(purchases.id) AS num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','=',$this->date_manifest)
+                            ->whereDate('show_times.show_time','=',$query_date)
                             ->whereNotExists(function ($query) {
                                 $query->select(DB::raw(1))
                                       ->from('manifest_emails')
@@ -157,33 +160,30 @@ class ReportManifestController extends Controller{
                             });
                     if($this->previous_date==false)
                         $dates = $dates->where(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)'),'<=',$this->date_manifest);
-                    $dates = $dates->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
+                    $dates = $dates->groupBy('show_times.id')->distinct()->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Primary Manifest for '];
                     break;
                 case 'LastMinute':
                     $dates = DB::table('show_times')
                             ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->join('manifest_emails', function ($join) {
-                                $join->on('manifest_emails.show_time_id', '=' ,'show_times.id')
-                                     ->on('manifest_emails.manifest_type', '=', 'Primary');
-                            })
+                            ->join('manifest_emails', 'manifest_emails.show_time_id', '=' ,'show_times.id')
                             ->select(DB::raw('show_times.id, show_times.show_time,
                                             shows.emails, shows.name, shows.manifest_emails AS s_manifest_emails,
-                                            COUNT(purchases.id) AS num_purchases,
+                                            COUNT(purchases.id) AS num_purchases, manifest_emails.num_purchases,
                                             SUM(purchases.quantity) AS num_people'))
+                            ->where('manifest_emails.manifest_type', '=', 'Primary')
                             ->where('purchases.status','=','Active')
-                            ->havingRaw( $this->date_manifest . ' BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
+                            ->whereDate('show_times.show_time','=',$query_date)
+                            ->havingRaw( '"'.$this->date_manifest.'" BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
                             ->havingRaw('COUNT(purchases.id) != manifest_emails.num_purchases')
-                            ->groupBy('show_times.id')->distinct()->take(1)->get()->toArray();
+                            ->groupBy('show_times.id')->distinct()->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
                     break;
                 default:break;
-            }
-            //return files
-            return $info;
+            }   
         } catch (Exception $ex) {
-
+            
         } finally {
             return $info;
         }
