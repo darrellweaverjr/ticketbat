@@ -107,16 +107,16 @@ class Purchase extends Model
                             $location = new Location;
                             $location->created = $current;
                             $location->updated = $current;
-                            $location->address = ($user)? $user->location()->address : 'Unknown';
-                            $location->city = ($user)? $user->location()->city : 'Unknown';
-                            $location->state = ($user)? $user->location()->state : 'NA';
-                            $location->zip = ($user)? $user->location()->zip : null;
-                            $location->country = ($user)? $user->location()->country : 'US';
-                            $location->lng = ($user)? $user->location()->lng : null;
-                            $location->lat = ($user)? $user->location()->lat : null;
+                            $location->address = ($user)? $user->location->address : 'Unknown';
+                            $location->city = ($user)? $user->location->city : 'Unknown';
+                            $location->state = ($user)? $user->location->state : 'NA';
+                            $location->zip = ($user)? $user->location->zip : null;
+                            $location->country = ($user)? $user->location->country : 'US';
+                            $location->lng = ($user)? $user->location->lng : null;
+                            $location->lat = ($user)? $user->location->lat : null;
                             $location->save();
                             //save customer
-                            $customer->location()->associate($location);
+                            $customer->location_id = $location->id;
                             $customer->first_name = trim(strip_tags($s['first_name']));
                             $customer->last_name = (!empty($s['last_name']))? trim(strip_tags($s['last_name'])) : (($user)? $user->last_name : null);
                             $customer->email = trim(strip_tags($s['email']));
