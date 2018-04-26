@@ -223,8 +223,8 @@ class PurchaseController extends Controller{
                 }
                 else
                 {
-                    $search['soldtime_start_date'] = date('n/d/yy 12:00 AM', strtotime('-7 DAY'));
-                    $search['soldtime_end_date'] = date('n/d/yy 11:59 PM');
+                    $search['soldtime_start_date'] = date('n/d/y 12:00 AM', strtotime('-7 DAY'));
+                    $search['soldtime_end_date'] = date('n/d/y 11:59 PM');
                 }
                 if($search['soldtime_start_date'] != '' && $search['soldtime_end_date'] != '')
                 {
