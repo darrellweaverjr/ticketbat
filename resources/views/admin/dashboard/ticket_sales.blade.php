@@ -5,6 +5,7 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -329,6 +330,20 @@
                                                     </button>
                                                 </span>
                                             </div>
+                                            <div id="showtime_date_input" class="input-group input-large date form_datetime dtpicker">
+                                                <input size="16" readonly="" class="form-control" type="text" name="showtime_date" value="{{$search['showtime_date']}}">
+                                                <span class="input-group-btn">
+                                                    <button class="btn default date-set" type="button">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </button>
+                                                    <button class="btn default" type="button" id="clear_onsale_date">
+                                                        <i class="fa fa-remove"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control input-large" name="showtime_id" value="{{$search['showtime_id']}}" placeholder="ID of the event time (showtime id)" />
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -517,6 +532,7 @@
 
 @section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/ticket_sales.js" type="text/javascript"></script>

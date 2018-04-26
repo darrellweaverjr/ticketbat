@@ -121,6 +121,30 @@ class DashboardController extends Controller
             $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'>=',date('Y-m-d',strtotime($data['search']['showtime_start_date']))];
             $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'<=',date('Y-m-d',strtotime($data['search']['showtime_end_date']))];
         }
+        if(isset($input) && isset($input['showtime_date']))
+        {
+            $data['search']['showtime_date'] = $input['showtime_date'];
+        }
+        else
+        {
+            $data['search']['showtime_date'] = '';
+        }
+        if($data['search']['showtime_date'] != '')
+        {
+            $data['where'][] = ['show_times.show_time','=',date('Y-m-d hh:ii',strtotime($data['search']['showtime_date']))];
+        }
+        if(isset($input) && isset($input['showtime_id']) && is_numeric($input['showtime_id']))
+        {
+            $data['search']['showtime_id'] = $input['showtime_id'];
+        }
+        else
+        {
+            $data['search']['showtime_id'] = '';
+        }
+        if($data['search']['showtime_id'] != '')
+        {
+            $data['where'][] = ['show_times.id','=',$data['search']['showtime_id']];
+        }
         //search soldtime
         if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
         {

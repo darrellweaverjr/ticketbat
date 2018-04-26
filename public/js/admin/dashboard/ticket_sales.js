@@ -154,6 +154,21 @@ var TableDatatablesButtons = function () {
             "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>"
         });
         //PERSONALIZED FUNCTIONS
+        
+        //showtime_date
+        $('#showtime_date_input').datetimepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "m/dd/yyyy H:ii P",   
+            pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
+            minuteStep: 15
+        });
+        //clear showtime_date
+        $('#clear_onsale_date').on('click', function(ev) {
+            $('#form_model_search [name="showtime_date"]').val('');
+            $('#showtime_date_input').datetimepicker('update');
+        });
+        
         //show_times_date
         $('#show_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
@@ -169,7 +184,7 @@ var TableDatatablesButtons = function () {
         $('#clear_show_times_date').on('click', function(ev) {
             $('#form_model_search [name="showtime_start_date"]').val('');
             $('#form_model_search [name="showtime_end_date"]').val('');
-            $('#show_times_date').datetimepicker('update');
+            $('#show_times_date').daterangepicker('update');
         });
         //sold_times_date
         $('#sold_times_date').daterangepicker({
@@ -188,7 +203,6 @@ var TableDatatablesButtons = function () {
         $('#clear_sold_times_date').on('click', function(ev) {
             $('#form_model_search [name="soldtime_start_date"]').val('');
             $('#form_model_search [name="soldtime_end_date"]').val('');
-            $('#sold_times_date').datetimepicker('update');
         });
         //venue on select
         $('#form_model_search select[name="venue"]').bind('change click', function() {

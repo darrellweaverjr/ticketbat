@@ -215,6 +215,30 @@ class PurchaseController extends Controller{
                     $where[] = [DB::raw('DATE(show_times.show_time)'),'>=',date('Y-m-d',strtotime($search['showtime_start_date']))];
                     $where[] = [DB::raw('DATE(show_times.show_time)'),'<=',date('Y-m-d',strtotime($search['showtime_end_date']))];
                 }
+                if(isset($input) && isset($input['showtime_date']))
+                {
+                    $search['showtime_date'] = $input['showtime_date'];
+                }
+                else
+                {
+                    $search['showtime_date'] = '';
+                }
+                if($search['showtime_date'] != '')
+                {
+                    $where[] = ['show_times.show_time','=',date('Y-m-d hh:ii',strtotime($search['showtime_date']))];
+                }
+                if(isset($input) && isset($input['showtime_id']) && is_numeric($input['showtime_id']))
+                {
+                    $search['showtime_id'] = $input['showtime_id'];
+                }
+                else
+                {
+                    $search['showtime_id'] = '';
+                }
+                if($search['showtime_id'] != '')
+                {
+                    $where[] = ['show_times.id','=',$search['showtime_id']];
+                }
                 //search soldtime
                 if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
                 {

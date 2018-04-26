@@ -103,6 +103,20 @@ var TableDatatablesManaged = function () {
             }
             $('#btn_model_search').prop("disabled",false);
         }
+        
+        //showtime_date
+        $('#showtime_date_input').datetimepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "m/dd/yyyy H:ii P",   
+            pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
+            minuteStep: 15
+        });
+        //clear showtime_date
+        $('#clear_onsale_date').on('click', function(ev) {
+            $('#form_model_search [name="showtime_date"]').val('');
+            $('#showtime_date_input').datetimepicker('update');
+        });
 
         //reset all selects
         function reset_purchase_status()
@@ -345,7 +359,7 @@ var TableDatatablesManaged = function () {
         $('#clear_show_times_date').on('click', function(ev) {
             $('#form_model_search [name="showtime_start_date"]').val('');
             $('#form_model_search [name="showtime_end_date"]').val('');
-            $('#show_times_date').datetimepicker('update');
+            $('#show_times_date').daterangepicker('update');
         });
         //sold_times_date
         $('#sold_times_date').daterangepicker({
@@ -364,7 +378,6 @@ var TableDatatablesManaged = function () {
         $('#clear_sold_times_date').on('click', function(ev) {
             $('#form_model_search [name="soldtime_start_date"]').val('');
             $('#form_model_search [name="soldtime_end_date"]').val('');
-            $('#sold_times_date').datetimepicker('update');
         });
         //search venue on select
         $('#form_model_search select[name="venue"]').bind('change click', function() {
