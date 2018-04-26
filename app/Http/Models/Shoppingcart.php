@@ -116,7 +116,7 @@ class Shoppingcart extends Model
             }
             //continue checking availables
             $i->unavailable = 0;    //availables by default
-            if(in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+            if(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
                 $i->available_time = $i->available_time_seller;
             if($i->available_event < 1 || $i->available_time < 1 || $i->available_qty==0) //available events and time
                 $i->unavailable = 1;
