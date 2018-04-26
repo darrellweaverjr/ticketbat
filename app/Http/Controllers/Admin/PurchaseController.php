@@ -225,7 +225,7 @@ class PurchaseController extends Controller{
                 }
                 if($search['showtime_date'] != '')
                 {
-                    $where[] = ['show_times.show_time','=',date('Y-m-d hh:ii:ss',strtotime($search['showtime_date']))];
+                    $where[] = ['show_times.show_time','=',date('Y-m-d H:i:s',strtotime($search['showtime_date']))];
                 }
                 if(isset($input) && isset($input['showtime_id']) && is_numeric($input['showtime_id']))
                 {
