@@ -368,18 +368,22 @@
                                                     <span class="required"> *</span>
                                                 </label>
                                                 <div class="show-error">
-                                                    <textarea name="short_description" class="form-control" rows="3"></textarea>
+                                                    <textarea name="short_description" class="form-control" rows="2"></textarea>
                                                 </div>
                                                 <label class="control-label">Description:</label>
                                                 <div class="show-error">
-                                                    <textarea name="description" class="form-control" rows="6"></textarea>
+                                                    <textarea name="description" class="form-control" rows="4"></textarea>
+                                                </div>
+                                                
+                                                <label class="control-label">Ticket Info (on the receipt)</label>
+                                                <div class="show-error">
+                                                    <textarea name="ticket_info" class="form-control" rows="2"></textarea>
                                                 </div>
 
                                                 <label class="control-label">After purchase note to display on the "Complete" page:</label>
                                                 <div class="show-error">
-                                                    <textarea name="after_purchase_note" class="form-control" rows="3"></textarea>
+                                                    <textarea name="after_purchase_note" class="form-control" rows="2"></textarea>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
