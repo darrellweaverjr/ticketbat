@@ -73,10 +73,11 @@ class HomeController extends Controller
                 ->where($options['where'])
                 ->where('show_times.is_active', '>', 0)
                 ->whereNotNull('venues.logo_url')
-                ->whereNotNull('shows.logo_url');
-            if(!is_null($options['venues']))
-                $shows = $shows->whereIn('venues.id',$options['venues']);
-            $shows = $shows->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')->groupBy('shows.id')->distinct()->get();
+                ->whereNotNull('shows.logo_url')
+                ->when(!is_null($options['venues']), function ($shows) use ($options) {
+                    return $shows->whereIn('venues.id',$options['venues']);
+                })
+                ->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')->groupBy('shows.id')->distinct()->get();
 
             foreach ($shows as $s) {
                 //venues
