@@ -3078,7 +3078,7 @@ var FormValidation = function () {
                     },
                     header_url: {
                         //url: true,
-                        required: true
+                        required: false
                     }
                 },
                 invalidHandler: function (event, validator) { //display error alert on form submit
