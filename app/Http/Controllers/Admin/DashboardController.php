@@ -131,7 +131,7 @@ class DashboardController extends Controller
         }
         if($data['search']['showtime_date'] != '')
         {
-            $data['where'][] = ['show_times.show_time','=',date('Y-m-d hh:ii',strtotime($data['search']['showtime_date']))];
+            $data['where'][] = ['show_times.show_time','=',date('Y-m-d hh:ii:ss',strtotime($data['search']['showtime_date']))];
         }
         if(isset($input) && isset($input['showtime_id']) && is_numeric($input['showtime_id']))
         {
