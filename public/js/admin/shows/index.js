@@ -1094,16 +1094,17 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success)
                         {
+                            
+                            update_tickets(data.tickets);
                             swal({
                                 title: "<span style='color:green;'>Saved!</span>",
                                 html: true,
                                 timer: 1500,
                                 type: "success",
                                 showConfirmButton: false
+                            },function(){
+                                $('#modal_model_update').modal('show');
                             });
-                            update_tickets(data.tickets);
-                            //show modal
-                            $('#modal_model_update').modal('show');
                         }
                         else{
                             swal({
