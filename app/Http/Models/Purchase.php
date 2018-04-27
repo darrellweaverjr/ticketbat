@@ -168,8 +168,8 @@ class Purchase extends Model
                             ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
                             ->select(DB::raw('purchases.*, purchases.quantity AS qty, tickets.ticket_type AS ticket_type_type, show_times.time_alternative,
                                     show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng, tickets.inclusive_fee,
-                                    shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets,
-                                    shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails,
+                                    shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets, shows.ticket_info AS s_ticket_info,
+                                    shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails, show_times.show_id,
                                     shows.daily_sales_emails AS s_daily_sales_emails,
                                     venues.name AS venue_name, venues.ticket_info, venues.daily_sales_emails AS v_daily_sales_emails,
                                     venues.weekly_sales_emails AS v_weekly_sales_emails,
@@ -296,7 +296,7 @@ class Purchase extends Model
             {
                 //init variables
                 $rows_html = $totals_html = '';
-                $pdf_receipts = $pdf_tickets = $purchases = [];
+                $pdf_receipts = $pdf_tickets = $purchases = $ticket_info = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'discount'=>0];
                 $top = $banners = '';
                 //set customer
@@ -311,6 +311,8 @@ class Purchase extends Model
                         //receipt
                         $purchase = array_merge((array)$receipt['customer'],(array)$receipt['purchase']);
                         $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
+                        if(!empty($receipt['purchase']->s_ticket_info) && !isset($ticket_info[$receipt['purchase']->show_id]))
+                            $ticket_info[$receipt['purchase']->show_id] = $receipt['purchase']->s_ticket_info;
                         
                         //create pdf receipt
                         $format = 'pdf';
@@ -370,6 +372,10 @@ class Purchase extends Model
                 if(!empty($receipt['banners']))
                     foreach ($receipt['banners'] as $b)
                         $banners .= '<div><a href="'.$b->url.'"><img src="'.$b->file.'"/></a></div>';
+                
+                //ticket_info
+                if(!empty($ticket_info))
+                    $top .= '<b>'.implode('<br>', $ticket_info).'</b>';
 
                 //send email
                 $send_to = ($resend_to && filter_var($resend_to, FILTER_VALIDATE_EMAIL))? $resend_to : $customer->email;
