@@ -478,7 +478,7 @@ class PurchaseController extends Controller{
                     else if($input['status']=='Active' || $old_status=='Active' || preg_match('/^Pending/',$old_status))
                     {
                         $receipt = $purchase->get_receipt();
-                        $status = ($input['status']=='Active')? 'ACTIVATED' : ( ($input['status']=='Chargeback')? 'CHARGEBACK' :'CANCELED' );
+                        $status = ($input['status']=='Active')? 'ACTIVATED' : ( ($input['status']=='Refunded')? 'REFUNDED' :'CANCELED' );
                         $sent = Purchase::email_receipts($status.': TicketBat Purchase',[$receipt],'receipt',$status,true);
                         if(!$sent)
                             return ['success'=>false,'msg'=>'The purchase changed the status.<br>But the email could not be sent to the customer and the venue.'];

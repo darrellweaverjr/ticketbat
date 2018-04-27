@@ -26,7 +26,7 @@
                     <div class="actions">
                         <div class="btn-group">
                             @if(in_array('Other',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
-                            <button id="btn_model_refund" class="btn sbold bg-purple">Chargeback
+                            <button id="btn_model_refund" class="btn sbold bg-purple">Refund
                                 <i class="fa fa-credit-card"></i>
                             </button>
                             @endif
@@ -54,7 +54,7 @@
                             <tr>
                                 <td>
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
-                                        <input type="radio" name="radios" id="{{$p->id}}" value="{{$p->id}}" />
+                                        <input type="radio" name="radios" id="{{$p->id}}" value="{{$p->id}}" data-skip="{{$p->skip}}" />
                                         <span></span>
                                     </label>
                                 </td>
@@ -108,7 +108,7 @@
                                 <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                             <div class="alert alert-success display-hide">
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                            <div class="row" style="padding-left:15px">
+                            <div class="row" style="padding-left:15px" id="credit_return">
                                 <div class="mt-radio-list">
                                     <label class="mt-radio mt-radio-single mt-radio-outline">
                                         <input type="radio" name="type" value="current_purchase" checked="true" />Selected purchase only.

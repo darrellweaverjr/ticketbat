@@ -144,9 +144,9 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
-                                        <a href="/admin/dashboard/chargebacks" class="nav-link">
+                                        <a href="/admin/dashboard/refunds" class="nav-link">
                                             <i class="icon-briefcase"></i>
-                                            <span class="title">Chargebacks</span>
+                                            <span class="title">Refunds</span>
                                         </a>
                                     </li>
                                     <li class="nav-item start open">

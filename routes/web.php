@@ -16,7 +16,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     //dashboard
     Route::match(['get','post'], 'dashboard/ticket_sales', 'DashboardController@ticket_sales')->middleware('permissions:REPORTS');
     Route::match(['get','post'], 'dashboard/coupons', 'DashboardController@coupons')->middleware('permissions:REPORTS');
-    Route::match(['get','post'], 'dashboard/chargebacks', 'DashboardController@chargebacks')->middleware('permissions:REPORTS');
+    Route::match(['get','post'], 'dashboard/refunds', 'DashboardController@refunds')->middleware('permissions:REPORTS');
     Route::match(['get','post'], 'dashboard/future_liabilities', 'DashboardController@future_liabilities')->middleware('permissions:REPORTS');
     Route::match(['get','post'], 'dashboard/trend_pace', 'DashboardController@trend_pace')->middleware('permissions:REPORTS');
     Route::match(['get','post'], 'dashboard/referrals', 'DashboardController@referrals')->middleware('permissions:REPORTS');

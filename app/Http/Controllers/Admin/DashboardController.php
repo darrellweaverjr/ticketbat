@@ -616,11 +616,11 @@ class DashboardController extends Controller
     }
 
     /**
-     * Show the chargeback report on the dashboard.
+     * Show the refunds report on the dashboard.
      *
      * @return view
      */
-    public function chargebacks()
+    public function refunds()
     {
         try {
             //init
@@ -629,7 +629,7 @@ class DashboardController extends Controller
             //conditions to search
             $data = $this->search($input);
             $where = $data['where'];
-            $where[] = ['purchases.status','=','Chargeback'];
+            $where[] = ['purchases.status','=','Refunded'];
             $search = $data['search'];
             //get all records
             $data = DB::table('purchases')
@@ -648,9 +648,9 @@ class DashboardController extends Controller
             $total = array( 'amount'=>array_sum(array_column($data,'amount')),
                             'tickets'=>array_sum(array_column($data,'tickets')));
             //return view
-            return view('admin.dashboard.chargebacks',compact('data','total','search'));
+            return view('admin.dashboard.refunds',compact('data','total','search'));
         } catch (Exception $ex) {
-            throw new Exception('Error Dashboard Chargebacks: '.$ex->getMessage());
+            throw new Exception('Error Dashboard Refunds: '.$ex->getMessage());
         }
     }
 

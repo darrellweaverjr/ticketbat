@@ -63,8 +63,19 @@ var TableDatatablesManaged = function () {
         //function resend
         $('#btn_model_refund').on('click', function(ev) {
             var id = $("#tb_model [name=radios]:checked").val();
+            var skip = $("#tb_model [name=radios]:checked").data('skip');
             $('#form_model_refund').trigger('reset');
             $('#form_model_refund [name="id"]').val(id);
+            if(skip>0)
+            {
+                $('#form_model_refund input:radio[name="type"]:last').attr('checked', true);
+                $('#credit_return').addClass('hidden');
+            }
+            else
+            {
+                $('#credit_return').removeClass('hidden');
+                $('#form_model_refund input:radio[name="type"]:first').attr('checked', true);
+            }
             $('#modal_model_refund').modal('show');
         }); 
         //function send
