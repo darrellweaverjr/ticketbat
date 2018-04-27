@@ -1094,8 +1094,6 @@ var TableDatatablesManaged = function () {
                     success: function(data) {
                         if(data.success)
                         {
-                            
-                            update_tickets(data.tickets);
                             swal({
                                 title: "<span style='color:green;'>Saved!</span>",
                                 html: true,
@@ -1103,7 +1101,9 @@ var TableDatatablesManaged = function () {
                                 type: "success",
                                 showConfirmButton: false
                             },function(){
+                                update_tickets(data.tickets);
                                 $('#modal_model_update').modal('show');
+                                swal.close();
                             });
                         }
                         else{
