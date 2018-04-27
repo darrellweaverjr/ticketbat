@@ -99,7 +99,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
-                    <form method="post" action="/admin/dashboard/chargebacks" id="form_model_search">
+                    <form method="post" action="/admin/dashboard/refunds" id="form_model_search">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
