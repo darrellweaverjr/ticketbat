@@ -122,7 +122,8 @@ class POSController extends Controller
                         if($i->ticket_id==$t->ticket_id)
                         {
                             $t_available = true;
-                            $t->cart = $i->number_of_items;
+                            if($i->item_id==$show_time_id)
+                                $t->cart = $i->number_of_items;
                         }
                     }
                     if(!$t_available)
