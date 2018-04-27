@@ -322,14 +322,17 @@ class Purchase extends Model
                         PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
                         $pdf_receipts[] = $pdfUrlR;
 
-                        //create pdf tickets
-                        $tickets = $receipt['tickets'];
-                        $type = 'C';
-                        $pdfUrlT = '/tmp/Tickets_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
-                        $pdf_ticket = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));
-                        if(file_exists($pdfUrlT)) unlink($pdfUrlT);
-                        PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
-                        $pdf_tickets[] = $pdfUrlT;
+                        //create pdf tickets                
+                        if($receipt['purchase']->printed_tickets == 0)
+                        {
+                            $tickets = $receipt['tickets'];
+                            $type = 'C';
+                            $pdfUrlT = '/tmp/Tickets_'.$receipt['purchase']->id.'_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$receipt['purchase']->ticket_type).'_'.date("m_d_Y_h_i_a",strtotime($receipt['purchase']->show_time)).'.pdf';
+                            $pdf_ticket = View::make('command.report_sales_receipt_tickets', compact('tickets','type','format'));
+                            if(file_exists($pdfUrlT)) unlink($pdfUrlT);
+                            PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
+                            $pdf_tickets[] = $pdfUrlT;
+                        }
 
                         if($type_email != 'reminder')
                         {

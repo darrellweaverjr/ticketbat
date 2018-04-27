@@ -186,7 +186,7 @@ class Shoppingcart extends Model
                 foreach ($items as $i)
                 {
                     //printed tickets
-                    if($i->printed_tickets>0)
+                    if($i->printed_tickets==1)
                         $printed_tickets['shows'][] = $i->name;
                     //get amex only for pay
                     if($amex_only!=1)

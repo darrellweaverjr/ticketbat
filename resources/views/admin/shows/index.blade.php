@@ -317,9 +317,12 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label col-md-5">Mail printed tickets</label>
-                                                <div class="col-md-7">
-                                                    <input type="hidden" name="printed_tickets" value="0"/>
-                                                    <input type="checkbox" class="make-switch input-large" name="printed_tickets" value="1" data-on-text="Yes, mail them" data-off-text="No, e-tickets" data-on-color="primary" data-off-color="danger">
+                                                <div class="col-md-5">
+                                                    <select class="form-control" name="printed_tickets">
+                                                        <option value="0">E-tickets only</option>
+                                                        <option value="1">Mail tickets</option>
+                                                        <option value="2">No e-tickets (will call only)</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
