@@ -73,6 +73,12 @@ class Shoppingcart extends Model
         //search for availables items
         foreach ($items as $key=>$i)
         {
+            // POS sytem options
+            if(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE'))))
+            {
+                $i->available_time = $i->available_time_seller;
+                $i->ticket_limit_by_transaction_only = 1;
+            }
             //recalculate availables tickets
             if($i->max_tickets>0 && $i->available_qty<-1)
                 $i->available_qty = 0;
@@ -93,8 +99,8 @@ class Shoppingcart extends Model
                         if($user)
                             $user_id = $user->id;
                     }
-                    //get previous purchases by user
-                    if(!empty($user_id))
+                    //get previous purchases by user if not a seller POS
+                    if(!empty($user_id) && empty($i->ticket_limit_by_transaction_only))
                     {
                         $purchases = DB::table('purchases')
                                     ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
@@ -115,9 +121,7 @@ class Shoppingcart extends Model
                     $i->available_qty = $max_available;
             }
             //continue checking availables
-            $i->unavailable = 0;    //availables by default
-            if(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE'))))
-                $i->available_time = $i->available_time_seller;
+            $i->unavailable = 0;    //availables by default            
             if($i->available_event < 1 || $i->available_time < 1 || $i->available_qty==0) //available events and time
                 $i->unavailable = 1;
             else if($i->available_qty!=-1 && $i->available_qty-$i->number_of_items<0)   //available qty of items to buy
