@@ -1822,6 +1822,9 @@ var TableDatatablesManaged = function () {
                             timer: 1500,
                             type: "success",
                             showConfirmButton: false
+                        },function(){
+                            $('#modal_model_update').modal('show');
+                            $('#btn_model_show_time_change').trigger('click');
                         });
                     }
                     else{
