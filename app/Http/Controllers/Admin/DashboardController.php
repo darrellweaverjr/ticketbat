@@ -639,7 +639,7 @@ class DashboardController extends Controller
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                         ->select(DB::raw('purchases.id, COALESCE(transactions.card_holder,CONCAT(customers.first_name," ",customers.last_name)) AS card_holder,
-                                          COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,0) AS amount, COALESCE(transactions.authcode,0) AS authcode,
+                                          COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,purchases.price_paid,0) AS amount, COALESCE(transactions.authcode,0) AS authcode,
                                           shows.name AS show_name, show_times.show_time, purchases.status AS status, venues.name AS venue_name, purchases.payment_type,
                                           purchases.quantity AS tickets, purchases.transaction_id, purchases.ticket_type, purchases.created, purchases.note '))
                         ->where($where)
