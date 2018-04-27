@@ -337,10 +337,9 @@ class Util extends Model
                     $data['venues'] = (!empty($venues_edit))? explode(',',$venues_edit) : [0];
                     $data['link'] = 'pos/buy/';
                 }
-                else if(in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+                else if(in_array(Auth::user()->user_type_id, explode(',', env('ROOT_USER_ID'))))
                 {
                     $data['where'] = [['show_times.show_time','>=',$date_limit]];
-                    $data['where'][] = [DB::raw('DATE_SUB(show_times.show_time,INTERVAL venues.cutoff_hours_start HOUR)'),'<=',$current];
                 }
             }
             return $data;
