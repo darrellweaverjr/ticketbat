@@ -88,8 +88,8 @@
                                                     @endif
                                                     <div class="mt-radio-list">
                                                         @foreach($t['tickets'] as $tt)
-                                                            @if($tt->max_available>0)
-                                                                <label class="mt-radio mt-radio-outline">
+                                                            @if($tt->max_available>0)   
+                                                                <label class="mt-radio mt-radio-outline">       {{$tt->max_available}}
                                                                     <input type="radio" name="ticket_id" @if($selected) class="default_radio" @endif data-pass="{{$t['password']}}" data-price="{{$tt->retail_price}}"
                                                                            data-max="{{$tt->max_available}}" value="{{$tt->ticket_id}}">
                                                                     @if($tt->retail_price>0)
@@ -97,9 +97,9 @@
                                                                     @else
                                                                         <b class="label label-sm sbold label-success">FREE</b>
                                                                     @endif
-                                                                    @if($tt->title!='None')- {{$tt->title}} @endif
-                                                                    @if($tt->max_available<20)
-                                                                        <b class="label label-sm sbold label-danger">Only {{$tt->max_available}} ticket(s) left!</b>
+                                                                    @if($tt->title!='None')- {{$tt->title}} @endif  
+                                                                    @if(!empty($tt->in_stock))
+                                                                        <b class="label label-sm sbold label-danger">Only {{$tt->in_stock}} ticket(s) left!</b>
                                                                     @endif
                                                                     @if($tt->coupon>0)
                                                                         <b class="label label-sm sbold label-warning" style="color:black"><i class="icon-trophy theme-font"></i> Applies discount</b>
