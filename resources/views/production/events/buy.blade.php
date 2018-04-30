@@ -89,7 +89,7 @@
                                                     <div class="mt-radio-list">
                                                         @foreach($t['tickets'] as $tt)
                                                             @if($tt->max_available>0)   
-                                                                <label class="mt-radio mt-radio-outline">       {{$tt->max_available}}
+                                                                <label class="mt-radio mt-radio-outline">      
                                                                     <input type="radio" name="ticket_id" @if($selected) class="default_radio" @endif data-pass="{{$t['password']}}" data-price="{{$tt->retail_price}}"
                                                                            data-max="{{$tt->max_available}}" value="{{$tt->ticket_id}}">
                                                                     @if($tt->retail_price>0)
