@@ -44,8 +44,8 @@
                     <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/S/{{$purchases}}" target="_blank"><i class="fa fa-ticket"></i> BOCA Ticket</a>
                     <a class="btn btn-outline sbold dark btn-lg uppercase" href="/user/purchases/tickets/W/{{$purchases}}" target="_blank"><i class="fa fa-hand-paper-o"></i> Wristband</a>
                 </center>
-            @else
-            <center><a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/C/{{$purchases}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
+            @elseif(!empty($print_receipt))
+            <center><a class="btn btn-danger btn-lg uppercase" href="/user/purchases/tickets/C/{{$print_receipt}}" target="_blank"><i class="fa fa-print icon-printer"></i> Print all tickets now!</a></center>
             @endif
                 @if(!empty($send_welcome_email))
                     @if($send_welcome_email>0)
