@@ -56,9 +56,9 @@
                                 </div>
                             @endif
                             @if(!empty($event->ticket_limit) && empty($event->ticket_left))
-                                <div class="bg-red bg-font-red text-center">
+                                <div class="bg-yellow bg-font-red text-center">
                                     <hr>
-                                    <h1>You have reach the limit of tickets for this event.</h1>
+                                    <h1>You have reach the limit of tickets for this event. Please, proceed to checkout.</h1>
                                     <br>
                                 </div>
                             @elseif(empty($event->for_sale))
