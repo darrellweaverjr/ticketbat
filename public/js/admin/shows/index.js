@@ -969,7 +969,7 @@ var TableDatatablesManaged = function () {
                 else
                     v.is_active = '<span class="label label-sm sbold label-danger"> Inactive </span>';
                 //unlimited tickets
-                if(v.max_tickets == 0) v.max_tickets = '&#8734;';
+                if(!(v.max_tickets>0)) v.max_tickets = '&#8734;';
                 //inclusive fees or over the price
                 if(v.inclusive_fee>0)
                     v.inclusive_fee = '<span class="label label-sm sbold label-success">Incl.</span>';

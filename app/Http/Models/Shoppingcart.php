@@ -54,8 +54,8 @@ class Shoppingcart extends Model
                             ->join('tickets', 'tickets.id', '=' ,'shoppingcart.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->leftJoin('purchases', function ($join) {
-                                $join->on('purchases.ticket_id', '=', 'tickets.id')
-                                     ->where('purchases.show_time_id', '=', 'show_times.id');
+                                $join->on('purchases.ticket_id', '=', 'tickets.id');
+                                $join->on('purchases.show_time_id', '=', 'show_times.id');
                             })
                             ->select(DB::raw('shoppingcart.id, shows.name, IF(shows.restrictions="None","",shows.restrictions) AS restrictions, shoppingcart.ticket_id, shoppingcart.options, shows.printed_tickets,
                                               shoppingcart.product_type, shoppingcart.cost_per_product, DATE_FORMAT(show_times.show_time,"%m/%d/%Y %H:%i:%s") AS show_time, shoppingcart.number_of_items, shoppingcart.item_id,
@@ -64,12 +64,13 @@ class Shoppingcart extends Model
                                               (CASE WHEN (show_times.is_active>0 AND tickets.is_active>0 AND shows.is_active>0) THEN 1 ELSE 0 END) AS available_event, shows.amex_only_start_date, shows.id AS show_id,
                                               (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, 
                                               (CASE WHEN NOW() BETWEEN (show_times.show_time - INTERVAL venues.cutoff_hours_start HOUR) AND (show_times.show_time + INTERVAL venues.cutoff_hours_end HOUR) THEN 1 ELSE 0 END) AS available_time_seller, 
-                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE -1 END) AS available_qty, 
+                                              (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE null END) AS available_qty, 
                                               shows.amex_only_end_date, shows.venue_id, tickets.inclusive_fee, shows.ticket_limit, tickets.max_tickets'))
                             ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
                             ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
         //limit tickets by show
         $ticket_limit = [];
+        
         //search for availables items
         foreach ($items as $key=>$i)
         {
@@ -79,71 +80,75 @@ class Shoppingcart extends Model
                 $i->available_time = $i->available_time_seller;
                 $i->ticket_limit_by_transaction_only = 1;
             }
-            //recalculate availables tickets
-            if($i->max_tickets>0 && $i->available_qty<-1)
-                $i->available_qty = 0;
-            //checkings for qty if ticket limit by customer
-            if(!empty($i->ticket_limit) && !empty($i->available_qty))
+            
+            //checking qty availables tickets
+            if($i->number_of_items >0)  //qty
             {
-                //set up available qty by ticket limit
-                if(!isset($ticket_limit[$i->item_id]))
+                if(!is_null($i->available_qty)) //availables
                 {
-                    $ticket_limit[$i->item_id] = ['c'=>$i->number_of_items, 'p'=>0];
-                    $email_guest = Session::get('email_guest', null);
-                    $user_id = null;
-                    if(Auth::check())
-                        $user_id = Auth::user()->id;
-                    else if(!empty($email_guest))
+                    if($i->available_qty < 1)
+                        $i->available_qty = 0;
+                    else if (!empty($i->ticket_limit))   //event limit
                     {
-                        $user = User::where('email',$email_guest)->first(['id']);
-                        if($user)
-                            $user_id = $user->id;
-                    }
-                    //get previous purchases by user if not a seller POS
-                    if(!empty($user_id) && empty($i->ticket_limit_by_transaction_only))
-                    {
-                        $purchases = DB::table('purchases')
-                                    ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
-                                    ->select(DB::raw('SUM(purchases.quantity) AS tickets'))
-                                    ->where('show_times.id',$i->item_id)->where('purchases.user_id','=', $user_id)
-                                    ->groupBy('purchases.user_id')->first();
-                        if(($purchases && !empty($purchases->tickets)))
-                            $ticket_limit[$i->item_id]['p'] = $purchases->tickets;
+                        //set up available qty by ticket limit
+                        if(!isset($ticket_limit[$i->item_id]))
+                        {
+                            $ticket_limit[$i->item_id] = ['c'=>$i->number_of_items, 'p'=>0];
+                            $email_guest = Session::get('email_guest', null);
+                            $user_id = null;
+                            if(Auth::check())
+                                $user_id = Auth::user()->id;
+                            else if(!empty($email_guest))
+                            {
+                                $user = User::where('email',$email_guest)->first(['id']);
+                                if($user)
+                                    $user_id = $user->id;
+                            }
+                            //get previous purchases by user if not a seller POS
+                            if(!empty($user_id) && empty($i->ticket_limit_by_transaction_only))
+                            {
+                                $purchases = DB::table('purchases')
+                                            ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
+                                            ->select(DB::raw('SUM(purchases.quantity) AS tickets'))
+                                            ->where('show_times.id',$i->item_id)->where('purchases.user_id','=', $user_id)
+                                            ->groupBy('purchases.user_id')->first();
+                                if(($purchases && !empty($purchases->tickets)))
+                                    $ticket_limit[$i->item_id]['p'] = $purchases->tickets;
+                            }
+                        }
+                        //check qty with limit
+                        $i->available_qty = ($i->available_qty<$i->ticket_limit)? $i->available_qty : $i->ticket_limit;
+                        $i->available_qty = (($ticket_limit[$i->item_id]['c']+$ticket_limit[$i->item_id]['p']) > $i->available_qty)? 0 : $i->available_qty;
                     }
                 }
-                //calc
-                $max_available = ($i->available_qty!=-1 && $i->available_qty<$i->ticket_limit)? $i->available_qty : $i->ticket_limit;
-                $qty_current = $ticket_limit[$i->item_id]['c'] + $ticket_limit[$i->item_id]['p'];
-                //if no available for show
-                if($qty_current > $max_available)
-                    $i->available_qty = 0;
-                else
-                    $i->available_qty = $max_available;
+                else    //unlimited
+                    $i->available_qty = $i->number_of_items;
             }
+            else 
+                $i->available_qty = 0;
+            
             //continue checking availables
             $i->unavailable = 0;    //availables by default            
-            if($i->available_event < 1 || $i->available_time < 1 || $i->available_qty==0) //available events and time
+            if($i->available_event < 1 || $i->available_time < 1) //available events and time
                 $i->unavailable = 1;
-            else if($i->available_qty!=-1 && $i->available_qty-$i->number_of_items<0)   //available qty of items to buy
+            else if($i->available_qty>0 && $i->number_of_items>0)   //available qty of items to buy
             {
-                if($i->available_qty>0 && $i->number_of_items>0)
+                $i->number_of_items = ($i->number_of_items>$i->available_qty)? $i->available_qty : $i->number_of_items;   
+                $qty_item_pay = $i->number_of_items;
+                $coupon = json_decode($i->coupon,true);
+                if(!empty($coupon) && !empty($coupon->id))
                 {
-                    $qty_item_pay = $i->number_of_items;
-                    $coupon = json_decode($i->coupon,true);
-                    if(!empty($coupon) && !empty($coupon->id))
-                    {
-                        $couponObj = Discount::find($coupon->id);
-                        if($couponObj)
-                            $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
-                    }
-                    $i->total_cost = $i->cost_per_product*$i->number_of_items;
-                    if($i->inclusive_fee>0)
-                        $i->total_cost += $i->processing_fee*$qty_item_pay;
-                    Shoppingcart::where('id', $i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost]);
+                    $couponObj = Discount::find($coupon->id);
+                    if($couponObj)
+                        $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
                 }
-                else
-                    $i->unavailable = 1;
+                $i->total_cost = $i->cost_per_product*$i->number_of_items;
+                if($i->inclusive_fee>0)
+                    $i->total_cost += $i->processing_fee*$qty_item_pay;
+                Shoppingcart::where('id', $i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost]);
             }
+            else
+                $i->unavailable = 1;
             //if there is unavailable item remove it
             if($i->unavailable > 0 || $i->number_of_items < 1)
             {

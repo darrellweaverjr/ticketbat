@@ -230,7 +230,8 @@ class EventController extends Controller
             $coupon = array_merge(Shoppingcart::tickets_coupon($s_token), Util::tickets_coupon());
             $has_coupon = 0;
             //checkings for qty if ticket limit by customer
-            if (!empty($event->ticket_limit)) {
+            if (!empty($event->ticket_limit)) 
+            {
                 $event->ticket_left = $event->ticket_limit;
                 $event->ticket_reserved = 0;
                 $email_guest = Session::get('email_guest', null);
@@ -278,7 +279,8 @@ class EventController extends Controller
                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                 ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                   tickets.retail_price,
-                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = ' . $event->show_time_id . ')) ELSE 0 END) AS max_available'))
+                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p 
+                                                            WHERE p.ticket_id = tickets.id AND p.show_time_id = ' . $event->show_time_id . ')) ELSE null END) AS max_available'))
                 ->where('tickets.show_id', $event->show_id)->where('tickets.is_active', '>', 0)
                 ->where(function ($query) {
                     if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
@@ -288,43 +290,45 @@ class EventController extends Controller
                 })
                 ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = ' . $event->show_time_id . ')'))
                 ->where(function ($query) use ($event) {
-                    $query->where('tickets.max_tickets', '<=', 0)
-                        ->orWhereRaw('tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p WHERE p.ticket_id = tickets.id AND p.show_time_id = ' . $event->show_time_id . ')', '>', 0);
+                    $query->whereNull('tickets.max_tickets')
+                        ->orWhere('tickets.max_tickets', '>', 0);
                 })
                 ->groupBy('tickets.id')->orderBy('tickets.is_default', 'DESC')->get();
-
+            
             foreach ($tickets as $t) {
+                //id
+                $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
                 
-                //limit ticket purchase by user and in_stock variable
-                if (!empty($event->ticket_limit)) {
-                    if($t->max_available>0)
+                //checking qty
+                if(is_null($t->max_available))  //unlimited
+                {
+                    if (!empty($event->ticket_limit))   //event limit
+                        $t->max_available = ($event->ticket_left < $qty_tickets_sell)? $event->ticket_left : $qty_tickets_sell;
+                    else    //unlimited2
+                        $t->max_available = $qty_tickets_sell;
+                }
+                else if($t->max_available > 0)  //availables
+                {
+                    if (!empty($event->ticket_limit))   //event limit
                     {
                         if($t->max_available <= $stock_avail_warning)
                             $t->in_stock = $t->max_available;
                         $t->max_available = ($event->ticket_left < $t->max_available - $event->ticket_reserved) ? $event->ticket_left : $t->max_available - $event->ticket_reserved;
+                        $t->max_available = ($t->max_available < $qty_tickets_sell)? $t->max_available : $qty_tickets_sell;
                     }
-                    else
-                        $t->max_available = $event->ticket_left;
-                }
-                else
-                {
-                    if($t->max_available>0)
+                    else    //no-limit availables
                     {
                         if($t->max_available <= $stock_avail_warning)
                             $t->in_stock = $t->max_available;
+                        if($t->max_available>$qty_tickets_sell)
+                            $t->max_available=$qty_tickets_sell;
                     }
-                    else
-                        $t->max_available = $qty_tickets_sell;
                 }
-                //default values on limits
-                if(empty($t->in_stock))
-                    $t->in_stock = null;
-                if($t->max_available>=$qty_tickets_sell)
-                    $t->max_available=$qty_tickets_sell;
+                else //soldout
+                    $t->max_available = 0;
+                
                 //if there is tickets availables
-                if ($t->max_available > 0) {          
-                    //id
-                    $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
+                if ($t->max_available >= 0) {   
                     //amex
                     $amex_only = ($event->amex_only > 0 && in_array($t->ticket_type, $event->amex_only_ticket_types)) ? 1 : 0;
                     //password
@@ -339,18 +343,15 @@ class EventController extends Controller
                     if (in_array($t->ticket_id, $coupon)) {
                         $t->coupon = 1;
                         $has_coupon = 1;
-                    } else {
+                    } else
                         $t->coupon = 0;
-                    }
+                    
                     //fill out tickets
-                    if (isset($event->tickets[$id])) {
+                    if (isset($event->tickets[$id]))
                         $event->tickets[$id]['tickets'][] = $t;
-                    } else {
+                    else 
                         $event->tickets[$id] = ['type' => $t->ticket_type, 'class' => $t->ticket_type_class, 'amex_only' => $amex_only, 'password' => $pass, 'tickets' => [$t]];
-                    }
-                } else {
-                    unset($t);
-                }
+                } 
             }
             //order the ticket types according to the stage order
             if (!empty($event->ticket_order)) {
@@ -366,16 +367,8 @@ class EventController extends Controller
                 $event->tickets = array_merge($new_order, $event->tickets);
             }
             //checkings for sale
-            if ($event->for_sale) {
-                if (!empty($event->on_sale) && strtotime($event->on_sale) != false) {
-                    if (strtotime($event->on_sale) > strtotime('now')) {
-                        $event->for_sale = 0;
-                    }
-                }
-                if (empty($event->tickets)) {
-                    $event->for_sale = 0;
-                }
-            }
+            if(empty($event->tickets) || ($event->for_sale && !empty($event->on_sale) && strtotime($event->on_sale) > strtotime('now')) )
+                $event->for_sale = 0;
             //get styles from cloud
             $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER') . '/' . $this->style_url);
             //return view

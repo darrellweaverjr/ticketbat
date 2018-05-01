@@ -107,6 +107,13 @@
                                                                     <span></span>
                                                                 </label>
                                                                 @php $selected = false @endphp
+                                                            @else
+                                                            <label class="mt-radio mt-radio-outline">      
+                                                                <input type="radio" disabled="true">
+                                                                    ${{$tt->retail_price}} <b class="label label-sm sbold label-danger"> SOLD OUT</b>
+                                                                @if($tt->title!='None')- {{$tt->title}} @endif  
+                                                                <span></span>
+                                                            </label>
                                                             @endif
                                                         @endforeach
                                                     </div>
