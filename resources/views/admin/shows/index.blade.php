@@ -1015,8 +1015,7 @@
                                         <input type="hidden" name="is_active" value="0"/>
                                         <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
                                     </div>
-                                    <label class="col-md-5 control-label">Limit (0 unlimited)
-                                        <span class="required"> * </span>
+                                    <label class="col-md-5 control-label">Limit (blank = &infin;)
                                     </label>
                                     <div class="col-md-7 show-error">
                                         <input type="number" value="0" name="max_tickets" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">

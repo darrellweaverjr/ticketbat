@@ -679,7 +679,7 @@ class ShowController extends Controller{
                 $ticket->retail_price = $input['retail_price'];
                 $ticket->processing_fee = $input['processing_fee'];
                 $ticket->percent_pf = $input['percent_pf'];
-                $ticket->max_tickets = ($input['max_tickets']>0)? $input['max_tickets'] : 0;
+                $ticket->max_tickets = ($input['max_tickets']>0)? $input['max_tickets'] : null;
                 $ticket->is_active = $input['is_active'];
                 $ticket->avail_hours = (!empty($input['avail_hours']))? $input['avail_hours'] : null;
                 if(isset($input['fixed_commission']) && $input['fixed_commission'] != 0.00 && $input['fixed_commission'] != '0.00')
