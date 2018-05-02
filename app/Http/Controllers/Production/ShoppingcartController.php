@@ -408,7 +408,7 @@ class ShoppingcartController extends Controller
             $display_schedule = 3;
             $current = date('Y-m-d H:i:s');
             $s_token = Util::s_token(false, true);       
-            $venue_id = $show_id = $show_time_id = $venue_logo = $show_logo = null;
+            $venue_id = $show_id = $show_time_id = $venue_logo = $show_logo = $show_time = null;
             $venues = $shows = $showtimes = $tickets = [];
             //checkings by user
             $options = Util::display_options_by_user();
@@ -490,14 +490,14 @@ class ShoppingcartController extends Controller
                     $shows = $venues[$venue_id]['shows'];
                 }
             }
-            $shows = []; $show_id = $show_time_id = null;
+            
             //show_times
             if(!empty($show_id))
             {
                 $showtimes = DB::table('show_times')
                     ->join('shows', 'show_times.show_id', '=', 'shows.id')
                     ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                    ->select(DB::raw('show_times.id, show_times.time_alternative, show_times.show_time'))
+                    ->select(DB::raw('show_times.id, show_times.time_alternative, DATE_FORMAT(show_times.show_time, "%a, %b %D, %Y @ %l:%i %p") AS show_time'))
                     ->where('show_times.show_id', $show_id)
                     ->where('show_times.is_active', '>', 0)
                     ->where($options['where'])
@@ -508,6 +508,8 @@ class ShoppingcartController extends Controller
             //tickets
             if(!empty($show_time_id))
             {
+                $show_time = ShowTime::find($show_time_id)->show_time;
+                
                 $tcks = DB::table('tickets')
                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                     ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
@@ -568,7 +570,7 @@ class ShoppingcartController extends Controller
             $cart['countries'] = Country::get(['code','name']);
             $cart['regions'] = Region::where('country','US')->get(['code','name']);
             //return view
-            return view('production.shoppingcart.pos', compact('ticket_types_css', 'cart', 'show_time_id', 'show_id', 'venue_id', 'tickets', 'showtimes', 'shows', 'venues','show_logo','venue_logo'));
+            return view('production.shoppingcart.pos', compact('ticket_types_css', 'cart', 'show_time_id', 'show_id', 'venue_id', 'tickets', 'showtimes', 'show_time', 'shows', 'venues','show_logo','venue_logo'));
         } catch (Exception $ex) {
             throw new Exception('Error Production POS Buy Index: ' . $ex->getMessage());
         }

@@ -52,7 +52,7 @@ var POSbuy = function () {
                     if(cart.items.length>0)
                     {
                         $.each(cart.items,function(k, v) {
-                            var show_id = $('#pos_showtimes select[name="show_time_id"]').data('show');
+                            var show_id = $('input[name="show_id"]:checked').val();
                             var date = moment(v.show_time);
                             //ticket
                             if(show_time_id == v.item_id)
@@ -66,11 +66,11 @@ var POSbuy = function () {
                             }
                             //cart
                             var product = '<h4 class="bold">('+v.number_of_items+') '+v.product_type;
+                            if(show_id != v.show_id)
+                                product += ' <i class="label-warning">'+v.name+'</i>';
                             if(v.package)
                                 product += '<br><i>'+v.package+'</i>';
                             product += '</h4>';
-                            if(show_id != v.show_id)
-                                product += '<br><i class="label-warning">'+v.name+'</i>';
                             var rowItem = '<td>'+product+'</td>';
                             var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2))+'<br>$'+(parseFloat(v.processing_fee)).toFixed(2)+'</td>';
                             var rowBtn = '<td style="text-align:center"><button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button></td>';
@@ -85,7 +85,7 @@ var POSbuy = function () {
             //submit value
             function update_items(ticket_id=0,qty=0,id=0)
             {
-                var show_time_id = $('#pos_showtimes select[name="show_time_id"]').val();
+                var show_time_id = $('input[name="show_time_id"]:checked').val();
                 if(show_time_id)
                 {
                     jQuery.ajax({
@@ -134,8 +134,8 @@ var POSbuy = function () {
             }
             
             //search
-            
-            $('#pos_search select').bind('change',function() {
+            $('input:radio').change(function () {
+                $(this).closest('div.modal').modal('hide');
                 swal({
                     title: "Changing values.",
                     text: "Please, wait.",
@@ -143,25 +143,6 @@ var POSbuy = function () {
                     showConfirmButton: false
                 });
                 $(this).closest('form').submit();
-            });
-//            $('#pos-search img').click(function () {
-//                //alert("Hellow world");
-//                //alert($("select").val());
-//                //$(this).closest('select').simulate('mousedown');
-//                $(this).closest('select').prop('size',100);
-//
-//            });
-            
-
-            //showtimes
-            $('#pos_showtimes select[name="show_time_id"]').bind('change',function() {
-                swal({
-                    title: "Changing event date/time.",
-                    text: "Please, wait.",
-                    type: "info",
-                    showConfirmButton: false
-                });
-                $('#form_model_event').submit();
             });
 
             //tickets

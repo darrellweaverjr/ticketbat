@@ -14,50 +14,35 @@
 
     <!-- BEGIN SHOWTIMES -->
     <div id="pos_search" class="row portlet mb-0" >
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" id="pos_venues">
-            <!-- BEGIN FORM-->
-            <form method="post" action="{{url()->current()}}" id="form_model_event">
-                <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                <select class="form-control input-lg" name="venue_id">
-                    <option value="" disabled selected>- Pick a venue -</option>
-                    @foreach($venues as $id=>$v)
-                    <option value="{{$id}}" @if($venue_id == intval($id)) selected @endif>{{$v['name']}}</option>
-                    @endforeach
-                </select>
-            </form>
-            <img src="{{$venue_logo}}" alt="-No logo image-" width="100%" style="height:115px">
-            <!-- END FORM-->
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+            <a data-toggle="modal" href="#modal_venue" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
+                @if(!empty($venue_logo))
+                <img src="{{$venue_logo}}" alt="Select a venue" width="100%" height="100%">
+                @else
+                <h2>Select a venue</h2>
+                @endif
+            </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" id="pos_shows">
-            <!-- BEGIN FORM-->
-            <form method="post" action="{{url()->current()}}" id="form_model_event">
-                <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                <select class="form-control input-lg" name="show_id">
-                    <option value="" disabled selected>- Pick a show -</option>
-                    @foreach($shows as $s)
-                    <option value="{{$s['id']}}" @if($show_id == $s['id']) selected @endif>{{$s['name']}}</option>
-                    @endforeach
-                </select>
-            </form>
-            <img src="{{$show_logo}}" alt="-No logo image-" width="100%" style="height:115px">
-            <!-- END FORM-->
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+            <a data-toggle="modal" href="#modal_show" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
+                @if(!empty($show_logo))
+                <img src="{{$show_logo}}" alt="Select a show" width="100%" height="100%">
+                @else
+                <h2>Select a show</h2>
+                @endif
+            </a>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" id="pos_showtimes">
-            <!-- BEGIN FORM-->
-            <form method="post" action="{{url()->current()}}" id="form_model_event">
-                <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                <select class="form-control input-lg" name="show_time_id" data-show="{{$show_id}}" >
-                    <option value="" disabled selected>- Pick a date/time -</option>
-                    @foreach($showtimes as $st)
-                    <option value="{{$st->id}}" @if($show_time_id == $st->id) selected @endif>{{date('D n/j @g:iA',strtotime($st->show_time))}}</option>
-                    @endforeach
-                </select>
-            </form>
-            <img src="{{config('app.theme')}}img/event-icon.png" alt="-No logo image-" width="100%" style="height:115px">
-            <!-- END FORM-->
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+            <a data-toggle="modal" href="#modal_showtime" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
+                @if(!empty($show_time))
+                <h2 style="color:white!important">{{date('l',strtotime($show_time))}}<br>{{date('M jS, Y',strtotime($show_time))}}<br>{{date('g:i A',strtotime($show_time))}}</h2>
+                @else
+                <h2>Select a show/time</h2>
+                @endif
+            </a>
         </div>
-        <div id="pos-tally" class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" >
-            <a data-toggle="modal" href="#modal_tally" class="dashboard-stat dashboard-stat-v2" style="height:160px">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" >
+            <a data-toggle="modal" href="#modal_tally" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 <div class="details sbold">
                     <div class="number sbold">
                         $ <span data-counter="counterup" id="cost_total" data-value="{{number_format($cart['total'],2)}}"></span>
@@ -147,9 +132,8 @@
                     @foreach($cart['items'] as $i)
                         <tr data-id="{{$i->id}}">
                             <td>
-                                <h4 class="bold">({{$i->number_of_items}}) {{$i->product_type}}
+                                <h4 class="bold">({{$i->number_of_items}}) {{$i->product_type}} @if($i->show_id != $show_id) <i class="label-warning">{{$i->name}}</i> @endif
                                     @if(!empty($i->package)) <br><i>{{$i->package}}</i> @endif</h4>
-                                @if($i->show_id != $show_id) <br><i class="label-warning">{{$i->name}}</i> @endif
                             </td>
                             <td @if($i->show_time_id != $show_time_id) class="label-warning" @endif style="text-align:center">{{date('M d, Y', strtotime($i->show_time))}}<br>{{date('g:i A', strtotime($i->show_time))}}</td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}<br>@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif</td>
@@ -231,6 +215,104 @@
     </div>
     <!-- END PAYMENT -->
 
+    <!-- BEGIN VENUES MODAL -->
+    <div id="modal_venue" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:400px !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h3 class="modal-title">Venues</h3>
+                </div>
+                <div class="modal-body">                    
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="{{url()->current()}}">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="mt-radio-list">
+                            @foreach($venues as $id=>$v)
+                            <label class="mt-radio mt-radio-outline">      
+                                <input type="radio" name="venue_id" @if($venue_id==$v['id']) checked="true" @endif value="{{$v['id']}}">
+                                <h4>{{$v['name']}}</h4>
+                                <img src="{{$v['logo']}}" alt="-No logo image-" width="100%" style="height:100px">
+                                <span></span>
+                            </label><hr>
+                            @endforeach
+                        </div>
+                    </form>                    
+                    <!-- END FORM-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END VENUES MODAL -->
+    
+    <!-- BEGIN SHOWS MODAL -->
+    <div id="modal_show" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:400px !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h3 class="modal-title">Shows</h3>
+                </div>
+                <div class="modal-body">                    
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="{{url()->current()}}">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="mt-radio-list">
+                            @foreach($shows as $id=>$s)
+                            <label class="mt-radio mt-radio-outline">      
+                                <input type="radio" name="show_id" @if($show_id==$s['id']) checked="true" @endif value="{{$s['id']}}">
+                                <h4>{{$s['name']}}</h4>
+                                <img src="{{$s['logo']}}" alt="-No logo image-" width="100%" style="height:100px">
+                                <span></span>
+                            </label><hr>
+                            @endforeach
+                        </div>
+                    </form>                    
+                    <!-- END FORM-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SHOWS MODAL -->
+    
+    <!-- BEGIN SHOWTIMES MODAL -->
+    <div id="modal_showtime" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:400px !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h3 class="modal-title">Show times</h3>
+                </div>
+                <div class="modal-body">                    
+                    <!-- BEGIN FORM-->
+                    <form method="post" action="{{url()->current()}}">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="mt-radio-list">
+                            @foreach($showtimes as $st)
+                            <label class="mt-radio mt-radio-outline">      
+                                <input type="radio" name="show_time_id" @if($show_time_id==$st->id) checked="true" @endif value="{{$st->id}}">
+                                <h4>{{$st->show_time}}</h4>
+                                <span></span>
+                            </label><hr>
+                            @endforeach
+                        </div>
+                    </form>                    
+                    <!-- END FORM-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SHOWTIMES MODAL -->
+    
     <!-- BEGIN TALLY MODAL -->
     <div id="modal_tally" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
