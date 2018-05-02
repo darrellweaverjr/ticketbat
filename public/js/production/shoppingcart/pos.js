@@ -91,7 +91,7 @@ var POSbuy = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/pos/update',
+                        url: '/shoppingcart/pos/update',
                         data: {show_time_id:show_time_id,ticket_id:ticket_id,qty:qty,id:id},
                         success: function(data) {
                             if(data.success)
@@ -202,7 +202,7 @@ var POSbuy = function () {
                     jQuery.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '/pos/email_receipt',
+                        url: '/shoppingcart/pos/receipts',
                         data: $('#form_receipt_email').serializeArray(),
                         success: function(data) {
                             if(data.success)

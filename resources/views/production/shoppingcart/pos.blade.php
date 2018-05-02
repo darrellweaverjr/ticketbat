@@ -14,7 +14,7 @@
 
     <!-- BEGIN SHOWTIMES -->
     <div id="pos_search" class="row portlet mb-0" >
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" id="pos_venues">
             <!-- BEGIN FORM-->
             <form method="post" action="{{url()->current()}}" id="form_model_event">
                 <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
@@ -28,7 +28,7 @@
             <img src="{{$venue_logo}}" alt="-No logo image-" width="100%" style="height:115px">
             <!-- END FORM-->
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" id="pos_shows">
             <!-- BEGIN FORM-->
             <form method="post" action="{{url()->current()}}" id="form_model_event">
                 <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
@@ -42,7 +42,7 @@
             <img src="{{$show_logo}}" alt="-No logo image-" width="100%" style="height:115px">
             <!-- END FORM-->
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" id="pos_showtimes">
             <!-- BEGIN FORM-->
             <form method="post" action="{{url()->current()}}" id="form_model_event">
                 <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
@@ -72,45 +72,62 @@
     <!-- BEGIN TICKETS AND SHOPPINGCART -->
     <div id="pos-checkout-top" class="row portlet light" style="margin-bottom:-30px">
         <div id="pos-ticket-wrapper" class="portlet about-text col-xs-12 col-sm-5 col-md-5">
+            @if(!empty($tickets))
             <h4><i class="fa fa-ticket"></i> Tickets</h4>
             <div id="pos_tickets" class="portlet-body pr-15 mt-3">
-                @if(empty($tickets))
-                    <h1 class="text-center" style="color:red"><b>Tickets are currently not for sale!</b></h1>
-                @elseif(empty($showtimes))
-                    <h1 class="text-center" style="color:red"><b>Tickets are not availables!</b></h1>
-                @else
-                    <div class="panel-group">
-                        <!-- BEGIN TICKETS -->
-                        @foreach($tickets as $index=>$t)
-                        <div class="panel">
-                            <div class="panel-heading p-3">
-                                <h4 class="panel-title {{$t['class']}} event-ticket-type"><strong class="lh-25">{{$t['type']}}</strong></h4>
-                            </div>
-                            <div class="panel-body" style="margin-bottom: -20px;">
-                                @foreach($t['tickets'] as $tt)
-                                <div class="row form-section" style="padding-right:15px">
-                                    <center>
-                                        <span class="col-sm-5 col-md-5">
-                                            <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b></h4>
-                                        </span>
-                                        @if($tt->max_available>0)
-                                        <div class="col-sm-7 col-md-7 input-group input-group-lg">
-                                            <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
-                                        </div>
-                                        @else
-                                        <h4><b>SOLD OUT</b></h4>
-                                        @endif
-                                        @if($tt->title!='None')<small>{{$tt->title}}</small>@endif
-                                    </center>
-                                </div>
-                                @endforeach
-                            </div>
+                <div class="panel-group">
+                    <!-- BEGIN TICKETS -->
+                    @foreach($tickets as $index=>$t)
+                    <div class="panel">
+                        <div class="panel-heading p-3">
+                            <h4 class="panel-title {{$t['class']}} event-ticket-type"><strong class="lh-25">{{$t['type']}}</strong></h4>
                         </div>
-                        @endforeach
-                        <!-- END TICKETS -->
+                        <div class="panel-body" style="margin-bottom: -20px;">
+                            @foreach($t['tickets'] as $tt)
+                            <div class="row form-section" style="padding-right:15px">
+                                <center>
+                                    <span class="col-sm-5 col-md-5">
+                                        <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b></h4>
+                                    </span>
+                                    @if(isset($tt->max_available) && $tt->max_available<1)
+                                    <div class="col-sm-7 col-md-7" style="background-color:red!important;font-size:22px;color:white"><b>SOLD OUT</b></div>
+                                    @elseif(!empty($tt->max_available))
+                                    <div class="col-sm-7 col-md-7 input-group input-group-lg">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-danger btn-lg sbold uppercase" type="button">- {{$tt->max_available}}</button>
+                                        </span>
+                                        <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" max="{{$tt->max_available}}" class="form-control input-lg">
+                                    </div>
+                                    @else
+                                    <div class="col-sm-7 col-md-7 input-group input-group-lg">
+                                        <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
+                                    </div>
+                                    @endif
+                                    @if($tt->title!='None')<small>{{$tt->title}}</small>@endif
+                                </center>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
-                @endif
+                    @endforeach
+                    <!-- END TICKETS -->
+                </div>
             </div>
+            @else
+            <h4><i class="fa fa-info-circle"></i> Information</h4>
+            <div id="pos_tickets" class="portlet-body pr-15 mt-3">
+                <h2 class="text-center" style="color:red"><b>
+                @if(empty($venues)) There are not venues availables to sell tickets.
+                @elseif(empty($venue_id)) You must select a venue.
+                @elseif(empty($shows)) There are not shows availables in that venue.
+                @elseif(empty($show_id)) You must select a show.
+                @elseif(empty($showtimes)) There are not show times availables for that event.
+                @elseif(empty($show_time_id)) You must select a date/time.
+                @else There are not tickets availables.
+                @endif
+                </b></h2>
+            </div>
+            @endif
         </div>
         <div id="pos-cart-wrapper" class="portlet light about-text col-xs-12 col-sm-7 col-md-7" >
             <h4><i class="fa fa-shopping-cart"></i> Shopping Cart</h4>

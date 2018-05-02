@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\Purchase;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Country;
 use App\Http\Models\Region;
@@ -404,7 +405,6 @@ class ShoppingcartController extends Controller
     {
         try {
             //init
-            $qty_tickets_sell = 100;
             $display_schedule = 3;
             $current = date('Y-m-d H:i:s');
             $s_token = Util::s_token(false, true);       
@@ -490,7 +490,7 @@ class ShoppingcartController extends Controller
                     $shows = $venues[$venue_id]['shows'];
                 }
             }
-            
+            $shows = []; $show_id = $show_time_id = null;
             //show_times
             if(!empty($show_id))
             {
@@ -513,7 +513,7 @@ class ShoppingcartController extends Controller
                     ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                       tickets.retail_price,
                                                       (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p 
-                                                       WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$show_time_id.')) ELSE ' . $qty_tickets_sell . ' END) AS max_available'))
+                                                       WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$show_time_id.')) ELSE null END) AS max_available'))
                     ->where('tickets.show_id', $show_id)->where('tickets.is_active', '>', 0)
                     ->where('tickets.only_pos', '>=', 0)
                     ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = '.$show_time_id.')'))
@@ -526,24 +526,16 @@ class ShoppingcartController extends Controller
                 //checking tickets
                 foreach ($tcks as $t) {                    
                     
-                    if($t->max_available<1) 
+                    if(!is_null($t->max_available) && $t->max_available<1)
                         $t->max_available = 0;
                     
-                    //if there is tickets availables
-                    if ($t->max_available >= 0) 
-                    {
-                        //max available
-                        if ($t->max_available > $qty_tickets_sell) {
-                            $t->max_available = $qty_tickets_sell;
-                        }
-                        //id
-                        $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
-                        //fill out tickets
-                        if (isset($tickets[$id]))
-                            $tickets[$id]['tickets'][] = $t;
-                        else 
-                            $tickets[$id] = ['type' => $t->ticket_type, 'class' => $t->ticket_type_class, 'tickets' => [$t]];
-                    } 
+                    //id
+                    $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
+                    //fill out tickets
+                    if (isset($tickets[$id]))
+                        $tickets[$id]['tickets'][] = $t;
+                    else 
+                        $tickets[$id] = ['type' => $t->ticket_type, 'class' => $t->ticket_type_class, 'tickets' => [$t]];
                    
                     //check with items in shoppingcart
                     if(count($cart))
@@ -567,7 +559,7 @@ class ShoppingcartController extends Controller
                         $t->cart = 0;
                 }
             }
-            
+         
             //get shoppingcart items
             $cart = $this->items($s_token,$show_time_id);
             //get styles from cloud
@@ -576,9 +568,92 @@ class ShoppingcartController extends Controller
             $cart['countries'] = Country::get(['code','name']);
             $cart['regions'] = Region::where('country','US')->get(['code','name']);
             //return view
-            return view('production.shoppingcart.pos', compact('ticket_types_css', 'cart', 'show_time_id', 'show_id', 'venue_id', 'showtimes', 'shows', 'venues','show_logo','venue_logo'));
+            return view('production.shoppingcart.pos', compact('ticket_types_css', 'cart', 'show_time_id', 'show_id', 'venue_id', 'tickets', 'showtimes', 'shows', 'venues','show_logo','venue_logo'));
         } catch (Exception $ex) {
             throw new Exception('Error Production POS Buy Index: ' . $ex->getMessage());
+        }
+    }
+    
+    /*
+     * update items in the cart
+     */
+    public function pos_update()
+    {
+        try {
+            $info = Input::all();
+            $s_token = Util::s_token(false,true);
+            if(!empty($info['id']))
+            {
+                return $this->remove($info['id'],$s_token);
+            }
+            else if(!empty($info['show_time_id']) && !empty($info['ticket_id']))
+            {
+                $item = Shoppingcart::where('item_id',$info['show_time_id'])->where('ticket_id',$info['ticket_id'])->where('session_id',$s_token)->first();
+
+                if($item)
+                {
+                    if(empty($info['qty']))
+                        return $this->remove($item->id,$s_token);
+                    else
+                    {
+                        $success = Shoppingcart::update_item($item->id, $info['qty'], $s_token);
+                        if($success['success'])
+                        {
+                            $cart = $this->items($s_token);
+                            if( !empty($cart) )
+                                return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
+                            return ['success'=>false, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
+                        }
+                        return $success;
+                    }
+                }
+                else if(!empty($info['qty']))
+                {   
+                    $success = Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $s_token);
+                    if($success['success'])
+                    {
+                        $cart = $this->items($s_token);
+                        if( !empty($cart) )
+                            return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
+                        return ['success'=>false, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
+                    }
+                    return $success;
+                }
+                return ['success'=>false, 'msg'=>'That item is not longer on the shopping cart!'];
+            }
+            return ['success'=>false, 'msg'=>'You must select a valid event date/time and ticket at the form!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
+    /*
+     * send the receipt of purchase by email
+     */
+    public function pos_email_receipt()
+    {
+        try {
+            $input = Input::all();
+            $receipts = [];
+            if(!empty($input['purchases']) && !empty($input['email']) && filter_var($input['email'], FILTER_VALIDATE_EMAIL))
+            {
+                $purchases = explode(',', $input['purchases']);
+                //send receipts
+                foreach ($purchases as $id)
+                {
+                    $p = Purchase::find($id);
+                    if($p)
+                        $receipts[] = $p->get_receipt();
+                }
+                //sent email
+                $response = Purchase::email_receipts('TicketBat Purchase',$receipts,'receipt',null,false,false,$input['email'],true);
+                if($response)
+                    return ['success'=>true,'msg'=>'The email was sent successfully!'];
+                return ['success'=>false,'msg'=>'The system could not sent the receipt to that email!'];
+            }
+            return ['success'=>false, 'msg'=>'You must enter a valid email in the form!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
     

@@ -162,6 +162,8 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     Route::post('shoppingcart/items', 'ShoppingcartController@items');
     Route::post('shoppingcart/count', 'ShoppingcartController@count');
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
+    Route::post('shoppingcart/pos/update', 'ShoppingcartController@pos_update');
+    Route::post('shoppingcart/pos/receipts', 'ShoppingcartController@pos_email_receipt');
     Route::match(['get','post'], 'shoppingcart/viewcart', 'ShoppingcartController@index');
     //purchase
     Route::post('purchase/process', 'PurchaseController@process');
@@ -182,5 +184,4 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     Route::match(['get','post'], 'pos/buy/{slug}', 'POSController@buy');
     Route::post('pos/update', 'POSController@update');
     Route::post('pos/email_receipt', 'POSController@email_receipt');
-    Route::get('pos/print_receipt/{purchases}', 'POSController@print_receipt');
 });
