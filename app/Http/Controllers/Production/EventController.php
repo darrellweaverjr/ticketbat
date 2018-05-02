@@ -291,7 +291,7 @@ class EventController extends Controller
                 ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = ' . $event->show_time_id . ')'))
                 ->where(function ($query) use ($event) {
                     $query->whereNull('tickets.max_tickets')
-                        ->orWhere('tickets.max_tickets', '>', 0);
+                          ->orWhere('tickets.max_tickets', '>', 0);
                 })
                 ->groupBy('tickets.id')->orderBy('tickets.is_default', 'DESC')->get();
             

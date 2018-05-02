@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
+use App\Http\Models\ShowTime;
 use App\Http\Models\Country;
 use App\Http\Models\Region;
 use App\Http\Models\User;
@@ -16,6 +18,7 @@ use App\Http\Models\Util;
 
 class ShoppingcartController extends Controller
 {
+    private $style_url = 'styles/ticket_types.css';
     /**
      * Watch viewcart view shoppingcart.
      *
@@ -26,10 +29,12 @@ class ShoppingcartController extends Controller
         try {
             //init
             $input = Input::all();
+            //  Force use the POS system
+            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE'))))
+                return $this->pos($input);
+            //recover session
             if(!empty($input['session']))
-            {
                 $this->recover($input['session']);
-            }
             //if auth or guest continue
             $email_guest = Session::get('email_guest', ''); 
             if(!Auth::check() && empty($email_guest))
@@ -38,16 +43,28 @@ class ShoppingcartController extends Controller
             {
                 $cart = $this->items();
                 if( !empty($cart) )
-                {
-                    //default email
-                    $cart['email'] = (Auth::check())? Auth::user()->email : $email_guest;
-                    //default enum
-                    $cart['countries'] = Country::get(['code','name']);  
-                    $cart['regions'] = Region::where('country','US')->get(['code','name']); 
-                    return view('production.shoppingcart.index',compact('cart'));
-                } 
+                    return $this->viewcart($cart,$email_guest);
                 return view('production.shoppingcart.empty');
             }
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
+    /**
+     * Watch viewcart view.
+     *
+     * @return Method
+     */
+    public function viewcart($cart,$email_guest)
+    {
+        try {
+            //default email
+            $cart['email'] = (Auth::check())? Auth::user()->email : $email_guest;
+            //default enum
+            $cart['countries'] = Country::get(['code','name']);  
+            $cart['regions'] = Region::where('country','US')->get(['code','name']); 
+            return view('production.shoppingcart.index',compact('cart'));
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
@@ -58,11 +75,29 @@ class ShoppingcartController extends Controller
      *
      * @return Method
      */
-    public function items()
+    public function items($show_time_id=0)
     {
         try {
             $s_token = Util::s_token(false,true);
             $cart = Shoppingcart::calculate_session($s_token);
+            //only for pos sytem tally
+            if($show_time_id)
+            {
+                $tally = DB::table('purchases')
+                            ->select(DB::raw('COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
+                                              SUM( IF(purchases.payment_type="Cash",purchases.price_paid,0) ) AS cash,
+                                              SUM(purchases.price_paid) AS total'))
+                            ->where('purchases.status','=','Active')
+                            ->where('purchases.show_time_id','=',$show_time_id)
+                            ->where('purchases.user_id','=',Auth::user()->id)
+                            ->where('purchases.channel','=','POS')
+                            ->groupBy('purchases.show_time_id')->orderBy('purchases.show_time_id')->first();
+                if($tally)
+                    $cart['tally'] = ['transactions'=>$tally->transactions, 'tickets'=>$tally->tickets, 'cash'=>$tally->cash, 'total'=>$tally->total];
+                else
+                    $cart['tally'] = ['transactions'=>0, 'tickets'=>0, 'cash'=>0, 'total'=>0];
+                return $cart;
+            }
             if($cart['success'] && $cart['quantity']>0)
                 return $cart;
             return null;
@@ -358,6 +393,193 @@ class ShoppingcartController extends Controller
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
-    }  
+    } 
+    
+    /**
+     * Show the default method for the buy page.
+     *
+     * @return Method
+     */
+    public function pos($input)
+    {
+        try {
+            //init
+            $qty_tickets_sell = 100;
+            $display_schedule = 3;
+            $current = date('Y-m-d H:i:s');
+            $s_token = Util::s_token(false, true);       
+            $venue_id = $show_id = $show_time_id = $venue_logo = $show_logo = null;
+            $venues = $shows = $showtimes = $tickets = [];
+            //checkings by user
+            $options = Util::display_options_by_user();
+            //get shoppingcart items
+            $cart = Shoppingcart::items_session($s_token);
+            
+            //get all records
+            $events = DB::table('shows')
+                ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                ->join('stages', 'stages.id', '=', 'shows.stage_id')
+                ->join('show_times', 'show_times.show_id', '=', 'shows.id')
+                ->select(DB::raw('venues.id AS venue_id, venues.name AS venue, venues.logo_url AS venue_url,
+                                  shows.id as show_id, shows.name, shows.logo_url'))
+                ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
+                ->where(function ($query) use ($current) {
+                    $query->whereNull('shows.on_sale')
+                        ->orWhere('shows.on_sale', '<=', $current);
+                })
+                ->where(function ($query) use ($current) {
+                    $query->whereNull('shows.on_featured')
+                        ->orWhere('shows.on_featured', '<=', $current);
+                })
+                ->where('show_times.is_active', '>', 0)
+                ->where($options['where'])
+                ->groupBy('shows.id')
+                ->get();
+            //venues and events    
+            foreach ($events as $e)
+            {
+                if(!isset($venues[$e->venue_id]))
+                    $venues[$e->venue_id] = ['id'=>$e->venue_id,'name'=>$e->venue, 'logo'=>Image::view_image($e->venue_url), 'shows'=>[]];
+                $shows[$e->show_id] = ['id'=>$e->show_id,'name'=>$e->name, 'logo'=>Image::view_image($e->logo_url), 'venue'=>$e->venue_id];
+                $venues[$e->venue_id]['shows'][] = $shows[$e->show_id];
+            }
+            
+            //if select venue
+            if(!empty($input['venue_id']))
+            {
+                if(isset($venues[$input['venue_id']]))
+                {
+                    $venue_id = $input['venue_id'];
+                    $venue_logo = $venues[$venue_id]['logo'];
+                    if(count($venues[$venue_id]['shows'])>0)
+                    {
+                        $shows = $venues[$venue_id]['shows'];
+                        $show_id = $shows[0]['id'];
+                        $show_logo = $shows[0]['logo'];
+                        
+                    }
+                    else
+                        $shows = [];
+                }
+                else
+                    $shows = [];
+            }
+            //if select show (default into)
+            else if(!empty($input['show_id']))
+            {
+                if(isset($shows[$input['show_id']]))
+                {
+                    $venue_id = $shows[$input['show_id']]['venue'];
+                    $venue_logo = $venues[$venue_id]['logo'];
+                    $show_id = $input['show_id'];
+                    $show_logo = $shows[$show_id]['logo'];
+                    $shows = $venues[$venue_id]['shows'];                    
+                }
+            }
+            //if select showtime 
+            if(!empty($input['show_time_id']))
+            {
+                $show_time = ShowTime::find($input['show_time_id']);
+                if($show_time && isset($shows[$show_time->show->id]))
+                {
+                    $show_time_id = $show_time->id;
+                    $show_id = $show_time->show->id;
+                    $show_logo = $shows[$show_id]['logo'];
+                    $venue_id = $show_time->show->venue_id;
+                    $venue_logo = $venues[$venue_id]['logo'];
+                    $shows = $venues[$venue_id]['shows'];
+                }
+            }
+            
+            //show_times
+            if(!empty($show_id))
+            {
+                $showtimes = DB::table('show_times')
+                    ->join('shows', 'show_times.show_id', '=', 'shows.id')
+                    ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                    ->select(DB::raw('show_times.id, show_times.time_alternative, show_times.show_time'))
+                    ->where('show_times.show_id', $show_id)
+                    ->where('show_times.is_active', '>', 0)
+                    ->where($options['where'])
+                    ->orderBy('show_times.show_time')->take($display_schedule)->get();
+                $show_time_id = (!count($showtimes))? null : ( (empty($show_time_id))? $showtimes[0]->id : $show_time_id );
+            }
+            
+            //tickets
+            if(!empty($show_time_id))
+            {
+                $tcks = DB::table('tickets')
+                    ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                    ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
+                                                      tickets.retail_price,
+                                                      (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p 
+                                                       WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$show_time_id.')) ELSE ' . $qty_tickets_sell . ' END) AS max_available'))
+                    ->where('tickets.show_id', $show_id)->where('tickets.is_active', '>', 0)
+                    ->where('tickets.only_pos', '>=', 0)
+                    ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = '.$show_time_id.')'))
+                    ->where(function ($query) use ($show_time_id) {
+                        $query->whereNull('tickets.max_tickets')
+                              ->orWhere('tickets.max_tickets', '>', 0);
+                    })
+                    ->groupBy('tickets.id')->orderBy('tickets.is_default', 'DESC')->get();
+                    
+                //checking tickets
+                foreach ($tcks as $t) {                    
+                    
+                    if($t->max_available<1) 
+                        $t->max_available = 0;
+                    
+                    //if there is tickets availables
+                    if ($t->max_available >= 0) 
+                    {
+                        //max available
+                        if ($t->max_available > $qty_tickets_sell) {
+                            $t->max_available = $qty_tickets_sell;
+                        }
+                        //id
+                        $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
+                        //fill out tickets
+                        if (isset($tickets[$id]))
+                            $tickets[$id]['tickets'][] = $t;
+                        else 
+                            $tickets[$id] = ['type' => $t->ticket_type, 'class' => $t->ticket_type_class, 'tickets' => [$t]];
+                    } 
+                   
+                    //check with items in shoppingcart
+                    if(count($cart))
+                    {
+                        $t_available = false;
+                        foreach ($cart as $i)
+                        {
+                            if($i->ticket_id==$t->ticket_id)
+                            {
+                                $t_available = true;
+                                if($i->item_id==$show_time_id)
+                                    $t->cart = $i->number_of_items;
+                            }
+                        }
+                        if(!$t_available)
+                            Shoppingcart::where('ticket_id','=',$t->ticket_id)->where('session_id','=',$s_token)->delete();
+                        if(empty($t->cart))
+                            $t->cart = 0;
+                    }
+                    else
+                        $t->cart = 0;
+                }
+            }
+            
+            //get shoppingcart items
+            $cart = $this->items($s_token,$show_time_id);
+            //get styles from cloud
+            $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER') . '/' . $this->style_url);
+
+            $cart['countries'] = Country::get(['code','name']);
+            $cart['regions'] = Region::where('country','US')->get(['code','name']);
+            //return view
+            return view('production.shoppingcart.pos', compact('ticket_types_css', 'cart', 'show_time_id', 'show_id', 'venue_id', 'showtimes', 'shows', 'venues','show_logo','venue_logo'));
+        } catch (Exception $ex) {
+            throw new Exception('Error Production POS Buy Index: ' . $ex->getMessage());
+        }
+    }
     
 }
