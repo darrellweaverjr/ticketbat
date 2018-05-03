@@ -26,7 +26,7 @@
                 @else
                 <!-- BEGIN FORM-->
                 <form method="post" action="{{url()->current()}}" id="form_model_event">
-                    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                    <input type="hidden" name="_token" value="{{ Session::token() }}" />
                     <select class="form-control input-lg" name="show_time_id" data-show="{{$event->show_id}}">
                         @foreach($event->showtimes as $st)
                         <option value="{{$st->id}}" @if($show_time_id == $st->id) selected @endif>{{$st->show_day}} @ {{$st->show_hour}}</option>

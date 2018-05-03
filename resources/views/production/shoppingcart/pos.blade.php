@@ -226,7 +226,7 @@
                 <div class="modal-body">                    
                     <!-- BEGIN FORM-->
                     <form method="post" action="{{url()->current()}}">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <div class="mt-radio-list">
                             @foreach($venues as $id=>$v)
                             <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12 @if($venue_id==$v['id']) border border-danger @endif">      
