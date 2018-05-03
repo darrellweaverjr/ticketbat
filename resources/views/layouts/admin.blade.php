@@ -629,6 +629,8 @@
         <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/jquery.validate.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/additional-methods.min.js" type="text/javascript"></script>
+        <!-- SCRIPT FOR VALIDATING ALL FORMS -->
+        <script src="/js/utils/validators.js" type="text/javascript"></script>
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         @yield('scripts')
