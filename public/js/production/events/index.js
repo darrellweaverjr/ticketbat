@@ -2,29 +2,7 @@ var TableDatatablesManaged = function () {
 
     var initTable = function () {
 
-        var table = $('#tb_model');
-        // begin first table
-        table.dataTable({
-            // Internationalisation. For more info refer to http://datatables.net/manual/i18n
-            "language": {
-                "emptyTable": "No events available",
-                "infoEmpty": "No events available",
-                "zeroRecords": "No events available",
-                "paginate": {
-                    "previous":"Prev",
-                    "next": "Next",
-                    "last": "Last",
-                    "first": "First"
-                }
-            },
-            "bStateSave": false,
-            "pageLength": 10,
-            "pagingType": "bootstrap_full_number",
-            "info" : false,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": false
-        });
+        var table = MainDataTableCreator.init('tb_model',false,[],10,false,'',[],false,false,false);
 
     }
     return {
