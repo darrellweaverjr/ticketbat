@@ -35,7 +35,7 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
             <a data-toggle="modal" href="#modal_showtime" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 @if(!empty($show_time))
-                <h2 style="color:white!important">{{date('l',strtotime($show_time))}}<br>{{date('M jS, Y',strtotime($show_time))}}<br>{{date('g:i A',strtotime($show_time))}}</h2>
+                <h2 style="color:white!important">{{date('l',strtotime($show_time))}}<br>{{date('M j, Y',strtotime($show_time))}}<br>{{date('g:i A',strtotime($show_time))}}</h2>
                 @else
                 <h2>Select a show/time</h2>
                 @endif
@@ -217,10 +217,10 @@
 
     <!-- BEGIN VENUES MODAL -->
     <div id="modal_venue" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:400px !important;">
+        <div class="modal-dialog" style="width:600px !important;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
                     <h3 class="modal-title">Venues</h3>
                 </div>
                 <div class="modal-body">                    
@@ -229,20 +229,17 @@
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="mt-radio-list">
                             @foreach($venues as $id=>$v)
-                            <label class="mt-radio mt-radio-outline">      
+                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12 @if($venue_id==$v['id']) border border-danger @endif">      
                                 <input type="radio" name="venue_id" @if($venue_id==$v['id']) checked="true" @endif value="{{$v['id']}}">
-                                <h4>{{$v['name']}}</h4>
-                                <img src="{{$v['logo']}}" alt="-No logo image-" width="100%" style="height:100px">
-                                <span></span>
-                            </label><hr>
+                                    <img src="{{$v['logo']}}" alt="-No logo image-" width="100%" style="height:100px">
+                                <span style="display:none"></span>
+                            </label>
                             @endforeach
                         </div>
                     </form>                    
                     <!-- END FORM-->
                 </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline">Close</button>
-                </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
@@ -250,10 +247,10 @@
     
     <!-- BEGIN SHOWS MODAL -->
     <div id="modal_show" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:400px !important;">
+        <div class="modal-dialog" style="width:600px !important;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
                     <h3 class="modal-title">Shows</h3>
                 </div>
                 <div class="modal-body">                    
@@ -262,20 +259,17 @@
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="mt-radio-list">
                             @foreach($shows as $id=>$s)
-                            <label class="mt-radio mt-radio-outline">      
+                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12 @if($show_id==$s['id']) border border-danger @endif">      
                                 <input type="radio" name="show_id" @if($show_id==$s['id']) checked="true" @endif value="{{$s['id']}}">
-                                <h4>{{$s['name']}}</h4>
                                 <img src="{{$s['logo']}}" alt="-No logo image-" width="100%" style="height:100px">
-                                <span></span>
-                            </label><hr>
+                                <span style="display:none"></span>
+                            </label>
                             @endforeach
                         </div>
                     </form>                    
                     <!-- END FORM-->
                 </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline">Close</button>
-                </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
@@ -283,10 +277,10 @@
     
     <!-- BEGIN SHOWTIMES MODAL -->
     <div id="modal_showtime" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:400px !important;">
+        <div class="modal-dialog" style="width:600px !important;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
                     <h3 class="modal-title">Show times</h3>
                 </div>
                 <div class="modal-body">                    
@@ -295,19 +289,17 @@
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="mt-radio-list">
                             @foreach($showtimes as $st)
-                            <label class="mt-radio mt-radio-outline">      
+                            <label class="mt-radio mt-radio-outline text-center" @if($show_time_id==$st->id) style="color:red" @endif>      
                                 <input type="radio" name="show_time_id" @if($show_time_id==$st->id) checked="true" @endif value="{{$st->id}}">
-                                <h4>{{$st->show_time}}</h4>
-                                <span></span>
+                                <h2><b>{{$st->show_time}}</b></h2>
+                                <span style="display:none"></span>
                             </label><hr>
                             @endforeach
                         </div>
                     </form>                    
                     <!-- END FORM-->
                 </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline">Close</button>
-                </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
