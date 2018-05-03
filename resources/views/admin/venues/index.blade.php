@@ -286,13 +286,13 @@
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Fixed Proccessing Fee</label>
                                                         <div class="col-md-6">
-                                                            <input type="number" value="0.00" name="default_processing_fee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_processing_fee" >
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default % Proccessing Fee</label>
                                                         <div class="col-md-6">
-                                                            <input type="number" value="0.00" name="default_percent_pfee" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_percent_pfee" >
                                                         </div>
                                                     </div>
                                                 </div>
@@ -302,13 +302,13 @@
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Fixed Commission</label>
                                                         <div class="col-md-6">
-                                                            <input type="number" value="0.00" name="default_fixed_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_fixed_commission" >
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label col-md-6">Default Commission %</label>
                                                         <div class="col-md-6">
-                                                            <input type="number" value="0.00" name="default_percent_commission" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                                            <input type="number" value="0.00" name="default_percent_commission" >
                                                         </div>
                                                     </div>
                                                 </div>
@@ -364,7 +364,7 @@
                                                     <span class="required"> * </span>
                                                 </label>
                                                 <div class="col-md-2 show-error">
-                                                    <input type="number" name="zip" class="form-control" placeholder="00000" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " />
+                                                    <input type="number" name="zip" class="form-control" placeholder="00000" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1063,7 +1063,7 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-md-9 show-error">
-                                        <input class="form-control" type="number" value="1" name="order" required="true" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                        <input class="form-control" type="number" value="1" name="order" required="true" >
                                     </div><br>
                                     <label class="control-label col-md-3">URL
                                         <span class="required">*</span>
@@ -1076,13 +1076,13 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-md-9 show-error">
-                                        <input class="form-control" type="number" value="0.00" name="price" required="true" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                        <input class="form-control" type="number" value="0.00" name="price" required="true" >
                                     </div>
                                     <label class="col-md-3 control-label">Clicks
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-md-9 show-error">
-                                        <input class="form-control" type="number" value="0" name="clicks" required="true" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                        <input class="form-control" type="number" value="0" name="clicks" required="true" >
                                     </div>
                                     <label class="control-label col-md-3">Date range:
                                     </label>

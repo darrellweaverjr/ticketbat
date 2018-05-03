@@ -62,7 +62,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-phone"></i>
                                     </span>
-                                    <input type="number" name="phone" class="form-control" placeholder="7025558888" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 ">
+                                    <input type="number" name="phone" class="form-control" placeholder="7025558888" >
                                 </div>
                             </div>
                         </div>

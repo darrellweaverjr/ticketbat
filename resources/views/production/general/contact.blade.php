@@ -47,8 +47,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-phone"></i>
                                     </span>
-                                    <input type="number" name="phone" @if(Auth::check()) value="{{preg_replace('/[^0-9]/s','',Auth::user()->phone)}}" @endif size="10" class="form-control" placeholder="7024445555" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||
-               event.charCode == 0 ">
+                                    <input type="number" name="phone" @if(Auth::check()) value="{{preg_replace('/[^0-9]/s','',Auth::user()->phone)}}" @endif size="10" class="form-control" placeholder="7024445555" >
                                 </div>
                             </div>
                         </div>

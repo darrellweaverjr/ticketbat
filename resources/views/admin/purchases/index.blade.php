@@ -710,7 +710,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label class="control-label">Change quantity of tickets:</label>
-                                    <input class="form-control" name="to_quantity" type="number" step="1" min="1" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 "/>
+                                    <input class="form-control" name="to_quantity" type="number" step="1" min="1" />
                                 </div>
                             </div>
                             <div class="row">

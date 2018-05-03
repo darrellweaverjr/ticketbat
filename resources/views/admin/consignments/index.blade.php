@@ -201,10 +201,10 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="number" style="width:75px" value="1" name="start_seat"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
+                                            <input type="number" style="width:75px" value="1" name="start_seat" required="true">
                                         </div>
                                         <div class="col-md-4">
-                                            <input type="number" style="width:80px" value="1" name="end_seat" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0" required="true">
+                                            <input type="number" style="width:80px" value="1" name="end_seat" required="true">
                                         </div>
                                         <label class="control-label col-md-3">Seat #</label>
                                         <div class="col-md-9 show-error">
@@ -217,25 +217,25 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-3 show-error">
-                                            <input type="number" style="width:90px" name="retail_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
+                                            <input type="number" style="width:90px" name="retail_price" value="0.00" step="0.01" class="form-control" />
                                         </div>
                                         <label class="control-label col-md-3">Comm(%)</label>
                                         <div class="col-md-3 show-error">
-                                            <input type="number" style="width:80px" name="percent_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                            <input type="number" style="width:80px" name="percent_commission" value="0.00" step="0.01" class="form-control" />
                                         </div>
                                         <label class="control-label col-md-3">P.Fee($)
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-3 show-error">
-                                            <input type="number" style="width:90px" name="processing_fee" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                            <input type="number" style="width:90px" name="processing_fee" value="0.00" step="0.01" class="form-control" />
                                         </div>
                                         <label class="control-label col-md-3">Comm($)</label>
                                         <div class="col-md-3 show-error">
-                                            <input type="number" style="width:80px" name="fixed_commission" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46"/>
+                                            <input type="number" style="width:80px" name="fixed_commission" value="0.00" step="0.01" class="form-control" />
                                         </div>
                                         <label class="control-label col-md-3">Collect($)</label>
                                         <div class="col-md-3 show-error">
-                                            <input type="number" style="width:90px" name="collect_price" value="0.00" step="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0  || event.charCode == 46"/>
+                                            <input type="number" style="width:90px" name="collect_price" value="0.00" step="0.01" class="form-control" />
                                         </div>
                                         <label class="control-label col-md-3"></label>
                                         <div class="col-md-3 show-error"></div>

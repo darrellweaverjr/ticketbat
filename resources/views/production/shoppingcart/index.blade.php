@@ -60,7 +60,7 @@
                                 </td>
                                 <td>
                                     <input type="number" @if(!empty($i->consignment)) disabled="true" @endif value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}"
-                                           @endif style="width:60px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0">
+                                           @endif style="width:60px" >
                                 </td>
                                 <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>
                                 <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}</td>

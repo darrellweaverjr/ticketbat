@@ -50,7 +50,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-8 show-error">
-                                    <input type="number" value="0.00" name="price" step="0.01" min="0.01" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 || event.charCode == 46">
+                                    <input type="number" value="0.00" name="price" step="0.01" min="0.01" class="form-control" >
                                 </div>
                                 <label class="control-label col-md-3">Enabled
                                 </label>

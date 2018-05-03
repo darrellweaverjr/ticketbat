@@ -268,8 +268,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-2 show-error">
-                                                <input name="zip" type="number" class="form-control" placeholder="#####" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||
-               event.charCode == 0 " /> </div>
+                                                <input name="zip" type="number" class="form-control" placeholder="#####" /> </div>
                                             <label class="control-label col-md-2">Country
                                                 <span class="required"> * </span>
                                             </label>
@@ -282,8 +281,7 @@
                                             </div>
                                             <label class="control-label col-md-1">Phone</label>
                                             <div class="col-md-2 show-error">
-                                                <input name="phone" class="form-control" placeholder="### ### ####" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) ||
-               event.charCode == 45 || event.charCode == 40 || event.charCode == 41 || event.charCode == 32 " /> </div>
+                                                <input name="phone" class="form-control" placeholder="### ### ####" /> </div>
                                         </div>
                                         <hr>
                                         <div class="form-group">
