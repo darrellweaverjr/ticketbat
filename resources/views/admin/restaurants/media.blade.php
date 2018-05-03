@@ -38,7 +38,7 @@
                     <div class="form-actions">
                         <div class="row">
                             <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_restaurant_media').trigger('reset')">Cancel</button>
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                     <div class="form-actions">
                         <div class="row">
                             <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_restaurant_media_add').trigger('reset')">Cancel</button>
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                 <button type="button" id="submit_model_restaurant_media_add" class="btn sbold grey-salsa">Save</button>
                             </div>
                         </div>

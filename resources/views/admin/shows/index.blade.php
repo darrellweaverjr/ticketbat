@@ -842,13 +842,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
-                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
-                                                                                                    title: 'Searching information',
-                                                                                                    text: 'Please, wait.',
-                                                                                                    type: 'info',
-                                                                                                    showConfirmButton: false
-                                                                                                });" >Search</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -907,7 +902,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_passwords').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_passwords" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
@@ -1037,7 +1032,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_tickets').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_tickets" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
@@ -1077,7 +1072,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_tickets').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_bands" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
@@ -1129,7 +1124,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_toggle').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_times_toggle" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
@@ -1255,7 +1250,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_times" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>
@@ -1329,7 +1324,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_times_F').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_times_move" class="btn sbold purple">Save</button>
                                 </div>
                             </div>
@@ -1476,7 +1471,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_show_contracts').trigger('reset')">Cancel</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                                     <button type="button" id="submit_model_show_contracts" class="btn sbold grey-salsa">Save</button>
                                 </div>
                             </div>

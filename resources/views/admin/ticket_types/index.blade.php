@@ -205,7 +205,7 @@
                     <div class="form-actions">
                         <div class="row">
                             <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="location.reload();">Cancel</button>
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
                             </div>
                         </div>
                     </div>

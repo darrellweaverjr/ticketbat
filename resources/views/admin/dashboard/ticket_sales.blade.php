@@ -126,7 +126,6 @@
                     <th style='text-align:right'>COMMISSIONS</th>
                     <th style='text-align:right'>P.FEES</th>
                     <th style='text-align:right'>GROSS PROFIT</th>
-                  </tr>
                 </tr>
             </thead>
             <tbody>
@@ -177,7 +176,6 @@
                     <th style="text-align:center">Comm.</th>
                     <th style="text-align:center">P.Fees</th>
                     <th style="text-align:center">Gross<br>Profit</th>
-                  </tr>
                 </tr>
             </thead>
             <tbody>
@@ -248,8 +246,8 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                <td>Order#: <b>{{$d->id}}</b>, Code: <b>{{$d->code}}</b>,<br> Ticket Type: <b>{{$d->ticket_type}}</b>, Method: <b>{{$d->method}}</b></i></small></td>
-                                <td style="text-align:center"><b>{{$d->name}}</b>, <small><i><b><a href="mailto:{{$d->email}}" target="_top">{{$d->email}}</a></b></td>
+                                <td>Order#: <b>{{$d->id}}</b>, Code: <b>{{$d->code}}</b>,<br> Ticket Type: <b>{{$d->ticket_type}}</b>, Method: <b>{{$d->method}}</b></td>
+                                <td style="text-align:center"><b>{{$d->name}}</b>, <small><i><b><a href="mailto:{{$d->email}}" target="_top">{{$d->email}}</a></b></i></small></td>
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
@@ -483,7 +481,7 @@
                                                 <input type="radio" @if(!empty($search['mirror_type']) && $search['mirror_type']=='previous_year' ) checked="true" @endif name="mirror_type" value="previous_year" />Last years mirror period
                                                 <span></span>
                                             </label>
-                                            <input type="text" name="mirror_period" style="width:20px" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 0 " @if(!empty($search['mirror_period'])) value="{{$search['mirror_period']}}" @else value="0" @endif />
+                                            <input type="text" name="mirror_period" style="width:20px" @if(!empty($search['mirror_period'])) value="{{$search['mirror_period']}}" @else value="0" @endif />
                                             <label class="control-label">&nbsp;&nbsp;&nbsp;Qty of mirrors prior sold date period</label>
                                         </div>
                                     </div>
@@ -511,13 +509,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
-                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
-                                                                                                    title: 'Searching information',
-                                                                                                    text: 'Please, wait.',
-                                                                                                    type: 'info',
-                                                                                                    showConfirmButton: false
-                                                                                                });" >Search</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa">Search</button>
                                 </div>
                             </div>
                         </div>

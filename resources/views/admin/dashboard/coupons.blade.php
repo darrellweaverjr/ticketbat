@@ -246,13 +246,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="modal-footer">
-                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline" onclick="$('#form_model_search').trigger('reset')">Cancel</button>
-                                    <button type="submit" class="btn sbold grey-salsa" onclick="$('#modal_model_search').modal('hide'); swal({
-                                                                                                    title: 'Searching information',
-                                                                                                    text: 'Please, wait.',
-                                                                                                    type: 'info',
-                                                                                                    showConfirmButton: false
-                                                                                                });" >Search</button>
+                                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                    <button type="submit" class="btn sbold grey-salsa">Search</button>
                                 </div>
                             </div>
                         </div>
