@@ -109,7 +109,7 @@
                                                                 @php $selected = false @endphp
                                                             @else
                                                             <label class="mt-radio mt-radio-outline">      
-                                                                <input type="radio" disabled="true">
+                                                                <input type="radio" disabled="true" data-price="0" data-max="0" value="{{$tt->ticket_id}}">
                                                                     ${{$tt->retail_price}} <b class="label label-sm sbold label-danger"> SOLD OUT</b>
                                                                 @if($tt->title!='None')- {{$tt->title}} @endif  
                                                                 <span></span>
@@ -127,7 +127,7 @@
                         </div>
                     @if(!empty($event->for_sale) && !empty($event->tickets))
                         <!-- BEGIN TOTALS -->
-                            <div class="row ml-15 mr-15 mt-5">
+                            <div class="row ml-15 mr-15 mt-5" id="update_tickets_panel">
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label class="control-label col-md-3">QTY</label>

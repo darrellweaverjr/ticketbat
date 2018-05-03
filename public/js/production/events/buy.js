@@ -32,9 +32,18 @@ var FunctionsManaged = function () {
             $('#form_model_update select[name="qty"]').data('price', price);
             var max = parseInt(e.data('max'));
             $('#form_model_update select[name="qty"]').empty();
-            for(var i = 1; i <= max; i++)
-                $('#form_model_update select[name="qty"]').append('<option value="'+i+'">'+i+'</option>');
-            $('#form_model_update select[name="qty"]').val(1).trigger('change');
+            if(max>0)
+            {
+                for(var i = 1; i <= max; i++)
+                    $('#form_model_update select[name="qty"]').append('<option value="'+i+'">'+i+'</option>');
+                $('#btn_add_shoppingcart').show();
+            }
+            else
+            {
+                $('#form_model_update select[name="qty"]').append('<option value="0">0</option>');
+                $('#btn_add_shoppingcart').hide();
+            } 
+            $('#form_model_update select[name="qty"] option:first').attr('selected','selected').trigger('change');
         }
         //add item to the shoppingcart
         $('#btn_add_shoppingcart').on('click', function(ev) {
