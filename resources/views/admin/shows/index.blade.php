@@ -800,7 +800,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" action="/admin/shows" id="form_model_search">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">
@@ -869,7 +869,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_passwords">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="id" value="" />
                         <div class="form-body">
@@ -929,7 +929,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_tickets">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="id" value="" />
                         <div class="form-body">
@@ -1059,7 +1059,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_bands">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
                         <div class="form-body">
                             <div class="row">
@@ -1099,7 +1099,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_times_toggle">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <div class="form-body">
                             <div class="row">
@@ -1151,7 +1151,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_times">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="action" value="" />
                         <div class="form-body">
@@ -1277,7 +1277,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_times_move">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">
@@ -1351,7 +1351,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_contracts">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" class="not_included"/>
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" class="not_included"/>
                         <input type="hidden" name="show_id" value="" class="not_included"/>
                         <input type="hidden" name="id" value="" class="not_included"/>
                         <div class="form-body">
@@ -1498,7 +1498,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_images">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="action" value="" />
@@ -1563,7 +1563,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_banners">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="parent_id" value="" />
                         <input type="hidden" name="action" value="" />
@@ -1626,7 +1626,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_show_videos">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="show_id" value="" />
                         <input type="hidden" name="action" value="" />

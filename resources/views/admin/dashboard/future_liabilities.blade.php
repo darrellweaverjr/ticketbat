@@ -164,7 +164,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" action="/admin/dashboard/future_liabilities" id="form_model_search">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">

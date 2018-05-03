@@ -377,7 +377,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_edit">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="discount_id" value="" />
                         <input type="hidden" name="ticket_id" value="" />
                         <input type="hidden" name="action" value="1" />
