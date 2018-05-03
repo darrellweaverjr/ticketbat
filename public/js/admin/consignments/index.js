@@ -610,105 +610,56 @@ var TableDatatablesManaged = function () {
 }();
 //*****************************************************************************************
 var FormValidation = function () {
-    // advance validation
-    var handleValidation = function() {
-        // for more info visit the official plugin documentation:
-        // http://docs.jquery.com/Plugins/Validation
-
-            var form = $('#form_model_update');
-            var error = $('.alert-danger', form);
-            var success = $('.alert-success', form);
-
-            //IMPORTANT: update CKEDITOR textarea with actual content before submit
-            form.on('submit', function() {
-                for(var instanceName in CKEDITOR.instances) {
-                    CKEDITOR.instances[instanceName].updateElement();
-                }
-            })
-
-            form.validate({
-                errorElement: 'span', //default input error message container
-                errorClass: 'help-block help-block-error', // default input error message class
-                focusInvalid: false, // do not focus the last invalid input
-                ignore: "", // validate all fields including form hidden input
-                rules: {
-                    venue_id: {
-                        required: true
-                    },
-                    show_id: {
-                        required: true
-                    },
-                    ticket_id: {
-                        required: true
-                    },
-                    seller_id: {
-                        required: true
-                    },
-                    show_time_id: {
-                        required: true
-                    },
-                    due_date: {
-                        required: true
-                    },
-                    section: {
-                        required: true
-                    },
-                    retail_price: {
-                        required: true,
-                        number: true,
-                        range: [0, 99999.99]
-                    },
-                    processing_fee: {
-                        required: true,
-                        number: true,
-                        range: [0, 99999.99]
-                    },
-                    percent_commission: {
-                        required: true,
-                        number: true,
-                        range: [0, 100]
-                    },
-                    fixed_commission: {
-                        required: false,
-                        number: true
-                    },
-                    due_date: {
-                        required: true
-                    }
-                },
-                invalidHandler: function (event, validator) { //display error alert on form submit
-                    success.hide();
-                    error.show();
-                    App.scrollTo(error, -200);
-                },
-
-                highlight: function (element) { // hightlight error inputs
-                   $(element)
-                        .closest('.show-error').addClass('has-error'); // set error class to the control group
-                },
-
-                unhighlight: function (element) { // revert the change done by hightlight
-                    $(element)
-                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
-                },
-
-                success: function (label) {
-                    label
-                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
-                },
-
-                submitHandler: function (form) {
-                    success.show();
-                    error.hide();
-                    form[0].submit(); // submit the form
-                }
-
-            });
-    }
     return {
         //main function to initiate the module
         init: function () {
-            handleValidation();
+            // advance validation
+            var rules = {
+                venue_id: {
+                    required: true
+                },
+                show_id: {
+                    required: true
+                },
+                ticket_id: {
+                    required: true
+                },
+                seller_id: {
+                    required: true
+                },
+                show_time_id: {
+                    required: true
+                },
+                due_date: {
+                    required: true
+                },
+                section: {
+                    required: true
+                },
+                retail_price: {
+                    required: true,
+                    number: true,
+                    range: [0, 99999.99]
+                },
+                processing_fee: {
+                    required: true,
+                    number: true,
+                    range: [0, 99999.99]
+                },
+                percent_commission: {
+                    required: true,
+                    number: true,
+                    range: [0, 100]
+                },
+                fixed_commission: {
+                    required: false,
+                    number: true
+                },
+                due_date: {
+                    required: true
+                }
+            };
+            MainFormValidation.init('form_model_update',rules,{});
         }
     };
 }();

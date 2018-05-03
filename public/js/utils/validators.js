@@ -18,12 +18,6 @@ var MainFormValidation = function () {
         var form = $('#'+form_id);
         var error = $('.alert-danger', form);
         var success = $('.alert-success', form);
-        //IMPORTANT: update CKEDITOR textarea with actual content before submit
-        form.on('submit', function() {
-            for(var instanceName in CKEDITOR.instances) {
-                CKEDITOR.instances[instanceName].updateElement();
-            }
-        });
         //VALIDATOR
         form.validate({
             errorElement: 'span', //default input error message container

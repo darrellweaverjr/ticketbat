@@ -2993,130 +2993,85 @@ var TableDatatablesManaged = function () {
 }();
 //*****************************************************************************************
 var FormValidation = function () {
-    // advance validation
-    var handleValidation = function() {
-        // for more info visit the official plugin documentation:
-        // http://docs.jquery.com/Plugins/Validation
-            var form = $('#form_model_update');
-            var error = $('.alert-danger', form);
-            var success = $('.alert-success', form);
-            //IMPORTANT: update CKEDITOR textarea with actual content before submit
-            form.on('submit', function() {
-                for(var instanceName in CKEDITOR.instances) {
-                    CKEDITOR.instances[instanceName].updateElement();
-                }
-            })
-            form.validate({
-                errorElement: 'span', //default input error message container
-                errorClass: 'help-block help-block-error', // default input error message class
-                focusInvalid: false, // do not focus the last invalid input
-                ignore: "", // validate all fields including form hidden input
-                rules: {
-                    name: {
-                        minlength: 1,
-                        maxlength: 100,
-                        required: true
-                    },
-                    short_description: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: true
-                    },
-                    description: {
-                        minlength: 5,
-                        maxlength: 2000,
-                        required: false
-                    },
-                    youtube: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: false
-                    },
-                    facebook: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: false
-                    },
-                    twitter: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: false
-                    },
-                    googleplus: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: false
-                    },
-                    instagram: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: false
-                    },
-                    yelpbadge: {
-                        minlength: 5,
-                        maxlength: 500,
-                        required: false
-                    },
-                    url: {
-                        minlength: 5,
-                        maxlength: 200,
-                        required: false
-                    },
-                    ext_slug: {
-                        minlength: 5,
-                        maxlength: 100,
-                        required: false
-                    },
-                    stage_id: {
-                        required: true
-                    },
-                    venue_id: {
-                        required: true
-                    },
-                    category_id: {
-                        required: true
-                    },
-                    logo_url: {
-                        //url: true,
-                        required: true
-                    },
-                    header_url: {
-                        //url: true,
-                        required: false
-                    }
-                },
-                invalidHandler: function (event, validator) { //display error alert on form submit
-                    success.hide();
-                    error.show();
-                    App.scrollTo(error, -200);
-                },
-
-                highlight: function (element) { // hightlight error inputs
-                   $(element)
-                        .closest('.show-error').addClass('has-error'); // set error class to the control group
-                },
-
-                unhighlight: function (element) { // revert the change done by hightlight
-                    $(element)
-                        .closest('.show-error').removeClass('has-error'); // set error class to the control group
-                },
-
-                success: function (label) {
-                    label
-                        .closest('.show-error').removeClass('has-error'); // set success class to the control group
-                },
-
-                submitHandler: function (form) {
-                    success.show();
-                    error.hide();
-                    form[0].submit(); // submit the form
-                }
-            });
-    }
     return {
         //main function to initiate the module
         init: function () {
-            handleValidation();
+            // advance validation
+            var rules = {
+                name: {
+                    minlength: 1,
+                    maxlength: 100,
+                    required: true
+                },
+                short_description: {
+                    minlength: 5,
+                    maxlength: 500,
+                    required: true
+                },
+                description: {
+                    minlength: 5,
+                    maxlength: 2000,
+                    required: false
+                },
+                youtube: {
+                    minlength: 5,
+                    maxlength: 500,
+                    required: false
+                },
+                facebook: {
+                    minlength: 5,
+                    maxlength: 500,
+                    required: false
+                },
+                twitter: {
+                    minlength: 5,
+                    maxlength: 500,
+                    required: false
+                },
+                googleplus: {
+                    minlength: 5,
+                    maxlength: 500,
+                    required: false
+                },
+                instagram: {
+                    minlength: 5,
+                    maxlength: 500,
+                    required: false
+                },
+                yelpbadge: {
+                    minlength: 5,
+                    maxlength: 500,
+                    required: false
+                },
+                url: {
+                    minlength: 5,
+                    maxlength: 200,
+                    required: false
+                },
+                ext_slug: {
+                    minlength: 5,
+                    maxlength: 100,
+                    required: false
+                },
+                stage_id: {
+                    required: true
+                },
+                venue_id: {
+                    required: true
+                },
+                category_id: {
+                    required: true
+                },
+                logo_url: {
+                    //url: true,
+                    required: true
+                },
+                header_url: {
+                    //url: true,
+                    required: false
+                }
+            };
+            MainFormValidation.init('form_model_update',rules,{});
         }
     };
 }();
