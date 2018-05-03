@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <!-- BEGIN FORM-->
                 <form method="post" id="form_model_restaurant_media" class="form-horizontal">
-                    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                    <input type="hidden" name="_token" value="{{ Session::token() }}" />
                     <input type="hidden" name="restaurants_id" value="" />
                     <input type="hidden" name="id" value="" />
                     <input type="hidden" name="action" value="1" />
@@ -59,7 +59,7 @@
             <div class="modal-body">
                 <!-- BEGIN FORM-->
                 <form method="post" id="form_model_restaurant_media_add" class="form-horizontal">
-                    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                    <input type="hidden" name="_token" value="{{ Session::token() }}" />
                     <input type="hidden" name="id" value="" />
                     <input type="hidden" name="action" value="1" />
                     <div class="form-body" style="padding: 0 10px">

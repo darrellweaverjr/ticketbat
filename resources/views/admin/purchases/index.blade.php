@@ -442,7 +442,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_email">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <div class="form-body">
                             <div class="row">
                                 <div class="form-group">
@@ -511,7 +511,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_edit">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="purchase_id" value="" />
                         <div class="form-body">
                             @if(Auth::check() && in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))

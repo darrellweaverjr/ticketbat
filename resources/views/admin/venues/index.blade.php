@@ -583,7 +583,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_venue_stages">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="venue_id" value="" />
                         <input type="hidden" name="action" value="" />
@@ -762,7 +762,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_venue_stage_images">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="stage_id" value="" />
                         <input type="hidden" name="action" value="" />
@@ -848,7 +848,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_venue_images">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="venue_id" value="" />
                         <input type="hidden" name="action" value="" />
@@ -913,7 +913,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_venue_banners">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="parent_id" value="" />
                         <input type="hidden" name="action" value="" />
@@ -976,7 +976,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_venue_videos">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="venue_id" value="" />
                         <input type="hidden" name="action" value="" />
@@ -1035,7 +1035,7 @@
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form method="post" id="form_model_venue_ads">
-                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="venue_id" value="" />
                         <input type="hidden" name="id" value="" />
                         <input type="hidden" name="action" value="1" />
