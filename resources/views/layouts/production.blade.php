@@ -241,7 +241,7 @@
         <!-- END THEME GLOBAL SCRIPTS -->
 
         <!-- SCRIPT FOR VALIDATING ALL FORMS -->
-        <script src="/js/utils/validators.js" type="text/javascript"></script>
+        <script src="/js/utils/templates.js" type="text/javascript"></script>
         <!-- SCRIPT FOR UPLOAD IMAGE FILE -->
         <script src="/js/utils/index.js" type="text/javascript"></script>
         <script src="/js/production/general/index.js" type="text/javascript"></script>
