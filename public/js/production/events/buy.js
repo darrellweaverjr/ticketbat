@@ -28,9 +28,14 @@ var FunctionsManaged = function () {
         function update_price()
         {
             var e = $('#form_model_update input[name="ticket_id"]:checked');
-            var price = parseFloat(e.data('price'));
+            if(e.length>0)
+            {
+                var price = parseFloat(e.data('price'));
+                var max = parseInt(e.data('max'));
+            }
+            else
+                var price = max = 0;
             $('#form_model_update select[name="qty"]').data('price', price);
-            var max = parseInt(e.data('max'));
             $('#form_model_update select[name="qty"]').empty();
             if(max>0)
             {
