@@ -1,9 +1,0 @@
-RewriteEngine on 
-
-#remove list indexes
-Options -Indexes
-
-#disabled iframe for external address
-Header append X-FRAME-OPTIONS "SAMEORIGIN"
-Header append X-XSS-PROTECTION "1; mode=block"
-Header append X-CONTENT-TYPE-OPTIONS "nosniff"
