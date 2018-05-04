@@ -1623,7 +1623,7 @@ var TableDatatablesManaged = function () {
             format: "yyyy-mm-dd hh:ii",
             pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
             todayBtn: true,
-            minuteStep: 15,
+            minuteStep: 1,
             defaultDate:'now'
         });
         //move show modal load shotimes
