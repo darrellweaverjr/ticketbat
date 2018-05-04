@@ -59,22 +59,23 @@ var POSbuy = function () {
                             {
                                 var qty = parseInt( $('#pos_tickets input[name="'+v.ticket_id+'"]').val() );
                                 $('#pos_tickets input[name="'+v.ticket_id+'"]').val( qty+v.number_of_items );
-                                var rowDate = '<td style="text-align:center">'+date.format('MMM D, YYYY')+'<br>'+date.format('h:mm A')+'</td>';
+                                var rowDate = '';
                             }
                             else {
-                                var rowDate = '<td class="label-warning" style="text-align:center">'+date.format('MMM D, YYYY')+'<br>'+date.format('h:mm A')+'</td>';
+                                var rowDate = '</br><b class="label-warning">'+date.format('M/DD/YYYY @ h:mm A')+'</b>';
                             }
                             //cart
-                            var product = '<h4 class="bold">('+v.number_of_items+') '+v.product_type;
-                            if(show_id != v.show_id)
-                                product += ' <i class="label-warning">'+v.name+'</i>';
+                            var product = '<h3 class="bold">'+v.number_of_items+' :: '+v.product_type;
                             if(v.package)
-                                product += '<br><i>'+v.package+'</i>';
-                            product += '</h4>';
+                                product += ' - <small>'+v.package+'</small>';
+                            product += rowDate;
+                            if(show_id != v.show_id)
+                                product += '<br><b class="label-warning uppercase">'+v.name+'</b>';
+                            product += '</h3>';
                             var rowItem = '<td>'+product+'</td>';
                             var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2))+'<br>$'+(parseFloat(v.processing_fee)).toFixed(2)+'</td>';
                             var rowBtn = '<td style="text-align:center"><button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button></td>';
-                            $('#tb_items').append('<tr data-id="'+v.id+'">'+rowItem+rowDate+rowSubtotal+rowBtn+'</tr>');
+                            $('#tb_items').append('<tr data-id="'+v.id+'">'+rowItem+rowSubtotal+rowBtn+'</tr>');
                         });
                     }
                 }

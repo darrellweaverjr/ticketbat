@@ -123,7 +123,6 @@
                     <thead>
                     <tr>
                         <th>Item(s)</th>
-                        <th class="text-center">Time</th>
                         <th class="text-right">Fees</th>
                         <th class="text-center">Remove</th>
                     </tr>
@@ -133,10 +132,12 @@
                     @foreach($cart['items'] as $i)
                         <tr data-id="{{$i->id}}">
                             <td>
-                                <h4 class="bold">({{$i->number_of_items}}) {{$i->product_type}} @if($i->show_id != $show_id) <i class="label-warning">{{$i->name}}</i> @endif
-                                    @if(!empty($i->package)) <br><i>{{$i->package}}</i> @endif</h4>
+                                <h3 class="bold">{{$i->number_of_items}} :: {{$i->product_type}}
+                                    @if(!empty($i->package)) - <small>{{$i->package}}</small> @endif
+                                    @if($i->show_time_id != $show_time_id) <br><b class="label-warning">{{date('n/d/Y @ g:i A', strtotime($i->show_time))}}</b> @endif
+                                    @if($i->show_id != $show_id) <br><b class="label-warning uppercase">{{$i->name}}</b> @endif
+                                </h3>
                             </td>
-                            <td @if($i->show_time_id != $show_time_id) class="label-warning" @endif style="text-align:center">{{date('M d, Y', strtotime($i->show_time))}}<br>{{date('g:i A', strtotime($i->show_time))}}</td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}<br>@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button>
