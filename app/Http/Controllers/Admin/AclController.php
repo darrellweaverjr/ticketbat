@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Models\Permission;
 use App\Http\Models\UserType;
 use App\Http\Models\Util;
@@ -25,6 +26,7 @@ class AclController extends Controller{
         try {
             //init
             $input = Input::all(); 
+            $commands = $this->commands();
             if(isset($input) && isset($input['id']))
             {
                 //get selected record
@@ -74,7 +76,7 @@ class AclController extends Controller{
                     $permission_scopes = Util::getEnumValues('user_type_permissions','permission_scope');
                 }
                 //return view
-                return view('admin.acls.index',compact('permissions','user_types','permission_types','permission_scopes'));
+                return view('admin.acls.index',compact('permissions','user_types','permission_types','permission_scopes','commands'));
             }
         } catch (Exception $ex) {
             throw new Exception('Error ACLs Index: '.$ex->getMessage());
@@ -190,5 +192,59 @@ class AclController extends Controller{
         } catch (Exception $ex) {
             throw new Exception('Error User Types Index: '.$ex->getMessage());
         }
-    }   
+    }
+    
+    /**
+     * List all acls and return default view.
+     *
+     * @return view
+     */
+    public function commands()
+    {
+        try {
+            //init
+            $input = Input::all();
+            $commands = [];
+
+            $commands[] = ['command'=>'Report:manifest','values'=>['date'=>0]];
+            $commands[] = ['command'=>'Report:sales','values'=>['days'=>1,'onlyadmin'=>0]];
+            $commands[] = ['command'=>'Report:sales_receipt','values'=>['days'=>1]];
+            $commands[] = ['command'=>'Report:consignment','values'=>[]];
+
+            $commands[] = ['command'=>'Promo:announced','values'=>['days'=>1]];
+
+            $commands[] = ['command'=>'Shoppingcart:clean','values'=>['days'=>10]];
+            $commands[] = ['command'=>'BrokenImage:clean','values'=>[]];
+            $commands[] = ['command'=>'Shoppingcart:recover','values'=>['hours'=>4]];
+            $commands[] = ['command'=>'Contract:update_tickets','values'=>[]];
+            $commands[] = ['command'=>'Consignments:check','values'=>[]];
+
+            if(isset($input) && isset($input['command']))
+            {
+                foreach ($commands as $c)
+                {
+                    if($c['command'] == $input['command'])
+                    {
+                        foreach ($c['values'] as $k=>$i)
+                        {
+                            if(isset($input[$k]))
+                                $c['values'][$k] = $input[$k];
+                        }
+                        $exitCode = Artisan::call( $c['command'], $c['values'] );
+                        if($exitCode)
+                            return ['success'=>true, 'msg'=>'Command executed successfully!'];
+                        return ['success'=>false, 'msg'=>'Command executed with failure!'];
+                    }
+                }
+                return ['success'=>false, 'msg'=>'Command not found!'];
+            }
+            else
+            {
+                //return view
+                return $commands;
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Command Index: '.$ex->getMessage());
+        }
+    }
 }

@@ -1,8 +1,8 @@
-var TableDatatablesManaged = function () {
+var CommandsDatatablesManaged = function () {
     
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',false,[],10,false);
+        var table = MainDataTableCreator.init('tb_model_commands',false,[],10,false);
         
         table.on('click', 'tbody tr', function () {
             $(this).find('[name="radios"]').prop('checked',true).trigger('change');
@@ -16,7 +16,7 @@ var TableDatatablesManaged = function () {
          
         //function run
         $('#btn_model_run').on('click', function(ev) {
-            var radio = $("#tb_model [name=radios]:checked");
+            var radio = $("#tb_model_commands [name=radios]:checked");
             var parameters = {command:radio.val()};
             radio.closest('tr').find('td:nth-child(3)').find('input').each(function() {
                 parameters[$(this).attr('name')] = $(this).val();
@@ -30,7 +30,7 @@ var TableDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/commands', 
+                url: '/admin/acls/commands', 
                 data: parameters, 
                 success: function(data) {
                     if(data.success) 
@@ -63,11 +63,11 @@ var TableDatatablesManaged = function () {
             
         }); 
         //enable function buttons on check radio 
-        $('input:radio[name=radios]').change(function () {
-            if($('input:radio[name=radios]:checked').length > 0)
+        $('#tb_model_commands input:radio[name=radios]').change(function () {
+            if($('#tb_model_commands input:radio[name=radios]:checked').length > 0)
                 $('#btn_model_run').prop('disabled',false);   
         });
-        $('input:radio[name=radios]').trigger('change');
+        $('#tb_model_commands input:radio[name=radios]').trigger('change');
     }
     return {
         //main function to initiate the module
@@ -81,5 +81,5 @@ var TableDatatablesManaged = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    TableDatatablesManaged.init();
+    CommandsDatatablesManaged.init();
 });

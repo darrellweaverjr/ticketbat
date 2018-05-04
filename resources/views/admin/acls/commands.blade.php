@@ -1,27 +1,10 @@
-@php $page_title='Commands' @endphp
-@extends('layouts.admin')
-@section('title')
-  {!! $page_title !!}
-@stop
-@section('styles')
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<!-- END PAGE LEVEL PLUGINS -->
-@endsection
-
-@section('content')
-    <!-- BEGIN PAGE HEADER-->
-    <!-- BEGIN PAGE TITLE-->
-    <h1 class="page-title"> {{$page_title}}
-        <small> - Execute commands.</small>
-    </h1>
-    <!-- END PAGE TITLE-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
             <div class="portlet box green">
                 <div class="portlet-title">
                     <div class="caption">
-                        <span class="caption-subject bold uppercase"> {{strtoupper($page_title)}} LIST </span>
+                        <span class="caption-subject bold uppercase">  LIST </span>
                     </div>
                     <div class="actions">
                         <div class="btn-group">
@@ -34,7 +17,7 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
+                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model_commands">
                         <thead>
                             <tr>
                                 <th width="2%"> </th>
@@ -69,8 +52,3 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
-@endsection
-
-@section('scripts')
-<script src="/js/admin/commands/index.js" type="text/javascript"></script>
-@endsection

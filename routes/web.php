@@ -75,14 +75,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     //packages
     Route::post('packages/save', 'PackageController@save')->middleware('permissions:PACKAGES');
     Route::post('packages/remove', 'PackageController@remove')->middleware('permissions:PACKAGES');
-    Route::match(['get','post'], 'packages', 'PackageController@index')->middleware('permissions:PACKAGES');
-    //acls
-    Route::post('acls/save', 'AclController@save')->middleware('permissions:ACLS');
-    Route::post('acls/remove', 'AclController@remove')->middleware('permissions:ACLS');
-    Route::match(['get','post'], 'acls', 'AclController@index')->middleware('permissions:ACLS');
-    Route::match(['get','post'], 'user_types', 'AclController@user_types')->middleware('permissions:ACLS');
-    //commands
-    Route::match(['get','post'], 'commands', 'CommandController@index')->middleware('permissions:ACLS');
+    Route::match(['get','post'], 'packages', 'PackageController@index')->middleware('permissions:PACKAGES');    
     //manifests emails
     Route::post('manifests/generate', 'ManifestController@generate')->middleware('permissions:MANIFESTS');
     Route::post('manifests/send', 'ManifestController@send')->middleware('permissions:MANIFESTS');
@@ -122,6 +115,12 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('RestaurantController@save')->middleware('permissions:RESTAURANTS');
     Route::post('restaurants/remove', 'RestaurantController@remove')->middleware('permissions:RESTAURANTS');
     Route::match(['get','post'], 'restaurants', 'RestaurantController@index')->middleware('permissions:RESTAURANTS');
+    //acls
+    Route::post('acls/commands', 'AclController@commands')->middleware('permissions:ACLS');
+    Route::post('acls/save', 'AclController@save')->middleware('permissions:ACLS');
+    Route::post('acls/remove', 'AclController@remove')->middleware('permissions:ACLS');
+    Route::match(['get','post'], 'acls', 'AclController@index')->middleware('permissions:ACLS');
+    Route::match(['get','post'], 'user_types', 'AclController@user_types')->middleware('permissions:ACLS');
 });
 
 

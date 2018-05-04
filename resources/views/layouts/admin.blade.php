@@ -235,22 +235,6 @@
                                 </a>
                             </li>
                             @endif
-                            @if(array_key_exists('ACLS', Auth::user()->user_type->getACLs()))
-                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/acls')===false)) active @endif">
-                                <a href="/admin/acls" class="nav-link nav-toggle">
-                                    <i class="icon-settings"></i>
-                                    <span class="title">ACLs</span>
-                                </a>
-                            </li>
-                            @if(in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))
-                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/commands')===false)) active @endif">
-                                <a href="/admin/commands" class="nav-link nav-toggle">
-                                    <i class="icon-settings"></i>
-                                    <span class="title">Commands</span>
-                                </a>
-                            </li>
-                            @endif
-                            @endif
                             @if(array_key_exists('MANIFESTS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/manifests')===false)) active @endif">
                                 <a href="/admin/manifests" class="nav-link nav-toggle">
@@ -315,6 +299,14 @@
                                 </a>
                             </li>
                             @endif
+                            @if(array_key_exists('ACLS', Auth::user()->user_type->getACLs()))
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/acls')===false)) active @endif">
+                                <a href="/admin/acls" class="nav-link nav-toggle">
+                                    <i class="icon-settings"></i>
+                                    <span class="title">ACLs</span>
+                                </a>
+                            </li>
+                            @endif
                         </ul>
                         @if(array_key_exists('RESTAURANTS', Auth::user()->user_type->getACLs()))
                         <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
@@ -330,7 +322,7 @@
                             </li>
                             @endif
                         </ul>
-                        @endif
+                        @endif                        
                         <!-- END SIDEBAR MENU -->
                     </div>
                     <!-- END SIDEBAR -->

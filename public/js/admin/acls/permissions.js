@@ -1,8 +1,8 @@
-var TableDatatablesManaged = function () {
+var PermissionsDatatablesManaged = function () {
     
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',true,[ [0, "asc"] ],20,false);
+        var table = MainDataTableCreator.init('tb_model_permissions',true,[ [0, "asc"] ],20,false);
         
         table.find('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
@@ -50,7 +50,7 @@ var TableDatatablesManaged = function () {
         });  
         //check/uncheck all
         var check_models = function(){
-            var set = $('.group-checkable').attr("data-set");
+            var set = $('#tb_model_permissions .group-checkable').attr("data-set");
             var checked = $(set+"[type=checkbox]:checked").length;
             if(checked == 1)
             {
@@ -90,7 +90,7 @@ var TableDatatablesManaged = function () {
             if($('#modal_model_update_header').hasClass('bg-green'))
                 $('#modal_model_update_header,#btn_model_save').removeClass('bg-green').addClass('bg-yellow');
             else $('#modal_model_update_header,#btn_model_save').addClass('bg-yellow');
-            var set = $('.group-checkable').attr("data-set");
+            var set = $('#tb_model_permissions .group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -384,7 +384,7 @@ var TableDatatablesManaged = function () {
     };
 }();
 //*****************************************************************************************
-var FormValidation = function () {
+var PermissionsFormValidation = function () {
     return {
         //main function to initiate the module
         init: function () {
@@ -412,6 +412,6 @@ var FormValidation = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    TableDatatablesManaged.init();
-    FormValidation.init();
+    PermissionsDatatablesManaged.init();
+    PermissionsFormValidation.init();
 });
