@@ -24,7 +24,7 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
             <a data-toggle="modal" href="#modal_venue" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 @if(!empty($venue_logo))
-                <img src="{{$venue_logo}}" alt="Select a venue" width="100%" height="100%">
+                <img src="{{$venue_logo}}" alt="VENUE: {{$venue_id}}" width="100%" height="100%">
                 @else
                 <h2>Select a venue</h2>
                 @endif
@@ -33,7 +33,7 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
             <a data-toggle="modal" href="#modal_show" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 @if(!empty($show_logo))
-                <img src="{{$show_logo}}" alt="Select a show" width="100%" height="100%">
+                <img src="{{$show_logo}}" alt="SHOW: {{$show_id}}" width="100%" height="100%">
                 @else
                 <h2>Select a show</h2>
                 @endif
@@ -231,9 +231,9 @@
                         <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <div class="row mt-radio-list">
                             @foreach($venues as $id=>$v)
-                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12">      
+                            <label class="mt-radio mt-radio-outline text-center bold col-lg-6 col-md-6 col-sm-6 col-xs-12">      
                                 <input type="radio" name="venue_id" @if($venue_id==$v['id']) checked="true" @endif value="{{$v['id']}}">
-                                       <img src="{{$v['logo']}}" style="height:160px;" @if($venue_id==$v['id']) class="marked" @endif alt="-No logo image-" width="100%">
+                                       <img src="{{$v['logo']}}" style="height:160px;" @if($venue_id==$v['id']) class="marked" @endif alt="{{$v['name']}}" width="100%">
                                 <span style="display:none"></span>
                             </label>
                             @endforeach
@@ -261,9 +261,9 @@
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="row mt-radio-list">
                             @foreach($shows as $id=>$s)
-                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12">      
+                            <label class="mt-radio mt-radio-outline text-center bold col-lg-6 col-md-6 col-sm-6 col-xs-12">      
                                 <input type="radio" name="show_id" @if($show_id==$s['id']) checked="true" @endif value="{{$s['id']}}">
-                                <img src="{{$s['logo']}}" style="height:160px;" @if($show_id==$s['id']) class="marked" @endif alt="-No logo image-" width="100%">
+                                <img src="{{$s['logo']}}" style="height:160px;" @if($show_id==$s['id']) class="marked" @endif alt="{{$v['name']}}" width="100%">
                                 <span style="display:none"></span>
                             </label>
                             @endforeach
@@ -291,7 +291,7 @@
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
                         <div class="row mt-radio-list" style="padding-right:30px">
                             @foreach($showtimes as $st)
-                            <label class="mt-radio mt-radio-outline text-center" >      
+                            <label class="mt-radio mt-radio-outline text-center">      
                                 <input type="radio" name="show_time_id" @if($show_time_id==$st->id) checked="true" @endif value="{{$st->id}}">
                                 <i class="btn btn-default btn-lg btn-block sbold @if($show_time_id==$st->id) marked @endif "><h2><b>{{$st->show_time}}</b></h2></i>
                                 <span style="display:none"></span>
