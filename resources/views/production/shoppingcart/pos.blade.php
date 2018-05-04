@@ -233,7 +233,7 @@
                             @foreach($venues as $id=>$v)
                             <label class="mt-radio mt-radio-outline text-center bold col-lg-6 col-md-6 col-sm-6 col-xs-12">      
                                 <input type="radio" name="venue_id" @if($venue_id==$v['id']) checked="true" @endif value="{{$v['id']}}">
-                                       <img src="{{$v['logo']}}" style="height:160px;" @if($venue_id==$v['id']) class="marked" @endif alt="{{$v['name']}}" width="100%">
+                                <h1><img src="{{$v['logo']}}" style="height:160px;" @if($venue_id==$v['id']) class="marked" @endif alt="{{$v['name']}}" width="100%"></h1>
                                 <span style="display:none"></span>
                             </label>
                             @endforeach
@@ -263,7 +263,7 @@
                             @foreach($shows as $id=>$s)
                             <label class="mt-radio mt-radio-outline text-center bold col-lg-6 col-md-6 col-sm-6 col-xs-12">      
                                 <input type="radio" name="show_id" @if($show_id==$s['id']) checked="true" @endif value="{{$s['id']}}">
-                                <img src="{{$s['logo']}}" style="height:160px;" @if($show_id==$s['id']) class="marked" @endif alt="{{$v['name']}}" width="100%">
+                                <h1><img src="{{$s['logo']}}" style="height:160px;" @if($show_id==$s['id']) class="marked" @endif alt="{{$s['name']}}" width="100%"></h1>
                                 <span style="display:none"></span>
                             </label>
                             @endforeach

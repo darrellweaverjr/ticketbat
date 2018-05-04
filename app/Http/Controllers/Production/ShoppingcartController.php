@@ -423,6 +423,7 @@ class ShoppingcartController extends Controller
                 ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                 ->select(DB::raw('venues.id AS venue_id, venues.name AS venue, venues.logo_url AS venue_url,
                                   shows.id as show_id, shows.name, shows.logo_url'))
+                ->where('venues.is_featured', '>', 0)
                 ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
                 ->where(function ($query) use ($current) {
                     $query->whereNull('shows.on_sale')
@@ -434,6 +435,11 @@ class ShoppingcartController extends Controller
                 })
                 ->where('show_times.is_active', '>', 0)
                 ->where($options['where'])
+                ->whereNotNull('venues.logo_url')
+                ->whereNotNull('shows.logo_url')
+                ->when(!is_null($options['venues']), function ($shows) use ($options) {
+                    return $shows->whereIn('venues.id',$options['venues']);
+                })
                 ->groupBy('shows.id')
                 ->get();
             //venues and events    
