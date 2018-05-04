@@ -6,6 +6,13 @@
 @section('styles')
     <!-- BEGIN PAGE LEVEL PLUGINS -->
     @if($ticket_types_css)<style>{{$ticket_types_css}}</style>@endif
+    <style>
+        .marked {
+            border-style:solid;
+            border-color:red;
+            border-width:10px;
+        }
+    </style>
     <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -72,17 +79,11 @@
                             <div class="row form-section" style="padding-right:15px">
                                 <center>
                                     <span class="col-sm-5 col-md-5">
-                                        <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b></h4>
+                                        <h4><b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b>
+                                            @if(!empty($tt->max_available))<label class="label label-danger bold">{{$tt->max_available}} left</label>@endif</h4>
                                     </span>
                                     @if(isset($tt->max_available) && $tt->max_available<1)
                                     <div class="col-sm-7 col-md-7" style="background-color:red!important;font-size:22px;color:white"><b>SOLD OUT</b></div>
-                                    @elseif(!empty($tt->max_available))
-                                    <div class="col-sm-7 col-md-7 input-group input-group-lg">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-danger btn-lg sbold uppercase" type="button">- {{$tt->max_available}}</button>
-                                        </span>
-                                        <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" max="{{$tt->max_available}}" class="form-control input-lg">
-                                    </div>
                                     @else
                                     <div class="col-sm-7 col-md-7 input-group input-group-lg">
                                         <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
@@ -216,8 +217,8 @@
     <!-- END PAYMENT -->
 
     <!-- BEGIN VENUES MODAL -->
-    <div id="modal_venue" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:600px !important;">
+    <div id="modal_venue" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
@@ -227,11 +228,11 @@
                     <!-- BEGIN FORM-->
                     <form method="post" action="{{url()->current()}}">
                         <input type="hidden" name="_token" value="{{ Session::token() }}" />
-                        <div class="mt-radio-list">
+                        <div class="row mt-radio-list">
                             @foreach($venues as $id=>$v)
-                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12 @if($venue_id==$v['id']) border border-danger @endif">      
+                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12">      
                                 <input type="radio" name="venue_id" @if($venue_id==$v['id']) checked="true" @endif value="{{$v['id']}}">
-                                    <img src="{{$v['logo']}}" alt="-No logo image-" width="100%" style="height:100px">
+                                       <img src="{{$v['logo']}}" style="height:160px;" @if($venue_id==$v['id']) class="marked" @endif alt="-No logo image-" width="100%">
                                 <span style="display:none"></span>
                             </label>
                             @endforeach
@@ -246,8 +247,8 @@
     <!-- END VENUES MODAL -->
     
     <!-- BEGIN SHOWS MODAL -->
-    <div id="modal_show" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:600px !important;">
+    <div id="modal_show" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
@@ -257,11 +258,11 @@
                     <!-- BEGIN FORM-->
                     <form method="post" action="{{url()->current()}}">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                        <div class="mt-radio-list">
+                        <div class="row mt-radio-list">
                             @foreach($shows as $id=>$s)
-                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12 @if($show_id==$s['id']) border border-danger @endif">      
+                            <label class="mt-radio mt-radio-outline text-center col-lg-6 col-md-6 col-sm-6 col-xs-12">      
                                 <input type="radio" name="show_id" @if($show_id==$s['id']) checked="true" @endif value="{{$s['id']}}">
-                                <img src="{{$s['logo']}}" alt="-No logo image-" width="100%" style="height:100px">
+                                <img src="{{$s['logo']}}" style="height:160px;" @if($show_id==$s['id']) class="marked" @endif alt="-No logo image-" width="100%">
                                 <span style="display:none"></span>
                             </label>
                             @endforeach
@@ -276,8 +277,8 @@
     <!-- END SHOWS MODAL -->
     
     <!-- BEGIN SHOWTIMES MODAL -->
-    <div id="modal_showtime" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:600px !important;">
+    <div id="modal_showtime" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
@@ -287,13 +288,13 @@
                     <!-- BEGIN FORM-->
                     <form method="post" action="{{url()->current()}}">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-                        <div class="mt-radio-list">
+                        <div class="row mt-radio-list" style="padding-right:30px">
                             @foreach($showtimes as $st)
-                            <label class="mt-radio mt-radio-outline text-center" @if($show_time_id==$st->id) style="color:red" @endif>      
+                            <label class="mt-radio mt-radio-outline text-center" >      
                                 <input type="radio" name="show_time_id" @if($show_time_id==$st->id) checked="true" @endif value="{{$st->id}}">
-                                <h2><b>{{$st->show_time}}</b></h2>
+                                <i class="btn btn-default btn-lg btn-block sbold @if($show_time_id==$st->id) marked @endif "><h2><b>{{$st->show_time}}</b></h2></i>
                                 <span style="display:none"></span>
-                            </label><hr>
+                            </label>
                             @endforeach
                         </div>
                     </form>                    
@@ -306,8 +307,8 @@
     <!-- END SHOWTIMES MODAL -->
     
     <!-- BEGIN TALLY MODAL -->
-    <div id="modal_tally" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
+    <div id="modal_tally" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -358,7 +359,7 @@
     
     <!-- BEGIN COMPLETE MODAL -->
     <div id="modal_complete" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content text-center">
                 <div class="modal-header">
                     <img src="{{config('app.theme')}}img/checked.png" alt="">

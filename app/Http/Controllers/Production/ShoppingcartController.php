@@ -504,6 +504,8 @@ class ShoppingcartController extends Controller
                     ->orderBy('show_times.show_time')->take($display_schedule)->get();
                 $show_time_id = (!count($showtimes))? null : ( (empty($show_time_id))? $showtimes[0]->id : $show_time_id );
             }
+            else
+                $shows = [];
             
             //tickets
             if(!empty($show_time_id))
