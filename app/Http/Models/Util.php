@@ -335,7 +335,7 @@ class Util extends Model
                     $data['where'][] = [DB::raw('DATE_ADD(show_times.show_time,INTERVAL venues.cutoff_hours_end HOUR)'),'>=',$current];
                     $venues_edit = Auth::user()->venues_check_ticket;
                     $data['venues'] = (!empty($venues_edit))? explode(',',$venues_edit) : [0];
-                    $data['link'] = 'pos/buy/';
+                    $data['link'] = 'shoppingcart/viewcart?slug=';
                 }
                 else if(in_array(Auth::user()->user_type_id, explode(',', env('ROOT_USER_ID'))))
                 {

@@ -13,6 +13,7 @@ use App\Http\Models\Purchase;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Country;
 use App\Http\Models\Region;
+use App\Http\Models\Show;
 use App\Http\Models\User;
 use App\Http\Models\Ticket;
 use App\Http\Models\Util;
@@ -442,6 +443,14 @@ class ShoppingcartController extends Controller
                     $venues[$e->venue_id] = ['id'=>$e->venue_id,'name'=>$e->venue, 'logo'=>Image::view_image($e->venue_url), 'shows'=>[]];
                 $shows[$e->show_id] = ['id'=>$e->show_id,'name'=>$e->name, 'logo'=>Image::view_image($e->logo_url), 'venue'=>$e->venue_id];
                 $venues[$e->venue_id]['shows'][] = $shows[$e->show_id];
+            }
+            
+            //if select slug
+            if(!empty($input['slug']))
+            {
+                $event = Show::where('slug',$input['slug'])->first();
+                if($event)
+                    $input['show_id'] = $event->id;
             }
             
             //if select venue
