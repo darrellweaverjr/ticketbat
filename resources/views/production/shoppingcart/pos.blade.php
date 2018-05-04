@@ -24,7 +24,7 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
             <a data-toggle="modal" href="#modal_venue" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 @if(!empty($venue_logo))
-                <img src="{{$venue_logo}}" alt="VENUE: {{$venue_id}}" width="100%" height="100%">
+                <img src="{{$venue_logo}}" alt="VENUE # {{$venue_id}}" width="100%" height="100%">
                 @else
                 <h2>Select a venue</h2>
                 @endif
@@ -33,7 +33,7 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
             <a data-toggle="modal" href="#modal_show" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 @if(!empty($show_logo))
-                <img src="{{$show_logo}}" alt="SHOW: {{$show_id}}" width="100%" height="100%">
+                <img src="{{$show_logo}}" alt="SHOW # {{$show_id}}" width="100%" height="100%">
                 @else
                 <h2>Select a show</h2>
                 @endif
@@ -132,11 +132,11 @@
                     @foreach($cart['items'] as $i)
                         <tr data-id="{{$i->id}}">
                             <td>
-                                <h3 class="bold">{{$i->number_of_items}} :: {{$i->product_type}}
+                                <h4 class="bold">{{$i->number_of_items}} :: {{$i->product_type}}
                                     @if(!empty($i->package)) - <small>{{$i->package}}</small> @endif
                                     @if($i->show_time_id != $show_time_id) <br><b class="label-warning">{{date('n/d/Y @ g:i A', strtotime($i->show_time))}}</b> @endif
                                     @if($i->show_id != $show_id) <br><b class="label-warning uppercase">{{$i->name}}</b> @endif
-                                </h3>
+                                </h4>
                             </td>
                             <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}<br>@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif</td>
                             <td class="text-center">
@@ -312,7 +312,7 @@
         <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
                     <h3 class="modal-title">Tally</h3>
                 </div>
                 <div class="modal-body">
@@ -350,9 +350,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline">Close</button>
-                </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>

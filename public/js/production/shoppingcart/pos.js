@@ -65,13 +65,13 @@ var POSbuy = function () {
                                 var rowDate = '</br><b class="label-warning">'+date.format('M/DD/YYYY @ h:mm A')+'</b>';
                             }
                             //cart
-                            var product = '<h3 class="bold">'+v.number_of_items+' :: '+v.product_type;
+                            var product = '<h4 class="bold">'+v.number_of_items+' :: '+v.product_type;
                             if(v.package)
                                 product += ' - <small>'+v.package+'</small>';
                             product += rowDate;
                             if(show_id != v.show_id)
                                 product += '<br><b class="label-warning uppercase">'+v.name+'</b>';
-                            product += '</h3>';
+                            product += '</h4>';
                             var rowItem = '<td>'+product+'</td>';
                             var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2))+'<br>$'+(parseFloat(v.processing_fee)).toFixed(2)+'</td>';
                             var rowBtn = '<td style="text-align:center"><button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button></td>';
