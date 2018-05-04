@@ -123,7 +123,7 @@ var TableDatatablesManaged = function () {
         //show_times_time
         $('.timepicker-no-seconds').timepicker({
                 autoclose: true,
-                minuteStep: 5
+                minuteStep: 1
         });
         // handle input group button click
         $('.timepicker').parent('.input-group').on('click', '.input-group-btn', function(e){
