@@ -2,7 +2,7 @@ var TableDatatablesManaged = function () {
     
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',[ [0, "desc"] ],10);
+        MainDataTableCreator.init('tb_model',[ [0, "desc"] ],10);
         
         //PERSONALIZED FUNCTIONS
         //start_end_date
@@ -23,15 +23,7 @@ var TableDatatablesManaged = function () {
                 "fromLabel": "From",
                 "toLabel": "To",
                 "customRangeLabel": "Custom",
-                "daysOfWeek": [
-                    "Su",
-                    "Mo",
-                    "Tu",
-                    "We",
-                    "Th",
-                    "Fr",
-                    "Sa"
-                ]
+                "daysOfWeek": [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ]
             },
             startDate: moment().subtract('days', 29),
             endDate: moment(),

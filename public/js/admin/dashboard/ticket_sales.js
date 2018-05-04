@@ -114,7 +114,7 @@ var TableDatatablesButtons = function () {
                     }
                 }
             ];
-        var table = MainDataTableCreator.init('tb_model',[ [4, "desc"] ],10,false,buttons);
+        MainDataTableCreator.init('tb_model',[ [4, "desc"] ],10,false,buttons);
         
         //PERSONALIZED FUNCTIONS
         

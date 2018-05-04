@@ -57,7 +57,7 @@ var TableDatatablesButtons = function () {
                     }
                 }
             ];
-        var table = MainDataTableCreator.init('tb_model',[ [6, "desc"] ],10,false,buttons);
+        MainDataTableCreator.init('tb_model',[ [6, "desc"] ],10,false,buttons);
         
         //PERSONALIZED FUNCTIONS
         //show_times_date
