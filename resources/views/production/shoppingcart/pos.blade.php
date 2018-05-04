@@ -86,7 +86,7 @@
                                     <div class="col-sm-7 col-md-7" style="background-color:red!important;font-size:22px;color:white"><b>SOLD OUT</b></div>
                                     @else
                                     <div class="col-sm-7 col-md-7 input-group input-group-lg">
-                                        <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" class="form-control input-lg">
+                                        <input type="number" value="{{$tt->cart}}" name="{{$tt->ticket_id}}" @if(!empty($tt->max_available)) max="{{$tt->max_available}}" @endif class="form-control input-lg">
                                     </div>
                                     @endif
                                     @if($tt->title!='None')<small>{{$tt->title}}</small>@endif

@@ -588,7 +588,7 @@ class ShoppingcartController extends Controller
             $s_token = Util::s_token(false,true);
             if(!empty($info['id']))
             {
-                return $this->remove($info['id'],$s_token);
+                return $this->pos_remove($info['id'],$s_token);
             }
             else if(!empty($info['show_time_id']) && !empty($info['ticket_id']))
             {
@@ -597,7 +597,7 @@ class ShoppingcartController extends Controller
                 if($item)
                 {
                     if(empty($info['qty']))
-                        return $this->remove($item->id,$s_token);
+                        return $this->pos_remove($item->id,$s_token);
                     else
                     {
                         $success = Shoppingcart::update_item($item->id, $info['qty'], $s_token);
@@ -626,6 +626,31 @@ class ShoppingcartController extends Controller
                 return ['success'=>false, 'msg'=>'That item is not longer on the shopping cart!'];
             }
             return ['success'=>false, 'msg'=>'You must select a valid event date/time and ticket at the form!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
+    /*
+     * remove items in the cart
+     */
+    public function pos_remove($id,$s_token)
+    {
+        try {
+            if(!empty($id))
+            {
+                //find and remove item
+                $success = Shoppingcart::remove_item($id, $s_token);
+                if($success['success'])
+                {
+                    $cart = $this->items($s_token);
+                    if( !empty($cart) )
+                        return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
+                    return ['success'=>true, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
+                }
+                return $success;
+            }
+            return ['success'=>false, 'msg'=>'You must select a valid item to remove!'];
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
