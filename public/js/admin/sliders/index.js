@@ -4,7 +4,7 @@ var TableDatatablesManaged = function () {
     
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',true,[ [1, "asc"] ],10,false);
+        var table = MainDataTableCreator.init('tb_model',[ [1, "asc"] ],10);
         
         table.find('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");

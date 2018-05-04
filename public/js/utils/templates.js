@@ -62,11 +62,9 @@ var MainDataTableCreator = function () {
     
     return {
         //main function to initiate the module
-        init: function (form_id,ordering=false,order=[],pageLength=5,drawCallback=false,dom='',buttons=[],bStateSave=true,lengthChange=true,searching=true) {
-            drawCallback = (drawCallback)? function(){ $('.lazy').lazy(); } : function(){};
-            var table = $('#'+form_id);
-            // begin first table
-            table.dataTable({
+        init: function (form_id,order=[],pageLength=5,drawCallback=false,buttons=[],bStateSave=true,lengthChange=true,searching=true) {
+            
+            var settings = {
                 // Internationalisation. For more info refer to http://datatables.net/manual/i18n
                 "language": {
                     "aria": {
@@ -87,11 +85,10 @@ var MainDataTableCreator = function () {
                         "first": "First"
                     }
                 },
-                //"ajax": '/admin/users/ajax',
-                "bStateSave": bStateSave, // save datatable state(pagination, sort, etc) in cookie.
+                "bStateSave": bStateSave, 
                 "lengthMenu": [
-                    [10, 15, 20, -1],
-                    [10, 15, 20, "All"] // change per page values here
+                    [5, 10, 15, 20, -1],
+                    [5, 10, 15, 20, "All"] 
                 ],
                 // set the initial value
                 "pageLength": pageLength,            
@@ -109,14 +106,21 @@ var MainDataTableCreator = function () {
                         "className": "dt-right"
                     }
                 ],
-                "ordering": ordering,
-                "order": order,
-                "drawCallback": drawCallback,
+                "ordering": true,
                 "lengthChange": lengthChange,
-                "searching": searching,
-                "dom": dom,
-                "buttons": buttons
-            });
+                "searching": searching
+            };
+            if(order.length>0)
+                settings.order = order;
+            if(drawCallback)
+                settings.drawCallback = function(){ $('.lazy').lazy(); };
+            if(buttons.length>0)
+            {
+                settings.dom = "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>";
+                settings.buttons = buttons;
+            }
+            var table = $('#'+form_id);
+            table.dataTable(settings);
             return table;
         }
     };

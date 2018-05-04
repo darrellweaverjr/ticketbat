@@ -2,7 +2,7 @@ var TableDatatablesManaged = function () {
 
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',true,[ [4, "desc"] ],15,false);
+        var table = MainDataTableCreator.init('tb_model',[ [4, "desc"] ],15);
         
         table.on('click', 'tbody tr', function () {
             $(this).find('[name="radios"]').prop('checked',true).trigger('change');

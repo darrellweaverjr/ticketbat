@@ -2,7 +2,7 @@ var TableDatatablesManaged = function () {
     
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',true,[ [0, "desc"] ],10,false);
+        var table = MainDataTableCreator.init('tb_model',[ [0, "desc"] ],10);
         
         //PERSONALIZED FUNCTIONS
         //start_end_date

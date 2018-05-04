@@ -2,7 +2,7 @@ var PermissionsDatatablesManaged = function () {
     
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model_permissions',true,[ [0, "asc"] ],20,false);
+        var table = MainDataTableCreator.init('tb_model_permissions',[ [0, "asc"] ],20);
         
         table.find('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
