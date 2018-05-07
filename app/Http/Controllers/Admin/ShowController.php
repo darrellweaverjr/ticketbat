@@ -679,8 +679,8 @@ class ShowController extends Controller{
                 $ticket->retail_price = $input['retail_price'];
                 $ticket->processing_fee = $input['processing_fee'];
                 $ticket->percent_pf = $input['percent_pf'];
-                $ticket->max_tickets = ($input['max_tickets']>0)? $input['max_tickets'] : null;
-                $ticket->is_active = $input['is_active'];
+                $ticket->max_tickets = (!empty($input['max_tickets']))? $input['max_tickets'] : null;
+                $ticket->is_active = (!empty($input['is_active']))? 1 : 0; 
                 $ticket->avail_hours = (!empty($input['avail_hours']))? $input['avail_hours'] : null;
                 if(isset($input['fixed_commission']) && $input['fixed_commission'] != 0.00 && $input['fixed_commission'] != '0.00')
                 {
@@ -692,8 +692,8 @@ class ShowController extends Controller{
                     $ticket->percent_commission = $input['percent_commission'];
                     $ticket->fixed_commission = null;
                 }
-                $ticket->inclusive_fee = (!empty($input['inclusive_fee']))? 1 : 0;
-                $ticket->only_pos = (!empty($input['only_pos']))? 1 : 0;
+                $ticket->inclusive_fee = (!empty($input['inclusive_feex']))? 1 : 0;
+                $ticket->only_pos = (!empty($input['only_posx']))? 1 : 0;
                 $ticket->save();
                 //return
                 $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')

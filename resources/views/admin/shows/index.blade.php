@@ -981,8 +981,7 @@
                                     <label class="control-label col-md-5">Fee type
                                     </label>
                                     <div class="col-md-7">
-                                        <input type="hidden" name="inclusive_fee" value="0"/>
-                                        <input type="checkbox" class="make-switch" name="inclusive_fee" data-size="small" value="1" data-on-text="Inclusive" data-off-text="Over price" data-on-color="primary" data-off-color="danger">
+                                        <input type="checkbox" class="make-switch" name="inclusive_feex" data-size="small" value="1" data-on-text="Inclusive" data-off-text="Over price" data-on-color="primary" data-off-color="danger">
                                     </div>
                                     <label class="col-md-5 control-label">Commission ($)
                                         <span class="required"> * </span>
@@ -1007,7 +1006,6 @@
                                         <span class="required"> * </span>
                                     </label>
                                     <div class="col-md-7">
-                                        <input type="hidden" name="is_active" value="0"/>
                                         <input type="checkbox" class="make-switch" name="is_active" data-size="small" value="1" data-on-text="Active" data-off-text="Inactive" data-on-color="primary" data-off-color="danger">
                                     </div>
                                     <label class="col-md-5 control-label">Limit (blank = &infin;)
@@ -1023,8 +1021,7 @@
                                     <label class="control-label col-md-5">POS only
                                     </label>
                                     <div class="col-md-7">
-                                        <input type="hidden" name="only_pos" value="0"/>
-                                        <input type="checkbox" class="make-switch" name="only_pos" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
+                                        <input type="checkbox" class="make-switch" name="only_posx" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                     </div>
                                 </div>
                             </div>

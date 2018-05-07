@@ -988,8 +988,8 @@ var TableDatatablesManaged = function () {
                             }
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_default"]').bootstrapSwitch('state', (data.ticket.is_default>0)? true : false, true);
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.ticket.is_active>0)? true : false, true);
-                            $('#form_model_show_tickets .make-switch:checkbox[name="inclusive_fee"]').bootstrapSwitch('state', (data.ticket.inclusive_fee>0)? true : false, true);
-                            $('#form_model_show_tickets .make-switch:checkbox[name="only_pos"]').bootstrapSwitch('state', (data.ticket.only_pos>0)? true : false, true);
+                            $('#form_model_show_tickets .make-switch:checkbox[name="inclusive_feex"]').bootstrapSwitch('state', (data.ticket.inclusive_fee>0)? true : false, true);
+                            $('#form_model_show_tickets .make-switch:checkbox[name="only_posx"]').bootstrapSwitch('state', (data.ticket.only_pos>0)? true : false, true);
                             $('#modal_model_show_tickets').modal('show');
                         }
                         else{
