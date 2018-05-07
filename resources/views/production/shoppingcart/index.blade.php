@@ -102,21 +102,27 @@
                         </form>
                     </div>
                     <div class="col-xs-7 col-xs-offset-5 col-sm-5 col-sm-offset-0">
-                        <div class="row">
-                            <div class="col-xs-7 text-right">
-                                <h6>subtotal: </h6>
-                                <h6>processing fee:</h6>
-                                @if(!empty($cart['savings'])) <h6>Savings: </h6> @endif
-                                @if(!empty($cart['printed'])) <h6>Printed tickets: </h6> @endif
-                                <h5><strong>Grand Total: </strong></h5>
-                            </div>
-                            <div class="col-xs-5 text-right pl-0">
-                                <h6>$ {{number_format($cart['retail_price'],2)}}</h6>
-                                <h6>$ {{number_format($cart['processing_fee'],2)}}</h6>
-                                @if(!empty($cart['savings'])) <h6>$ {{number_format($cart['savings'],2)}}</h6> @endif
-                                @if(!empty($cart['printed'])) <h6>$ {{number_format($cart['printed'],2)}}</h6> @endif
-                                <h5><strong>$ {{number_format($cart['total'],2)}}</strong></h5>
-                            </div>
+                        <div class="row text-right">
+                            <h6>
+                                <span class="col-xs-7">Subtotal:</span>
+                                <span class="col-xs-5 pl-0" id="cost_subtotal">$ {{number_format($cart['retail_price'],2)}}</span>
+                            </h6>
+                            <h6>
+                                <span class="col-xs-7">Processing fee:</span>
+                                <span class="col-xs-5 pl-0" id="cost_fees">$ {{number_format($cart['processing_fee'],2)}}</span>
+                            </h6>
+                            <h6 @if($cart['savings']<0.01) class="hidden" @endif>
+                                <span class="col-xs-7">Savings:</span>
+                                <span class="col-xs-5 pl-0" id="cost_savings">$ {{number_format($cart['savings'],2)}}</span>
+                            </h6>
+                            <h6 @if($cart['printed']<0.01) class="hidden" @endif>
+                                <span class="col-xs-7">Printed tickets:</span>
+                                <span class="col-xs-5 pl-0" id="cost_printed">$ {{number_format($cart['printed'],2)}}</span>
+                            </h6>   
+                            <h4 class="bold">
+                                <span class="col-xs-7">Grand Total:</span>
+                                <span class="col-xs-5 pl-0" id="cost_total">$ {{number_format($cart['total'],2)}}</span>
+                            </h4>
                         </div>
                     </div>
                 </div>

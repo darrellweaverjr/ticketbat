@@ -14,14 +14,14 @@ var UpdateShoppingcartFunctions = function () {
             $('#cost_total').data('total',parseFloat(cart.total).toFixed(2));
             //hide empty savings
             if(cart.savings>0)
-                $('#cost_savings').closest('h4').removeClass('hidden');
+                $('#cost_savings').closest('h6').removeClass('hidden');
             else
-                $('#cost_savings').closest('h4').addClass('hidden');
+                $('#cost_savings').closest('h6').addClass('hidden');
             //hide empty printed tickets
             if(cart.printed>0)
-                $('#cost_printed').closest('h4').removeClass('hidden');
+                $('#cost_printed').closest('h6').removeClass('hidden');
             else
-                $('#cost_printed').closest('h4').addClass('hidden');
+                $('#cost_printed').closest('h6').addClass('hidden');
             //update restrictions
             if(cart.restrictions.length>0)
             {

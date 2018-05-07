@@ -985,7 +985,7 @@ var TableDatatablesManaged = function () {
                                 //fill out
                                 if(key!='is_default' && key!='is_active')
                                     $('#form_model_show_tickets [name="'+key+'"]').val(data.ticket[key]);
-                            }
+                            } 
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_default"]').bootstrapSwitch('state', (data.ticket.is_default>0)? true : false, true);
                             $('#form_model_show_tickets .make-switch:checkbox[name="is_active"]').bootstrapSwitch('state', (data.ticket.is_active>0)? true : false, true);
                             $('#form_model_show_tickets .make-switch:checkbox[name="inclusive_feex"]').bootstrapSwitch('state', (data.ticket.inclusive_fee>0)? true : false, true);
