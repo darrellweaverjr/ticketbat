@@ -83,6 +83,8 @@ class Image extends Model
         try {  
             //get file attributes
             $originalName = preg_replace('/\..+$/', '', $file->getClientOriginalName());  
+            $originalName = preg_replace('/\s+/','-',$originalName);
+            $originalName = preg_replace('/[^a-zA-Z0-9\_\-\.]/','',$originalName);
             $originalExt = $file->getClientOriginalExtension();
             //open image to edit
             $image = Img::make($file->getRealPath());
