@@ -42,7 +42,9 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center">
             <a data-toggle="modal" href="#modal_showtime" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 @if(!empty($show_time))
-                <h2 style="color:white!important">{{date('l',strtotime($show_time))}}<br>{{date('M j, Y',strtotime($show_time))}}<br>{{date('g:i A',strtotime($show_time))}}</h2>
+                <h2 style="color:white!important">{{date('l',strtotime($show_time))}}
+                    <br>{{date('M j, Y',strtotime($show_time))}}
+                    <br><i class="fa fa-clock-o icon-clock"></i> {{date('g:i A',strtotime($show_time))}}</h2>
                 @else
                 <h2>Select a show/time</h2>
                 @endif
@@ -318,33 +320,33 @@
                 <div class="modal-body">
                     <div data-always-visible="1" data-rail-visible1="1">
                         <h3 class="text-center"><b>{{Auth::user()->first_name}} {{Auth::user()->last_name}}</b><br>{{Auth::user()->email}}</h3>
-                        <div class="row" style="padding:20px">
-                            <h3 class="sbold required">Pending: </h3><hr>
-                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
-                                <h3 class="sbold label-info">Tickets: </h3>
+                        <div class="row" style="padding:10px">
+                            <h3 class="sbold required">Shopping cart: </h3><hr>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <h3 class="sbold label-info">Tickets</h3>
                                 <h3 class="text-center" id="t_p_tickets">{{$cart['quantity']}}</h3>
                             </div>
-                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
-                                <h3 class="sbold label-success">Collect: </h3>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <h3 class="sbold label-success">Total</h3>
                                 <h3 class="text-right" id="t_p_total">${{number_format($cart['total'],2)}}</h3>
                             </div>
                         </div>
-                        <div class="row" style="padding:20px">
-                            <h3 class="sbold required">Totals: </h3><hr>
-                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
-                                <h3 class="sbold label-primary">Transactions: </h3>
+                        <div class="row" style="padding:10px">
+                            <h3 class="sbold required">Totals for current event: </h3><hr>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <h3 class="sbold label-primary">Transact.</h3>
                                 <h3 class="text-center" id="t_t_transactions">@if(!empty($cart['tally'])){{$cart['tally']['transactions']}} @endif</h3>
                             </div>
-                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
-                                <h3 class="sbold label-info">Tickets: </h3>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <h3 class="sbold label-info">Tickets</h3>
                                 <h3 class="text-center" id="t_t_tickets">@if(!empty($cart['tally'])){{$cart['tally']['tickets']}} @endif</h3>
                             </div>
-                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
-                                <h3 class="sbold label-success">Cash: </h3>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <h3 class="sbold label-success">Cash</h3>
                                 <h3 class="text-right" id="t_t_cash">@if(!empty($cart['tally']))${{number_format($cart['tally']['cash'],2)}} @endif</h3>
                             </div>
-                            <div class="col-md-6 col-sm-6 col-xs-6 text-stat1">
-                                <h3 class="sbold label-success">Total: </h3>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <h3 class="sbold label-success">Total</h3>
                                 <h3 class="text-right" id="t_t_total">@if(!empty($cart['tally']))${{number_format($cart['tally']['total'],2)}} @endif</h3>
                             </div>
                         </div>

@@ -479,6 +479,21 @@ class ShoppingcartController extends Controller
                 else
                     $shows = [];
             }
+            //if not selected any show and only one venue
+            else if(empty($input['show_id']) && count($venues)==1)
+            {
+                $venue_id = key( $venues );
+                $venue_logo = $venues[$venue_id]['logo'];
+                if(count($venues[$venue_id]['shows'])>0)
+                {
+                    $shows = $venues[$venue_id]['shows'];
+                    $show_id = $shows[0]['id'];
+                    $show_logo = $shows[0]['logo'];
+
+                }
+                else
+                    $shows = [];
+            }
             //if select show (default into)
             else if(!empty($input['show_id']))
             {
@@ -577,13 +592,17 @@ class ShoppingcartController extends Controller
                     else
                         $t->cart = 0;
                 }
+                //get shoppingcart items
+                $cart = $this->items($show_time_id);
             }
-         
-            //get shoppingcart items
-            $cart = $this->items($s_token,$show_time_id);
+            else
+            {
+                //get shoppingcart items
+                $cart = ['success'=>true,'quantity'=>0,'seller'=>1,'total'=>0,'items'=>[],'amex_only'=>0,'tally'=>['transactions'=>0, 'tickets'=>0, 'cash'=>0, 'total'=>0]];
+            }
             //get styles from cloud
             $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER') . '/' . $this->style_url);
-
+            //enums
             $cart['countries'] = Country::get(['code','name']);
             $cart['regions'] = Region::where('country','US')->get(['code','name']);
             //return view
@@ -618,7 +637,7 @@ class ShoppingcartController extends Controller
                         $success = Shoppingcart::update_item($item->id, $info['qty'], $s_token);
                         if($success['success'])
                         {
-                            $cart = $this->items($s_token);
+                            $cart = $this->items();
                             if( !empty($cart) )
                                 return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
                             return ['success'=>false, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
@@ -631,7 +650,7 @@ class ShoppingcartController extends Controller
                     $success = Shoppingcart::add_item($info['show_time_id'], $info['ticket_id'], $info['qty'], $s_token);
                     if($success['success'])
                     {
-                        $cart = $this->items($s_token);
+                        $cart = $this->items();
                         if( !empty($cart) )
                             return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
                         return ['success'=>false, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
@@ -658,7 +677,7 @@ class ShoppingcartController extends Controller
                 $success = Shoppingcart::remove_item($id, $s_token);
                 if($success['success'])
                 {
-                    $cart = $this->items($s_token);
+                    $cart = $this->items();
                     if( !empty($cart) )
                         return ['success'=>true,'msg'=>$success['msg'], 'cart'=>$cart];
                     return ['success'=>true, 'msg'=>'There are no items in the shopping cart!', 'cart'=>null];
