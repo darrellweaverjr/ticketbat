@@ -106,12 +106,13 @@ var MainDataTableCreator = function () {
                         "className": "dt-right"
                     }
                 ],
-                "ordering": true,
                 "lengthChange": lengthChange,
                 "searching": searching
             };
             if(order.length>0)
                 settings.order = order;
+            else
+                settings.ordering = false;
             if(drawCallback)
                 settings.drawCallback = function(){ $('.lazy').lazy(); };
             if(buttons.length>0)
