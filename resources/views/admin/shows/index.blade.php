@@ -966,35 +966,62 @@
                                     <div class="col-md-7 show-error">
                                         <input type="number" value="0" name="retail_price" >
                                     </div>
-                                    <label class="col-md-5 control-label">Proccessing Fee ($)
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-7 show-error">
-                                        <input type="number" value="0" name="processing_fee" >
-                                    </div>
-                                    <label class="col-md-5 control-label">Proccessing Fee (%)
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-7 show-error">
-                                        <input type="number" value="0" name="percent_pf" >
-                                    </div>
                                     <label class="control-label col-md-5">Fee type
                                     </label>
                                     <div class="col-md-7">
                                         <input type="checkbox" class="make-switch" name="inclusive_feex" data-size="small" value="1" data-on-text="Inclusive" data-off-text="Over price" data-on-color="primary" data-off-color="danger">
                                     </div>
-                                    <label class="col-md-5 control-label">Commission ($)
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-7 show-error">
-                                        <input type="number" value="0" name="fixed_commission" width="100px" >
-                                    </div>
-                                    <label class="col-md-5 control-label">Commission (%)
-                                        <span class="required"> * </span>
-                                    </label>
-                                    <div class="col-md-7 show-error">
-                                        <input type="number" value="0" name="percent_commission" width="100px" >
-                                    </div>
+                                    @if(in_array(Auth::user()->id, explode(',', env('ROOT_USER_ID'))))                                    
+                                        <label class="col-md-5 control-label">Proccessing Fee ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="processing_fee" >
+                                        </div>
+                                        <label class="col-md-5 control-label">Proccessing Fee (%)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="percent_pf" >
+                                        </div>
+                                        <label class="col-md-5 control-label">Commission ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="fixed_commission" width="100px" >
+                                        </div>
+                                        <label class="col-md-5 control-label">Commission (%)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="percent_commission" width="100px" >
+                                        </div>
+                                    @else
+                                        <label class="col-md-5 control-label">Proccessing Fee ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="processing_fee" readonly="true">
+                                        </div>
+                                        <label class="col-md-5 control-label">Proccessing Fee (%)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="percent_pf" readonly="true">
+                                        </div>
+                                        <label class="col-md-5 control-label">Commission ($)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="fixed_commission" width="100px" readonly="true">
+                                        </div>
+                                        <label class="col-md-5 control-label">Commission (%)
+                                            <span class="required"> * </span>
+                                        </label>
+                                        <div class="col-md-7 show-error">
+                                            <input type="number" value="0" name="percent_commission" width="100px" readonly="true">
+                                        </div>
+                                    @endif
                                     <label class="control-label col-md-5">Make default ticket
                                         <span class="required"> * </span>
                                     </label>

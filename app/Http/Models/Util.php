@@ -337,7 +337,7 @@ class Util extends Model
                     $data['venues'] = (!empty($venues_edit))? explode(',',$venues_edit) : [0];
                     $data['link'] = 'shoppingcart/viewcart?slug=';
                 }
-                else if(in_array(Auth::user()->user_type_id, explode(',', env('ROOT_USER_ID'))))
+                else if(in_array(Auth::user()->id, explode(',', env('ROOT_USER_ID'))))
                 {
                     $data['where'] = [['show_times.show_time','>=',$date_limit]];
                 }
