@@ -59,7 +59,7 @@
                                     <small><i>{{$i->package}}</i></small> @endif <br>On {{date('l, F j, Y @ g:i A', strtotime($i->show_time))}}
                                 </td>
                                 <td>
-                                    <input type="number" @if(!empty($i->consignment)) disabled="true" @endif value="{{$i->number_of_items}}" min="1" @if($i->available_qty<0) max="1000" @else max="{{$i->available_qty}}"
+                                    <input type="number" @if(!empty($i->consignment)) disabled="true" @endif value="{{$i->number_of_items}}" min="1" @if(is_numeric($i->available_qty) && $i->available_qty>0) max="{{$i->available_qty}}"
                                            @endif style="width:60px" >
                                 </td>
                                 <td style="text-align:right">${{number_format($i->cost_per_product,2)}}</td>

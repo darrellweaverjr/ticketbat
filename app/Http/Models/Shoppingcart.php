@@ -122,7 +122,7 @@ class Shoppingcart extends Model
                     }
                 }
                 else    //unlimited
-                    $i->available_qty = $i->number_of_items;
+                    $i->available_qty = null;
             }
             else 
                 $i->available_qty = 0;
@@ -131,9 +131,10 @@ class Shoppingcart extends Model
             $i->unavailable = 0;    //availables by default            
             if($i->available_event < 1 || $i->available_time < 1) //available events and time
                 $i->unavailable = 1;
-            else if($i->available_qty>0 && $i->number_of_items>0)   //available qty of items to buy
+            else if((is_null($i->available_qty) || $i->available_qty>0) && $i->number_of_items>0)   //available qty of items to buy
             {
-                $i->number_of_items = ($i->number_of_items>$i->available_qty)? $i->available_qty : $i->number_of_items;   
+                if(!is_null($i->available_qty) && ($i->number_of_items>$i->available_qty))
+                    $i->number_of_items = $i->available_qty;   
                 $qty_item_pay = $i->number_of_items;
                 $coupon = json_decode($i->coupon,true);
                 if(!empty($coupon) && !empty($coupon->id))

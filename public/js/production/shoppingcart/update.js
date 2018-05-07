@@ -106,10 +106,10 @@ var UpdateShoppingcartFunctions = function () {
                 var row = $('#tb_items tr[id="'+v.id+'"]');
                 row.data('qty',v.number_of_items);
                 row.find('td:nth-child(2) input').val(v.number_of_items);
-                if(v.available_qty<0)
-                    row.find('td:nth-child(2) input').prop('max',1000);
-                else
+                if($.isNumeric( v.available_qty ) && v.available_qty>0)
                     row.find('td:nth-child(2) input').prop('max',v.available_qty);
+                else
+                    row.find('td:nth-child(2) input').removeAttr('max');
                 row.find('td:nth-child(3)').html('$'+((parseFloat(v.cost_per_product)).toFixed(2)));
                 row.find('td:nth-child(4)').html('$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2)));
                 if(v.inclusive_fee>0)
