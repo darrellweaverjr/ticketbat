@@ -270,6 +270,7 @@ class VenueController extends Controller{
                 $venue->default_processing_fee = $input['default_processing_fee'];
                 $venue->default_percent_pfee = $input['default_percent_pfee'];
                 $venue->default_fixed_commission = $input['default_fixed_commission'];
+                $venue->default_percent_commission = $input['default_percent_commission'];
                 $venue->cutoff_hours_start = intval($input['cutoff_hours_start']);
                 $venue->cutoff_hours_end = intval($input['cutoff_hours_end']);
                 if(!empty($input['logo_url']))
