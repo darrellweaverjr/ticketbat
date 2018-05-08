@@ -74,261 +74,6 @@ class DashboardController extends Controller
     }
 
     /**
-     * Makes where for queries in all report and search values.
-     *
-     * @return Method
-     */
-    private function search($input,$custom=null)
-    {
-        //init
-        $data = ['where'=>[],'search'=>[]];
-        $data['search']['venues'] = [];
-        $data['search']['shows'] = [];
-        $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
-        $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
-        $data['search']['status'] = Util::getEnumValues('purchases','status');
-        $data['search']['channels'] = Util::getEnumValues('purchases','channel');
-        //search venue
-        if(isset($input) && isset($input['venue']))
-        {
-            $data['search']['venue'] = $input['venue'];
-            if($data['search']['venue'] != '')
-                $data['where'][] = ['shows.venue_id','=',$data['search']['venue']];
-        }
-        else
-            $data['search']['venue'] = '';
-        //search show
-        if(isset($input) && isset($input['show']))
-        {
-            $data['search']['show'] = $input['show'];
-            if($data['search']['show'] != '')
-                $data['where'][] = ['shows.id','=',$data['search']['show']];
-        }
-        else
-            $data['search']['show'] = '';
-        //search showtime
-        if(isset($input) && isset($input['showtime_start_date']) && isset($input['showtime_end_date']))
-        {
-            $data['search']['showtime_start_date'] = $input['showtime_start_date'];
-            $data['search']['showtime_end_date'] = $input['showtime_end_date'];
-        }
-        else
-        {
-            $data['search']['showtime_start_date'] = $data['search']['showtime_end_date'] = '';
-        }
-        if($data['search']['showtime_start_date'] != '' && $data['search']['showtime_end_date'] != '')
-        {
-            $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'>=',date('Y-m-d',strtotime($data['search']['showtime_start_date']))];
-            $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'<=',date('Y-m-d',strtotime($data['search']['showtime_end_date']))];
-        }
-        if(isset($input) && isset($input['showtime_date']))
-        {
-            $data['search']['showtime_date'] = $input['showtime_date'];
-        }
-        else
-        {
-            $data['search']['showtime_date'] = '';
-        }
-        if($data['search']['showtime_date'] != '')
-        {
-            $data['where'][] = ['show_times.show_time','=',date('Y-m-d H:i:s',strtotime($data['search']['showtime_date']))];
-        }
-        if(isset($input) && isset($input['showtime_id']) && is_numeric($input['showtime_id']))
-        {
-            $data['search']['showtime_id'] = $input['showtime_id'];
-        }
-        else
-        {
-            $data['search']['showtime_id'] = '';
-        }
-        if($data['search']['showtime_id'] != '')
-        {
-            $data['where'][] = ['show_times.id','=',$data['search']['showtime_id']];
-        }
-        //search soldtime
-        if(isset($input) && isset($input['soldtime_start_date']) && isset($input['soldtime_end_date']))
-        {
-            $data['search']['soldtime_start_date'] = $input['soldtime_start_date'];
-            $data['search']['soldtime_end_date'] = $input['soldtime_end_date'];
-        }
-        else
-        {
-            if($custom=='future')
-            {
-                $data['search']['soldtime_start_date'] = $data['search']['soldtime_end_date'] = '';
-            }
-            else
-            {
-                $data['search']['soldtime_start_date'] = date('n/d/y', strtotime('-7 DAY')).' 12:00 AM';
-                $data['search']['soldtime_end_date'] = date('n/d/y').' 11:59 PM';
-            }
-        }
-        if($data['search']['soldtime_start_date'] != '' && $data['search']['soldtime_end_date'] != '' && $custom!='coupons')
-        {
-            $data['where'][] = [DB::raw('purchases.created'),'>=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_start_date']))];
-            $data['where'][] = [DB::raw('purchases.created'),'<=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_end_date']))];
-        }
-        //search payment types
-        if(isset($input) && isset($input['payment_type']) && !empty($input['payment_type']))
-        {
-            $data['search']['payment_type'] = $input['payment_type'];
-        }
-        else
-        {
-            $data['search']['payment_type'] = array_values($data['search']['payment_types']);
-        }
-        //search channel
-        if(isset($input) && isset($input['channel']) && !empty($input['channel']))
-        {
-            $data['search']['channel'] = $input['channel'];
-            $data['where'][] = ['purchases.channel','=',$data['search']['channel']];
-        }
-        else
-        {
-            $data['search']['channel'] = '';
-        }
-        //search date range
-        if(isset($input) && isset($input['start_amount']) && is_numeric($input['start_amount']))
-        {
-            $data['search']['start_amount'] = trim($input['start_amount']);
-            $data['where'][] = [DB::raw('amount'),'>=',$data['search']['start_amount']];
-        }
-        else
-        {
-            $data['search']['start_amount'] = '';
-        }
-        if(isset($input) && isset($input['end_amount']) && is_numeric($input['end_amount']))
-        {
-            $data['search']['end_amount'] = trim($input['end_amount']);
-            $data['where'][] = [DB::raw('amount'),'<=',$data['search']['end_amount']];
-        }
-        else
-        {
-            $data['search']['end_amount'] = '';
-        }
-        //search ticket_type
-        if(isset($input) && !empty($input['ticket_type']))
-        {
-            $data['search']['ticket_type'] = $input['ticket_type'];
-            $data['where'][] = ['tickets.ticket_type','=',$data['search']['ticket_type']];
-        }
-        else
-            $data['search']['ticket_type'] = '';
-        //search status
-        if(isset($input) && !empty($input['statu']))
-        {
-            $data['search']['statu'] = $input['statu'];
-            $data['where'][] = ['purchases.status','=',$data['search']['statu']];
-        }
-        else
-            $data['search']['statu'] = '';
-        //search user
-        if(isset($input) && !empty($input['user']))
-        {
-            $data['search']['user'] = trim($input['user']);
-            if(is_numeric($data['search']['user']))
-                $data['where'][] = ['users.id','=',$data['search']['user']];
-            else if(filter_var($data['search']['user'], FILTER_VALIDATE_EMAIL))
-                $data['where'][] = ['users.email','=',$data['search']['user']];
-            else
-                $data['search']['user'] = '';
-        }
-        else
-        {
-            $data['search']['user'] = '';
-        }
-        //search customer
-        if(isset($input) && !empty($input['customer']))
-        {
-            $data['search']['customer'] = trim($input['customer']);
-            if(is_numeric($data['search']['customer']))
-                $data['where'][] = ['customers.id','=',$data['search']['customer']];
-            else if(filter_var($data['search']['customer'], FILTER_VALIDATE_EMAIL))
-                $data['where'][] = ['customers.email','=',$data['search']['customer']];
-            else
-                $data['search']['customer'] = '';
-        }
-        else
-        {
-            $data['search']['customer'] = '';
-        }
-        //search order_id
-        if(isset($input) && !empty($input['order_id']) && is_numeric($input['order_id']))
-        {
-            $data['search']['order_id'] = trim($input['order_id']);
-            $data['where'][] = ['purchases.id','=',$data['search']['order_id']];
-        }
-        else
-        {
-            $data['search']['order_id'] = '';
-        }
-        //search authcode
-        if(isset($input) && !empty($input['authcode']))
-        {
-            $data['search']['authcode'] = trim($input['authcode']);
-            $data['where'][] = ['transactions.authcode','=',$data['search']['authcode']];
-        }
-        else
-            $data['search']['authcode'] = '';
-        //search refnum
-        if(isset($input) && !empty($input['refnum']))
-        {
-            $data['search']['refnum'] = trim($input['refnum']);
-            $data['where'][] = ['transactions.refnum','=',$data['search']['refnum']];
-        }
-        else
-            $data['search']['refnum'] = '';
-        //search printing
-        if(isset($input) && isset($input['mirror_type']) && !empty($input['mirror_type']))
-            $data['search']['mirror_type'] = $input['mirror_type'];
-        else
-            $data['search']['mirror_type'] = 'previous_period';
-
-        if(isset($input) && isset($input['mirror_period']) && !empty($input['mirror_period']) && is_numeric($input['mirror_period']))
-            $data['search']['mirror_period'] = $input['mirror_period'];
-        else
-            $data['search']['mirror_period'] = 0;
-
-        if(isset($input) && isset($input['replace_chart']) && !empty($input['replace_chart']))
-            $data['search']['replace_chart'] = 1;
-        else
-            $data['search']['replace_chart'] = 1;
-
-        if(isset($input) && isset($input['coupon_report']) && !empty($input['coupon_report']))
-            $data['search']['coupon_report'] = 1;
-        else
-            $data['search']['coupon_report'] = 0;
-        //PERMISSIONS
-        //if user has permission to view
-        if(in_array('View',Auth::user()->user_type->getACLs()['REPORTS']['permission_types']))
-        {
-            if(Auth::user()->user_type->getACLs()['REPORTS']['permission_scope'] != 'All')
-            {
-                if(!empty(Auth::user()->venues_edit) && count(explode(',',Auth::user()->venues_edit)))
-                {
-                    $data['where'][] = [DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.create_user_id'),'=',Auth::user()->id];
-                    //add shows and venues for search
-                    $data['search']['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
-                    $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
-                }
-                else
-                    $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
-            }
-            //all
-            else
-            {
-                //add shows and venues for search
-                $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
-                $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
-            }
-        }
-        else
-            $data['where'][] = ['purchases.id','=',0];
-        //return
-        return $data;
-    }
-
-    /**
      * Show the ticket sales report on the dashboard.
      *
      * @return view
@@ -340,7 +85,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = $summary = $coupons = array();
             //conditions to search
-            $data = $this->search($input);
+            $data = Util::filter_purchases('REPORTS', $input, '-7');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
@@ -543,7 +288,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = $graph = array();
             //conditions to search
-            $data = (!empty($info))? $info : $this->search($input,'coupons');
+            $data = (!empty($info))? $info : Util::filter_purchases('REPORTS', $input, '-7');
             $where = $data['where'];
             $where[] = ['discounts.id','!=',1];
             $search = $data['search'];
@@ -627,7 +372,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = array();
             //conditions to search
-            $data = $this->search($input);
+                        $data = Util::filter_purchases('REPORTS', $input, '-30');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Refunded'];
             $search = $data['search'];
@@ -667,7 +412,7 @@ class DashboardController extends Controller
             $data = $total = array();
             $current = date('Y-m-d H:i:s');
             //conditions to search
-            $data = $this->search($input,'future');
+            $data = Util::filter_purchases('REPORTS', $input, 0);
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $where[] = ['show_times.show_time','>',$current];
@@ -717,7 +462,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = $graph = array();
             //conditions to search
-            $data = $this->search($input);
+            $data = Util::filter_purchases('REPORTS', $input, '-30');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
@@ -781,7 +526,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = array();
             //conditions to search
-            $data = $this->search($input);
+            $data = Util::filter_purchases('REPORTS', $input, '-30');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
