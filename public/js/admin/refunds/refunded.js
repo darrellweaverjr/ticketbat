@@ -1,8 +1,8 @@
-var TableDatatablesManaged = function () {
+var RefundedDatatablesManaged = function () {
     
     var initTable = function () {
         
-        MainDataTableCreator.init('tb_model',[],10);
+        MainDataTableCreator.init('tb_model_refunded',[],10);
         
         //PERSONALIZED FUNCTIONS
     }
@@ -18,5 +18,5 @@ var TableDatatablesManaged = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    TableDatatablesManaged.init();
+    RefundedDatatablesManaged.init();
 });

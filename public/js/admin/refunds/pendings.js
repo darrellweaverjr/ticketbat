@@ -1,8 +1,8 @@
-var TableDatatablesManaged = function () {
+var PendingDatatablesManaged = function () {
     
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',[ [0, "desc"] ],10);
+        var table = MainDataTableCreator.init('tb_model_pendings',[ [0, "desc"] ],10);
         
         table.on('click', 'tbody tr', function () {
             $(this).find('[name="radios"]').prop('checked',true).trigger('change');
@@ -100,5 +100,5 @@ var TableDatatablesManaged = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    TableDatatablesManaged.init();
+    PendingDatatablesManaged.init();
 });

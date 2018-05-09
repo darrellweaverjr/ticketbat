@@ -38,6 +38,7 @@ class RefundController extends Controller{
         try {
             //init
             $refunds = [];
+            $pendings = $this->pendings();
             //if user has permission to view
             if(in_array('View',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
             {
@@ -91,7 +92,7 @@ class RefundController extends Controller{
                                 ->get();
                 }
             }
-            return view('admin.refunds.index',compact('refunds'));
+            return view('admin.refunds.index',compact('refunds','pendings'));
         } catch (Exception $ex) {
             throw new Exception('Error Refunds Index: '.$ex->getMessage());
         }
@@ -163,7 +164,7 @@ class RefundController extends Controller{
                                 ->get();
                 }
             }
-            return view('admin.refunds.pendings',compact('purchases'));
+            return $purchases;
         } catch (Exception $ex) {
             throw new Exception('Error Refunds Pendings: '.$ex->getMessage());
         }
