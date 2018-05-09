@@ -27,6 +27,8 @@
         <link href="{{config('app.theme')}}css/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="{{config('app.theme')}}css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- END GLOBAL MANDATORY STYLES -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="{{config('app.theme')}}css/daterangepicker.min.css" rel="stylesheet" type="text/css" />
@@ -585,6 +587,8 @@
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="{{config('app.theme')}}js/moment-2.21.0.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/daterangepicker.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+        <script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/jquery.waypoints.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/jquery.counterup.min.js" type="text/javascript"></script>
         <script src="{{config('app.theme')}}js/fullcalendar.min.js" type="text/javascript"></script>

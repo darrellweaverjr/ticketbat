@@ -190,7 +190,6 @@
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/amcharts.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/pie.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/channels.js" type="text/javascript"></script>

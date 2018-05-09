@@ -5,7 +5,6 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="{{config('app.theme')}}css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -218,6 +217,5 @@
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/manifests/index.js" type="text/javascript"></script>
 @endsection

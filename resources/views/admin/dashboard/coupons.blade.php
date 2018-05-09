@@ -170,7 +170,6 @@
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/coupons.js" type="text/javascript"></script>
 @endsection

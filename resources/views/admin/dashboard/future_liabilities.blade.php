@@ -160,6 +160,5 @@
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/future_liabilities.js" type="text/javascript"></script>
 @endsection

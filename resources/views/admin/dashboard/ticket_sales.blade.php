@@ -5,7 +5,6 @@
 @stop
 @section('styles')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="{{config('app.theme')}}css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 @endsection
 
@@ -276,8 +275,6 @@
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/ticket_sales.js" type="text/javascript"></script>
