@@ -8,11 +8,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use App\Http\Models\Purchase;
-use App\Http\Models\Venue;
 use App\Http\Models\Discount;
 use App\Http\Models\User;
 use App\Http\Models\Customer;
-use App\Http\Models\Show;
 use App\Http\Models\Ticket;
 use App\Http\Models\ShowTime;
 use App\Http\Models\Transaction;
@@ -173,7 +171,7 @@ class PurchaseController extends Controller{
                 //conditions to search
                 $status = [];
                 $purchases = [];
-                $data = Util::filter_purchases('PURCHASES', $input, '-7');
+                $data = Purchase::filter_options('PURCHASES', $input, '-7');
                 $where = $data['where'];
                 $search = $data['search'];                
                 //if user has permission to view

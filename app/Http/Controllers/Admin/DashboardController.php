@@ -6,11 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use App\Http\Models\Venue;
-use App\Http\Models\Show;
-use App\Http\Models\User;
-use App\Http\Models\Customer;
-use App\Http\Models\Util;
+use App\Http\Models\Purchase;
 
 class DashboardController extends Controller
 {
@@ -85,7 +81,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = $summary = $coupons = array();
             //conditions to search
-            $data = Util::filter_purchases('REPORTS', $input, '-7');
+            $data = Purchase::filter_options('REPORTS', $input, '-7');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
@@ -288,7 +284,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = $graph = array();
             //conditions to search
-            $data = (!empty($info))? $info : Util::filter_purchases('REPORTS', $input, '-7');
+            $data = (!empty($info))? $info : Purchase::filter_options('REPORTS', $input, '-7');
             $where = $data['where'];
             $where[] = ['discounts.id','!=',1];
             $search = $data['search'];
@@ -372,7 +368,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = array();
             //conditions to search
-                        $data = Util::filter_purchases('REPORTS', $input, '-30');
+            $data = Purchase::filter_options('REPORTS', $input, '-30');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Refunded'];
             $search = $data['search'];
@@ -412,7 +408,7 @@ class DashboardController extends Controller
             $data = $total = array();
             $current = date('Y-m-d H:i:s');
             //conditions to search
-            $data = Util::filter_purchases('REPORTS', $input, 0);
+            $data = Purchase::filter_options('REPORTS', $input, 0);
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $where[] = ['show_times.show_time','>',$current];
@@ -462,7 +458,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = array();
             //conditions to search
-            $data = Util::filter_purchases('REPORTS', $input, '-30');
+            $data = Purchase::filter_options('REPORTS', $input, '-30');
             $where = $data['where'];
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];

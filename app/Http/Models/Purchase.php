@@ -585,4 +585,175 @@ class Purchase extends Model
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
+    
+    /**
+     * Filter purchases according to conditions.
+     */
+    public static function filter_options($module,$input,$default_date_range=null)
+    {
+        $data = [ 'where'=>[ ['purchases.id','>',0] ],'search'=>[ 'venues'=>[],'shows'=>[] ] ];
+        
+        try {
+            //FILTER SEARCH INPUT
+            $data['search']['payment_types'] = Util::getEnumValues('purchases','payment_type');
+            $data['search']['ticket_types'] = Util::getEnumValues('tickets','ticket_type');
+            $data['search']['status'] = Util::getEnumValues('purchases','status');
+            $data['search']['channels'] = Util::getEnumValues('purchases','channel');
+            //if values
+            if(isset($input))
+            {
+                //search venue
+                $data['search']['venue'] = (!empty($input['venue']))? $input['venue'] : '';
+                if(!empty($input['venue']))
+                    $data['where'][] = ['shows.venue_id','=',$data['search']['venue']];                
+                
+                //search show
+                $data['search']['show'] = (!empty($input['show']))? $input['show'] : '';
+                if(!empty($input['show']))
+                    $data['where'][] = ['shows.id','=',$data['search']['show']];
+                //search showtime range
+                $data['search']['showtime_start_date'] = (!empty($input['showtime_start_date']))? $input['showtime_start_date'] : '';
+                $data['search']['showtime_end_date'] = (!empty($input['showtime_end_date']))? $input['showtime_end_date'] : '';
+                if(!empty($data['search']['showtime_start_date']) && !empty($data['search']['showtime_end_date']))
+                {
+                    $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'>=',date('Y-m-d',strtotime($data['search']['showtime_start_date']))];
+                    $data['where'][] = [DB::raw('DATE(show_times.show_time)'),'<=',date('Y-m-d',strtotime($data['search']['showtime_end_date']))];
+                }
+                //search showtime   
+                $data['search']['showtime_date'] = (!empty($input['showtime_date']))? $input['showtime_date'] : '';
+                if(!empty($data['search']['showtime_date']))
+                    $data['where'][] = ['show_times.show_time','=',date('Y-m-d H:i:s',strtotime($data['search']['showtime_date']))];
+                // showtime_id
+                $data['search']['showtime_id'] = (!empty($input['showtime_id']) && is_numeric($input['showtime_id']))? $input['showtime_id'] : '';
+                if(!empty($data['search']['showtime_id']))
+                    $data['where'][] = ['show_times.id','=',$data['search']['showtime_id']];
+                //search soldtime
+                if(!empty($default_date_range))
+                {
+                    $default_start_date = date('n/d/y', strtotime($default_date_range.' DAY')).' 12:00 AM';
+                    $default_end_date = date('n/d/y').' 11:59 PM';
+                }
+                else
+                    $default_start_date = $default_end_date = '';
+                $data['search']['soldtime_start_date'] = (isset($input['soldtime_start_date']))? $input['soldtime_start_date'] : $default_start_date;
+                $data['search']['soldtime_end_date'] = (isset($input['soldtime_end_date']))? $input['soldtime_end_date'] : $default_end_date;
+                if(!empty($data['search']['soldtime_start_date']) && !empty($data['search']['soldtime_end_date']))
+                {
+                    $data['where'][] = [DB::raw('purchases.created'),'>=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_start_date']))];
+                    $data['where'][] = [DB::raw('purchases.created'),'<=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_end_date']))];
+                }
+                //search payment types
+                $data['search']['payment_type'] = (!empty($input['payment_type']))? $input['payment_type'] : array_values($data['search']['payment_types']);
+                //search channel
+                $data['search']['channel'] = (!empty($input['channel']))? $input['channel'] : '';
+                if(!empty($input['channel']))
+                    $data['where'][] = ['purchases.channel','=',$data['search']['channel']];
+                //search date range
+                $data['search']['start_amount'] = (!empty($input['start_amount']) && is_numeric($input['start_amount']))? trim($input['start_amount']) : '';
+                $data['search']['end_amount'] = (!empty($input['end_amount']) && is_numeric($input['end_amount']))? trim($input['end_amount']) : '';
+                if(!empty($input['start_amount']))
+                    $data['where'][] = ['purchases.price_paid','>=',$data['search']['start_amount']];
+                if(!empty($input['end_amount']))
+                    $data['where'][] = ['purchases.price_paid','<=',$data['search']['end_amount']];
+                //search ticket_type
+                $data['search']['ticket_type'] = (!empty($input['ticket_type']))? $input['ticket_type'] : '';
+                if(!empty($input['ticket_type']))
+                    $data['where'][] = ['tickets.ticket_type','=',$data['search']['ticket_type']];
+                //search status
+                $data['search']['statu'] = (!empty($input['statu']))? $input['statu'] : '';
+                if(!empty($input['statu']))
+                    $data['where'][] = ['purchases.status','=',$data['search']['statu']];
+                //search user
+                if(!empty($input['user']))
+                {
+                    $data['search']['user'] = trim($input['user']);
+                    if(is_numeric($data['search']['user']))
+                        $data['where'][] = ['users.id','=',$data['search']['user']];
+                    else if(filter_var($data['search']['user'], FILTER_VALIDATE_EMAIL))
+                        $data['where'][] = ['users.email','=',$data['search']['user']];
+                    else
+                        $data['search']['user'] = '';
+                }
+                else
+                    $data['search']['user'] = '';
+                //search customer
+                if(!empty($input['customer']))
+                {
+                    $data['search']['customer'] = trim($input['customer']);
+                    if(is_numeric($data['search']['customer']))
+                        $data['where'][] = ['customers.id','=',$data['search']['customer']];
+                    else if(filter_var($data['search']['customer'], FILTER_VALIDATE_EMAIL))
+                        $data['where'][] = ['customers.email','=',$data['search']['customer']];
+                    else
+                        $data['search']['customer'] = '';
+                }
+                else
+                    $data['search']['customer'] = '';
+                //search order_id
+                $data['search']['order_id'] = (!empty($input['order_id']) && is_numeric($input['order_id']))? trim($input['order_id']) : '';
+                if(!empty($input['order_id']))
+                    $data['where'][] = ['purchases.id','=',$data['search']['order_id']];
+                //search authcode
+                $data['search']['authcode'] = (!empty($input['authcode']))? trim($input['authcode']) : '';
+                if(!empty($input['authcode']))
+                    $data['where'][] = ['transactions.authcode','=',$data['search']['authcode']];
+                //search refnum
+                $data['search']['refnum'] = (!empty($input['refnum']))? trim($input['refnum']) : '';
+                if(!empty($input['refnum']))
+                    $data['where'][] = ['transactions.refnum','=',$data['search']['refnum']];
+                
+                //search printing
+                if(isset($input['mirror_type']) && !empty($input['mirror_type']))
+                    $data['search']['mirror_type'] = $input['mirror_type'];
+                else
+                    $data['search']['mirror_type'] = 'previous_period';
+
+                if(isset($input['mirror_period']) && !empty($input['mirror_period']) && is_numeric($input['mirror_period']))
+                    $data['search']['mirror_period'] = $input['mirror_period'];
+                else
+                    $data['search']['mirror_period'] = 0;
+
+                if(isset($input['replace_chart']) && !empty($input['replace_chart']))
+                    $data['search']['replace_chart'] = 1;
+                else
+                    $data['search']['replace_chart'] = 1;
+
+                if(isset($input['coupon_report']) && !empty($input['coupon_report']))
+                    $data['search']['coupon_report'] = 1;
+                else
+                    $data['search']['coupon_report'] = 0;
+            }
+            
+            //FILTER SEARCH BY PERMISSIONS     
+            if(in_array('View',Auth::user()->user_type->getACLs()[$module]['permission_types']))
+            {
+                if(Auth::user()->user_type->getACLs()[$module]['permission_scope'] != 'All')
+                {
+                    if(!empty(Auth::user()->venues_edit) && count(explode(',',Auth::user()->venues_edit)))
+                    {
+                        $data['where'][] = [DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.create_user_id'),'=',Auth::user()->id];
+                        //add shows and venues for search
+                        $data['search']['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
+                        $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
+                    }
+                    else
+                        $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
+                }
+                //all
+                else
+                {
+                    //add shows and venues for search
+                    $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
+                    $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
+                }
+            }
+            else
+                $data['where'][] = ['purchases.id','=',0];
+            
+        } catch (Exception $ex) {
+            
+        } finally {
+            return $data;
+        }
+    }
 }
