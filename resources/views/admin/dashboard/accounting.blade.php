@@ -1,4 +1,4 @@
-@php $page_title='Refunds' @endphp
+@php $page_title='Accounting' @endphp
 @extends('layouts.admin')
 @section('title')
   {!! $page_title !!}
@@ -91,11 +91,11 @@
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN INCLUDE FILTER SEARCH-->
-    @includeIf('admin.purchases.filter', ['search'=>$search,'action'=>'/admin/dashboard/refunds'])
+    @includeIf('admin.purchases.filter', ['search'=>$search,'action'=>'/admin/dashboard/accounting'])
     <!-- END INCLUDE FILTER SEARCH-->
 @endsection
 
 @section('scripts')
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script src="/js/admin/dashboard/refunds.js" type="text/javascript"></script>
+<script src="/js/admin/dashboard/accounting.js" type="text/javascript"></script>
 @endsection

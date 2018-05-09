@@ -357,11 +357,11 @@ class DashboardController extends Controller
     }
 
     /**
-     * Show the refunds report on the dashboard.
+     * Show the accounting report on the dashboard.
      *
      * @return view
      */
-    public function refunds()
+    public function accounting()
     {
         try {
             //init
@@ -389,9 +389,9 @@ class DashboardController extends Controller
             $total = array( 'amount'=>array_sum(array_column($data,'amount')),
                             'tickets'=>array_sum(array_column($data,'tickets')));
             //return view
-            return view('admin.dashboard.refunds',compact('data','total','search'));
+            return view('admin.dashboard.accounting',compact('data','total','search'));
         } catch (Exception $ex) {
-            throw new Exception('Error Dashboard Refunds: '.$ex->getMessage());
+            throw new Exception('Error Dashboard Accounting: '.$ex->getMessage());
         }
     }
 

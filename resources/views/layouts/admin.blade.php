@@ -144,9 +144,9 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
-                                        <a href="/admin/dashboard/refunds" class="nav-link">
-                                            <i class="icon-briefcase"></i>
-                                            <span class="title">Refunds</span>
+                                        <a href="/admin/dashboard/accounting" class="nav-link">
+                                            <i class="icon-book-open"></i>
+                                            <span class="title">Accounting</span>
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
