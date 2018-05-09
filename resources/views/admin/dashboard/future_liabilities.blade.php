@@ -160,5 +160,6 @@
 @endsection
 
 @section('scripts')
+<script src="/js/admin/purchases/filter.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/future_liabilities.js" type="text/javascript"></script>
 @endsection

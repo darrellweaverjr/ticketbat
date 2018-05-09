@@ -171,5 +171,6 @@
 
 @section('scripts')
 <script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
+<script src="/js/admin/purchases/filter.js" type="text/javascript"></script>
 <script src="/js/admin/dashboard/coupons.js" type="text/javascript"></script>
 @endsection
