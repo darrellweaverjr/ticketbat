@@ -397,8 +397,8 @@ class Util extends Model
                 }
                 else
                     $default_start_date = $default_end_date = '';
-                $data['search']['soldtime_start_date'] = (!empty($input['soldtime_start_date']))? $input['soldtime_start_date'] : $default_start_date;
-                $data['search']['soldtime_end_date'] = (!empty($input['soldtime_end_date']))? $input['soldtime_end_date'] : $default_end_date;
+                $data['search']['soldtime_start_date'] = (isset($input['soldtime_start_date']))? $input['soldtime_start_date'] : $default_start_date;
+                $data['search']['soldtime_end_date'] = (isset($input['soldtime_end_date']))? $input['soldtime_end_date'] : $default_end_date;
                 if(!empty($data['search']['soldtime_start_date']) && !empty($data['search']['soldtime_end_date']))
                 {
                     $data['where'][] = [DB::raw('purchases.created'),'>=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_start_date']))];
