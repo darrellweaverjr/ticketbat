@@ -156,15 +156,9 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
-                                        <a href="/admin/dashboard/trend_pace" class="nav-link">
-                                            <i class="icon-bulb"></i>
-                                            <span class="title">Trend & Pace</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item start open">
-                                        <a href="/admin/dashboard/referrals" class="nav-link">
-                                            <i class="icon-note"></i>
-                                            <span class="title">Referrals</span>
+                                        <a href="/admin/dashboard/channels" class="nav-link">
+                                            <i class="icon-layers"></i>
+                                            <span class="title">Channels</span>
                                         </a>
                                     </li>
                                 </ul>

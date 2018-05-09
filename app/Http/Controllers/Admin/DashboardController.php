@@ -451,75 +451,11 @@ class DashboardController extends Controller
     }
 
     /**
-     * Show the Trend and Pace report on the dashboard.
-     *
-     * @return view
-     */
-    public function trend_pace()
-    {
-        try {
-            //init
-            $input = Input::all();
-            $data = $total = $graph = array();
-            //conditions to search
-            $data = Util::filter_purchases('REPORTS', $input, '-30');
-            $where = $data['where'];
-            $where[] = ['purchases.status','=','Active'];
-            $search = $data['search'];
-            //get all records
-            $data = DB::table('purchases')
-                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
-                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                    ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, show_times.show_time, venues.name AS venue_name,
-                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
-                                              WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 1 DAY)),0) AS tickets_one,
-                                    COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
-                                              WHERE stt.show_id = shows.id AND DATE(pp.created)=DATE_SUB(CURDATE(),INTERVAL 2 DAY)),0) AS tickets_two,
-                                    SUM(purchases.quantity) AS tickets,
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
-                                    SUM(ROUND(purchases.savings,2)) AS discounts,
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
-                                    SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
-                    ->where($where)
-                    ->orderBy('shows.name','show_times.show_time desc')->groupBy('show_times.id')->get()->toArray();
-            //info for the graph
-            $start = date('Y-m-d', strtotime('-1 year'));
-            $where[] = ['purchases.created','>=',$start];
-            $graph = DB::table('purchases')
-                    ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
-                    ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->select(DB::raw('DATE_FORMAT(purchases.created,"%m/%Y") AS purchased,
-                                    SUM(purchases.quantity) AS qty_tickets, COUNT(purchases.id) AS qty_purchases, SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
-                    ->where($where)
-                    ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
-                    ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
-            //calculate totals
-            $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
-                            'tickets'=>array_sum(array_column($data,'tickets')),
-                            'price_paids'=>array_sum(array_column($data,'price_paids')),
-                            'retail_prices'=>array_sum(array_column($data,'retail_prices')),
-                            'revenue'=>array_sum(array_column($data,'revenue')),
-                            'discounts'=>array_sum(array_column($data,'discounts')),
-                            'fees'=>array_sum(array_column($data,'fees')),
-                            'to_show'=>array_sum(array_column($data,'to_show')),
-                            'commissions'=>array_sum(array_column($data,'commissions')));
-            //return view
-            return view('admin.dashboard.trend_pace',compact('data','total','graph','search'));
-        } catch (Exception $ex) {
-            throw new Exception('Error Dashboard Trend and Pace: '.$ex->getMessage());
-        }
-    }
-
-    /**
      * Show the Referrals report on the dashboard.
      *
      * @return view
      */
-    public function referrals()
+    public function channels()
     {
         try {
             //init
@@ -531,17 +467,17 @@ class DashboardController extends Controller
             $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
             //search arrange by order url or show
-            if(isset($input) && isset($input['order']) && $input['order']=='url')
+            if(isset($input) && isset($input['order']) && $input['order']=='channel')
             {
-                $order = 'url';
-                $groupby = 'referral_url,show_name';
-                $orderby = 'referral_url,show_name';
+                $order = 'channel';
+                $groupby = 'channel,show_name';
+                $orderby = 'channel,show_name';
             }
             else
             {
                 $order = 'show';
-                $groupby = 'show_name,referral_url';
-                $orderby = 'show_name,referral_url';
+                $groupby = 'show_name,channel';
+                $orderby = 'show_name,channel';
             }
             $search['order'] = $order;
             $data = DB::table('purchases')
@@ -549,7 +485,7 @@ class DashboardController extends Controller
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
-                                    COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
+                                    purchases.channel,
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
@@ -559,27 +495,24 @@ class DashboardController extends Controller
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
-                    ->whereNotNull('purchases.referrer_url')
                     ->groupBy(DB::raw($groupby))->orderBy(DB::raw($orderby))->get()->toArray();
             //info for the graph
-            if($order=='url')
-                $groupby = 'referral_url';
+            if($order=='channel')
+                $groupby = 'channel';
             else
                 $groupby = 'shows.id';
-            $graph['url'] = DB::table('purchases')
+            $graph['channel'] = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->select(DB::raw('COALESCE(SUBSTRING_INDEX(SUBSTRING_INDEX(purchases.referrer_url, "://", -1),"/", 1), "-Not Registered-") AS referral_url,
+                    ->select(DB::raw('purchases.channel,
                                       SUM(purchases.processing_fee+purchases.commission_percent) AS amount'))
                     ->where($where)
-                    ->whereNotNull('purchases.referrer_url')
-                    ->groupBy('referral_url')->orderBy('amount','ASC')->distinct()->get()->toJson();
+                    ->groupBy('channel')->orderBy('amount','ASC')->distinct()->get()->toJson();
             $graph['show'] = DB::table('purchases')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
                     ->where($where)
-                    ->whereNotNull('purchases.referrer_url')
                     ->groupBy('show_name')->orderBy('amount','ASC')->distinct()->get()->toJson();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
@@ -592,9 +525,9 @@ class DashboardController extends Controller
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //return view
-            return view('admin.dashboard.referrals',compact('data','total','graph','search'));
+            return view('admin.dashboard.channels',compact('data','total','graph','search'));
         } catch (Exception $ex) {
-            throw new Exception('Error Dashboard Referrals: '.$ex->getMessage());
+            throw new Exception('Error Dashboard Channels: '.$ex->getMessage());
         }
     }
 

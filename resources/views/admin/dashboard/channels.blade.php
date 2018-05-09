@@ -1,4 +1,4 @@
-@php $page_title='Referrals' @endphp
+@php $page_title='Channels' @endphp
 @extends('layouts.admin')
 @section('title')
   {!! $page_title !!}
@@ -107,14 +107,14 @@
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
                <div class="portlet-body responsive">
-                   <div id="referral_chart_url"  data-info="{{$graph['url']}}" class="chart" style="height:250px;"></div>
+                   <div id="chart_channel"  data-info="{{$graph['channel']}}" class="chart" style="height:250px;"></div>
                </div>
            </div>
        </div>
        <div class="col-md-6">
            <div class="portlet light portlet-fit bordered">
                <div class="portlet-body responsive">
-                   <div id="referral_chart_show"  data-info="{{$graph['show']}}" class="chart" style="height:250px;"></div>
+                   <div id="chart_show"  data-info="{{$graph['show']}}" class="chart" style="height:250px;"></div>
                </div>
            </div>
        </div>
@@ -132,12 +132,12 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                @if($search['order']=='url')
+                                @if($search['order']=='channel')
                                 <th style="text-align:center">Venue</th>
                                 <th style="text-align:center">Show</th>
-                                <th style="text-align:center">Referral</th>
+                                <th style="text-align:center">Channel</th>
                                 @else
-                                <th style="text-align:center">Referral</th>
+                                <th style="text-align:center">Channel</th>
                                 <th style="text-align:center">Venue</th>
                                 <th style="text-align:center">Show</th>
                                 @endif
@@ -156,12 +156,12 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                @if($search['order']=='url')
+                                @if($search['order']=='channel')
                                 <td>{{$d->venue_name}}</td>
                                 <td>{{$d->show_name}}</td>
-                                <td>{{$d->referral_url}}</td>
+                                <td>{{$d->channel}}</td>
                                 @else
-                                <td>{{$d->referral_url}}</td>
+                                <td>{{$d->channel}}</td>
                                 <td>{{$d->venue_name}}</td>
                                 <td>{{$d->show_name}}</td>
                                 @endif
@@ -266,7 +266,7 @@
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <select class="form-control" name="order" style="width: 321px !important">
-                                                <option selected value="url">URL</option>
+                                                <option selected value="channel">Channel</option>
                                                 <option @if($search['order']=='show') selected @endif value="show">Show</option>
                                             </select>
                                         </div>
@@ -295,5 +295,5 @@
 <script src="{{config('app.theme')}}js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/amcharts.js" type="text/javascript"></script>
 <script src="{{config('app.theme')}}js/pie.js" type="text/javascript"></script>
-<script src="/js/admin/dashboard/referrals.js" type="text/javascript"></script>
+<script src="/js/admin/dashboard/channels.js" type="text/javascript"></script>
 @endsection

@@ -50,7 +50,7 @@ var TableDatatablesButtons = function () {
                     className: 'btn sbold bg-green'
                 }
             ];
-        MainDataTableCreator.init('tb_model',[ [0, "asc"] ],10,false,buttons);
+        MainDataTableCreator.init('tb_model',[ [2, "asc"] ],10,false,buttons);
         
         //PERSONALIZED FUNCTIONS
         //show_times_date
@@ -101,45 +101,53 @@ var TableDatatablesButtons = function () {
             }
         });
         // charts totals
-        var graph = $('#trend_pace_chart_qty').data('info');
-        var purchased=[],qty_tickets=[],qty_purchases=[],amount=[];
-        $.each(graph,function(k, v) {
-            purchased.push(v.purchased);
-            qty_tickets.push(parseFloat(v.qty_tickets));
-            qty_purchases.push(parseFloat(v.qty_purchases));
-            amount.push(parseFloat(v.amount));
+        var graph_channel = $('#chart_channel').data('info');
+        var graph_show = $('#chart_show').data('info');
+        var channels=[],shows=[];
+        $.each(graph_channel,function(k, v) {
+            channels.push({"channel":v.channel,"value":v.amount});
         });
-        // chart qty
-	$('#trend_pace_chart_qty').highcharts({
-            chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: '', x: -20 },
-            xAxis: { categories: purchased },
-            yAxis: { title: { text: 'Quantity' },
-                     plotLines: [{ value: 0, width: 1, color: '#808080' }]
-            },
-            tooltip: { valuePrefix: ' ' },
-            series: [{
-                    name: 'Sold Tickets',
-                    data: qty_tickets
-            }, {
-                    name: 'Qty Purchases',
-                    data: qty_purchases
-            }]
-	});
-        //chart money
-        $('#trend_pace_chart_money').highcharts({
-            chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: '', x: -20 },
-            xAxis: { categories: purchased },
-            yAxis: { title: { text: 'Dollars ($)' },
-                     plotLines: [{ value: 0, width: 1, color: '#808080' }]
-            },
-            tooltip: { valuePrefix: '$ ' },
-            series: [{
-                    name: 'Gross Profit',
-                    data: amount
-            }]
-	});
+        $.each(graph_show,function(k, v) {
+            shows.push({"show":v.show_name,"value":v.amount});
+        });
+        // chart channels
+	AmCharts.makeChart("chart_channel", {
+            "type": "pie",
+            "fontFamily": 'Open Sans',
+            "color":    '#888',
+            "dataProvider": channels,
+            "valueField": "value",
+            "titleField": "channel",
+            "outlineAlpha": 0.4,
+            "depth3D": 15,
+            "balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
+            "angle": 30,
+            "exportConfig": {
+                menuItems: [{
+                    icon: '/lib/3/images/export.png',
+                    format: 'png'
+                }]
+            }
+        });
+        // chart show
+	AmCharts.makeChart("chart_show", {
+            "type": "pie",
+            "fontFamily": 'Open Sans',
+            "color":    '#888',
+            "dataProvider": shows,
+            "valueField": "value",
+            "titleField": "show",
+            "outlineAlpha": 0.4,
+            "depth3D": 15,
+            "balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
+            "angle": 30,
+            "exportConfig": {
+                menuItems: [{
+                    icon: '/lib/3/images/export.png',
+                    format: 'png'
+                }]
+            }
+        });
     }
     return {
         //main function to initiate the module
