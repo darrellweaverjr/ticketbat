@@ -78,7 +78,7 @@
                         </div>
                         <div class="panel-body" style="margin: 0px 10px -20px 10px">
                             @foreach($t['tickets'] as $tt)
-                            <div class="row text-center " style="padding:10px;margin-bottom:10px;border-style: double;">
+                            <div class="row text-center " style="padding:10px;margin-bottom:10px;border-style:outset;">
                                 <h3>
                                     <b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b>
                                     @if(!empty($tt->max_available))<label class="label label-danger bold">{{$tt->max_available}} left</label>@endif
@@ -208,7 +208,7 @@
                         </center>
 
                         <div class="row text-center" style="padding:20px">
-                            <button type="button" id="btn_check_pay" class="btn btn-primary btn-lg btn-block uppercase">Check form and process payment <i class="fa fa-money"></i></button>
+                            <button type="button" id="btn_check_pay" class="btn btn-primary btn-lg btn-block uppercase" style="border-style:outset;">Check form and process payment <i class="fa fa-money"></i></button>
                         </div>
 
                     </div>
