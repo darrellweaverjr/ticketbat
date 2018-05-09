@@ -460,8 +460,9 @@ html, body {
 #pos-ticket-wrapper {
     background-color: #f4f4f5 !important;
 }
-#pos-ticket-wrapper div, #pos_tickets > div > div {
-    background-color: transparent !important;
+#pos-ticket-wrapper div.row {
+    background-color: #f4f4f5 !important;
+    color:black !important;
 }
 #pos-ticket-wrapper > h4 {
     background-color: #e5e5e5;
