@@ -368,26 +368,58 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = array();
             //conditions to search
-            $data = Purchase::filter_options('REPORTS', $input, '-30');
+            $data = Purchase::filter_options('REPORTS', $input, '-7');
             $where = $data['where'];
-            $where[] = ['purchases.status','=','Refunded'];
             $search = $data['search'];
             //get all records
             $data = DB::table('purchases')
+                        ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                        ->join('users', 'users.id', '=' ,'purchases.user_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
-                        ->select(DB::raw('purchases.id, COALESCE(transactions.card_holder,CONCAT(customers.first_name," ",customers.last_name)) AS card_holder,
-                                          COALESCE(transactions.refnum,0) AS refnum, COALESCE(transactions.amount,purchases.price_paid,0) AS amount, COALESCE(transactions.authcode,0) AS authcode,
-                                          shows.name AS show_name, show_times.show_time, purchases.status AS status, venues.name AS venue_name, purchases.payment_type,
-                                          purchases.quantity AS tickets, purchases.transaction_id, purchases.ticket_type, purchases.created, purchases.note '))
+                        ->leftJoin('transaction_refunds', 'purchases.id', '=' ,'transaction_refunds.purchase_id')
+                        ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, 
+                                          purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
+                                          ( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
+                                                 WHEN (purchases.payment_type="None") THEN "Comp."
+                                                 ELSE purchases.payment_type END ) AS method,
+                                          transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
+                                          COUNT(purchases.id) AS purchases, purchases.status,
+                                          SUM(purchases.quantity) AS tickets,  SUM(ROUND(purchases.price_paid,2)) AS price_paid,
+                                          COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
+                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid) , 0)  ) AS refunds, 
+                                          SUM( IF(purchases.status<>"Refunded", ROUND(purchases.commission_percent+purchases.processing_fee,2) , 0)  ) AS profit,
+                                          IF(purchases.inclusive_fee>0, 
+                                                SUM(ROUND(purchases.retail_price-purchases.savings-purchases.processing_fee,2)), 
+                                                SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
+                                          SUM(ROUND(purchases.savings,2)) AS discounts,
+                                          SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                          SUM( IF(purchases.status<>"Refunded", ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent,2) , 0)  ) AS to_show,
+                                          SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
+                        ->where(function($query) {
+                            $query->whereNull('transaction_refunds.id')
+                                  ->orWhere('transaction_refunds.result','=','Approved');
+                        })
+                        ->where(function($query) {
+                            $query->where('purchases.status','=','Active')
+                                  ->orWhere('purchases.status','=','Refunded')
+                                  ->orWhere('purchases.status','like','Pending%');
+                        })
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
             //calculate totals
-            $total = array( 'amount'=>array_sum(array_column($data,'amount')),
-                            'tickets'=>array_sum(array_column($data,'tickets')));
+            $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
+                            'tickets'=>array_sum(array_column($data,'tickets')),
+                            'profit'=>array_sum(array_column($data,'profit')),
+                            'price_paid'=>array_sum(array_column($data,'price_paid')),
+                            'fees'=>array_sum(array_column($data,'fees')),
+                            'to_show'=>array_sum(array_column($data,'to_show')),
+                            'refunds'=>array_sum(array_column($data,'refunds')),
+                            'commissions'=>array_sum(array_column($data,'commissions')));
             //return view
             return view('admin.dashboard.accounting',compact('data','total','search'));
         } catch (Exception $ex) {

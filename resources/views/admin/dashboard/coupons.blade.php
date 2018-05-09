@@ -85,7 +85,7 @@
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 purple">
                 <div class="visual">
-                    <i class="fa fa-shopping-cart"></i>
+                    <i class="fa fa-bank"></i>
                 </div>
                 <div class="details">
                     <div class="number">
