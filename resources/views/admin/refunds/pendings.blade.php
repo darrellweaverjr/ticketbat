@@ -101,12 +101,12 @@
                                     <input type="radio" class="form-control" name="type" value="full_transaction" />All purchases that matches this transaction.
                                     <span></span>
                                 </label><hr>
-                                <label class="mt-radio mt-radio-single mt-radio-outline col-md-9">
-                                    <input type="radio" name="type" value="custom_amount" />Specific amount from this selected purchase:
+                                <label class="mt-radio mt-radio-single mt-radio-outline col-md-9" disabled="true">
+                                    <input type="radio" name="type" disabled="true" value="custom_amount" />Specific amount from this selected purchase:
                                     <span></span>
                                 </label>
                                 <div class="col-md-3">
-                                <input type="number" class="form-control" name="amount" value=""/>
+                                <input type="number" class="form-control" disabled="true" name="amount" value=""/>
                                 </div>
                             </div>
                         </div>
