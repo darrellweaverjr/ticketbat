@@ -369,6 +369,10 @@ class DashboardController extends Controller
             $data = $total = array();
             //conditions to search
             $data = Purchase::filter_options('REPORTS', $input, '-7');
+            //enable only valid purchase status
+            foreach ($data['search']['status'] as $k=>$v)
+                if($v!='Active' && $v!='Refunded' && !(strpos($v,'Pending')===0))
+                    unset($data['search']['status'][$k]);
             $where = $data['where'];
             $search = $data['search'];
             //get all records
