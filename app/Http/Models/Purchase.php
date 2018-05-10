@@ -644,6 +644,7 @@ class Purchase extends Model
                 }
                 //search payment types
                 $data['search']['payment_type'] = (!empty($input['payment_type']))? $input['payment_type'] : array_values($data['search']['payment_types']);
+                $data['where'][] =  [DB::raw('purchases.payment_type IN ("'.implode('","',$data['search']['payment_type']).'") AND purchases.id'),'>',0];
                 //search channel
                 $data['search']['channel'] = (!empty($input['channel']))? $input['channel'] : '';
                 if(!empty($input['channel']))
