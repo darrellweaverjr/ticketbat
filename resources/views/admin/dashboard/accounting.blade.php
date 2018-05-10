@@ -118,7 +118,8 @@
                             <tr>
                                 <th class="all" style="text-align:center">Orders</th>
                                 <th class="all" style="text-align:center">Customer</th>
-                                <th class="all" style="text-align:center">Venue<br>Show</th>
+                                <th class="all" style="text-align:center">Venue</th>
+                                <th class="all" style="text-align:center">Show</th>
                                 <th class="all" style="text-align:center">Show<br>Date</th>
                                 <th class="all" style="text-align:center">Trans.<br>Date</th>
                                 <th class="all" style="text-align:center">Qty<br>Tcks</th>
@@ -143,7 +144,8 @@
                             <tr @if(strpos($d->status,'Pending') === 0) class="warning" @endif >
                                 <td>{{$d->id}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>
-                                <td style="text-align:center">{{$d->venue_name}}<br><b><small>"{{$d->show_name}}"</small></b></td>
+                                <td style="text-align:center">{{$d->venue_name}}</td>
+                                <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->created)}}">{{date('n/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
@@ -166,7 +168,8 @@
                             <tr class="danger">
                                 <td>{{$d->id}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>
-                                <td style="text-align:center">{{$d->venue_name}}<br><b><small>"{{$d->show_name}}"</small></b></td>
+                                <td style="text-align:center">{{$d->venue_name}}</td>
+                                <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->refunded)}}">{{date('n/d/Y g:ia',strtotime($d->refunded))}}</td>
                                 <td style="text-align:center">({{number_format($d->tickets)}})</td>
