@@ -392,17 +392,18 @@ class DashboardController extends Controller
                                                  WHEN (purchases.payment_type="None") THEN "Comp."
                                                  ELSE purchases.payment_type END ) AS method,
                                           transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                          COUNT(purchases.id) AS purchases, purchases.status,
+                                          COUNT(purchases.id) AS purchases, purchases.status, 
                                           SUM(purchases.quantity) AS tickets,  SUM(ROUND(purchases.price_paid,2)) AS price_paid,
                                           COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
-                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid) , 0)  ) AS refunds, 
-                                          SUM( IF(purchases.status<>"Refunded", ROUND(purchases.commission_percent+purchases.processing_fee,2) , 0)  ) AS profit,
+                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid,0), 0 ) ) AS refunds, 
+                                          SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
                                           IF(purchases.inclusive_fee>0, 
                                                 SUM(ROUND(purchases.retail_price-purchases.savings-purchases.processing_fee,2)), 
-                                                SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
+                                                SUM(ROUND(purchases.retail_price-purchases.savings,2)) ) AS revenue,
                                           SUM(ROUND(purchases.savings,2)) AS discounts,
-                                          SUM(ROUND(purchases.processing_fee,2)) AS fees,
-                                          SUM( IF(purchases.status<>"Refunded", ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent,2) , 0)  ) AS to_show,
+                                          SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
+                                          SUM(ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent,2)) AS to_show,
                                           SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->where(function($query) {
@@ -418,10 +419,13 @@ class DashboardController extends Controller
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
+                            'revenue'=>array_sum(array_column($data,'revenue')),
                             'profit'=>array_sum(array_column($data,'profit')),
                             'price_paid'=>array_sum(array_column($data,'price_paid')),
-                            'fees'=>array_sum(array_column($data,'fees')),
+                            'fees_incl'=>array_sum(array_column($data,'fees_incl')),
+                            'fees_over'=>array_sum(array_column($data,'fees_over')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
+                            'discounts'=>array_sum(array_column($data,'discounts')),
                             'refunds'=>array_sum(array_column($data,'refunds')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //return view

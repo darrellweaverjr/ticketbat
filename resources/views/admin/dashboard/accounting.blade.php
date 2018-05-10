@@ -28,7 +28,7 @@
                         <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </div>
                     <div class="desc">Tickets Sold
-                        <br>Purchases: <span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span>
+                        <br>Transactions: <span data-counter="counterup" data-value="{{number_format(count($data))}}">0</span>
                     </div>
                 </div>
             </a>
@@ -67,7 +67,8 @@
                 <div class="details">
                     <div class="number"></div>                        
                     <div class="desc">
-                        Fees: $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span>
+                        Fees Incl.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl'],2)}}"></span>
+                        <br>Fees Over.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_over'],2)}}"></span>
                         <br>Commis.: $ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}"></span>
                     </div>
                 </div>
@@ -119,17 +120,16 @@
                                 <th class="all" style="text-align:center">Customer</th>
                                 <th class="all" style="text-align:center">Venue<br>Show</th>
                                 <th class="all" style="text-align:center">Show<br>Date</th>
-                                <th class="all" style="text-align:center">Sold<br>Date</th>
-                                <th class="all" style="text-align:center">Qty<br>Sold</th>
+                                <th class="all" style="text-align:center">Trans.<br>Date</th>
+                                <th class="all" style="text-align:center">Qty<br>Tcks</th>
                                 <th class="all" style="text-align:center">Base</th>
                                 <th class="all" style="text-align:center">Comm.</th>
-                                <th class="all" style="text-align:center">P.Fees</th>
+                                <th class="all" style="text-align:center">Fee<br>Incl.</th>
+                                <th class="all" style="text-align:center">Fee<br>Over</th>
                                 <th class="all" style="text-align:center">Disc.</th>
-                                <th class="all" style="text-align:center">Total<br>Paid</th>
+                                <th class="all" style="text-align:center">Total<br>Amount</th>
                                 <th class="all" style="text-align:center">Venue<br>Rev.</th>
                                 <th class="all" style="text-align:center">TB<br>Rev.</th>
-                                <th class="all" style="text-align:center">Refund</th>
-                                <th class="all" style="text-align:center">Ref.On</th>
                                 <th class="none" style="text-align:left">Coupon</th>
                                 <th class="none" style="text-align:left">Method</th>
                                 <th class="none" style="text-align:left">Cardholder</th>
@@ -140,8 +140,8 @@
                         </thead>
                         <tbody>
                             @foreach($data as $d)
-                            <tr @if($d->status=='Refunded') class="danger" @elseif(strpos($d->status,'Pending') === 0) class="warning" @endif >
-                                <td>{{$d->id}}<br><b>{{$d->status}}</b></td>
+                            <tr @if(strpos($d->status,'Pending') === 0) class="warning" @endif >
+                                <td>{{$d->id}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>
                                 <td style="text-align:center">{{$d->venue_name}}<br><b><small>"{{$d->show_name}}"</small></b></td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
@@ -149,13 +149,12 @@
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->fees,2)}} @if($d->inclusive_fee>0) <i class="fa fa-info-circle"></i> @endif</td>
-                                <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
+                                <td style="text-align:right">($ {{number_format($d->discounts,2)}})</td>
                                 <td style="text-align:right">$ {{number_format($d->price_paid,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                                 <td style="text-align:right"><b>$ {{number_format($d->profit,2)}}</b></td>
-                                <td style="text-align:right">( $ {{number_format($d->refunds,2)}} )</td>
-                                <td style="text-align:center" data-order="{{strtotime($d->refunded)}}">@if($d->status=='Refunded'){{date('n/d/Y g:ia',strtotime($d->refunded))}} @endif</td>
                                 <td style="text-align:center">{{$d->code}}</td>
                                 <td style="text-align:center">{{$d->method}}</td>
                                 <td style="text-align:center">{{$d->card_holder}}</td>
@@ -163,6 +162,30 @@
                                 <td style="text-align:center">{{$d->refnum}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
                             </tr>
+                            @if($d->status=='Refunded')
+                            <tr class="danger">
+                                <td>{{$d->id}}</td>
+                                <td style="text-align:center">{{$d->name}}</td>
+                                <td style="text-align:center">{{$d->venue_name}}<br><b><small>"{{$d->show_name}}"</small></b></td>
+                                <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
+                                <td style="text-align:center" data-order="{{strtotime($d->refunded)}}">{{date('n/d/Y g:ia',strtotime($d->refunded))}}</td>
+                                <td style="text-align:center">({{number_format($d->tickets)}})</td>
+                                <td style="text-align:right">($ {{number_format($d->revenue,2)}})</td>
+                                <td style="text-align:right">($ {{number_format($d->commissions,2)}})</td>
+                                <td style="text-align:right">($ {{number_format($d->fees_incl,2)}})</td>
+                                <td style="text-align:right">($ {{number_format($d->fees_over,2)}})</td>
+                                <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
+                                <td style="text-align:right">($ {{number_format($d->refunds,2)}})</td>
+                                <td style="text-align:right">($ {{number_format($d->to_show,2)}})</td>
+                                <td style="text-align:right"><b>($ {{number_format($d->profit,2)}})</b></td>
+                                <td style="text-align:center">{{$d->code}}</td>
+                                <td style="text-align:center">{{$d->method}}</td>
+                                <td style="text-align:center">{{$d->card_holder}}</td>
+                                <td style="text-align:center">{{$d->authcode}}</td>
+                                <td style="text-align:center">{{$d->refnum}}</td>
+                                <td style="text-align:center">...{{$d->last_4}}</td>
+                            </tr>
+                            @endif
                             @endforeach
                         </tbody>
                     </table>
