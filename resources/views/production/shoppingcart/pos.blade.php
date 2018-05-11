@@ -73,17 +73,17 @@
                     <!-- BEGIN TICKETS -->
                     @foreach($tickets as $index=>$t)
                     <div class="panel {{$t['class']}}">
-                        <div class="p-3">
-                            <span class="panel-title {{$t['class']}} lh-25"><h3><b>{{$t['type']}}</b></h3></span>
+                        <div class="panel-heading1 p-3" style="margin-bottom:-15px">
+                            <h4 class="panel-title {{$t['class']}} event-ticket-type"><strong class="lh-25">{{$t['type']}}</strong></h4>
                         </div>
-                        <div class="panel-body" style="margin: 0px 10px -20px 10px">
+                        <div class="panel-body" style="margin: 0px 10px -15px 10px">
                             @foreach($t['tickets'] as $tt)
-                            <div class="row text-center " style="padding:10px;margin-bottom:10px;border-style:outset;">
-                                <h3>
+                            <div class="row text-center" style="margin-bottom:10px;border-style:outset;">
+                                <h4>
                                     <b>@if($tt->retail_price>0) ${{$tt->retail_price}} @else FREE @endif</b>
                                     @if(!empty($tt->max_available))<label class="label label-danger bold">{{$tt->max_available}} left</label>@endif
                                     @if($tt->title!='None') - <b><i>{{$tt->title}}</i></b>@endif
-                                </h3>
+                                </h4>
                                 @if(isset($tt->max_available) && $tt->max_available<1)
                                 <div style="background-color:red!important;font-size:24px;color:white"><b>SOLD OUT</b></div>
                                 @else
