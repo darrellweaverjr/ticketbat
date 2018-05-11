@@ -48,6 +48,7 @@ class ReportSalesController extends Controller{
             $this->start_date = $this->report_date = date($date_format,strtotime('now'));
             //create report
             $report = ['sales'=>[ $this->report_sales('showtime',$show_time_id,'Event Totals') ]];
+            $report['sales'][0]['table_financial'] = null;
             $files = $this->create_files($report,'Event Totals');
             //send the email
             if(!empty($files))
@@ -186,7 +187,7 @@ class ReportSalesController extends Controller{
                 else if($type=='showtime')
                     $table->where('show_times.id','=',$e_id);
             }
-            $table = $types->distinct()->get()->toArray();  
+            $table = $table->distinct()->get()->toArray();  
             
         } catch (Exception $ex) {
             return [];

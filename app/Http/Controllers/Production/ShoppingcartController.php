@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Command\ReportSalesController;
 use App\Http\Models\Image;
 use App\Http\Models\Shoppingcart;
 use App\Http\Models\Purchase;
@@ -728,13 +729,13 @@ class ShoppingcartController extends Controller
         try {
             $input = Input::all();
             $receipts = [];
-            if(!empty($input['show_time_id']) && !empty($input['email']) && filter_var($input['email'], FILTER_VALIDATE_EMAIL))
+            if(!empty($input['show_time_id']) && !empty($input['report']) && filter_var($input['report'], FILTER_VALIDATE_EMAIL))
             {
                 $showtime = ShowTime::find($input['show_time_id']);
                 if($showtime)
                 {
                     $control = new ReportSalesController(0,0);
-                    $response = $control->event($input['show_time_id'],$input['email']);
+                    $response = $control->event($input['show_time_id'],$input['report']);
                     if($response)
                         return ['success'=>true,'msg'=>'The email was sent successfully!'];
                     return ['success'=>false,'msg'=>'The system could not sent the report to that email!'];
