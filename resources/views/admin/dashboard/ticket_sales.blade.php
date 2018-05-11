@@ -77,9 +77,11 @@
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span></div>
-                    <div class="desc">Fee Revenue</div>
+                    <div class="number"></div>
+                    <div class="desc">
+                        Fees Incl.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl'],2)}}"></span>
+                        <br>Fees Over.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_over'],2)}}"></span>
+                    </div>
                 </div>
             </a>
         </div>
@@ -123,7 +125,8 @@
                     <th style='text-align:right'>DISCOUNTS</th>
                     <th style='text-align:right'>TO SHOW</th>
                     <th style='text-align:right'>COMMISSIONS</th>
-                    <th style='text-align:right'>P.FEES</th>
+                    <th style='text-align:right'>FEES INCL</th>
+                    <th style='text-align:right'>FEES OVER</th>
                     <th style='text-align:right'>GROSS PROFIT</th>
                 </tr>
             </thead>
@@ -137,7 +140,8 @@
                     <td style="text-align:right">$ {{number_format($d['discounts'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['to_show'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['commissions'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($d['fees'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['fees_incl'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['fees_over'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['profit'],2)}}</td>
                 </tr>
                 @endforeach
@@ -173,7 +177,8 @@
                     <th style="text-align:center">Total<br>Revenue</th>
                     <th style="text-align:center">To<br>Show</th>
                     <th style="text-align:center">Comm.</th>
-                    <th style="text-align:center">P.Fees</th>
+                    <th style="text-align:center">Fees Incl</th>
+                    <th style="text-align:center">Fees Over</th>
                     <th style="text-align:center">Gross<br>Profit</th>
                 </tr>
             </thead>
@@ -191,8 +196,9 @@
                     <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
-                    <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
-                    <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees,2)}}</b></td>
+                    <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
+                    <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees_incl+$d->fees_over,2)}}</b></td>
                 </tr>
                 @endforeach
             </tbody>
@@ -204,8 +210,9 @@
                     <td style="text-align:right">$ {{number_format($coupons['total']['revenue'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['to_show'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['commissions'],2)}}</td>
-                    <td style="text-align:right">$ {{number_format($coupons['total']['fees'],2)}}</td>
-                    <td style="text-align:right"><b>$ {{number_format($coupons['total']['commissions']+$coupons['total']['fees'],2)}}</b></td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['fees_incl'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['fees_over'],2)}}</td>
+                    <td style="text-align:right"><b>$ {{number_format($coupons['total']['commissions']+$coupons['total']['fees_incl']+$coupons['total']['fees_over'],2)}}</b></td>
                 </tr>
             </tfoot>
         </table>
@@ -222,31 +229,40 @@
                     <div class="tools"> </div>
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover" id="tb_model">
+                    <table class="table table-striped table-bordered table-hover dt-responsive" id="tb_model">
                         <thead>
                             <tr>
-                                <th style="text-align:center">Sales Details</th>
-                                <th style="text-align:center">Customer</th>
-                                <th style="text-align:center">Venue</th>
-                                <th style="text-align:center">Show</th>
-                                <th style="text-align:center">Show<br>Date</th>
-                                <th style="text-align:center">Sold<br>Date</th>
-                                <th style="text-align:center">Qty<br>Sold</th>
-                                <th style="text-align:center">Total<br>Revenue</th>
+                                <th class="all" style="text-align:center">Orders</th>
+                                <th class="none">Status</th>
+                                <th class="all" style="text-align:center">Customer</th>
+                                <th class="none">Email</th>
+                                <th class="all" style="text-align:center">Venue</th>
+                                <th class="all" style="text-align:center">Show</th>
+                                <th class="all" style="text-align:center">Show<br>Date</th>
+                                <th class="all" style="text-align:center">Sold<br>Date</th>
+                                <th class="all" style="text-align:center">Qty<br>Sold</th>
+                                <th class="all" style="text-align:center">Total<br>Revenue</th>
                                 @if(Auth::user()->user_type_id != 5)
-                                <th style="text-align:center">Discounts</th>
+                                <th class="all" style="text-align:center">Disc.</th>
                                 @endif
-                                <th style="text-align:center">To<br>Show</th>
-                                <th style="text-align:center">@if(Auth::user()->user_type_id != 5) Commiss. @else TB Comm.<br>Expense @endif</th>
-                                <th style="text-align:center">P.Fees</th>
-                                <th style="text-align:center">@if(Auth::user()->user_type_id != 5) Gross<br>Profit @else TB Retains @endif</th>
+                                <th class="all" style="text-align:center">To<br>Show</th>
+                                <th class="all" style="text-align:center">@if(Auth::user()->user_type_id != 5) Comm. @else TB Comm.<br>Exp. @endif</th>
+                                <th class="all" style="text-align:center">Fee<br>Incl</th>
+                                <th class="all" style="text-align:center">Fee<br>Over</th>
+                                <th class="all" style="text-align:center">@if(Auth::user()->user_type_id != 5) Gross<br>Profit @else TB Retain @endif</th>
+                                <th class="none">Coupon</th>
+                                <th class="none">Ticket Type</th>
+                                <th class="none">Method</th>
+                                <th class="none">Channel</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data as $d)
-                            <tr>
-                                <td>Order#: <b>{{$d->id}}</b>, Code: <b>{{$d->code}}</b>,<br> Ticket Type: <b>{{$d->ticket_type}}</b>, Method: <b>{{$d->method}}</b></td>
-                                <td style="text-align:center"><b>{{$d->name}}</b>, <small><i><b><a href="mailto:{{$d->email}}" target="_top">{{$d->email}}</a></b></i></small></td>
+                            <tr @if($d->status != "Active") class="warning" @endif >
+                                <td>{{$d->id}}</td>
+                                <td>{{$d->status}}</td>
+                                <td style="text-align:center">{{$d->name}}</td>
+                                <td style="text-align:center"><a href="mailto:{{$d->email}}" target="_top">{{$d->email}}</a></td>
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('m/d/Y g:ia',strtotime($d->show_time))}}</td>
@@ -258,8 +274,13 @@
                                 @endif
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
                                 <td style="text-align:right"><b>$ {{number_format($d->profit,2)}}</b></td>
+                                <td style="text-align:center">{{$d->code}}</td>
+                                <td style="text-align:center">{{$d->ticket_type}} - {{$d->title}}</td>    
+                                <td style="text-align:center">{{$d->method}}</td>
+                                <td style="text-align:center">{{$d->channel}}</td>
                             </tr>
                             @endforeach
                         </tbody>

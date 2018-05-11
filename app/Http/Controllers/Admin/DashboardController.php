@@ -82,8 +82,11 @@ class DashboardController extends Controller
             $data = $total = $summary = $coupons = array();
             //conditions to search
             $data = Purchase::filter_options('REPORTS', $input, '-7');
+            //enable only valid purchase status
+            foreach ($data['search']['status'] as $k=>$v)
+                if($v!='Active' && !(strpos($v,'Pending')===0))
+                    unset($data['search']['status'][$k]);
             $where = $data['where'];
-            $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
             //coupon's report
             if(!empty($search['coupon_report']))
@@ -91,6 +94,7 @@ class DashboardController extends Controller
             //get all records
             $data = DB::table('purchases')
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                        ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                         ->join('users', 'users.id', '=' ,'purchases.user_id')
@@ -101,18 +105,22 @@ class DashboardController extends Controller
                                           tickets.ticket_type, purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
                                           ( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
                                                  WHEN (purchases.payment_type="None") THEN "Comp."
-                                                 ELSE purchases.payment_type END ) AS method, purchases.channel,
-                                          COUNT(purchases.id) AS purchases,
-                                          SUM(purchases.quantity) AS tickets,
+                                                 ELSE purchases.payment_type END ) AS method, purchases.channel, packages.title,
+                                          COUNT(purchases.id) AS purchases, purchases.status,
+                                          SUM(purchases.quantity) AS tickets, 
                                           SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
                                           SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
                                           SUM(ROUND(purchases.savings,2)) AS discounts,
-                                          SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                          SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
                                           SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                           SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
+                        ->where(function($query) {
+                            $query->where('purchases.status','=','Active')
+                                  ->orWhere('purchases.status','like','Pending%');
+                        })
                         ->orderBy('purchases.created','DESC')->groupBy('purchases.id')
-                        ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
                         ->get()->toArray();
             //calculate totals
             function calc_totals($data)
@@ -122,7 +130,8 @@ class DashboardController extends Controller
                             'profit'=>array_sum(array_column($data,'profit')),
                             'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
-                            'fees'=>array_sum(array_column($data,'fees')),
+                            'fees_incl'=>array_sum(array_column($data,'fees_incl')),
+                            'fees_over'=>array_sum(array_column($data,'fees_over')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             }
@@ -203,8 +212,7 @@ class DashboardController extends Controller
                 else $title = 'Current <i>'.date('m/d/Y',strtotime($search['soldtime_start_date'])).' to '.date('m/d/Y',strtotime($search['soldtime_end_date'])).'</i>';
 
                 $summary_table = [];
-                $subtotals = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
-                $consignment = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees'=>0,'profit'=>0];
+                $subtotals = $consignment = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees_incl'=>0,'fees_over'=>0,'profit'=>0];
                 $summary_info = DB::table('purchases')
                             ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
@@ -221,18 +229,21 @@ class DashboardController extends Controller
                                               SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
                                               SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
                                               SUM(ROUND(purchases.savings,2)) AS discounts,
-                                              SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                              SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
+                                              SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
                                               SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                               SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                             ->where($where)
-                            ->groupBy('channel','method')
-                            ->orderBy('channel','method')
-                            ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
+                            ->where(function($query) {
+                                $query->where('purchases.status','=','Active')
+                                      ->orWhere('purchases.status','like','Pending%');
+                            })
+                            ->groupBy('channel','method')->orderBy('channel','method')
                             ->get()->toArray();
                 foreach ($summary_info as $d)
                 {
                     $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'revenue'=>$d->revenue,'discounts'=>$d->discounts,
-                                                'to_show'=>$d->to_show,'commissions'=>$d->commissions,'fees'=>$d->fees,'profit'=>$d->profit];
+                                                'to_show'=>$d->to_show,'commissions'=>$d->commissions,'fees_incl'=>$d->fees_incl,'fees_over'=>$d->fees_over,'profit'=>$d->profit];
                     if($d->channel == 'Consignment')
                         $consignment = calc_totals([$consignment,$current]);
                     else
@@ -263,6 +274,10 @@ class DashboardController extends Controller
                                     SUM(purchases.quantity) AS qty,
                                     SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
                     ->where($where)
+                    ->where(function($query) {
+                        $query->where('purchases.status','=','Active')
+                              ->orWhere('purchases.status','like','Pending%');
+                    })
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
                     ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();
             //return view
@@ -284,7 +299,16 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = $graph = array();
             //conditions to search
-            $data = (!empty($info))? $info : Purchase::filter_options('REPORTS', $input, '-7');
+            if(!empty($info))
+                $data = $info;
+            else
+            {
+                $data = Purchase::filter_options('REPORTS', $input, '-7');
+                //enable only valid purchase status
+                foreach ($data['search']['status'] as $k=>$v)
+                    if($v!='Active' && !(strpos($v,'Pending')===0))
+                        unset($data['search']['status'][$k]);
+            }
             $where = $data['where'];
             $where[] = ['discounts.id','!=',1];
             $search = $data['search'];
@@ -308,12 +332,14 @@ class DashboardController extends Controller
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
                                     SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                    SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
+                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
-                    ->where(function($query) use ($search) {
+                    ->where(function($query) {
                         $query->where('purchases.status','=','Active')
+                              ->orWhere('purchases.status','like','Pending%')
                               ->orWhereNull('purchases.id');
                     })
                     ->groupBy('venues.id','shows.id','discounts.id')->orderBy('tickets','DESC')->orderBy('discounts.code','ASC')->orderBy('show_name','ASC');
@@ -339,7 +365,8 @@ class DashboardController extends Controller
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
                             'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
-                            'fees'=>array_sum(array_column($data,'fees')),
+                            'fees_incl'=>array_sum(array_column($data,'fees_incl')),
+                            'fees_over'=>array_sum(array_column($data,'fees_over')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //descriptions
@@ -378,6 +405,7 @@ class DashboardController extends Controller
             //get all records
             $data = DB::table('purchases')
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                        ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                         ->join('users', 'users.id', '=' ,'purchases.user_id')
@@ -390,9 +418,9 @@ class DashboardController extends Controller
                                           purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
                                           ( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
                                                  WHEN (purchases.payment_type="None") THEN "Comp."
-                                                 ELSE purchases.payment_type END ) AS method,
+                                                 ELSE purchases.payment_type END ) AS method, tickets.ticket_type, packages.title,
                                           transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                          COUNT(purchases.id) AS purchases, purchases.status, 
+                                          COUNT(purchases.id) AS purchases, purchases.status, purchases.channel,
                                           SUM(purchases.quantity) AS tickets,  SUM(ROUND(purchases.price_paid,2)) AS price_paid,
                                           COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
                                           SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid,0), 0 ) ) AS refunds, 

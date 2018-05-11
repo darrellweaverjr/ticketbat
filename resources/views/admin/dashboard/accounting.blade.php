@@ -131,12 +131,14 @@
                                 <th class="all" style="text-align:center">Total<br>Amount</th>
                                 <th class="all" style="text-align:center">Venue<br>Rev.</th>
                                 <th class="all" style="text-align:center">TB<br>Rev.</th>
-                                <th class="none" style="text-align:left">Coupon</th>
-                                <th class="none" style="text-align:left">Method</th>
-                                <th class="none" style="text-align:left">Cardholder</th>
-                                <th class="none" style="text-align:left">Authcode</th>
-                                <th class="none" style="text-align:left">Refnum</th>
-                                <th class="none" style="text-align:left">CC Last 4</th>
+                                <th class="none">Coupon</th>
+                                <th class="none">Ticket</th>
+                                <th class="none">Channel</th>
+                                <th class="none">Method</th>
+                                <th class="none">Cardholder</th>
+                                <th class="none">Authcode</th>
+                                <th class="none">Refnum</th>
+                                <th class="none">CC Last 4</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -158,6 +160,8 @@
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                                 <td style="text-align:right"><b>$ {{number_format($d->profit,2)}}</b></td>
                                 <td style="text-align:center">{{$d->code}}</td>
+                                <td style="text-align:center">{{$d->ticket_type}} - {{$d->title}}</td>
+                                <td style="text-align:center">{{$d->channel}}</td>
                                 <td style="text-align:center">{{$d->method}}</td>
                                 <td style="text-align:center">{{$d->card_holder}}</td>
                                 <td style="text-align:center">{{$d->authcode}}</td>
@@ -182,6 +186,8 @@
                                 <td style="text-align:right">($ {{number_format($d->to_show,2)}})</td>
                                 <td style="text-align:right"><b>($ {{number_format($d->profit,2)}})</b></td>
                                 <td style="text-align:center">{{$d->code}}</td>
+                                <td style="text-align:center">{{$d->ticket_type}} - {{$d->title}}</td>
+                                <td style="text-align:center">{{$d->channel}}</td>
                                 <td style="text-align:center">{{$d->method}}</td>
                                 <td style="text-align:center">{{$d->card_holder}}</td>
                                 <td style="text-align:center">{{$d->authcode}}</td>
