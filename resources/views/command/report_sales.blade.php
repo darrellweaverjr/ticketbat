@@ -292,6 +292,46 @@
                       </tr>
               </table>
               @endif
+              
+              
+              <hr>
+             @if(isset($d['table_tickets']))
+              <hr><table>
+                  <tr class="ttitle">
+                      <td colspan="7">TICKETS REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                </tr>
+                  <tr class="theader">
+                      <td>TYPE</td>
+                      <td style='text-align:center'>TRANSACTIONS</td>
+                      <td style='text-align:center'>TICKETS</td>
+                      <td style='text-align:right'>REVENUE(R)</td>
+                      <td style='text-align:right'>FEES(F)</td>
+                      <td style='text-align:right'>COMMIS.(C)</td>
+                      <td style='text-align:right'>NET(R-C-F)</td>
+                  </tr>
+                  @foreach($d['table_tickets']['data'] as $e)
+                    <tr>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                  @endforeach
+                  <tr class="ttotal">
+                        <td>Totals</td>
+                        <td style='text-align:center'>{{number_format($d['table_tickets']['total']['transactions'])}}</td>
+                        <td style='text-align:center'>{{number_format($d['table_tickets']['total']['tickets'])}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['paid'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['fees'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['commissions'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['amount'],2)}}</td>
+                    </tr>
+              </table>
+              @endif
+              
             </div>
             @endforeach
         @endif

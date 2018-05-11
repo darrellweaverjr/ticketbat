@@ -45,14 +45,16 @@ class ReportSalesController extends Controller{
         try {
             //init main variables
             $date_format = 'D, F j, Y';
-            $this->start_date = $this->report_date = date($date_format,strtotime('now'));
+            $showtime = ShowTime::find($show_time_id);
+            $title = $showtime->show->name.' @ '.date('n/d/Y g:iA', strtotime($showtime->show_time)).' - Total Sales';
+            $this->report_date = date($date_format,strtotime('now'));
             //create report
-            $report = ['sales'=>[ $this->report_sales('showtime',$show_time_id,'Event Totals') ]];
+            $report = ['sales'=>[ $this->report_sales('showtime',$show_time_id,$title) ]];
             $report['sales'][0]['table_financial'] = null;
-            $files = $this->create_files($report,'Event Totals');
+            $files = $this->create_files($report,$title);
             //send the email
             if(!empty($files))
-                $sent = $this->send_email($files,$email,'Event Totals');
+                $sent = $this->send_email($files,$email,$title);
             if(isset($sent))
                 return $sent;
             return false;
@@ -131,7 +133,7 @@ class ReportSalesController extends Controller{
                 //send the email
                 if(!empty($files))
                     $sent = $this->send_email($files,env('MAIL_REPORT_TO'),'TicketBat Totals');
-            }
+            }   
             if(isset($sent))
                 return $sent;
             return false;
@@ -147,9 +149,10 @@ class ReportSalesController extends Controller{
         try {
             $types = $this->create_table_types($type,$e);
             $financial = $this->report_financial($type,$e);
-            $shows = $this->create_table_shows($type,$e);
+            $shows = ($type=='showtime')?  null : $this->create_table_shows($type,$e);
             $channels = $this->create_table_channels($type,$e);
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,'table_financial'=>$financial];
+            $tickets = $this->create_table_tickets($type,$e);
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,'table_tickets'=>$tickets,'table_financial'=>$financial];
         } catch (Exception $ex) {
             return [];
         }
@@ -188,7 +191,44 @@ class ReportSalesController extends Controller{
                     $table->where('show_times.id','=',$e_id);
             }
             $table = $table->distinct()->get()->toArray();  
+            return ['data'=>$table, 'total'=> $this->calc_totals($table)];
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    /*
+     * table_sales_types
+     */
+    public function create_table_tickets($type='admin',$e_id=null)
+    {
+        try {
+            //get all records
+            $types = DB::table('venues')
+                            ->join('shows', 'venues.id', '=' ,'shows.venue_id')
+                            ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->select(DB::raw('tickets.ticket_type, packages.title,
+                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
+                                          SUM(purchases.price_paid) AS paid,
+                                          SUM(purchases.commission_percent) AS commissions,
+                                          SUM(purchases.processing_fee) AS fees,
+                                          SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
+                            ->where('purchases.status','=','Active')
+                            ->groupBy('tickets.ticket_type')->groupBy('packages.title')->orderBy('tickets.ticket_type')->orderBy('packages.title');
             
+            if($type=='admin' || empty($e_id))
+                $types->whereDate('purchases.created','>=',$this->start_date);
+            else if(!empty($e_id))
+            {
+                if($type=='venue')
+                    $types->whereDate('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
+                else if($type=='showtime')
+                    $types->where('show_times.id','=',$e_id);
+            }
+            $types = $types->distinct()->get()->toArray();   
+            return ['data'=>$types, 'total'=> $this->calc_totals($types)];
         } catch (Exception $ex) {
             return [];
         }
@@ -256,7 +296,6 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.processing_fee) AS fees,
                                           SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
                         ->where('purchases.status','=','Active')
-                        ->whereDate('purchases.created','>=',$this->start_date)
                         ->groupBy('purchases.channel')->orderBy('purchases.channel');
             
             if($type=='admin' || empty($e_id))
@@ -264,7 +303,7 @@ class ReportSalesController extends Controller{
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $table->whereDate('purchases.created','>=',$this->start_date)->where('venues.id',$e_id);
+                    $table->whereDate('purchases.created','>=',$this->start_date)->where('shows.venue_id',$e_id);
                 else if($type=='showtime')
                     $table->where('show_times.id','=',$e_id);
             }
@@ -308,8 +347,7 @@ class ReportSalesController extends Controller{
                             ->where('purchases.status','=','Active')
                             ->where('show_times.show_time','>',date('Y-m-d H:i'))
                             ->groupBy('show_times.show_time')->groupBy('shows.id')
-                            ->orderBy('show_times.show_time')->orderBy('shows.name')
-                            ->distinct()->get()->toArray();
+                            ->orderBy('show_times.show_time')->orderBy('shows.name');
             
             if(!empty($e_id))
             {
@@ -317,7 +355,6 @@ class ReportSalesController extends Controller{
                     $future->where('venues.id',$e_id);
             }
             $future = $future->distinct()->get()->toArray();
-            
             return ['data'=>$future, 'total'=> $this->calc_totals($future)];
         } catch (Exception $ex) {
             return [];
