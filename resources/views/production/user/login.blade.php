@@ -23,7 +23,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-envelope"></i>
                                     </span>
-                                    <input type="email" name="username" class="form-control" placeholder="mail@server.com" required="true">
+                                    <input type="email" name="username" class="form-control" placeholder="mail@server.com" required="true" autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-lock"></i>
                                     </span>
-                                    <input type="password" name="password" class="form-control" required="true">
+                                    <input type="password" name="password" class="form-control" required="true" autocomplete="off">
                                 </div>
                             </div>
                         </div>

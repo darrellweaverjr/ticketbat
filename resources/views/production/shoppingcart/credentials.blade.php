@@ -93,7 +93,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-lock"></i>
                                     </span>
-                                    <input type="password" name="password" class="form-control" required="true" autocomplete="on">
+                                    <input type="password" name="password" class="form-control" required="true" autocomplete="off">
                                 </div>
                             </div>
                         </div>
