@@ -477,8 +477,11 @@ class DashboardController extends Controller
             $current = date('Y-m-d H:i:s');
             //conditions to search
             $data = Purchase::filter_options('REPORTS', $input, 0);
+            //enable only valid purchase status
+            foreach ($data['search']['status'] as $k=>$v)
+                if($v!='Active' && !(strpos($v,'Pending')===0))
+                    unset($data['search']['status'][$k]);
             $where = $data['where'];
-            $where[] = ['purchases.status','=','Active'];
             $where[] = ['show_times.show_time','>',$current];
             $search = $data['search'];
             //get all records
@@ -492,10 +495,15 @@ class DashboardController extends Controller
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
                                     SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                    SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
+                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions '))
                         ->where($where)
+                        ->where(function($query) {
+                            $query->where('purchases.status','=','Active')
+                                  ->orWhere('purchases.status','like','Pending%');
+                        })
                         ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
@@ -504,7 +512,8 @@ class DashboardController extends Controller
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
                             'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
-                            'fees'=>array_sum(array_column($data,'fees')),
+                            'fees_incl'=>array_sum(array_column($data,'fees_incl')),
+                            'fees_over'=>array_sum(array_column($data,'fees_over')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //return view
@@ -527,8 +536,11 @@ class DashboardController extends Controller
             $data = $total = array();
             //conditions to search
             $data = Purchase::filter_options('REPORTS', $input, '-30');
+            //enable only valid purchase status
+            foreach ($data['search']['status'] as $k=>$v)
+                if($v!='Active' && !(strpos($v,'Pending')===0))
+                    unset($data['search']['status'][$k]);
             $where = $data['where'];
-            $where[] = ['purchases.status','=','Active'];
             $search = $data['search'];
             //search arrange by order url or show
             if(isset($input) && isset($input['order']) && $input['order']=='channel')
@@ -555,10 +567,15 @@ class DashboardController extends Controller
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
                                     SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
-                                    SUM(ROUND(purchases.processing_fee,2)) AS fees,
+                                    SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
+                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
                                     SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
+                    ->where(function($query) {
+                        $query->where('purchases.status','=','Active')
+                              ->orWhere('purchases.status','like','Pending%');
+                    })
                     ->groupBy(DB::raw($groupby))->orderBy(DB::raw($orderby))->get()->toArray();
             //info for the graph
             if($order=='channel')
@@ -585,7 +602,8 @@ class DashboardController extends Controller
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
                             'revenue'=>array_sum(array_column($data,'revenue')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
-                            'fees'=>array_sum(array_column($data,'fees')),
+                            'fees_incl'=>array_sum(array_column($data,'fees_incl')),
+                            'fees_over'=>array_sum(array_column($data,'fees_over')),
                             'to_show'=>array_sum(array_column($data,'to_show')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //return view

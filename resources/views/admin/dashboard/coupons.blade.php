@@ -41,7 +41,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees'],2)}}"></span></div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees_incl']+$total['fees_over'],2)}}"></span></div>
                     <div class="desc">Total Revenue</div>
                 </div>
             </a>
@@ -76,9 +76,11 @@
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['fees'],2)}}"></span></div>
-                    <div class="desc">Fee Revenue</div>
+                    <div class="number"></div>
+                    <div class="desc">
+                        Fees Incl.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl'],2)}}"></span>
+                        <br>Fees Over.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_over'],2)}}"></span>
+                    </div>
                 </div>
             </a>
         </div>
@@ -89,7 +91,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees'],2)}}"></span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees_incl']+$total['fees_over'],2)}}"></span>
                     </div>
                     <div class="desc">Gross Profit</div>
                 </div>
@@ -135,7 +137,8 @@
                                 <th style="text-align:center">Total<br>Revenue</th>
                                 <th style="text-align:center">To<br>Show</th>
                                 <th style="text-align:center">Comm.</th>
-                                <th style="text-align:center">P.Fees</th>
+                                <th style="text-align:center">Fees<br>Incl</th>
+                                <th style="text-align:center">Fees<br>Over</th>
                                 <th style="text-align:center">Gross<br>Profit</th>
                             </tr>
                         </thead>
@@ -153,8 +156,9 @@
                                 <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
-                                <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees,2)}}</b></td>
+                                <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
+                                <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees_incl+$d->fees_over,2)}}</b></td>
                             </tr>
                             @endforeach
                         </tbody>
