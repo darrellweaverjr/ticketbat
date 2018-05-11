@@ -714,15 +714,15 @@ class Purchase extends Model
                 else
                     $data['search']['mirror_period'] = 0;
 
-                if(isset($input['replace_chart']) && !empty($input['replace_chart']))
-                    $data['search']['replace_chart'] = 1;
+                if(isset($input['replace_chart']))
+                    $data['search']['replace_chart'] = (!empty($input['replace_chart']))? 1 : 0;
                 else
                     $data['search']['replace_chart'] = 1;
 
-                if(isset($input['coupon_report']) && !empty($input['coupon_report']))
-                    $data['search']['coupon_report'] = 1;
+                if(isset($input['coupon_report']))
+                    $data['search']['coupon_report'] = (!empty($input['coupon_report']))? 1 : 0;
                 else
-                    $data['search']['coupon_report'] = 0;
+                    $data['search']['coupon_report'] = 1;
             }
             
             //FILTER SEARCH BY PERMISSIONS     
