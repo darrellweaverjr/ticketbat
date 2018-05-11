@@ -349,6 +349,20 @@
                                 <h3 class="text-right" id="t_t_total">@if(!empty($cart['tally']))${{number_format($cart['tally']['total'],2)}} @endif</h3>
                             </div>
                         </div>
+                        @if(!empty($show_time_id))
+                        <div class="row" style="padding:10px">
+                            <h3 class="sbold required">Email report for current event to: </h3><hr>
+                            <form method="post" id="form_report_email" class="form-horizontal">
+                                <input type="hidden" name="show_time_id" value="{{$show_time_id}}">
+                                <div class="col-md-7 col-sm-7 col-xs-12">
+                                    <input type="email" value="" name="report" class="form-control input-lg" placeholder="abc@gmail.com">
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <button type="button" class="btn btn-info btn-lg btn-block uppercase" id="btn_report_email"><i class="fa fa-send"></i> Email report</button>
+                                </div>
+                            </form>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="modal-footer"></div>

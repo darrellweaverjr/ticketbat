@@ -720,4 +720,31 @@ class ShoppingcartController extends Controller
         }
     }
     
+    /*
+     * send the report of event by email
+     */
+    public function pos_email_report()
+    {
+        try {
+            $input = Input::all();
+            $receipts = [];
+            if(!empty($input['show_time_id']) && !empty($input['email']) && filter_var($input['email'], FILTER_VALIDATE_EMAIL))
+            {
+                $showtime = ShowTime::find($input['show_time_id']);
+                if($showtime)
+                {
+                    $control = new ReportSalesController(0,0);
+                    $response = $control->event($input['show_time_id'],$input['email']);
+                    if($response)
+                        return ['success'=>true,'msg'=>'The email was sent successfully!'];
+                    return ['success'=>false,'msg'=>'The system could not sent the report to that email!'];
+                }
+                return ['success'=>false,'msg'=>'That event is not longer available in the system!'];
+            }
+            return ['success'=>false, 'msg'=>'You must enter a valid email in the form!'];
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
 }

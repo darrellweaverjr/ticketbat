@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Command;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use App\Http\Models\ShowTime;
 use App\Mail\EmailSG;
 use Barryvdh\DomPDF\Facade as PDF;
 
@@ -35,6 +36,28 @@ class ReportSalesController extends Controller{
         $this->report_date = ($this->days==1)? date($date_format,strtotime('yesterday')) :
                                   date($date_format,strtotime('-'.$this->days.' days')).' - '.date($date_format,strtotime('yesterday'));
         $this->subject = 'Daily Sales Report ';
+    }
+    /*
+     * get sales report pdf by specific event
+     */
+    public function event($show_time_id,$email)
+    {
+        try {
+            //init main variables
+            $date_format = 'D, F j, Y';
+            $this->start_date = $this->report_date = date($date_format,strtotime('now'));
+            //create report
+            $report = ['sales'=>[ $this->report_sales('showtime',$show_time_id,'Event Totals') ]];
+            $files = $this->create_files($report,'Event Totals');
+            //send the email
+            if(!empty($files))
+                $sent = $this->send_email($files,$email,'Event Totals');
+            if(isset($sent))
+                return $sent;
+            return false;
+        } catch (Exception $ex) {
+            return false;
+        }
     }
     /*
      * get sales report pdf
@@ -118,23 +141,13 @@ class ReportSalesController extends Controller{
     /*
      * table_sales_shows
      */
-    public function report_sales($type,$venue,$title)
+    public function report_sales($type,$e,$title)
     {
         try {
-            if($type=='admin')
-            {
-                $types = $this->create_table_types();
-                $financial = $this->report_financial();
-                $shows = $this->create_table_shows();
-                $channels = $this->create_table_channels();
-            }
-            else
-            {
-                $types = $this->create_table_types($venue);
-                $financial = $this->report_financial($venue);
-                $shows = $this->create_table_shows($venue);
-                $channels = $this->create_table_channels($venue);
-            }
+            $types = $this->create_table_types($type,$e);
+            $financial = $this->report_financial($type,$e);
+            $shows = $this->create_table_shows($type,$e);
+            $channels = $this->create_table_channels($type,$e);
             return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,'table_financial'=>$financial];
         } catch (Exception $ex) {
             return [];
@@ -143,48 +156,38 @@ class ReportSalesController extends Controller{
     /*
      * table_sales_shows
      */
-    public function create_table_shows($venue_id=null)
+    public function create_table_shows($type='admin',$e_id=null)
     {
         try {
-            if(empty($venue_id))
-                return DB::table('shows')
-                            ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                            ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                            ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
-                            ->select(DB::raw('venues.name AS venue, shows.name, tickets.ticket_type, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
-                                            purchases.payment_type AS payment_type,
-                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                          SUM(purchases.retail_price) AS retail_price,
-                                          SUM(purchases.savings) AS savings,
-                                          SUM(purchases.price_paid) AS paid,
-                                          SUM(purchases.commission_percent) AS commissions,
-                                          SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
-                            ->where('purchases.status','=','Active')
-                            ->whereDate('purchases.created','>=',$this->start_date)
-                            ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.ticket_type')->groupBy(DB::raw('payment_type'))
-                            ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.ticket_type')->orderBy(DB::raw('payment_type'))
-                            ->distinct()->get()->toArray();
-            else
-                //get all records
-                return DB::table('shows')
-                            ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                            ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                            ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
-                            ->select(DB::raw('shows.name, tickets.ticket_type, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
-                                            purchases.payment_type AS payment_type,
-                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                          SUM(purchases.savings) AS savings,
-                                          SUM(purchases.price_paid) AS paid,
-                                          SUM(purchases.commission_percent) AS commissions,
-                                          SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
-                            ->where('purchases.status','=','Active')->where('venues.id','=',$venue_id)
-                            ->whereDate('purchases.created','>=',$this->start_date)
-                            ->groupBy('shows.id')->groupBy('show_times.show_time')->orderBy('shows.name')
-                            ->distinct()->get()->toArray();
+            $table = DB::table('shows')
+                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                        ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
+                        ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                        ->select(DB::raw('venues.name AS venue, shows.name, tickets.ticket_type, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
+                                        purchases.payment_type AS payment_type,
+                                      COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
+                                      SUM(purchases.retail_price) AS retail_price,
+                                      SUM(purchases.savings) AS savings,
+                                      SUM(purchases.price_paid) AS paid,
+                                      SUM(purchases.commission_percent) AS commissions,
+                                      SUM(purchases.processing_fee) AS fees,
+                                      SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
+                        ->where('purchases.status','=','Active')
+                        ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.ticket_type')->groupBy(DB::raw('payment_type'))
+                        ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.ticket_type')->orderBy(DB::raw('payment_type'));
+
+            if($type=='admin' || empty($e_id))
+                $table->whereDate('purchases.created','>=',$this->start_date);
+            else if(!empty($e_id))
+            {
+                if($type=='venue')
+                    $table->whereDate('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
+                else if($type=='showtime')
+                    $table->where('show_times.id','=',$e_id);
+            }
+            $table = $types->distinct()->get()->toArray();  
+            
         } catch (Exception $ex) {
             return [];
         }
@@ -192,12 +195,9 @@ class ReportSalesController extends Controller{
     /*
      * table_sales_types
      */
-    public function create_table_types($venue_id=null)
+    public function create_table_types($type='admin',$e_id=null)
     {
         try {
-            $where = [['purchases.status','=','Active']];
-            if($venue_id)
-                $where[] = ['venues.id',$venue_id];
             //get all records
             $types = DB::table('venues')
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
@@ -209,10 +209,19 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
                                           SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
-                            ->where($where)
-                            ->whereDate('purchases.created','>=',$this->start_date)
-                            ->groupBy(DB::raw('payment_type'))->orderBy(DB::raw('payment_type'))
-                            ->distinct()->get()->toArray();
+                            ->where('purchases.status','=','Active')
+                            ->groupBy(DB::raw('payment_type'))->orderBy(DB::raw('payment_type'));
+            
+            if($type=='admin' || empty($e_id))
+                $types->whereDate('purchases.created','>=',$this->start_date);
+            else if(!empty($e_id))
+            {
+                if($type=='venue')
+                    $types->whereDate('purchases.created','>=',$this->start_date)->where('venues.id',$e_id);
+                else if($type=='showtime')
+                    $types->where('show_times.id','=',$e_id);
+            }
+            $types = $types->distinct()->get()->toArray();   
             $total = $this->calc_totals($types);
             $others = [];
             foreach ($types as $k=>$t)
@@ -234,7 +243,7 @@ class ReportSalesController extends Controller{
     /*
      * table_selling_ways
      */
-    public function create_table_channels($venue_id=null)
+    public function create_table_channels($type='admin',$e_id=null)
     {
         try {
             $table = DB::table('purchases')
@@ -248,8 +257,16 @@ class ReportSalesController extends Controller{
                         ->where('purchases.status','=','Active')
                         ->whereDate('purchases.created','>=',$this->start_date)
                         ->groupBy('purchases.channel')->orderBy('purchases.channel');
-            if(!empty($venue_id))
-                $table->where('shows.venue_id',$venue_id);
+            
+            if($type=='admin' || empty($e_id))
+                $table->whereDate('purchases.created','>=',$this->start_date);
+            else if(!empty($e_id))
+            {
+                if($type=='venue')
+                    $table->whereDate('purchases.created','>=',$this->start_date)->where('venues.id',$e_id);
+                else if($type=='showtime')
+                    $table->where('show_times.id','=',$e_id);
+            }
             $table = $table->distinct()->get()->toArray();
             return ['data'=>$table, 'total'=> $this->calc_totals($table)];
         } catch (Exception $ex) {
@@ -265,7 +282,7 @@ class ReportSalesController extends Controller{
             if(empty($venue_id))    //admin
                 $future = $this->create_table_future_liabilities();
             else
-                $future = $this->create_table_future_liabilities($venue_id);
+                $future = $this->create_table_future_liabilities('venue',$venue_id);
             return ['type'=>$type,'title'=>$title,'date'=>date('D, F j, Y',strtotime('today')),'table_future'=>$future['data'],'total'=>$future['total']];
         } catch (Exception $ex) {
             return [];
@@ -274,14 +291,10 @@ class ReportSalesController extends Controller{
     /*
      * table_sales_types
      */
-    public function create_table_future_liabilities($venue_id=null)
+    public function create_table_future_liabilities($type='admin',$e_id=null)
     {
         try {
-            $where = [['purchases.status','=','Active']];
-            if($venue_id)   //when each venue
-            {
-                $where[] = ['venues.id',$venue_id];
-                $future = DB::table('venues')
+            $future = DB::table('venues')
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                             ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -291,30 +304,19 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.commission_percent) AS commissions,
                                           SUM(purchases.processing_fee) AS fees,
                                           SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
-                            ->where($where)
+                            ->where('purchases.status','=','Active')
                             ->where('show_times.show_time','>',date('Y-m-d H:i'))
                             ->groupBy('show_times.show_time')->groupBy('shows.id')
                             ->orderBy('show_times.show_time')->orderBy('shows.name')
                             ->distinct()->get()->toArray();
-            }
-            else    //when admin
+            
+            if(!empty($e_id))
             {
-                $future = DB::table('venues')
-                            ->join('shows', 'venues.id', '=' ,'shows.venue_id')
-                            ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                            ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->select(DB::raw('venues.name AS venue, shows.name AS event, show_times.show_time,
-                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                          SUM(purchases.price_paid) AS paid,
-                                          SUM(purchases.commission_percent) AS commissions,
-                                          SUM(purchases.processing_fee) AS fees,
-                                          SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
-                            ->where($where)
-                            ->where('show_times.show_time','>',date('Y-m-d H:i'))
-                            ->groupBy('show_times.show_time')->groupBy('shows.id')
-                            ->orderBy('show_times.show_time')->orderBy('shows.name')
-                            ->distinct()->get()->toArray();
+                if($type=='venue')
+                    $future->where('venues.id',$e_id);
             }
+            $future = $future->distinct()->get()->toArray();
+            
             return ['data'=>$future, 'total'=> $this->calc_totals($future)];
         } catch (Exception $ex) {
             return [];
@@ -323,7 +325,7 @@ class ReportSalesController extends Controller{
     /*
      * table_financial
      */
-    public function report_financial($venue_id=null)
+    public function report_financial($type='admin',$e_id=null)
     {
         try {
             //init
@@ -336,35 +338,35 @@ class ReportSalesController extends Controller{
             $_end = $end;
             $name = 'Total';
             $title = ($start==$end)? 'DAILY BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_end)) : 'PERIOD BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_start)).' - '.date('D, F j, Y',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$venue_id);
+            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
 
             //table roll up month MTD   -1
             $_start = date('Y-m-01',strtotime($end));
             $_end = $end;
             $name = 'Total MTD ('.date('F Y',strtotime($_end)).')';
             $title = 'ROLL UP MTD CURRENT ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$venue_id);
+            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
 
             //table roll up previous month MTD  -2
             $_start = date('Y-m-d', $this->rollup_date( date('Y-m-01',strtotime($end)) ));
             $_end = date('Y-m-d', $this->rollup_date($end));
             $name = 'Total MTD ('.date('F Y',strtotime($_end)).')';
             $title = 'ROLL UP MTD PERIOD ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$venue_id);
+            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
 
             //table roll up year YTD    -3
             $_start = date('Y-01-01',strtotime($end));
             $_end = $end;
             $name = 'Total YTD ('.date('Y',strtotime($_end)).')';
             $title = 'ROLL UP YTD CURRENT ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$venue_id);
+            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
 
             //table roll up previous year YTD   -4
             $_start = date('Y-m-d', $this->rollup_date( date('Y-01-01',strtotime($end)) ));
             $_end = date('Y-m-d', $this->rollup_date($end));
             $name = 'Total YTD ('.date('Y',strtotime($_end)).')';
             $title = 'ROLL UP YTD PERIOD ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$venue_id);
+            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
 
             //percent MTD
 
@@ -380,7 +382,7 @@ class ReportSalesController extends Controller{
     /*
      * table_financial
      */
-    public function create_table_financial($start,$end,$name,$title,$venue_id)
+    public function create_table_financial($start,$end,$name,$title,$e_id,$type)
     {
         try {
             $table = DB::table('purchases')
@@ -393,10 +395,17 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.processing_fee) AS fees,
                                           SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
                         ->where('purchases.status','=','Active')
-                        ->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end)
                         ->groupBy('venues.id')->orderBy('venues.name');
-            if(!empty($venue_id))
-                $table->where('venues.id',$venue_id);
+            
+            if($type=='admin' || empty($e_id))
+                $table->whereDate('purchases.created','>=',$this->start_date);
+            else if(!empty($e_id))
+            {
+                if($type=='venue')
+                    $table->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end)->where('venues.id',$e_id);
+                else if($type=='showtime')
+                    $table->where('show_times.id','=',$e_id);
+            }
             $table = $table->distinct()->get()->toArray();
             return ['title'=>$title, 'data'=>$table, 'total'=> $this->calc_totals($table)];
         } catch (Exception $ex) {
@@ -411,23 +420,26 @@ class ReportSalesController extends Controller{
     {
         try {
             $files = [];
-
             //sales report pdf
-            $format = 'sales'; $data = $report['sales'];
-            $view= View::make('command.report_sales', compact('data','format'));
-            $file = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-            PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
-            $files[] = $file;
-
+            if(isset($report['sales']))
+            {
+                $format = 'sales'; $data = $report['sales'];
+                $view= View::make('command.report_sales', compact('data','format'));
+                $file = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
+                PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
+                $files[] = $file;
+            }    
             //future liabilities report pdf
-            $format = 'future_liabilities'; $data = $report['future'];
-            $file = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-            $view = View::make('command.report_sales', compact('data','format'));
-            PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
-            $files[] = $file;
-
+            if(isset($report['sales']))
+            {
+                $format = 'future_liabilities'; $data = $report['future'];
+                $file = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
+                $view = View::make('command.report_sales', compact('data','format'));
+                PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
+                $files[] = $file;
+            }
             //sales report csv
-            if(!empty($report['sales'][0]['table_shows']))
+            if(!empty($report['sales']) && !empty($report['sales'][0]['table_shows']))
             {
                 $format = 'csv'; $data = $report['sales'][0]['table_shows'];
                 $view = View::make('command.report_sales', compact('data','format'));

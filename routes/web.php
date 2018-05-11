@@ -162,6 +162,7 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
     Route::post('shoppingcart/pos/update', 'ShoppingcartController@pos_update');
     Route::post('shoppingcart/pos/receipts', 'ShoppingcartController@pos_email_receipt');
+    Route::post('shoppingcart/pos/reports', 'ShoppingcartController@pos_email_report');
     Route::match(['get','post'], 'shoppingcart/viewcart', 'ShoppingcartController@index');
     //purchase
     Route::post('purchase/process', 'PurchaseController@process');
