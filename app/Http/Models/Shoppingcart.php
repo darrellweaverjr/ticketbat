@@ -144,9 +144,9 @@ class Shoppingcart extends Model
                         $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
                 }
                 $i->total_cost = $i->cost_per_product*$i->number_of_items;
-                $i->sales_taxes = Util::round($i->total_cost*$i->default_sales_taxes_percent/100);
-                if($i->inclusive_fee>0)
+                if(!($i->inclusive_fee>0))
                     $i->total_cost += $i->processing_fee*$qty_item_pay;
+                $i->sales_taxes = Util::round($i->total_cost*$i->default_sales_taxes_percent/100);
                 Shoppingcart::where('id', $i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost,'sales_taxes'=>$i->sales_taxes]);
             }
             else
@@ -568,9 +568,9 @@ class Shoppingcart extends Model
                     $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
             }
             $item->total_cost = Util::round($item->cost_per_product*$item->number_of_items);
-            $item->sales_taxes = Util::round($item->total_cost*$ticket->default_sales_taxes_percent/100);
             if(!($ticket->inclusive_fee>0))
                 $item->total_cost += Util::round($ticket->processing_fee*$qty_item_pay);
+            $item->sales_taxes = Util::round($item->total_cost*$ticket->default_sales_taxes_percent/100);
             $item->save();
             //overwrite default values for all items into shoppingcart
             Shoppingcart::where('session_id','=',$s_token)->update(['user_id'=>$item->user_id,'coupon'=>$item->coupon]);

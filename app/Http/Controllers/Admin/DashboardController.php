@@ -218,7 +218,8 @@ class DashboardController extends Controller
                 else $title = 'Current <i>'.date('m/d/Y',strtotime($search['soldtime_start_date'])).' to '.date('m/d/Y',strtotime($search['soldtime_end_date'])).'</i>';
 
                 $summary_table = [];
-                $subtotals = $consignment = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees_incl'=>0,'fees_over'=>0,'profit'=>0];
+                $subtotals = $consignment = ['purchases'=>0,'tickets'=>0,'revenue'=>0,'discounts'=>0,'to_show'=>0,'commissions'=>0,'fees_incl'=>0,'fees_over'=>0,
+                                             'profit'=>0,'sales_taxes'=>0,'cc_fees'=>0];
                 $summary_info = DB::table('purchases')
                             ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
