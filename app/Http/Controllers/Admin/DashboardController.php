@@ -109,11 +109,13 @@ class DashboardController extends Controller
                                           COUNT(purchases.id) AS purchases, purchases.status,
                                           SUM(purchases.quantity) AS tickets, 
                                           SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
-                                          SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                          IF(purchases.inclusive_fee>0, 
+                                            SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
+                                            SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                           SUM(ROUND(purchases.savings,2)) AS discounts,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
+                                          SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee,2)) AS to_show,
                                           SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                         ->where($where)
                         ->where(function($query) {
@@ -227,11 +229,13 @@ class DashboardController extends Controller
                                               COUNT(purchases.id) AS purchases,
                                               SUM(purchases.quantity) AS tickets,
                                               SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
-                                              SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                              IF(purchases.inclusive_fee>0, 
+                                                SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
+                                                SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                               SUM(ROUND(purchases.savings,2)) AS discounts,
                                               SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                               SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                              SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
+                                              SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee,2)) AS to_show,
                                               SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                             ->where($where)
                             ->where(function($query) {
@@ -330,11 +334,13 @@ class DashboardController extends Controller
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                    IF(purchases.inclusive_fee>0, 
+                                        SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
+                                        SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                     SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
+                                    SUM(ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
                     ->where(function($query) {
@@ -493,11 +499,13 @@ class DashboardController extends Controller
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                    IF(purchases.inclusive_fee>0, 
+                                        SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
+                                        SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                     SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
+                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions '))
                         ->where($where)
                         ->where(function($query) {
@@ -565,11 +573,13 @@ class DashboardController extends Controller
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) AS revenue,
+                                    IF(purchases.inclusive_fee>0, 
+                                        SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
+                                        SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                     SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.retail_price-purchases.savings-purchases.commission_percent,2)) AS to_show,
+                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
                     ->where(function($query) {
