@@ -533,6 +533,10 @@ class Purchase extends Model
                 else
                     $purchase->inclusive_fee = 1;
                 $purchase->payment_type = ($purchase->retail_price<0.01 && $purchase->price_paid<0.01)? 'Free event' : ( (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None' );
+                //taxes and other fees
+                $purchase->sales_taxes = $i->sales_taxes;
+                $purchase->price_paid += $purchase->sales_taxes;
+                $purchase->cc_fees = ($purchase->payment_type=='Credit')? Util::round($purchase->price_paid*env('USAEPAY_CREDIT_CARD_FEE_PERCENT',0)/100) : 0.00;
                 $purchase->updated = $current;
                 $purchase->created = $current;
                 $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;
