@@ -41,6 +41,7 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['revenue'],2)}}"></span></div>
                     <div class="desc">Total Revenue
                         @if(Auth::user()->user_type_id != 5)<br>Discounts: $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}"></span>@endif
+                        <br>Sales Tax: $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes'],2)}}"></span>
                     </div>
                 </div>
             </a>
@@ -53,7 +54,9 @@
                 <div class="details">
                     <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}"></span></div>
-                    <div class="desc">To Show</div>
+                    <div class="desc">To Show
+                        <br>CC Fees: $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees'],2)}}"></span> 
+                    </div>
                 </div>
             </a>
         </div>
@@ -119,12 +122,14 @@
             <thead>
                 <tr>
                     <th>CHANNEL - TYPE</th>
-                    <th style='text-align:center'>TRANSACTIONS</th>
+                    <th style='text-align:center'>TRANSACT.</th>
                     <th style='text-align:center'>TICKETS</th>
-                    <th style='text-align:right'>TOTAL REVENUE</th>
+                    <th style='text-align:right'>REVENUE</th>
+                    <th style='text-align:right'>TAXES</th>
                     <th style='text-align:right'>DISCOUNTS</th>
                     <th style='text-align:right'>TO SHOW</th>
-                    <th style='text-align:right'>COMMISSIONS</th>
+                    <th style='text-align:right'>CC FEES</th>
+                    <th style='text-align:right'>COMMIS.</th>
                     <th style='text-align:right'>FEES INCL</th>
                     <th style='text-align:right'>FEES OVER</th>
                     <th style='text-align:right'>GROSS PROFIT</th>
@@ -132,13 +137,15 @@
             </thead>
             <tbody>
                @foreach($summ['table'] as $k=>$d)
-                <tr @if($k=='Subtotals' || $k=='Totals') style="font-weight:bold" @endif>
+                <tr @if($k=='Subtotals' || $k=='Totals') style="font-weight:bold" @endif>   
                     <td>{{$k}}</td>
                     <td style="text-align:center">{{number_format($d['purchases'])}}</td>
                     <td style="text-align:center">{{number_format($d['tickets'])}}</td>
                     <td style="text-align:right">$ {{number_format($d['revenue'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['sales_taxes'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['discounts'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['to_show'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d['cc_fees'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['commissions'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['fees_incl'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($d['fees_over'],2)}}</td>
@@ -153,7 +160,7 @@
     <div id="tb_coupon" class="portlet-body" style="display:none;" >
         @if(!empty($coupons))
         <h5>Coupons Report</h5>
-        <table width="100% class="table table-striped table-bordered table-hover">
+        <table width="100%" class="table table-striped table-bordered table-hover">
             <tbody>
                 @foreach($coupons['descriptions'] as $k=>$d)
                 <tr>
@@ -163,7 +170,7 @@
                 @endforeach
             </tbody>
         </table>
-        <table width="100% class="table table-striped table-bordered table-hover">
+        <table width="100%" class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
                     <th>Venue</th>
@@ -174,8 +181,10 @@
                     <th style="text-align:center">Sales<br>-1D</th>
                     <th style="text-align:center">Qty Sold<br>(Purch.)</th>
                     <th style="text-align:center">Discount</th>
+                    <th style="text-align:center">Sales<br>Taxes</th>
                     <th style="text-align:center">Total<br>Revenue</th>
                     <th style="text-align:center">To<br>Show</th>
+                    <th style="text-align:center">CC<br>Fees</th>
                     <th style="text-align:center">Comm.</th>
                     <th style="text-align:center">Fees Incl</th>
                     <th style="text-align:center">Fees Over</th>
@@ -193,8 +202,10 @@
                     <td style="text-align:center">{{$d->tickets_one}}</td>
                     <td style="text-align:center">{{number_format($d->tickets)}} ({{number_format($d->purchases)}})</td>
                     <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d->sales_taxes,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
+                    <td style="text-align:right">$ {{number_format($d->cc_fees,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
                     <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
@@ -207,8 +218,10 @@
                     <td colspan="6">TOTALS</td>
                     <td style="text-align:center">{{number_format($coupons['total']['tickets'])}} ({{number_format($coupons['total']['purchases'])}})</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['discounts'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['sales_taxes'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['revenue'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['to_show'],2)}}</td>
+                    <td style="text-align:right">$ {{number_format($coupons['total']['cc_fees'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['commissions'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['fees_incl'],2)}}</td>
                     <td style="text-align:right">$ {{number_format($coupons['total']['fees_over'],2)}}</td>
@@ -245,7 +258,9 @@
                                 @if(Auth::user()->user_type_id != 5)
                                 <th class="all" style="text-align:center">Disc.</th>
                                 @endif
+                                <th class="all" style="text-align:center">Sales<br>Taxes</th>
                                 <th class="all" style="text-align:center">To<br>Show</th>
+                                <th class="all" style="text-align:center">CC<br>Fees</th>
                                 <th class="all" style="text-align:center">@if(Auth::user()->user_type_id != 5) Comm. @else TB Comm.<br>Exp. @endif</th>
                                 <th class="all" style="text-align:center">Fee<br>Incl</th>
                                 <th class="all" style="text-align:center">Fee<br>Over</th>
@@ -272,7 +287,9 @@
                                 @if(Auth::user()->user_type_id != 5)
                                 <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
                                 @endif
+                                <td style="text-align:right">$ {{number_format($d->sales_taxes,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->cc_fees,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>

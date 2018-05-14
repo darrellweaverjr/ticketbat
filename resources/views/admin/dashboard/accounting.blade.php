@@ -41,8 +41,8 @@
                 <div class="details">
                     <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['price_paid'],2)}}"></span></div>
-                    <div class="desc">
-                        Total Paid
+                    <div class="desc">Total Paid
+                        <br>Sales Tax: $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes'],2)}}"></span>
                     </div>
                 </div>
             </a>
@@ -55,7 +55,9 @@
                 <div class="details">
                     <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}"></span></div>
-                    <div class="desc">Venue Revenue</div>
+                    <div class="desc">Venue Revenue
+                        <br>CC Fees: $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees'],2)}}"></span> 
+                    </div>
                 </div>
             </a>
         </div>
@@ -124,12 +126,15 @@
                                 <th class="all" style="text-align:center">Trans.<br>Date</th>
                                 <th class="all" style="text-align:center">Qty<br>Tcks</th>
                                 <th class="all" style="text-align:center">Base</th>
-                                <th class="all" style="text-align:center">Comm.</th>
+                                <th class="all" style="text-align:center">Com.</th>
                                 <th class="all" style="text-align:center">Fee<br>Incl.</th>
                                 <th class="all" style="text-align:center">Fee<br>Over</th>
                                 <th class="all" style="text-align:center">Disc.</th>
-                                <th class="all" style="text-align:center">Total<br>Amount</th>
+                                <th class="all" style="text-align:center">Pre<br>taxes</th>
+                                <th class="all" style="text-align:center">Sales<br>taxes</th>
+                                <th class="all" style="text-align:center">Total<br>Charged</th>
                                 <th class="all" style="text-align:center">Venue<br>Rev.</th>
+                                <th class="all" style="text-align:center">Merch<br>Fees</th>
                                 <th class="all" style="text-align:center">TB<br>Rev.</th>
                                 <th class="none">Coupon</th>
                                 <th class="none">Ticket</th>
@@ -156,9 +161,12 @@
                                 <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
                                 <td style="text-align:right">($ {{number_format($d->discounts,2)}})</td>
+                                <td style="text-align:right"><b>$ {{number_format($d->price_paid-$d->sales_taxes,2)}}</b></td>
+                                <td style="text-align:right">$ {{number_format($d->sales_taxes,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->price_paid,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
-                                <td style="text-align:right"><b>$ {{number_format($d->profit,2)}}</b></td>
+                                <td style="text-align:right">$ {{number_format($d->cc_fees,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->profit,2)}}</td>
                                 <td style="text-align:center">{{$d->code}}</td>
                                 <td style="text-align:center">{{$d->ticket_type}} - {{$d->title}}</td>
                                 <td style="text-align:center">{{$d->channel}}</td>
@@ -182,9 +190,12 @@
                                 <td style="text-align:right">($ {{number_format($d->fees_incl,2)}})</td>
                                 <td style="text-align:right">($ {{number_format($d->fees_over,2)}})</td>
                                 <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
+                                <td style="text-align:right"><b>($ {{number_format($d->refunds-$d->sales_taxes,2)}})</b></td>
+                                <td style="text-align:right">($ {{number_format($d->sales_taxes,2)}})</td>
                                 <td style="text-align:right">($ {{number_format($d->refunds,2)}})</td>
                                 <td style="text-align:right">($ {{number_format($d->to_show,2)}})</td>
-                                <td style="text-align:right"><b>($ {{number_format($d->profit,2)}})</b></td>
+                                <td style="text-align:right">($ {{number_format($d->cc_fees,2)}})</td>
+                                <td style="text-align:right">($ {{number_format($d->profit,2)}})</td>
                                 <td style="text-align:center">{{$d->code}}</td>
                                 <td style="text-align:center">{{$d->ticket_type}} - {{$d->title}}</td>
                                 <td style="text-align:center">{{$d->channel}}</td>

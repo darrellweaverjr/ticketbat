@@ -44,6 +44,7 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees_incl']+$total['fees_over'],2)}}"></span></div>
                     <div class="desc">Total Revenue
                         @if(Auth::user()->user_type_id != 5)<br>Discounts: $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}"></span>@endif
+                        <br>Sales Tax: $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes'],2)}}"></span>
                     </div>
                 </div>
             </a>
@@ -56,7 +57,9 @@
                 <div class="details">
                     <div class="number">
                         $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}"></span></div>
-                    <div class="desc">To Show</div>
+                    <div class="desc">To Show
+                        <br>CC Fees: $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees'],2)}}"></span> 
+                    </div>
                 </div>
             </a>
         </div>
@@ -123,10 +126,12 @@
                                 <th style="text-align:center">Qty<br>Sold</th>
                                 <th style="text-align:center">Purchases</th>
                                 <th style="text-align:center">Total<br>Revenue</th>
+                                <th style="text-align:center">Sales<br>Taxes</th>
                                 @if(Auth::user()->user_type_id != 5)
                                 <th style="text-align:center">Discounts</th>
                                 @endif
                                 <th style="text-align:center">To<br>Show</th>
+                                <th style="text-align:center">CC<br>Fees</th>
                                 <th style="text-align:center">@if(Auth::user()->user_type_id != 5) Commiss. @else TB Comm.<br>Expense @endif</th>
                                 <th style="text-align:center">Fees<br>Incl</th>
                                 <th style="text-align:center">Fees<br>Over</th>
@@ -141,10 +146,12 @@
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:center">{{number_format($d->purchases)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->sales_taxes,2)}}</td>
                                 @if(Auth::user()->user_type_id != 5)
                                 <td style="text-align:right">$ {{number_format($d->discounts,2)}}</td>
                                 @endif
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->cc_fees,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
