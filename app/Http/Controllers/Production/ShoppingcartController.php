@@ -425,7 +425,7 @@ class ShoppingcartController extends Controller
                 ->select(DB::raw('venues.id AS venue_id, venues.name AS venue, venues.logo_url AS venue_url,
                                   shows.id as show_id, shows.name, shows.logo_url'))
                 ->where('venues.is_featured', '>', 0)
-                ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
+                ->where('shows.is_active', '>', 0)
                 ->where(function ($query) use ($current) {
                     $query->whereNull('shows.on_sale')
                         ->orWhere('shows.on_sale', '<=', $current);

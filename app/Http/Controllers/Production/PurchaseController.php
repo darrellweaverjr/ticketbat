@@ -39,7 +39,7 @@ class PurchaseController extends Controller
             //remove unavailable items from shopingcart
             foreach($shoppingcart['items'] as $key=>$item)
                 if($item->unavailable)
-                    unset($shoppingcart['items'][$key]);
+                    unset($shoppingcart['items'][$key]);   
             //pre-checks if seller
             if($shoppingcart['seller']>0)
             {

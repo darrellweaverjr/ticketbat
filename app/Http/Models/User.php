@@ -187,8 +187,38 @@ class User extends Authenticatable
         try {
             //init set
             $send_welcome_email = false;
-            //if it is a seller/admin dont update the users table, only the customers one
-            if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
+            //if it is a seller dont update the users table and no customers one
+            if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('POS_OPTION_USER_TYPE'))))
+            {
+                //get customer
+                $customer = Customer::where('email',trim($info['email']))->first();
+                if(!$customer)
+                {
+                    $customer = new Customer;
+                    $customer->email = trim($info['email']);
+                    $location = new Location;
+                    $location->address = Auth::user()->location->address;
+                    $location->city = Auth::user()->location->city;
+                    $location->state = Auth::user()->location->state;
+                    $location->zip = Auth::user()->location->zip;
+                    $location->country = Auth::user()->location->country;
+                    $location->lng = Auth::user()->location->lng;
+                    $location->lat = Auth::user()->location->lat;
+                    $location->created = $current;
+                    $location->updated = $current;
+                    $location->save();
+                    $customer->location()->associate($location);
+                    $customer->first_name = Auth::user()->first_name;
+                    $customer->last_name = Auth::user()->last_name;
+                    $customer->phone = Auth::user()->phone;
+                    $customer->save();
+                }
+                if(empty($customer->id))
+                    return ['success'=>false, 'send_welcome_email'=>0, 'msg'=>'There is an error setting up the customer information.'];
+                return ['success'=>true, 'send_welcome_email'=>0, 'user_id'=>Auth::user()->id, 'customer_id'=>$customer->id];
+            }
+            //if it is a admin dont update the users table, only the customers one
+            else if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))
             {
                 //get customer
                 $customer = Customer::where('email',trim($info['email']))->first();
