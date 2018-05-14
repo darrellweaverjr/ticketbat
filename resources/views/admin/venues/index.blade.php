@@ -279,7 +279,7 @@
                                     <div class="tab-pane" id="tab_model_update_tickets" style="padding:0 20px">
                                         <div class="row">
                                             <label class="control-label">
-                                                <span class="required">Default ticket's values for this venue</span>
+                                                <span class="required">Default ticket's values for this venue (NOT POS)</span>
                                             </label><br><br>
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -311,6 +311,17 @@
                                                             <input type="number" value="0.00" name="default_percent_commission" >
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="control-label">
+                                                <span class="required">State sales taxes percent</span>
+                                            </label>
+                                            <div class="form-group" >
+                                                <label class="control-label col-md-6">Sales taxes percent</label>
+                                                <div class="col-md-6">
+                                                    <input type="number" value="0.00" name="default_sales_taxes_percent" >
                                                 </div>
                                             </div>
                                         </div>
@@ -508,6 +519,43 @@
                                                     <input type="number" class="form-control" name="cutoff_hours_end"/>
                                                 </div>
                                                 <label class="control-label col-md-2 text-left"> hours after. </label>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0px 40px">
+                                            <label class="control-label">
+                                                <span class="required">Default ticket's values for this venue (ONLY POS)</span>
+                                            </label><br><br>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default Fixed Proccessing Fee</label>
+                                                        <div class="col-md-6">
+                                                            <input type="number" value="0.00" name="default_processing_fee_pos" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default % Proccessing Fee</label>
+                                                        <div class="col-md-6">
+                                                            <input type="number" value="0.00" name="default_percent_pfee_pos" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default Fixed Commission</label>
+                                                        <div class="col-md-6">
+                                                            <input type="number" value="0.00" name="default_fixed_commission_pos" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Default Commission %</label>
+                                                        <div class="col-md-6">
+                                                            <input type="number" value="0.00" name="default_percent_commission_pos" >
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
