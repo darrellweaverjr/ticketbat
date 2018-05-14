@@ -124,7 +124,8 @@
                     <thead>
                     <tr>
                         <th>Item(s)</th>
-                        <th class="text-right">Fees</th>
+                        <th class="text-right">Subt.</th>
+                        <th class="text-right">Fees<br>Taxes</th>
                         <th class="text-center">Remove</th>
                     </tr>
                     </thead>
@@ -139,7 +140,10 @@
                                     @if($i->show_id != $show_id) <br><b class="label-warning uppercase">{{$i->name}}</b> @endif
                                 </h4>
                             </td>
-                            <td style="text-align:right">${{number_format($i->cost_per_product*$i->number_of_items,2)}}<br>@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif</td>
+                            <td style="text-align:right">
+                                ${{number_format($i->cost_per_product*$i->number_of_items,2)}}
+                            </td>
+                            <td style="text-align:right">@if($i->inclusive_fee>0) $0.00 @else ${{number_format($i->processing_fee,2)}} @endif <br>${{number_format($i->sales_taxes,2)}}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button>
                             </td>

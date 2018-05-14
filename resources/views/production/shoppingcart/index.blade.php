@@ -118,7 +118,11 @@
                             <h6 @if($cart['printed']<0.01) class="hidden" @endif>
                                 <span class="col-xs-7">Printed tickets:</span>
                                 <span class="col-xs-5 pl-0" id="cost_printed">$ {{number_format($cart['printed'],2)}}</span>
-                            </h6>   
+                            </h6>  
+                            <h6>
+                                <span class="col-xs-7">Sales taxes:</span>
+                                <span class="col-xs-5 pl-0" id="cost_taxes">$ {{number_format($cart['sales_taxes'],2)}}</span>
+                            </h6>
                             <h4 class="bold">
                                 <span class="col-xs-7">Grand Total:</span>
                                 <span class="col-xs-5 pl-0" id="cost_total">$ {{number_format($cart['total'],2)}}</span>

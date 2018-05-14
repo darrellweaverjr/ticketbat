@@ -73,9 +73,10 @@ var POSbuy = function () {
                                 product += '<br><b class="label-warning uppercase">'+v.name+'</b>';
                             product += '</h4>';
                             var rowItem = '<td>'+product+'</td>';
-                            var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2))+'<br>$'+(parseFloat(v.processing_fee)).toFixed(2)+'</td>';
+                            var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.cost_per_product)*parseFloat(v.number_of_items)).toFixed(2))+'</td>';
+                            var rowTaxes = '<td style="text-align:right">$'+(parseFloat(v.processing_fee)).toFixed(2)+'<br>$'+((parseFloat(v.sales_taxes)).toFixed(2))+'</td>';
                             var rowBtn = '<td style="text-align:center"><button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button></td>';
-                            $('#tb_items').append('<tr data-id="'+v.id+'">'+rowItem+rowSubtotal+rowBtn+'</tr>');
+                            $('#tb_items').append('<tr data-id="'+v.id+'">'+rowItem+rowSubtotal+rowTaxes+rowBtn+'</tr>');
                         });
                     }
                 }

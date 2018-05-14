@@ -65,7 +65,7 @@ class Shoppingcart extends Model
                                               (CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END) AS available_time, 
                                               (CASE WHEN NOW() BETWEEN (show_times.show_time - INTERVAL venues.cutoff_hours_start HOUR) AND (show_times.show_time + INTERVAL venues.cutoff_hours_end HOUR) THEN 1 ELSE 0 END) AS available_time_seller, 
                                               (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets - COALESCE(SUM(purchases.quantity),0)) ELSE null END) AS available_qty, 
-                                              shows.amex_only_end_date, shows.venue_id, tickets.inclusive_fee, shows.ticket_limit, tickets.max_tickets'))
+                                              shows.amex_only_end_date, shows.venue_id, tickets.inclusive_fee, shows.ticket_limit, tickets.max_tickets, venues.default_sales_taxes_percent'))
                             ->where('shoppingcart.session_id','=',$session_id)->where('shoppingcart.status','=',0)
                             ->orderBy('shoppingcart.timestamp')->groupBy('shoppingcart.id')->distinct()->get();
         //limit tickets by show
@@ -144,9 +144,10 @@ class Shoppingcart extends Model
                         $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
                 }
                 $i->total_cost = $i->cost_per_product*$i->number_of_items;
+                $i->sales_taxes = Util::round($i->total_cost*$i->default_sales_taxes_percent/100);
                 if($i->inclusive_fee>0)
                     $i->total_cost += $i->processing_fee*$qty_item_pay;
-                Shoppingcart::where('id', $i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost]);
+                Shoppingcart::where('id', $i->id)->update(['number_of_items'=>$i->number_of_items,'total_cost'=>$i->total_cost,'sales_taxes'=>$i->sales_taxes]);
             }
             else
                 $i->unavailable = 1;
@@ -179,7 +180,7 @@ class Shoppingcart extends Model
     public static function calculate_session($session_id)
     {
         try {
-            $price = $qty = $fee = $save = $saveAll = $total = 0;
+            $price = $qty = $fee = $save = $saveAll = $total = $sales_taxes = 0;
             $saveAllApplied = false;
             $coupon = $coupon_description = null;
             $restrictions = $banners = [];
@@ -289,6 +290,8 @@ class Shoppingcart extends Model
                         $fee += (!($i->inclusive_fee>0))? Util::round($i->processing_fee) : 0;
                         //calculate commission for item
                         $i->commission = ($i->c_fixed)? Util::round($i->c_fixed*$qty_item_pay) : Util::round($i->c_percent*$i->cost_per_product/100*$qty_item_pay);
+                        //calculate sales taxes
+                        $sales_taxes += $i->sales_taxes;
                     }
                 }
             }
@@ -310,10 +313,12 @@ class Shoppingcart extends Model
             $total += $printed_tickets['select'];
             $printed_tickets['details'] = count($items)-count($printed_tickets['shows']);
             $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
+            //taxes
+            $total += $sales_taxes;
             //return
             return ['success'=>true,'coupon'=>$coupon,'coupon_description'=>$coupon_description,'quantity'=>$qty,'seller'=>$seller,'banners'=>$banners,
                     'retail_price'=>Util::round($price),'processing_fee'=>Util::round($fee),'savings'=>Util::round($save),'printed'=>$printed_tickets['select'],
-                    'total'=>Util::round($total),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
+                    'total'=>Util::round($total),'sales_taxes'=>Util::round($sales_taxes),'items'=>$items,'restrictions'=>$restrictions,'amex_only'=>$amex_only,'printed_tickets'=>$printed_tickets];
 
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
@@ -497,16 +502,20 @@ class Shoppingcart extends Model
             if(empty($seat_id))
             {
                 $ticket = DB::table('tickets')
-                        ->select(DB::raw('id AS ticket_id, retail_price, processing_fee, ticket_type, inclusive_fee'))
-                        ->where('id','=',$ticket_id)->where('is_active','>',0)->first();
+                        ->join('shows', 'tickets.show_id', '=' ,'shows.id')
+                        ->join('venues', 'shows.venue_id', '=' ,'venues.id')
+                        ->select(DB::raw('tickets.id AS ticket_id, tickets.retail_price, tickets.processing_fee, tickets.ticket_type, tickets.inclusive_fee, venues.default_sales_taxes_percent'))
+                        ->where('tickets.id','=',$ticket_id)->where('tickets.is_active','>',0)->first();
             }
             else
             {
                 $ticket = DB::table('seats')
                         ->join('tickets', 'seats.ticket_id', '=' ,'tickets.id')
+                        ->join('shows', 'tickets.show_id', '=' ,'shows.id')
+                        ->join('venues', 'shows.venue_id', '=' ,'venues.id')
                         ->select(DB::raw('tickets.id AS ticket_id, seats.id AS seat_id, seats.consignment_id, seats.seat, tickets.ticket_type, inclusive_fee,
                                           COALESCE(seats.retail_price,tickets.retail_price,0) AS retail_price,
-                                          COALESCE(seats.processing_fee,tickets.processing_fee,0) AS processing_fee'))
+                                          COALESCE(seats.processing_fee,tickets.processing_fee,0) AS processing_fee, venues.default_sales_taxes_percent'))
                         ->where('seats.id','=',$seat_id)->where('seats.status','=','Created')->first();
             }
             if(!$ticket)
@@ -559,6 +568,7 @@ class Shoppingcart extends Model
                     $qty_item_pay -= $couponObj->free_tickets($i->number_of_items);
             }
             $item->total_cost = Util::round($item->cost_per_product*$item->number_of_items);
+            $item->sales_taxes = Util::round($item->total_cost*$ticket->default_sales_taxes_percent/100);
             if(!($ticket->inclusive_fee>0))
                 $item->total_cost += Util::round($ticket->processing_fee*$qty_item_pay);
             $item->save();

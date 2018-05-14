@@ -10,6 +10,7 @@ var UpdateShoppingcartFunctions = function () {
             $('#cost_fees').html('$ '+parseFloat(cart.processing_fee).toFixed(2));
             $('#cost_savings').html('$ '+parseFloat(cart.savings).toFixed(2));
             $('#cost_printed').html('$ '+parseFloat(cart.printed).toFixed(2));
+            $('#cost_taxes').html('$ '+parseFloat(cart.sales_taxes).toFixed(2));
             $('#cost_total').html('$ '+parseFloat(cart.total).toFixed(2));
             $('#cost_total').data('total',parseFloat(cart.total).toFixed(2));
             //hide empty savings
@@ -91,13 +92,6 @@ var UpdateShoppingcartFunctions = function () {
 
             //update cash form
             $('#form_cash input[name="pending"]').val(cart.total);
-            if(cart.cash_breakdown)
-            {
-                $('#form_cash input[name="cashed"]').val(cart.total);
-                $('#form_cash div.cash_breakdown').css('display','none');
-            }
-            else
-                $('#form_cash div.cash_breakdown').css('display','block');
             CashFunctions.calculate();
             //update items in list
             var items_qty = (cart.items.length>1)? 'items' : 'item';
