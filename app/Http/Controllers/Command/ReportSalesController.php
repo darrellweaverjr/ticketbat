@@ -126,7 +126,7 @@ class ReportSalesController extends Controller{
                     if(!empty($files))
                         $sent = $this->send_email($files,$v->accounting_email,$v->name);
                 }
-            }
+            }   
             //send admin email
             if($this->only_admin>0)
             {
@@ -464,7 +464,7 @@ class ReportSalesController extends Controller{
     public function create_files($report,$name)
     {
         try {
-            $files = [];
+            $files = [];    
             //sales report pdf
             if(isset($report['sales']))
             {
