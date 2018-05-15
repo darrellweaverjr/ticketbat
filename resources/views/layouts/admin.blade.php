@@ -146,12 +146,6 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
-                                        <a href="/admin/dashboard/accounting" class="nav-link">
-                                            <i class="icon-book-open"></i>
-                                            <span class="title">Accounting</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item start open">
                                         <a href="/admin/dashboard/future_liabilities" class="nav-link">
                                             <i class="icon-graph"></i>
                                             <span class="title">Future Liabilities</span>
