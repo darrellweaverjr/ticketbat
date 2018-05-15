@@ -80,11 +80,11 @@ class ReportSalesController extends Controller{
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->select(DB::raw('venues.id, venues.name, venues.accounting_email, venues.daily_sales_emails,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                          SUM(purchases.price_paid) AS paid,
-                                          SUM(purchases.commission_percent) AS commissions,
+                                          SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
+                                          SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
+                                          SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
                             ->where('purchases.status','=','Active')
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->orderBy('venues.name')
@@ -164,6 +164,8 @@ class ReportSalesController extends Controller{
     public function create_table_shows($type='admin',$e_id=null)
     {
         try {
+            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee) AS amount' :
+                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee) AS amount';
             $table = DB::table('shows')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
@@ -173,12 +175,11 @@ class ReportSalesController extends Controller{
                                         purchases.payment_type AS payment_type,
                                       COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                       SUM(purchases.retail_price) AS retail_price,
-                                      SUM(purchases.savings) AS savings,
-                                      SUM(purchases.price_paid) AS paid,
+                                      SUM(purchases.savings) AS savings, SUM(purchases.sales_taxes) AS taxes,
+                                      SUM(purchases.price_paid) AS paid, SUM(purchases.cc_fees) AS cc_fee,
                                       SUM(purchases.commission_percent) AS commissions,
                                       SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                      SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                      SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
+                                      SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                         ->where('purchases.status','=','Active')
                         ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.ticket_type')->groupBy(DB::raw('payment_type'))
                         ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.ticket_type')->orderBy(DB::raw('payment_type'));
@@ -204,6 +205,8 @@ class ReportSalesController extends Controller{
     public function create_table_tickets($type='admin',$e_id=null)
     {
         try {
+            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee) AS amount' :
+                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee) AS amount';
             //get all records
             $types = DB::table('venues')
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
@@ -213,11 +216,10 @@ class ReportSalesController extends Controller{
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->select(DB::raw('tickets.ticket_type, packages.title,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                          SUM(purchases.price_paid) AS paid,
-                                          SUM(purchases.commission_percent) AS commissions,
+                                          SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
+                                          SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                             ->where('purchases.status','=','Active')
                             ->groupBy('tickets.ticket_type')->groupBy('packages.title')->orderBy('tickets.ticket_type')->orderBy('packages.title');
             
@@ -242,6 +244,8 @@ class ReportSalesController extends Controller{
     public function create_table_types($type='admin',$e_id=null)
     {
         try {
+            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee) AS amount' :
+                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee) AS amount';
             //get all records
             $types = DB::table('venues')
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
@@ -249,11 +253,10 @@ class ReportSalesController extends Controller{
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->select(DB::raw('purchases.payment_type AS payment_type,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                          SUM(purchases.price_paid) AS paid,
-                                          SUM(purchases.commission_percent) AS commissions,
+                                          SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
+                                          SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                             ->where('purchases.status','=','Active')
                             ->groupBy(DB::raw('payment_type'))->orderBy(DB::raw('payment_type'));
             
@@ -291,15 +294,17 @@ class ReportSalesController extends Controller{
     public function create_table_channels($type='admin',$e_id=null)
     {
         try {
+            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee) AS amount' :
+                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee) AS amount';
             $table = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=', 'show_times.show_id')
                         ->select(DB::raw('purchases.channel,
-                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
+                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets, 
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
+                                          SUM(purchases.sales_taxes) AS taxes, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                         ->where('purchases.status','=','Active')
                         ->groupBy('purchases.channel')->orderBy('purchases.channel');
             
@@ -339,17 +344,18 @@ class ReportSalesController extends Controller{
     public function create_table_future_liabilities($type='admin',$e_id=null)
     {
         try {
+            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee) AS amount' :
+                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee) AS amount';
             $future = DB::table('venues')
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                             ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->select(DB::raw('venues.name AS venue, shows.name AS event, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                          SUM(purchases.price_paid) AS paid,
-                                          SUM(purchases.commission_percent) AS commissions,
+                                          SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
+                                          SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee) AS amount'))
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                             ->where('purchases.status','=','Active')
                             ->where('show_times.show_time','>',date('Y-m-d H:i'))
                             ->groupBy('show_times.show_time')->groupBy('shows.id')
@@ -429,16 +435,17 @@ class ReportSalesController extends Controller{
     public function create_table_financial($start,$end,$name,$title,$e_id,$type)
     {
         try {
+            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee) AS amount' :
+                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee) AS amount';
             $table = DB::table('purchases')
                         ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=', 'show_times.show_id')
                         ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                        ->select(DB::raw('venues.id, venues.name,
+                        ->select(DB::raw('venues.id, venues.name, SUM(purchases.sales_taxes) AS taxes, SUM(purchases.cc_fees) AS cc_fee,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(purchases.commission_percent+purchases.processing_fee) AS amount'))
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                         ->where('purchases.status','=','Active')
                         ->groupBy('venues.id')->orderBy('venues.name');
             
@@ -532,6 +539,8 @@ class ReportSalesController extends Controller{
             return array( 'tickets'=>array_sum(array_column($table,'tickets')),
                           'transactions'=>array_sum(array_column($table,'transactions')),
                           'paid'=>array_sum(array_column($table,'paid')),
+                          'taxes'=>array_sum(array_column($table,'taxes')),
+                          'cc_fee'=>array_sum(array_column($table,'cc_fee')),
                           'commissions'=>array_sum(array_column($table,'commissions')),
                           'fees_incl'=>array_sum(array_column($table,'fees_incl')),
                           'fees_over'=>array_sum(array_column($table,'fees_over')),
