@@ -432,27 +432,26 @@ class DashboardController extends Controller
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                         ->leftJoin('transaction_refunds', 'purchases.id', '=' ,'transaction_refunds.purchase_id')
-                        ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, shows.name AS show_name, 
+                        ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, customers.email,  shows.name AS show_name, 
                                           purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
                                           ( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
                                                  WHEN (purchases.payment_type="None") THEN "Comp."
                                                  ELSE purchases.payment_type END ) AS method, tickets.ticket_type, packages.title,
                                           transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                           COUNT(purchases.id) AS purchases, purchases.status, purchases.channel,
-                                          SUM(purchases.quantity) AS tickets,  SUM(ROUND(purchases.price_paid,2)) AS price_paid,
+                                          SUM(purchases.quantity) AS tickets,  purchases.retail_price,
+                                          SUM( IF(purchases.inclusive_fee>0, 0 , purchases.processing_fee) ) AS fees, purchases.savings,
+                                          SUM( IF(purchases.inclusive_fee>0, 
+                                            purchases.price_paid-purchases.retail_price-purchases.sales_taxes+purchases.savings,
+                                            purchases.price_paid-purchases.processing_fee-purchases.retail_price-purchases.sales_taxes+purchases.savings )) AS other,
+                                          purchases.sales_taxes, purchases.price_paid, purchases.cc_fees, 
+                                          ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees,2) AS to_show,
+                                          SUM( IF(purchases.inclusive_fee>0, purchases.processing_fee, 0) ) AS fees_incl,
+                                          SUM( IF(purchases.inclusive_fee>0, 0, purchases.processing_fee) ) AS fees_over,
+                                          purchases.commission_percent AS commissions,
+                                          ROUND(purchases.processing_fee+purchases.commission_percent,2) AS profit,
                                           COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
-                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid,0), 0 ) ) AS refunds, 
-                                          SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
-                                          IF(purchases.inclusive_fee>0, 
-                                                SUM(ROUND(purchases.retail_price-purchases.savings-purchases.processing_fee,2)), 
-                                                SUM(ROUND(purchases.retail_price-purchases.savings,2)) ) AS revenue,
-                                          SUM(ROUND(purchases.savings,2)) AS discounts,
-                                          SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
-                                          SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
-                                          SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                          SUM(ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees,2)) AS to_show,
-                                          SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
+                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid,0), 0 ) ) AS refunds'))
                         ->where($where)
                         ->where(function($query) {
                             $query->whereNull('transaction_refunds.id')
@@ -467,17 +466,19 @@ class DashboardController extends Controller
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
-                            'revenue'=>array_sum(array_column($data,'revenue')),
-                            'profit'=>array_sum(array_column($data,'profit')),
+                            'retail_price'=>array_sum(array_column($data,'retail_price')),
+                            'fees'=>array_sum(array_column($data,'fees')),
+                            'savings'=>array_sum(array_column($data,'savings')),
+                            'sales_taxes'=>array_sum(array_column($data,'sales_taxes')),
+                            'other'=>array_sum(array_column($data,'other')),
                             'price_paid'=>array_sum(array_column($data,'price_paid')),
+                            'cc_fees'=>array_sum(array_column($data,'cc_fees')),
+                            'to_show'=>array_sum(array_column($data,'to_show')),
                             'fees_incl'=>array_sum(array_column($data,'fees_incl')),
                             'fees_over'=>array_sum(array_column($data,'fees_over')),
-                            'to_show'=>array_sum(array_column($data,'to_show')),
-                            'discounts'=>array_sum(array_column($data,'discounts')),
+                            'commissions'=>array_sum(array_column($data,'commissions')),
                             'refunds'=>array_sum(array_column($data,'refunds')),
-                            'cc_fees'=>array_sum(array_column($data,'cc_fees')),
-                            'sales_taxes'=>array_sum(array_column($data,'sales_taxes')),
-                            'commissions'=>array_sum(array_column($data,'commissions')));
+                            'profit'=>array_sum(array_column($data,'profit')));
             //return view
             return view('admin.dashboard.accounting',compact('data','total','search'));
         } catch (Exception $ex) {
