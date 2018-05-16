@@ -15,9 +15,6 @@ use Carbon\Carbon;
 
 class HomeController extends Controller
 {
-
-    protected $shows;
-
     /**
      * Create a new controller instance.
      *
@@ -51,26 +48,44 @@ class HomeController extends Controller
             $cats = $categories = $cities = $venues = [];
             $current = date('Y-m-d H:i:s');
             $options = Util::display_options_by_user();
-            
+
             //get sliders
             $sliders = Slider::orderBy('n_order')->get();
             foreach ($sliders as $s) {
                 $s->image_url = Image::view_image($s->image_url);
             }
 
-            dd("mf!");
+            //get shows
+            $shows = DB::table('shows')
+                ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                ->join('locations', 'locations.id', '=', 'venues.location_id')
+                ->join('show_times', 'shows.id', '=', 'show_times.show_id')
+                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
+                ->select(DB::raw('shows.id, shows.venue_id, shows.name, shows.logo_url, locations.city, locations.country, locations.state, shows.category_id,
+                                          venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
+                                          MIN(tickets.retail_price+tickets.processing_fee) AS price, shows.starting_at, shows.regular_price'))
+                ->where('venues.is_featured', '>', 0)->where('shows.is_featured', '>', 0)
+                ->where('shows.is_active', '>', 0)
+                ->where(function ($query) use ($current) {
+                    $query->whereNull('shows.on_featured')
+                        ->orWhere('shows.on_featured', '<=', $current);
+                })
+                ->where($options['where'])
+                ->where('show_times.is_active', '>', 0)
+                ->whereNotNull('venues.logo_url')
+                ->whereNotNull('shows.logo_url')
+                ->when(!is_null($options['venues']), function ($shows) use ($options) {
+                    return $shows->whereIn('venues.id',$options['venues']);
+                })
+                ->orderBy('shows.sequence', 'ASC')->orderBy('show_times.show_time', 'ASC')->groupBy('shows.id')->distinct()->get();
 
-            $this->setShows($current,$options);
-
-            $iterator = $this->getShows();
-
-            foreach ( $iterator as $s) {
+            foreach ($shows as $s) {
                 //venues
                 if(!isset($venues[$s->venue_id]))
                     $venues[$s->venue_id] = ['id'=>$s->venue_id, 'name'=>$s->venue, 'city'=>$s->city];
                 //cities
                 if(!isset($cities[$s->city]))
-                    $cities[$s->city] = ['city'=>$s->city, 'state'=>$s->state, 'country'=>$s->country];                
+                    $cities[$s->city] = ['city'=>$s->city, 'state'=>$s->state, 'country'=>$s->country];
                 //add link here
                 $s->link = '/'.$options['link'].$s->slug;
                 //set up url
@@ -99,7 +114,7 @@ class HomeController extends Controller
                 if (in_array($c->id, $cats)) {
                     $categories[] = $c;
                 }
-            }            
+            }
 
             //return view
             return view('production.home.index', compact('sliders', 'shows', 'categories', 'cities', 'venues'));
@@ -121,7 +136,7 @@ class HomeController extends Controller
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
             $options = Util::display_options_by_user();
-            
+
             //calculate subcategories
             if (!empty($input['category']) && is_numeric($input['category'])) {
                 $result = [];
@@ -194,45 +209,5 @@ class HomeController extends Controller
         }
     }
 
-
-    /**
-     * @return mixed $shows
-     */
-    public function getShows()
-    {
-        return $this->shows;
-    }
-
-    /**
-     * @param mixed $shows
-     */
-    public function setShows($currentDate, $optionsSet): void
-    {
-        $this->shows = DB::table('shows')
-            ->join('venues', 'venues.id', '=', 'shows.venue_id')
-            ->join('locations', 'locations.id', '=', 'venues.location_id')
-            ->join('show_times', 'shows.id', '=', 'show_times.show_id')
-            ->join('tickets', 'tickets.show_id', '=', 'shows.id')
-            ->select(DB::raw('shows.id, shows.venue_id, shows.name, shows.logo_url, locations.city, locations.country, locations.state, shows.category_id,
-                                          venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
-                                          MIN(tickets.retail_price+tickets.processing_fee) AS price, shows.starting_at, shows.regular_price'))
-            ->where('venues.is_featured', '>', 0)->where('shows.is_featured', '>', 0)
-            ->where('shows.is_active', '>', 0)
-            ->where(function ($query) use ($currentDate) {
-                $query->whereNull('shows.on_featured')
-                    ->orWhere('shows.on_featured', '<=', $currentDate);
-            })
-            ->where($optionsSet['where'])
-            ->where('show_times.is_active', '>', 0)
-            ->whereNotNull('venues.logo_url')
-            ->whereNotNull('shows.logo_url')
-            ->when(!is_null($optionsSet['venues']), function ($shows) use ($optionsSet) {
-                return $shows->whereIn('venues.id',$optionsSet['venues']);
-            })
-            ->orderBy('shows.sequence', 'ASC')
-            ->orderBy('show_times.show_time', 'ASC')
-            ->groupBy('shows.id')->distinct()
-            ->get();
-    }
 
 }
