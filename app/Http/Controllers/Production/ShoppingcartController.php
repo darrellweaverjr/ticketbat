@@ -84,6 +84,11 @@ class ShoppingcartController extends Controller
             $s_token = Util::s_token(false,true);
             $cart = Shoppingcart::calculate_session($s_token);
             //only for pos sytem tally
+            foreach ($cart['items'] as $i)
+            {
+                $i->total = $i->total_cost - $i->savings + $i->sales_taxes;
+                $i->total += ($i->inclusive_fee>0)? 0 : $i->processing_fee;
+            } 
             if($show_time_id)
             {
                 $tally = DB::table('purchases')
@@ -529,6 +534,7 @@ class ShoppingcartController extends Controller
                 $showtimes = DB::table('show_times')
                     ->join('shows', 'show_times.show_id', '=', 'shows.id')
                     ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                    ->join('tickets', 'tickets.show_id', '=', 'shows.id')
                     ->select(DB::raw('show_times.id, show_times.time_alternative, DATE_FORMAT(show_times.show_time, "%a, %b %D, %Y @ %l:%i %p") AS show_time'))
                     ->where('show_times.show_id', $show_id)
                     ->where('show_times.is_active', '>', 0)
@@ -601,7 +607,7 @@ class ShoppingcartController extends Controller
             {
                 //get shoppingcart items
                 $cart = ['success'=>true,'quantity'=>0,'seller'=>1,'total'=>0,'items'=>[],'amex_only'=>0,'tally'=>['transactions'=>0, 'tickets'=>0, 'cash'=>0, 'total'=>0]];
-            }
+            }   
             //get styles from cloud
             $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER') . '/' . $this->style_url);
             //enums
