@@ -155,7 +155,7 @@
     <body>
         <div class="container">
             <div class="header">
-                <img src="http://www.ticketbat.com/themes/img/logo-header-white.jpg" alt="Ticket Bat">
+                <img src="https://www.ticketbat.com/themes/img/logo-header-white.jpg" alt="Ticket Bat">
             </div>
             <div class="tb-title">
                 Your Ticketbat purchase for <span class="tb-highlight-color">{{$purchase['show_name']}}</span> on <span class="tb-highlight-color">{{date('m/d/Y g:ia',strtotime($purchase['show_time']))}}</span> is confirmed. Have a great time!
@@ -244,7 +244,7 @@
 </html>
 @elseif($format == 'printer')
         <div style="text-align:center">
-            <img src="http://www.ticketbat.com/themes/img/logo-header-white.jpg" width="280" alt="TicketBat Receipt">
+            <img src="https://www.ticketbat.com/themes/img/logo-header-white.jpg" width="280" alt="TicketBat Receipt">
         </div><hr>
         @if(!empty($printer['restrictions']))
         <b>Restrictions:</b> {{implode(', ',$printer['restrictions'])}}<br>

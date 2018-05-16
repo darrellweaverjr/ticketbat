@@ -96,7 +96,7 @@
     <body>
         @if($format=='pdf')
         <div style="text-align:center">
-            <img src="http://www.ticketbat.com/themes/img/logo-header-white.jpg" alt="TicketBat">
+            <img src="https://www.ticketbat.com/themes/img/logo-header-white.jpg" alt="TicketBat">
             <h1>CONSIGNMENT TICKET AGREEMENT</h1>    
         </div><br><br>
         <table class="table table-condensed table-responsive">

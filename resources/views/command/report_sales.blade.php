@@ -33,7 +33,7 @@
         </style>
     </head>
     <body>
-        @php $logo = 'https://www.ticketbat.com/themes/img/logo-header-white.jpg' @endphp
+        @php $logo = "https://www.ticketbat.com/themes/img/logo-header-white.jpg" @endphp
         
         @if($format == 'future_liabilities')
             @foreach($data as $d)
@@ -108,6 +108,7 @@
 
         @elseif($format == 'sales')
             @foreach($data as $d)
+                @php $net = ($d['type']=='admin')? '(F+C)' : '(P-T-M-F-C)' @endphp
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                     <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
@@ -132,7 +133,7 @@
                       <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                       <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                       <td style='text-align:right'>COMM.<br>(C)</td>
-                      <td style='text-align:right'>NET<br>@if($d['type']=='admin') (F+C) @else (P-T-M-F-C) @endif</td>
+                      <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
                   @foreach($t['data'] as $v)
                   @if($d['type'] == 'admin' || $d['type'] != 'admin' && $v->name == $d['title'])
@@ -183,7 +184,7 @@
                       <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                       <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                       <td style='text-align:right'>COMM.<br>(C)</td>
-                      <td style='text-align:right'>NET<br>@if($d['type']=='admin') (F+C) @else (P-T-M-F-C) @endif</td>
+                      <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
                   @foreach($d['table_types']['data'] as $e)
                     <tr>
@@ -257,7 +258,7 @@
                       <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                       <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                       <td style='text-align:right'>COMM.<br>(C)</td>
-                      <td style='text-align:right'>NET<br>@if($d['type']=='admin') (F+C) @else (P-T-M-F-C) @endif</td>
+                      <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
                   @foreach($d['table_channels']['data'] as $e)
                     <tr>
@@ -305,7 +306,7 @@
                         <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                         <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                         <td style='text-align:right'>COMM.<br>(C)</td>
-                        <td style='text-align:right'>NET<br>@if($d['type']=='admin') (F+C) @else (P-T-M-F-C) @endif</td>
+                        <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
                   @foreach($d['table_tickets']['data'] as $e)
                     <tr>
@@ -344,7 +345,7 @@
                   <tr class="theader">
                         <td width="25%" align='left'>SHOWS</td>
                         <td style='text-align:center'>DATE<br>TIME</td>
-                        <td style='text-align:center'>TICK<br>TYPE</td>
+                        <td style='text-align:center'>TICKET</td>
                         <td style='text-align:center'>TRANS.</td>
                         <td style='text-align:center'>TICKS.</td>
                         <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
@@ -353,13 +354,13 @@
                         <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                         <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                         <td style='text-align:right'>COMM.<br>(C)</td>
-                        <td style='text-align:right'>NET<br>@if($d['type']=='admin') (F+C) @else (P-T-M-F-C) @endif</td>
+                        <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
                   @foreach($d['table_shows']['data'] as $e)
                     <tr>
                           <td width="25%" align='left'>{{$e->name}}</td>
                           <td style='text-align:center'>{{$e->show_time}}</td>
-                          <td style='text-align:center'>{{$e->ticket_type}}</td>
+                          <td style='text-align:center'>{{$e->ticket_type}} - {{$e->title}}</td>
                           <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                           <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>

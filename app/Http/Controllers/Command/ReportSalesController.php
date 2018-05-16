@@ -171,7 +171,9 @@ class ReportSalesController extends Controller{
                         ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                         ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
-                        ->select(DB::raw('venues.name AS venue, shows.name, tickets.ticket_type, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
+                        ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                        ->select(DB::raw('venues.name AS venue, shows.name, tickets.ticket_type, packages.title,
+                                        DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
                                         purchases.payment_type AS payment_type,
                                       COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                       SUM(purchases.retail_price) AS retail_price,
@@ -181,8 +183,8 @@ class ReportSalesController extends Controller{
                                       SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                       SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                         ->where('purchases.status','=','Active')
-                        ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.ticket_type')->groupBy(DB::raw('payment_type'))
-                        ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.ticket_type')->orderBy(DB::raw('payment_type'));
+                        ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.id')
+                        ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.id');
 
             if($type=='admin' || empty($e_id))
                 $table->whereDate('purchases.created','>=',$this->start_date);
@@ -221,7 +223,7 @@ class ReportSalesController extends Controller{
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                             ->where('purchases.status','=','Active')
-                            ->groupBy('tickets.ticket_type')->groupBy('packages.title')->orderBy('tickets.ticket_type')->orderBy('packages.title');
+                            ->groupBy('tickets.ticket_type')->groupBy('packages.title')->orderBy('tickets.id')->orderBy('packages.title');
             
             if($type=='admin' || empty($e_id))
                 $types->whereDate('purchases.created','>=',$this->start_date);
