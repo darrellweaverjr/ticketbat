@@ -250,7 +250,7 @@ var SubmitFunctions = function () {
                                 $('#btn_loading').addClass('hidden');
                                 $('#btn_process').removeClass('hidden');
                                 $('#accept_terms').prop('checked', false);
-                                disabled_submit();
+                                $('#btn_process').prop('disabled',true);
                             });
                         }
                     },
@@ -265,7 +265,7 @@ var SubmitFunctions = function () {
                             $('#btn_loading').addClass('hidden');
                             $('#btn_process').removeClass('hidden');
                             $('#accept_terms').prop('checked', false);
-                            disabled_submit();
+                            $('#btn_process').prop('disabled',true);
                         });
                     }
                 });

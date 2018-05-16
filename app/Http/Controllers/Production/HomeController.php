@@ -48,13 +48,13 @@ class HomeController extends Controller
             $cats = $categories = $cities = $venues = [];
             $current = date('Y-m-d H:i:s');
             $options = Util::display_options_by_user();
-            
+
             //get sliders
             $sliders = Slider::orderBy('n_order')->get();
             foreach ($sliders as $s) {
                 $s->image_url = Image::view_image($s->image_url);
             }
-            
+
             //get shows
             $shows = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
@@ -85,7 +85,7 @@ class HomeController extends Controller
                     $venues[$s->venue_id] = ['id'=>$s->venue_id, 'name'=>$s->venue, 'city'=>$s->city];
                 //cities
                 if(!isset($cities[$s->city]))
-                    $cities[$s->city] = ['city'=>$s->city, 'state'=>$s->state, 'country'=>$s->country];                
+                    $cities[$s->city] = ['city'=>$s->city, 'state'=>$s->state, 'country'=>$s->country];
                 //add link here
                 $s->link = '/'.$options['link'].$s->slug;
                 //set up url
@@ -114,7 +114,7 @@ class HomeController extends Controller
                 if (in_array($c->id, $cats)) {
                     $categories[] = $c;
                 }
-            }            
+            }
 
             //return view
             return view('production.home.index', compact('sliders', 'shows', 'categories', 'cities', 'venues'));
@@ -136,7 +136,7 @@ class HomeController extends Controller
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
             $options = Util::display_options_by_user();
-            
+
             //calculate subcategories
             if (!empty($input['category']) && is_numeric($input['category'])) {
                 $result = [];
