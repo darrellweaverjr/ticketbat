@@ -64,7 +64,7 @@ class HomeController extends Controller
                 ->select(DB::raw('shows.id, shows.venue_id, shows.name, shows.logo_url, locations.city, locations.country, locations.state, shows.category_id,
                                           venues.name AS venue, MIN(show_times.show_time) AS show_time, shows.slug, show_times.time_alternative,
                                           MIN(tickets.retail_price+tickets.processing_fee) AS price, shows.starting_at, shows.regular_price'))
-                ->where('venues.is_featured', '>', 0)->where('shows.is_featured', '>', 0)
+                ->where('venues.is_featured', '>', 0)
                 ->where('shows.is_active', '>', 0)
                 ->where(function ($query) use ($current) {
                     $query->whereNull('shows.on_featured')
@@ -167,9 +167,10 @@ class HomeController extends Controller
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('locations', 'locations.id', '=', 'venues.location_id')
                 ->join('show_times', 'shows.id', '=', 'show_times.show_id')
+                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
                 ->select(DB::raw('shows.id, show_times.time_alternative,
                                           DATE_FORMAT(MIN(show_times.show_time),"%b %d, %Y @ %h:%i %p") AS date_venue_on'))
-                ->where('venues.is_featured', '>', 0)->where('shows.is_featured', '>', 0)
+                ->where('venues.is_featured', '>', 0)
                 ->where('shows.is_active', '>', 0)
                 ->where(function ($query) use ($current) {
                     $query->whereNull('shows.on_featured')

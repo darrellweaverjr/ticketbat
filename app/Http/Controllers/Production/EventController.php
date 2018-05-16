@@ -29,6 +29,8 @@ class EventController extends Controller
             if (empty($slug)) {
                 return redirect()->route('index');
             }
+            $current = date('Y-m-d H:i:s');
+            $options = Util::display_options_by_user();
             //get all records
             $event = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
@@ -113,18 +115,10 @@ class EventController extends Controller
             foreach ($event->bands as $b) {
                 $b->image_url = Image::view_image($b->image_url);
             }
-
-
-            //get showtimes
-            // Don't hide shows for Seller accounts hack
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
-                $nowVar = Carbon::now()->subDay()->toDateTimeString();
-            } else {
-                $nowVar = Carbon::now()->toDateTimeString();
-            }
-
+            //showtimes
             $event->showtimes = DB::table('show_times')
                 ->join('shows', 'show_times.show_id', '=', 'shows.id')
+                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
                 ->select(DB::raw('show_times.id, show_times.time_alternative,
                                                  DATE_FORMAT(show_times.show_time,"%Y/%m/%d %H:%i") AS show_time,
                                                  DATE_FORMAT(show_times.show_time,"%a") AS show_day,
@@ -133,13 +127,8 @@ class EventController extends Controller
                                                  IF(show_times.slug, show_times.slug, shows.ext_slug) AS ext_slug,
                                                  IF(NOW()>DATE_SUB(show_times.show_time,INTERVAL shows.cutoff_hours HOUR), 1, 0) as presale'))
                 ->where('show_times.show_id', $event->show_id)->where('show_times.is_active', '>', 0)
-                ->where(function ($query) use ($nowVar) {
-                    $query->where('show_times.show_time', '>=', $nowVar);
-                })
-                ->where(function ($query) use ($nowVar) {
-                    $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)', '>=', $nowVar ));
-                })
-                ->orderBy('show_times.show_time')->get();
+                ->where($options['where'])
+                ->groupBy('show_times.id')->orderBy('show_times.show_time')->get();
             //get reviews
             $reviews = DB::table('show_reviews')
                 ->select(DB::raw('COUNT(id) AS posts, AVG(rating) AS rating'))
@@ -169,42 +158,35 @@ class EventController extends Controller
     public function buy($slug, $product)
     {
         try {
+            $current = date('Y-m-d H:i:s');
+            $options = Util::display_options_by_user();
             $qty_tickets_sell = 20;
             $stock_avail_warning = 75;
-            if (empty($slug) || empty($product)) {
+            if(empty($slug) || empty($product)) 
                 return redirect()->route('index');
-            }
-
-            // Don't hide shows for Seller accounts hack
-            if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE')))) {
-                $nowVar = Carbon::now()->subDay()->toDateTimeString();
-            } else {
-                $nowVar = Carbon::now()->toDateTimeString();
-            }
-
             //get all records
             $event = DB::table('shows')
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('stages', 'stages.id', '=', 'shows.stage_id')
                 ->join('show_times', 'show_times.show_id', '=', 'shows.id')
+                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
                 ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, shows.ticket_limit,
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time,
                                           show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id, stages.ticket_order,
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
                                           shows.on_sale, CASE WHEN NOW() > (show_times.show_time - INTERVAL shows.cutoff_hours HOUR) THEN 0 ELSE 1 END AS for_sale'))
                 ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
-                ->where(function ($query) use ($nowVar) {
+                ->where(function ($query) use ($current) {
+                    $query->whereNull('shows.on_sale')
+                        ->orWhere('shows.on_sale', '<=', $current);
+                })
+                ->where(function ($query) use ($current) {
                     $query->whereNull('shows.on_featured')
-                        ->orWhere('shows.on_featured', '<=', $nowVar);
+                        ->orWhere('shows.on_featured', '<=', $current);
                 })
+                ->where($options['where'])
                 ->where('shows.slug', $slug)->where('show_times.id', $product)
-                ->where('show_times.is_active', '>', 0)
-                ->where(function ($query) use ($nowVar) {
-                    $query->where('show_times.show_time', '>=', $nowVar);
-                })
-                ->where(function ($query) use ($nowVar) {
-                    $query->whereRaw(DB::raw('DATE_SUB(show_times.show_time, INTERVAL shows.cutoff_hours HOUR)', '>=', $nowVar ));
-                })
+                ->where('show_times.is_active', '>', 0)->where('show_times.show_time', '>=', $current)
                 ->first();
             if (!$event) {
                 return redirect()->route('index');

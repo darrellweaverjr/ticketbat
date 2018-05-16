@@ -422,6 +422,7 @@ class ShoppingcartController extends Controller
                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                 ->join('stages', 'stages.id', '=', 'shows.stage_id')
                 ->join('show_times', 'show_times.show_id', '=', 'shows.id')
+                ->join('tickets', 'tickets.show_id', '=', 'shows.id')
                 ->select(DB::raw('venues.id AS venue_id, venues.name AS venue, venues.logo_url AS venue_url,
                                   shows.id as show_id, shows.name, shows.logo_url'))
                 ->where('venues.is_featured', '>', 0)

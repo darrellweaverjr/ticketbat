@@ -40,7 +40,7 @@ class VenueController extends Controller
                         ->select(DB::raw('venues.id as venue_id, venues.slug, venues.description, venues.name,
                                           venues.facebook, venues.twitter, venues.googleplus, venues.yelpbadge, venues.youtube, venues.instagram,
                                           locations.*, venues.logo_url'))
-                        ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where('venues.is_featured','>',0)->where('shows.is_active','>',0)
                         ->where('show_times.is_active','>',0)
                         ->where(DB::raw($this->cutoff_date()),'>', \Carbon\Carbon::now())
                         ->where('tickets.is_active','>',0)
@@ -105,7 +105,7 @@ class VenueController extends Controller
                         ->select(DB::raw('shows.id AS show_id, shows.name, shows.logo_url, locations.city, categories.name AS category,
                                           venues.name AS venue, show_times.show_time, shows.slug, show_times.time_alternative, shows.description,
                                           IF(shows.starting_at,shows.starting_at,MIN(tickets.retail_price+tickets.processing_fee)) AS price'))
-                        ->where('shows.venue_id',$venue->venue_id)->where('shows.is_active','>',0)->where('shows.is_featured','>',0)
+                        ->where('shows.venue_id',$venue->venue_id)->where('shows.is_active','>',0)
                         ->where($options['where'])
                         ->where('show_times.is_active','=',1)
                         ->whereNotNull('shows.logo_url');

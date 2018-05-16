@@ -325,12 +325,12 @@ class Util extends Model
         try {
             $current = date('Y-m-d H:i:s');
             $date_limit = date('Y-m-d H:i:s', strtotime('yesterday'));
-            $data = ['where'=>[['show_times.show_time','>=',$current]], 'venues'=>null, 'link'=>'event/'];
+            $data = ['where'=>[['show_times.show_time','>=',$current],['shows.is_featured','>',0],['tickets.only_pos','=',0]], 'venues'=>null, 'link'=>'event/'];
             if(Auth::check())
             {
                 if(in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE'))))
                 {
-                    $data['where'] = [['show_times.show_time','>=',$date_limit]];
+                    $data['where'] = [['show_times.show_time','>=',$date_limit],['tickets.only_pos','>',0]];
                     $data['where'][] = [DB::raw('DATE_SUB(show_times.show_time,INTERVAL venues.cutoff_hours_start HOUR)'),'<=',$current];
                     $data['where'][] = [DB::raw('DATE_ADD(show_times.show_time,INTERVAL venues.cutoff_hours_end HOUR)'),'>=',$current];
                     $venues_edit = Auth::user()->venues_check_ticket;
@@ -340,6 +340,10 @@ class Util extends Model
                 else if(in_array(Auth::user()->id, explode(',', env('ROOT_USER_ID'))))
                 {
                     $data['where'] = [['show_times.show_time','>=',$date_limit]];
+                }
+                else if(in_array(Auth::user()->user_type_id, explode(',', env('SELLER_OPTION_USER_TYPE'))))
+                {
+                    $data['where'] = [['show_times.show_time','>=',$current]];
                 }
             }
             return $data;
