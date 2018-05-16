@@ -539,7 +539,7 @@ class ShoppingcartController extends Controller
                     ->where('show_times.show_id', $show_id)
                     ->where('show_times.is_active', '>', 0)
                     ->where($options['where'])
-                    ->orderBy('show_times.show_time')->take($display_schedule)->get();
+                    ->groupBy('show_times.id')->orderBy('show_times.show_time')->take($display_schedule)->get();
                 $show_time_id = (!count($showtimes))? null : ( (empty($show_time_id))? $showtimes[0]->id : $show_time_id );
             }
             else
