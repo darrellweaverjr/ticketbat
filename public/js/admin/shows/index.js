@@ -367,6 +367,14 @@ var TableDatatablesManaged = function () {
                     }
                 });
             }
+            if(data.tickets_default)
+            {
+                $.each(data.tickets_default,function(k, v) {
+                    $('#form_model_show_tickets_default input:hidden[name="'+k+'"]').val(v);
+                });
+            }
+            else
+                $('#form_model_show_tickets_default').trigger('reset');
             //fill out passwords
             if(data.passwords && data.passwords.length)
             {
@@ -937,33 +945,30 @@ var TableDatatablesManaged = function () {
             var classX = $(this).find('option:selected').attr('data-class');
             $('#form_model_show_tickets [name="ticket_type_class"]').val(classX);
         });
-        $('#btn_model_ticket_add').on('click', function(ev) {
-            $('#form_model_show_tickets input[name="id"]:hidden').val('').trigger('change');
-            $('#form_model_show_tickets').trigger('reset');
-            $('#form_model_show_tickets [name="ticket_type"]').trigger('change');
-            jQuery.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '/admin/shows/tickets',
-                data: {venue_defaults:1,show_id:$('#form_model_update input[name="id"]:hidden').val()},
-                success: function(data) {
-                    if(data.success && data.default)
-                    {
-                        $('#form_model_show_tickets [name="processing_fee"]').val(data.default.default_processing_fee);
-                        $('#form_model_show_tickets [name="percent_pf"]').val(data.default.default_percent_pfee);
-                        $('#form_model_show_tickets [name="fixed_commission"]').val(data.default.default_fixed_commission);
-                        $('#form_model_show_tickets [name="percent_commission"]').val(data.default.default_percent_commission);
-                        $('#modal_model_show_tickets').modal('show');
-                    }
-                    else{
-                        $('#modal_model_show_tickets').modal('show');
-                    }
-                },
-                error: function(){
-                    $('#modal_model_show_tickets').modal('show');
-                }
-            });
+        function toggle_default_tickets()
+        {
+            if( $('#form_model_show_tickets .make-switch:checkbox[name="only_posx"]').is(':checked'))
+            {
+                $('#form_model_show_tickets [name="processing_fee"]').val($('#form_model_show_tickets_default input[name="default_processing_fee_pos"]').val());
+                $('#form_model_show_tickets [name="percent_pf"]').val($('#form_model_show_tickets_default input[name="default_percent_pfee_pos"]').val());
+                $('#form_model_show_tickets [name="fixed_commission"]').val($('#form_model_show_tickets_default input[name="default_fixed_commission_pos"]').val());
+                $('#form_model_show_tickets [name="percent_commission"]').val($('#form_model_show_tickets_default input[name="default_percent_commission_pos"]').val());
+            }
+            else
+            {
+                $('#form_model_show_tickets [name="processing_fee"]').val($('#form_model_show_tickets_default input[name="default_processing_fee"]').val());
+                $('#form_model_show_tickets [name="percent_pf"]').val($('#form_model_show_tickets_default input[name="default_percent_pfee"]').val());
+                $('#form_model_show_tickets [name="fixed_commission"]').val($('#form_model_show_tickets_default input[name="default_fixed_commission"]').val());
+                $('#form_model_show_tickets [name="percent_commission"]').val($('#form_model_show_tickets_default input[name="default_percent_commission"]').val());
+            }
+        }
+        $('#btn_model_ticket_add').on('click', function(ev) {            
+            toggle_default_tickets();
+            $('#modal_model_show_tickets').modal('show');
         });
+        $('#form_model_show_tickets .make-switch:checkbox[name="only_posx"]').on('switchChange.bootstrapSwitch', function (event, state) {
+            toggle_default_tickets();
+        }); 
         $('#tb_show_tickets').on('click', 'button', function(e){
             var row = $(this).closest('tr');
             //edit

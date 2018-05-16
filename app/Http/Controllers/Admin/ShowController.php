@@ -267,6 +267,11 @@ class ShowController extends Controller{
                 $tickets = DB::table('tickets')->join('packages', 'tickets.package_id', '=' ,'packages.id')
                                 ->select('tickets.*','packages.title')->where('tickets.show_id','=',$show->id)->distinct()->get();
                 $tt_inactive = DB::table('ticket_types_inactive')->select('ticket_types_inactive.*')->distinct()->implode('ticket_types_inactive.ticket_type',',');
+                $tickets_default = DB::table('venues')
+                                ->join('shows', 'shows.venue_id', '=' ,'venues.id')
+                                ->select('venues.default_processing_fee','venues.default_percent_pfee','venues.default_percent_commission','venues.default_fixed_commission',
+                                         'venues.default_processing_fee_pos','venues.default_percent_pfee_pos','venues.default_percent_commission_pos','venues.default_fixed_commission_pos')
+                                ->where('shows.id','=',$show->id)->first();
                 $show_times = ShowTime::where('show_id','=',$show->id)->where('show_time','>=',$root_setting)->distinct()->get();
                 $passwords = DB::table('show_passwords')->select('show_passwords.*')
                                 ->where('show_passwords.show_id','=',$show->id)->distinct()->get();
@@ -290,7 +295,7 @@ class ShowController extends Controller{
                     $b->file = Image::view_image($b->file);
                 $videos = DB::table('videos')->join('show_videos', 'show_videos.video_id', '=' ,'videos.id')
                                 ->select('videos.*')->where('show_videos.show_id','=',$show->id)->distinct()->get();
-                return ['success'=>true,'show'=>$show,'tickets'=>$tickets,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'sweepstakes'=>$sweepstakes,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
+                return ['success'=>true,'show'=>$show,'tickets'=>$tickets,'tickets_default'=>$tickets_default,'ticket_types_inactive'=>$tt_inactive,'show_times'=>$show_times,'passwords'=>$passwords,'bands'=>$bands,'sweepstakes'=>$sweepstakes,'contracts'=>$contracts,'images'=>$images,'banners'=>$banners,'videos'=>$videos];
             }
         } catch (Exception $ex) {
             throw new Exception('Error Shows Get: '.$ex->getMessage());
@@ -619,16 +624,6 @@ class ShowController extends Controller{
             {
                 $tickets = Ticket::find($input['id']);
                 return ['success'=>true,'ticket'=>$tickets];
-            }
-            else if(isset($input['venue_defaults']) && isset($input['show_id']))
-            {
-                $default = DB::table('venues')
-                                ->join('shows', 'shows.venue_id', '=' ,'venues.id')
-                                ->select('venues.default_processing_fee','venues.default_percent_pfee','venues.default_percent_commission','venues.default_fixed_commission')
-                                ->where('shows.id','=',$input['show_id'])->first();
-                if($default)
-                    return ['success'=>true,'default'=>$default];
-                return ['success'=>false];
             }
             //save
             else if(isset($input))

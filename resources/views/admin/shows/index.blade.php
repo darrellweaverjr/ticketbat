@@ -922,6 +922,16 @@
                 </div>
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
+                    <form method="post" id="form_model_show_tickets_default">
+                        <input type="hidden" name="default_processing_fee" value="" />
+                        <input type="hidden" name="default_processing_fee_pos" value="" />
+                        <input type="hidden" name="default_percent_pfee" value="" />
+                        <input type="hidden" name="default_percent_pfee_pos" value="" />
+                        <input type="hidden" name="default_percent_commission" value="" />
+                        <input type="hidden" name="default_percent_commission_pos" value="" />
+                        <input type="hidden" name="default_fixed_commission" value="" />
+                        <input type="hidden" name="default_fixed_commission_pos" value="" />
+                    </form>
                     <form method="post" id="form_model_show_tickets">
                         <input type="hidden" name="_token" value="{{ Session::token() }}" />
                         <input type="hidden" name="show_id" value="" />
