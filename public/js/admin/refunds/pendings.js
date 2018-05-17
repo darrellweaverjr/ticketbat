@@ -15,8 +15,8 @@ var PendingDatatablesManaged = function () {
         //PERSONALIZED FUNCTIONS
         //function resend
         $('#btn_model_refund').on('click', function(ev) {
-            var id = $("#tb_model [name=radios]:checked").val();
-            var skip = $("#tb_model [name=radios]:checked").data('skip');
+            var id = $("#tb_model_pendings [name=radios]:checked").val();
+            var skip = $("#tb_model_pendings [name=radios]:checked").data('skip');
             $('#form_model_refund').trigger('reset');
             $('#form_model_refund [name="id"]').val(id);
             if(skip>0)
