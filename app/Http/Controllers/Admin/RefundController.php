@@ -246,6 +246,16 @@ class RefundController extends Controller{
                             return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' status updated successfully!<br>'.$note];
                         return ['success'=>false, 'msg'=>'There was an error trying to update the status of the purchase #'.$purchase->id.'<br>'.$note];
                     }
+                    else if($input['type']=='charge_purchase')
+                    {
+                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Chargeback.';
+                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
+                        $purchase->status = 'Chargeback';
+                        $purchase->updated = $current;
+                        if($purchase->save())
+                            return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' status updated successfully!<br>'.$note];
+                        return ['success'=>false, 'msg'=>'There was an error trying to update the status of the purchase #'.$purchase->id.'<br>'.$note];
+                    }
                     else if($purchase->transaction_id)
                     {
                         if($input['type']=='current_purchase')

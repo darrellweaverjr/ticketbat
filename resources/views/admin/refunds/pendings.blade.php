@@ -117,11 +117,16 @@
                             </div>
                         </div>
                         <div class="row" style="padding-left:15px">
-                            <div class="mt-radio-list">
-                                <label class="mt-radio mt-radio-single mt-radio-outline" style="color:red;font-size:small;">
-                                    <input type="radio" name="type" value="update_purchase" />Select this option only if you want to update the status in the system and already did a manual refund.
+                            <div class="mt-radio-list" style="color:red;font-size:small;">
+                                <label class="mt-radio mt-radio-single mt-radio-outline" >
+                                    <input type="radio" name="type" value="update_purchase" />Select this option only if you want to update the status in the system to <b>REFUNDED</b> and already did a manual refund.
                                     <span></span>
                                 </label>
+                                <label class="mt-radio mt-radio-single mt-radio-outline" >
+                                    <input type="radio" name="type" value="charge_purchase" />Select this option only if you want to update the status in the system to <b>CHARGEBACK</b> and bank already confirmed the operation.
+                                    <span></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="form-actions">

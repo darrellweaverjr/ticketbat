@@ -75,7 +75,7 @@ var TableDatatablesManaged = function () {
             reset_purchase_status();
             var select = '<select data-id="'+id+'" class="form-control" name="status">';
             $.each($('#tb_model').data('status'),function(k, v) {
-                if(v != 'Refunded')
+                if(v != 'Refunded' && v != 'Chargeback')
                 {
                     if(v == status.data('status'))
                         select+= '<option selected value="'+k+'">'+v+'</option>';
