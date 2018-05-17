@@ -82,6 +82,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     //contact logs
     Route::match(['get','post'], 'contacts', 'ContactController@index')->middleware('permissions:CONTACTS');
     //purchases
+    Route::post('purchases/filter', 'PurchaseController@filter')->middleware('permissions:PURCHASES');
     Route::post('purchases/email', 'PurchaseController@email')->middleware('permissions:PURCHASES');
     Route::get('purchases/tickets/{type}/{ids}', 'PurchaseController@tickets')->middleware('permissions:PURCHASES');
     Route::post('purchases/save', 'PurchaseController@save')->middleware('permissions:PURCHASES');

@@ -29,12 +29,23 @@
                                     <label class="control-label col-md-3">Show:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
-                                            <select class="form-control" name="show" style="width: 321px !important" data-content='@php echo str_replace("'"," ",json_encode($search["shows"]));@endphp'>
+                                            <select class="form-control" name="show" style="width: 321px !important">
                                                 <option selected value="">All</option>
                                                 @foreach($search['shows'] as $index=>$s)
-                                                    @if($s->venue_id == $search['venue'])
                                                     <option @if($s->id==$search['show']) selected @endif value="{{$s->id}}">{{$s->name}}</option>
-                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Ticket:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <select class="form-control" name="ticket" style="width: 321px !important">
+                                                <option selected value="">All</option>
+                                                @foreach($search['tickets'] as $index=>$t)
+                                                    <option @if($t->id==$search['ticket']) selected @endif value="{{$t->id}}">{{$t->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -69,21 +80,6 @@
                                         </div>
                                         <div class="input-group">
                                             <input type="number" class="form-control input-large" name="showtime_id" value="{{$search['showtime_id']}}" placeholder="ID of the event time (showtime id)" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Sold Date:</label>
-                                    <div class="col-md-9 show-error">
-                                        <div class="input-group input-large" id="sold_times_date">
-                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$search['soldtime_start_date']}}" readonly="true">
-                                            <span class="input-group-addon"></span>
-                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$search['soldtime_end_date']}}" readonly="true">
-                                            <span class="input-group-btn">
-                                                <button class="btn default" type="button" id="clear_sold_times_date">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -175,6 +171,21 @@
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="text" class="form-control input-large" name="refnum" value="{{$search['refnum']}}" placeholder="RefNum of the transaction" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Trans.Date:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group input-large" id="sold_times_date">
+                                            <input type="text" class="form-control" name="soldtime_start_date" value="{{$search['soldtime_start_date']}}" readonly="true">
+                                            <span class="input-group-addon"></span>
+                                            <input type="text" class="form-control" name="soldtime_end_date" value="{{$search['soldtime_end_date']}}" readonly="true">
+                                            <span class="input-group-btn">
+                                                <button class="btn default" type="button" id="clear_sold_times_date">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\View;
 use App\Http\Models\Purchase;
 use App\Http\Models\Discount;
 use App\Http\Models\User;
+use App\Http\Models\Show;
 use App\Http\Models\Customer;
 use App\Http\Models\Ticket;
 use App\Http\Models\ShowTime;
@@ -544,6 +545,30 @@ class PurchaseController extends Controller{
 
         } catch (Exception $ex) {
             throw new Exception('Error Purchases tickets: '.$ex->getMessage());
+        }
+    }
+    /**
+     * View filters enum of purchase.
+     *
+     * @void
+     */
+    public function filter()
+    {
+        try {
+            //init
+            $input = Input::all();
+            if(!empty($input['venue_id']))
+                $values = Show::where('venue_id',$input['venue_id'])->orderBy('name')->get(['id','name']);
+            else if(!empty($input['show_id']))
+                $values = DB::table('tickets')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->select(DB::raw('tickets.id, CONCAT(tickets.ticket_type," - ",packages.title) AS name'))
+                            ->where('tickets.show_id',$input['show_id'])->groupBy('tickets.id')->get();
+            else
+                $values = [];
+            return ['success'=>true,'values'=>$values];    
+        } catch (Exception $ex) {
+            throw new Exception('Error Purchases filter: '.$ex->getMessage());
         }
     }
 }

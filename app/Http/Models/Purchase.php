@@ -666,6 +666,10 @@ class Purchase extends Model
                 $data['search']['ticket_type'] = (!empty($input['ticket_type']))? $input['ticket_type'] : '';
                 if(!empty($input['ticket_type']))
                     $data['where'][] = ['tickets.ticket_type','=',$data['search']['ticket_type']];
+                //search ticket
+                $data['search']['ticket'] = (!empty($input['ticket']))? $input['ticket'] : '';
+                if(!empty($input['ticket']))
+                    $data['where'][] = ['tickets.id','=',$data['search']['ticket']];
                 //search status
                 $data['search']['statu'] = (!empty($input['statu']))? $input['statu'] : '';
                 if(!empty($input['statu']))
@@ -739,9 +743,8 @@ class Purchase extends Model
                     if(!empty(Auth::user()->venues_edit) && count(explode(',',Auth::user()->venues_edit)))
                     {
                         $data['where'][] = [DB::raw('shows.venue_id IN ('.Auth::user()->venues_edit.') OR shows.create_user_id'),'=',Auth::user()->id];
-                        //add shows and venues for search
+                        //add venues for search
                         $data['search']['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
-                        $data['search']['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('create_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
                     }
                     else
                         $data['where'][] = ['shows.create_user_id','=',Auth::user()->id];
@@ -749,13 +752,18 @@ class Purchase extends Model
                 //all
                 else
                 {
-                    //add shows and venues for search
+                    //add venues for search
                     $data['search']['venues'] = Venue::orderBy('name')->get(['id','name']);
-                    $data['search']['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
                 }
             }
             else
                 $data['where'][] = ['purchases.id','=',0];
+            //fill out enums for shows and tickets
+            $data['search']['shows'] = ((!empty($data['search']['venue'])))? Show::where('venue_id',$data['search']['venue'])->orderBy('name')->get(['id','name','venue_id']) : [];
+            $data['search']['tickets'] = ((!empty($data['search']['show'])))? DB::table('tickets')
+                                                    ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                                                    ->select(DB::raw('tickets.id, CONCAT(tickets.ticket_type," - ",packages.title) AS name'))
+                                                    ->where('tickets.show_id', $data['search']['show'])->groupBy('tickets.id')->get() : [];
             
         } catch (Exception $ex) {
             

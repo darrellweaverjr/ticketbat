@@ -52,19 +52,43 @@ var FilterSearchManaged = function () {
             $('#form_model_search [name="soldtime_end_date"]').val('');
         });
         //search venue on select
-        $('#form_model_search select[name="venue"]').bind('change click', function() {
-            var venue = $(this).val();
+        $('#form_model_search select[name="venue"]').bind('change', function() {
+            var venue_id = $(this).val();
             $('#form_model_search select[name="show"]').html('<option selected value="">All</option>');
-            var shows = $('#form_model_search select[name="show"]').data('content');
-            if(shows)
-            {
-                $.each(shows,function(k, v) {
-                    if(v.venue_id == venue)
-                        $('#form_model_search select[name="show"]').append('<option value="'+v.id+'">'+v.name+'</option>');
-                });
-            }
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/purchases/filter',
+                data: {venue_id:venue_id},
+                success: function(data) {
+                    if(data.success)
+                    {
+                        $.each(data.values,function(k, v) {
+                            $('#form_model_search select[name="show"]').append('<option value="'+v.id+'">'+v.name+'</option>');
+                        });
+                    }
+                }
+            });
         });
-        
+        //search show on select
+        $('#form_model_search select[name="show"]').bind('change', function() {
+            var show_id = $(this).val();
+            $('#form_model_search select[name="ticket"]').html('<option selected value="">All</option>');
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/admin/purchases/filter',
+                data: {show_id:show_id},
+                success: function(data) {
+                    if(data.success)
+                    {
+                        $.each(data.values,function(k, v) {
+                            $('#form_model_search select[name="ticket"]').append('<option value="'+v.id+'">'+v.name+'</option>');
+                        });
+                    }
+                }
+            });
+        });
         //function autoshow modal search
         if(parseInt($('#modal_model_search').data('modal')) > 0)
             $('#modal_model_search').modal('show');
