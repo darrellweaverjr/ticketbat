@@ -312,11 +312,11 @@
                                                 </label><br>
                                                 <label>
                                                     <input type="hidden"   name="update_transaction_customer" value="0" />
-                                                    <input type="checkbox" name="update_transaction_customer" value="1" /> Update associated cardholder name in transactions using the Customer ID?
+                                                    <input type="checkbox" disabled="true" name="update_transaction_customer" value="1" /> Update associated cardholder name in transactions using the Customer ID?
                                                 </label><br>
                                                 <label>
                                                     <input type="hidden"   name="update_transaction_user" value="0" />
-                                                    <input type="checkbox" name="update_transaction_user" value="1" /> Update associated cardholder name in transactions using the User ID?
+                                                    <input type="checkbox" disabled="true" name="update_transaction_user" value="1" /> Update associated cardholder name in transactions using the User ID?
                                                 </label>
                                             </div>
                                         </div>
