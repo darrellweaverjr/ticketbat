@@ -346,6 +346,7 @@ class DashboardController extends Controller
             //get all records
             $data = DB::table('discounts')
                     ->leftJoin('purchases', 'discounts.id', '=' ,'purchases.discount_id')
+                    ->leftJoin('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->leftJoin('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->leftJoin('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->leftJoin('venues', 'venues.id', '=' ,'shows.venue_id')
@@ -443,6 +444,7 @@ class DashboardController extends Controller
             $search = $data['search'];
             //get all records
             $data = DB::table('purchases')
+                        ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
@@ -520,6 +522,7 @@ class DashboardController extends Controller
             }
             $search['order'] = $order;
             $data = DB::table('purchases')
+                    ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
@@ -550,6 +553,7 @@ class DashboardController extends Controller
             else
                 $groupby = 'shows.id';
             $graph['channel'] = DB::table('purchases')
+                    ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('purchases.channel,
@@ -557,6 +561,7 @@ class DashboardController extends Controller
                     ->where($where)
                     ->groupBy('channel')->orderBy('amount','ASC')->distinct()->get()->toJson();
             $graph['show'] = DB::table('purchases')
+                    ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
