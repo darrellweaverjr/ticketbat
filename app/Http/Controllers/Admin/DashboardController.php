@@ -109,7 +109,7 @@ class DashboardController extends Controller
                                                  WHEN (purchases.payment_type="None") THEN "Comp."
                                                  ELSE purchases.payment_type END ) AS method, tickets.ticket_type, packages.title,
                                           transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                          COUNT(purchases.id) AS purchases, purchases.status, purchases.channel,
+                                          COUNT(purchases.id) AS purchases, purchases.status, purchases.channel, purchases.note,
                                           SUM(purchases.quantity) AS tickets,  purchases.retail_price,
                                           SUM( IF(purchases.inclusive_fee>0, 0 , purchases.processing_fee) ) AS fees, purchases.savings,
                                           SUM( IF(purchases.inclusive_fee>0, 

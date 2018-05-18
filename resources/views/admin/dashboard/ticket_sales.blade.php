@@ -348,6 +348,7 @@
                                 <th class="none">Authcode</th>
                                 <th class="none">Refnum</th>
                                 <th class="none">CC Last 4</th>
+                                <th class="none">Notes</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -382,6 +383,7 @@
                                 <td style="text-align:center">{{$d->authcode}}</td>
                                 <td style="text-align:center">{{$d->refnum}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
+                                <td style="text-align:center">{{$d->note}}</td>
                             </tr>
                             @if($d->status=='Refunded')
                             <tr class="danger">
@@ -414,6 +416,7 @@
                                 <td style="text-align:center">{{$d->authcode}}</td>
                                 <td style="text-align:center">{{$d->refnum}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
+                                <td style="text-align:center">{{$d->note}}</td>
                             </tr>
                             @endif
                             @endforeach
