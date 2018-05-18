@@ -50,7 +50,6 @@ class ReportSalesController extends Controller{
             $this->report_date = date($date_format,strtotime('now'));
             //create report
             $report = ['sales'=>[ $this->report_sales('showtime',$show_time_id,$title) ]];
-            $report['sales'][0]['table_financial'] = null;
             $files = $this->create_files($report,$title);
             //send the email
             if(!empty($files))
@@ -149,7 +148,7 @@ class ReportSalesController extends Controller{
     {
         try {
             $types = $this->create_table_types($type,$e);
-            $financial = $this->report_financial($type,$e);
+            $financial = ($type=='showtime')?  null : $this->report_financial($type,$e);
             $shows = ($type=='showtime')?  null : $this->create_table_shows($type,$e);
             $channels = $this->create_table_channels($type,$e);
             $tickets = $this->create_table_tickets($type,$e);
@@ -457,8 +456,6 @@ class ReportSalesController extends Controller{
             {
                 if($type=='venue')
                     $table->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end)->where('venues.id',$e_id);
-                else if($type=='showtime')
-                    $table->where('show_times.id','=',$e_id);
             }
             $table = $table->distinct()->get()->toArray();
             return ['title'=>$title, 'data'=>$table, 'total'=> $this->calc_totals($table)];
