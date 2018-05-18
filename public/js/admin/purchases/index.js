@@ -304,7 +304,7 @@ var TableDatatablesManaged = function () {
                         for(var key in data.current){
                             if(key == 'show_time')
                                 data.current[key] = moment(data.current[key]).format('M/D/YY h:mma');
-                            $('#form_model_edit input[name="'+key+'"]').val(data.current[key]);
+                            $('#form_model_edit [name="'+key+'"]').val(data.current[key]);
                         }
                         //fill out showtimes
                         $('#form_model_edit select[name="to_show_time_id"]').html('<option selected value=""></option>');
@@ -354,6 +354,13 @@ var TableDatatablesManaged = function () {
             var to_ticket_id = $('#form_model_edit select[name="to_ticket_id"]').val();
             var to_discount_id = $('#form_model_edit select[name="to_discount_id"]').val();
             var to_quantity = $('#form_model_edit input[name="to_quantity"]').val();
+            $('#modal_model_edit').modal('hide');
+            swal({
+                title: "Calculating",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
@@ -362,12 +369,12 @@ var TableDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) {
                         //remove style
-                        $('#form_model_edit input').css('border-color','').css('background','').css('font-weight','normal');
+                        $('#form_model_edit input, #form_model_edit select').css('border-color','').css('background','').css('font-weight','normal');
                         //fill out
                         for(var key in data.target) {
                             if(key == 't_show_time')
                                 data.target[key] = moment(data.target[key]).format('M/D/YY h:mma');
-                            $('#form_model_edit input[name="'+key+'"]').val(data.target[key]);
+                            $('#form_model_edit [name="'+key+'"]').val(data.target[key]);
                         }
                         //hightlight changes
                         if(parseFloat($('#form_model_edit input[name="t_quantity"]').val()) != parseFloat($('#form_model_edit input[name="quantity"]').val()))
@@ -386,6 +393,16 @@ var TableDatatablesManaged = function () {
                             $('#form_model_edit input[name="t_show_time"]').css('border-color','blue');
                         if($('#form_model_edit input[name="t_code"]').val() != $('#form_model_edit input[name="code"]').val())
                             $('#form_model_edit input[name="t_code"]').css('border-color','blue');
+                        if($('#form_model_edit input[name="t_sales_taxes"]').val() != $('#form_model_edit input[name="sales_taxes"]').val())
+                            $('#form_model_edit input[name="t_sales_taxes"]').css('border-color','blue');
+                        if($('#form_model_edit input[name="t_cc_fee"]').val() != $('#form_model_edit input[name="cc_fee"]').val())
+                            $('#form_model_edit input[name="t_cc_fee"]').css('border-color','blue');
+                        if($('#form_model_edit select[name="t_inclusive_fee"]').val() != $('#form_model_edit input[name="p_inclusive_fee"]').val())
+                            $('#form_model_edit input[name="t_inclusive_fee"]').css('border-color','blue');
+                        if($('#form_model_edit select[name="t_payment_type"]').val() != $('#form_model_edit input[name="payment_type"]').val())
+                            $('#form_model_edit input[name="t_payment_type"]').css('border-color','blue');
+                        if($('#form_model_edit select[name="t_channel"]').val() != $('#form_model_edit input[name="channel"]').val())
+                            $('#form_model_edit input[name="t_channel"]').css('border-color','blue');
                         //check price
                         var from_price = parseFloat($('#form_model_edit input[name="price_paid"]').val());
                         var to_price = parseFloat($('#form_model_edit input[name="t_price_paid"]').val());
@@ -393,9 +410,11 @@ var TableDatatablesManaged = function () {
                             $('#form_model_edit input[name="t_price_paid"]').css('background','#C9F9C4').css('font-weight','bold');
                         else if(from_price < to_price)
                             $('#form_model_edit input[name="t_price_paid"]').css('background','#F7D9D8').css('font-weight','bold');
+                        swal.close();
+                        $('#modal_model_edit').modal('show');
                     }
                     else{
-                        $('#modal_model_edit').modal('hide');
+                        swal.close();
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
                             text: data.msg,
@@ -408,7 +427,7 @@ var TableDatatablesManaged = function () {
                     }
                 },
                 error: function(){
-                    $('#modal_model_edit').modal('hide');
+                    swal.close();
                     swal({
                         title: "<span style='color:red;'>Error!</span>",
                         text: "There was an error trying to get the ticket's information!<br>The request could not be sent to the server.",

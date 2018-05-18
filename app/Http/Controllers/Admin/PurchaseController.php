@@ -82,6 +82,7 @@ class PurchaseController extends Controller{
                                 ->join('discounts','discounts.id','=','purchases.discount_id')
                                 ->select('tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_pf','tickets.fixed_commission', 'tickets.inclusive_fee',
                                           'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price', 'tickets.is_active',
+                                          'purchases.inclusive_fee AS p_inclusive_fee','purchases.sales_taxes','purchases.cc_fees AS cc_fee','purchases.channel','purchases.payment_type',
                                           'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid','discounts.code',
                                           'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
                                 ->where('purchases.id','=',$input['id'])->first();
@@ -146,7 +147,9 @@ class PurchaseController extends Controller{
                                    't_is_active'=>$ticket->is_active,'t_inclusive_fee'=>$ticket->inclusive_fee,'t_code'=>$discount->code,
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
-                                   't_p_retail_price'=> Util::round($ticket->retail_price*$qty),
+                                   't_p_retail_price'=> Util::round($ticket->retail_price*$qty),'t_cc_fee'=> Util::round($purchase->cc_fees),
+                                   't_payment_type'=> (!empty($input['t_payment_type']))? $input['t_payment_type'] : $purchase->payment_type,
+                                   't_channel'=> (!empty($input['t_channel']))? $input['t_channel'] : $purchase->channel,
                                    't_p_processing_fee'=>(!empty($ticket->processing_fee))? Util::round($ticket->processing_fee*$qty_item_pay) : Util::round($ticket->t_percent_pf/100*$ticket->retail_price*$qty_item_pay)];
                         //calculate savings result
                         $target['t_savings'] = Util::round( $discount->calculate_savings($qty,$target['t_p_retail_price'] + $target['t_p_processing_fee']) );
@@ -157,8 +160,15 @@ class PurchaseController extends Controller{
                         $target['t_commission_percent'] = (!empty($fixed_commission))? Util::round($fixed_commission*$qty_item_pay) : Util::round($ticket->percent_commission/100*$ticket->retail_price*$qty_item_pay);
                         //calculate total result
                         $target['t_price_paid'] = Util::round($target['t_p_retail_price'] - $target['t_savings']);
-                        if(!($ticket->inclusive_fee>0))
+                        if(isset($input['t_inclusive_fee']))
+                            $inclusive = ($input['t_inclusive_fee']>0)? 1 : 0;
+                        else
+                            $inclusive = $purchase->inclusive_fee;
+                        if(!($inclusive>0))
                             $target['t_price_paid'] += Util::round($target['t_p_processing_fee']);
+                        $sales_tax = $showtime->show->venue->default_sales_taxes_percent/100;
+                        $target['t_sales_taxes'] = Util::round($target['t_price_paid'] * $sales_tax);
+                        $target['t_price_paid'] += Util::round($target['t_sales_taxes']);
                         return ['success'=>true,'target'=>$target];
                     }
                     else
@@ -394,6 +404,31 @@ class PurchaseController extends Controller{
                                 $transaction->save();
                             }
                         }
+                    }
+                    if(isset($input['t_sales_taxes']) && $input['t_sales_taxes']!=$purchase->sales_taxes)
+                    {
+                        $note.= ', sale taxes from '.$purchase->sales_taxes.' to '.$input['t_sales_taxes'];
+                        $purchase->sales_taxes = $input['t_sales_taxes'];
+                    }
+                    if(isset($input['t_cc_fee']) && $input['t_cc_fee']!=$purchase->cc_fees)
+                    {
+                        $note.= ', CC Fees from '.$purchase->cc_fees.' to '.$input['t_cc_fee'];
+                        $purchase->cc_fees = $input['t_cc_fee'];
+                    }
+                    if(isset($input['t_inclusive_fee']) && $input['t_inclusive_fee']!=$purchase->inclusive_fee)
+                    {
+                        $note.= ', Incl Fee from '.$purchase->inclusive_fee.' to '.$input['t_inclusive_fee'];
+                        $purchase->inclusive_fee = $input['t_inclusive_fee'];
+                    }
+                    if(!empty($input['t_payment_type']) && $input['t_payment_type']!=$purchase->payment_type)
+                    {
+                        $note.= ', Payment from '.$purchase->payment_type.' to '.$input['t_payment_type'];
+                        $purchase->payment_type = $input['t_payment_type'];
+                    }
+                    if(!empty($input['t_channel']) && $input['t_channel']!=$purchase->channel)
+                    {
+                        $note.= ', Channel from '.$purchase->channel.' to '.$input['t_channel'];
+                        $purchase->channel = $input['t_channel'];
                     }
                     //note and save
                     $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
