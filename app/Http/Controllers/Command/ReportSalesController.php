@@ -452,7 +452,7 @@ class ReportSalesController extends Controller{
                         ->groupBy('venues.id')->orderBy('venues.name');
             
             if($type=='admin' || empty($e_id))
-                $table->whereDate('purchases.created','>=',$this->start_date);
+                $table->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end);
             else if(!empty($e_id))
             {
                 if($type=='venue')
