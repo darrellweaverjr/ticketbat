@@ -133,7 +133,7 @@ class DashboardController extends Controller
                                   ->orWhere('purchases.status','=','Refunded')
                                   ->orWhere('purchases.status','like','Pending%');
                         })
-                        ->orderBy('purchases.created','DESC')->groupBy('purchases.id')->get()->toArray();
+                        ->groupBy('purchases.id')->orderBy('purchases.id','DESC')->get()->toArray();
             //calculate totals
             function calc_totals($data,$ref=false)
             {
