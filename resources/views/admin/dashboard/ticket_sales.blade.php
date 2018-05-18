@@ -383,7 +383,7 @@
                                 <td style="text-align:center">{{$d->authcode}}</td>
                                 <td style="text-align:center">{{$d->refnum}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
-                                <td style="text-align:center">{{html_entity_decode($d->note)}}</td>
+                                <td style="text-align:center">@php echo trim($d->note) @endphp</td>
                             </tr>
                             @if($d->status=='Refunded')
                             <tr class="danger">
@@ -416,7 +416,7 @@
                                 <td style="text-align:center">{{$d->authcode}}</td>
                                 <td style="text-align:center">{{$d->refnum}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
-                                <td style="text-align:center">{{html_entity_decode($d->note)}}</td>
+                                <td style="text-align:center">@php echo trim($d->note) @endphp}</td>
                             </tr>
                             @endif
                             @endforeach
