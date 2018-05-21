@@ -284,8 +284,9 @@ class PurchaseController extends Controller{
                     
                     if(isset($input['status']))
                     {
-                        $note.= ', status from '.$purchase->status.' to '.$input['status'];
+                        $old_status = $purchase->status;
                         $purchase->status = $input['status'];
+                        $note.= ', status from '.$purchase->status.' to '.$input['status'];
                     }
                     if(isset($input['note']))
                     {
@@ -340,27 +341,27 @@ class PurchaseController extends Controller{
                         $note.= ', qty from '.$purchase->quantity.' to '.$input['to_quantity'];
                         $purchase->quantity = $input['to_quantity'];
                     }
-                    if($purchase->retail_price != $input['t_p_retail_price'])
+                    if(isset($input['t_p_retail_price']) &&  $purchase->retail_price != $input['t_p_retail_price'])
                     {
                         $note.= ', retail_price from '.$purchase->retail_price.' to '.$input['t_p_retail_price'];
                         $purchase->retail_price = $input['t_p_retail_price'];
                     }
-                    if($purchase->processing_fee != $input['t_p_processing_fee'])
+                    if(isset($input['t_p_processing_fee']) &&  $purchase->processing_fee != $input['t_p_processing_fee'])
                     {
                         $note.= ', processing_fee from '.$purchase->processing_fee.' to '.$input['t_p_processing_fee'];
                         $purchase->processing_fee = $input['t_p_processing_fee'];
                     }
-                    if($purchase->savings != $input['t_savings'])
+                    if(isset($input['t_savings']) &&  $purchase->savings != $input['t_savings'])
                     {
                         $note.= ', savings from '.$purchase->savings.' to '.$input['t_savings'];
                         $purchase->savings = $input['t_savings'];
                     }
-                    if($purchase->commission_percent != $input['t_commission_percent'])
+                    if(isset($input['t_commission_percent']) &&  $purchase->commission_percent != $input['t_commission_percent'])
                     {
                         $note.= ', commission from '.$purchase->commission_percent.' to '.$input['t_commission_percent'];
                         $purchase->commission_percent = $input['t_commission_percent'];
                     }
-                    if($purchase->price_paid != $input['t_price_paid'])
+                    if(isset($input['t_price_paid']) &&  $purchase->price_paid != $input['t_price_paid'])
                     {
                         $note.= ', price paid from '.$purchase->price_paid.' to '.$input['t_price_paid'];
                         $purchase->price_paid = $input['t_price_paid'];
