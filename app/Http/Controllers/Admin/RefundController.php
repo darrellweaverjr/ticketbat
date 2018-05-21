@@ -59,7 +59,7 @@ class RefundController extends Controller{
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email,
-                                                  purchases.payment_type AS method,
+                                                  purchases.payment_type AS method, purchases.printed_fee,
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
                                 ->whereIn('shows.venue_id',[Auth::user()->venues_edit])
@@ -84,7 +84,7 @@ class RefundController extends Controller{
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
                                                   users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email,
-                                                  purchases.payment_type AS method,
+                                                  purchases.payment_type AS method, purchases.printed_fee,
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
                                 ->orderBy('purchases.created','DESC')->orderBy('transaction_refunds.created','DESC')

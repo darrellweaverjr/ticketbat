@@ -35,7 +35,7 @@
                                         @if($p->card_holder && $p->card_holder != $p->first_name.' '.$p->last_name) <br><i class="fa fa-credit-card"></i> {{$p->card_holder}}@endif
                                     </b>
                                     <br><small><i>AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>, ID: <b>{{$p->order_id}}</b>, Qty: <b>{{$p->quantity}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
-                                    <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}}</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>,
+                                    <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}}</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>, Print.Fee: <b>${{number_format($p->printed_fee,2)}}</b>,
                                     <br> Method: <b>{{$p->method}}</b> , Status: <b>{{$p->status}}</b>
                                     </i></small>
                                     @if(!empty(trim($p->note)))<div class="note note-info" style="font-style:italic;font-size:smaller">@php echo trim($p->note) @endphp</div>@endif
