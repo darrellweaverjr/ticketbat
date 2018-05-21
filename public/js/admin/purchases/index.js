@@ -349,7 +349,7 @@ var TableDatatablesManaged = function () {
         });
         //on change edit field
         $('#form_model_edit select[name="to_show_time_id"], #form_model_edit select[name="to_ticket_id"], #form_model_edit select[name="to_discount_id"], #form_model_edit input[name="to_quantity"]').on('change', function() {
-            var purchase_id = $('#form_model_edit input[name="purchase_id"]:hidden').val();
+            var purchase_id = $('#form_model_edit input[name="id"]:hidden').val();
             var to_show_time_id = $('#form_model_edit select[name="to_show_time_id"]').val();
             var to_ticket_id = $('#form_model_edit select[name="to_ticket_id"]').val();
             var to_discount_id = $('#form_model_edit select[name="to_discount_id"]').val();
@@ -365,7 +365,7 @@ var TableDatatablesManaged = function () {
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/purchases',
-                data: {purchase_id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_discount_id:to_discount_id,to_quantity:to_quantity},
+                data: {id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_discount_id:to_discount_id,to_quantity:to_quantity},
                 success: function(data) {
                     if(data.success) {
                         //remove style

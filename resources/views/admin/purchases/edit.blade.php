@@ -9,7 +9,7 @@
                 <!-- BEGIN FORM-->
                 <form method="post" id="form_model_edit">
                     <input type="hidden" name="_token" value="{{ Session::token() }}" />
-                    <input type="hidden" name="purchase_id" value="" />
+                    <input type="hidden" name="id" value="" />
                     <div class="form-body">
                         <div class="row">
                             <div class="col-md-3">

@@ -275,53 +275,22 @@ class PurchaseController extends Controller{
             $input = Input::all();
             $current = date('Y-m-d H:i:s');
             //save all record
-            if($input && isset($input['id']))
+            if($input && !empty($input['id']))
             {
                 $purchase = Purchase::find($input['id']);
-                if(isset($input['status']))
-                {
-                    //update status
-                    $old_status = $purchase->status;
-                    $purchase->status = $input['status'];
-                    $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
-                    $note.= ' status from '.$old_status.' to '.$input['status'];
-                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                    $purchase->updated = $current;
-                    $purchase->save();
-                    //send emails for pending status
-                    if(preg_match('/^Pending/',$input['status']))
-                    {
-                        $sent = $purchase->set_pending();
-                        if(!$sent)
-                            return ['success'=>false,'msg'=>'The system updated the status.<br>But the email could not be sent to the admin.'];
-                    }
-                    //re-send email if change form active to any inactive and viceversa
-                    else if($input['status']=='Active' || $old_status=='Active' || preg_match('/^Pending/',$old_status))
-                    {
-                        $receipt = $purchase->get_receipt();
-                        $status = ($input['status']=='Active')? 'ACTIVATED' : ( ($input['status']=='Refunded')? 'REFUNDED' :'CANCELED' );
-                        $sent = Purchase::email_receipts($status.': TicketBat Purchase',[$receipt],'receipt',$status,true);
-                        if(!$sent)
-                            return ['success'=>false,'msg'=>'The purchase changed the status.<br>But the email could not be sent to the customer and the venue.'];
-                    }
-                    return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
-                }
-                else if(isset($input['note']))
-                {
-                    $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b>'.strip_tags($input['note']).'&nbsp;';
-                    $purchase->note = $purchase->note.$note;
-                    $purchase->updated = $current;
-                    $purchase->save();
-                    return ['success'=>true,'msg'=>'Purchase saved successfully!','note'=>$purchase->note];
-                }
-                else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>Invalid data.'];
-            }
-            else if($input && isset($input['purchase_id']))
-            {
-                $purchase = Purchase::find($input['purchase_id']);
                 if($purchase)
                 {
                     $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change ';
+                    
+                    if(isset($input['status']))
+                    {
+                        $note.= ', status from '.$purchase->status.' to '.$input['status'];
+                        $purchase->status = $input['status'];
+                    }
+                    if(isset($input['note']))
+                    {
+                        $note = '&nbsp;<br><b>'.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b>'.strip_tags($input['note']).'&nbsp;';
+                    }
                     if(!empty($input['to_user_email']))
                     {
                         $to_email = trim($input['to_user_email']);
@@ -440,6 +409,25 @@ class PurchaseController extends Controller{
                         $tickets = implode(',',range(1,$purchase->quantity));
                         DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
                     }
+                    if(!empty($input['status']))
+                    {
+                        //send emails for pending status
+                        if(preg_match('/^Pending/',$input['status']))
+                        {
+                            $sent = $purchase->set_pending();
+                            if(!$sent)
+                                return ['success'=>false,'msg'=>'The system updated the status.<br>But the email could not be sent to the admin.'];
+                        }
+                        //re-send email if change form active to any inactive and viceversa
+                        else if($input['status']=='Active' || $old_status=='Active' || preg_match('/^Pending/',$old_status))
+                        {
+                            $receipt = $purchase->get_receipt();
+                            $status = ($input['status']=='Active')? 'ACTIVATED' : ( ($input['status']=='Refunded')? 'REFUNDED' :'CANCELED' );
+                            $sent = Purchase::email_receipts($status.': TicketBat Purchase',[$receipt],'receipt',$status,true);
+                            if(!$sent)
+                                return ['success'=>false,'msg'=>'The purchase changed the status.<br>But the email could not be sent to the customer and the venue.'];
+                        }
+                    } 
                     return ['success'=>true,'msg'=>'Purchase saved successfully!'];
                 }
                 else return ['success'=>false,'msg'=>'There was an error saving the purchase.<br>That purchase is not longer in the system.'];
