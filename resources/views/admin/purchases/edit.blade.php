@@ -182,6 +182,10 @@
                                     <div class="col-md-8">
                                         <input class="form-control" name="channel" type="text" readonly="true"/>
                                     </div>
+                                    <label class="control-label col-md-4">Updated:</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" style="font-size:10px" name="updated" type="text" readonly="true"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -237,8 +241,8 @@
                                     <div class="col-md-8">
                                         <select class="form-control" name="t_inclusive_fee" readonly="true">
                                             <option selected="true" disabled="true" value=""></option>
-                                            <option value="1">Inclusive</option>
-                                            <option value="0">Over price</option>
+                                            <option value="1">1 (Inclusive)</option>
+                                            <option value="0">0 (Over price)</option>
                                         </select>
                                     </div>
                                     <label class="control-label col-md-4">Pyment:</label>
@@ -258,6 +262,18 @@
                                             <option value="{{$index}}">{{$c}}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <label class="control-label col-md-4">Updated:</label>
+                                    <div id="t_updated_date" class="col-md-8 input-group1 date dtpicker">
+                                        <input size="16" readonly="true" style="font-size:10px" class="form-control" type="text" name="t_updated" value="">
+                                        <span class="input-group-btn">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                            <button class="btn default" type="button" id="clear_t_updated_date">
+                                                <i class="fa fa-remove"></i>
+                                            </button>
+                                        </span>
                                     </div>
                                 </div>
                             </div>

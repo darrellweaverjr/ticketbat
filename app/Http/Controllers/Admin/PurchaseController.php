@@ -81,7 +81,7 @@ class PurchaseController extends Controller{
                                 ->join('packages','packages.id','=','tickets.package_id')
                                 ->join('discounts','discounts.id','=','purchases.discount_id')
                                 ->select('tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_pf','tickets.fixed_commission', 'tickets.inclusive_fee',
-                                          'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price', 'tickets.is_active',
+                                          'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price', 'tickets.is_active', 'purchases.updated',
                                           'purchases.inclusive_fee AS p_inclusive_fee','purchases.sales_taxes','purchases.cc_fees AS cc_fee','purchases.channel','purchases.payment_type',
                                           'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid','discounts.code',
                                           'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
@@ -150,6 +150,7 @@ class PurchaseController extends Controller{
                                    't_p_retail_price'=> Util::round($ticket->retail_price*$qty),'t_cc_fee'=> Util::round($purchase->cc_fees),
                                    't_payment_type'=> (!empty($input['t_payment_type']))? $input['t_payment_type'] : $purchase->payment_type,
                                    't_channel'=> (!empty($input['t_channel']))? $input['t_channel'] : $purchase->channel,
+                                   't_updated'=> (!empty($input['t_updated']))? $input['t_updated'] : $purchase->updated,
                                    't_p_processing_fee'=>(!empty($ticket->processing_fee))? Util::round($ticket->processing_fee*$qty_item_pay) : Util::round($ticket->t_percent_pf/100*$ticket->retail_price*$qty_item_pay)];
                         //calculate savings result
                         $target['t_savings'] = Util::round( $discount->calculate_savings($qty,$target['t_p_retail_price'] + $target['t_p_processing_fee']) );
@@ -399,6 +400,11 @@ class PurchaseController extends Controller{
                     {
                         $note.= ', Channel from '.$purchase->channel.' to '.$input['t_channel'];
                         $purchase->channel = $input['t_channel'];
+                    }
+                    if(!empty($input['t_updated']) && date('Y-m-d H:i:s',strtotime($input['t_updated']))!=$purchase->updated)
+                    {
+                        $note.= ', Updated from '.date('m/d/Y g:ia',strtotime($purchase->updated)).' to '.$input['t_updated'];
+                        $purchase->updated = date('Y-m-d H:i:s',strtotime($input['t_updated']));
                     }
                     //note and save
                     $purchase->note = ($purchase->note)? $purchase->note.$note : $note;

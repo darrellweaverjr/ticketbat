@@ -85,7 +85,22 @@ var TableDatatablesManaged = function () {
             });
             select+= '</select>';
             status.html(select);
-        })
+        });
+        
+        //showtime_date
+        $('#t_updated_date').datetimepicker({
+            autoclose: true,
+            isRTL: App.isRTL(),
+            format: "m/dd/yy hh:iip",   
+            pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
+            minuteStep: 15,
+            defaultDate: new Date()
+        });
+        //clear showtime_date
+        $('#clear_t_updated_date').on('click', function(ev) {
+            $('#form_model_edit input[name="t_updated"]').val('');
+            $('#t_updated_date').datetimepicker('update');
+        });
 
         //function to change status to purchase
         function change_status(id,status)
@@ -302,10 +317,11 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update_title').html('Edit purchase # '+id);
                         //fill out current
                         for(var key in data.current){
-                            if(key == 'show_time')
+                            if(key == 'show_time' || key == 'updated' || key == 't_updated')
                                 data.current[key] = moment(data.current[key]).format('M/D/YY h:mma');
                             $('#form_model_edit [name="'+key+'"]').val(data.current[key]);
                         }
+                        $('#form_model_edit input[name="id"]:hidden').val(data.current.purchase_id);
                         //fill out showtimes
                         $('#form_model_edit select[name="to_show_time_id"]').html('<option selected value=""></option>');
                         $.each(data.showtimes,function(k, v) {
@@ -365,7 +381,7 @@ var TableDatatablesManaged = function () {
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/purchases',
-                data: {id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_discount_id:to_discount_id,to_quantity:to_quantity},
+                data: {purchase_id:purchase_id,to_show_time_id:to_show_time_id,to_ticket_id:to_ticket_id,to_discount_id:to_discount_id,to_quantity:to_quantity},
                 success: function(data) {
                     if(data.success) {
                         //remove style
