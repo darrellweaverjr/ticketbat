@@ -52,7 +52,7 @@ class PurchaseController extends Controller{
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
                                                       purchases.payment_type AS method, shows.venue_id, purchases.show_time_id, show_times.show_id,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
-                                                      discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
+                                                      discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.printed_fee,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
                                                       customers.first_name, customers.last_name, customers.email, customers.phone,
                                                       show_times.show_time, shows.name AS show_name, packages.title'))
@@ -83,7 +83,7 @@ class PurchaseController extends Controller{
                                 ->select('tickets.ticket_type','tickets.retail_price','tickets.processing_fee','tickets.percent_pf','tickets.fixed_commission', 'tickets.inclusive_fee',
                                           'tickets.percent_commission','tickets.is_active','purchases.quantity','purchases.retail_price AS p_retail_price', 'tickets.is_active', 'purchases.updated',
                                           'purchases.inclusive_fee AS p_inclusive_fee','purchases.sales_taxes','purchases.cc_fees AS cc_fee','purchases.channel','purchases.payment_type',
-                                          'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid','discounts.code',
+                                          'purchases.processing_fee AS p_processing_fee','purchases.savings','purchases.commission_percent','purchases.price_paid','discounts.code', 'purchases.printed_fee',
                                           'show_times.show_time','packages.title','purchases.ticket_id','purchases.id AS purchase_id','shows.id AS show_id','purchases.show_time_id')
                                 ->where('purchases.id','=',$input['id'])->first();
                 $showtimes = DB::table('show_times')->select('id','show_time')
@@ -144,7 +144,7 @@ class PurchaseController extends Controller{
                         $qty_item_pay = $qty-$free_tickets;
                         //calculate target result
                         $target = ['t_ticket_type'=>$ticket->ticket_type,'t_title'=>$ticket->package->title,'t_retail_price'=>$ticket->retail_price,
-                                   't_is_active'=>$ticket->is_active,'t_inclusive_fee'=>$ticket->inclusive_fee,'t_code'=>$discount->code,
+                                   't_is_active'=>$ticket->is_active,'t_inclusive_fee'=>$ticket->inclusive_fee,'t_code'=>$discount->code, 't_printed_fee'=>$ticket->printed_fee,
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
                                    't_p_retail_price'=> Util::round($ticket->retail_price*$qty),'t_cc_fee'=> Util::round($purchase->cc_fees),
@@ -160,7 +160,7 @@ class PurchaseController extends Controller{
                         $fixed_commission = (!empty($c->fixed_commission))? $c->fixed_commission : $ticket->fixed_commission;
                         $target['t_commission_percent'] = (!empty($fixed_commission))? Util::round($fixed_commission*$qty_item_pay) : Util::round($ticket->percent_commission/100*$ticket->retail_price*$qty_item_pay);
                         //calculate total result
-                        $target['t_price_paid'] = Util::round($target['t_p_retail_price'] - $target['t_savings']);
+                        $target['t_price_paid'] = Util::round($target['t_p_retail_price'] - $target['t_savings'] + $target['t_printed_fee']);
                         if(isset($input['t_inclusive_fee']))
                             $inclusive = ($input['t_inclusive_fee']>0)? 1 : 0;
                         else
@@ -361,6 +361,11 @@ class PurchaseController extends Controller{
                     {
                         $note.= ', commission from '.$purchase->commission_percent.' to '.$input['t_commission_percent'];
                         $purchase->commission_percent = $input['t_commission_percent'];
+                    }
+                    if(isset($input['t_printed_fee']) &&  $purchase->printed_fee != $input['t_printed_fee'])
+                    {
+                        $note.= ', printed_fee from '.$purchase->printed_fee.' to '.$input['t_printed_fee'];
+                        $purchase->printed_fee = $input['t_printed_fee'];
                     }
                     if(isset($input['t_price_paid']) &&  $purchase->price_paid != $input['t_price_paid'])
                     {

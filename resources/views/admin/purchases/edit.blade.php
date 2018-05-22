@@ -150,6 +150,10 @@
                                     <div class="col-md-8">
                                         <input class="form-control" name="commission_percent" type="number" readonly="true"/>
                                     </div>
+                                    <label class="control-label col-md-4">Prnt.Fee:</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" name="printed_fee" type="number" readonly="true"/>
+                                    </div>
                                     <label class="control-label col-md-4">Taxes:</label>
                                     <div class="col-md-8">
                                         <input class="form-control" name="sales_taxes" type="number" readonly="true"/>
@@ -216,6 +220,10 @@
                                     <label class="control-label col-md-4">Commis.:</label>
                                     <div class="col-md-8">
                                         <input class="form-control" name="t_commission_percent" type="number" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-4">Prnt.Fee:</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" name="t_printed_fee" type="number" readonly="true"/>
                                     </div>
                                     <label class="control-label col-md-4">Taxes:</label>
                                     <div class="col-md-8">
