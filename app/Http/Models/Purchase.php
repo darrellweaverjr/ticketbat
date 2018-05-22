@@ -297,7 +297,7 @@ class Purchase extends Model
                 //init variables
                 $rows_html = $totals_html = '';
                 $pdf_receipts = $pdf_tickets = $purchases = $ticket_info = [];
-                $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'sales_taxes'=>0,'discount'=>0];
+                $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'printed_fee'=>0,'sales_taxes'=>0,'discount'=>0];
                 $top = $banners = '';
                 //set customer
                 $customer = $receipts[0]['customer'];
@@ -350,6 +350,7 @@ class Purchase extends Model
                             $totals['processing_fee']+=$purchase['processing_fee'];
                             $totals['retail_price']+=$receipt['purchase']->retail_price;
                             $totals['discount']+=$receipt['purchase']->savings;
+                            $totals['printed_fee']+=$receipt['purchase']->printed_fee;
                             $totals['sales_taxes']+=$receipt['purchase']->sales_taxes;
                             //show on top if change date
                             if($change=='CANCELED' || $change=='REFUNDED')
@@ -370,6 +371,8 @@ class Purchase extends Model
                                 <tr> <td align="right">Processing Fee:</td> <td align="right">$ '.number_format($totals['processing_fee'],2).'</td> </tr>';
                 if($totals['discount'] > 0)
                     $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
+                if($totals['printed_fee'] > 0)
+                    $totals_html.='<tr> <td align="right">Printer fee:</td> <td align="right">$ '.number_format($totals['printed_fee'],2).'</td> </tr>';
                 $totals_html.='<tr> <td align="right">Sales taxes:</td> <td align="right">$ '.number_format($totals['sales_taxes'],2).'</td> </tr>';
                 $totals_html.='<tr> <td align="right" style="color:#1F9F0B;"><b>GRAND TOTAL</b>:</td> <td align="right" style="color:#1F9F0B;">$ '.number_format($totals['total'],2).'</td> </tr>';
 
