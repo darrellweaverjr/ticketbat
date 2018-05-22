@@ -528,16 +528,12 @@ class Purchase extends Model
                 $purchase->retail_price = $i->retail_price;
                 $purchase->commission_percent = $i->commission;
                 $purchase->processing_fee = $i->processing_fee;
-                $purchase->price_paid = Util::round($purchase->retail_price-$purchase->savings);
-                //if inclusive fee sum fee set value, otherwise sume fee over price
-                if(!($i->inclusive_fee>0))
-                    $purchase->price_paid += Util::round($purchase->processing_fee);
-                else
-                    $purchase->inclusive_fee = 1;
+                $purchase->price_paid = $shoppingcart['total'];
+                $purchase->inclusive_fee = (!empty($i->inclusive_fee))? 1 : 0;
                 $purchase->payment_type = ($purchase->retail_price<0.01 && $purchase->price_paid<0.01)? 'Free event' : ( (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None' );
                 //taxes and other fees
                 $purchase->sales_taxes = $i->sales_taxes;
-                $purchase->price_paid += $purchase->sales_taxes;
+                $purchase->printed_fee = $shoppingcart['printed'];
                 $purchase->cc_fees = ($purchase->payment_type=='Credit')? Util::round($purchase->price_paid*env('USAEPAY_CREDIT_CARD_FEE_PERCENT',0)/100) : 0.00;
                 $purchase->updated = $current;
                 $purchase->created = $current;
