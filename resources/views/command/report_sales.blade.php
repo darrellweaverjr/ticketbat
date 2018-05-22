@@ -56,6 +56,7 @@
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                      <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
                       <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                       <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                       <td style='text-align:right'>COMM.<br>(C)</td>
@@ -71,6 +72,7 @@
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
@@ -83,6 +85,7 @@
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
@@ -97,6 +100,7 @@
                       <td style='text-align:right'>$ {{number_format($d['total']['paid'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($d['total']['taxes'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($d['total']['cc_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['printed_fee'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($d['total']['fees_incl'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($d['total']['fees_over'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($d['total']['commissions'],2)}}</td>
@@ -130,6 +134,7 @@
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                      <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
                       <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                       <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                       <td style='text-align:right'>COMM.<br>(C)</td>
@@ -144,6 +149,7 @@
                       <td style='text-align:right'>$ {{number_format($v->paid,2)}}</td>
                       <td style='text-align:right'>$ {{number_format($v->taxes,2)}}</td>
                       <td style='text-align:right'>$ {{number_format($v->cc_fee,2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($v->printed_fee,2)}}</td>
                       <td style='text-align:right'>$ {{number_format($v->fees_incl,2)}}</td>
                       <td style='text-align:right'>$ {{number_format($v->fees_over,2)}}</td>
                       <td style='text-align:right'>$ {{number_format($v->commissions,2)}}</td>
@@ -159,6 +165,7 @@
                       <td style='text-align:right'>$ {{number_format($t['total']['paid'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($t['total']['taxes'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($t['total']['cc_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($t['total']['printed_fee'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($t['total']['fees_incl'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($t['total']['fees_over'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($t['total']['commissions'],2)}}</td>
@@ -181,6 +188,7 @@
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                      <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
                       <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                       <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                       <td style='text-align:right'>COMM.<br>(C)</td>
@@ -194,6 +202,7 @@
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
@@ -208,6 +217,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['paid'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['taxes'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['cc_fee'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['printed_fee'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['fees_incl'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['fees_over'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['subtotal']['commissions'],2)}}</td>
@@ -221,6 +231,7 @@
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
@@ -235,6 +246,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['paid'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['taxes'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['cc_fee'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_types']['total']['printed_fee'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['fees_incl'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['fees_over'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['commissions'],2)}}</td>
@@ -255,6 +267,7 @@
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                      <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
                       <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                       <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                       <td style='text-align:right'>COMM.<br>(C)</td>
@@ -268,6 +281,7 @@
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
@@ -282,6 +296,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['paid'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['taxes'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['cc_fee'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['printed_fee'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['fees_incl'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['fees_over'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['commissions'],2)}}</td>
@@ -303,6 +318,7 @@
                         <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                         <td style='text-align:right'>TAXES<br>(T)</td>
                         <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                        <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
                         <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                         <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                         <td style='text-align:right'>COMM.<br>(C)</td>
@@ -316,6 +332,7 @@
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
@@ -329,6 +346,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['paid'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['taxes'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['cc_fee'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['printed_fee'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['fees_incl'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['fees_over'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['commissions'],2)}}</td>
@@ -351,6 +369,7 @@
                         <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                         <td style='text-align:right'>TAXES<br>(T)</td>
                         <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                        <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
                         <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
                         <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
                         <td style='text-align:right'>COMM.<br>(C)</td>
@@ -366,6 +385,7 @@
                           <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                           <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
@@ -379,6 +399,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['paid'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['taxes'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['cc_fee'],2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['printed_fee'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['fees_incl'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['fees_over'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['commissions'],2)}}</td>
