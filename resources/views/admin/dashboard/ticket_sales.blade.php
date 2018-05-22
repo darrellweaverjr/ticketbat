@@ -351,7 +351,8 @@
                                 <th class="all" style="text-align:center">Fees</th>
                                 <th class="all" style="text-align:center">Disc</th>
                                 <th class="all" style="text-align:center">Print<br>Fee</th>
-                                <th class="all" style="text-align:center">Taxes</th>                                
+                                <th class="all" style="text-align:center">Taxes</th>     
+                                <th class="all" style="text-align:center">Diff</th>
                                 <th class="all" style="text-align:center">Total<br>Charged</th>                                
                                 <th class="all" style="text-align:center">CC<br>Fee</th>
                                 <th class="all" style="text-align:center">Venue<br>Rev.</th>   
@@ -388,7 +389,8 @@
                                 <td style="text-align:right">($ {{number_format($d->savings,2)}})</td>
                                 <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->sales_taxes,2)}}</td>
-                                <td style="text-align:right"><b>$ {{number_format($d->price_paid,2)}}</b><br>@if($d->other!=0) <b style="color:red">$ {{number_format($d->other,2)}}</b> @endif</td>
+                                <td style="text-align:right" @if($d->other!=0) class="bold font-red" @endif>$ {{number_format($d->other,2)}}</td>
+                                <td style="text-align:right"><b>$ {{number_format($d->price_paid,2)}}</b></td>
                                 <td style="text-align:right">$ {{number_format($d->cc_fees,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
@@ -422,7 +424,8 @@
                                 <td style="text-align:right">$ {{number_format($d->savings,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
                                 <td style="text-align:right">($ {{number_format($d->sales_taxes,2)}})</td>
-                                <td style="text-align:right"><b>($ {{number_format($d->price_paid,2)}})</b><br>@if($d->other!=0) <b style="color:red">$ {{number_format($d->other*-1,2)}}</b> @endif</td>
+                                <td style="text-align:right" @if($d->other!=0) class="bold font-red" @endif>$ {{number_format($d->other*-1,2)}}</td>
+                                <td style="text-align:right"><b>($ {{number_format($d->price_paid,2)}})</b></td>
                                 <td style="text-align:right">($ {{number_format($d->cc_fees,2)}})</td>
                                 <td style="text-align:right">($ {{number_format($d->to_show,2)}})</td>
                                 <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
