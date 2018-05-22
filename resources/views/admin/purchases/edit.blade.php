@@ -12,267 +12,225 @@
                     <input type="hidden" name="id" value="" />
                     <div class="form-body">
                         <div class="row">
-                            <div class="col-md-3">
-                                <label class="control-label">
-                                    <span><b>Ticket current:</b></span>
-                                </label>
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="control-label col-md-4">Type:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2"><b>TICKET</b></label>
+                                    <label class="control-label col-md-5 text-right"><b>current:</b></label>
+                                    <label class="control-label col-md-5 text-right"><b>target:</b></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">Type:</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="ticket_type" type="text" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Pkge:</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_ticket_type" type="text" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Pkge:</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="title" type="text" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Rt.Price:</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_title" type="text" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Rt.Price:</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="retail_price" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Fees($):</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_retail_price" type="number" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Fees($):</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="processing_fee" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Fees(%):</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_processing_fee" type="number" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Fees(%):</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="percent_pf" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Comm($):</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_percent_pf" type="number" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Comm($):</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="fixed_commission" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Comm(%):</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_fixed_commission" type="number" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Comm(%):</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="percent_commission" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Active:</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_percent_commission" type="number" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Active:</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="is_active" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Incl.Fee:</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_is_active" type="number" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Incl.Fee:</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="inclusive_fee" type="number" readonly="true"/>
                                     </div>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_inclusive_fee" type="number" readonly="true"/>
+                                    </div>
                                 </div><hr>
-                                <div class="form-group">
+                                <div class="form-group col-md-6" style="margin-top:35px">
                                     <label class="control-label required">Move to other date/time:</label>
                                     <select class="form-control" name="to_show_time_id">
                                     </select>
-                                </div>
-                                <div class="form-group">
                                     <label class="control-label required">Change ticket type:</label>
                                     <select class="form-control" name="to_ticket_id">
                                     </select>
-                                </div>
-                                <div class="form-group">
                                     <label class="control-label required">Apply Coupon:</label>
                                     <select class="form-control" name="to_discount_id">
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="control-label">
-                                    <span><b>Ticket target:</b></span>
-                                </label>
-                                <div class="form-group">
-                                    <label class="control-label col-md-4">Type:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_ticket_type" type="text" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Pkge:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_title" type="text" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Rt.Price:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_retail_price" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Fees($):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_processing_fee" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Fees(%):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_percent_pf" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Comm($):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_fixed_commission" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Comm(%):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_percent_commission" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Active:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_is_active" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Incl.Fee:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="t_inclusive_fee" type="number" readonly="true"/>
-                                    </div>
-                                </div><hr>
-                                <div class="form-group">
+                                <div class="form-group col-md-6" style="margin-top:35px">
                                     <label class="control-label required">Change quantity of tickets:</label>
                                     <input class="form-control" name="to_quantity" type="number" step="1" min="1"/>
-                                </div>
-                                <div class="form-group">
                                     <label class="control-label required">Email of <b>CUSTOMER</b> to change to:</label>
                                     <input type="email" class="form-control" name="to_customer_email"/>
-                                </div>
-                                <div class="form-group">
                                     <label class="control-label required">Email of <b>USER</b> to change to:</label>
                                     <input type="email" class="form-control" name="to_user_email"/>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="control-label">
-                                    <span><b>Purchase current:</b></span>
-                                </label>
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="control-label col-md-4">Qty:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2"><b>PURCHASE</b></label>
+                                    <label class="control-label col-md-5 text-right"><b>current:</b></label>
+                                    <label class="control-label col-md-5 text-right"><b>target:
+                                        @if(Auth::check() && in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))
+                                            <input type="checkbox" name="force_edit" value="1" />
+                                        @endif
+                                        </b></label>
+                                </div>
+                                <div class="form-group" id="target_purchase">
+                                    <label class="control-label col-md-2">Qty:</label>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="quantity" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Rt.Price:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="p_retail_price" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">P.Fees:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="p_processing_fee" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Saving:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="savings" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Commis.:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="commission_percent" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Prnt.Fee:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="printed_fee" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Taxes:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="sales_taxes" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">CC.Fee:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="cc_fee" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">P.Paid:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="price_paid" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">ShowTime:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" style="font-size:10px" name="show_time" type="text" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Coupon:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="code" type="text" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Incl.Fee:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="p_inclusive_fee" type="number" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Pyment:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="payment_type" type="text" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Channel:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="channel" type="text" readonly="true"/>
-                                    </div>
-                                    <label class="control-label col-md-4">Updated:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" style="font-size:10px" name="updated" type="text" readonly="true"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="control-label">
-                                    <span><b>Purchase target:
-                                    @if(Auth::check() && in_array(Auth::user()->id,explode(',',env('ROOT_USER_ID'))))
-                                        <input type="checkbox" name="force_edit" value="1" />
-                                    @endif
-                                    </b></span>
-                                </label>
-                                <div class="form-group">
-                                    <label class="control-label col-md-4">Qty:</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_quantity" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Rt.Price:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">Rt.Price:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="p_retail_price" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_p_retail_price" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">P.Fees:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">P.Fees:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="p_processing_fee" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_p_processing_fee" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Saving:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">Saving:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="savings" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_savings" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Commis.:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">Commis.:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="commission_percent" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_commission_percent" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Prnt.Fee:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">Prnt.Fee:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="printed_fee" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_printed_fee" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Taxes:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">Taxes:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="sales_taxes" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_sales_taxes" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">CC.Fee:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">CC.Fee:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="cc_fee" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_cc_fee" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">P.Paid:</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2">P.Paid:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="price_paid" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_price_paid" type="number" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">ShowTime:</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" style="font-size:10px" name="t_show_time" type="text" readonly="true"/>
+                                    <label class="control-label col-md-2">ShowTime:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="show_time" type="text" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Coupon:</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="t_show_time" type="text" readonly="true"/>
+                                    </div>
+                                    <label class="control-label col-md-2">Coupon:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="code" type="text" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
                                         <input class="form-control" name="t_code" type="text" readonly="true"/>
                                     </div>
-                                    <label class="control-label col-md-4">Incl.Fee:</label>
-                                    <div class="col-md-8">
-                                        <select class="form-control" name="t_inclusive_fee" readonly="true">
+                                    <label class="control-label col-md-2">Incl.Fee:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="p_inclusive_fee" type="number" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select class="form-control" name="t_p_inclusive_fee" disabled="true">
                                             <option selected="true" disabled="true" value=""></option>
                                             <option value="1">1 (Inclusive)</option>
                                             <option value="0">0 (Over price)</option>
                                         </select>
                                     </div>
-                                    <label class="control-label col-md-4">Pyment:</label>
-                                    <div class="col-md-8">
-                                        <select class="form-control" name="t_payment_type" readonly="true">
+                                    <label class="control-label col-md-2">Pyment:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="payment_type" type="text" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select class="form-control" name="t_payment_type" disabled="true">
                                             <option selected="true" disabled="true" value=""></option>
                                             @foreach($search['payment_types'] as $index=>$c)
                                             <option value="{{$index}}">{{$c}}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <label class="control-label col-md-4">Channel:</label>
-                                    <div class="col-md-8">
-                                        <select class="form-control" name="t_channel" readonly="true">
+                                    <label class="control-label col-md-2">Channel:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="channel" type="text" readonly="true"/>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select class="form-control" name="t_channel" disabled="true">
                                             <option selected="true" disabled="true" value=""></option>
                                             @foreach($search['channels'] as $index=>$c)
                                             <option value="{{$index}}">{{$c}}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <label class="control-label col-md-4">Updated:</label>
-                                    <div id="t_updated_date" class="col-md-8 input-group1 date dtpicker">
+                                    <label class="control-label col-md-2">Updated:</label>
+                                    <div class="col-md-5">
+                                        <input class="form-control" name="updated" type="text" readonly="true"/>
+                                    </div>
+                                    <div id="t_updated_date" class="col-md-5 input-group date dtpicker">
                                         <input size="16" readonly="true" style="font-size:10px" class="form-control" type="text" name="t_updated" value="">
                                         <span class="input-group-btn">
                                             <button class="btn default date-set" type="button">

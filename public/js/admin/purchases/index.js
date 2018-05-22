@@ -91,7 +91,7 @@ var TableDatatablesManaged = function () {
         $('#t_updated_date').datetimepicker({
             autoclose: true,
             isRTL: App.isRTL(),
-            format: "m/dd/yy hh:iip",   
+            format: "m/dd/yy hh:ii p",   
             pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
             minuteStep: 15,
             defaultDate: new Date()
@@ -302,7 +302,8 @@ var TableDatatablesManaged = function () {
         //function show move modal window
         $('#btn_model_edit').on('click', function(ev) {
             $('#form_model_edit').trigger('reset');
-            $('#form_model_edit input[name="t_p_retail_price"], #form_model_edit input[name="t_p_processing_fee"], #form_model_edit input[name="t_savings"], #form_model_edit input[name="t_commission_percent"], #form_model_edit input[name="t_price_paid"]').prop('readonly', true);
+            $('#target_purchase input[name^="t_"]').prop('readonly', true);
+            $('#target_purchase select[name^="t_"]').prop('disabled', true);
             $('#form_model_edit input').css('border-color','').css('background','').css('font-weight','normal');
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
@@ -317,8 +318,8 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update_title').html('Edit purchase # '+id);
                         //fill out current
                         for(var key in data.current){
-                            if(key == 'show_time' || key == 'updated' || key == 't_updated')
-                                data.current[key] = moment(data.current[key]).format('M/D/YY h:mma');
+                            if(key == 'show_time' || key == 'updated')
+                                data.current[key] = moment(data.current[key]).format('M/DD/YYYY h:mm a');
                             $('#form_model_edit [name="'+key+'"]').val(data.current[key]);
                         }
                         $('#form_model_edit input[name="id"]:hidden').val(data.current.purchase_id);
@@ -359,9 +360,15 @@ var TableDatatablesManaged = function () {
         //enable/disable force edit purchase
         $('#form_model_edit [name="force_edit"]').bind('click','change', function(ev) {
             if($(this).is(':checked'))
-                $('#form_model_edit input[name^="t_p_"], #form_model_edit input[name="t_p_processing_fee"], #form_model_edit input[name="t_savings"], #form_model_edit input[name="t_commission_percent"], #form_model_edit input[name="t_price_paid"]').prop('readonly', false);
+            {
+                $('#target_purchase input[name^="t_"]').prop('readonly', false);
+                $('#target_purchase select[name^="t_"]').prop('disabled', false);
+            }
             else
-                $('#form_model_edit input[name="t_p_retail_price"], #form_model_edit input[name="t_p_processing_fee"], #form_model_edit input[name="t_savings"], #form_model_edit input[name="t_commission_percent"], #form_model_edit input[name="t_price_paid"]').prop('readonly', true);
+            {
+                $('#form_model_edit input[name^="t_"]').prop('readonly', true);
+                $('#target_purchase select[name^="t_"]').prop('disabled', true);
+            }
         });
         //on change edit field
         $('#form_model_edit select[name="to_show_time_id"], #form_model_edit select[name="to_ticket_id"], #form_model_edit select[name="to_discount_id"], #form_model_edit input[name="to_quantity"]').on('change', function() {
@@ -388,8 +395,8 @@ var TableDatatablesManaged = function () {
                         $('#form_model_edit input, #form_model_edit select').css('border-color','').css('background','').css('font-weight','normal');
                         //fill out
                         for(var key in data.target) {
-                            if(key == 't_show_time')
-                                data.target[key] = moment(data.target[key]).format('M/D/YY h:mma');
+                            if(key == 't_show_time' || key == 't_updated')
+                                data.target[key] = moment(data.target[key]).format('M/DD/YYYY h:mm a');
                             $('#form_model_edit [name="'+key+'"]').val(data.target[key]);
                         }
                         //hightlight changes

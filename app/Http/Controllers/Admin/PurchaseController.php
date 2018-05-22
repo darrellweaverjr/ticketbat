@@ -144,10 +144,12 @@ class PurchaseController extends Controller{
                         $qty_item_pay = $qty-$free_tickets;
                         //calculate target result
                         $target = ['t_ticket_type'=>$ticket->ticket_type,'t_title'=>$ticket->package->title,'t_retail_price'=>$ticket->retail_price,
-                                   't_is_active'=>$ticket->is_active,'t_inclusive_fee'=>$ticket->inclusive_fee,'t_code'=>$discount->code, 't_printed_fee'=>$ticket->printed_fee,
+                                   't_is_active'=>$ticket->is_active,'t_inclusive_fee'=>$ticket->inclusive_fee, 
+                                   't_code'=>$discount->code, 't_printed_fee'=>$purchase->printed_fee, 
+                                   't_p_inclusive_fee'=>(isset($input['t_p_inclusive_fee']))? $input['t_p_inclusive_fee'] : $purchase->inclusive_fee,
                                    't_processing_fee'=>$ticket->processing_fee,'t_percent_pf'=>$ticket->t_percent_pf,'t_fixed_commission'=>$ticket->fixed_commission,
                                    't_percent_commission'=>$ticket->percent_commission,'t_quantity'=>$qty,'t_show_time'=>$showtime->show_time,
-                                   't_p_retail_price'=> Util::round($ticket->retail_price*$qty),'t_cc_fee'=> Util::round($purchase->cc_fees),
+                                   't_p_retail_price'=> Util::round($ticket->retail_price*$qty),'t_cc_fee'=> $purchase->cc_fees,
                                    't_payment_type'=> (!empty($input['t_payment_type']))? $input['t_payment_type'] : $purchase->payment_type,
                                    't_channel'=> (!empty($input['t_channel']))? $input['t_channel'] : $purchase->channel,
                                    't_updated'=> (!empty($input['t_updated']))? $input['t_updated'] : $purchase->updated,
@@ -161,14 +163,9 @@ class PurchaseController extends Controller{
                         $target['t_commission_percent'] = (!empty($fixed_commission))? Util::round($fixed_commission*$qty_item_pay) : Util::round($ticket->percent_commission/100*$ticket->retail_price*$qty_item_pay);
                         //calculate total result
                         $target['t_price_paid'] = Util::round($target['t_p_retail_price'] - $target['t_savings'] + $target['t_printed_fee']);
-                        if(isset($input['t_inclusive_fee']))
-                            $inclusive = ($input['t_inclusive_fee']>0)? 1 : 0;
-                        else
-                            $inclusive = $purchase->inclusive_fee;
-                        if(!($inclusive>0))
+                        if(!($target['t_p_inclusive_fee']>0))
                             $target['t_price_paid'] += Util::round($target['t_p_processing_fee']);
-                        $sales_tax = $showtime->show->venue->default_sales_taxes_percent/100;
-                        $target['t_sales_taxes'] = Util::round($target['t_price_paid'] * $sales_tax);
+                        $target['t_sales_taxes'] = Util::round($target['t_price_paid'] * $showtime->show->venue->default_sales_taxes_percent/100);
                         $target['t_price_paid'] += Util::round($target['t_sales_taxes']);
                         return ['success'=>true,'target'=>$target];
                     }
