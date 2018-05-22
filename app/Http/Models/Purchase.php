@@ -366,7 +366,7 @@ class Purchase extends Model
                     }
                 }
                 //table on email to show all totals
-                $totals['total'] = $totals['retail_price'] + $totals['processing_fee'] - $totals['discount']  + $totals['sales_taxes'];
+                $totals['total'] = $totals['retail_price'] + $totals['processing_fee'] - $totals['discount']  + $totals['printed_fee'] + $totals['sales_taxes'];
                 $totals_html = '<tr> <td align="right" width="80%">Subtotal:</td> <td width="20%" align="right">$ '.number_format($totals['retail_price'],2).'</td> </tr>
                                 <tr> <td align="right">Processing Fee:</td> <td align="right">$ '.number_format($totals['processing_fee'],2).'</td> </tr>';
                 if($totals['discount'] > 0)
