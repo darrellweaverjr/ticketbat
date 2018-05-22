@@ -116,11 +116,11 @@ class DashboardController extends Controller
                                             purchases.price_paid-purchases.retail_price-purchases.sales_taxes+purchases.savings-purchases.printed_fee,
                                             purchases.price_paid-purchases.processing_fee-purchases.retail_price-purchases.sales_taxes+purchases.savings-purchases.printed_fee )) AS other,
                                           purchases.sales_taxes, purchases.price_paid, purchases.cc_fees, 
-                                          ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees,2) AS to_show,
+                                          ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees-purchases.printed_fee,2) AS to_show,
                                           SUM( IF(purchases.inclusive_fee>0, purchases.processing_fee, 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, purchases.processing_fee) ) AS fees_over,
                                           purchases.commission_percent AS commissions,
-                                          ROUND(purchases.processing_fee+purchases.commission_percent,2) AS profit,
+                                          ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit,
                                           COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
                                           SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid,0), 0 ) ) AS refunds'))
                         ->where($where)
@@ -242,7 +242,7 @@ class DashboardController extends Controller
 
                 $summary_table = [];
                 $subtotals = $consignment = ['purchases'=>0,'tickets'=>0,'price_paid'=>0,'savings'=>0,'to_show'=>0,'commissions'=>0,'fees_incl'=>0,'fees_over'=>0,
-                                             'profit'=>0,'sales_taxes'=>0,'cc_fees'=>0];
+                                             'profit'=>0,'sales_taxes'=>0,'cc_fees'=>0,'printed_fee'=>0];
                 $summary_info = DB::table('purchases')
                             ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
@@ -255,15 +255,15 @@ class DashboardController extends Controller
                                                      WHEN (purchases.payment_type="None") THEN "Comp."
                                                      ELSE purchases.payment_type END ) AS method, purchases.channel,
                                               COUNT(purchases.id) AS purchases,
-                                              SUM(purchases.quantity) AS tickets,
+                                              SUM(purchases.quantity) AS tickets, SUM(purchases.printed_fee) AS printed_fee,  
                                               SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
                                               SUM(ROUND(purchases.price_paid,2)) AS price_paid,
                                               SUM(ROUND(purchases.savings,2)) AS savings,
-                                              SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
+                                              SUM(ROUND(purchases.cc_fees,2)) AS cc_fees, SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,
                                               SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
                                               SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                               SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                              SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees,2)) AS to_show,
+                                              SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-printed_fee,2)) AS to_show,
                                               SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                             ->where($where)
                             ->where(function($query) {
@@ -276,7 +276,7 @@ class DashboardController extends Controller
                 {
                     $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'price_paid'=>$d->price_paid,'savings'=>$d->savings,'sales_taxes'=>$d->sales_taxes,
                                 'cc_fees'=>$d->cc_fees,'to_show'=>$d->to_show,'commissions'=>$d->commissions,'fees_incl'=>$d->fees_incl,'fees_over'=>$d->fees_over,
-                                'profit'=>$d->profit];
+                                'profit'=>$d->profit,'printed_fee'=>$d->printed_fee];
                     if($d->channel == 'Consignment')
                         $consignment = calc_totals([$consignment,$current]);
                     else
@@ -305,7 +305,7 @@ class DashboardController extends Controller
                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                     ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased,
                                     SUM(purchases.quantity) AS qty,
-                                    SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS amount'))
+                                    SUM(ROUND(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee,2)) AS amount'))
                     ->where($where)
                     ->where(function($query) {
                         $query->where('purchases.status','=','Active')
@@ -361,18 +361,17 @@ class DashboardController extends Controller
                                     COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
                                               AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 7 DAY)),0) AS tickets_seven,
-                                    SUM(purchases.quantity) AS tickets,
+                                    SUM(purchases.quantity) AS tickets, SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
-                                    IF(purchases.inclusive_fee>0, 
-                                        SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
-                                        SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
+                                    SUM(ROUND(purchases.price_paid,2)) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
+                                    SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,  
                                     SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
                                     SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                     SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees,2)) AS to_show,
+                                    SUM(ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
                     ->where(function($query) {
@@ -402,6 +401,7 @@ class DashboardController extends Controller
                             'price_paids'=>array_sum(array_column($data,'price_paids')),
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
                             'revenue'=>array_sum(array_column($data,'revenue')),
+                            'printed_fee'=>array_sum(array_column($data,'printed_fee')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees_incl'=>array_sum(array_column($data,'fees_incl')),
                             'fees_over'=>array_sum(array_column($data,'fees_over')),
@@ -459,10 +459,11 @@ class DashboardController extends Controller
                                         SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
+                                    SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,
                                     SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
                                     SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                     SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees,2)) AS to_show,
+                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions '))
                         ->where($where)
                         ->where(function($query) {
@@ -476,6 +477,7 @@ class DashboardController extends Controller
                             'price_paids'=>array_sum(array_column($data,'price_paids')),
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
                             'revenue'=>array_sum(array_column($data,'revenue')),
+                            'printed_fee'=>array_sum(array_column($data,'printed_fee')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees_incl'=>array_sum(array_column($data,'fees_incl')),
                             'fees_over'=>array_sum(array_column($data,'fees_over')),
@@ -538,10 +540,11 @@ class DashboardController extends Controller
                                         SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
                                     SUM(ROUND(purchases.savings,2)) AS discounts,
                                     SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
+                                    SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,  
                                     SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
                                     SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                     SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees,2)) AS to_show,
+                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
                                     SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                     ->where($where)
                     ->where(function($query) {
@@ -559,14 +562,14 @@ class DashboardController extends Controller
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->select(DB::raw('purchases.channel,
-                                      SUM(purchases.processing_fee+purchases.commission_percent) AS amount'))
+                                      SUM(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee) AS amount'))
                     ->where($where)
                     ->groupBy('channel')->orderBy('amount','ASC')->distinct()->get()->toJson();
             $graph['show'] = DB::table('purchases')
                     ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
-                    ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent) AS amount, shows.name AS show_name'))
+                    ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee) AS amount, shows.name AS show_name'))
                     ->where($where)
                     ->groupBy('show_name')->orderBy('amount','ASC')->distinct()->get()->toJson();
             //calculate totals
@@ -575,6 +578,7 @@ class DashboardController extends Controller
                             'price_paids'=>array_sum(array_column($data,'price_paids')),
                             'retail_prices'=>array_sum(array_column($data,'retail_prices')),
                             'revenue'=>array_sum(array_column($data,'revenue')),
+                            'printed_fee'=>array_sum(array_column($data,'printed_fee')),
                             'discounts'=>array_sum(array_column($data,'discounts')),
                             'fees_incl'=>array_sum(array_column($data,'fees_incl')),
                             'fees_over'=>array_sum(array_column($data,'fees_over')),

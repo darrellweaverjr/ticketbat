@@ -41,7 +41,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['retail_prices']-$total['discounts']+$total['fees_incl']+$total['fees_over'],2)}}"></span></div>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['price_paids'],2)}}"></span></div>
                     <div class="desc">Total Revenue
                         <br>Sales Tax: $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes'],2)}}"></span>
                     </div>
@@ -84,6 +84,7 @@
                     <div class="desc">
                         Fees Incl.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl'],2)}}"></span>
                         <br>Fees Over.: $ <span data-counter="counterup" data-value="{{number_format($total['fees_over'],2)}}"></span>
+                        <br>Print Fee: $ <span data-counter="counterup" data-value="{{number_format($total['printed_fee'],2)}}"></span>
                     </div>
                 </div>
             </a>
@@ -95,7 +96,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees_incl']+$total['fees_over'],2)}}"></span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees_incl']+$total['fees_over']+$total['printed_fee'],2)}}"></span>
                     </div>
                     <div class="desc">Gross Profit</div>
                 </div>
@@ -140,8 +141,9 @@
                                 <th style="text-align:center">Purch.</th>
                                 <th style="text-align:center">Total<br>Revenue</th>
                                 <th style="text-align:center">Sales<br>Taxes</th>
-                                <th style="text-align:center">To<br>Show</th>
                                 <th style="text-align:center">CC<br>Fees</th>
+                                <th style="text-align:center">To<br>Show</th>
+                                <th style="text-align:center">Print<br>Fee</th>
                                 <th style="text-align:center">Comm.</th>
                                 <th style="text-align:center">Fees<br>Incl</th>
                                 <th style="text-align:center">Fees<br>Over</th>
@@ -161,12 +163,13 @@
                                 <td style="text-align:center">{{number_format($d->purchases)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->sales_taxes,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->cc_fees,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->to_show,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->commissions,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees_incl,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees_over,2)}}</td>
-                                <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees_incl+$d->fees_over,2)}}</b></td>
+                                <td style="text-align:right"><b>$ {{number_format($d->commissions+$d->fees_incl+$d->fees_over+$d->printed_fee,2)}}</b></td>
                             </tr>
                             @endforeach
                         </tbody>
