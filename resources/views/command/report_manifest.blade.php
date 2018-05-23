@@ -31,7 +31,7 @@
     <body>
         <h3 style="text-align:center">
             <img alt="TicketBat.com" height="50" widtd="300" src="https://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
-            <br><br>MANIFEST REPORT
+            <br><br>MANIFEST REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
         </h3><hr>
         <p class="ttitle">The following tickets have been purchased for "{{$data['name']}}" on "{{date('m/d/Y g:ia',strtotime($data['show_time']))}}"</p>
         <table>

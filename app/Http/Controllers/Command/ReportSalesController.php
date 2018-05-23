@@ -187,11 +187,12 @@ class ReportSalesController extends Controller{
                         ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.id');
 
             if($type=='admin' || empty($e_id))
-                $table->whereDate('show_times.show_time','>=',$this->start_date);
+                $table->whereDate('show_times.show_time','>=',$this->start_date)->whereDate('show_times.show_time','<=', \Illuminate\Support\Carbon::today());
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $table->whereDate('show_times.show_time','>=',$this->start_date)->where('venues.id','=',$e_id);
+                    $table->whereDate('show_times.show_time','>=',$this->start_date)->whereDate('show_times.show_time','<=', \Illuminate\Support\Carbon::today())
+                          ->where('venues.id','=',$e_id);
                 else if($type=='showtime')
                     $table->where('show_times.id','=',$e_id);
             }

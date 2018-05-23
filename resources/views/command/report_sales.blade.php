@@ -40,7 +40,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                 <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                <br><br>FUTURE LIABILITIES REPORT
+                <br><br>FUTURE LIABILITIES REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( starting on {{$d['date']}} )</p>
                 <table>
@@ -116,7 +116,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                     <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                    <br><br>SALES REPORT
+                    <br><br>SALES REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
 
