@@ -417,7 +417,7 @@
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
-                                <td style="text-align:center" data-order="{{strtotime($d->created)}}">{{date('n/d/Y g:ia',strtotime($d->created))}}</td>
+                                <td style="text-align:center" data-order="{{strtotime($d->refunded)}}">{{date('n/d/Y g:ia',strtotime($d->refunded))}}</td>
                                 <td style="text-align:center">({{number_format($d->tickets)}})</td>
                                 <td style="text-align:right">($ {{number_format($d->retail_price,2)}})</td>
                                 <td style="text-align:right">($ {{number_format($d->fees,2)}})</td>
