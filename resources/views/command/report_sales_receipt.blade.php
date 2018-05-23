@@ -153,9 +153,11 @@
             </style>
     </head>
     <body>
+        @php $logo = "https://marketing-image-production.s3.amazonaws.com/uploads/0524976af1dff0748cb6a51c8ff0043e15fda93ccf1129a5124b18035eea48bd5b937bec629a19356d1ee0763159f3e1095a67bb6fe4780d92e2757b0493dbd1.jpg" @endphp
+        
         <div class="container">
             <div class="header">
-                <img src="https://www.ticketbat.com/themes/img/logo-header-white.jpg" alt="Ticket Bat">
+                <img alt="TicketBat.com" height="50" width="300" src={{$logo}}/>
             </div>
             <div class="tb-title">
                 Your Ticketbat purchase for <span class="tb-highlight-color">{{$purchase['show_name']}}</span> on <span class="tb-highlight-color">{{date('m/d/Y g:ia',strtotime($purchase['show_time']))}}</span> is confirmed. Have a great time!
@@ -244,7 +246,7 @@
 </html>
 @elseif($format == 'printer')
         <div style="text-align:center">
-            <img src="https://www.ticketbat.com/themes/img/logo-header-white.jpg" width="280" alt="TicketBat Receipt">
+            <img src={{$logo}} width="280" alt="TicketBat Receipt">
         </div><hr>
         @if(!empty($printer['restrictions']))
         <b>Restrictions:</b> {{implode(', ',$printer['restrictions'])}}<br>

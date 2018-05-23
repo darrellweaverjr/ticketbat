@@ -33,7 +33,7 @@
         </style>
     </head>
     <body>
-        @php $logo = "https://www.ticketbat.com/themes/img/logo-header-white.jpg" @endphp
+        @php $logo = "https://marketing-image-production.s3.amazonaws.com/uploads/0524976af1dff0748cb6a51c8ff0043e15fda93ccf1129a5124b18035eea48bd5b937bec629a19356d1ee0763159f3e1095a67bb6fe4780d92e2757b0493dbd1.jpg" @endphp
         
         @if($format == 'future_liabilities')
             @foreach($data as $d)

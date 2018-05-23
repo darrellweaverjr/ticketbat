@@ -29,8 +29,10 @@
         </style>
     </head>
     <body>
+        @php $logo = "https://marketing-image-production.s3.amazonaws.com/uploads/0524976af1dff0748cb6a51c8ff0043e15fda93ccf1129a5124b18035eea48bd5b937bec629a19356d1ee0763159f3e1095a67bb6fe4780d92e2757b0493dbd1.jpg" @endphp
+        
         <h3 style="text-align:center">
-            <img alt="TicketBat.com" height="50" widtd="300" src="https://www.ticketbat.com/themes/img/logo-header-white.jpg"/>
+            <img alt="TicketBat.com" height="50" width="300" src={{$logo}}/>
             <br><br>MANIFEST REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
         </h3><hr>
         <p class="ttitle">The following tickets have been purchased for "{{$data['name']}}" on "{{date('m/d/Y g:ia',strtotime($data['show_time']))}}"</p>
