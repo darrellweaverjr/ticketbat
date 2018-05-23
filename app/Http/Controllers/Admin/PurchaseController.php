@@ -403,10 +403,14 @@ class PurchaseController extends Controller{
                         $note.= ', Channel from '.$purchase->channel.' to '.$input['t_channel'];
                         $purchase->channel = $input['t_channel'];
                     }
-                    if(!empty($input['t_updated']) && date('Y-m-d H:i:s',strtotime($input['t_updated']))!=$purchase->updated)
+                    if(!empty($input['t_updated']) && strtotime($input['t_updated']) )
                     {
-                        $note.= ', Updated from '.date('m/d/Y g:ia',strtotime($purchase->updated)).' to '.$input['t_updated'];
-                        $purchase->updated = date('Y-m-d H:i:s',strtotime($input['t_updated']));
+                        $updated= date('Y-m-d H:i:s',strtotime($input['t_updated']));
+                        if($updated != $purchase->updated)
+                        {
+                            $note.= ', Updated from '.date('m/d/Y g:ia',strtotime($purchase->updated)).' to '.$input['t_updated'];
+                            $purchase->updated = $updated;
+                        }
                     }
                     //note and save
                     $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
