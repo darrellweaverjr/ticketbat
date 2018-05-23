@@ -124,8 +124,8 @@
             <hr>@foreach($d['table_financial'] as $t)
             <hr><table>
                   <tr class="ttitle">
-                      <td colspan="5">{{html_entity_decode($t['title'])}}</td>
-                      <td colspan="2" style='text-align:right'>@if(!empty($t['percent'])) @if($t['percent']>0)+ @endif {{$t['percent']}}% NET (C+F) @endif</td>
+                      <td colspan="7">{{html_entity_decode($t['title'])}}</td>
+                      <td colspan="4" style='text-align:right'>@if(!empty($t['percent'])) @if($t['percent']>0)+ @endif {{$t['percent']}}% NET {{$net}} @endif</td>
                   </tr>
                   <tr class="theader">
                       <td width="25%">VENUES</td>
