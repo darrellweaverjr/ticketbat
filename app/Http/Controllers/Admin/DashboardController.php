@@ -122,7 +122,7 @@ class DashboardController extends Controller
                                           purchases.commission_percent AS commissions,
                                           ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit,
                                           COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
-                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid,0), 0 ) ) AS refunds'))
+                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,purchases.price_paid,0), 0 ) ) AS refunds'))
                         ->where($where)
                         ->where(function($query) {
                             $query->whereNull('transaction_refunds.id')
