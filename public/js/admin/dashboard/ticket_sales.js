@@ -19,15 +19,6 @@ var TableDatatablesButtons = function () {
                     customize: function ( win ) {
                         var graph = ($('#form_model_search input[name="replace_chart"]:checked').length)? 'Yes' : 'No';
                         var coupons = ($('#form_model_search input[name="coupon_report"]:checked').length)? 'Yes' : 'No';
-                        
-                        var xxx = '';
-                        $('#form_model_search').each(function(){
-                            var text = $(this).closest('div.form-group').find('label').text();
-                            var value = $(this).val();
-                            alert(text+' :: '+value);
-                        });
-                        
-                        
                         var t = '<hr><div style="font-size:12px;float:left">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
                                 'Show: '+$('#form_model_search select[name="show"] option:selected').text()+'<br>'+
                                 'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
