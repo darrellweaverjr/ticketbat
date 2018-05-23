@@ -33,8 +33,8 @@ class ReportSalesController extends Controller{
         $this->only_admin = $only_admin;
         $this->start_date = date('Y-m-d',strtotime('-'.$this->days.' days'));
         $date_format = 'D, F j, Y';
-        $this->report_date = ($this->days==1)? date($date_format,strtotime('yesterday')) :
-                                  date($date_format,strtotime('-'.$this->days.' days')).' - '.date($date_format,strtotime('yesterday'));
+        $this->report_date = ($this->days<1)? date($date_format,strtotime('now')) :
+                                  date($date_format,strtotime('-'.$this->days.' days')).' - '.date($date_format,strtotime('now'));
         $this->subject = 'Daily Sales Report ';
     }
     /*
@@ -187,11 +187,11 @@ class ReportSalesController extends Controller{
                         ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.id');
 
             if($type=='admin' || empty($e_id))
-                $table->whereDate('purchases.created','>=',$this->start_date);
+                $table->whereDate('show_times.show_time','>=',$this->start_date);
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $table->whereDate('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
+                    $table->whereDate('show_times.show_time','>=',$this->start_date)->where('venues.id','=',$e_id);
                 else if($type=='showtime')
                     $table->where('show_times.id','=',$e_id);
             }
