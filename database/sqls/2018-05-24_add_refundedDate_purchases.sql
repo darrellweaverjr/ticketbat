@@ -14,6 +14,11 @@ ADD COLUMN `refunded` DATETIME NULL DEFAULT NULL AFTER `inclusive_fee`;
 ALTER TABLE `transaction_refunds` 
 ADD COLUMN `payment_type` VARCHAR(20) NOT NULL DEFAULT 'Credit' AFTER `error`;
 
+#update payent type on refunds
+update transaction_refunds r 
+inner join purchases p on r.purchase_id=p.id
+set r.payment_type = p.payment_type;
+
 #update refunded field on table purchases
 update purchases p 
 left join transaction_refunds r on r.purchase_id = p.id and r.result='Approved'
