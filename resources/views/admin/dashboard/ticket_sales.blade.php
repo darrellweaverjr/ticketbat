@@ -16,7 +16,7 @@
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
     <div class="row" id="totals">
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-right:-25px">
+        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <div class="display col-md-3">
                 <div class="number text-left">
                     <small>-</small>
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-stat2 col-lg-2 col-md-2 col-sm-6 col-xs-12" style="margin-right:-25px">
+        <div class="dashboard-stat2 col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <div class="display col-md-6">
                 <div class="number text-right">
                     <small>DISCOUNTS</small>
@@ -98,7 +98,7 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-right:-25px">
+        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <div class="display col-md-4">
                 <div class="number text-right">
                     <small >C.C. FEE</small>
@@ -142,7 +142,7 @@
                 </div>                    
             </div>
         </div>
-        <div class="dashboard-stat2 col-lg-4 col-md-4 col-sm-6 col-xs-12" style="margin-right:-25px">
+        <div class="dashboard-stat2 col-lg-4 col-md-4 col-sm-6 col-xs-12">
             <div class="display col-md-3">
                 <div class="number text-right">
                     <small>COMMIS.</small>
@@ -202,9 +202,9 @@
         </div>
     </div>
     <!-- END DASHBOARD STATS 1-->
-    <div id="ticket_sales_chart_sales" data-info="{{$graph}}" style="height:200px;"></div>
+    <div class="row" id="ticket_sales_chart_sales" data-info="{{$graph}}" style="height:200px;"></div>
     <!-- BEGIN TOTAL TABLE FOR PRINT-->
-    <div id="tb_summary" class="portlet-body" style="display:none;" >
+    <div id="tb_summary" class="row portlet-body" style="display:none;" >
         @foreach($summary as $summ)
         <h5 class="bold">@php echo $summ['title'] @endphp</h5>
         <table width="100%" class="table table-striped table-bordered table-hover">
@@ -248,7 +248,7 @@
         @endforeach
     </div>
     <!-- BEGIN COUPONS TABLE FOR PRINT-->
-    <div id="tb_coupon" class="portlet-body" style="display:none;" >
+    <div id="tb_coupon" class="row portlet-body" style="display:none;" >
         @if(!empty($coupons))
         <h5 class="bold">Coupons Report</h5>
         @if(!empty($coupons['descriptions']))
