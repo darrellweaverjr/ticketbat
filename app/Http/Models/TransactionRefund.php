@@ -90,6 +90,7 @@ class TransactionRefund extends Model
             if(!empty($tran->error_code))
                 $transaction->error_code = $tran->error_code;
             $transaction->created = $created;
+            $transaction->payment_type = 'Credit';
             $transaction->save();
             //return
             if($success)

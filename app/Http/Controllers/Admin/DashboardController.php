@@ -134,7 +134,7 @@ class DashboardController extends Controller
                                           SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,purchases.price_paid,0), 0 ) ) AS refunds,
                                           IF(purchases.status="Refunded", COALESCE(transaction_refunds.created,purchases.updated) , purchases.created ) AS trans_date
                                           '))
-                        ->where(clear_date_sold($where))
+                        //->where(clear_date_sold($where))
                         ->where($where)
                         ->where(function($query) {
                             $query->whereNull('transaction_refunds.id')

@@ -6,20 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\View;
 use App\Http\Models\Purchase;
-use App\Http\Models\Venue;
-use App\Http\Models\Discount;
-use App\Http\Models\User;
-use App\Http\Models\Customer;
-use App\Http\Models\Show;
-use App\Http\Models\Ticket;
-use App\Http\Models\ShowTime;
 use App\Http\Models\Transaction;
 use App\Http\Models\TransactionRefund;
-use Barryvdh\DomPDF\Facade as PDF;
-use App\Http\Models\Util;
-use App\Mail\EmailSG;
 
 /**
  * Manage Refunds
@@ -180,7 +169,20 @@ class RefundController extends Controller{
         try {
             //init
             $input = Input::all();
-            $current = date('Y-m-d H:i:s');
+            $current = date('Y-m-d H:i:s');            
+            function create_refund($purchase,$user,$description,$current)
+            {
+                $transaction = new TransactionRefund;
+                $transaction->purchase_id = $purchase->id;
+                $transaction->user_id = $user->id;
+                $transaction->amount = $purchase->price_paid;
+                $transaction->description = (!empty($description))? $description : null;
+                $transaction->result = 'Approved';
+                $transaction->error = 'Manually changed purchase to '.$purchase->status;
+                $transaction->created = $current;
+                $transaction->payment_type = $purchase->payment_type;
+                $transaction->save();
+            }            
             //function refund each
             function refund_each($purchase, $user, $amount, $description, $current, $partial=false)
             {
@@ -189,8 +191,19 @@ class RefundController extends Controller{
                     $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Refunded.';
                     $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                     $purchase->status = 'Refunded';
-                    $purchase->updated = $current;
+                    $purchase->updated = $purchase->refunded = $current;
                     $purchase->save();
+                    //save into transaction
+                    $transaction = new TransactionRefund;
+                    $transaction->purchase_id = $purchase->id;
+                    $transaction->user_id = $user->id;
+                    $transaction->amount = $purchase->price_paid;
+                    $transaction->description = $description;
+                    $transaction->result = 'Approved';
+                    $transaction->error = 'Manually changed purchase to '.$purchase->status;
+                    $transaction->created = $current;
+                    $transaction->payment_type = $purchase->payment_type;
+                    $transaction->save();
                     return ['success'=>true, 'id'=>$purchase->id, 'msg'=>$note];
                 }
                 else if($purchase->payment_type == 'Credit' && $purchase->transaction && $purchase->transaction->trans_result=='Approved')
@@ -211,7 +224,7 @@ class RefundController extends Controller{
                             {
                                 $purchase->status = 'Refunded';
                             }
-                            $purchase->updated = $current;
+                            $purchase->updated = $purchase->refunded = $current;
                             $purchase->save();
                             return ['success'=>true, 'id'=>$purchase->id, 'msg'=>$refunded['msg']];
                         }
@@ -241,9 +254,12 @@ class RefundController extends Controller{
                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Refunded.';
                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                         $purchase->status = 'Refunded';
-                        $purchase->updated = $current;
+                        $purchase->updated = $purchase->refunded = $current;
                         if($purchase->save())
+                        {
+                            create_refund($purchase,$user,$description,$current);
                             return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' status updated successfully!<br>'.$note];
+                        }  
                         return ['success'=>false, 'msg'=>'There was an error trying to update the status of the purchase #'.$purchase->id.'<br>'.$note];
                     }
                     else if($input['type']=='charge_purchase')
@@ -251,9 +267,12 @@ class RefundController extends Controller{
                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Change status to Chargeback.';
                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                         $purchase->status = 'Chargeback';
-                        $purchase->updated = $current;
+                        $purchase->updated = $purchase->refunded = $current;
                         if($purchase->save())
+                        {
+                            create_refund($purchase,$user,$description,$current);
                             return ['success'=>true,'msg'=>'Purchase #'.$purchase->id.' status updated successfully!<br>'.$note];
+                        }
                         return ['success'=>false, 'msg'=>'There was an error trying to update the status of the purchase #'.$purchase->id.'<br>'.$note];
                     }
                     else if($purchase->transaction_id)
