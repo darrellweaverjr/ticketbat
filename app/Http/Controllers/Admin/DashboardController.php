@@ -135,6 +135,7 @@ class DashboardController extends Controller
                                           IF(purchases.status="Refunded", COALESCE(transaction_refunds.created,purchases.updated) , purchases.created ) AS trans_date
                                           '))
                         ->where(clear_date_sold($where))
+                        ->where($where)
                         ->where(function($query) {
                             $query->whereNull('transaction_refunds.id')
                                   ->orWhere('transaction_refunds.result','=','Approved');
@@ -145,8 +146,8 @@ class DashboardController extends Controller
                                   ->orWhere('purchases.status','like','Pending%');
                         })
                         ->groupBy('purchases.id')->orderBy('purchases.id','DESC');
-                        if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
-                            $data->havingRaw('trans_date BETWEEN "'.date('Y-m-d H:i:s',strtotime($search['soldtime_start_date'])).'" AND "'.date('Y-m-d H:i:s',strtotime($search['soldtime_end_date'])).'"');
+                        //if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
+                            //$data->havingRaw('trans_date BETWEEN "'.date('Y-m-d H:i:s',strtotime($search['soldtime_start_date'])).'" AND "'.date('Y-m-d H:i:s',strtotime($search['soldtime_end_date'])).'"');
                         $data = $data->get()->toArray();
                         
             //calculate totals
