@@ -22,7 +22,7 @@ var TableDatatablesButtons = function () {
                                 'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
                                 'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'</div>';
                         t = t + '<hr><table width="100%"><thead><tr>';
-                        $.each($('#totals .details').clone(),function(k, v) {
+                        $.each($('#totals').clone(),function(k, v) {
                             t = t + '<th valign="top" style="text-align:right" width="16.5%">'+v.innerHTML+'</th>';
                         });
                         t = t + '</tr></thead></table><hr>';
