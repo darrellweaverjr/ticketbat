@@ -82,6 +82,15 @@ class DashboardController extends Controller
             $data = $total = $summary = $coupons = array();
             //conditions to search
             $data = Purchase::filter_options('REPORTS', $input, '-7');
+            //clear date sold for comparisons
+            function clear_date_sold($where)
+            {
+                return array_filter($where, function($value){
+                    if (strstr($value[0], 'purchases.created') !== false)
+                       return false;
+                    return true;
+                });
+            }
             //enable only valid purchase status
             foreach ($data['search']['status'] as $k=>$v)
                 if($v!='Active' && $v!='Refunded' && !(strpos($v,'Pending')===0))
@@ -122,8 +131,10 @@ class DashboardController extends Controller
                                           purchases.commission_percent AS commissions,
                                           ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit,
                                           COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
-                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,purchases.price_paid,0), 0 ) ) AS refunds'))
-                        ->where($where)
+                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,purchases.price_paid,0), 0 ) ) AS refunds,
+                                          IF(purchases.status="Refunded", COALESCE(transaction_refunds.created,purchases.updated) , purchases.created ) AS trans_date
+                                          '))
+                        ->where(clear_date_sold($where))
                         ->where(function($query) {
                             $query->whereNull('transaction_refunds.id')
                                   ->orWhere('transaction_refunds.result','=','Approved');
@@ -133,7 +144,11 @@ class DashboardController extends Controller
                                   ->orWhere('purchases.status','=','Refunded')
                                   ->orWhere('purchases.status','like','Pending%');
                         })
-                        ->groupBy('purchases.id')->orderBy('purchases.id','DESC')->get()->toArray();
+                        ->groupBy('purchases.id')->orderBy('purchases.id','DESC');
+                        if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
+                            $data->havingRaw('trans_date BETWEEN "'.date('Y-m-d H:i:s',strtotime($search['soldtime_start_date'])).'" AND "'.date('Y-m-d H:i:s',strtotime($search['soldtime_end_date'])).'"');
+                        $data = $data->get()->toArray();
+                        
             //calculate totals
             function calc_totals($data,$ref=false)
             {
@@ -165,16 +180,7 @@ class DashboardController extends Controller
                                                 'profit_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->profit : 0; }, $data)) ] ); 
                 return $array;
             }
-            $total = calc_totals($data,true);
-            //clear date sold for comparisons
-            function clear_date_sold($where)
-            {
-                return array_filter($where, function($value){
-                    if (strstr($value[0], 'purchases.created') !== false)
-                       return false;
-                    return true;
-                });
-            }
+            $total = calc_totals($data,true);            
             //calculate summary table according to period
             function cal_summary($period,$where,$search,$type='previous')
             {
