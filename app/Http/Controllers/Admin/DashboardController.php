@@ -93,7 +93,7 @@ class DashboardController extends Controller
             }
             //enable only valid purchase status
             foreach ($data['search']['status'] as $k=>$v)
-                if($v!='Active' && $v!='Refunded' && !(strpos($v,'Pending')===0))
+                if($v!='Active' && $v!='Refunded' && $v!='Chargeback' && !(strpos($v,'Pending')===0))
                     unset($data['search']['status'][$k]);
             $where = $data['where'];
             $search = $data['search'];
@@ -111,9 +111,8 @@ class DashboardController extends Controller
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                         ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                         ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
-                        ->leftJoin('transaction_refunds', 'purchases.id', '=' ,'transaction_refunds.purchase_id')
                         ->select(DB::raw('purchases.id, CONCAT(customers.first_name," ",customers.last_name) as name, customers.email,  shows.name AS show_name, 
-                                          purchases.created, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
+                                          purchases.created, purchases.refunded, show_times.show_time, discounts.code, venues.name AS venue_name, tickets.inclusive_fee,
                                           ( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
                                                  WHEN (purchases.payment_type="None") THEN "Comp."
                                                  ELSE purchases.payment_type END ) AS method, tickets.ticket_type, packages.title,
@@ -129,31 +128,31 @@ class DashboardController extends Controller
                                           SUM( IF(purchases.inclusive_fee>0, purchases.processing_fee, 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, purchases.processing_fee) ) AS fees_over,
                                           purchases.commission_percent AS commissions,
-                                          ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit,
-                                          COALESCE(transaction_refunds.created,purchases.updated) AS refunded, 
-                                          SUM( IF(purchases.status="Refunded", COALESCE(transaction_refunds.amount,purchases.price_paid,0), 0 ) ) AS refunds,
-                                          IF(purchases.status="Refunded", COALESCE(transaction_refunds.created,purchases.updated) , purchases.created ) AS trans_date
-                                          '))
-                        //->where(clear_date_sold($where))
-                        ->where($where)
-                        ->where(function($query) {
-                            $query->whereNull('transaction_refunds.id')
-                                  ->orWhere('transaction_refunds.result','=','Approved');
+                                          ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit'))
+                        ->where(clear_date_sold($where))
+                        ->where(function($query) use ($search) {
+                            if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
+                            {
+                                $start = date('Y-m-d H:i:s', strtotime($search['soldtime_start_date']));
+                                $end = date('Y-m-d H:i:s', strtotime($search['soldtime_end_date']));
+                                $query->whereBetween('purchases.created', [$start, $end])
+                                      ->orWhereBetween('purchases.refunded', [$start, $end]);
+                            }
                         })
                         ->where(function($query) {
                             $query->where('purchases.status','=','Active')
                                   ->orWhere('purchases.status','=','Refunded')
+                                  ->orWhere('purchases.status','=','Chargeback')
                                   ->orWhere('purchases.status','like','Pending%');
                         })
-                        ->groupBy('purchases.id')->orderBy('purchases.id','DESC');
-                        //if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
-                            //$data->havingRaw('trans_date BETWEEN "'.date('Y-m-d H:i:s',strtotime($search['soldtime_start_date'])).'" AND "'.date('Y-m-d H:i:s',strtotime($search['soldtime_end_date'])).'"');
-                        $data = $data->get()->toArray();
+                        ->groupBy('purchases.id')->orderBy('purchases.id','DESC')->get()->toArray();
                         
             //calculate totals
-            function calc_totals($data,$ref=false)
+            function calc_totals($data,$search=null)
             {
-                $array = [  'purchases'=>array_sum(array_column($data,'purchases')),
+                if(empty($search))
+                {
+                    return [  'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
                             'savings'=>array_sum(array_column($data,'savings')),
                             'sales_taxes'=>array_sum(array_column($data,'sales_taxes')),
@@ -166,22 +165,64 @@ class DashboardController extends Controller
                             'commissions'=>array_sum(array_column($data,'commissions')),
                             'refunds'=>array_sum(array_column($data,'refunds')),
                             'profit'=>array_sum(array_column($data,'profit')) ];
-                if($ref)                   
-                    return array_merge ($array,['purchases_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->purchases : 0; }, $data)),
-                                                'tickets_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->tickets : 0; }, $data)),
-                                                'savings_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->savings : 0; }, $data)),
-                                                'sales_taxes_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->sales_taxes : 0; }, $data)),
-                                                'price_paid_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->price_paid : 0; }, $data)),
-                                                'cc_fees_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->cc_fees : 0; }, $data)),
-                                                'printed_fee_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->printed_fee : 0; }, $data)),
-                                                'to_show_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->to_show : 0; }, $data)),
-                                                'fees_incl_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->fees_incl : 0; }, $data)),
-                                                'fees_over_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->fees_over : 0; }, $data)),
-                                                'commissions_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->commissions : 0; }, $data)),
-                                                'profit_'=>array_sum(array_map(function($i) { return ($i->status=='Refunded')? $i->profit : 0; }, $data)) ] ); 
-                return $array;
-            }
-            $total = calc_totals($data,true);            
+                }
+                else
+                {
+                    $credit = ['purchases'=>0,'tickets'=>0,'savings'=>0,'sales_taxes'=>0,'price_paid'=>0,'cc_fees'=>0,'printed_fee'=>0,'to_show'=>0,'fees_incl'=>0,'fees_over'=>0,'commissions'=>0,'refunds'=>0,'profit'=>0 ];
+                    $debit = ['purchases_'=>0,'tickets_'=>0,'savings_'=>0,'sales_taxes_'=>0,'price_paid_'=>0,'cc_fees_'=>0,'printed_fee_'=>0,'to_show_'=>0,'fees_incl_'=>0,'fees_over_'=>0,'commissions_'=>0,'profit_'=>0];
+                    foreach ($data as $d)
+                    {
+                        if($d->status=='Refunded' || $d->status=='Chargeback')
+                        {
+                            $d->display = 0;                           
+                            if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
+                            {
+                                if(strtotime($d->created) >= strtotime($search['soldtime_start_date']) && strtotime($d->created) <= strtotime($search['soldtime_end_date']))
+                                    $d->display++;
+                                if(strtotime($d->refunded) >= strtotime($search['soldtime_start_date']) && strtotime($d->refunded) <= strtotime($search['soldtime_end_date']))
+                                    $d->display--;
+                            }
+                        }
+                        else
+                            $d->display = 1;
+                        //credit
+                        if($d->display>=0)
+                        {
+                            $credit['purchases'] += $d->purchases;
+                            $credit['tickets'] += $d->tickets;
+                            $credit['savings'] += $d->savings;
+                            $credit['sales_taxes'] += $d->sales_taxes;
+                            $credit['price_paid'] += $d->price_paid;
+                            $credit['cc_fees'] += $d->cc_fees;
+                            $credit['printed_fee'] += $d->printed_fee;
+                            $credit['to_show'] += $d->to_show;
+                            $credit['fees_incl'] += $d->fees_incl;
+                            $credit['fees_over'] += $d->fees_over;
+                            $credit['commissions'] += $d->commissions;
+                            $credit['profit'] += $d->profit;
+                        }
+                        //debit 
+                        if($d->display<=0)   
+                        {
+                            $debit['purchases_'] -= $d->purchases;
+                            $debit['tickets_'] -= $d->tickets;
+                            $debit['savings_'] -= $d->savings;
+                            $debit['sales_taxes_'] -= $d->sales_taxes;
+                            $debit['price_paid_'] -= $d->price_paid;
+                            $debit['cc_fees_'] -= $d->cc_fees;
+                            $debit['printed_fee_'] -= $d->printed_fee;
+                            $debit['to_show_'] -= $d->to_show;
+                            $debit['fees_incl_'] -= $d->fees_incl;
+                            $debit['fees_over_'] -= $d->fees_over;
+                            $debit['commissions_'] -= $d->commissions;
+                            $debit['profit_'] -= $d->profit;
+                        }
+                    }
+                }
+                return array_merge($credit,$debit);
+            }            
+            $total = calc_totals($data,$search); 
+            
             //calculate summary table according to period
             function cal_summary($period,$where,$search,$type='previous')
             {

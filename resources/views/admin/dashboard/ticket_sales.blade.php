@@ -32,10 +32,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['price_paid'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['refunds'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['price_paid_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['price_paid']-$total['refunds'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['price_paid']+$total['price_paid_'],2)}}">0.00</span>
                     </h4>
                 </div>
             </div>
@@ -46,10 +46,10 @@
                         <span data-counter="counterup" data-value="{{number_format($total['purchases'])}}">0</span> 
                     </h4>
                     <h4 class="font-red-haze">
-                        (<span data-counter="counterup" data-value="{{number_format($total['purchases_'])}}">0</span>)
+                        <span data-counter="counterup" data-value="{{number_format($total['purchases_'])}}">0</span>
                     </h4>
                     <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['purchases']-$total['purchases_'])}}">0</span>
+                        <span data-counter="counterup" data-value="{{number_format($total['purchases']+$total['purchases_'])}}">0</span>
                     </h4>
                 </div>
             </div>
@@ -60,10 +60,10 @@
                         <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        (<span data-counter="counterup" data-value="{{number_format($total['tickets_'])}}">0</span>)
+                        <span data-counter="counterup" data-value="{{number_format($total['tickets_'])}}">0</span>
                     </h4>
                     <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['tickets']-$total['tickets_'])}}">0</span>
+                        <span data-counter="counterup" data-value="{{number_format($total['tickets']+$total['tickets_'])}}">0</span>
                     </h4>
                 </div>
             </div>
@@ -76,10 +76,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['savings'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['savings_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['savings_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['savings']-$total['savings_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['savings']+$total['savings_'],2)}}">0.00</span>
                     </h4>
                 </div>
             </div>
@@ -90,10 +90,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes']-$total['sales_taxes_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes']+$total['sales_taxes_'],2)}}">0.00</span>
                     </h4>
                 </div>
             </div>
@@ -106,10 +106,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['cc_fees_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees']-$total['cc_fees_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees']+$total['cc_fees_'],2)}}">0.00</span>
                     </h4>
                 </div>
             </div>
@@ -120,10 +120,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['to_show_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['to_show_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['to_show']-$total['to_show_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['to_show']+$total['to_show_'],2)}}">0.00</span>
                     </h4>
                 </div>
             </div>
@@ -134,10 +134,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['printed_fee'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['printed_fee_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['printed_fee_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['printed_fee']-$total['printed_fee_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['printed_fee']+$total['printed_fee_'],2)}}">0.00</span>
                     </h4>
                 </div>                    
             </div>
@@ -150,10 +150,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['commissions_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']-$total['commissions_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['commissions_'],2)}}">0.00</span>
                     </h4>
                 </div>
             </div>
@@ -164,10 +164,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['fees_incl_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl']-$total['fees_incl_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl']+$total['fees_incl_'],2)}}">0.00</span>
                     </h4>
                 </div>                    
             </div>
@@ -178,10 +178,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['fees_over'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['fees_over_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_over_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_over']-$total['fees_over_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_over']+$total['fees_over_'],2)}}">0.00</span>
                     </h4>
                 </div>                    
             </div>
@@ -192,10 +192,10 @@
                         $ <span data-counter="counterup" data-value="{{number_format($total['profit'],2)}}">0.00</span>
                     </h4>
                     <h4 class="font-red-haze">
-                        ($ <span data-counter="counterup" data-value="{{number_format($total['profit_'],2)}}">0.00</span>)
+                        $ <span data-counter="counterup" data-value="{{number_format($total['profit_'],2)}}">0.00</span>
                     </h4>
                     <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['profit']-$total['profit_'],2)}}">0.00</span>
+                        $ <span data-counter="counterup" data-value="{{number_format($total['profit']+$total['profit_'],2)}}">0.00</span>
                     </h4>
                 </div>                    
             </div>
@@ -338,7 +338,8 @@
                     <table class="table table-striped table-bordered table-hover dt-responsive" id="tb_model">
                         <thead>
                             <tr>
-                                <th class="all" style="text-align:center">Orders</th>
+                                <th class="all" style="text-align:center"><i class="fa fa-search"></i></th>
+                                <th class="all" style="text-align:center">Order</th>
                                 <th class="none">Status</th>
                                 <th class="all" style="text-align:center">Customer</th>
                                 <th class="none">Email</th>
@@ -373,20 +374,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($data as $d)
+                        @foreach($data as $d)
+                            @if($d->display>=0)
                             <tr @if(strpos($d->status,'Pending') === 0) class="warning" @endif >
+                                <td></td>
                                 <td>{{$d->id}}</td>
                                 <td style="text-align:center">{{$d->status}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>
                                 <td style="text-align:center">{{$d->email}}</td>
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
-                                <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
-                                <td style="text-align:center" data-order="{{strtotime($d->created)}}">{{date('n/d/Y g:ia',strtotime($d->created))}}</td>
+                                <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
+                                <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->retail_price,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->fees,2)}}</td>
-                                <td style="text-align:right">($ {{number_format($d->savings,2)}})</td>
+                                <td style="text-align:right">$ {{number_format($d->savings*-1,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->sales_taxes,2)}}</td>
                                 <td style="text-align:right" @if($d->other!=0) class="bold font-red" @endif>$ {{number_format($d->other,2)}}</td>
@@ -408,31 +411,33 @@
                                 <td style="text-align:center">...{{$d->last_4}}</td>
                                 <td style="text-align:center">@php echo trim($d->note) @endphp</td>
                             </tr>
-                            @if($d->status=='Refunded')
+                            @endif
+                            @if($d->display<=0)
                             <tr class="danger">
+                                <td></td>
                                 <td>{{$d->id}}</td>
                                 <td style="text-align:center">{{$d->status}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>
                                 <td style="text-align:center">{{$d->email}}</td>
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
-                                <td style="text-align:center" data-order="{{strtotime($d->show_time)}}">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
-                                <td style="text-align:center" data-order="{{strtotime($d->refunded)}}">{{date('n/d/Y g:ia',strtotime($d->refunded))}}</td>
-                                <td style="text-align:center">({{number_format($d->tickets)}})</td>
-                                <td style="text-align:right">($ {{number_format($d->retail_price,2)}})</td>
-                                <td style="text-align:right">($ {{number_format($d->fees,2)}})</td>
+                                <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
+                                <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->refunded))}}</td>
+                                <td style="text-align:center">{{number_format($d->tickets*-1)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->retail_price*-1,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees*-1,2)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->savings,2)}}</td>
-                                <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
-                                <td style="text-align:right">($ {{number_format($d->sales_taxes,2)}})</td>
-                                <td style="text-align:right" @if($d->other!=0) class="bold font-red" @endif>$ {{number_format($d->other*-1,2)}}</td>
-                                <td style="text-align:right"><b>($ {{number_format($d->price_paid,2)}})</b></td>
-                                <td style="text-align:right">($ {{number_format($d->cc_fees,2)}})</td>
-                                <td style="text-align:right">($ {{number_format($d->to_show,2)}})</td>
-                                <td style="text-align:right">$ {{number_format($d->printed_fee,2)}}</td>
-                                <td style="text-align:right">($ {{number_format($d->commissions,2)}})</td>
-                                <td style="text-align:right">($ {{number_format($d->fees_incl,2)}})</td>
-                                <td style="text-align:right">($ {{number_format($d->fees_over,2)}})</td>
-                                <td style="text-align:right"><b>($ {{number_format($d->profit,2)}})</b></td>
+                                <td style="text-align:right">$ {{number_format($d->printed_fee*-1,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->sales_taxes*-1,2)}}</td>
+                                <td style="text-align:right" @if($d->other!=0) class="bold font-red" @endif>$ {{number_format($d->other,2)}}</td>
+                                <td style="text-align:right"><b>$ {{number_format($d->price_paid*-1,2)}}</b></td>
+                                <td style="text-align:right">$ {{number_format($d->cc_fees*-1,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->to_show*-1,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->printed_fee*-1,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->commissions*-1,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees_incl*-1,2)}}</td>
+                                <td style="text-align:right">$ {{number_format($d->fees_over*-1,2)}}</td>
+                                <td style="text-align:right"><b>$ {{number_format($d->profit*-1,2)}}</b></td>
                                 <td style="text-align:center">{{$d->code}}</td>
                                 <td style="text-align:center">{{$d->ticket_type}} - {{$d->title}}</td>
                                 <td style="text-align:center">{{$d->channel}}</td>
@@ -444,7 +449,7 @@
                                 <td style="text-align:center">@php echo trim($d->note) @endphp}</td>
                             </tr>
                             @endif
-                            @endforeach
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
