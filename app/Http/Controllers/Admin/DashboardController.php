@@ -174,14 +174,16 @@ class DashboardController extends Controller
                     {
                         if($d->status=='Refunded' || $d->status=='Chargeback')
                         {
-                            $d->display = 0;                           
-                            if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
+                            if($search['statu']=='Refunded' || $search['statu']=='Chargeback')
+                                $d->display=-1;
+                            else if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
                             {
+                                $d->display = 0;
                                 if(strtotime($d->created) >= strtotime($search['soldtime_start_date']) && strtotime($d->created) <= strtotime($search['soldtime_end_date']))
                                     $d->display++;
                                 if(strtotime($d->refunded) >= strtotime($search['soldtime_start_date']) && strtotime($d->refunded) <= strtotime($search['soldtime_end_date']))
                                     $d->display--;
-                            }
+                            }  
                         }
                         else
                             $d->display = 1;
