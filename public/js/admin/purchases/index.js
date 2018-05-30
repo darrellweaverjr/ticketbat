@@ -333,7 +333,7 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update_title').html('Edit purchase # '+id);
                         //fill out current
                         for(var key in data.current){
-                            if(key == 'show_time' || key == 'updated' || key == 'refunded')
+                            if(key == 'show_time' || key == 'updated' || (key == 'refunded' && data.current[key]!=null))
                                 data.current[key] = moment(data.current[key]).format('M/DD/YYYY h:mm a');
                             $('#form_model_edit [name="'+key+'"]').val(data.current[key]);
                         }
@@ -410,7 +410,7 @@ var TableDatatablesManaged = function () {
                         $('#form_model_edit input, #form_model_edit select').css('border-color','').css('background','').css('font-weight','normal');
                         //fill out
                         for(var key in data.target) {
-                            if(key == 't_show_time' || key == 't_updated' || key == 't_refunded')
+                            if(key == 't_show_time' || key == 't_updated' || (key == 't_refunded' && data.target[key]!=null) )
                                 data.target[key] = moment(data.target[key]).format('M/DD/YYYY h:mm a');
                             $('#form_model_edit [name="'+key+'"]').val(data.target[key]);
                         }
