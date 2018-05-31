@@ -128,7 +128,7 @@ class DashboardController extends Controller
                                           SUM( IF(purchases.inclusive_fee>0, purchases.processing_fee, 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, purchases.processing_fee) ) AS fees_over,
                                           purchases.commission_percent AS commissions,
-                                          ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit, 1 AS display'))
+                                          ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit, 0 AS display'))
                         ->where(clear_date_sold($where))
                         ->where(function($query) use ($search) {
                             if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
