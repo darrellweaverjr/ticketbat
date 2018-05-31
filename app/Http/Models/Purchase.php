@@ -352,16 +352,22 @@ class Purchase extends Model
                             $totals['discount']+=$receipt['purchase']->savings;
                             $totals['printed_fee']+=$receipt['purchase']->printed_fee;
                             $totals['sales_taxes']+=$receipt['purchase']->sales_taxes;
-                            //show on top if change date
+                            //show on top if change status
                             if($change=='CANCELED' || $change=='REFUNDED')
                                 $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
+                            
                             else if($change=='ACTIVATED')
                                 $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVED</b></h1>' ;
-                            else if($change)
-                                $top = 'Your purchase of '.$receipt['purchase']->quantity.' '.$receipt['purchase']->ticket_type_type.' ticket(s) for '.
-                                       $receipt['purchase']->show_name.' on '.date('l, F jS - g:i A',strtotime($change)).
-                                       ' has been changed to '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).
-                                       '.<br>Your updated receipt and tickets are attached.' ;
+                            else
+                                $top = '';
+                        }
+                        //show on top if change date
+                        if($type_email == 'changed')
+                        {
+                            $top = 'This purchase of '.$receipt['purchase']->quantity.' '.$receipt['purchase']->ticket_type_type.' ticket(s) for '.
+                                    $receipt['purchase']->show_name.' on '.date('l, F jS - g:i A',strtotime($change)).
+                                    ' has been changed to '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).
+                                    '.<br>The updated receipt and tickets are attached.<br><br>' ;
                         }
                     }
                 }
@@ -421,12 +427,16 @@ class Purchase extends Model
                             $top_copy .= 'If the guest was a no show, DO NOT RETURN the tickets.  The Settlement Team will make the adjustment.<br><br>';
                             $top_copy .= 'Please reply to this email.</b><br><br>';
                         }
-                        else
+                        else if($type_email=='changed')
                         {
-                            $subject.=' (BO Receipt)';
+                            $subject = 'TicketBat :: Date Changed for order #'.$receipt['purchase']->id;
+                            $top_copy = $top ;
+                        }
+                        else 
+                        {
+                            $subject = $subject.' (BO Receipt)';
                             $top_copy = $top;
                         }
-                        $subject = ($change=='REFUNDED')? 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id : $subject.' (BO Receipt)';
                         $email = new EmailSG(null, $p->emails , $subject);
                         $email->category('Receipts');
                         $email->attachment(array_merge($pdf_receipts,$pdf_tickets));

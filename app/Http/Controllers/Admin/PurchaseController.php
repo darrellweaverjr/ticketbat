@@ -316,8 +316,9 @@ class PurchaseController extends Controller{
                     if(!empty($input['to_show_time_id']) && $purchase->show_time_id != $input['to_show_time_id'])
                     {
                         $from = ShowTime::find($purchase->show_time_id);
+                        $date_from = date('m/d/Y g:i a',strtotime($from->show_time));
                         $to = ShowTime::find($input['to_show_time_id']);
-                        $note.= ', date from '.date('m/d/Y g:i a',strtotime($from->show_time)).' to '.date('m/d/Y g:i a',strtotime($to->show_time));
+                        $note.= ', date from '.$date_from.' to '.date('m/d/Y g:i a',strtotime($to->show_time));
                         $purchase->show_time_id = $input['to_show_time_id'];
                     }
                     if(!empty($input['to_ticket_id']) && $purchase->ticket_id != $input['to_ticket_id'])
@@ -442,6 +443,11 @@ class PurchaseController extends Controller{
                             DB::table('ticket_number')->where('purchases_id',$purchase->id)->delete();
                             $tickets = implode(',',range(1,$purchase->quantity));
                             DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                        }
+                        if(!empty($input['to_show_time_id']))
+                        {
+                            $receipt = $purchase->get_receipt();
+                            Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $date_from, true);
                         }
                         if(!empty($input['status']))
                         {

@@ -856,7 +856,7 @@ class ShowController extends Controller{
                                 if($pur)
                                 {
                                     $receipt = $pur->get_receipt();
-                                    Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $date_from);
+                                    Purchase::email_receipts('Updated show information: TicketBat Purchase', [$receipt], 'changed', $date_from, true);
                                 }
                             }
                         }
