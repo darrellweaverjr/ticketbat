@@ -93,7 +93,7 @@ class EmailSG {
         try {
             $email = null;
             if (!filter_var($e, FILTER_VALIDATE_EMAIL) === false) {
-                if (str_contains(url()->current(), 'dev.ticketbat') || str_contains(url()->current(), 'qa.ticketbat') || str_contains(url()->current(), 'localhost')) {
+                if ( env('APP_ENV','development') != 'production'  ) {
                     if (strpos(env('MAIL_TEST'), trim($e)) !== FALSE) {
                         $email = new SendGrid\Email(null, $e);
                     } else {
