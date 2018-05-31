@@ -300,6 +300,7 @@ class DashboardController extends Controller
                             ->join('venues', 'venues.id', '=' ,'shows.venue_id')
                             ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                            ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                             ->select(DB::raw('( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
                                                      WHEN (purchases.payment_type="None") THEN "Comp."
                                                      ELSE purchases.payment_type END ) AS method, purchases.channel,
@@ -352,6 +353,7 @@ class DashboardController extends Controller
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('users', 'users.id', '=' ,'purchases.user_id')
                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                    ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                     ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased,
                                     SUM(purchases.quantity) AS qty,
                                     SUM(ROUND(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee,2)) AS amount'))
@@ -401,6 +403,7 @@ class DashboardController extends Controller
                     ->leftJoin('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->leftJoin('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->leftJoin('venues', 'venues.id', '=' ,'shows.venue_id')
+                    ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                     ->select(DB::raw('COALESCE(shows.name,"-") AS show_name, COUNT(purchases.id) AS purchases,
                                     COALESCE(venues.name,"-") AS venue_name, discounts.code,
                                     discounts.distributed_at, discounts.description,discounts.start_date,discounts.end_date, purchases.id,
@@ -499,6 +502,7 @@ class DashboardController extends Controller
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                         ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                         ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                        ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                         ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                     SUM(purchases.quantity) AS tickets,
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
@@ -579,6 +583,7 @@ class DashboardController extends Controller
                     ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                     ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                     ->join('venues', 'venues.id', '=' ,'shows.venue_id')
+                    ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                     purchases.channel,
                                     SUM(purchases.quantity) AS tickets,
