@@ -431,6 +431,9 @@ class Purchase extends Model
                         {
                             $subject = 'TicketBat :: Date Changed for order #'.$receipt['purchase']->id;
                             $top_copy = $top ;
+                            $to_e1 = explode(',', $p->emails);
+                            $to_e2 = explode(',', env('MAIL_ACCOUNTING_TO','') );
+                            $p->emails = array_unique( array_merge($to_e1,$to_e2) );
                         }
                         else 
                         {
