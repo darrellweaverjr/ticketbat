@@ -443,8 +443,8 @@
                                 <td style="text-align:center">{{$d->channel}}</td>
                                 <td style="text-align:center">{{$d->method}}</td>
                                 <td style="text-align:center">{{$d->card_holder}}</td>
-                                <td style="text-align:center">{{$d->authcode}}</td>
-                                <td style="text-align:center">{{$d->refnum}}</td>
+                                <td style="text-align:center">{{$d->r_authcode}}</td>
+                                <td style="text-align:center">{{$d->r_refnum}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
                                 <td style="text-align:center">@php echo trim($d->note) @endphp}</td>
                             </tr>

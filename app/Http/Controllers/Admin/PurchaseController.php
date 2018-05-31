@@ -49,6 +49,7 @@ class PurchaseController extends Controller{
                                     ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                       IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
                                                       purchases.payment_type AS method, shows.venue_id, purchases.show_time_id, show_times.show_id,
@@ -201,6 +202,7 @@ class PurchaseController extends Controller{
                                     ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
                                     ->leftJoin('ticket_number',function($join){
                                         $join->on('ticket_number.purchases_id','=','purchases.id')
                                              ->on('ticket_number.customers_id','!=','customers.id');
@@ -237,6 +239,7 @@ class PurchaseController extends Controller{
                                     ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
                                     ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                    ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
                                     ->leftJoin('ticket_number',function($join){
                                         $join->on('ticket_number.purchases_id','=','purchases.id')
                                              ->on('ticket_number.customers_id','!=','customers.id');

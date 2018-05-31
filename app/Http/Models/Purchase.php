@@ -719,11 +719,11 @@ class Purchase extends Model
                 //search authcode
                 $data['search']['authcode'] = (!empty($input['authcode']))? trim($input['authcode']) : '';
                 if(!empty($input['authcode']))
-                    $data['where'][] = ['transactions.authcode','=',$data['search']['authcode']];
+                    $data['where'][] = [DB::raw('transactions.authcode = "'.$data['search']['authcode'].'" OR transaction_refunds.authcode'),'=',$data['search']['authcode']];
                 //search refnum
                 $data['search']['refnum'] = (!empty($input['refnum']))? trim($input['refnum']) : '';
                 if(!empty($input['refnum']))
-                    $data['where'][] = ['transactions.refnum','=',$data['search']['refnum']];
+                    $data['where'][] = [DB::raw('transactions.refnum = "'.$data['search']['refnum'].'" OR transaction_refunds.ref_num'),'=',$data['search']['refnum']];
                 
                 //search printing
                 if(isset($input['mirror_type']) && !empty($input['mirror_type']))
