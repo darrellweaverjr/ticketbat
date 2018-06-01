@@ -293,7 +293,7 @@ class Purchase extends Model
     {
         try {
             if(is_array($receipts) && count($receipts) && is_string($subject) && is_string($type_email))
-            {
+            {   
                 //init variables
                 $rows_html = $totals_html = $coupon_code = '';
                 $pdf_receipts = $pdf_tickets = $purchases = $ticket_info = [];
@@ -348,7 +348,7 @@ class Purchase extends Model
                             $totals['qty']+=$receipt['purchase']->quantity;
                             $totals['processing_fee']+=$purchase['processing_fee'];
                             $totals['retail_price']+=$receipt['purchase']->retail_price;
-                            $totals['discount']-=$receipt['purchase']->savings;
+                            $totals['discount']+=$receipt['purchase']->savings;
                             $totals['printed_fee']+=$receipt['purchase']->printed_fee;
                             $totals['sales_taxes']+=$receipt['purchase']->sales_taxes;
                             //show on top if change status
@@ -378,7 +378,7 @@ class Purchase extends Model
                 $totals_html = '<tr> <td align="right" width="80%">Subtotal:</td> <td width="20%" align="right">$ '.number_format($totals['retail_price'],2).'</td> </tr>
                                 <tr> <td align="right">Processing Fee:</td> <td align="right">$ '.number_format($totals['processing_fee'],2).'</td> </tr>';
                 if($totals['discount'] > 0)
-                    $totals_html.='<tr> <td align="right">Discount (<b>'.$coupon_code.'</b>):</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
+                    $totals_html.='<tr> <td align="right">Discount (<b>'.$coupon_code.'</b>):</td> <td align="right">- $ '.number_format($totals['discount'],2).'</td> </tr>';
                 if($totals['printed_fee'] > 0)
                     $totals_html.='<tr> <td align="right">Printer fee:</td> <td align="right">$ '.number_format($totals['printed_fee'],2).'</td> </tr>';
                 $totals_html.='<tr> <td align="right">Sales taxes:</td> <td align="right">$ '.number_format($totals['sales_taxes'],2).'</td> </tr>';
@@ -545,7 +545,7 @@ class Purchase extends Model
                 $purchase->retail_price = $i->retail_price;
                 $purchase->commission_percent = $i->commission;
                 $purchase->processing_fee = $i->processing_fee;
-                $purchase->price_paid = $shoppingcart['total'];
+                $purchase->price_paid = $i->total_cost;
                 $purchase->inclusive_fee = (!empty($i->inclusive_fee))? 1 : 0;
                 $purchase->payment_type = ($purchase->retail_price<0.01 && $purchase->price_paid<0.01)? 'Free event' : ( (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None' );
                 //taxes and other fees
