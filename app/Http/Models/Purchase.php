@@ -295,7 +295,7 @@ class Purchase extends Model
             if(is_array($receipts) && count($receipts) && is_string($subject) && is_string($type_email))
             {
                 //init variables
-                $rows_html = $totals_html = '';
+                $rows_html = $totals_html = $coupon_code = '';
                 $pdf_receipts = $pdf_tickets = $purchases = $ticket_info = [];
                 $totals = ['qty'=>0,'processing_fee'=>0,'retail_price'=>0,'printed_fee'=>0,'sales_taxes'=>0,'discount'=>0];
                 $top = $banners = '';
@@ -369,6 +369,9 @@ class Purchase extends Model
                                     ' has been changed to '.date('l, F jS - g:i A',strtotime($receipt['purchase']->show_time)).
                                     '.<br>The updated receipt and tickets are attached.<br><br>' ;
                         }
+                        //show coupon code used
+                        if(empty($coupon_code) && $receipt['purchase']->code!='0000')
+                            $coupon_code = $receipt['purchase']->code;
                     }
                 }
                 //table on email to show all totals
@@ -376,7 +379,7 @@ class Purchase extends Model
                 $totals_html = '<tr> <td align="right" width="80%">Subtotal:</td> <td width="20%" align="right">$ '.number_format($totals['retail_price'],2).'</td> </tr>
                                 <tr> <td align="right">Processing Fee:</td> <td align="right">$ '.number_format($totals['processing_fee'],2).'</td> </tr>';
                 if($totals['discount'] > 0)
-                    $totals_html.='<tr> <td align="right">Discount:</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
+                    $totals_html.='<tr> <td align="right">Discount (<b>'.$coupon_code.'</b>):</td> <td align="right">$ '.number_format($totals['discount'],2).'</td> </tr>';
                 if($totals['printed_fee'] > 0)
                     $totals_html.='<tr> <td align="right">Printer fee:</td> <td align="right">$ '.number_format($totals['printed_fee'],2).'</td> </tr>';
                 $totals_html.='<tr> <td align="right">Sales taxes:</td> <td align="right">$ '.number_format($totals['sales_taxes'],2).'</td> </tr>';
