@@ -20,7 +20,12 @@
                 <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model_pendings">
                     <thead>
                         <tr>
-                            <th width="2%"></th>
+                            <th width="2%">
+                                <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                    <input type="checkbox" class="group-checkable" data-set="#tb_model_pendings .checkboxes" />
+                                    <span></span>
+                                </label>
+                            </th>
                             <th width="1%"></th>
                             <th width="47%">Purchase Info</th>
                             <th width="18%">Show/Venue</th>
@@ -36,13 +41,12 @@
                             @php $color = substr(dechex(crc32($p->color)),0,6) @endphp
                         <tr>
                             <td>
-                                <label class="mt-radio mt-radio-single mt-radio-outline">
-                                    <input type="radio" name="radios" id="{{$p->id}}" value="{{$p->id}}" data-skip="{{$p->skip}}" />
+                                <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                    <input type="checkbox" class="checkboxes" id="{{$p->id}}" value="{{$p->id}}" data-skip="{{$p->skip}}"/>
                                     <span></span>
                                 </label>
                             </td>
                             <td style="text-align:center;background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;">
-
                             </td>
                             <td class="search-item clearfix">
                                 <div class="search-content" >
@@ -80,7 +84,7 @@
     <div class="modal-dialog" style="width:500px !important;">
         <div class="modal-content portlet">
             <div class="modal-header alert-block bg-purple">
-                <h4 class="modal-title bold uppercase" style="color:white;"><center>Refund Purchase/Transaction</center></h4>
+                <h4 class="modal-title bold uppercase" style="color:white;"><center>Refund Purchase</center></h4>
             </div>
             <div class="modal-body">
                 <!-- BEGIN FORM-->
@@ -91,32 +95,13 @@
                             <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                         <div class="alert alert-success display-hide">
                             <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        <div class="row" style="padding-left:15px" id="credit_return">
+                        <div class="row" style="padding-left:15px">
                             <div class="mt-radio-list">
                                 <label class="mt-radio mt-radio-single mt-radio-outline">
                                     <input type="radio" name="type" value="current_purchase" checked="true" />Selected purchase only.
                                     <span></span>
-                                </label><hr>
-                                <label class="mt-radio mt-radio-single mt-radio-outline">
-                                    <input type="radio" class="form-control" name="type" value="full_transaction" />All purchases that matches this transaction.
-                                    <span></span>
-                                </label><hr>
-                                <label class="mt-radio mt-radio-single mt-radio-outline col-md-9" disabled="true">
-                                    <input type="radio" name="type" disabled="true" value="custom_amount" />Specific amount from this selected purchase:
-                                    <span></span>
                                 </label>
-                                <div class="col-md-3">
-                                <input type="number" class="form-control" disabled="true" name="amount" value=""/>
-                                </div>
                             </div>
-                        </div>
-                        <div class="row" style="padding:15px">
-                            <label class="control-label">Description:</label>
-                            <div class="show-error">
-                                <textarea name="description" class="form-control" rows="4"></textarea>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-left:15px">
                             <div class="mt-radio-list" style="color:red;font-size:small;">
                                 <label class="mt-radio mt-radio-single mt-radio-outline" >
                                     <input type="radio" name="type" value="update_purchase" />Select this option only if you want to update the status in the system to <b>REFUNDED</b> and already did a manual refund.
@@ -126,6 +111,12 @@
                                     <input type="radio" name="type" value="charge_purchase" />Select this option only if you want to update the status in the system to <b>CHARGEBACK</b> and bank already confirmed the operation.
                                     <span></span>
                                 </label>
+                            </div>
+                        </div>
+                        <div class="row" style="padding:15px">
+                            <label class="control-label">Description:</label>
+                            <div class="show-error">
+                                <textarea name="description" class="form-control" rows="4"></textarea>
                             </div>
                         </div>
                     </div>

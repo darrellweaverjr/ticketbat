@@ -4,31 +4,55 @@ var PendingDatatablesManaged = function () {
         
         var table = MainDataTableCreator.init('tb_model_pendings',[ [0, "desc"] ],10);
         
-        table.on('click', 'tbody tr', function () {
-            $(this).find('[name="radios"]').prop('checked',true).trigger('change');
+        table.find('.group-checkable').change(function () {
+            var set = jQuery(this).attr("data-set");
+            var checked = jQuery(this).is(":checked");
+            jQuery(set).each(function () {
+                if (checked) {
+                    $(this).prop("checked", true);
+                    $(this).parents('tr').addClass("active");
+                } else {
+                    $(this).prop("checked", false);
+                    $(this).parents('tr').removeClass("active");
+                }
+            });
+            check_models();
         });
-        
-        table.on('change', 'tbody tr .radios', function () {
+
+        table.on('click', 'tbody tr td:not(:first-child)', function () {
+            var action = $(this).parent().find('.checkboxes').is(':checked');
+            if(!action)
+                table.find('.checkboxes').prop('checked',false);
+            $(this).parent().find('.checkboxes').prop('checked',!action);
+            check_models();
+        });
+
+        table.on('change', 'tbody tr .checkboxes', function () {
+            check_models();
             $(this).parents('tr').toggleClass("active");
         });
+
+        //PERSONALIZED FUNCTIONS
+        //check/uncheck all
+        var check_models = function(){
+            var set = $('.group-checkable').attr("data-set");
+            var checked = $(set+"[type=checkbox]:checked").length;
+            if(checked >= 1)
+                $('#btn_model_refund').prop("disabled",false);
+            else
+                $('#btn_model_refund').prop("disabled",true);
+        }
         
         //PERSONALIZED FUNCTIONS
         //function resend
         $('#btn_model_refund').on('click', function(ev) {
-            var id = $("#tb_model_pendings [name=radios]:checked").val();
-            var skip = $("#tb_model_pendings [name=radios]:checked").data('skip');
-            $('#form_model_refund').trigger('reset');
-            $('#form_model_refund [name="id"]').val(id);
-            if(skip>0)
-            {
-                $('#form_model_refund input:radio[name="type"]:last').attr('checked', true);
-                $('#credit_return').addClass('hidden');
-            }
-            else
-            {
-                $('#credit_return').removeClass('hidden');
-                $('#form_model_refund input:radio[name="type"]:first').attr('checked', true);
-            }
+            var ids = [];
+            var set = $('.group-checkable').attr("data-set");
+            var checked = $(set+"[type=checkbox]:checked");
+            jQuery(checked).each(function (key, item) {
+                ids.push(item.id);
+            });
+            $('#form_model_refund [name="id"]').val(ids.join('-'));
             $('#modal_model_refund').modal('show');
         }); 
         //function send
@@ -49,10 +73,10 @@ var PendingDatatablesManaged = function () {
                     if(data.success) 
                     {
                         swal({
-                            title: "<span style='color:green;'>Saved!</span>",
+                            title: "<span style='color:orange;'>Process!</span>",
                             text: data.msg,
                             html: true,
-                            type: "success",
+                            type: "warning",
                             showConfirmButton: true
                         },function(){
                             location.reload();
@@ -80,13 +104,8 @@ var PendingDatatablesManaged = function () {
                 }
             });
         });
-        //enable function buttons on check radio 
-        $('input:radio[name=radios]').change(function () {
-            if($('input:radio[name=radios]:checked').length > 0)
-            {
-                $('#btn_model_refund').prop('disabled',false);
-            }
-        });
+        //init functions
+        check_models();
     }
     return {
         //main function to initiate the module
