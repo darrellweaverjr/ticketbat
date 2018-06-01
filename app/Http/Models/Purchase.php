@@ -170,7 +170,7 @@ class Purchase extends Model
                                     show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng, tickets.inclusive_fee,
                                     shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets, shows.ticket_info AS s_ticket_info,
                                     shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails, show_times.show_id,
-                                    shows.daily_sales_emails AS s_daily_sales_emails,
+                                    shows.daily_sales_emails AS s_daily_sales_emails, tickets.retail_price AS price_each,
                                     venues.name AS venue_name, venues.ticket_info, venues.daily_sales_emails AS v_daily_sales_emails,
                                     venues.weekly_sales_emails AS v_weekly_sales_emails,
                                     IF(ticket_number.id IS NULL, 0, 1) as section'))
@@ -310,7 +310,6 @@ class Purchase extends Model
 
                         //receipt
                         $purchase = array_merge((array)$receipt['customer'],(array)$receipt['purchase']);
-                        $purchase['price_each'] = round($purchase['retail_price']/$purchase['qty'],2);
                         if(!empty($receipt['purchase']->s_ticket_info) && !isset($ticket_info[$receipt['purchase']->show_id]))
                             $ticket_info[$receipt['purchase']->show_id] = $receipt['purchase']->s_ticket_info;
                         
@@ -349,7 +348,7 @@ class Purchase extends Model
                             $totals['qty']+=$receipt['purchase']->quantity;
                             $totals['processing_fee']+=$purchase['processing_fee'];
                             $totals['retail_price']+=$receipt['purchase']->retail_price;
-                            $totals['discount']+=$receipt['purchase']->savings;
+                            $totals['discount']-=$receipt['purchase']->savings;
                             $totals['printed_fee']+=$receipt['purchase']->printed_fee;
                             $totals['sales_taxes']+=$receipt['purchase']->sales_taxes;
                             //show on top if change status
@@ -370,7 +369,7 @@ class Purchase extends Model
                                     '.<br>The updated receipt and tickets are attached.<br><br>' ;
                         }
                         //show coupon code used
-                        if(empty($coupon_code) && $receipt['purchase']->code!='0000')
+                        if(empty($coupon_code))
                             $coupon_code = $receipt['purchase']->code;
                     }
                 }
@@ -511,7 +510,6 @@ class Purchase extends Model
                         $printer['info'][] = $i->ticket_info;
                     $printer['items'][] = $i;
                 }
-                //dd($printer);
             }
         } catch (Exception $ex) {
             

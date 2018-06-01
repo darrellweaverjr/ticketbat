@@ -179,13 +179,13 @@ class PurchaseController extends Controller
         $seller = (Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE'))))? 1 : 0;
         try {
             //init
-            $input = Input::all();
+            $input = Input::all();  
             if(!empty($input['purchases']) && isset($input['send_welcome_email']))
             {
                 $purchases = $input['purchases'];
                 $send_welcome_email = $input['send_welcome_email'];
                 //send receipts
-                $data = $this->receipts($purchases,$seller);
+                $data = $this->receipts($purchases,$seller);    
                 //get data
                 $print_receipt = $data['print_receipt'];
                 $after_purchase_note = $data['after_purchase_note'];
@@ -227,7 +227,7 @@ class PurchaseController extends Controller
         $totals = $transaction = 0;
         $input = Input::all();
         //load input
-        $purchases = (empty($purchasex) && !empty($input['purchases']))? explode(',', $input['purchases']) : explode(',', $purchasex);
+        $purchases = (empty($purchasex) && !empty($input['purchases']))? explode('-', $input['purchases']) : explode('-', $purchasex);  
         try {
             //send receipts
             foreach ($purchases as $id)
