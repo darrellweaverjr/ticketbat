@@ -127,6 +127,7 @@ class BandController extends Controller{
                 $band->name = trim(strip_tags($input['name']));
                 $band->short_description = trim(strip_tags($input['short_description']));
                 $band->description = trim(strip_tags($input['description'],'<p><a><br>'));
+
                 $band->youtube = strip_tags($input['youtube']);
                 $band->facebook = strip_tags($input['facebook']);
                 $band->twitter = strip_tags($input['twitter']);
@@ -135,7 +136,23 @@ class BandController extends Controller{
                 $band->instagram = strip_tags($input['instagram']);
                 $band->soundcloud = strip_tags($input['soundcloud']);
                 $band->website = strip_tags($input['website']);
-                if(!empty($input['image_url']) && preg_match('/media\/preview/',$input['image_url'])) 
+
+                $tempSocialArray = [$band->youtube,$band->facebook,$band->twitter,$band->my_space,$band->flickr,$band->instagram,$band->soundcloud,$band->website ];
+                $tempSocialAlert = "";
+
+                foreach ( $tempSocialArray as $item) {
+                    if ($item !== "") {
+                        if (!filter_var($item, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
+                            $tempSocialAlert .= $item . " is not a valid URL. ";
+                        }
+                    }
+                }
+
+                if ( $tempSocialAlert !== ""){
+                    return ['success' => false, 'msg' => $tempSocialAlert];
+                }
+
+                if(!empty($input['image_url']) && preg_match('/media\/preview/',$input['image_url']))
                 {
                     $band->delete_image_file();
                     $band->set_image_url($input['image_url']);
