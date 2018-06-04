@@ -91,7 +91,7 @@ var TableDatatablesManaged = function () {
         $('#t_updated_date').datetimepicker({
             autoclose: true,
             isRTL: App.isRTL(),
-            format: "m/dd/yy hh:ii p",   
+            format: "yyyy-mm-dd hh:ii:ss",  
             pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
             minuteStep: 15,
             defaultDate: new Date()
@@ -106,7 +106,7 @@ var TableDatatablesManaged = function () {
         $('#t_refunded_date').datetimepicker({
             autoclose: true,
             isRTL: App.isRTL(),
-            format: "m/dd/yy hh:ii p",   
+            format: "yyyy-mm-dd hh:ii:ss",
             pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left"),
             minuteStep: 15,
             defaultDate: new Date()
@@ -333,8 +333,8 @@ var TableDatatablesManaged = function () {
                         $('#modal_model_update_title').html('Edit purchase # '+id);
                         //fill out current
                         for(var key in data.current){
-                            if(key == 'show_time' || key == 'updated' || (key == 'refunded' && data.current[key]!=null))
-                                data.current[key] = moment(data.current[key]).format('M/DD/YYYY h:mm a');
+                            //if(key == 'show_time' || key == 'updated' || (key == 'refunded' && data.current[key]!=null))
+                                //data.current[key] = moment(data.current[key]).format('M/DD/YYYY h:mm a');
                             $('#form_model_edit [name="'+key+'"]').val(data.current[key]);
                         }
                         $('#form_model_edit input[name="id"]:hidden').val(data.current.purchase_id);
@@ -410,8 +410,8 @@ var TableDatatablesManaged = function () {
                         $('#form_model_edit input, #form_model_edit select').css('border-color','').css('background','').css('font-weight','normal');
                         //fill out
                         for(var key in data.target) {
-                            if(key == 't_show_time' || key == 't_updated' || (key == 't_refunded' && data.target[key]!=null) )
-                                data.target[key] = moment(data.target[key]).format('M/DD/YYYY h:mm a');
+                            //if(key == 't_show_time' || key == 't_updated' || (key == 't_refunded' && data.target[key]!=null) )
+                                //data.target[key] = moment(data.target[key]).format('M/DD/YYYY h:mm a');
                             $('#form_model_edit [name="'+key+'"]').val(data.target[key]);
                         }
                         //hightlight changes
