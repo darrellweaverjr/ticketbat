@@ -256,31 +256,37 @@ class Purchase extends Model
         //get purchase info mix
         $purchase = DB::table('purchases')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
+                            ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                            ->select(DB::raw('purchases.id, purchases.quantity AS qty, purchases.payment_type, purchases.status, purchases.ticket_type,
-                                    IF(transactions.amount IS NOT NULL, transactions.amount, purchases.price_paid) as amount,
-                                    transactions.trans_result, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                    customers.first_name, customers.last_name, customers.phone, customers.email, transactions.id AS transaction_id,
+                            ->select(DB::raw('purchases.id, purchases.quantity AS qty, purchases.payment_type, purchases.ticket_type,
+                                    IF(transactions.amount IS NOT NULL, transactions.amount, purchases.price_paid) as amount, purchases.price_paid,
+                                    transactions.card_holder, purchases.refunded_reason, s.accounting_email, s.emails,
+                                    customers.first_name, customers.last_name, customers.phone, customers.email, 
                                     purchases.created'))
                             ->where('purchases.id', '=', $this->id)
                             ->groupBy('purchases.id')->first();
         if(!$purchase)
             return false;
-        $link = str_replace('/save', '', url()->current()).'?order_id='.$this->id.'&soldtime_start_date=&soldtime_end_date=';
         $html  = '<b>PURCHASE PENDING TO REFUND</b><br><br>';
-        $html .= '<b>Request by:</b> '.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.')<br><br>';
+        $html .= '<b>Status changed by:</b> '.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.')<br><br>';
         $html .= '<b>Customer:</b> '.$purchase->first_name.' '.$purchase->last_name.'<br>';
         $html .= '<b>Email:</b> <a href="mailto:'.$purchase->email.'" target="_top">'.$purchase->email.'</a> <b>Phone:</b> '.$purchase->phone.'<br><br>';
-        $html .= '<b>Purchase:</b> '.$purchase->id.' <b>Status:</b> '.$purchase->status.'<br>';
+        $html .= '<b>Order #:</b> '.$purchase->id.'<br>';
         $html .= '<b>Tickets:</b> '.$purchase->qty.' / '.$purchase->ticket_type.'<br>';
-        $html .= '<b>Created:</b> '.$purchase->created.'<br>';
-        $html .= '<b>Payment:</b> '.$purchase->payment_type.' <b>Amount:</b> $ '.$purchase->amount.'<br><br>';
-        $html .= '<b>Transacion:</b> '.$purchase->transaction_id.' <b>Status:</b> '.$purchase->trans_result.'<br>';
-        $html .= '<b>Cardholder:</b> '.$purchase->card_holder.' <b>Card:</b> ...'.$purchase->last_4.'<br>';
-        $html .= '<b>Authcode:</b> '.$purchase->authcode.' <b>Refnum:</b> '.$purchase->refnum.'<br><br>';
-        $html .= '<b>Click here to update status:</b> <a href="'.$link.'">'.$link.'</a><br><br>';
+        $html .= '<b>Transaction date/time:</b> '.$purchase->created.'<br>';
+        $html .= '<b>Payment type:</b> '.$purchase->payment_type.'<br>';        
+        $html .= '<b>Amount:</b> $ '.$purchase->price_paid.' <b>/</b> $ '.$purchase->amount.'<br><br>';
+        $html .= '<b>Cardholder:</b> '.$purchase->card_holder.'<br><br>';
+        $html .= '<b>Reason to refund:</b> '.$purchase->refunded_reason.'<br>';
+        //send to
+        $acc_email = explode(',', $purchase->accounting_email);
+        $oth_email = explode(',', $purchase->emails);
+        $accoun_tb = explode(',', env('MAIL_ACCOUNTING_TO',''));
+        $others_tb = explode(',', env('MAIL_PURCHASE_PENDING',''));        
+        $to = array_unique( array_merge($acc_email,$oth_email,$accoun_tb,$others_tb) );
         //send email
-        $email = new EmailSG(null, env('MAIL_PURCHASE_PENDING','MAIL_ADMIN'), 'TicketBat Admin: Purchase pending to refund');
+        $email = new EmailSG(null, $to, 'TicketBat Admin: Purchase pending to refund request');
         $email->category('Custom');
         $email->body('custom',['body'=>$html]);
         $email->template('46388c48-5397-440d-8f67-48f82db301f7');

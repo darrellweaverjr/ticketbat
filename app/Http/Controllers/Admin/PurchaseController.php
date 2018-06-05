@@ -286,6 +286,13 @@ class PurchaseController extends Controller{
                 {                    
                     if(isset($input['status']))
                     {
+                        if(strpos($input['status'], 'Pending') === 0)
+                        {
+                            $reason = (!empty(trim($input['reason'])) && strlen(trim($input['reason']))>5)? trim($input['reason']) : null;
+                            if(empty($reason))
+                                return ['success'=>false,'msg'=>'There was an error updating the purchase.<br>You must write a reason to the refund with more than 5 characters.'];
+                            $purchase->refunded_reason = $reason;
+                        }                        
                         $old_status = $purchase->status;
                         $purchase->status = $input['status'];
                         $note.= ', status from '.$purchase->status.' to '.$input['status'];

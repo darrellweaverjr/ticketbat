@@ -118,7 +118,7 @@ var TableDatatablesManaged = function () {
         });
 
         //function to change status to purchase
-        function change_status(id,status)
+        function change_status(id,status,reason='')
         {
             swal({
                 title: "Changing purchase's status",
@@ -130,7 +130,7 @@ var TableDatatablesManaged = function () {
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '/admin/purchases/save',
-                data: {id:id,status:status},
+                data: {id:id,status:status,reason:reason},
                 success: function(data) {
                     if(data.success)
                     {
@@ -241,33 +241,33 @@ var TableDatatablesManaged = function () {
                     swal({
                         title: "Are you sure to change the status from <b>"+old_status+"</b> to <b>"+status+"</b>?",
                         text: "An email will be sent to the admin to complete the action.",
-                        type: "warning",
+                        type: "input",
                         html:true,
                         showCancelButton: true,
                         confirmButtonClass: "btn-danger",
                         confirmButtonText: "Yes, do it!",
                         closeOnConfirm: false,
-                        closeOnCancel: true
+                        closeOnCancel: true,
+                        inputPlaceholder: "Reason for refund"
                     },
-                      function(isConfirm) {
-                        if (isConfirm) {
-                            if(id)
-                            {
-                                change_status(id,status);
-                            }
-                            else
-                            {
-                                swal({
-                                    title: "<span style='color:red;'>Error!</span>",
-                                    text: "Please, you must select the purchase first.",
-                                    html: true,
-                                    type: "error"
-                                });
-                                $('#tb_model select[name="status"]').val(old_status);
-                            }
-                        } else {
+                      function(inputValue) {
+                        if (inputValue === false) return false;
+                        if (inputValue === "") {
+                          swal.showInputError("You need to write something!");
+                          return false;
+                        } 
+                        if(id)
+                            change_status(id,status,inputValue);
+                        else
+                        {
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: "Please, you must select the purchase first.",
+                                html: true,
+                                type: "error"
+                            });
                             $('#tb_model select[name="status"]').val(old_status);
-                        }
+                        } 
                     });
                 }
                 else if(status=='Active' || old_status=='Active')
