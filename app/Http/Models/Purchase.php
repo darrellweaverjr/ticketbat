@@ -261,7 +261,7 @@ class Purchase extends Model
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                             ->select(DB::raw('purchases.id, purchases.quantity AS qty, purchases.payment_type, purchases.ticket_type,
                                     IF(transactions.amount IS NOT NULL, transactions.amount, purchases.price_paid) as amount, purchases.price_paid,
-                                    transactions.card_holder, purchases.refunded_reason, s.accounting_email, s.emails,
+                                    transactions.card_holder, purchases.refunded_reason, shows.accounting_email, shows.emails,
                                     customers.first_name, customers.last_name, customers.phone, customers.email, 
                                     purchases.created'))
                             ->where('purchases.id', '=', $this->id)
@@ -284,7 +284,7 @@ class Purchase extends Model
         $oth_email = explode(',', $purchase->emails);
         $accoun_tb = explode(',', env('MAIL_ACCOUNTING_TO',''));
         $others_tb = explode(',', env('MAIL_PURCHASE_PENDING',''));        
-        $to = array_unique( array_merge($acc_email,$oth_email,$accoun_tb,$others_tb) );
+        $to = array_unique( array_merge($acc_email,$oth_email,$accoun_tb,$others_tb) );        
         //send email
         $email = new EmailSG(null, $to, 'TicketBat Admin: Purchase pending to refund request');
         $email->category('Custom');
