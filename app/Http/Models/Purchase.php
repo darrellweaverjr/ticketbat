@@ -693,7 +693,14 @@ class Purchase extends Model
                 $data['search']['statu'] = (!empty($input['statu']))? $input['statu'] : '';
                 if(!empty($input['statu']))
                     $data['where'][] = ['purchases.status','=',$data['search']['statu']];
-                //search user
+                //search user by name                
+                $data['search']['first_name'] = (!empty($input['first_name']))? $input['first_name'] : '';
+                if(!empty($input['first_name']))
+                    $data['where'][] = [DB::raw('users.first_name LIKE "%'.$data['search']['first_name'].'%" OR transactions.card_holder'),'like','%'.$data['search']['first_name'].'%']; 
+                $data['search']['last_name'] = (!empty($input['last_name']))? $input['last_name'] : '';
+                if(!empty($input['last_name']))
+                    $data['where'][] = [DB::raw('users.last_name LIKE "%'.$data['search']['last_name'].'%" OR transactions.card_holder'),'like','%'.$data['search']['last_name'].'%']; 
+                //search user by id/email
                 if(!empty($input['user']))
                 {
                     $data['search']['user'] = trim($input['user']);
@@ -723,6 +730,10 @@ class Purchase extends Model
                 $data['search']['order_id'] = (!empty($input['order_id']) && is_numeric($input['order_id']))? trim($input['order_id']) : '';
                 if(!empty($input['order_id']))
                     $data['where'][] = ['purchases.id','=',$data['search']['order_id']];
+                //search invoice
+                $data['search']['invoice'] = (!empty($input['invoice']))? trim($input['invoice']) : '';
+                if(!empty($input['invoice']))
+                    $data['where'][] = ['transactions.invoice','=',$data['search']['invoice']];
                 //search authcode
                 $data['search']['authcode'] = (!empty($input['authcode']))? trim($input['authcode']) : '';
                 if(!empty($input['authcode']))

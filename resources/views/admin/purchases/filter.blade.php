@@ -137,8 +137,13 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">User:</label>
                                     <div class="col-md-9 show-error">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control input-large" name="user" value="{{$search['user']}}" placeholder="ID/Email of the user" />
+                                        <div class="input-group input-large">
+                                            <input type="text" class="form-control" name="first_name" value="{{$search['first_name']}}" placeholder="First name">
+                                            <span class="input-group-addon">-</span>
+                                            <input type="text" class="form-control" name="last_name" value="{{$search['last_name']}}" placeholder="Last name">
+                                        </div>
+                                        <div class="input-group input-large">
+                                            <input type="text" class="form-control" name="user" value="{{$search['user']}}" placeholder="ID/Email of the user" />
                                         </div>
                                     </div>
                                 </div>
@@ -155,6 +160,14 @@
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <input type="number" class="form-control input-large" name="order_id" value="{{$search['order_id']}}" placeholder="ID of the order (purchase id)" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Invoice:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-large" name="invoice" value="{{$search['invoice']}}" placeholder="Invoice # (USAePay id)" />
                                         </div>
                                     </div>
                                 </div>
@@ -189,20 +202,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Payment Type:</label>
-                                    <div class="col-md-9 show-error">
-                                        <div class="input-group mt-checkbox-inline">
-                                            @foreach($search['payment_types'] as $index=>$p)
-                                            @php if($p=='None') $p='Comp.' @endphp
-                                            <label class="mt-checkbox">
-                                                <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" data-value="{{$p}}" value="{{$index}}" />{{$p}}
-                                                <span></span>
-                                            </label>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
                                 @if(!empty($order))
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Order:</label>
@@ -217,6 +216,24 @@
                                 </div>
                                 @endif
                             </div>
+                        </div>
+                        <div class="row" style="padding-right:40px">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Payment Type:</label>
+                                    <div class="col-md-9 show-error">
+                                        <div class="input-group mt-checkbox-inline">
+                                            @foreach($search['payment_types'] as $index=>$p)
+                                            @php if($p=='None') $p='Comp.' @endphp
+                                            <label class="mt-checkbox">
+                                                <input type="checkbox" @if(!empty($search['payment_type']) && in_array($index,$search['payment_type'])) checked="true" @endif name="payment_type[]" data-value="{{$p}}" value="{{$index}}" />{{$p}}
+                                                <span></span>
+                                            </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
                         </div>
                         @if(!empty($printing))
                         <div class="row" style="padding:0 20px">
