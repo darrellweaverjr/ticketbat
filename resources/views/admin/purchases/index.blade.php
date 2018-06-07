@@ -104,10 +104,11 @@
                                         @endif
                                         <small><i>Qty: <b>{{$p->quantity}}</b>, Coupon: <b>{{$p->code}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
                                         <br> Ret.P: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}} @if($p->inclusive_fee>0) (Incl) @endif</b>, Comm.: <b>${{number_format($p->commission_percent,2)}}</b>, 
-                                             Sav.: <b>${{number_format($p->savings,2)}}</b>, Print.: <b>${{number_format($p->printed_fee,2)}}</b>, Paid: <b>${{number_format($p->price_paid,2)}}</b>
+                                             Sav.: <b>${{number_format($p->savings,2)}}</b>, Print.: <b>${{number_format($p->printed_fee,2)}}</b>, 
                                         </i></small>
-                                        @if($p->refunded)<br><small><i>Refund: <b>{{date('m/d/Y g:ia',strtotime($p->refunded))}}</b>, AuthCode: <b>{{$p->r_authcode}}</b>, RefNum: <b>{{$p->r_refnum}}</b>, Amount: <b>${{$p->r_amount}}</b>, Descr: <b>{{$p->description}}</b>,</i></small>@endif
-                                        <div id="note_{{$p->id}}" class="note note-info @if(empty(trim($p->note))) hidden @endif" style="font-style:italic;font-size:smaller">@php echo trim($p->note) @endphp</div>
+                                        @if($p->refunded)<br><small><i>Refund: <b>{{date('m/d/Y g:ia',strtotime($p->refunded))}}</b>, AuthCode: <b>{{$p->r_authcode}}</b>, RefNum: <b>{{$p->r_refnum}}</b>, Amount: <b>${{$p->r_amount}}</b>, 
+                                                <br> Ref.Desc.: <b>{{$p->description}}</b>,</i></small>@endif
+                                        <div id="note_{{$p->id}}" class="note note-info @if(empty(trim($p->note))) hidden @endif" style="font-style:italic;font-size:smaller;">@php echo trim($p->note) @endphp</div>
                                     </div>
                                 </td>
                                 <td><center>{{$p->show_name}}<br><b>{{$p->venue_name}}</b></center></td>
