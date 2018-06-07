@@ -60,11 +60,11 @@ var TableDatatablesManaged = function () {
         //reset all selects
         function reset_purchase_status()
         {
-            $.each($('#tb_model td:nth-child(8)'),function(k, v) {
+            $.each($('#tb_model td:nth-child(9)'),function(k, v) {
                 $(v).html('<center>'+$(v).data('status')+'</center>');
             });
         }
-        $('#tb_model td:not(:nth-child(8))').click(function() {
+        $('#tb_model td:not(:nth-child(9))').click(function() {
             reset_purchase_status();
         })
 
