@@ -117,8 +117,9 @@ class DashboardController extends Controller
                                           ( CASE WHEN (discounts.discount_type = "N for N") THEN "BOGO"
                                                  WHEN (purchases.payment_type="None") THEN "Comp."
                                                  ELSE purchases.payment_type END ) AS method, tickets.ticket_type, packages.title,
-                                          transactions.card_holder, transactions.last_4,
-                                          transaction_refunds.authcode AS r_authcode, transactions.authcode,
+                                          transactions.card_holder, transactions.last_4, transactions.invoice_num,
+                                          COALESCE(transaction_refunds.amount,transactions.amount,purchases.price_paid) AS amount, 
+                                          transaction_refunds.authcode AS r_authcode, transactions.authcode, 
                                           transaction_refunds.ref_num AS r_refnum, transactions.refnum,
                                           COUNT(purchases.id) AS purchases, purchases.status, purchases.channel, purchases.note,
                                           SUM(purchases.quantity) AS tickets,  purchases.retail_price, purchases.printed_fee,

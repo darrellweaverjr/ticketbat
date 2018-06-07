@@ -343,6 +343,7 @@
                                 <th class="none">Status</th>
                                 <th class="all" style="text-align:center">Customer</th>
                                 <th class="none">Email</th>
+                                <th class="none">Purchased</th>
                                 <th class="all" style="text-align:center">Venue</th>
                                 <th class="all" style="text-align:center">Show</th>
                                 <th class="all" style="text-align:center">Show<br>Date</th>
@@ -369,6 +370,8 @@
                                 <th class="none">Cardholder</th>
                                 <th class="none">Authcode</th>
                                 <th class="none">Refnum</th>
+                                <th class="none">Invoice</th>
+                                <th class="none">CC Trans.</th>
                                 <th class="none">CC Last 4</th>
                                 <th class="none">Notes</th>
                             </tr>
@@ -382,6 +385,7 @@
                                 <td style="text-align:center">{{$d->status}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>
                                 <td style="text-align:center">{{$d->email}}</td>
+                                <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
@@ -408,6 +412,8 @@
                                 <td style="text-align:center">{{$d->card_holder}}</td>
                                 <td style="text-align:center">{{$d->authcode}}</td>
                                 <td style="text-align:center">{{$d->refnum}}</td>
+                                <td style="text-align:center">{{$d->invoice_num}}</td>
+                                <td style="text-align:center">{{$d->amount}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
                                 <td style="text-align:center">@php echo trim($d->note) @endphp</td>
                             </tr>
@@ -419,6 +425,7 @@
                                 <td style="text-align:center">{{$d->status}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>
                                 <td style="text-align:center">{{$d->email}}</td>
+                                <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->created))}}</td>
                                 <td style="text-align:center">{{$d->venue_name}}</td>
                                 <td style="text-align:center">{{$d->show_name}}</td>
                                 <td style="text-align:center">{{date('n/d/Y g:ia',strtotime($d->show_time))}}</td>
@@ -445,6 +452,8 @@
                                 <td style="text-align:center">{{$d->card_holder}}</td>
                                 <td style="text-align:center">{{$d->r_authcode}}</td>
                                 <td style="text-align:center">{{$d->r_refnum}}</td>
+                                <td style="text-align:center">{{$d->invoice_num}}</td>
+                                <td style="text-align:center">{{$d->amount}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
                                 <td style="text-align:center">@php echo trim($d->note) @endphp}</td>
                             </tr>
