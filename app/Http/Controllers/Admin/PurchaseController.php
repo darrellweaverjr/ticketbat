@@ -207,9 +207,9 @@ class PurchaseController extends Controller{
                                         $join->on('ticket_number.purchases_id','=','purchases.id')
                                              ->on('ticket_number.customers_id','!=','customers.id');
                                     })
-                                    ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
-                                                      purchases.payment_type AS method, tickets.inclusive_fee,
+                                    ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4, transactions.amount,
+                                                      purchases.payment_type AS method, tickets.inclusive_fee, transactions.invoice_num, transaction_refunds.amount AS r_amount,
+                                                      transaction_refunds.authcode AS r_authcode, transaction_refunds.ref_num AS r_refnum, transaction_refunds.description,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
@@ -244,9 +244,9 @@ class PurchaseController extends Controller{
                                         $join->on('ticket_number.purchases_id','=','purchases.id')
                                              ->on('ticket_number.customers_id','!=','customers.id');
                                     })
-                                    ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                      IF(transactions.amount IS NOT NULL,transactions.amount,purchases.price_paid) AS amount,
-                                                      purchases.payment_type AS method, tickets.inclusive_fee,
+                                    ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4, transactions.amount,
+                                                      purchases.payment_type AS method, tickets.inclusive_fee, transactions.invoice_num, transaction_refunds.amount AS r_amount,
+                                                      transaction_refunds.authcode AS r_authcode, transaction_refunds.ref_num AS r_refnum, transaction_refunds.description,
                                                       IF(transactions.id IS NOT NULL,transactions.id,CONCAT(purchases.session_id,purchases.created)) AS color,
                                                       discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
                                                       users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,

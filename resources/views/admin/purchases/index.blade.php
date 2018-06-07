@@ -66,12 +66,13 @@
                                     </label>
                                 </th>
                                 <th width="1%"></th>
-                                <th width="47%">Purchase Info</th>
-                                <th width="18%">Show/Venue</th>
-                                <th width="8%">Show Time</th>
-                                <th width="8%">Purchase Time</th>
-                                <th width="5%">Amount</th>
-                                <th width="11%">Status</th>
+                                <th width="5%">ID</th>
+                                <th width="40%">Purchase Info</th>
+                                <th width="20%">Show/<br>Venue</th>
+                                <th width="8%">Event<br>DateTime</th>
+                                <th width="8%">Purchase<br>DateTime</th>
+                                <th width="8%">Method/<br>Amount</th>
+                                <th width="8%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,27 +90,33 @@
                                     data-id="{{$p->id}}" style="text-align:center;background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;">
                                     <i class="fa fa-search"></i>
                                 </td>
+                                <td><center>{{$p->id}}</center></td>
                                 <td class="search-item clearfix">
                                     <div class="search-content" >
                                         @if($previous_color != $color)
                                         <b class="search-title">
-                                            <i class="fa fa-ticket"></i> {{$p->first_name}} {{$p->last_name}}, <small><i> <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></i></small> @if($p->shared) &emsp;<small><i><span class="fa fa-share"></span> ticket(s) shared with {{$p->shared}} people</i></small> @endif
+                                            <i class="fa fa-ticket"></i> {{$p->first_name}} {{$p->last_name}}, <small><i> <a href="mailto:{{$p->email}}" target="_top">{{$p->email}}</a></i></small> 
+                                            @if($p->shared) &emsp;<small><i><span class="fa fa-share"></span> ticket(s) shared with {{$p->shared}} people</i></small> @endif
                                             @if($p->first_name != $p->u_first_name || $p->last_name != $p->u_last_name || $p->email != $p->email) <br><i class="fa fa-user"></i> {{$p->u_first_name}} {{$p->u_last_name}} <small><i> (<a href="mailto:{{$p->u_email}}" target="_top">{{$p->u_email}}</a>)</i></small> @endif
-                                            @if($p->card_holder && $p->card_holder != $p->first_name.' '.$p->last_name) <br><i class="fa fa-credit-card"></i> {{$p->card_holder}}@endif
-                                        </b>
-                                        <br><small><i>Method: <b>{{$p->method}}</b>, @if($p->transaction_id)AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>,@endif</i></small><br>
+                                            @if($p->method=='Credit') <br><i class="fa fa-credit-card"></i> {{$p->card_holder}} => ${{$p->amount}} @endif
+                                        </b><br>
+                                        @if($p->transaction_id)<small><i>Transaction: <b>{{$p->transaction_id}}</b>, AuthCode: <b>{{$p->authcode}}</b>, RefNum: <b>{{$p->refnum}}</b>, Invoice: <b>{{$p->invoice_num}}</b>,</i></small><br>@endif
                                         @endif
-                                        <small><i>ID: <b>{{$p->id}}</b>, Qty: <b>{{$p->quantity}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
-                                        <br> Ret.Price: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}} @if($p->inclusive_fee>0) (Inclusive) @endif</b>, Commiss.: <b>${{number_format($p->commission_percent,2)}}</b>, Savings: <b>${{number_format($p->savings,2)}}</b>, Print.Fee: <b>${{number_format($p->printed_fee,2)}}</b>
+                                        <small><i>Qty: <b>{{$p->quantity}}</b>, Coupon: <b>{{$p->code}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
+                                        <br> Ret.P: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}} @if($p->inclusive_fee>0) (Incl) @endif</b>, Comm.: <b>${{number_format($p->commission_percent,2)}}</b>, 
+                                             Sav.: <b>${{number_format($p->savings,2)}}</b>, Print.: <b>${{number_format($p->printed_fee,2)}}</b>, Paid: <b>${{number_format($p->price_paid,2)}}</b>
                                         </i></small>
+                                        @if($p->refunded)<br><small><i>Refund: <b>{{date('m/d/Y g:ia',strtotime($p->refunded))}}</b>, AuthCode: <b>{{$p->r_authcode}}</b>, RefNum: <b>{{$p->r_refnum}}</b>, Amount: <b>${{$p->r_amount}}</b>, Descr: <b>{{$p->description}}</b>,</i></small>@endif
                                         <div id="note_{{$p->id}}" class="note note-info @if(empty(trim($p->note))) hidden @endif" style="font-style:italic;font-size:smaller">@php echo trim($p->note) @endphp</div>
                                     </div>
                                 </td>
-                                <td><center>{{$p->show_name}}<br>at<br>{{$p->venue_name}}</center></td>
-                                <td data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y',strtotime($p->show_time))}}<br>{{date('g:ia',strtotime($p->show_time))}}</center></td>
-                                <td data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y',strtotime($p->created))}}<br>{{date('g:ia',strtotime($p->created))}}</center></td>
+                                <td><center>{{$p->show_name}}<br><b>{{$p->venue_name}}</b></center></td>
+                                <td data-order="{{strtotime($p->show_time)}}"><center>{{date('m/d/Y g:ia',strtotime($p->show_time))}}</center></td>
+                                <td data-order="{{strtotime($p->created)}}"><center>{{date('m/d/Y g:ia',strtotime($p->created))}}</center></td>
                                 <td style="text-align:right">
-                                    @if($previous_color != $color) @if($p->amount > 0) $ {{number_format($p->amount,2)}} @elseif($p->method=='Free event') @php echo '(Free event)' @endphp @else @php echo '(Comp)' @endphp @endif @endif
+                                    @if($previous_color != $color) <b>{{$p->method}}</b><br><br>@endif                                   
+                                    @if($p->price_paid > 0) ${{number_format($p->price_paid,2)}} @elseif($p->method=='Free event') @php echo '(Free event)' @endphp @else @php echo '(Comp)' @endphp @endif 
+                                    @if($p->refunded) <br>-${{$p->r_amount}} @endif
                                 </td>
                                 <td data-status="{{$p->status}}"><center>{{$p->status}}</center></td>
                             </tr>

@@ -2,7 +2,7 @@ var TableDatatablesManaged = function () {
 
     var initTable = function () {
         
-        var table = MainDataTableCreator.init('tb_model',[ [5, "desc"] ],10);
+        var table = MainDataTableCreator.init('tb_model',[ [6, "desc"] ],10);
 
         table.find('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
@@ -69,7 +69,7 @@ var TableDatatablesManaged = function () {
         })
 
         //create editable status for purchase
-        $('#tb_model td:nth-child(8)').click(function() {
+        $('#tb_model td:nth-child(9)').click(function() {
             var status = $(this);
             var id = status.closest('tr').find('input:checkbox').attr('id');
             reset_purchase_status();
