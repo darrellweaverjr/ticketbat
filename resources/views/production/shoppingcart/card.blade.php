@@ -36,7 +36,7 @@
             </label>
             <div class="col-sm-3 show-error">
                 <div class="input-group">
-                    <input type="number" class="form-control" placeholder="####" name="cvv" style="min-width:75px" autocomplete="off">
+                    <input type="text" class="form-control" placeholder="####" name="cvv" style="min-width:75px" autocomplete="off">
                     <span class="input-group-btn">
                     <a class="btn btn-info" data-toggle="modal" href="#modal_cvv"><i class="fa fa-question icon-question"></i> What is it?</a>
                 </span>
