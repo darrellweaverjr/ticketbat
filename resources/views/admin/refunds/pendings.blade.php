@@ -81,7 +81,7 @@
 <!-- END EXAMPLE TABLE PORTLET-->
 <!-- BEGIN REFUND MODAL-->
 <div id="modal_model_refund" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:500px !important;">
+    <div class="modal-dialog" style="width:1000px !important;">
         <div class="modal-content portlet">
             <div class="modal-header alert-block bg-purple">
                 <h4 class="modal-title bold uppercase" style="color:white;"><center>Refund Purchase</center></h4>
@@ -90,33 +90,64 @@
                 <!-- BEGIN FORM-->
                 <form method="post" id="form_model_refund" class="form-horizontal">
                     <input name="id" type="hidden" value=""/>
-                    <div class="form-body">
+                    <div class="form-body" style="padding:10px">
                         <div class="alert alert-danger display-hide">
                             <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                         <div class="alert alert-success display-hide">
                             <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        <div class="row" style="padding-left:15px">
-                            <div class="mt-radio-list">
-                                <label class="mt-radio mt-radio-single mt-radio-outline">
-                                    <input type="radio" name="type" value="current_purchase" checked="true" />Selected purchase only.
+                        <div class="row">
+                            <div class="mt-radio-list" >
+                                <label class="mt-radio mt-radio-single mt-radio-outline" style="color:blue;">
+                                    <input type="radio" name="type" value="current_purchase" checked="true" />Refund through USAePay.
                                     <span></span>
                                 </label>
-                            </div>
-                            <div class="mt-radio-list" style="color:red;font-size:small;">
-                                <label class="mt-radio mt-radio-single mt-radio-outline" >
+                                <label class="mt-radio mt-radio-single mt-radio-outline" style="color:red;">
                                     <input type="radio" name="type" value="update_purchase" />Select this option only if you want to update the status in the system to <b>REFUNDED</b> and already did a manual refund.
                                     <span></span>
                                 </label>
-                                <label class="mt-radio mt-radio-single mt-radio-outline" >
+                                <label class="mt-radio mt-radio-single mt-radio-outline" style="color:red;">
                                     <input type="radio" name="type" value="charge_purchase" />Select this option only if you want to update the status in the system to <b>CHARGEBACK</b> and bank already confirmed the operation.
                                     <span></span>
                                 </label>
                             </div>
                         </div>
-                        <div class="row" style="padding:15px">
+                        <div class="row" id="refund_details">
+                            <table class="table table-striped table-bordered table-hover table-checkable">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">Item</th>
+                                        <th width="10%">ID</th>
+                                        <th width="10%">Qty</th>
+                                        <th width="10%">Ret.$</th>
+                                        <th width="10%">Savings</th>
+                                        <th width="10%">Fees</th>
+                                        <th width="10%">Taxes</th>
+                                        <th width="10%">Amount</th>
+                                        <th width="20%">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tb_body_pendings">
+                                </tbody>
+                                <tfoot>
+                                    <tr id="tb_foot_pendings">
+                                        <td colspan="2"></td>
+                                        <td><input type="number" class="form-control" style="width:70px!important;" name="quantity" value="0" min="0" step="1"/></td>
+                                        <td><input type="number" class="form-control" style="width:80px!important;" name="retail_price" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" class="form-control" style="width:80px!important;" name="savings" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" class="form-control" style="width:80px!important;" name="processing_fee" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" class="form-control" style="width:80px!important;" name="sales_taxes" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" class="form-control" style="width:80px!important;" name="amount" value="0.00" min="0" step="0.01"/></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="row" id="purchase_details">
+                        </div>
+                        <div class="row">
                             <label class="control-label">Description:</label>
                             <div class="show-error">
-                                <textarea name="description" class="form-control" rows="4"></textarea>
+                                <textarea name="description" class="form-control" rows="1"></textarea>
                             </div>
                         </div>
                     </div>

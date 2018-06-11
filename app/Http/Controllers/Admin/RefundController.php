@@ -158,6 +158,64 @@ class RefundController extends Controller{
             throw new Exception('Error Refunds Pendings: '.$ex->getMessage());
         }
     }
+    
+    /**
+     * check purchases before refund.
+     *
+     * @return view
+     */
+    public function check()
+    {
+        try {
+            //init
+            $input = Input::all();
+            $purchases = $refunds = [];
+            if(!empty($input['ids']))
+            {
+                $id = explode('-', $input['ids']);
+                if(!empty($id))
+                {
+                    //multiples transactions
+                    if(count($id)>1)
+                    {
+                        foreach ($id as $i)
+                        {
+                            $data = DB::table('purchases')
+                                    ->leftJoin('transaction_refunds', 'purchases.id', '=', 'transaction_refunds.purchase_id')
+                                    ->select(DB::raw('purchases.id, purchases.price_paid, SUM( COALESCE(transaction_refunds.amount,0) ) AS refunded '))
+                                    ->where('purchases.id',$i)->orderBy('purchases.id')->groupBy('purchases.id')->first();
+                            $purchases[$i] = (!empty($data))? ['paid'=>$data->price_paid,'refunded'=>$data->refunded,'available'=>$data->price_paid-$data->refunded] : ['paid'=>0,'refunded'=>0,'available'=>0];
+                        }
+                    }
+                    else
+                    {
+                        $purchase = Purchase::find($id)->first();  
+                        if($purchase)
+                        {
+                            $refundx = TransactionRefund::where('purchase_id',$id)->where('result','=','Approved')
+                                                    ->get(['id','quantity','retail_price','processing_fee','savings','commission_percent','printed_fee','sales_taxes','amount','created'])->toArray();
+                            $available = ['quantity'=>$purchase->quantity - array_sum(array_column($refundx,'quantity')),
+                                          'retail_price'=>$purchase->retail_price - array_sum(array_column($refundx,'retail_price')),
+                                          'processing_fee'=>$purchase->processing_fee - array_sum(array_column($refundx,'processing_fee')),
+                                          'savings'=>$purchase->savings - array_sum(array_column($refundx,'savings')),
+                                          'commission_percent'=>$purchase->commission_percent - array_sum(array_column($refundx,'commission_percent')),
+                                          'printed_fee'=>$purchase->printed_fee - array_sum(array_column($refundx,'printed_fee')),
+                                          'sales_taxes'=>$purchase->sales_taxes - array_sum(array_column($refundx,'sales_taxes')),
+                                          'amount'=>$purchase->price_paid - array_sum(array_column($refundx,'amount')) ];
+                        }
+                        else
+                            $available = [ 'quantity'=>0,'retail_price'=>0,'processing_fee'=>0,'savings'=>0,'commission_percent'=>0,'printed_fee'=>0,'sales_taxes'=>0,'amount'=>0 ];
+                        $refunds = ['purchase'=>$purchase,'refunds'=>$refundx,'available'=>$available];
+                    }
+                    return ['success'=>true, 'qty'=>count($id), 'purchases'=>$purchases, 'refunds'=>$refunds];
+                }
+                return ['success'=>false, 'msg'=>'You must select at least one valid purchase to process.'];
+            }
+            return ['success'=>false, 'msg'=>'You must select at least one purchase to process.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Refunds Check: '.$ex->getMessage());
+        }
+    }
 
     /**
      * Refund purchase.
