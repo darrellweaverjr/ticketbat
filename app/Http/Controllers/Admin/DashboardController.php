@@ -310,7 +310,7 @@ class DashboardController extends Controller
                                                      WHEN (purchases.payment_type="None") THEN "Comp."
                                                      ELSE purchases.payment_type END ) AS method, purchases.channel,
                                               COUNT(purchases.id) AS purchases,
-                                              SUM(purchases.quantity) AS tickets, SUM(purchases.printed_fee) AS printed_fee,  
+                                              SUM(purchases.quantity) AS tickets, 
                                               SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
                                               SUM(ROUND(purchases.price_paid,2)) AS price_paid,
                                               SUM(ROUND(purchases.savings,2)) AS savings,
@@ -422,7 +422,7 @@ class DashboardController extends Controller
                                     COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
                                               AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 7 DAY)),0) AS tickets_seven,
-                                    SUM(purchases.quantity) AS tickets, SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,
+                                    SUM(purchases.quantity) AS tickets, 
                                     SUM(ROUND(purchases.price_paid,2)) AS price_paids,
                                     SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
                                     SUM(ROUND(purchases.price_paid,2)) AS revenue,
