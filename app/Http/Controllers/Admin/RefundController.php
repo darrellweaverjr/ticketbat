@@ -183,7 +183,7 @@ class RefundController extends Controller{
                             $data = DB::table('purchases')
                                     ->leftJoin('transaction_refunds', 'purchases.id', '=', 'transaction_refunds.purchase_id')
                                     ->select(DB::raw('purchases.id, purchases.price_paid, SUM( COALESCE(transaction_refunds.amount,0) ) AS refunded '))
-                                    ->where('purchases.id',$i)->orderBy('purchases.id')->groupBy('purchases.id')->first();
+                                    ->where('transaction_refunds.result','=','Approved')->where('purchases.id',$i)->orderBy('purchases.id')->groupBy('purchases.id')->first();
                             $purchases[$i] = (!empty($data))? ['paid'=>$data->price_paid,'refunded'=>$data->refunded,'available'=>$data->price_paid-$data->refunded] : ['paid'=>0,'refunded'=>0,'available'=>0];
                         }
                     }
@@ -201,7 +201,10 @@ class RefundController extends Controller{
                                           'commission_percent'=>$purchase->commission_percent - array_sum(array_column($refundx,'commission_percent')),
                                           'printed_fee'=>$purchase->printed_fee - array_sum(array_column($refundx,'printed_fee')),
                                           'sales_taxes'=>$purchase->sales_taxes - array_sum(array_column($refundx,'sales_taxes')),
-                                          'amount'=>$purchase->price_paid - array_sum(array_column($refundx,'amount')) ];
+                                          'amount'=>$purchase->price_paid - array_sum(array_column($refundx,'amount')),
+                                        'ticket_price'=>$purchase->retail_price/$purchase->quantity,
+                                        'ticket_fee'=>($purchase->inclusive_fee<1)? $purchase->processing_fee/$purchase->quantity : 0,
+                                        'sales_percent'=>$purchase->sales_taxes/($purchase->price_paid-$purchase->sales_taxes)];
                         }
                         else
                             $available = [ 'quantity'=>0,'retail_price'=>0,'processing_fee'=>0,'savings'=>0,'commission_percent'=>0,'printed_fee'=>0,'sales_taxes'=>0,'amount'=>0 ];
@@ -231,7 +234,7 @@ class RefundController extends Controller{
             $response = [];
             $user = Auth::user();
             
-            function create_refund($purchase,$user,$description,$current,$status)
+            function create_refund($purchase,$user,$description,$current,$status,$input)
             {
                 $transaction = new TransactionRefund;
                 $transaction->purchase_id = $purchase->id;
@@ -242,6 +245,15 @@ class RefundController extends Controller{
                 $transaction->error = 'Manually changed purchase to '.$status;
                 $transaction->created = $current;
                 $transaction->payment_type = $purchase->payment_type;
+                if($transaction->result == 'Approved')
+                {
+                    $transaction->quantity = (isset($input['quantity']))? $input['quantity'] : $purchase->quantity;
+                    $transaction->retail_price = (isset($input['retail_price']))? $input['retail_price'] : $purchase->retail_price;
+                    $transaction->savings = (isset($input['savings']))? $input['savings'] : $purchase->savings;
+                    $transaction->processing_fee = (isset($input['processing_fee']))? $input['processing_fee'] : $purchase->processing_fee;
+                    $transaction->printed_fee = (isset($input['printed_fee']))? $input['printed_fee'] : $purchase->printed_fee;
+                    $transaction->sales_taxes = (isset($input['sales_taxes']))? $input['sales_taxes'] : $purchase->sales_taxes;
+                }
                 return $transaction->save();
             }   
             
@@ -249,6 +261,8 @@ class RefundController extends Controller{
             {
                 $id = explode('-', $input['id']);
                 $description = (!empty(trim($input['description'])))? trim($input['description']) : null;
+                if(isset($input['amount']) && empty($input['amount']))
+                    return ['success'=>false, 'msg'=>'You must select a valid amount to process.'];
                 if(!empty($id))
                 {
                     //try to refund each purchase 
@@ -258,9 +272,14 @@ class RefundController extends Controller{
                         if($purchase)
                         {
                             //check amount to refun
-                            if($purchase->price_paid>0)
+                            $data = DB::table('purchases')
+                                    ->leftJoin('transaction_refunds', 'purchases.id', '=', 'transaction_refunds.purchase_id')
+                                    ->select(DB::raw('SUM( COALESCE(transaction_refunds.amount,0) ) AS refunded '))
+                                    ->where('transaction_refunds.result','=','Approved')->where('purchases.id',$purchase->id)->orderBy('purchases.id')->groupBy('purchases.id')->first();
+                            $available = $purchase->price_paid - $data->refunded;
+                            $amount = (!empty($input['amount']) && $input['amount']>0 && $input['amount']<$available)? $input['amount'] : $available;
+                            if($amount>0)
                             {
-                                $amount = $purchase->price_paid;
                                 //check action to process
                                 if($input['type']=='current_purchase')
                                 {
@@ -269,33 +288,22 @@ class RefundController extends Controller{
                                     {
                                         if($purchase->transaction && $purchase->transaction->trans_result=='Approved')
                                         {
-                                            $refunded = TransactionRefund::where('purchase_id',$purchase->id)->where('result','=','Approved')->first();
-                                            if($refunded)
+                                            $refunded = TransactionRefund::usaepay($purchase, $user, $amount, $description, $current, $input);
+                                            if($refunded['success'])
                                             {
+                                                $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
+                                                $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                                 $purchase->status = 'Refunded';
-                                                $purchase->refunded = $refunded->created;
+                                                $purchase->refunded = $current;
                                                 $purchase->save();
-                                                $response[$i] = 'Already refunded';
+                                                $response[$i] = 'Done successfully!';
                                             }
                                             else
                                             {
-                                                $refunded = TransactionRefund::usaepay($purchase, $user, $amount, $description, $current);
-                                                if($refunded['success'])
-                                                {
-                                                    $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
-                                                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                                    $purchase->status = 'Refunded';
-                                                    $purchase->refunded = $current;
-                                                    $purchase->save();
-                                                    $response[$i] = 'Done successfully!';
-                                                }
-                                                else
-                                                {
-                                                    $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount;
-                                                    $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                                    $purchase->save();
-                                                    $response[$i] = 'Intent to refund failed ('.$purchase->payment_type.').';
-                                                }
+                                                $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount;
+                                                $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
+                                                $purchase->save();
+                                                $response[$i] = 'Intent to refund failed ('.$purchase->payment_type.').';
                                             }
                                         }
                                         else
@@ -304,7 +312,7 @@ class RefundController extends Controller{
                                     //refund cash
                                     else
                                     {
-                                        $refunded = create_refund($purchase,$user,$description,$current,'Refunded');
+                                        $refunded = create_refund($purchase,$user,$description,$current,'Refunded',$input);
                                         if($refunded)
                                         {
                                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
@@ -327,65 +335,43 @@ class RefundController extends Controller{
                                 //only update status refunded
                                 else if($input['type']=='update_purchase')
                                 {
-                                    $refunded = TransactionRefund::where('purchase_id',$purchase->id)->where('result','=','Approved')->first();
+                                    $refunded = create_refund($purchase,$user,$description,$current,'Refunded',$input);
                                     if($refunded)
                                     {
+                                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually refunded $'.$amount;
+                                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                         $purchase->status = 'Refunded';
-                                        $purchase->refunded = $refunded->created;
+                                        $purchase->refunded = $current;
                                         $purchase->save();
-                                        $response[$i] = 'Already refunded';
+                                        $response[$i] = 'Done successfully!';
                                     }
                                     else
                                     {
-                                        $refunded = create_refund($purchase,$user,$description,$current,'Refunded');
-                                        if($refunded)
-                                        {
-                                            $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually refunded $'.$amount;
-                                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                            $purchase->status = 'Refunded';
-                                            $purchase->refunded = $current;
-                                            $purchase->save();
-                                            $response[$i] = 'Done successfully!';
-                                        }
-                                        else
-                                        {
-                                            $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to manually refund $'.$amount;
-                                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                            $purchase->save();
-                                            $response[$i] = 'Intent to manually refund failed ('.$purchase->payment_type.').';
-                                        }
+                                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to manually refund $'.$amount;
+                                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
+                                        $purchase->save();
+                                        $response[$i] = 'Intent to manually refund failed ('.$purchase->payment_type.').';
                                     }
                                 }
                                 //update status chargeback
                                 else if($input['type']=='charge_purchase')
                                 {
-                                    $refunded = TransactionRefund::where('purchase_id',$purchase->id)->where('result','=','Approved')->first();
+                                    $refunded = create_refund($purchase,$user,$description,$current,'Chargeback',$input);
                                     if($refunded)
                                     {
-                                        $purchase->status = 'Chargeback';
-                                        $purchase->refunded = $refunded->created;
+                                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually Chargeback $'.$amount;
+                                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
+                                        $purchase->status = 'Refunded';
+                                        $purchase->refunded = $current;
                                         $purchase->save();
-                                        $response[$i] = 'Already refunded';
+                                        $response[$i] = 'Done successfully!';
                                     }
                                     else
                                     {
-                                        $refunded = create_refund($purchase,$user,$description,$current,'Chargeback');
-                                        if($refunded)
-                                        {
-                                            $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually Chargeback $'.$amount;
-                                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                            $purchase->status = 'Refunded';
-                                            $purchase->refunded = $current;
-                                            $purchase->save();
-                                            $response[$i] = 'Done successfully!';
-                                        }
-                                        else
-                                        {
-                                            $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to manually Chargeback $'.$amount;
-                                            $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                            $purchase->save();
-                                            $response[$i] = 'Intent to manually Chargeback failed ('.$purchase->payment_type.').';
-                                        }
+                                        $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to manually Chargeback $'.$amount;
+                                        $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
+                                        $purchase->save();
+                                        $response[$i] = 'Intent to manually Chargeback failed ('.$purchase->payment_type.').';
                                     }
                                 }
                                 else

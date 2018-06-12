@@ -44,7 +44,7 @@ class TransactionRefund extends Model
     /*
      * make transaction
      */
-    public static function usaepay($purchase,$user,$amount,$description=null,$created)
+    public static function usaepay($purchase,$user,$amount,$description=null,$created,$input=[])
     {
         try {
             //init params
@@ -91,6 +91,15 @@ class TransactionRefund extends Model
                 $transaction->error_code = $tran->error_code;
             $transaction->created = $created;
             $transaction->payment_type = 'Credit';
+            if($transaction->result == 'Approved')
+            {
+                $transaction->quantity = (isset($input['quantity']))? $input['quantity'] : $purchase->quantity;
+                $transaction->retail_price = (isset($input['retail_price']))? $input['retail_price'] : $purchase->retail_price;
+                $transaction->savings = (isset($input['savings']))? $input['savings'] : $purchase->savings;
+                $transaction->processing_fee = (isset($input['processing_fee']))? $input['processing_fee'] : $purchase->processing_fee;
+                $transaction->printed_fee = (isset($input['printed_fee']))? $input['printed_fee'] : $purchase->printed_fee;
+                $transaction->sales_taxes = (isset($input['sales_taxes']))? $input['sales_taxes'] : $purchase->sales_taxes;
+            }
             $transaction->save();
             //return
             if($success)

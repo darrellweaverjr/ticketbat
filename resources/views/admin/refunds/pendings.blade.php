@@ -115,29 +115,33 @@
                             <table class="table table-striped table-bordered table-hover table-checkable">
                                 <thead>
                                     <tr>
-                                        <th width="10%">Item</th>
                                         <th width="10%">ID</th>
                                         <th width="10%">Qty</th>
                                         <th width="10%">Ret.$</th>
                                         <th width="10%">Savings</th>
                                         <th width="10%">Fees</th>
+                                        <th width="10%">Print.Fee</th>
                                         <th width="10%">Taxes</th>
                                         <th width="10%">Amount</th>
                                         <th width="20%">Date</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tb_body_pendings">
+                                <tbody id="tb_body_pendings" class="text-right">
                                 </tbody>
                                 <tfoot>
-                                    <tr id="tb_foot_pendings">
-                                        <td colspan="2"></td>
-                                        <td><input type="number" class="form-control" style="width:70px!important;" name="quantity" value="0" min="0" step="1"/></td>
-                                        <td><input type="number" class="form-control" style="width:80px!important;" name="retail_price" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" class="form-control" style="width:80px!important;" name="savings" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" class="form-control" style="width:80px!important;" name="processing_fee" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" class="form-control" style="width:80px!important;" name="sales_taxes" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" class="form-control" style="width:80px!important;" name="amount" value="0.00" min="0" step="0.01"/></td>
-                                        <td></td>
+                                    <tr id="tb_foot_pendings" class="warning">
+                                        <td>
+                                            <input type="hidden" name="ticket_price" value="0"/>
+                                            <input type="hidden" name="ticket_fee" value="0"/>
+                                            <input type="hidden" name="sales_percent" value="0"/>
+                                        </td>
+                                        <td><input type="number" name="quantity" value="0" min="0" step="1"/></td>
+                                        <td><input type="number" name="retail_price" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" name="savings" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" name="processing_fee" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" name="printed_fee" value="0.00" min="0" step="0.01"/></td>
+                                        <td><input type="number" name="sales_taxes" value="0.00" min="0" step="0.01"/></td>
+                                        <td colspan="2"><input type="text" name="amount" class="form-control" value="0.00" min="0" step="0.01" readonly="true" style="max-width:100px"/>Amount to be refunded</td>
                                     </tr>
                                 </tfoot>
                             </table>
