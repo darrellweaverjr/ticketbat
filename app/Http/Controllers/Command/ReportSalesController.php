@@ -98,8 +98,9 @@ class ReportSalesController extends Controller{
                 $venues = DB::table('venues')
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                             ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                            ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->select('venues.id','venues.name','venues.accounting_email','venues.daily_sales_emails')
+                            ->leftJoin('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->select(DB::raw('venues.id, venues.name, venues.accounting_email, venues.daily_sales_emails,
+                                          COUNT(purchases.id) AS transactions'))
                             ->where('purchases.status','=','Active')
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->orderBy('venues.name')
@@ -108,23 +109,30 @@ class ReportSalesController extends Controller{
             //loop through all venues to create each report for each one
             foreach ($venues as $v)
             {
-                $report_venue = [];
-                $report_venue['sales'] = [ $this->report_sales('venue',$v->id,$v->name) ];
-                $report_venue['future'] = [ $this->report_future_liabilities('venue',$v->id,$v->name) ];
+                //if no purchases
+                if($v->transactions<1 && $v->daily_sales_emails>0 && !empty($v->accounting_email))
+                    $sent = $this->send_email([],$v->accounting_email,$v->name);
+                //purchases email for this period
+                else    
+                {
+                    $report_venue = [];
+                    $report_venue['sales'] = [ $this->report_sales('venue',$v->id,$v->name) ];
+                    $report_venue['future'] = [ $this->report_future_liabilities('venue',$v->id,$v->name) ];
 
-                //merge them to admin
-                if($this->only_admin>0)
-                {
-                    $report['sales'][] = $report_venue['sales'][0];
-                    $report['future'][] = $report_venue['future'][0];
-                }
-                //send the emails if available option
-                else if($v->daily_sales_emails > 0 && !empty($v->accounting_email))
-                {
-                    $files = $this->create_files($report_venue,$v->name);
-                    //send the email
-                    if(!empty($files))
-                        $sent = $this->send_email($files,$v->accounting_email,$v->name);
+                    //merge them to admin
+                    if($this->only_admin>0)
+                    {
+                        $report['sales'][] = $report_venue['sales'][0];
+                        $report['future'][] = $report_venue['future'][0];
+                    }
+                    //send the emails if available option
+                    else if($v->daily_sales_emails > 0 && !empty($v->accounting_email))
+                    {
+                        $files = $this->create_files($report_venue,$v->name);
+                        //send the email
+                        if(!empty($files))
+                            $sent = $this->send_email($files,$v->accounting_email,$v->name);
+                    }
                 }
             }   
             //send admin email
@@ -514,13 +522,24 @@ class ReportSalesController extends Controller{
     public function send_email($files,$to_email,$subject)
     {
         try {
+            //create email header
             $email = new EmailSG(env('MAIL_REPORT_FROM'), $to_email ,$this->subject.'( '.$subject.' ) '.$this->report_date);
             /*if(env('MAIL_REPORT_CC',null))
                 $email->cc(env('MAIL_REPORT_CC'));*/
             $email->category('Reports');
-            $email->body('sales_report',array('date'=>date('m/d/Y H:ia')));
-            $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
-            $email->attachment( $files );
+            //email body
+            if(empty($files))
+            {
+                $email->body('custom',['body'=>'You have no sales for this period.']);
+                $email->template('46388c48-5397-440d-8f67-48f82db301f7');
+            }
+            else
+            {
+                $email->body('sales_report',array('date'=>date('m/d/Y H:ia')));
+                $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
+                $email->attachment( $files );
+            }
+            //send email
             $sent = $email->send();
             foreach ($files as $f)
                 if(file_exists($f))
