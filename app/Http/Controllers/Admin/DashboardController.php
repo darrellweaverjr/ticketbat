@@ -318,7 +318,7 @@ class DashboardController extends Controller
                                               SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
                                               SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                               SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                              SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-printed_fee,2)) AS to_show,
+                                              SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
                                               SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
                             ->where($where)
                             ->where(function($query) {
