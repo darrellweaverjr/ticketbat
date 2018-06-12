@@ -327,7 +327,7 @@ class Purchase extends Model
                         PDF::loadHTML($pdf_receipt->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlR);
                         $pdf_receipts[] = $pdfUrlR;
 
-                        //create pdf tickets                
+                        //create pdf tickets if no printed tickets           
                         if($receipt['purchase']->printed_tickets == 0)
                         {
                             $tickets = $receipt['tickets'];
@@ -337,6 +337,19 @@ class Purchase extends Model
                             if(file_exists($pdfUrlT)) unlink($pdfUrlT);
                             PDF::loadHTML($pdf_ticket->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($pdfUrlT);
                             $pdf_tickets[] = $pdfUrlT;
+                        }
+                        //send email for print tickets by mail
+                        else
+                        {
+                            //send email
+                            $msg = '<h1>Order #'.$receipt['purchase']->id.' paid $'.$receipt['purchase']->printed_fee.' to print the ticket(s) and mail it(them).<br>Please, enter into TicketBat.com, print them and sent by mail.';
+                            $msg.= '<br><br>If you already send them, ignore this email, maybe someone re-sent the receipt and trigger this email.</h1>';
+                            
+                            $email = new EmailSG(null, env('MAIL_PRINTED_TICKETS_TO','admin@ticketbat.com') , 'Ticketbat :: Printed tickets request.');
+                            $email->category('Important');
+                            $email->body('custom',['body'=>$msg]);
+                            $email->template('46388c48-5397-440d-8f67-48f82db301f7');
+                            $email->send();
                         }
 
                         if($type_email != 'reminder')
