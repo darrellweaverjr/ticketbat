@@ -339,7 +339,7 @@ class Purchase extends Model
                             $pdf_tickets[] = $pdfUrlT;
                         }
                         //send email for print tickets by mail
-                        else
+                        else if($receipt['purchase']->printed_fee>0)
                         {
                             //send email
                             $msg = '<h1>Order #'.$receipt['purchase']->id.' paid $'.$receipt['purchase']->printed_fee.' to print the ticket(s) and mail it(them).<br>Please, enter into TicketBat.com, print them and sent by mail.';
