@@ -69,7 +69,7 @@ class ReportSalesController extends Controller{
         try {
             //init main variables
             $report = ['sales'=>[],'future'=>[]];
-
+            $ven = [];
             //get all the venues with purchases and if admin add extra fields
             if($this->only_admin>0) //admin, get all data with values
             {
@@ -108,6 +108,7 @@ class ReportSalesController extends Controller{
             //loop through all venues to create each report for each one
             foreach ($venues as $v)
             {
+                $ven[] = $v->id;
                 $report_venue = [];
                 $report_venue['sales'] = [ $this->report_sales('venue',$v->id,$v->name) ];
                 $report_venue['future'] = [ $this->report_future_liabilities('venue',$v->id,$v->name) ];
@@ -135,6 +136,18 @@ class ReportSalesController extends Controller{
                 if(!empty($files))
                     $sent = $this->send_email($files,env('MAIL_REPORT_TO'),'TicketBat Totals');
             }   
+            //send email to venues with no sales
+            else
+            {
+                $venues = DB::table('venues')
+                            ->select('venues.id','venues.name','venues.accounting_email')
+                            ->where('venues.daily_sales_emails','>',0)
+                            ->whereNotIn('venues.id',$ven)
+                            ->groupBy('venues.id')->orderBy('venues.name')
+                            ->distinct()->get()->toArray();
+                foreach ($venues as $v)
+                    $sent = $this->send_email([],$v->accounting_email,$v->name);
+            }
             if(isset($sent))
                 return $sent;
             return false;
@@ -517,10 +530,18 @@ class ReportSalesController extends Controller{
             $email = new EmailSG(env('MAIL_REPORT_FROM'), $to_email ,$this->subject.'( '.$subject.' ) '.$this->report_date);
             /*if(env('MAIL_REPORT_CC',null))
                 $email->cc(env('MAIL_REPORT_CC'));*/
-            $email->category('Reports');
-            $email->body('sales_report',array('date'=>date('m/d/Y H:ia')));
-            $email->template('a6e2bc2e-5852-4d14-b8ff-d63e5044fd14');
-            $email->attachment( $files );
+            $email->category('Reports');            
+            if(!empty($files))
+            {
+                $msg = '<center>Attached is the report for sales completed on '.date('m/d/Y H:ia').'<br><h1>:)</h1></center>';
+                $email->attachment( $files );
+            }
+            else
+            {
+                $msg = '<center>This venue has no purchases in this period<br><h1>:(</h1></center>';
+            }
+            $email->body('custom',['body'=>$msg]);
+            $email->template('46388c48-5397-440d-8f67-48f82db301f7');
             $sent = $email->send();
             foreach ($files as $f)
                 if(file_exists($f))

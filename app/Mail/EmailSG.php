@@ -287,12 +287,6 @@ class EmailSG {
                         }
                         break;
                     }
-                case 'sales_report': {
-                        if (isset($data)) {
-                            $body[] = array('variable' => ':date', 'value' => $data['date']);
-                        }
-                        break;
-                    }
                 case 'reminder': {
                         if (isset($data['purchase']) && is_array($data['purchase'])) {
                             foreach ($data['purchase'] as $purchase) {
