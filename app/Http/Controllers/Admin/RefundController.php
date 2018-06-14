@@ -247,6 +247,7 @@ class RefundController extends Controller{
                 $transaction->payment_type = $purchase->payment_type;
                 if($transaction->result == 'Approved')
                 {
+                    $transaction->refunded_reason = $purchase->refunded_reason;
                     $transaction->quantity = (isset($input['quantity']))? $input['quantity'] : $purchase->quantity;
                     $transaction->retail_price = (isset($input['retail_price']))? $input['retail_price'] : $purchase->retail_price;
                     $transaction->savings = (isset($input['savings']))? $input['savings'] : $purchase->savings;
@@ -299,7 +300,7 @@ class RefundController extends Controller{
                                                 $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
                                                 $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                                 $purchase->status = 'Refunded';
-                                                //$purchase->refunded = $current;
+                                                $purchase->refunded_reason = null;
                                                 $purchase->save();
                                                 $response[$i] = 'Done successfully!';
                                             }
@@ -323,7 +324,7 @@ class RefundController extends Controller{
                                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
                                             $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                             $purchase->status = 'Refunded';
-                                            //$purchase->refunded = $current;
+                                            $purchase->refunded_reason = null;
                                             $purchase->save();
                                             $response[$i] = 'Done successfully!';
                                         }
@@ -346,7 +347,7 @@ class RefundController extends Controller{
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually refunded $'.$amount;
                                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                         $purchase->status = 'Refunded';
-                                        //$purchase->refunded = $current;
+                                        $purchase->refunded_reason = null;
                                         $purchase->save();
                                         $response[$i] = 'Done successfully!';
                                     }
@@ -367,7 +368,7 @@ class RefundController extends Controller{
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually Chargeback $'.$amount;
                                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                         $purchase->status = 'Refunded';
-                                        //$purchase->refunded = $current;
+                                        $purchase->refunded_reason = null;
                                         $purchase->save();
                                         $response[$i] = 'Done successfully!';
                                     }

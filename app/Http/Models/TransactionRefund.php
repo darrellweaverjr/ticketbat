@@ -93,6 +93,7 @@ class TransactionRefund extends Model
             $transaction->payment_type = 'Credit';
             if($transaction->result == 'Approved')
             {
+                $transaction->refunded_reason = $purchase->refunded_reason;
                 $transaction->quantity = (isset($input['quantity']))? $input['quantity'] : $purchase->quantity;
                 $transaction->retail_price = (isset($input['retail_price']))? $input['retail_price'] : $purchase->retail_price;
                 $transaction->savings = (isset($input['savings']))? $input['savings'] : $purchase->savings;
