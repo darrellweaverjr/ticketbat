@@ -241,21 +241,6 @@
                                             </button>
                                         </span>
                                     </div>
-                                    <label class="control-label col-md-2">Refunded:</label>
-                                    <div class="col-md-5">
-                                        <input class="form-control" name="refunded" type="text" readonly="true"/>
-                                    </div>
-                                    <div id="t_refunded_date" class="col-md-5 input-group date dtpicker">
-                                        <input size="16" readonly="true" style="font-size:10px" class="form-control" type="text" name="t_refunded" value="">
-                                        <span class="input-group-btn">
-                                            <button class="btn default date-set" type="button">
-                                                <i class="fa fa-calendar"></i>
-                                            </button>
-                                            <button class="btn default" type="button" id="clear_t_refunded_date">
-                                                <i class="fa fa-remove"></i>
-                                            </button>
-                                        </span>
-                                    </div>
                                 </div>
                             </div>
                         </div>

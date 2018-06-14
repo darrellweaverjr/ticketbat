@@ -424,21 +424,6 @@ class PurchaseController extends Controller{
                             $purchase->updated = $updated;
                         }
                     }
-                    if(isset($input['t_refunded']) && strtotime($input['t_refunded']) )
-                    {
-                        $refunded= (!empty($input['t_refunded']) && strtotime($input['t_refunded']))? date('Y-m-d H:i',strtotime($input['t_refunded'])) : null;
-                        if(!is_null($refunded) && $refunded != date('Y-m-d H:i',strtotime($purchase->refunded)) )
-                        {
-                            $refun = TransactionRefund::where('purchase_id',$purchase->id)->where('result','=','Approved')->first();
-                            if($refun)
-                            {
-                                $refun->created = $refunded;
-                                $refun->save();
-                                $note.= ', Refunded from '.date('m/d/Y g:ia',strtotime($purchase->refunded)).' to '.date('m/d/Y g:ia',strtotime($refunded));
-                                $purchase->refunded = $refunded;
-                            }
-                        }
-                    }
                     
                     //note and save
                     if(!empty($note))
