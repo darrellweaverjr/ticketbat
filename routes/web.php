@@ -89,6 +89,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::match(['get','post'], 'purchases', 'PurchaseController@index')->middleware('permissions:PURCHASES');
     //refunds
     Route::post('refunds/check', 'RefundController@check')->middleware('permissions:REFUNDS');
+    Route::post('refunds/refund', 'RefundController@refund')->middleware('permissions:REFUNDS');
     Route::post('refunds/save', 'RefundController@save')->middleware('permissions:REFUNDS');
     Route::get('refunds/pendings', 'RefundController@pendings')->middleware('permissions:REFUNDS');
     Route::get('refunds', 'RefundController@index')->middleware('permissions:REFUNDS');

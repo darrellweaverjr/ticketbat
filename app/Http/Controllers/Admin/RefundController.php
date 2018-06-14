@@ -225,7 +225,7 @@ class RefundController extends Controller{
      *
      * @void
      */
-    public function save()
+    public function refund()
     {
         try {
             //init
@@ -275,7 +275,12 @@ class RefundController extends Controller{
                             $data = DB::table('purchases')
                                     ->leftJoin('transaction_refunds', 'purchases.id', '=', 'transaction_refunds.purchase_id')
                                     ->select(DB::raw('SUM( COALESCE(transaction_refunds.amount,0) ) AS refunded '))
-                                    ->where('transaction_refunds.result','=','Approved')->where('purchases.id',$purchase->id)->orderBy('purchases.id')->groupBy('purchases.id')->first();
+                                    ->where('purchases.id',$purchase->id)
+                                    ->where(function($query) {
+                                        $query->where('transaction_refunds.result','=','Approved')
+                                              ->orWhereNull('transaction_refunds.id');
+                                    })
+                                    ->orderBy('purchases.id')->groupBy('purchases.id')->first();
                             $available = $purchase->price_paid - $data->refunded;
                             $amount = (!empty($input['amount']) && $input['amount']>0 && $input['amount']<$available)? $input['amount'] : $available;
                             if($amount>0)
@@ -396,6 +401,34 @@ class RefundController extends Controller{
                 return ['success'=>false, 'msg'=>'You must select a valid purchase(s) to process.'];
             }
             return ['success'=>false, 'msg'=>'You must select a purchase to process.'];
+            
+        } catch (Exception $ex) {
+            throw new Exception('Error Purchases Save: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * Refund purchase.
+     *
+     * @void
+     */
+    public function save()
+    {
+        try {
+            //init
+            $input = Input::all();
+            if($input && !empty($input['id']) && !empty($input['created']) && strtotime($input['created']))
+            {
+                $refund = TransactionRefund::find($input['id']);
+                if($refund)
+                {
+                    $refund->created = date('Y-m-d H:i:s', strtotime($input['created']));
+                    $refund->save();
+                    return ['success'=>true, 'msg'=>'Refund updated successfully.'];
+                }
+                return ['success'=>false, 'msg'=>'That refund is not longer in the system.'];
+            }
+            return ['success'=>false, 'msg'=>'You must select a purchase to process and a valid date to change the refund to.'];
             
         } catch (Exception $ex) {
             throw new Exception('Error Purchases Save: '.$ex->getMessage());

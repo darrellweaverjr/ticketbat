@@ -6,14 +6,24 @@
                 <div class="caption">
                     <span class="caption-subject bold uppercase"> LIST </span>
                 </div>
+                <div class="actions">
+                    @if(in_array('Other',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
+                    <div class="btn-group">
+                        <button id="btn_model_edit" class="btn sbold bg-yellow" disabled="true">Edit
+                            <i class="fa fa-edit"></i>
+                        </button>
+                    </div>
+                    @endif
+                </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model_refunded">
                     <thead>
                         <tr>
+                            <th width="2%"></th>
                             <th width="1%"></th>
-                            <th width="40%">Purchase Info</th>
-                            <th width="40%">Refund Info</th>
+                            <th width="39%">Purchase Info</th>
+                            <th width="39%">Refund Info</th>
                             <th width="9%">Amount</th>
                             <th width="10%">Created</th>
                         </tr>
@@ -23,6 +33,12 @@
                         @foreach($refunds as $index=>$p)
                             @php $color = substr(dechex(crc32($p->order_id)),0,6) @endphp
                         <tr>
+                            <td>
+                                <label class="mt-radio mt-radio-single mt-radio-outline">
+                                    <input type="radio" name="radios" id="{{$p->id}}" value="{{$p->id}} ({{$p->order_id}})" />
+                                    <span></span>
+                                </label>
+                            </td>
                             <td style="text-align:center;background-color:#{{$color}};border-top:thick solid @if($previous_color==$color) #{{$color}} @else #ffffff @endif !important;">
                                 <i class="fa fa-shopping-cart"></i>
                             </td>
@@ -65,3 +81,50 @@
     </div>
 </div>
 <!-- END EXAMPLE TABLE PORTLET-->
+<!-- BEGIN EDIT MODAL-->
+<div id="modal_model_edit" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:500px !important;">
+        <div class="modal-content portlet">
+            <div id="modal_model_update_header" class="modal-header alert-block bg-yellow">
+                <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Refund</center></h4>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN FORM-->
+                <form method="post" id="form_model_edit" class="form-horizontal">
+                    <input name="id" type="hidden" value=""/>
+                    <div class="form-body">
+                        <div class="alert alert-danger display-hide">
+                            <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                        <div class="alert alert-success display-hide">
+                            <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                        <div class="row" style="padding-left:15px">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Refund date</label>
+                                <div class="col-md-3 show-error">
+                                    <div id="refund_date_input" class="input-group input-large date form_datetime dtpicker">
+                                        <input size="16" readonly="" class="form-control" type="text" name="created" value="{{date('n/d/Y g:i A')}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                                <button type="button" id="btn_model_save" class="btn sbold bg-yellow">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END EDIT MODAL-->

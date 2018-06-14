@@ -159,7 +159,7 @@
                         <div class="row">
                             <div class="modal-footer">
                                 <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
-                                <button type="button" id="btn_model_save" class="btn sbold bg-purple">Process</button>
+                                <button type="button" id="btn_model_process" class="btn sbold bg-purple">Process</button>
                             </div>
                         </div>
                     </div>

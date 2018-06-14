@@ -146,7 +146,7 @@ var PendingDatatablesManaged = function () {
             $('#tb_foot_pendings input[name="amount"]').val( parseFloat( subt+taxes ).toFixed(2) );
         });
         //function send
-        $('#btn_model_save').on('click', function(ev) {
+        $('#btn_model_process').on('click', function(ev) {
             $('#modal_model_refund').modal('hide');
             swal({
                 title: "Refunding purchase(s)",
@@ -157,7 +157,7 @@ var PendingDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/refunds/save', 
+                url: '/admin/refunds/refund', 
                 data: $('#form_model_refund').serializeArray(), 
                 success: function(data) {
                     if(data.success) 
