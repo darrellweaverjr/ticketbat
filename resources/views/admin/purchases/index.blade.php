@@ -104,10 +104,8 @@
                                         @endif
                                         <small><i>Qty: <b>{{$p->quantity}}</b>, Coupon: <b>{{$p->code}}</b>, T.Type: <b>{{$p->ticket_type_type}}</b>, Pkg: <b>{{$p->title}}</b>,
                                         <br> Ret.P: <b>${{number_format($p->retail_price,2)}}</b>, Fees: <b>${{number_format($p->processing_fee,2)}} @if($p->inclusive_fee>0) (Incl) @endif</b>, Comm.: <b>${{number_format($p->commission_percent,2)}}</b>, 
-                                             Sav.: <b>${{number_format($p->savings,2)}}</b>, Print.: <b>${{number_format($p->printed_fee,2)}}</b>, 
+                                             Sav.: <b>${{number_format($p->savings,2)}}</b>, Print.: <b>${{number_format($p->printed_fee,2)}}</b>, @if(in_array($p->status,['Refunded','Chargeback'])) Refund: <b>-${{$p->ref_amount}}</b> @endif
                                         </i></small>
-                                        @if($p->refunded)<br><small><i>Refund: <b>{{date('m/d/Y g:ia',strtotime($p->refunded))}}</b>, AuthCode: <b>{{$p->r_authcode}}</b>, RefNum: <b>{{$p->r_refnum}}</b>, Amount: <b>${{$p->r_amount}}</b>, 
-                                                <br> Ref.Desc.: <b>{{$p->description}}</b>,</i></small>@endif
                                         <div id="note_{{$p->id}}" class="note note-info @if(empty(trim($p->note))) hidden @endif" style="font-style:italic;font-size:smaller;">@php echo trim($p->note) @endphp</div>
                                     </div>
                                 </td>
@@ -117,7 +115,7 @@
                                 <td style="text-align:right">
                                     @if($previous_color != $color) <b>{{$p->method}}</b><br><br>@endif                                   
                                     @if($p->price_paid > 0) ${{number_format($p->price_paid,2)}} @elseif($p->method=='Free event') @php echo '(Free event)' @endphp @else @php echo '(Comp)' @endphp @endif 
-                                    @if($p->refunded) <br>-${{$p->r_amount}} @endif
+                                    @if(in_array($p->status,['Refunded','Chargeback'])) <br>-${!!$p->r_amount!!} @endif
                                 </td>
                                 <td data-status="{{$p->status}}"><center>{{$p->status}}</center></td>
                             </tr>
