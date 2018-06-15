@@ -91,17 +91,15 @@ class DashboardController extends Controller
                     return true;
                 });
             }
-            //enable only valid purchase status
-            foreach ($data['search']['status'] as $k=>$v)
-                if($v!='Active' && $v!='Refunded' && $v!='Chargeback' && !(strpos($v,'Pending')===0))
-                    unset($data['search']['status'][$k]);
             $where = $data['where'];
             $search = $data['search'];
             //coupon's report
             if(!empty($search['coupon_report']))
                 $coupons = $this->coupons($data);
-            //get all records            
-            $credit = DB::table('purchases')
+            //credit
+            if(!in_array($search['statu'], ['Refunded','Chargeback']))
+            {
+                $credit = DB::table('purchases')
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                         ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -132,23 +130,30 @@ class DashboardController extends Controller
                                           SUM( IF(purchases.inclusive_fee>0, 0, purchases.processing_fee) ) AS fees_over,
                                           purchases.commission_percent AS commissions,
                                           ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit, 1 AS display'))
-                        ->where(clear_date_sold($where))
-                        ->where(function($query) use ($search) {
-                            if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
-                            {
-                                $start = date('Y-m-d H:i:s', strtotime($search['soldtime_start_date']));
-                                $end = date('Y-m-d H:i:s', strtotime($search['soldtime_end_date']));
-                                $query->whereBetween('purchases.created', [$start, $end]);
-                            }
-                        })
-                        ->where(function($query) {
-                            $query->where('purchases.status','=','Active')
-                                  ->orWhere('purchases.status','like','Pending%')
-                                  ->orWhere('purchases.status','=','Refunded')
-                                  ->orWhere('purchases.status','=','Chargeback');
-                        })
-                        ->groupBy('purchases.id')->orderBy('purchases.id','DESC')->get();                        
-            $debit = DB::table('purchases')
+                        ->where($where)
+                        ->where('purchases.status','<>','Void')
+                        ->groupBy('purchases.id')->orderBy('purchases.id','DESC')->get();  
+                $credit_ = $credit->toArray();
+                $total_c = ['purchases'=>array_sum(array_column($credit_,'purchases')),
+                        'tickets'=>array_sum(array_column($credit_,'tickets')),
+                        'savings'=>array_sum(array_column($credit_,'savings')),
+                        'sales_taxes'=>array_sum(array_column($credit_,'sales_taxes')),
+                        'price_paid'=>array_sum(array_column($credit_,'amount')),
+                        'cc_fees'=>array_sum(array_column($credit_,'cc_fees')),
+                        'printed_fee'=>array_sum(array_column($credit_,'printed_fee')),
+                        'to_show'=>array_sum(array_column($credit_,'to_show')),
+                        'fees_incl'=>array_sum(array_column($credit_,'fees_incl')),
+                        'fees_over'=>array_sum(array_column($credit_,'fees_over')),
+                        'commissions'=>array_sum(array_column($credit_,'commissions')),
+                        'profit'=>array_sum(array_column($credit_,'profit'))];   
+            }
+            else
+                $total_c = [  'purchases'=>0,'tickets'=>0,'savings'=>0,'sales_taxes'=>0,'price_paid'=>0,'cc_fees'=>0,'printed_fee'=>0,'to_show'=>0,'fees_incl'=>0,'fees_over'=>0,'commissions'=>0,'profit'=>0 ];
+            
+            //debit
+            if(in_array($search['statu'], ['','Refunded','Chargeback']))
+            {
+                $debit = DB::table('purchases')
                         ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                         ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                         ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -180,50 +185,43 @@ class DashboardController extends Controller
                                           SUM( IF(purchases.inclusive_fee>0, 0, transaction_refunds.processing_fee*-1) ) AS fees_over,
                                           purchases.commission_percent*-1 AS commissions,
                                           ROUND(transaction_refunds.processing_fee+purchases.commission_percent+transaction_refunds.printed_fee,2)*-1 AS profit, -1 AS display'))
-                        ->where(clear_date_sold($where))
-                        ->where(function($query) use ($search) {
-                            if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
-                            {
-                                $start = date('Y-m-d H:i:s', strtotime($search['soldtime_start_date']));
-                                $end = date('Y-m-d H:i:s', strtotime($search['soldtime_end_date']));
-                                $query->whereBetween('transaction_refunds.created', [$start, $end]);
-                            }
-                        })
+                        ->where($where)
                         ->where(function($query) {
                             $query->where('purchases.status','=','Refunded')
                                   ->orWhere('purchases.status','=','Chargeback');
                         })
                         ->where('transaction_refunds.result','=','Approved')
                         ->groupBy('purchases.id')->groupBy('transaction_refunds.id')
-                        ->orderBy('purchases.id','DESC')->orderBy('transaction_refunds.id','DESC')->get();                       
-            $data = $credit->merge($debit)->toArray();            
-            $credit = $credit->toArray();
-            $debit = $debit->toArray();            
-            $total = [  'purchases'=>array_sum(array_column($credit,'purchases')),
-                        'tickets'=>array_sum(array_column($credit,'tickets')),
-                        'savings'=>array_sum(array_column($credit,'savings')),
-                        'sales_taxes'=>array_sum(array_column($credit,'sales_taxes')),
-                        'price_paid'=>array_sum(array_column($credit,'amount')),
-                        'cc_fees'=>array_sum(array_column($credit,'cc_fees')),
-                        'printed_fee'=>array_sum(array_column($credit,'printed_fee')),
-                        'to_show'=>array_sum(array_column($credit,'to_show')),
-                        'fees_incl'=>array_sum(array_column($credit,'fees_incl')),
-                        'fees_over'=>array_sum(array_column($credit,'fees_over')),
-                        'commissions'=>array_sum(array_column($credit,'commissions')),
-                        'profit'=>array_sum(array_column($credit,'profit')),   
-
-                        'purchases_'=>array_sum(array_column($debit,'purchases')),
-                        'tickets_'=>array_sum(array_column($debit,'tickets')),
-                        'savings_'=>array_sum(array_column($debit,'savings')),
-                        'sales_taxes_'=>array_sum(array_column($debit,'sales_taxes')),
-                        'price_paid_'=>array_sum(array_column($debit,'amount')),
-                        'cc_fees_'=>array_sum(array_column($debit,'cc_fees')),
-                        'printed_fee_'=>array_sum(array_column($debit,'printed_fee')),
-                        'to_show_'=>array_sum(array_column($debit,'to_show')),
-                        'fees_incl_'=>array_sum(array_column($debit,'fees_incl')),
-                        'fees_over_'=>array_sum(array_column($debit,'fees_over')),
-                        'commissions_'=>array_sum(array_column($debit,'commissions')),
-                        'profit_'=>array_sum(array_column($debit,'profit')) ];   
+                        ->orderBy('purchases.id','DESC')->orderBy('transaction_refunds.id','DESC')->get(); 
+                $debit_ = $debit->toArray(); 
+                $total_d = ['purchases_'=>array_sum(array_column($debit_,'purchases')),
+                        'tickets_'=>array_sum(array_column($debit_,'tickets')),
+                        'savings_'=>array_sum(array_column($debit_,'savings')),
+                        'sales_taxes_'=>array_sum(array_column($debit_,'sales_taxes')),
+                        'price_paid_'=>array_sum(array_column($debit_,'amount')),
+                        'cc_fees_'=>array_sum(array_column($debit_,'cc_fees')),
+                        'printed_fee_'=>array_sum(array_column($debit_,'printed_fee')),
+                        'to_show_'=>array_sum(array_column($debit_,'to_show')),
+                        'fees_incl_'=>array_sum(array_column($debit_,'fees_incl')),
+                        'fees_over_'=>array_sum(array_column($debit_,'fees_over')),
+                        'commissions_'=>array_sum(array_column($debit_,'commissions')),
+                        'profit_'=>array_sum(array_column($debit_,'profit')) ];  
+            }
+            else
+                $total_d = [  'purchases_'=>0,'tickets_'=>0,'savings_'=>0,'sales_taxes_'=>0,'price_paid_'=>0,'cc_fees_'=>0,'printed_fee_'=>0,'to_show_'=>0,'fees_incl_'=>0,'fees_over_'=>0,'commissions_'=>0,'profit_'=>0 ]; 
+                      
+            if(isset($credit))
+            {
+                if(isset($debit))
+                    $data = $credit->merge($debit)->toArray();
+                else
+                    $data = $credit->toArray();                    
+            }
+            else if(isset($debit))
+                $data = $debit->toArray(); 
+            else
+                $data = [];            
+            $total = array_merge($total_c,$total_d);   
             
             //calculate totals
             function calc_totals($data)
@@ -303,6 +301,8 @@ class DashboardController extends Controller
                         //set up new date period
                         $where[] = [DB::raw('DATE(purchases.created)'),'>=',$start_date];
                         $where[] = [DB::raw('DATE(purchases.created)'),'<=',$end_date];
+                        $where[] = [DB::raw('DATE(transaction_refunds.created)'),'>=',$start_date];
+                        $where[] = [DB::raw('DATE(transaction_refunds.created)'),'<=',$end_date];
                         $title = 'Period '.$period.': <i>( '.date('M jS Y',strtotime($start_date)).' - '.date('M jS Y',strtotime($end_date)).' )</i>';
                     }
                     else return ['title'=>$title,'table'=>[]];
@@ -325,21 +325,20 @@ class DashboardController extends Controller
                                                      WHEN (purchases.payment_type="None") THEN "Comp."
                                                      ELSE purchases.payment_type END ) AS method, purchases.channel,
                                               COUNT(purchases.id) AS purchases,
-                                              SUM(purchases.quantity) AS tickets, 
-                                              SUM(ROUND(purchases.commission_percent+purchases.processing_fee,2)) AS profit,
-                                              SUM(ROUND(purchases.price_paid,2)) AS price_paid,
-                                              SUM(ROUND(purchases.savings,2)) AS savings,
-                                              SUM(ROUND(purchases.cc_fees,2)) AS cc_fees, SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,
-                                              SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
-                                              SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                              SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                              SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
-                                              SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
+                                              SUM(purchases.quantity)-SUM(transaction_refunds.quantity) AS tickets, 
+                                              SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee)-SUM(transaction_refunds.commission_percent+transaction_refunds.processing_fee+transaction_refunds.printed_fee) AS profit,
+                                              SUM(purchases.price_paid)-SUM(transaction_refunds.amount) AS price_paid,
+                                              SUM(purchases.savings)-SUM(transaction_refunds.savings) AS savings,
+                                              SUM(purchases.cc_fees) AS cc_fees, SUM(purchases.printed_fee)-SUM(transaction_refunds.printed_fee) AS printed_fee,
+                                              SUM(purchases.sales_taxes)-SUM(transaction_refunds.printed_fee) AS sales_taxes,
+                                              SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2)-SUM(transaction_refunds.printed_fee), 0) ) AS fees_incl,
+                                              SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)-SUM(transaction_refunds.printed_fee)) ) AS fees_over,
+                                              SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee) 
+                                              -SUM(transaction_refunds.amount-transaction_refunds.commission_percent-transaction_refunds.processing_fee-transaction_refunds.cc_fees-transaction_refunds.printed_fee) AS to_show,
+                                              SUM(purchases.commission_percent)-SUM(transaction_refunds.commission_percent) AS commissions'))
                             ->where($where)
-                            ->where(function($query) {
-                                $query->where('purchases.status','=','Active')
-                                      ->orWhere('purchases.status','like','Pending%');
-                            })
+                            ->where('purchases.status','<>','Void')
+                            ->where('transaction_refunds.result','=','Approved')
                             ->groupBy('channel','method')->orderBy('channel','method')
                             ->get()->toArray();
                 foreach ($summary_info as $d)
@@ -376,13 +375,12 @@ class DashboardController extends Controller
                     ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                     ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
                     ->select(DB::raw('DATE_FORMAT(purchases.created,"%b %Y") AS purchased,
-                                    SUM(purchases.quantity) AS qty,
-                                    SUM(ROUND(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee,2)) AS amount'))
+                                    SUM(purchases.quantity)-SUM(transaction_refunds.quantity) AS qty,
+                                    SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee)
+                                    -SUM(transaction_refunds.commission_percent+transaction_refunds.processing_fee+transaction_refunds.printed_fee) AS amount'))
                     ->where($where)
-                    ->where(function($query) {
-                        $query->where('purchases.status','=','Active')
-                              ->orWhere('purchases.status','like','Pending%');
-                    })
+                    ->where('purchases.status','<>','Void')
+                    ->where('transaction_refunds.result','=','Approved')
                     ->whereRaw(DB::raw('DATE_FORMAT(purchases.created,"%Y%m") >= '.$start))
                     ->groupBy(DB::raw('DATE_FORMAT(purchases.created,"%Y%m")'))->get()->toJson();  
             //return view
@@ -404,16 +402,7 @@ class DashboardController extends Controller
             $input = Input::all();
             $data = $total = $graph = array();
             //conditions to search
-            if(!empty($info))
-                $data = $info;
-            else
-            {
-                $data = Purchase::filter_options('REPORTS', $input, '-7');
-                //enable only valid purchase status
-                foreach ($data['search']['status'] as $k=>$v)
-                    if($v!='Active' && !(strpos($v,'Pending')===0))
-                        unset($data['search']['status'][$k]);
-            }
+            $data = (!empty($info))? $info : Purchase::filter_options('REPORTS', $input, '-7');
             $where = $data['where'];
             $where[] = ['discounts.id','!=',1];
             $search = $data['search'];
@@ -437,25 +426,22 @@ class DashboardController extends Controller
                                     COALESCE((SELECT SUM(pp.quantity) FROM purchases pp INNER JOIN show_times stt ON stt.id = pp.show_time_id
                                               WHERE stt.show_id = shows.id AND pp.discount_id = purchases.discount_id
                                               AND DATE(pp.created)>=DATE_SUB(CURDATE(),INTERVAL 7 DAY)),0) AS tickets_seven,
-                                    SUM(purchases.quantity) AS tickets, 
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
-                                    SUM(ROUND(purchases.price_paid,2)) AS revenue,
-                                    SUM(ROUND(purchases.savings,2)) AS discounts,
-                                    SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
-                                    SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,  
-                                    SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
-                                    SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
-                                    SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
+                                    SUM(purchases.quantity)-SUM(transaction_refunds.quantity) AS tickets, 
+                                    SUM(purchases.price_paid)-SUM(transaction_refunds.amount) AS price_paids,
+                                    SUM(purchases.retail_price)-SUM(transaction_refunds.retail_price) AS retail_prices,
+                                    SUM(purchases.price_paid)-SUM(transaction_refunds.amount) AS revenue,
+                                    SUM(purchases.savings)-SUM(transaction_refunds.savings) AS discounts,
+                                    SUM(purchases.cc_fees) AS cc_fees,
+                                    SUM(purchases.printed_fee)-SUM(transaction_refunds.printed_fee) AS printed_fee,  
+                                    SUM(purchases.sales_taxes)-SUM(transaction_refunds.sales_taxes) AS sales_taxes,
+                                    SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2)-SUM(transaction_refunds.processing_fee), 0) ) AS fees_incl,
+                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee-SUM(transaction_refunds.processing_fee),2)) ) AS fees_over,
+                                    SUM(purchases.price_paid-purchases.processing_fee-purchases.commission_percent-purchases.cc_fees-purchases.printed_fee) 
+                                    -SUM(transaction_refunds.amount-transaction_refunds.commission_percent-transaction_refunds.processing_fee-transaction_refunds.cc_fees-transaction_refunds.printed_fee) AS to_show,
+                                    SUM(purchases.commission_percent)-SUM(transaction_refunds.commission_percent) AS commissions'))
                     ->where($where)
-                    ->where(function($query) {
-                        $query->where('purchases.status','=','Active')
-                              ->orWhere('purchases.status','like','Pending%')
-                              ->orWhereNull('purchases.id');
-                    })
-                    ->groupBy('venues.id','shows.id','discounts.id')->orderBy('tickets','DESC')->orderBy('discounts.code','ASC')->orderBy('show_name','ASC');
+                    ->where('purchases.status','<>','Void')
+                    ->where('transaction_refunds.result','=','Approved');
             //conditions
             if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
             {
@@ -470,7 +456,8 @@ class DashboardController extends Controller
                           ->orWhereNull('purchases.id');
                 });
             }
-            $data = $data->get()->toArray();
+            $data = $data->groupBy('venues.id','shows.id','discounts.id')->orderBy('tickets','DESC')
+                         ->orderBy('discounts.code','ASC')->orderBy('show_name','ASC')->get()->toArray();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
                             'tickets'=>array_sum(array_column($data,'tickets')),
@@ -531,25 +518,24 @@ class DashboardController extends Controller
                         ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                         ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
                         ->select(DB::raw('shows.id, shows.name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
-                                    SUM(purchases.quantity) AS tickets,
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    SUM(purchases.quantity)-SUM(transaction_refunds.quantity) AS tickets,
+                                    SUM(purchases.price_paid)-SUM(transaction_refunds.amount) AS price_paids,
+                                    SUM(purchases.retail_price)-SUM(transaction_refunds.retail_price) AS retail_prices,
                                     IF(purchases.inclusive_fee>0, 
-                                        SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
-                                        SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
-                                    SUM(ROUND(purchases.savings,2)) AS discounts,
-                                    SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
-                                    SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,
-                                    SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
-                                    SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
-                                    SUM(ROUND(purchases.commission_percent,2)) AS commissions '))
+                                        SUM(purchases.retail_price-purchases.savings)-SUM(transaction_refunds.retail_price)-SUM(transaction_refunds.savings), 
+                                        SUM(purchases.retail_price-purchases.savings+purchases.processing_fee)-SUM(transaction_refunds.retail_price)-SUM(transaction_refunds.savings)-SUM(transaction_refunds.processing_fee) ) AS revenue,
+                                    SUM(purchases.savings)-SUM(transaction_refunds.savings) AS discounts,
+                                    SUM(purchases.cc_fees) AS cc_fees,
+                                    SUM(purchases.printed_fee)-SUM(transaction_refunds.printed_fee) AS printed_fee,
+                                    SUM(purchases.sales_taxes)-SUM(purchases.sales_taxes) AS sales_taxes,
+                                    SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2)-SUM(transaction_refunds.processing_fee), 0) ) AS fees_incl,
+                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)-SUM(transaction_refunds.processing_fee)) ) AS fees_over,
+                                    SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee) 
+                                    -SUM(transaction_refunds.amount-transaction_refunds.commission_percent-transaction_refunds.processing_fee-transaction_refunds.cc_fees-transaction_refunds.printed_fee) AS to_show,
+                                    SUM(purchases.commission_percent)-SUM(transaction_refunds.commission_percent) AS commissions '))
                         ->where($where)
-                        ->where(function($query) {
-                            $query->where('purchases.status','=','Active')
-                                  ->orWhere('purchases.status','like','Pending%');
-                        })
+                        ->where('purchases.status','<>','Void')
+                        ->where('transaction_refunds.result','=','Approved')
                         ->orderBy('shows.name')->groupBy('shows.id')->get()->toArray();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
@@ -585,10 +571,6 @@ class DashboardController extends Controller
             $data = $total = array();
             //conditions to search
             $data = Purchase::filter_options('REPORTS', $input, '-30');
-            //enable only valid purchase status
-            foreach ($data['search']['status'] as $k=>$v)
-                if($v!='Active' && !(strpos($v,'Pending')===0))
-                    unset($data['search']['status'][$k]);
             $where = $data['where'];
             $search = $data['search'];
             //search arrange by order url or show
@@ -616,25 +598,24 @@ class DashboardController extends Controller
                     ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
                     ->select(DB::raw('shows.name AS show_name, COUNT(purchases.id) AS purchases, venues.name AS venue_name,
                                     purchases.channel,
-                                    SUM(purchases.quantity) AS tickets,
-                                    SUM(ROUND(purchases.price_paid,2)) AS price_paids,
-                                    SUM(ROUND(purchases.retail_price,2)) AS retail_prices,
+                                    SUM(purchases.quantity)-SUM(transaction_refunds.quantity) AS tickets,
+                                    SUM(purchases.price_paid)-SUM(transaction_refunds.amount) AS price_paids,
+                                    SUM(purchases.retail_price)-SUM(transaction_refunds.retail_price) AS retail_prices,
                                     IF(purchases.inclusive_fee>0, 
-                                        SUM(ROUND(purchases.retail_price-purchases.savings,2)), 
-                                        SUM(ROUND(purchases.retail_price-purchases.savings+purchases.processing_fee,2)) ) AS revenue,
-                                    SUM(ROUND(purchases.savings,2)) AS discounts,
-                                    SUM(ROUND(purchases.cc_fees,2)) AS cc_fees,
-                                    SUM(ROUND(purchases.printed_fee,2)) AS printed_fee,  
-                                    SUM(ROUND(purchases.sales_taxes,2)) AS sales_taxes,
+                                        SUM(purchases.retail_price-purchases.savings)-SUM(transaction_refunds.retail_price)-SUM(transaction_refunds.savings), 
+                                        SUM(purchases.retail_price-purchases.savings+purchases.processing_fee)-SUM(transaction_refunds.retail_price)-SUM(transaction_refunds.savings)-SUM(transaction_refunds.processing_fee) ) AS revenue,
+                                    SUM(purchases.savings)-SUM(transaction_refunds.savings) AS discounts,
+                                    SUM(purchases.cc_fees,) AS cc_fees,
+                                    SUM(purchases.printed_fee)-SUM(transaction_refunds.printed_fee) AS printed_fee,  
+                                    SUM(purchases.sales_taxes)-SUM(transaction_refunds.sales_taxes) AS sales_taxes,
                                     SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
-                                    SUM(ROUND(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee,2)) AS to_show,
-                                    SUM(ROUND(purchases.commission_percent,2)) AS commissions'))
+                                    SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)-SUM(transaction_refunds.processing_fee)) ) AS fees_over,
+                                    SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee) 
+                                    -SUM(transaction_refunds.amount-transaction_refunds.commission_percent-transaction_refunds.processing_fee-transaction_refunds.cc_fees-transaction_refunds.printed_fee) AS to_show,
+                                    SUM(purchases.commission_percent)-SUM(transaction_refunds.commission_percent) AS commissions'))
                     ->where($where)
-                    ->where(function($query) {
-                        $query->where('purchases.status','=','Active')
-                              ->orWhere('purchases.status','like','Pending%');
-                    })
+                    ->where('purchases.status','<>','Void')
+                    ->where('transaction_refunds.result','=','Approved')
                     ->groupBy(DB::raw($groupby))->orderBy(DB::raw($orderby))->get()->toArray();
             //info for the graph
             if($order=='channel')
@@ -652,6 +633,8 @@ class DashboardController extends Controller
                     ->select(DB::raw('purchases.channel,
                                       SUM(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee) AS amount'))
                     ->where($where)
+                    ->where('purchases.status','<>','Void')
+                    ->where('transaction_refunds.result','=','Approved')
                     ->groupBy('channel')->orderBy('amount','ASC')->distinct()->get()->toJson();
             $graph['show'] = DB::table('purchases')
                     ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
@@ -661,8 +644,11 @@ class DashboardController extends Controller
                     ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                     ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                     ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
-                    ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee) AS amount, shows.name AS show_name'))
+                    ->select(DB::raw('SUM(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee)
+                                     -SUM(transaction_refunds.commission_percent+transaction_refunds.processing_fee+transaction_refunds.printed_fee) AS amount, shows.name AS show_name'))
                     ->where($where)
+                    ->where('purchases.status','<>','Void')
+                    ->where('transaction_refunds.result','=','Approved')
                     ->groupBy('show_name')->orderBy('amount','ASC')->distinct()->get()->toJson();
             //calculate totals
             $total = array( 'purchases'=>array_sum(array_column($data,'purchases')),
