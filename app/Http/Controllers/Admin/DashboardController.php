@@ -191,6 +191,7 @@ class DashboardController extends Controller
                             $query->where('purchases.status','=','Refunded')
                                   ->orWhere('purchases.status','=','Chargeback');
                         })
+                        ->where('transaction_refunds.result','=','Approved')
                         ->groupBy('purchases.id')->groupBy('transaction_refunds.id')
                         ->orderBy('purchases.id','DESC')->orderBy('transaction_refunds.id','DESC')->get();                       
             $data = $credit->merge($debit)->toArray();            
