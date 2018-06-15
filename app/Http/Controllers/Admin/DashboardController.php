@@ -143,7 +143,9 @@ class DashboardController extends Controller
                         })
                         ->where(function($query) {
                             $query->where('purchases.status','=','Active')
-                                  ->orWhere('purchases.status','like','Pending%');
+                                  ->orWhere('purchases.status','like','Pending%')
+                                  ->orWhere('purchases.status','=','Refunded')
+                                  ->orWhere('purchases.status','=','Chargeback');
                         })
                         ->groupBy('purchases.id')->orderBy('purchases.id','DESC')->get();                        
             $debit = DB::table('purchases')
