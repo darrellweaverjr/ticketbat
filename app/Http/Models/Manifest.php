@@ -38,39 +38,52 @@ class Manifest extends Model
     /**
      * Send manifest to person.
      */
-    public function send($mailer=null, $subject=null)
+    public function send($mailer=null, $subject=null, $empty=false)
     {
-        //data
-        $data = json_decode($this->email,true);
+        if(!$empty)
+        {
+            //data
+            $data = json_decode($this->email,true);
 
-        if(!empty($mailer))
-            $data['emails'] = $mailer;
-        if(empty($subject))
-            $subject = 'Re-send '.$data['type'].' Manifest for ';
+            if(!empty($mailer))
+                $data['emails'] = $mailer;
+            if(empty($subject))
+                $subject = 'Re-send '.$data['type'].' Manifest for ';
 
-        //create pdf
-        $format = 'pdf';
-        $pdf_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.pdf';
-        $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
-        PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'landscape')->setWarnings(false)->save($pdf_path);
+            //create pdf
+            $format = 'pdf';
+            $pdf_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.pdf';
+            $manifest_pdf = View::make('command.report_manifest', compact('data','format'));
+            PDF::loadHTML($manifest_pdf->render())->setPaper('a4', 'landscape')->setWarnings(false)->save($pdf_path);
 
-        //create csv
-        $format = 'csv';
-        $manifest_csv = View::make('command.report_manifest', compact('data','format'));
-        $csv_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.csv';
-        $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
+            //create csv
+            $format = 'csv';
+            $manifest_csv = View::make('command.report_manifest', compact('data','format'));
+            $csv_path = '/tmp/ReportManifest_'.$data['type'].'_'.$data['id'].'_'.date('U').'.csv';
+            $fp_csv= fopen($csv_path, "w"); fwrite($fp_csv, $manifest_csv->render()); fclose($fp_csv);
 
-        //sending email
-        $email = new EmailSG(env('MAIL_REPORT_FROM'),$data['emails'],$subject.$data['name']);
-        $email->body('manifest',$data);
-        $email->category('Manifests');
-        $email->attachment([$csv_path,$pdf_path]);
-        $email->template('89890051-c3ba-4d94-a2ff-ac237f8295ba');
+            //sending email
+            $email = new EmailSG(env('MAIL_REPORT_FROM'),$data['emails'],$subject.$data['name']);
+            $email->category('Manifests');        
+            $msg = '<center>Attached is the CSV and PDF '.$data['type'].' Manifest for '.$data['name'].' on '.date('m/d/Y g:ia').'<br><h1>:)</h1></center>';
+            $email->body('custom',['body'=>$msg]);
+            $email->template('46388c48-5397-440d-8f67-48f82db301f7');
+            $email->attachment([$csv_path,$pdf_path]);        
 
-        //if the email was sent successfully delete files
-        $response = $email->send();
-        unlink($csv_path);
-        unlink($pdf_path);
-        return $response;
+            //if the email was sent successfully delete files
+            $response = $email->send();
+            unlink($csv_path);
+            unlink($pdf_path);
+            return $response;
+        }
+        else
+        {
+            $email = new EmailSG(env('MAIL_REPORT_FROM'),$mailer,$subject);
+            $email->category('Manifests');            
+            $msg = '<center>There are no purchases for this show when it started.<br>Reported on '.date('m/d/Y g:ia').'<br><h1>:(</h1></center>';
+            $email->body('custom',['body'=>$msg]);
+            $email->template('46388c48-5397-440d-8f67-48f82db301f7');
+            return $email->send();
+        }
     }
 }

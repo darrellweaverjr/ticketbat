@@ -14,7 +14,7 @@ use Carbon\Carbon;
  */
 class ReportManifestController extends Controller{
 
-    protected $manifests = ['Preliminary','Primary','LastMinute'];
+    protected $manifests = ['Preliminary','Primary','LastMinute','NoSales'];
     protected $date_manifest;
     protected $previous_date;
 
@@ -52,39 +52,49 @@ class ReportManifestController extends Controller{
                 $info = $this->create_report($type);
                 if(!empty($info['dates']))
                 {
-                    $logs .= count($info['dates']).' result(s) for "'.date('m/d/Y',strtotime($this->date_manifest)).'":</i></b><br>';
-                    //create and send report for each date
-                    foreach($info['dates'] as $k=>$date)
+                    //if the show has sales
+                    if($info['dates']->num_purchases>0)
                     {
-                        $logs .= '* * '.($k+1).'. <small>"'.$date->name.'" on "'.date('m/d/Y g:ia',strtotime($date->show_time)).'"<br>* * * => ';
-                        $date->type = $type;
-                        $data = $this->create_data($date);
-                        $manifest = $this->save_data($data);
-                        if($manifest)
+                        $logs .= count($info['dates']).' result(s) for "'.date('m/d/Y',strtotime($this->date_manifest)).'":</i></b><br>';
+                        //create and send report for each date
+                        foreach($info['dates'] as $k=>$date)
                         {
-                            $logs .= ' Saved OK,';
-                            if($data['s_manifest_emails']>0 && !empty($data['emails']))
+                            $logs .= '* * '.($k+1).'. <small>"'.$date->name.'" on "'.date('m/d/Y g:ia',strtotime($date->show_time)).'"<br>* * * => ';
+                            $date->type = $type;
+                            $data = $this->create_data($date);
+                            $manifest = $this->save_data($data);
+                            if($manifest)
                             {
-                                $logs .= ' Sending to "'.$data['emails'].'",';
-                                $sent = $manifest->send($data['emails'], $info['subject']);
-                                //storage if email was sent successfully
-                                $data['sent'] = ($sent)? 1 : 0;
-                                $manifest->email = json_encode($data);
-                                $manifest->save();
-                                if($sent)
-                                    $logs .= ' Sent OK.';
+                                $logs .= ' Saved OK,';
+                                if($data['s_manifest_emails']>0 && !empty($data['emails']))
+                                {
+                                    $logs .= ' Sending to "'.$data['emails'].'",';
+                                    $sent = $manifest->send($data['emails'], $info['subject']);
+                                    //storage if email was sent successfully
+                                    $data['sent'] = ($sent)? 1 : 0;
+                                    $manifest->email = json_encode($data);
+                                    $manifest->save();
+                                    if($sent)
+                                        $logs .= ' Sent OK.';
+                                    else
+                                        $logs .= ' Sent failure.';
+                                }
                                 else
-                                    $logs .= ' Sent failure.';
+                                {
+                                    $logs .= ' No email';
+                                    $sent = true;
+                                }
                             }
                             else
-                            {
-                                $logs .= ' No email';
-                                $sent = true;
-                            }
+                                $logs .= ' Saved failure.';
+                            $logs .= '</small><br>';
                         }
-                        else
-                            $logs .= ' Saved failure.';
-                        $logs .= '</small><br>';
+                    }
+                    //empty email with no purchases
+                    else if($info['dates']->s_manifest_emails>0 && !empty($info['dates']->emails))
+                    {
+                        $manifest = new Manifest;
+                        $manifest->send($info['dates']->emails, $info['subject'].' '.$info['dates']->name,true);
                     }
                 }
                 else
@@ -175,6 +185,24 @@ class ReportManifestController extends Controller{
                             ->whereDate('show_times.show_time','=',$query_date)
                             ->havingRaw( '"'.$this->date_manifest.'" BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
                             ->havingRaw('COUNT(purchases.id) != manifest_emails.num_purchases')
+                            ->groupBy('show_times.id')->distinct()->get()->toArray();
+                    $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
+                    break;
+                case 'NoSales':
+                    $dates = DB::table('show_times')
+                            ->join('shows', 'shows.id', '=' ,'show_times.show_id')
+                            ->leftJoin('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->select(DB::raw('show_times.id, show_times.show_time,
+                                            shows.emails, shows.name, shows.manifest_emails AS s_manifest_emails,
+                                            COUNT(purchases.id) AS num_purchases, manifest_emails.num_purchases,
+                                            SUM(purchases.quantity) AS num_people'))
+                            ->where(function($query) {
+                                $query->where('purchases.status','=','Active')
+                                      ->orWhereNull('purchases.id');
+                            })
+                            ->whereDate('show_times.show_time','=',$query_date)
+                            ->havingRaw( '"'.$this->date_manifest.'" BETWEEN DATE_ADD(show_times.show_time, INTERVAL 10 MINUTE) AND show_times.show_time')
+                            ->havingRaw('COUNT(purchases.id) < 1')
                             ->groupBy('show_times.id')->distinct()->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
                     break;
