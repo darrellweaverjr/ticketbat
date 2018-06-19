@@ -679,9 +679,6 @@ class Purchase extends Model
                 {
                     $data['where'][] = [DB::raw('purchases.created'),'>=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_start_date']))];
                     $data['where'][] = [DB::raw('purchases.created'),'<=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_end_date']))];
-                    
-                    $data['where'][] = [DB::raw('transaction_refunds.created'),'>=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_start_date']))];
-                    $data['where'][] = [DB::raw('transaction_refunds.created'),'<=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_end_date']))];
                 }
                 //search payment types
                 $data['search']['payment_type'] = (!empty($input['payment_type']))? $input['payment_type'] : array_values($data['search']['payment_types']);
