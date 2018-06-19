@@ -533,7 +533,7 @@ class ReportSalesController extends Controller{
             $email->category('Reports');            
             if(!empty($files))
             {
-                $msg = '<center>Attached is the report for sales completed on '.date('m/d/Y H:ia').'<br><h1>:)</h1></center>';
+                $msg = '<center>Attached is the report for sales completed on '.date('m/d/Y g:ia').'<br><h1>:)</h1></center>';
                 $email->attachment( $files );
             }
             else
