@@ -635,6 +635,8 @@ class ShowController extends Controller{
                 }
                 else
                 {
+                    if(Ticket::where('show_id','=',$input['show_id'])->where('ticket_type','=',trim($input['ticket_type']))->where('package_id','=',$input['package_id'])->count())
+                        return ['success'=>false,'msg'=>'There was an error saving the ticket.<br>That (ticket type/package) for this show is already in the system.','errors'=>'ticket_type'];
                     $ticket = new Ticket;
                     $ticket->audit_user_id = Auth::user()->id;
                 }
