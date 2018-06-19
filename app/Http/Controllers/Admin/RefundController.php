@@ -299,17 +299,16 @@ class RefundController extends Controller{
                                             {
                                                 $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
                                                 $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                                $purchase->status = 'Refunded';
                                                 $purchase->refunded_reason = null;
                                                 $purchase->save();
-                                                $response[$i] = 'Done successfully!';
+                                                $response[$i] = 'Done successfully!<br>'.$refunded['msg'];
                                             }
                                             else
                                             {
                                                 $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount;
                                                 $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                                 $purchase->save();
-                                                $response[$i] = 'Intent to refund failed ('.$purchase->payment_type.').';
+                                                $response[$i] = 'Intent to refund failed ('.$purchase->payment_type.').<br>'.$refunded['msg'];
                                             }
                                         }
                                         else
