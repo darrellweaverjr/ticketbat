@@ -233,7 +233,7 @@ class RefundController extends Controller{
             $current = date('Y-m-d H:i:s');    
             $response = [];
             $user = Auth::user();
-            
+            return ['success'=>true, 'msg'=>'sssss'];
             function create_refund($purchase,$user,$description,$current,$status,$input)
             {
                 $transaction = new TransactionRefund;
@@ -335,8 +335,7 @@ class RefundController extends Controller{
                                             $purchase->save();
                                             $response[$i] = 'Intent to refund failed ('.$purchase->payment_type.').';
                                         }
-                                    }
-                                        
+                                    } 
                                 }
                                 //only update status refunded
                                 else if($input['type']=='update_purchase')
@@ -404,7 +403,7 @@ class RefundController extends Controller{
             return ['success'=>false, 'msg'=>'You must select a purchase to process.'];
             
         } catch (Exception $ex) {
-            throw new Exception('Error Purchases Save: '.$ex->getMessage());
+            throw new Exception('Error Purchases Refund: '.$ex->getMessage());
         }
     }
     
