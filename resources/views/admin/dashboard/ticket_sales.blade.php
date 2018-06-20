@@ -412,7 +412,7 @@
                                 <td style="text-align:center">{{$d->authcode}}</td>
                                 <td style="text-align:center">{{$d->refnum}}</td>
                                 <td style="text-align:center">{{$d->invoice_num}}</td>
-                                <td style="text-align:center">{{$d->amount}}</td>
+                                <td style="text-align:center">${{number_format($d->price_paid,2)}}/ ${{number_format($d->amount,2)}}</td>
                                 <td style="text-align:center">...{{$d->last_4}}</td>
                                 <td style="text-align:center">@php echo trim($d->note) @endphp}</td>
                             </tr>
