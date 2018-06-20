@@ -233,7 +233,6 @@ class RefundController extends Controller{
             $current = date('Y-m-d H:i:s');    
             $response = [];
             $user = Auth::user();
-            return ['success'=>true, 'msg'=>'sssss'];
             function create_refund($purchase,$user,$description,$current,$status,$input)
             {
                 $transaction = new TransactionRefund;
