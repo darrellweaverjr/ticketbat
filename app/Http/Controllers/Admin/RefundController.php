@@ -233,12 +233,12 @@ class RefundController extends Controller{
             $current = date('Y-m-d H:i:s');    
             $response = [];
             $user = Auth::user();
-            function create_refund($purchase,$user,$description,$current,$status,$input)
+            function create_refund($purchase,$user,$amount,$description,$current,$status,$input)
             {
                 $transaction = new TransactionRefund;
                 $transaction->purchase_id = $purchase->id;
                 $transaction->user_id = $user->id;
-                $transaction->amount = $purchase->price_paid;
+                $transaction->amount = $amount;
                 $transaction->description = (!empty($description))? $description : null;
                 $transaction->result = 'Approved';
                 $transaction->error = 'Manually changed purchase to '.$status;
@@ -283,6 +283,7 @@ class RefundController extends Controller{
                                     ->orderBy('purchases.id')->groupBy('purchases.id')->first();
                             $available = $purchase->price_paid - $data->refunded;
                             $amount = (!empty($input['amount']) && $input['amount']>0 && $input['amount']<$available)? $input['amount'] : $available;
+                            //return ['success'=>false, 'msg'=>$amount];
                             if($amount>0)
                             {
                                 //check action to process
@@ -316,7 +317,7 @@ class RefundController extends Controller{
                                     //refund cash
                                     else
                                     {
-                                        $refunded = create_refund($purchase,$user,$description,$current,'Refunded',$input);
+                                        $refunded = create_refund($purchase,$user,$amount,$description,$current,'Refunded',$input);
                                         if($refunded)
                                         {
                                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
@@ -338,7 +339,7 @@ class RefundController extends Controller{
                                 //only update status refunded
                                 else if($input['type']=='update_purchase')
                                 {
-                                    $refunded = create_refund($purchase,$user,$description,$current,'Refunded',$input);
+                                    $refunded = create_refund($purchase,$user,$amount,$description,$current,'Refunded',$input);
                                     if($refunded)
                                     {
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually refunded $'.$amount;
@@ -359,7 +360,7 @@ class RefundController extends Controller{
                                 //update status chargeback
                                 else if($input['type']=='charge_purchase')
                                 {
-                                    $refunded = create_refund($purchase,$user,$description,$current,'Chargeback',$input);
+                                    $refunded = create_refund($purchase,$user,$amount,$description,$current,'Chargeback',$input);
                                     if($refunded)
                                     {
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually Chargeback $'.$amount;
