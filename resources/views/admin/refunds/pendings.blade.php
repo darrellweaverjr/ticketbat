@@ -112,7 +112,7 @@
                             </div>
                         </div>
                         <div class="row" id="refund_details">
-                            <table class="table table-striped table-bordered table-hover table-checkable">
+                            <table class="table table-striped table-responsive table-bordered table-hover table-checkable" style="width:800px !important;">
                                 <thead>
                                     <tr>
                                         <th width="10%">ID</th>
@@ -135,13 +135,13 @@
                                             <input type="hidden" name="ticket_fee" value="0"/>
                                             <input type="hidden" name="sales_percent" value="0"/>
                                         </td>
-                                        <td><input type="number" name="quantity" value="0" min="0" step="1"/></td>
-                                        <td><input type="number" name="retail_price" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" name="savings" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" name="processing_fee" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" name="printed_fee" value="0.00" min="0" step="0.01"/></td>
-                                        <td><input type="number" name="sales_taxes" value="0.00" min="0" step="0.01"/></td>
-                                        <td colspan="2"><input type="text" name="amount" class="form-control" value="0.00" min="0" step="0.01" readonly="true" style="max-width:100px"/>Amount to be refunded</td>
+                                        <td><input type="number" class="form-control" name="quantity" value="0" min="0" step="1" style="width:60px"/></td>
+                                        <td><input type="number" class="form-control" name="retail_price" value="0.00" min="0" step="0.01" style="width:90px"/></td>
+                                        <td><input type="number" class="form-control" name="savings" value="0.00" min="0" step="0.01" style="width:90px"/></td>
+                                        <td><input type="number" class="form-control" name="processing_fee" value="0.00" min="0" step="0.01" style="width:90px"/></td>
+                                        <td><input type="number" class="form-control" name="printed_fee" value="0.00" min="0" step="0.01" style="width:90px"/></td>
+                                        <td><input type="number" class="form-control" name="sales_taxes" value="0.00" min="0" step="0.01" style="width:90px"/></td>
+                                        <td colspan="2"><input type="text" name="amount" class="form-control" value="0.00" min="0" step="0.01" readonly="true" style="max-width:130px"/>Amount to be refunded</td>
                                     </tr>
                                 </tfoot>
                             </table>
