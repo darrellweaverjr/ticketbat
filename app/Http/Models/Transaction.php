@@ -98,7 +98,7 @@ class Transaction extends Model
             $coupon = (!empty($shoppingcart['coupon']))? ' coupon: '.$shoppingcart['coupon'] : ' no coupon';
             foreach($shoppingcart['items'] as $item)
             {
-                $tran_description.= '* '.$item->number_of_items.' '.$item->product_type.' '.$item->package.' for '.$item->name.' on '.$item->show_time.' with '.$coupon.' *';
+                $tran_description.= '* '.$item->number_of_items.' '.$item->product_type.' '.$item->package.' at $'.$item->total_cost.' for '.$item->name.' on '.$item->show_time.' with '.$coupon.' *';
                 $tran->custid = $item->item_id;
             }
             $tran->description = $tran_description;
