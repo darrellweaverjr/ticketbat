@@ -202,7 +202,10 @@
         </div>
     </div>
     <!-- END DASHBOARD STATS 1-->
-    <div class="row" id="ticket_sales_chart_sales" data-info="{{$graph}}" style="height:200px;"></div>
+    <div class="row" id="ticket_sales_charts" style="height:200px;">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="ticket_sales_chart_sales" data-info="{{$graph_credit}}" style="height:200px;"></div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="ticket_sales_chart_refunds" data-info="{{$graph_debit}}" style="height:200px;"></div>
+    </div>    
     <!-- BEGIN TOTAL TABLE FOR PRINT-->
     <div id="tb_summary" class="row portlet-body" style="display:none;" >
         @foreach($summary as $summ)
@@ -227,7 +230,7 @@
             </thead>
             <tbody>
                @foreach($summ['table'] as $k=>$d)
-                <tr @if($k=='Subtotals' || $k=='Totals') style="font-weight:bold" @endif>   
+                <tr @if(strpos($k, 'otal') !== false) style="font-weight:bold" @endif>   
                     <td>{{$k}}</td>
                     <td style="text-align:center">{{number_format($d['purchases'])}}</td>
                     <td style="text-align:center">{{number_format($d['tickets'])}}</td>

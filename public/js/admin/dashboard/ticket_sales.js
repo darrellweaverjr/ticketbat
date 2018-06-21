@@ -31,7 +31,7 @@ var TableDatatablesButtons = function () {
                         t = t + '<hr>'+$('#tb_summary').html();
                         if(graph=='Yes')
                         {
-                            t = t + '<hr>'+$('#ticket_sales_chart_sales').addClass('compact').html();
+                            t = t + '<hr>'+$('#ticket_sales_charts').addClass('compact').html();
                             $(win.document.body).find('table').addClass('compact').css('display','none');
                         }
                         if(coupons=='Yes')
@@ -118,29 +118,52 @@ var TableDatatablesButtons = function () {
         
         //PERSONALIZED FUNCTIONS
         
-        // charts totals
-        var graph = $('#ticket_sales_chart_sales').data('info');
+        // charts totals credit
         var purchased=[],qty=[],amount=[];
-        $.each(graph,function(k, v) {
+        $.each($('#ticket_sales_chart_sales').data('info'),function(k, v) {
             purchased.push(v.purchased);
             qty.push(parseFloat(v.qty));
             amount.push(parseFloat(v.amount));
         });
+        // charts totals debit
+        var purchased_=[],qty_=[],amount_=[];
+        $.each($('#ticket_sales_chart_refunds').data('info'),function(k, v) {
+            purchased_.push(v.purchased);
+            qty_.push(parseFloat(v.qty));
+            amount_.push(parseFloat(v.amount));
+        });
         // chart sales
 	$('#ticket_sales_chart_sales').highcharts({
             chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: '', x: -20 },
+            title: { text: 'Sales', x: -20 },
             xAxis: { categories: purchased },
             yAxis: { title: { text: 'Quantity' },
                      plotLines: [{ value: 0, width: 1, color: '#808080' }]
             },
             tooltip: { valuePrefix: ' ' },
             series: [{
-                    name: 'Sold Tickets',
+                    name: 'Transactions',
                     data: qty
             }, {
-                    name: 'Gross Profit',
+                    name: 'Profit',
                     data: amount
+            }]
+	});
+        // charts refunds
+	$('#ticket_sales_chart_refunds').highcharts({
+            chart : { style: { fontFamily: 'Open Sans' } },
+            title: { text: 'Refunds & Chargeback', x: -20 },
+            xAxis: { categories: purchased_ },
+            yAxis: { title: { text: 'Quantity' },
+                     plotLines: [{ value: 0, width: 1, color: '#808080' }]
+            },
+            tooltip: { valuePrefix: ' ' },
+            series: [{
+                    name: 'Transactions',
+                    data: qty_
+            }, {
+                    name: 'Profit',
+                    data: amount_
             }]
 	});
 
