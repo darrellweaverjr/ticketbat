@@ -668,8 +668,8 @@ class Purchase extends Model
                 //search soldtime
                 if(!empty($default_date_range))
                 {
-                    $default_start_date = date('n/d/y', strtotime($default_date_range.' DAY')).' 12:00 AM';
-                    $default_end_date = date('n/d/y').' 11:59 PM';
+                    $default_start_date = date('m/d/Y', strtotime($default_date_range.' DAY'));
+                    $default_end_date = date('m/d/Y');
                 }
                 else
                     $default_start_date = $default_end_date = '';
@@ -677,8 +677,8 @@ class Purchase extends Model
                 $data['search']['soldtime_end_date'] = (isset($input['soldtime_end_date']))? $input['soldtime_end_date'] : $default_end_date;
                 if(!empty($data['search']['soldtime_start_date']) && !empty($data['search']['soldtime_end_date']))
                 {
-                    $data['where'][] = [DB::raw('purchases.created'),'>=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_start_date']))];
-                    $data['where'][] = [DB::raw('purchases.created'),'<=',date('Y-m-d H:i:s',strtotime($data['search']['soldtime_end_date']))];
+                    $data['where'][] = [DB::raw('DATE(purchases.created)'),'>=',date('Y-m-d',strtotime($data['search']['soldtime_start_date']))];
+                    $data['where'][] = [DB::raw('DATE(purchases.created)'),'<=',date('Y-m-d',strtotime($data['search']['soldtime_end_date']))];
                 }
                 //search payment types
                 $data['search']['payment_type'] = (!empty($input['payment_type']))? $input['payment_type'] : array_values($data['search']['payment_types']);
@@ -706,6 +706,8 @@ class Purchase extends Model
                 $data['search']['statu'] = (!empty($input['statu']))? $input['statu'] : '';
                 if(!empty($input['statu']))
                     $data['where'][] = ['purchases.status','=',$data['search']['statu']];
+                else
+                    $data['where'][] = ['purchases.status','<>','Void'];
                 //search user by name                
                 $data['search']['first_name'] = (!empty($input['first_name']))? $input['first_name'] : '';
                 if(!empty($input['first_name']))

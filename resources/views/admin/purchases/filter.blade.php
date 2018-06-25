@@ -114,7 +114,7 @@
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <select class="form-control" name="statu" style="width: 321px !important">
-                                                <option selected value="">All</option>
+                                                <option selected value="">Not Voided</option>
                                                 @foreach($search['status'] as $index=>$s)
                                                     <option @if(!empty($search['statu']) && $index==$search['statu']) selected @endif value="{{$index}}">{{$s}}</option>
                                                 @endforeach

@@ -138,7 +138,7 @@
 
                                         </a>
                                     </li>
-                                    {{--<li class="nav-item start open">
+                                    <li class="nav-item start open">
                                         <a href="/admin/dashboard/coupons" class="nav-link">
                                             <i class="icon-wallet"></i>
                                             <span class="title">Coupons</span>
@@ -156,7 +156,7 @@
                                             <i class="icon-layers"></i>
                                             <span class="title">Channels</span>
                                         </a>
-                                    </li>--}}
+                                    </li>
                                 </ul>
                             </li>
                             @endif

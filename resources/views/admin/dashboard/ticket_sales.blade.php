@@ -382,7 +382,7 @@
                         <tbody>
                         @foreach($data as $d)
                             <tr @if($d->display<0) class="danger" @elseif($d->status!='Active') class="warning" @endif>
-                                <td></td>
+                                <td>{{substr($d->status,0,1)}}</td>
                                 <td>{{$d->id}}</td>
                                 <td style="text-align:center">{{$d->status}}</td>
                                 <td style="text-align:center">{{$d->name}}</td>

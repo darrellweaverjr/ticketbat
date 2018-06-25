@@ -204,7 +204,7 @@ class PurchaseController extends Controller{
                                     ->leftJoin('transaction_refunds', 'transaction_refunds.purchase_id', '=' ,'purchases.id')
                                     ->leftJoin('ticket_number',function($join){
                                         $join->on('ticket_number.purchases_id','=','purchases.id')
-                                             ->on('ticket_number.customers_id','!=','customers.id');
+                                             ->where('ticket_number.customers_id','!=','customers.id');
                                     })
                                     ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4, transactions.amount,
                                                       purchases.payment_type AS method, tickets.inclusive_fee, transactions.invoice_num, 

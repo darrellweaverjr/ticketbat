@@ -36,14 +36,14 @@ var FilterSearchManaged = function () {
         //sold_times_date
         $('#sold_times_date').daterangepicker({
                 opens: (App.isRTL() ? 'left' : 'right'),
-                timePicker: true,
-                timePickerIncrement: 1,
-                format: 'M/DD/YY h:mm A',
+                //timePicker: true,
+                //timePickerIncrement: 1,
+                format: 'MM/DD/YYYY',
                 separator: ' to '
             },
             function (start, end) {
-                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('M/DD/YY h:mm A'));
-                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('M/DD/YY h:mm A'));
+                $('#form_model_search input[name="soldtime_start_date"]').val(start.format('MM/DD/YYYY'));
+                $('#form_model_search input[name="soldtime_end_date"]').val(end.format('MM/DD/YYYY'));
             }
         );
         //clear sold_times_date
