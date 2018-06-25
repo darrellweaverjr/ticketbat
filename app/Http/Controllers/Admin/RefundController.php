@@ -253,6 +253,7 @@ class RefundController extends Controller{
                     $transaction->processing_fee = (isset($input['processing_fee']))? $input['processing_fee'] : $purchase->processing_fee;
                     $transaction->printed_fee = (isset($input['printed_fee']))? $input['printed_fee'] : $purchase->printed_fee;
                     $transaction->sales_taxes = (isset($input['sales_taxes']))? $input['sales_taxes'] : $purchase->sales_taxes;
+                    $transaction->commission_percent = (isset($input['commission_percent']))? $input['commission_percent'] : $purchase->commission_percent;
                 }
                 return $transaction->save();
             }   

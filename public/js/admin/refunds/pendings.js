@@ -79,19 +79,22 @@ var PendingDatatablesManaged = function () {
                             {
                                 var created = moment(data.refunds.purchase.created);
                                 $('#tb_body_pendings').append('<tr class="success"><td>'+data.refunds.purchase.id+'</td><td>'+data.refunds.purchase.quantity+'</td><td>'+data.refunds.purchase.retail_price+'</td><td>-'+data.refunds.purchase.savings
-                                                         +'</td><td>'+data.refunds.purchase.processing_fee+'</td><td>'+data.refunds.purchase.printed_fee+'</td><td>'+data.refunds.purchase.sales_taxes+'</td><td>'+data.refunds.purchase.price_paid+'</td><td>'+created.format('M/DD/YYYY @ h:mmA')+'</td></tr>');
+                                                         +'</td><td>'+data.refunds.purchase.processing_fee+'</td><td>'+data.refunds.purchase.printed_fee+'</td><td>'+data.refunds.purchase.sales_taxes+'</td><td>'+data.refunds.purchase.commission_percent
+                                                         +'</td><td>'+data.refunds.purchase.price_paid+'</td><td>'+created.format('M/DD/YYYY @ h:mmA')+'</td></tr>');
                             } 
                             $.each(data.refunds.refunds,function(k, v) {
                                 var created = moment(v.created);
                                 $('#tb_body_pendings').append('<tr class="danger"><td>'+v.id+'</td><td>-'+v.quantity+'</td><td>-'+v.retail_price+'</td><td>'+v.savings
-                                                         +'</td><td>-'+v.processing_fee+'</td><td>-'+v.printed_fee+'</td><td>-'+v.sales_taxes+'</td><td>-'+v.amount+'</td><td>'+created.format('M/DD/YYYY @ h:mmA')+'</td></tr>');
+                                                         +'</td><td>-'+v.processing_fee+'</td><td>-'+v.printed_fee+'</td><td>-'+v.sales_taxes+'</td><td>-'+v.commission_percent+'</td><td>-'+v.amount
+                                                         +'</td><td>'+created.format('M/DD/YYYY @ h:mmA')+'</td></tr>');
                             });
                             $.each(data.refunds.available,function(k, v) {
                                 $('#tb_foot_pendings input[name="'+k+'"]').val(v);
                                 $('#tb_foot_pendings input[name="'+k+'"]').attr('max',v);
                             });
-                            $('#tb_body_pendings').append('<tr class="bold"><td>Available</td><td>'+data.refunds.available.quantity+'</td><td>'+data.refunds.available.retail_price+'</td><td>-'+data.refunds.available.savings
-                                                         +'</td><td>'+data.refunds.available.processing_fee+'</td><td>'+data.refunds.available.printed_fee+'</td><td>'+data.refunds.available.sales_taxes+'</td><td>'+data.refunds.available.amount+'</td><td></td></tr>');
+                            $('#tb_body_pendings').append('<tr class="bold"><td>Avail.</td><td>'+data.refunds.available.quantity+'</td><td>'+data.refunds.available.retail_price+'</td><td>-'+data.refunds.available.savings
+                                                         +'</td><td>'+data.refunds.available.processing_fee+'</td><td>'+data.refunds.available.printed_fee+'</td><td>'+data.refunds.available.sales_taxes
+                                                         +'</td><td>'+data.refunds.available.commission_percent+'</td><td>'+data.refunds.available.amount+'</td><td></td></tr>');
                         }
                         else
                         {

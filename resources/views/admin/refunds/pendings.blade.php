@@ -122,8 +122,9 @@
                                         <th width="10%">Fees</th>
                                         <th width="10%">Print.Fee</th>
                                         <th width="10%">Taxes</th>
+                                        <th width="10%">Comm</th>
                                         <th width="10%">Amount</th>
-                                        <th width="20%">Date</th>
+                                        <th width="10%">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb_body_pendings" class="text-right">
@@ -136,11 +137,12 @@
                                             <input type="hidden" name="sales_percent" value="0"/>
                                         </td>
                                         <td><input type="number" class="form-control" name="quantity" value="0" min="0" step="1" style="width:60px"/></td>
-                                        <td><input type="number" class="form-control" name="retail_price" value="0.00" min="0" step="0.01" style="width:90px"/></td>
-                                        <td><input type="number" class="form-control" name="savings" value="0.00" min="0" step="0.01" style="width:90px"/></td>
-                                        <td><input type="number" class="form-control" name="processing_fee" value="0.00" min="0" step="0.01" style="width:90px"/></td>
-                                        <td><input type="number" class="form-control" name="printed_fee" value="0.00" min="0" step="0.01" style="width:90px"/></td>
-                                        <td><input type="number" class="form-control" name="sales_taxes" value="0.00" min="0" step="0.01" style="width:90px"/></td>
+                                        <td><input type="number" class="form-control" name="retail_price" value="0.00" min="0" step="0.01" style="width:80px"/></td>
+                                        <td><input type="number" class="form-control" name="savings" value="0.00" min="0" step="0.01" style="width:75px"/></td>
+                                        <td><input type="number" class="form-control" name="processing_fee" value="0.00" min="0" step="0.01" style="width:75px"/></td>
+                                        <td><input type="number" class="form-control" name="printed_fee" value="0.00" min="0" step="0.01" style="width:75px"/></td>
+                                        <td><input type="number" class="form-control" name="sales_taxes" value="0.00" min="0" step="0.01" style="width:75px"/></td>
+                                        <td><input type="number" class="form-control" name="commission_percent" value="0.00" min="0" step="0.01" style="width:75px"/></td>
                                         <td colspan="2"><input type="text" name="amount" class="form-control" value="0.00" min="0" step="0.01" readonly="true" style="max-width:130px"/>Amount to be refunded</td>
                                     </tr>
                                 </tfoot>

@@ -85,7 +85,7 @@ class ReportSalesController extends Controller{
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
                                           SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee) AS amount'))
-                            ->where('purchases.status','=','Active')
+                            ->where('purchases.status','<>','Void')
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->orderBy('venues.name')
                             ->distinct()->get()->toArray();
@@ -100,7 +100,7 @@ class ReportSalesController extends Controller{
                             ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->select('venues.id','venues.name','venues.accounting_email','venues.daily_sales_emails')
-                            ->where('purchases.status','=','Active')
+                            ->where('purchases.status','<>','Void')
                             ->whereDate('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->orderBy('venues.name')
                             ->distinct()->get()->toArray();
@@ -195,7 +195,7 @@ class ReportSalesController extends Controller{
                                       SUM(purchases.commission_percent) AS commissions,
                                       SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                       SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                        ->where('purchases.status','=','Active')
+                        ->where('purchases.status','<>','Void')
                         ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.id')
                         ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.id');
 
@@ -236,7 +236,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                            ->where('purchases.status','=','Active')
+                            ->where('purchases.status','<>','Void')
                             ->groupBy('tickets.ticket_type')->groupBy('packages.title')->orderBy('tickets.id')->orderBy('packages.title');
             
             if($type=='admin' || empty($e_id))
@@ -273,7 +273,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                            ->where('purchases.status','=','Active')
+                            ->where('purchases.status','<>','Void')
                             ->groupBy(DB::raw('payment_type'))->orderBy(DB::raw('payment_type'));
             
             if($type=='admin' || empty($e_id))
@@ -321,7 +321,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.sales_taxes) AS taxes, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                        ->where('purchases.status','=','Active')
+                        ->where('purchases.status','<>','Void')
                         ->groupBy('purchases.channel')->orderBy('purchases.channel');
             
             if($type=='admin' || empty($e_id))
@@ -372,7 +372,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                            ->where('purchases.status','=','Active')
+                            ->where('purchases.status','<>','Void')
                             ->where('show_times.show_time','>',date('Y-m-d H:i'))
                             ->groupBy('show_times.show_time')->groupBy('shows.id')
                             ->orderBy('show_times.show_time')->orderBy('shows.name');
@@ -462,7 +462,7 @@ class ReportSalesController extends Controller{
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.commission_percent) AS commissions,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                        ->where('purchases.status','=','Active')
+                        ->where('purchases.status','<>','Void')
                         ->groupBy('venues.id')->orderBy('venues.name');
             
             if($type=='admin' || empty($e_id))
