@@ -56,11 +56,9 @@ class TransactionRefund extends Model
                 $tran->pin=env('USAEPAY_PIN_REFUND','4826');;
                 $tran->ip=Request::getClientIp();
                 //command
-                $tran->command = 'creditvoid';
+                $tran->command = $command;
                 //refund info
                 $tran->refnum=$ref_num;	
-                //$tran->invoice=$purchase->transaction->invoice_num;
-                //$tran->usesandbox=true;
                 $tran->amount=$amount;
                 if(!empty($description))
                     $tran->description=$description;
