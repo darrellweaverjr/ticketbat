@@ -52,12 +52,12 @@ class ReportManifestController extends Controller{
                 $info = $this->create_report($type);
                 if(!empty($info['dates']))
                 {
-                    //if the show has sales
-                    if($info['dates']->num_purchases>0)
+                    $logs .= count($info['dates']).' result(s) for "'.date('m/d/Y',strtotime($this->date_manifest)).'":</i></b><br>';
+                    //create and send report for each date
+                    foreach($info['dates'] as $k=>$date)
                     {
-                        $logs .= count($info['dates']).' result(s) for "'.date('m/d/Y',strtotime($this->date_manifest)).'":</i></b><br>';
-                        //create and send report for each date
-                        foreach($info['dates'] as $k=>$date)
+                        //if the show has sales
+                        if($date->num_purchases>0)
                         {
                             $logs .= '* * '.($k+1).'. <small>"'.$date->name.'" on "'.date('m/d/Y g:ia',strtotime($date->show_time)).'"<br>* * * => ';
                             $date->type = $type;
@@ -87,14 +87,15 @@ class ReportManifestController extends Controller{
                             }
                             else
                                 $logs .= ' Saved failure.';
-                            $logs .= '</small><br>';
                         }
-                    }
-                    //empty email with no purchases
-                    else if($info['dates']->s_manifest_emails>0 && !empty($info['dates']->emails))
-                    {
-                        $manifest = new Manifest;
-                        $manifest->send($info['dates']->emails, $info['subject'].' '.$info['dates']->name,true);
+                        //empty email with no purchases
+                        else if($date->s_manifest_emails>0 && !empty($date->emails))
+                        {
+                            $logs .= '* * '.($k+1).'. <small>"'.$date->name.'" on "'.date('m/d/Y g:ia',strtotime($date->show_time)).'"<br>* * * => No sales.';
+                            $manifest = new Manifest;
+                            $manifest->send($date->emails, $info['subject'].' '.$date->name,true);
+                        }
+                        $logs .= '</small><br>';
                     }
                 }
                 else
