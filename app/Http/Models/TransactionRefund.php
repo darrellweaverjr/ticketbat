@@ -58,7 +58,7 @@ class TransactionRefund extends Model
                 //command
                 $tran->command = 'creditvoid';
                 //refund info
-                $tran->refnum=$purchase->transaction->refnum;	
+                $tran->refnum=$ref_num;	
                 //$tran->invoice=$purchase->transaction->invoice_num;
                 //$tran->usesandbox=true;
                 $tran->amount=$amount;
