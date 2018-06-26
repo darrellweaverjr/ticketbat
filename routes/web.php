@@ -122,6 +122,8 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('acls/remove', 'AclController@remove')->middleware('permissions:ACLS');
     Route::match(['get','post'], 'acls', 'AclController@index')->middleware('permissions:ACLS');
     Route::match(['get','post'], 'user_types', 'AclController@user_types')->middleware('permissions:ACLS');
+    //ngbc
+    Route::match(['get','post'], 'ngcb', 'NGCBController@index')->middleware('permissions:NGCB');
 });
 
 

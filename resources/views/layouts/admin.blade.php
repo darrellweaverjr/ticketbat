@@ -135,7 +135,7 @@
                                         <a href="/admin/dashboard/ticket_sales" class="nav-link">
                                             <i class="icon-bar-chart"></i>
                                             <span class="title">Ticket Sales</span>
-
+                                            <span class="selected"></span>
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
@@ -160,12 +160,19 @@
                                 </ul>
                             </li>
                             @endif
+                            @if(array_key_exists('NGCB', Auth::user()->user_type->getACLs()))
+                            <li class="nav-item @if(!(strpos(url()->current(),'/admin/ngcb')===false)) active @endif">
+                                <a href="/admin/ngcb" class="nav-link nav-toggle">
+                                    <i class="icon-game-controller"></i>
+                                    <span class="title">NGCB</span>
+                                </a>
+                            </li>
+                            @endif
                             @if(array_key_exists('USERS', Auth::user()->user_type->getACLs()))
                             <li class="nav-item @if(!(strpos(url()->current(),'/admin/users')===false)) active @endif">
                                 <a href="/admin/users" class="nav-link nav-toggle">
                                     <i class="icon-user"></i>
                                     <span class="title">Users</span>
-                                    <span class="selected"></span>
                                 </a>
                             </li>
                             @endif
