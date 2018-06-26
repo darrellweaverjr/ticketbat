@@ -35,6 +35,8 @@ class DashboardController extends Controller
             $permits = Auth::user()->user_type->getACLs();
             if(!empty($permits['REPORTS']))
                 return redirect('/admin/dashboard/ticket_sales');
+            if(!empty($permits['NGCB']))
+                return redirect('/admin/ngcb');
             if(!empty($permits['USERS']))
                 return redirect('/admin/users');
             if(!empty($permits['BANDS']))
@@ -50,9 +52,7 @@ class DashboardController extends Controller
             if(!empty($permits['COUPONS']))
                 return redirect('/admin/coupons');
             if(!empty($permits['PACKAGES']))
-                return redirect('/admin/packages');
-            if(!empty($permits['ACLS']))
-                return redirect('/admin/acls');
+                return redirect('/admin/packages');            
             if(!empty($permits['MANIFESTS']))
                 return redirect('/admin/manifests');
             if(!empty($permits['CONTACTS']))
@@ -63,8 +63,11 @@ class DashboardController extends Controller
                 return redirect('/admin/sliders');
             if(!empty($permits['CONSIGNMENTS']))
                 return redirect('/admin/consignments');
+            if(!empty($permits['ACLS']))
+                return redirect('/admin/acls');
             if(!empty($permits['RESTAURANTS']))
                 return redirect('/admin/restaurants');
+            
         }
         return redirect()->route('logout');
     }
