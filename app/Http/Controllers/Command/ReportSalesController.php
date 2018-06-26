@@ -165,8 +165,11 @@ class ReportSalesController extends Controller{
             $financial = ($type=='showtime')?  null : $this->report_financial($type,$e);
             $shows = ($type=='showtime')?  null : $this->create_table_shows($type,$e);
             $channels = $this->create_table_channels($type,$e);
-            $tickets = $this->create_table_tickets($type,$e);
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,'table_tickets'=>$tickets,'table_financial'=>$financial];
+            $tickets = $this->create_table_tickets($type,$e);         
+            //debits
+            $debits = $this->create_table_debits($type, $e, null, null);
+            //return
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,'table_tickets'=>$tickets,'table_financial'=>$financial,'table_debits'=>$debits];
         } catch (Exception $ex) {
             return [];
         }
@@ -402,37 +405,32 @@ class ReportSalesController extends Controller{
             //table sales by period or daily by property    -0
             $_start = $start;
             $_end = $end;
-            $name = 'Total';
             $title = ($start==$end)? 'DAILY BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_end)) : 'PERIOD BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_start)).' - '.date('D, F j, Y',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
+            $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up month MTD   -1
             $_start = date('Y-m-01',strtotime($end));
             $_end = $end;
-            $name = 'Total MTD ('.date('F Y',strtotime($_end)).')';
             $title = 'ROLL UP MTD CURRENT ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
+            $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up previous month MTD  -2
             $_start = date('Y-m-d', $this->rollup_date( date('Y-m-01',strtotime($end)) ));
             $_end = date('Y-m-d', $this->rollup_date($end));
-            $name = 'Total MTD ('.date('F Y',strtotime($_end)).')';
             $title = 'ROLL UP MTD PERIOD ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
+            $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up year YTD    -3
             $_start = date('Y-01-01',strtotime($end));
             $_end = $end;
-            $name = 'Total YTD ('.date('Y',strtotime($_end)).')';
             $title = 'ROLL UP YTD CURRENT ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
+            $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up previous year YTD   -4
             $_start = date('Y-m-d', $this->rollup_date( date('Y-01-01',strtotime($end)) ));
             $_end = date('Y-m-d', $this->rollup_date($end));
-            $name = 'Total YTD ('.date('Y',strtotime($_end)).')';
             $title = 'ROLL UP YTD PERIOD ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
-            $tables[] = $this->create_table_financial($_start,$_end,$name,$title,$e_id,$type);
+            $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //percent MTD
 
@@ -448,7 +446,7 @@ class ReportSalesController extends Controller{
     /*
      * table_financial
      */
-    public function create_table_financial($start,$end,$name,$title,$e_id,$type)
+    public function create_table_financial($start,$end,$title,$e_id,$type)
     {
         try {
             $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee) AS amount' :
@@ -473,7 +471,71 @@ class ReportSalesController extends Controller{
                     $table->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end)->where('venues.id',$e_id);
             }
             $table = $table->distinct()->get()->toArray();
-            return ['title'=>$title, 'data'=>$table, 'total'=> $this->calc_totals($table)];
+            $data = ['title'=>$title, 'data'=>$table, 'total'=> $this->calc_totals($table)];
+            //debits
+            $debits = $this->create_table_debits($type, $e_id, $start, $end);
+            $data['debits'] = $debits['data'];
+            $data['grand_total'] = $this->calc_totals([$data['total'], $debits['total']]);
+            //return
+            return $data;
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    
+    /*
+     * table_refunds
+     */
+    public function create_table_debits($type='admin',$e_id=null,$start=null,$end=null)
+    {
+        try {
+            if(empty($start))
+                $start = $this->start_date;            
+            $amount = ($type=='admin')? 'SUM(transaction_refunds.commission_percent+transaction_refunds.processing_fee+transaction_refunds.printed_fee)*-1 AS amount' :
+                                        'SUM(transaction_refunds.amount-transaction_refunds.sales_taxes-purchases.cc_fees-transaction_refunds.commission_percent-transaction_refunds.processing_fee-transaction_refunds.printed_fee)*-1 AS amount';
+            //get all records
+            $debits = DB::table('venues')
+                            ->join('shows', 'venues.id', '=' ,'shows.venue_id')
+                            ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->join('transaction_refunds', function($join){
+                                $join->on('transaction_refunds.purchase_id', '=', 'purchases.id')
+                                     ->where('transaction_refunds.result','=','Approved');
+                            })
+                            ->select(DB::raw('purchases.status, SUM(transaction_refunds.printed_fee)*-1 AS printed_fee,
+                                          COUNT(transaction_refunds.id)*-1 AS transactions, SUM(transaction_refunds.quantity)*-1 AS tickets,
+                                          SUM(transaction_refunds.amount)*-1 AS paid, SUM(transaction_refunds.sales_taxes)*-1 AS taxes,
+                                          SUM(transaction_refunds.commission_percent)*-1 AS commissions, SUM(purchases.cc_fees)*-1 AS cc_fee,
+                                          SUM( IF(purchases.inclusive_fee>0, ROUND(transaction_refunds.processing_fee,2), 0) )*-1 AS fees_incl,
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(transaction_refunds.processing_fee,2)) )*-1 AS fees_over, '.$amount))
+                            ->where(function($query) {
+                                $query->where('purchases.status','=','Refunded')
+                                      ->orWhere('purchases.status','=','Chargeback');
+                            })
+                            ->groupBy('purchases.status');
+            
+            if($type=='admin' || empty($e_id))
+            {
+                $debits->whereDate('transaction_refunds.created','>=',$start);
+                if(!empty($end))
+                    $debits->whereDate('transaction_refunds.created','<=',$end);
+            }
+            else if(!empty($e_id))
+            {
+                if($type=='venue')
+                {
+                    $debits->whereDate('transaction_refunds.created','>=',$start);
+                    if(!empty($end))
+                        $debits->whereDate('transaction_refunds.created','<=',$end);
+                    $debits->where('venues.id','=',$e_id);
+                }
+                else if($type=='showtime')
+                    $debits->where('show_times.id','=',$e_id);
+            }
+            $debits = $debits->distinct()->get()->toArray();   
+            return ['data'=>$debits, 'total'=> $this->calc_totals($debits)];
         } catch (Exception $ex) {
             return [];
         }
