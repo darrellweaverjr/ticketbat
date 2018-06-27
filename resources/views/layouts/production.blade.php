@@ -14,7 +14,7 @@
         <meta charset="utf-8" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ;
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' gap://ready file://* * https://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ;
                           img-src *  'self' blob: {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
                           style-src 'self' {{env('IMAGE_URL_OLDTB_SERVER')}} {{env('IMAGE_URL_AMAZON_SERVER')}} https://fonts.googleapis.com 'unsafe-inline';
                           font-src 'self' http://fonts.gstatic.com;
