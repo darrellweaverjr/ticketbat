@@ -141,7 +141,19 @@
                                         <i class="icon-tag"></i>&nbsp;&nbsp;&nbsp;My Consignments</a>
                                     </li>
                                     @endif
-                                    <li>
+                                    @if(in_array(Auth::user()->user_type_id,explode(',',env('POS_OPTION_USER_TYPE'))))
+                                        @if(Auth::user()->drawer_status()==0)
+                                        <li>
+                                            <a data-toggle="modal" href="#modal_seller_open" title="Open your drawer for this shift.">
+                                            <i class="icon-book-open"></i>&nbsp;&nbsp;&nbsp;Open drawer</a>
+                                        </li>
+                                        @else 
+                                        <li>
+                                            <a data-toggle="modal" href="#modal_seller_close" title="Close your drawer for this shift.">
+                                            <i class="icon-close"></i>&nbsp;&nbsp;&nbsp;Close drawer</a>
+                                        </li>
+                                        @endif
+                                    @endif
                                     <li>
                                         <a id="btn_logout" title="Log out session">
                                         <i class="icon-key"></i>&nbsp;&nbsp;&nbsp;Log Out</a>
@@ -221,6 +233,9 @@
             <!-- BEGIN RESET PASSWORD MODAL -->
             @includeIf('production.user.reset_password')
             <!-- END RECOVER RESET MODAL -->
+            <!-- BEGIN SELLER MODAL -->
+            @includeIf('production.user.seller')
+            <!-- END SELLER MODAL -->
 
         <!-- BEGIN CORE PLUGINS -->
         <script src="{{config('app.theme')}}js/jquery.min.js" type="text/javascript"></script>
@@ -256,6 +271,14 @@
         <script src="/js/production/user/reset_password.js" type="text/javascript"></script>
         @if(Auth::check() && Auth::user()->force_password_reset>0)
         <script type="text/javascript">$('#modal_reset_password').modal('show');</script>
+        @endif
+        @if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('POS_OPTION_USER_TYPE'))))
+            @php $status = Auth::user()->drawer_status() @endphp
+            @if($status==0)
+            <script type="text/javascript">$('#modal_seller_open').modal('show');</script>
+            @elseif($status>1)
+            <script type="text/javascript">$('#modal_seller_continue').modal('show');</script>
+            @endif
         @endif
         @yield('scripts')
     </body>

@@ -4,6 +4,8 @@ namespace App\Http\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use App\Mail\EmailSG;
 
 /**
@@ -306,6 +308,68 @@ class User extends Authenticatable
             }
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error setting up the customer information!'];
+        }
+    }
+    
+    /*
+     * drawer status for seller
+     */
+    public function drawer_status()
+    {
+        try {
+            $s_token = Util::s_token(false, true);
+            $drawer = UserSeller::where('user_id',$this->id)->first(); 
+            if(!$drawer)
+            {
+                $drawer = new UserSeller;
+                $drawer->user_id = $this->id;
+                $drawer->open_drawer = 0;
+                $drawer->cash_in = 0;
+                $drawer->session_id = $s_token;
+                $drawer->save();
+            }
+            if($drawer->open_drawer == 0)
+                return 0;
+            else
+            {
+                if($drawer->session_id != $s_token)
+                    return 2;
+                else
+                    return 1;
+            }           
+        } catch (Exception $ex) {
+            return 0;
+        }
+    }
+    
+    /*
+     * drawer open for seller
+     */
+    public function drawer_open()
+    {
+        try {
+            $s_token = Util::s_token(false, true);
+            $drawer = UserSeller::where('user_id',$this->id)->first(); 
+            if(!$drawer)
+            {
+                $drawer = new UserSeller;
+                $drawer->user_id = $this->id;
+                $drawer->open_drawer = 0;
+                $drawer->cash_in = 0;
+                $drawer->session_id = $s_token;
+                $drawer->save();
+            }
+            if($drawer->open_drawer == 0)
+                return 0;
+            else
+            {
+                if($drawer->session_id != $s_token)
+                    return 2;
+                else
+                    return 1;
+            }           
+        } catch (Exception $ex) {
+            return 0;
         }
     }
 }

@@ -34,7 +34,10 @@ class ShoppingcartController extends Controller
             $input = Input::all();
             //  Force use the POS system
             if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE'))))
-                return $this->pos($input);
+            {
+                return view('production.shoppingcart.empty');
+                //return $this->pos($input);
+            }
             //recover session
             if(!empty($input['session']))
                 $this->recover($input['session']);
