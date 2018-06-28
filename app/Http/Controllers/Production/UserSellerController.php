@@ -202,8 +202,8 @@ class UserSellerController extends Controller
                 $tally = DB::table('seller_tally')
                             ->leftJoin('purchases', function($join){
                                 $join->on('seller_tally.user_id', '=', 'purchases.user_id')
-                                     ->where('seller_tally.time_in','<=','purchases.created')
-                                     ->where('seller_tally.time_out','>=','purchases.created');
+                                     ->on('seller_tally.time_in','<=','purchases.created')
+                                     ->on('seller_tally.time_out','>=','purchases.created');
                             })
                             ->select(DB::raw('seller_tally.*, COUNT(purchases.id) AS transactions, SUM(COALESCE(purchases.quantity,0)) AS tickets, SUM(COALESCE(purchases.price_paid,0)) AS total'))
                             ->where('seller_tally.user_id', '=',Auth::user()->id)
