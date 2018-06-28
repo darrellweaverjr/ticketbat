@@ -199,5 +199,5 @@ class UserController extends Controller
             throw new Exception('Error Production User Logout: '.$ex->getMessage());
         }
     }
-       
+           
 }

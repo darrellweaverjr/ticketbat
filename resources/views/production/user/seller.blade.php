@@ -1,6 +1,6 @@
 <!-- BEGIN SELLER OPEN MODAL -->
 <div id="modal_seller_open" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width:500px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Open Drawer</h3>
@@ -42,16 +42,15 @@
 <!-- END SELLER OPEN MODAL -->
 <!-- BEGIN CONTINUE MODAL -->
 <div id="modal_seller_continue" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width:500px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Continue/Close Drawer</h3>
             </div>
             <div class="modal-body">
                 <!-- BEGIN FORM-->
-                <form method="post" id="form_seller_open" class="form-horizontal">
+                <form method="post" id="form_seller_continue" class="form-horizontal">
                     <input name="user_id" type="hidden" @if(Auth::check()) value="{{Auth::user()->id}}" @endif/>
-                    <input name="open_drawer" type="hidden" value="2"/>
                     <div class="form-body text-center">
                         <h3>Your drawer is currently opened.<br><br>Do you want to continue with it or do you want to close it?</h3>
                     </div>
@@ -59,8 +58,8 @@
                 <!-- END FORM-->
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn bg-green btn-outline">Continue with current one</button>
-                <button type="button" id="btn_seller_continue" class="btn bg-red btn-outline" title="Close selling process for the shift.">Close the drawer.</button>
+                <button type="button" id="btn_seller_continue" class="btn bg-green btn-outline" title="Continue process for the shift.">Continue with current one</button>
+                <button type="button" id="btn_seller_closing" class="btn bg-red btn-outline" title="Close selling process for the shift.">Close the drawer.</button>
             </div>
         </div>
     </div>
@@ -68,7 +67,7 @@
 <!-- END SELLER CONTINUE MODAL -->
 <!-- BEGIN CLOSE MODAL -->
 <div id="modal_seller_close" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width:500px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Close Drawer</h3>
@@ -80,6 +79,12 @@
                     <input name="open_drawer" type="hidden" value="0"/>
                     <div class="form-body text-center">
                         <h3>Are you sure to close your drawer for this shift?</h3>
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                            <input type="hidden" class="checkboxes" value="0" name="send_report"/>
+                            <input type="checkbox" class="checkboxes" value="1" checked="true" name="send_report"/>
+                            Send report.
+                            <span></span>
+                        </label>
                     </div>
                 </form>
                 <!-- END FORM-->
