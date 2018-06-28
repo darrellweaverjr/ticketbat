@@ -157,6 +157,12 @@
                                             <span class="title">Channels</span>
                                         </a>
                                     </li>
+                                    <li class="nav-item start open">
+                                        <a href="/admin/dashboard/sellers" class="nav-link">
+                                            <i class="icon-basket"></i>
+                                            <span class="title">Sellers</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             @endif
