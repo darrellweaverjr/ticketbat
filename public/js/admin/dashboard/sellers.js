@@ -50,7 +50,7 @@ var TableDatatablesButtons = function () {
                     className: 'btn sbold bg-green'
                 }
             ];
-        MainDataTableCreator.init('tb_model',[ [6, "desc"] ],10,false,buttons);
+        MainDataTableCreator.init('tb_model',[ [0, "asc"] ],10,false,buttons);
         
     }
     return {
