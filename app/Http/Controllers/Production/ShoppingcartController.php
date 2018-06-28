@@ -34,10 +34,7 @@ class ShoppingcartController extends Controller
             $input = Input::all();
             //  Force use the POS system
             if (Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE'))))
-            {
-                return view('production.shoppingcart.empty');
-                //return $this->pos($input);
-            }
+                return $this->pos($input);
             //recover session
             if(!empty($input['session']))
                 $this->recover($input['session']);
@@ -413,7 +410,11 @@ class ShoppingcartController extends Controller
      */
     public function pos($input)
     {
-        try {
+        try {    
+            //check drawer status first (1 = open)
+            $drawer_status = UserSellerController::drawer_status();
+            if( $drawer_status != 1 )
+                return view('production.shoppingcart.pos', compact('drawer_status'));
             //init
             $display_schedule = 3;
             $current = date('Y-m-d H:i:s');
@@ -617,7 +618,7 @@ class ShoppingcartController extends Controller
             $cart['countries'] = Country::get(['code','name']);
             $cart['regions'] = Region::where('country','US')->get(['code','name']);
             //return view
-            return view('production.shoppingcart.pos', compact('ticket_types_css', 'cart', 'show_time_id', 'show_id', 'venue_id', 'tickets', 'showtimes', 'show_time', 'shows', 'venues','show_logo','venue_logo'));
+            return view('production.shoppingcart.pos', compact('drawer_status','ticket_types_css', 'cart', 'show_time_id', 'show_id', 'venue_id', 'tickets', 'showtimes', 'show_time', 'shows', 'venues','show_logo','venue_logo'));
         } catch (Exception $ex) {
             throw new Exception('Error Production POS Buy Index: ' . $ex->getMessage());
         }

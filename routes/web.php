@@ -145,6 +145,10 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     Route::post('user/recover_password', 'UserController@recover_password');
     Route::post('user/reset_password', 'UserController@reset_password');
     Route::post('user/guest', 'UserController@guest');
+    //user seller
+    Route::post('user/seller/drawer_open', 'UserSellerController@drawer_open')->middleware('productioncheck');
+    Route::post('user/seller/drawer_continue', 'UserSellerController@drawer_continue')->middleware('productioncheck');
+    Route::post('user/seller/drawer_close', 'UserSellerController@drawer_close')->middleware('productioncheck');
     //user purchase
     Route::post('user/purchases/share', 'UserPurchaseController@share')->middleware('productioncheck');
     Route::get('user/purchases/receipts/{id}', 'UserPurchaseController@receipts')->middleware('productioncheck');

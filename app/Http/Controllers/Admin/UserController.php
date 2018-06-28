@@ -113,7 +113,7 @@ class UserController extends Controller{
                         if(count($input))
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                                ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
+                                ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active, users.updated'))
                                 ->where($where)
                                 ->where('users.audit_user_id','=',Auth::user()->id)
                                 ->orderBy('users.last_name')
@@ -125,7 +125,7 @@ class UserController extends Controller{
                         if(count($input))
                         $users = DB::table('users')
                                 ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                                ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active'))
+                                ->select(DB::raw('users.id, users.email, users.first_name, users.last_name, users.phone, user_types.user_type, IF(users.is_active>0,"Active","Inactive") AS is_active, users.updated'))
                                 ->where($where)
                                 ->orderBy('users.last_name')
                                 ->get();

@@ -5,7 +5,7 @@
 @stop
 @section('styles')
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-    @if($ticket_types_css)<style>{{$ticket_types_css}}</style>@endif
+    @if(!empty($ticket_types_css))<style>{{$ticket_types_css}}</style>@endif
     <style>
         .marked {
             border-style:solid;
@@ -18,6 +18,7 @@
 
 @section('content')
 
+    @if($drawer_status==1)
 
     <!-- BEGIN SHOWTIMES -->
     <div id="pos_search" class="row portlet mb-0" >
@@ -412,7 +413,8 @@
         </div>
     </div>
     <!-- END COMPLETE MODAL -->
-
+    @endif
+    
 @endsection
 
 @section('scripts')

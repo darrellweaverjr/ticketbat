@@ -1,3 +1,6 @@
+@if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('POS_OPTION_USER_TYPE'))))
+@php $seller_drawer_status = App\Http\Controllers\Production\UserSellerController::drawer_status() @endphp
+@endif
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
@@ -141,8 +144,8 @@
                                         <i class="icon-tag"></i>&nbsp;&nbsp;&nbsp;My Consignments</a>
                                     </li>
                                     @endif
-                                    @if(in_array(Auth::user()->user_type_id,explode(',',env('POS_OPTION_USER_TYPE'))))
-                                        @if(Auth::user()->drawer_status()==0)
+                                    @if(isset($seller_drawer_status))
+                                        @if($seller_drawer_status==0)
                                         <li>
                                             <a data-toggle="modal" href="#modal_seller_open" title="Open your drawer for this shift.">
                                             <i class="icon-book-open"></i>&nbsp;&nbsp;&nbsp;Open drawer</a>
@@ -272,11 +275,11 @@
         @if(Auth::check() && Auth::user()->force_password_reset>0)
         <script type="text/javascript">$('#modal_reset_password').modal('show');</script>
         @endif
-        @if(Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('POS_OPTION_USER_TYPE'))))
-            @php $status = Auth::user()->drawer_status() @endphp
-            @if($status==0)
+        @if(isset($seller_drawer_status))
+            <script src="/js/production/user/seller.js" type="text/javascript"></script>
+            @if($seller_drawer_status==0)
             <script type="text/javascript">$('#modal_seller_open').modal('show');</script>
-            @elseif($status>1)
+            @elseif($seller_drawer_status>1)
             <script type="text/javascript">$('#modal_seller_continue').modal('show');</script>
             @endif
         @endif
