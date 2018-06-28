@@ -160,6 +160,56 @@ var SellerFunctions = function () {
                 }
             }); 
         });
+        
+        //function tally drawer
+        $('#open_seller_tally').on('click', function(ev) {
+            swal({
+                title: "Opening tally",
+                text: "Please, wait.",
+                type: "info",
+                showConfirmButton: false
+            });
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/user/seller/tally', 
+                success: function(data) {
+                    if(data.success) 
+                    {
+                        $('#table_tally_body').empty();
+                        if(data.tally)
+                        {
+                            $.each(data.tally,function(k, v) {
+                                var t_o = (v.time_out)? '<td>'+v.time_out+'</td>' : '<td>Pending</td>';
+                                var c_o = (v.cash_out)? '<td>$ '+v.cash_out+'</td>' : '<td>Pending</td>';
+                                var color = (v.time_out)? 'danger' : 'success';
+                                $('#table_tally_body').append('<tr class="'+color+'"><td>'+(k+1)+'</td><td>'+v.time_in+'</td>'+t_o+'<td>$ '+v.cash_in+'</td>'+c_o+'<td>'+v.transactions+'</td><td>'+v.tickets+'</td><td>$ '+v.total+'</td></tr>');
+                            });
+                        }
+                        swal.close();
+                        $('#modal_seller_tally').modal('show'); 
+                    }
+                    else{
+                        swal.close();
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                },
+                error: function(){
+                    swal.close();
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to open the tally.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });       
+        });
     }
     return {
         //main function to initiate the module

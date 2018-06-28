@@ -98,15 +98,35 @@
 </div>
 <!-- END SELLER CLOSE MODAL -->
 <!-- BEGIN TALLY MODAL -->
-<div id="modal_tally" class="modal fade" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" style="width:700px !important;">
+<div id="modal_seller_tally" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
                 <h3 class="modal-title">Tally</h3>
             </div>
             <div class="modal-body">
-                
+                @if(Auth::check())
+                <h3 class="text-center"><b>{{Auth::user()->first_name}} {{Auth::user()->last_name}}</b><br>{{Auth::user()->email}}</h3>
+                <div class="row portlet-body" style="padding:0 20px">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="5%">ID</th>
+                                <th width="15%">Time<br>In</th>
+                                <th width="15%">Time<br>Out</th>
+                                <th width="15%">Cash<br>In</th>
+                                <th width="15%">Cash<br>Out</th>
+                                <th width="10%">Trans.</th>
+                                <th width="10%">Tickt</th>
+                                <th width="15%">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table_tally_body">
+                        </tbody>
+                    </table>
+                </div>
+                @endif
             </div>
             <div class="modal-footer"></div>
         </div>

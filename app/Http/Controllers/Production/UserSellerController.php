@@ -183,5 +183,36 @@ class UserSellerController extends Controller
             throw new Exception('Error Production User drawer open: '.$ex->getMessage());
         }
     }
+    
+    /**
+     * Seller, close drawer.
+     *
+     * @return Method
+     */
+    public function seller_tally()
+    {
+        try {
+            //init
+            $current = date('Y-m-d H:i:s');
+            if(!Auth::check())
+                return ['success'=>false,'msg'=>'You must be logged as a seller to see this option!'];
+            else
+            {
+                $entries = 5;
+                $tally = DB::table('seller_tally')
+                            ->leftJoin('purchases', function($join){
+                                $join->on('seller_tally.user_id', '=', 'purchases.user_id')
+                                     ->where('seller_tally.time_in','<=','purchases.created')
+                                     ->where('seller_tally.time_out','>=','purchases.created');
+                            })
+                            ->select(DB::raw('seller_tally.*, COUNT(purchases.id) AS transactions, SUM(COALESCE(purchases.quantity,0)) AS tickets, SUM(COALESCE(purchases.price_paid,0)) AS total'))
+                            ->where('seller_tally.user_id', '=',Auth::user()->id)
+                            ->groupBy('seller_tally.id')->orderBy('seller_tally.id','DESC')->take($entries)->get();
+                return ['success'=>true,'tally'=>$tally];
+            }
+        } catch (Exception $ex) {
+            throw new Exception('Error Production User drawer open: '.$ex->getMessage());
+        }
+    }
        
 }

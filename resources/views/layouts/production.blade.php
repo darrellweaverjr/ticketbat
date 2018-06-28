@@ -148,7 +148,7 @@
                                         @if($seller_drawer_status==0)
                                         <li>
                                             <a data-toggle="modal" href="#modal_seller_open" title="Open your drawer for this shift.">
-                                            <i class="icon-book-open"></i>&nbsp;&nbsp;&nbsp;Open drawer</a>
+                                            <i class="icon-shuffle"></i>&nbsp;&nbsp;&nbsp;Open drawer</a>
                                         </li>
                                         @else 
                                         <li>
@@ -156,6 +156,10 @@
                                             <i class="icon-close"></i>&nbsp;&nbsp;&nbsp;Close drawer</a>
                                         </li>
                                         @endif
+                                        <li>
+                                            <a id="open_seller_tally" title="View your tally.">
+                                            <i class="icon-book-open"></i>&nbsp;&nbsp;&nbsp;View Tally</a>
+                                        </li>
                                     @endif
                                     <li>
                                         <a id="btn_logout" title="Log out session">
