@@ -83,29 +83,14 @@ class ShoppingcartController extends Controller
         try {
             $s_token = Util::s_token(false,true);
             $cart = Shoppingcart::calculate_session($s_token);
-            //only for pos sytem tally
+            //only for pos sytem totals
             foreach ($cart['items'] as $i)
             {
                 $i->total = $i->total_cost - $i->savings + $i->sales_taxes;
                 $i->total += ($i->inclusive_fee>0)? 0 : $i->processing_fee;
             } 
             if($show_time_id)
-            {
-                $tally = DB::table('purchases')
-                            ->select(DB::raw('COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                              SUM( IF(purchases.payment_type="Cash",purchases.price_paid,0) ) AS cash,
-                                              SUM(purchases.price_paid) AS total'))
-                            ->where('purchases.status','=','Active')
-                            ->where('purchases.show_time_id','=',$show_time_id)
-                            ->where('purchases.user_id','=',Auth::user()->id)
-                            ->where('purchases.channel','=','POS')
-                            ->groupBy('purchases.show_time_id')->orderBy('purchases.show_time_id')->first();
-                if($tally)
-                    $cart['tally'] = ['transactions'=>$tally->transactions, 'tickets'=>$tally->tickets, 'cash'=>$tally->cash, 'total'=>$tally->total];
-                else
-                    $cart['tally'] = ['transactions'=>0, 'tickets'=>0, 'cash'=>0, 'total'=>0];
                 return $cart;
-            }
             if($cart['success'] && $cart['quantity']>0)
                 return $cart;
             return null;
@@ -610,8 +595,8 @@ class ShoppingcartController extends Controller
             else
             {
                 //get shoppingcart items
-                $cart = ['success'=>true,'quantity'=>0,'seller'=>1,'total'=>0,'items'=>[],'amex_only'=>0,'tally'=>['transactions'=>0, 'tickets'=>0, 'cash'=>0, 'total'=>0]];
-            }   
+                $cart = ['success'=>true,'quantity'=>0,'seller'=>1,'total'=>0,'items'=>[],'amex_only'=>0];
+            }  
             //get styles from cloud
             $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER') . '/' . $this->style_url);
             //enums

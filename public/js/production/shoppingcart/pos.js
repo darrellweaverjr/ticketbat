@@ -18,16 +18,9 @@ var POSbuy = function () {
                     //update totals
                     $('#qty_total').html(cart.quantity);
                     $('#cost_total').html(parseFloat(cart.total).toFixed(2));
-                    //update Tally
+                    //update TOTALS
                     $('#t_p_tickets').html(cart.quantity);
                     $('#t_p_total').html('$'+parseFloat(cart.total).toFixed(2));
-                    if(cart.tally)
-                    {
-                        $('#t_t_transactions').html(cart.tally.transactions);
-                        $('#t_t_tickets').html(cart.tally.tickets);
-                        $('#t_t_cash').html('$'+parseFloat(cart.tally.cash).toFixed(2));
-                        $('#t_t_total').html('$'+parseFloat(cart.tally.total).toFixed(2));
-                    }
                     //update payment tabs
                     if(cart.total<0.01 && cart.quantity>0)
                     {
@@ -238,7 +231,7 @@ var POSbuy = function () {
             
             //function send receipt by email
             $('#btn_report_email').on('click', function(ev) {
-                $('#modal_tally').modal('hide');
+                $('#modal_complete').modal('hide');
                 if($('#form_report_email').valid())
                 {
                     swal({
@@ -263,7 +256,7 @@ var POSbuy = function () {
                                     type: "success",
                                     showConfirmButton: false
                                 });
-                                $('#modal_tally').modal('show');
+                                $('#modal_complete').modal('show');
                             }
                             else{
                                 swal({
@@ -272,7 +265,7 @@ var POSbuy = function () {
                                     html: true,
                                     type: "error"
                                 },function(){
-                                    $('#modal_tally').modal('show');
+                                    $('#modal_complete').modal('show');
                                 });
                             }
                         },
@@ -283,7 +276,7 @@ var POSbuy = function () {
                                 html: true,
                                 type: "error"
                             },function(){
-                                $('#modal_tally').modal('show');
+                                $('#modal_complete').modal('show');
                             });
                         }
                     });
@@ -296,7 +289,7 @@ var POSbuy = function () {
                         html: true,
                         type: "error"
                     },function(){
-                        $('#modal_tally').modal('show');
+                        $('#modal_complete').modal('show');
                     });
                 }
             });

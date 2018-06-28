@@ -97,3 +97,19 @@
     </div>
 </div>
 <!-- END SELLER CLOSE MODAL -->
+<!-- BEGIN TALLY MODAL -->
+<div id="modal_tally" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="width:700px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
+                <h3 class="modal-title">Tally</h3>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<!-- END TALLY MODAL -->

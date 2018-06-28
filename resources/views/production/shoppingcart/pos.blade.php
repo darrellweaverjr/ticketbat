@@ -52,7 +52,7 @@
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center" >
-            <a data-toggle="modal" href="#modal_tally" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
+            <a data-toggle="modal" href="#modal_totals" class="dashboard-stat dashboard-stat-v2 dark" style="height:130px;color:red;font-size:22px">
                 <div class="details sbold">
                     <div class="number sbold">
                         $ <span data-counter="counterup" id="cost_total" data-value="{{number_format($cart['total'],2)}}"></span>
@@ -313,13 +313,13 @@
     </div>
     <!-- END SHOWTIMES MODAL -->
     
-    <!-- BEGIN TALLY MODAL -->
-    <div id="modal_tally" class="modal fade" tabindex="-1" aria-hidden="true">
+    <!-- BEGIN TOTALS MODAL -->
+    <div id="modal_totals" class="modal fade" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" style="width:700px !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
-                    <h3 class="modal-title">Tally</h3>
+                    <h3 class="modal-title">Totals</h3>
                 </div>
                 <div class="modal-body">
                     <div data-always-visible="1" data-rail-visible1="1">
@@ -328,53 +328,20 @@
                             <h3 class="sbold required">Shopping cart: </h3><hr>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <h3 class="sbold label-info">Tickets</h3>
-                                <h3 class="text-center" id="t_p_tickets">{{$cart['quantity']}}</h3>
+                                <h1 class="text-center" id="t_p_tickets">{{$cart['quantity']}}</h1>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <h3 class="sbold label-success">Total</h3>
-                                <h3 class="text-right" id="t_p_total">${{number_format($cart['total'],2)}}</h3>
+                                <h1 class="text-right" id="t_p_total">${{number_format($cart['total'],2)}}</h1>
                             </div>
                         </div>
-                        <div class="row" style="padding:10px">
-                            <h3 class="sbold required">Totals for current event: </h3><hr>
-                            <div class="col-md-3 col-sm-3 col-xs-12">
-                                <h3 class="sbold label-primary">Transact.</h3>
-                                <h3 class="text-center" id="t_t_transactions">@if(!empty($cart['tally'])){{$cart['tally']['transactions']}} @endif</h3>
-                            </div>
-                            <div class="col-md-3 col-sm-3 col-xs-12">
-                                <h3 class="sbold label-info">Tickets</h3>
-                                <h3 class="text-center" id="t_t_tickets">@if(!empty($cart['tally'])){{$cart['tally']['tickets']}} @endif</h3>
-                            </div>
-                            <div class="col-md-3 col-sm-3 col-xs-12">
-                                <h3 class="sbold label-success">Cash</h3>
-                                <h3 class="text-right" id="t_t_cash">@if(!empty($cart['tally']))${{number_format($cart['tally']['cash'],2)}} @endif</h3>
-                            </div>
-                            <div class="col-md-3 col-sm-3 col-xs-12">
-                                <h3 class="sbold label-success">Total</h3>
-                                <h3 class="text-right" id="t_t_total">@if(!empty($cart['tally']))${{number_format($cart['tally']['total'],2)}} @endif</h3>
-                            </div>
-                        </div>
-                        @if(!empty($show_time_id))
-                        <div class="row" style="padding:10px">
-                            <h3 class="sbold required">Email report for current event to: </h3><hr>
-                            <form method="post" id="form_report_email" class="form-horizontal">
-                                <input type="hidden" name="show_time_id" value="{{$show_time_id}}">
-                                <div class="col-md-7 col-sm-7 col-xs-12">
-                                    <input type="email" value="" name="report" class="form-control input-lg" placeholder="abc@gmail.com">
-                                </div>
-                                <div class="col-md-5 col-sm-5 col-xs-12">
-                                    <button type="button" class="btn btn-info btn-lg btn-block uppercase" id="btn_report_email"><i class="fa fa-send"></i> Email report</button>
-                                </div>
-                            </form>
-                        </div>
-                        @endif
                     </div>
                 </div>
                 <div class="modal-footer"></div>
             </div>
         </div>
     </div>
-    <!-- END TALLY MODAL -->
+    <!-- END TOTALS MODAL -->
     
     <!-- BEGIN COMPLETE MODAL -->
     <div id="modal_complete" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
