@@ -72,7 +72,7 @@
                                 <th width="100">Last Name</th>
                                 <th width="10%">Phone</th>
                                 <th width="10%">Role</th>
-                                <th width="10%">Updated</th>
+                                <th width="10%">Created</th>
                                 <th width="10%">Status</th>
                             </tr>
                         </thead>
@@ -91,7 +91,7 @@
                                 <td>{{$u->last_name}}</td>
                                 <td>{{$u->phone}}</td>
                                 <td>{{$u->user_type}}</td>
-                                <td>{{$u->updated}}</td>
+                                <td>{{$u->created}}</td>
                                 <td>{{$u->is_active}}</td>
                             </tr>
                             @endforeach
