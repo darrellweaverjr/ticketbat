@@ -1,6 +1,6 @@
 <!-- BEGIN SELLER OPEN MODAL -->
 <div id="modal_seller_open" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:500px !important;">
+    <div class="modal-dialog" style="width:50% !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Open Drawer</h3>
@@ -42,7 +42,7 @@
 <!-- END SELLER OPEN MODAL -->
 <!-- BEGIN CONTINUE MODAL -->
 <div id="modal_seller_continue" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:500px !important;">
+    <div class="modal-dialog" style="width:50% !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Continue/Close Drawer</h3>
@@ -67,7 +67,7 @@
 <!-- END SELLER CONTINUE MODAL -->
 <!-- BEGIN CLOSE MODAL -->
 <div id="modal_seller_close" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:500px !important;">
+    <div class="modal-dialog" style="width:50% !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Close Drawer</h3>
@@ -99,7 +99,7 @@
 <!-- END SELLER CLOSE MODAL -->
 <!-- BEGIN TALLY MODAL -->
 <div id="modal_seller_tally" class="modal fade" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" style="width:1000px !important;">
+    <div class="modal-dialog" style="width:90% !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
