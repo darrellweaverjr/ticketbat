@@ -19,15 +19,23 @@ var TableDatatablesButtons = function () {
                     customize: function ( win ) {
                         var graph = ($('#form_model_search input[name="replace_chart"]:checked').length)? 'Yes' : 'No';
                         var coupons = ($('#form_model_search input[name="coupon_report"]:checked').length)? 'Yes' : 'No';
-                        var t = '<hr><div style="font-size:12px;float:left">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
-                                'Show: '+$('#form_model_search select[name="show"] option:selected').text()+'<br>'+
-                                'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
-                                'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'<br>'+
-                                'Payment Types: '+$('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).attr('data-value'); } ).get().join(',')+'<br>'+
-                                '</div><div style="font-size:12px;float:left">User: '+$('#form_model_search select[name="user"] option:selected').text()+'<br>'+
-                                'Qty of mirror period: '+$('#form_model_search input[name="mirror_period"]').val()+'<br>'+
+                        var f_venue = $('#form_model_search select[name="venue"] option:selected').text();
+                        var f_show = $('#form_model_search select[name="show"] option:selected').text();
+                        var f_st = $('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val();
+                        var f_sd = $('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val();
+                        var f_paymt = $('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).attr('data-value'); } ).get().join(',');
+                        var f_usr = $('#form_model_search select[name="user"] option:selected').text();
+                        var f_mirr = $('#form_model_search input[name="mirror_period"]').val();
+                        var t = '<hr><div style="font-size:12px;float:left">Venue: '+f_venue+'<br>'+
+                                'Show: '+f_show+'<br>'+
+                                'Show Time: '+f_st+'<br>'+
+                                'Sold Date: '+f_sd+'<br>'+
+                                'Payment Types: '+f_paymt+'<br>'+
+                                '</div><div style="font-size:12px;float:left">User: '+f_usr+'<br>'+
+                                'Qty of mirror period: '+f_mirr+'<br>'+
                                 'Show Graph instead of Table: '+graph+'<br>'+
                                 'Show Coupon\'s Report: '+coupons+'</div>';
+                        t = t + '<hr>'+$('#form_model_search .row').html();
                         t = t + '<hr>'+$('#tb_summary').html();
                         if(graph=='Yes')
                         {

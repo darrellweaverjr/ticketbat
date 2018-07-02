@@ -261,9 +261,30 @@ class DashboardController extends Controller
             //calculate summary table according to period
             function cal_summary($period,$where,$search,$type='previous')
             {
-                $start_date = date('Y-m-d',strtotime($search['soldtime_start_date'])); 
-                $end_date = date('Y-m-d',strtotime($search['soldtime_end_date']));   
-                $title = 'Current: <i>( '.date('M jS Y',strtotime($start_date)).' - '.date('M jS Y',strtotime($end_date)).' )</i>';
+                //start date
+                if(strtotime($search['soldtime_start_date']))
+                {
+                    $start_date = date('Y-m-d',strtotime($search['soldtime_start_date']));
+                    $start_period = date('M jS Y',strtotime($start_date));
+                }
+                else
+                {
+                    $start_date = null;
+                    $start_period = '&#8734;';
+                }
+                //end date
+                if(strtotime($search['soldtime_end_date']))
+                {
+                    $end_date = date('Y-m-d',strtotime($search['soldtime_end_date']));
+                    $end_period = date('M jS Y',strtotime($end_date));
+                }
+                else
+                {
+                    $end_date = null;
+                    $end_period = '&#8734;';
+                }
+                //title
+                $title = 'Current: <i>( '.$start_period.' - '.$end_period.' )</i>';
                 if(!empty($period))
                 {
                     if(!empty($start_date) && !empty($end_date))
@@ -351,10 +372,11 @@ class DashboardController extends Controller
                                               IF(purchases.inclusive_fee>0, 0, SUM(purchases.processing_fee) ) AS fees_over,
                                               SUM(purchases.price_paid-purchases.commission_percent-purchases.processing_fee-purchases.cc_fees-purchases.printed_fee) AS to_show,
                                               SUM(purchases.commission_percent) AS commissions'))
-                            ->where(DashboardController::clear_date_sold($where))
-                            ->whereBetween(DB::raw('DATE(purchases.created)'),[$start_date,$end_date])
-                            ->groupBy('channel','method')->orderBy('channel','method')
-                            ->get()->toArray();
+                            ->where(DashboardController::clear_date_sold($where));
+                if(!empty($start_date) && !empty($end_date))
+                    $summary_credit = $summary_credit->whereBetween(DB::raw('DATE(purchases.created)'),[$start_date,$end_date]);
+                $summary_credit = $summary_credit->groupBy('channel','method')->orderBy('channel','method')->get()->toArray();
+                
                 foreach ($summary_credit as $d)
                 {
                     $current = ['purchases'=>$d->purchases,'tickets'=>$d->tickets,'price_paid'=>$d->price_paid,'savings'=>$d->savings,'sales_taxes'=>$d->sales_taxes,
@@ -371,7 +393,7 @@ class DashboardController extends Controller
                 $summary_table['Subtotals'] = $subtotals;
                 $summary_table['Consignment'] = $consignment;
                 $summary_table['Totals'] = calc_totals([$consignment,$subtotals]);
-                $summary_debit = (array)DB::table('purchases')
+                $summary_debit = DB::table('purchases')
                             ->join('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
                             ->join('users', 'users.id', '=' ,'purchases.user_id')
@@ -395,13 +417,13 @@ class DashboardController extends Controller
                                               IF(purchases.inclusive_fee>0, 0, COALESCE(SUM(transaction_refunds.processing_fee), 0) )*-1 AS fees_over,
                                               COALESCE(SUM(transaction_refunds.amount-transaction_refunds.commission_percent-transaction_refunds.processing_fee-purchases.cc_fees-transaction_refunds.printed_fee), 0)*-1 AS to_show,
                                               COALESCE(SUM(transaction_refunds.commission_percent), 0)*-1 AS commissions'))
-                            ->where(DashboardController::clear_date_sold($where))
-                            ->whereBetween(DB::raw('DATE(transaction_refunds.created)'),[$start_date,$end_date])
-                            ->first();
+                            ->where(DashboardController::clear_date_sold($where));
+                if(!empty($start_date) && !empty($end_date))
+                    $summary_debit = $summary_debit->whereBetween(DB::raw('DATE(transaction_refunds.created)'),[$start_date,$end_date]);
+                $summary_debit = (array)$summary_debit->first();
+                
                 $summary_table['- Ref&Chargbk'] = $summary_debit;
                 $summary_table['Grand Total'] = calc_totals([$summary_table['Totals'],$summary_debit]);
-                
-               // dd($summary_table);
                 
                 return ['title'=>$title,'table'=>$summary_table];
             }
