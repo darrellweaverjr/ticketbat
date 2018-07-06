@@ -5,18 +5,18 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * UserSeller class
+ * SellerTally class
  *
  * @author ivan
  */
-class UserSeller extends Model
+class SellerTally extends Model
 {    
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'user_seller';
+    protected $table = 'seller_tally';
     /**
      * Indicates if the model should be timestamped.
      *

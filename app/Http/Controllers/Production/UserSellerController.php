@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Models\UserSeller;
+use App\Http\Models\SellerTally;
 use App\Http\Models\Util;
 
 class UserSellerController extends Controller
@@ -60,6 +61,7 @@ class UserSellerController extends Controller
             $current = date('Y-m-d H:i:s');
             if(isset($input) && !empty($input['user_id']) && isset($input['open_drawer']) && isset($input['cash_in']))
             {
+                //get drawer
                 $drawer = UserSeller::where('user_id',$input['user_id'])->first(); 
                 if(!$drawer)
                 {
@@ -68,6 +70,9 @@ class UserSellerController extends Controller
                     );
                     $drawer = UserSeller::where('user_id',$input['user_id'])->first(); 
                 }
+                if(!$drawer)
+                    return ['success'=>false,'status'=>0,'msg'=>'The system could not create the drawer for that user!'];
+                //check drawer status
                 if($drawer->open_drawer>0)
                 {
                     if($drawer->session_id != $s_token)
@@ -77,19 +82,22 @@ class UserSellerController extends Controller
                     }
                     return ['success'=>false,'status'=>1,'msg'=>'The drawer is already open!'];
                 }
-                //create tally
-                $tally = DB::table('seller_tally')
-                            ->select('seller_tally.*')
-                            ->where('user_id', '=', $input['user_id'])
-                            ->orderBy('time_in', 'DESC')->first();
+                //get tally
+                $tally = SellerTally::where('user_id', '=', $input['user_id'])->orderBy('time_in', 'DESC')->first();
                 if($tally && $tally->time_out==null && $tally->cash_out==null)
-                    return ['success'=>false,'status'=>2,'msg'=>'There is a tally already opened. You must close it first.'];
-                    
-                //update drawer
-                $open_drawer = DB::table('seller_tally')->insertGetId(
-                        ['user_id'=>$input['user_id'], 'cash_in'=>$input['cash_in'], 'time_in'=>$current, 'cash_out'=>null, 'time_out'=>null]
-                );
-                UserSeller::where('user_id',$input['user_id'])->update(['cash_in'=>$input['cash_in'], 'time_in'=>$current, 'open_drawer'=>$open_drawer, 'session_id'=>$s_token]); 
+                    return ['success'=>false,'status'=>2,'msg'=>'There is a tally already opened. You must close it first.'];                    
+                //create tally
+                $tally = new SellerTally;
+                $tally->user_id = $input['user_id'];
+                $tally->cash_in = $input['cash_in'];
+                $tally->time_in = $current;
+                $tally->cash_out = null;
+                $tally->time_out = null;
+                $tally->save();
+                if(!$tally || empty($tally->id))
+                    return ['success'=>false,'status'=>1,'msg'=>'The system could not create the tally for this seller.']; 
+                //update drawer status
+                UserSeller::where('user_id',$input['user_id'])->update(['cash_in'=>$input['cash_in'], 'time_in'=>$current, 'open_drawer'=>$tally->id, 'session_id'=>$s_token]); 
                 return ['success'=>true,'status'=>1,'msg'=>'Drawer opened successfully!'];
             }
             return ['success'=>false,'msg'=>'Form invalid!'];
@@ -145,9 +153,7 @@ class UserSellerController extends Controller
                 else 
                 {
                     $cash_out = $drawer->cash_in;
-                    $tally = DB::table('seller_tally')
-                            ->select('seller_tally.*')
-                            ->where('id', '=', $drawer->open_drawer)->first();
+                    $tally = SellerTally::where('id', '=', $drawer->open_drawer)->first();
                     $purchases = DB::table('purchases')
                             ->select(DB::raw('SUM(price_paid) AS cash_get'))
                             ->where('user_id', '=', $input['user_id'])->where('payment_type', '=', 'Cash')
@@ -159,10 +165,9 @@ class UserSellerController extends Controller
                         if($purchases)
                             $cash_out += $purchases->cash_get;
                         //update tally
-                        DB::table('seller_tally')
-                        ->where('id', '=', $drawer->open_drawer)
-                        ->update(['time_out' => $current, 'cash_out' => $cash_out]);
-                        
+                        $tally->time_out = $current;
+                        $tally->cash_out = $cash_out;
+                        $tally->save();
                         //create and send the reports
                         if(!empty($input['send_report']))
                         {
