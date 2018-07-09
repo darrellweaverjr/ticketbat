@@ -51,9 +51,9 @@
                 <form method="post" id="form_seller_continue" class="form-horizontal">
                     <input name="user_id" type="hidden" @if(Auth::check()) value="{{Auth::user()->id}}" @endif/>
                     <div class="form-body text-center">
-                        <h3>Your drawer is currently opened.<br><br>Do you want to continue with it or do you want to close it?</h3>
-                        <button type="button" id="btn_seller_continue" class="btn btn-lg bg-green btn-outline" title="Continue process for the shift.">Continue with current one</button>
-                        <button type="button" id="btn_seller_closing" class="btn btn-lg bg-red btn-outline" title="Close selling process for the shift.">Close the drawer.</button>
+                        <h3>Your drawer is currently opened.<br><br>Do you want to continue with it or do you want to close it?</h3><br>
+                        <button type="button" id="btn_seller_continue" class="btn btn-lg btn-block bg-green btn-outline" title="Continue process for the shift.">Continue with current one</button><br>
+                        <button type="button" id="btn_seller_closing" class="btn btn-lg btn-block bg-red btn-outline" title="Close selling process for the shift.">Close the drawer.</button>
                     </div>
                 </form>
                 <!-- END FORM-->

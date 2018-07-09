@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Models\ShowTime;
 use App\Http\Models\UserSeller;
 use App\Http\Models\SellerTally;
 use App\Http\Models\Util;
+use App\Http\Controllers\Command\ReportSalesController;
 
 class UserSellerController extends Controller
 {
@@ -255,7 +257,7 @@ class UserSellerController extends Controller
             }
             //send report
             else
-            {
+            {  
                 if(!empty($input['show_times']) && !empty($input['email']))
                 {
                     $msg = '';

@@ -229,7 +229,7 @@ var SellerFunctions = function () {
                         {
                             $.each(data.events,function(k, v) {
                                 var date = moment(v.show_time);
-                                $('#events_list').append('<label class="mt-checkbox"><input type="checkbox" name="show_times[]" value="'+v.id+'" />'+v.name+' => '+date.format('M/DD/YYYY @ h:mmA')+' ('+v.purchases+' purchases) <span></span></label><br>');
+                                $('#events_list').append('<label class="mt-checkbox"><input type="checkbox" name="show_times[]" value="'+v.id+'" />#'+v.id+' => '+date.format('M/DD/YYYY @ h:mmA')+' ('+v.purchases+' purchases)<br>'+v.name+'<span></span></label><br>');
                             });
                         }
                         $('#modal_seller_report').modal('show');
@@ -269,7 +269,7 @@ var SellerFunctions = function () {
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '/user/seller/report',
-                    data: $('#form_report_email').serializeArray(),
+                    data: $('#form_seller_report').serializeArray(),
                     success: function(data) {
                         if(data.success)
                         {
@@ -277,9 +277,8 @@ var SellerFunctions = function () {
                                 title: "<span style='color:green;'>Sent!</span>",
                                 text: data.msg,
                                 html: true,
-                                timer: 1500,
                                 type: "success",
-                                showConfirmButton: false
+                                showConfirmButton: true
                             });
                         }
                         else{
