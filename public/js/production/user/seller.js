@@ -210,6 +210,114 @@ var SellerFunctions = function () {
                 }
             });       
         });
+        
+        // on load modal to send the reports
+        $('#open_seller_report').on('click', function(e) {
+            jQuery.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '/user/seller/report',
+                data: {action:0},
+                success: function(data) {
+                    if(data.success)
+                    {
+                        //reset email to
+                        $('#form_seller_report').trigger('reset');
+                        //reset send to
+                        $('#events_list').empty();
+                        if(data.events)
+                        {
+                            $.each(data.events,function(k, v) {
+                                var date = moment(v.show_time);
+                                $('#events_list').append('<label class="mt-checkbox"><input type="checkbox" name="show_times[]" value="'+v.id+'" />'+v.name+' => '+date.format('M/DD/YYYY @ h:mmA')+' ('+v.purchases+' purchases) <span></span></label><br>');
+                            });
+                        }
+                        $('#modal_seller_report').modal('show');
+                    }
+                    else{
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: data.msg,
+                            html: true,
+                            type: "error"
+                        });
+                    }
+                },
+                error: function(){
+                    swal({
+                        title: "<span style='color:red;'>Error!</span>",
+                        text: "There was an error trying to open the send report modal!<br>The request could not be sent to the server.",
+                        html: true,
+                        type: "error"
+                    });
+                }
+            });
+        });
+        
+        //function send report by email
+        $('#btn_seller_report').on('click', function(ev) {
+            $('#modal_seller_report').modal('hide');
+            if($('#form_seller_report [type=checkbox]:checked').length > 0)
+            {
+                swal({
+                    title: "Sending report by email",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/user/seller/report',
+                    data: $('#form_report_email').serializeArray(),
+                    success: function(data) {
+                        if(data.success)
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Sent!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                        }
+                        else{
+                            swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_seller_report').modal('show');
+                            });
+                        }
+                    },
+                    error: function(){
+                        swal({
+                            title: "<span style='color:red;'>Error!</span>",
+                            text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
+                            html: true,
+                            type: "error"
+                        },function(){
+                            $('#modal_seller_report').modal('show');
+                        });
+                    }
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "There was an error trying to send the email!<br>You must check some events to create the report.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_seller_report').modal('show');
+                });
+            }
+        });
+            
     }
     return {
         //main function to initiate the module

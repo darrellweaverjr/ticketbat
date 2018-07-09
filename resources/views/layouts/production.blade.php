@@ -160,6 +160,10 @@
                                             <a id="open_seller_tally" title="View your tally.">
                                             <i class="icon-book-open"></i>&nbsp;&nbsp;&nbsp;View Tally</a>
                                         </li>
+                                        <li>
+                                            <a id="open_seller_report" title="Send report.">
+                                            <i class="icon-docs"></i>&nbsp;&nbsp;&nbsp;Send report</a>
+                                        </li>
                                     @endif
                                     <li>
                                         <a id="btn_logout" title="Log out session">

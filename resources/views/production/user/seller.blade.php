@@ -3,6 +3,8 @@
     <div class="modal-dialog" style="width:50% !important;">
         <div class="modal-content">
             <div class="modal-header">
+                <button type="button" id="btn_seller_open" class="btn btn-lg bg-green btn-outline pull-right" title="Open selling process for the shift.">Open</button>
+                <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Cancel</button>
                 <h3 class="modal-title">Open Drawer</h3>
             </div>
             <div class="modal-body">
@@ -24,7 +26,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-money"></i>
                                     </span>
-                                    <input type="number" name="cash_in" class="form-control" placeholder="0.00" value="0.00" step="0.01" min="0.00">
+                                    <input type="number" name="cash_in" class="form-control input-lg" placeholder="0.00" value="0.00" step="0.01" min="0.00">
                                 </div>
                             </div>
                         </div>
@@ -32,10 +34,7 @@
                 </form>
                 <!-- END FORM-->
             </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
-                <button type="button" id="btn_seller_open" class="btn bg-green btn-outline" title="Open selling process for the shift.">Open</button>
-            </div>
+            <div class="modal-footer"></div>
         </div>
     </div>
 </div>
@@ -53,14 +52,13 @@
                     <input name="user_id" type="hidden" @if(Auth::check()) value="{{Auth::user()->id}}" @endif/>
                     <div class="form-body text-center">
                         <h3>Your drawer is currently opened.<br><br>Do you want to continue with it or do you want to close it?</h3>
+                        <button type="button" id="btn_seller_continue" class="btn btn-lg bg-green btn-outline" title="Continue process for the shift.">Continue with current one</button>
+                        <button type="button" id="btn_seller_closing" class="btn btn-lg bg-red btn-outline" title="Close selling process for the shift.">Close the drawer.</button>
                     </div>
                 </form>
                 <!-- END FORM-->
             </div>
-            <div class="modal-footer">
-                <button type="button" id="btn_seller_continue" class="btn bg-green btn-outline" title="Continue process for the shift.">Continue with current one</button>
-                <button type="button" id="btn_seller_closing" class="btn bg-red btn-outline" title="Close selling process for the shift.">Close the drawer.</button>
-            </div>
+            <div class="modal-footer"></div>
         </div>
     </div>
 </div>
@@ -70,6 +68,8 @@
     <div class="modal-dialog" style="width:50% !important;">
         <div class="modal-content">
             <div class="modal-header">
+                <button type="button" id="btn_seller_close" class="btn btn-lg bg-red btn-outline pull-right" title="Close selling process for the shift.">Close</button>
+                <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Cancel</button>
                 <h3 class="modal-title">Close Drawer</h3>
             </div>
             <div class="modal-body">
@@ -79,20 +79,11 @@
                     <input name="open_drawer" type="hidden" value="0"/>
                     <div class="form-body text-center">
                         <h3>Are you sure to close your drawer for this shift?</h3>
-                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                            <input type="hidden" class="checkboxes" value="0" name="send_report"/>
-                            <input type="checkbox" class="checkboxes" value="1" checked="true" name="send_report"/>
-                            Send report.
-                            <span></span>
-                        </label>
                     </div>
                 </form>
                 <!-- END FORM-->
             </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
-                <button type="button" id="btn_seller_close" class="btn bg-red btn-outline" title="Close selling process for the shift.">Close</button>
-            </div>
+            <div class="modal-footer"></div>
         </div>
     </div>
 </div>
@@ -103,7 +94,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
-                <h3 class="modal-title">Tally</h3>
+                <h3 class="modal-title">Tally (last 5)</h3>
             </div>
             <div class="modal-body">
                 @if(Auth::check())
@@ -133,3 +124,45 @@
     </div>
 </div>
 <!-- END TALLY MODAL -->
+<!-- BEGIN SEND REPORT MODAL -->
+<div id="modal_seller_report" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:50% !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="btn_seller_report" class="btn btn-lg bg-red btn-outline pull-right" title="Send reports.">Send</button>
+                <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline pull-right">Close</button>
+                <h3 class="modal-title">Send report</h3>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN FORM-->
+                <form method="post" id="form_seller_report" class="form-horizontal">
+                    <input name="user_id" type="hidden" @if(Auth::check()) value="{{Auth::user()->id}}" @endif/>
+                    <input name="action" type="hidden" value="1"/>
+                    <div class="form-body">
+                        <div class="row form-group" style="padding:0 20px">
+                            <h3>Destination:</h3><br>
+                            <div class="mt-radio-list col-md-12">
+                                <label class="mt-radio"> To venue's distribution list.
+                                    <input value="v" name="email" type="radio" checked="true">
+                                    <span></span>
+                                </label>
+                                <label class="mt-radio"> To show's distribution list.
+                                    <input value="s" name="email" type="radio" checked="false">
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row form-group" style="padding:0 20px">
+                            <h3>Last events to create the report to:</h3><br>
+                            <div class="mt-checkbox-inline" style="padding:0 20px" id="events_list">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<!-- END SEND REPORT MODAL -->

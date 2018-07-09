@@ -151,6 +151,7 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     Route::post('user/seller/drawer_continue', 'UserSellerController@drawer_continue')->middleware('productioncheck');
     Route::post('user/seller/drawer_close', 'UserSellerController@drawer_close')->middleware('productioncheck');
     Route::post('user/seller/tally', 'UserSellerController@seller_tally')->middleware('productioncheck');
+    Route::post('user/seller/report', 'UserSellerController@seller_report')->middleware('productioncheck');
     //user purchase
     Route::post('user/purchases/share', 'UserPurchaseController@share')->middleware('productioncheck');
     Route::get('user/purchases/receipts/{id}', 'UserPurchaseController@receipts')->middleware('productioncheck');
@@ -172,7 +173,6 @@ Route::group(['middleware' => ['ForceSSL','check'],'namespace' => 'Production'],
     Route::post('shoppingcart/countdown', 'ShoppingcartController@countdown');
     Route::post('shoppingcart/pos/update', 'ShoppingcartController@pos_update');
     Route::post('shoppingcart/pos/receipts', 'ShoppingcartController@pos_email_receipt');
-    Route::post('shoppingcart/pos/reports', 'ShoppingcartController@pos_email_report');
     Route::match(['get','post'], 'shoppingcart/viewcart', 'ShoppingcartController@index');
     //purchase
     Route::post('purchase/process', 'PurchaseController@process');
