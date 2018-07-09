@@ -83,17 +83,17 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     //contact logs
     Route::match(['get','post'], 'contacts', 'ContactController@index')->middleware('permissions:CONTACTS');
     //purchases
+    Route::post('purchases/check', 'RefundController@check')->middleware('permissions:REFUNDS');
+    Route::post('purchases/refund', 'RefundController@refund')->middleware('permissions:REFUNDS');
     Route::post('purchases/filter', 'PurchaseController@filter')->middleware('permissions:PURCHASES');
     Route::post('purchases/email', 'PurchaseController@email')->middleware('permissions:PURCHASES');
     Route::get('purchases/tickets/{type}/{ids}', 'PurchaseController@tickets')->middleware('permissions:PURCHASES');
     Route::post('purchases/save', 'PurchaseController@save')->middleware('permissions:PURCHASES');
     Route::match(['get','post'], 'purchases', 'PurchaseController@index')->middleware('permissions:PURCHASES');
-    //refunds
-    Route::post('refunds/check', 'RefundController@check')->middleware('permissions:REFUNDS');
-    Route::post('refunds/refund', 'RefundController@refund')->middleware('permissions:REFUNDS');
+    //refunds    
     Route::post('refunds/save', 'RefundController@save')->middleware('permissions:REFUNDS');
     Route::get('refunds/pendings', 'RefundController@pendings')->middleware('permissions:REFUNDS');
-    Route::get('refunds', 'RefundController@index')->middleware('permissions:REFUNDS');
+    Route::match(['get','post'], 'refunds', 'RefundController@index')->middleware('permissions:REFUNDS');
     //home sliders
     Route::post('sliders/save', 'SliderController@save')->middleware('permissions:SLIDERS');
     Route::post('sliders/remove', 'SliderController@remove')->middleware('permissions:SLIDERS');

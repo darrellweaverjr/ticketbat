@@ -13,6 +13,50 @@ var RefundedDatatablesManaged = function () {
         });
         
         //PERSONALIZED FUNCTIONS
+        
+        
+        //start_end_date
+        $('#start_end_date').daterangepicker({
+            "ranges": {
+                'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            },
+            "locale": {
+                "format": "MM/DD/YYYY",
+                "separator": " - ",
+                "applyLabel": "Apply",
+                "cancelLabel": "Cancel",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Custom",
+                "daysOfWeek": [
+                    "Su",
+                    "Mo",
+                    "Tu",
+                    "We",
+                    "Th",
+                    "Fr",
+                    "Sa"
+                ]
+            },
+            startDate: moment().subtract('days', 29),
+            endDate: moment(),
+            opens: (App.isRTL() ? 'right' : 'left')
+        }, function(start, end, label) {
+                $('#form_model_search [name="start_date"]').val(start.format('YYYY-MM-DD'));
+                $('#form_model_search [name="end_date"]').val(end.format('YYYY-MM-DD'));
+                $('#start_end_date span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                $( "#form_model_search" ).submit();
+        });
+        $('#start_end_date span').html(moment($('#form_model_search [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_search [name="end_date"]').val()).format('MMMM D, YYYY'));
+        $('#start_end_date').show();
+        
+        
+        
         //refunded date
         $('#refund_date_input').datetimepicker({
             autoclose: true,

@@ -50,6 +50,11 @@
                                 <i class="fa fa-share"></i>
                             </button>
                             @endif
+                            @if(in_array('Edit',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
+                            <button id="btn_model_refund" class="btn sbold bg-purple" disabled="true">Refund
+                                <i class="fa fa-credit-card"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -235,6 +240,9 @@
     <!-- BEGIN EDIT MODAL -->
     @includeIf('production.general.share_tickets')
     <!-- END SHARE TICKETS MODAL -->
+    <!-- BEGIN REFUND MODAL -->
+    @includeIf('admin.purchases.refund')
+    <!-- END REFUND MODAL -->
 @endsection
 
 @section('scripts')
@@ -242,4 +250,5 @@
 <script src="/js/production/general/share_tickets.js" type="text/javascript"></script>
 <script src="/js/admin/purchases/filter.js" type="text/javascript"></script>
 <script src="/js/admin/purchases/index.js" type="text/javascript"></script>
+<script src="/js/admin/purchases/refund.js" type="text/javascript"></script>
 @endsection

@@ -26,8 +26,20 @@ class RefundController extends Controller{
     {
         try {
             //init
+            $input = Input::all();
+            if(isset($input) && isset($input['start_date']) && isset($input['end_date']))
+            {
+                //input dates
+                $start_date = date('Y-m-d H:i:s',strtotime($input['start_date']));
+                $end_date = date('Y-m-d H:i:s',strtotime($input['end_date']));
+            }
+            else
+            {
+                //default dates
+                $start_date = date('Y-m-d H:i:s', strtotime('-30 DAY'));
+                $end_date = date('Y-m-d H:i:s');
+            }
             $refunds = [];
-            $pendings = $this->pendings();
             //if user has permission to view
             if(in_array('View',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
             {
@@ -43,7 +55,7 @@ class RefundController extends Controller{
                                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                                 ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
-                                ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
@@ -52,7 +64,8 @@ class RefundController extends Controller{
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
                                 ->whereIn('shows.venue_id',[Auth::user()->venues_edit])
-                                ->orderBy('purchases.created','transaction_refunds.created')
+                                ->whereBetween('transaction_refunds.created', [$start_date,$end_date])
+                                ->orderBy('transaction_refunds.created','DESC')
                                 ->groupBy('transaction_refunds.id')
                                 ->get();
                 }//all
@@ -68,7 +81,7 @@ class RefundController extends Controller{
                                 ->join('venues', 'venues.id', '=', 'shows.venue_id')
                                 ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
                                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
-                                ->join('transactions', 'transactions.id', '=', 'purchases.transaction_id')
+                                ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                                 ->select(DB::raw('transaction_refunds.*, purchases.id AS order_id, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
                                                   transactions.amount, purchases.note, purchases.quantity, purchases.retail_price, purchases.processing_fee, purchases.commission_percent,
                                                   discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name, purchases.savings, purchases.status,
@@ -76,86 +89,15 @@ class RefundController extends Controller{
                                                   purchases.payment_type AS method, purchases.printed_fee,
                                                   customers.first_name, customers.last_name, customers.email, customers.phone,
                                                   show_times.show_time, shows.name AS show_name, packages.title'))
-                                ->orderBy('purchases.created','DESC')->orderBy('transaction_refunds.created','DESC')
+                                ->whereBetween('transaction_refunds.created', [$start_date,$end_date])
+                                ->orderBy('transaction_refunds.created','DESC')
                                 ->groupBy('transaction_refunds.id')
                                 ->get();
                 }
             }
-            return view('admin.refunds.index',compact('refunds','pendings'));
+            return view('admin.refunds.index',compact('refunds','start_date','end_date'));
         } catch (Exception $ex) {
             throw new Exception('Error Refunds Index: '.$ex->getMessage());
-        }
-    }
-
-    /**
-     * List all purchases and return default view.
-     *
-     * @return view
-     */
-    public function pendings()
-    {
-        try {
-            //init
-            $purchases = [];
-            //if user has permission to view
-            if(in_array('View',Auth::user()->user_type->getACLs()['REFUNDS']['permission_types']))
-            {
-                if(Auth::user()->user_type->getACLs()['REFUNDS']['permission_scope'] != 'All')
-                {
-                    $purchases = DB::table('purchases')
-                                ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
-                                ->join('users', 'users.id', '=' ,'purchases.user_id')
-                                ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                                ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
-                                ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                                ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                                ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
-                                ->join('packages', 'packages.id', '=', 'tickets.package_id')
-                                ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                                ->select(DB::raw('purchases.*, transactions.card_holder, 
-                                                  transactions.authcode, transactions.refnum, transactions.last_4,
-                                                  transactions.amount AS amount,
-                                                  purchases.payment_type AS method, IF(transactions.id,0,1) AS skip,
-                                                  IF(transactions.id, transactions.id, purchases.created) AS color,
-                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
-                                                  users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
-                                                  customers.first_name, customers.last_name, customers.email, customers.phone,
-                                                  show_times.show_time, shows.name AS show_name, packages.title'))
-                                ->where('purchases.status','like','Pending%')
-                                ->whereIn('shows.venue_id',[Auth::user()->venues_edit])
-                                ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
-                                ->groupBy('purchases.id')
-                                ->get();
-                }//all
-                else
-                {
-                    $purchases = DB::table('purchases')
-                                ->join('customers', 'customers.id', '=' ,'purchases.customer_id')
-                                ->join('users', 'users.id', '=' ,'purchases.user_id')
-                                ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
-                                ->join('show_times', 'show_times.id', '=', 'purchases.show_time_id')
-                                ->join('shows', 'shows.id', '=', 'show_times.show_id')
-                                ->join('venues', 'venues.id', '=', 'shows.venue_id')
-                                ->join('tickets', 'tickets.id', '=', 'purchases.ticket_id')
-                                ->join('packages', 'packages.id', '=', 'tickets.package_id')
-                                ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
-                                ->select(DB::raw('purchases.*, transactions.card_holder, transactions.authcode, transactions.refnum, transactions.last_4,
-                                                  transactions.amount AS amount,
-                                                  purchases.payment_type AS method, IF(transactions.id,0,1) AS skip,
-                                                  IF(transactions.id, transactions.id, purchases.created) AS color,
-                                                  discounts.code, tickets.ticket_type AS ticket_type_type,venues.name AS venue_name,
-                                                  users.first_name AS u_first_name, users.last_name AS u_last_name, users.email AS u_email, users.phone AS u_phone,
-                                                  customers.first_name, customers.last_name, customers.email, customers.phone,
-                                                  show_times.show_time, shows.name AS show_name, packages.title'))
-                                ->where('purchases.status','like','Pending%')
-                                ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
-                                ->groupBy('purchases.id')
-                                ->get();
-                }
-            }
-            return $purchases;
-        } catch (Exception $ex) {
-            throw new Exception('Error Refunds Pendings: '.$ex->getMessage());
         }
     }
     

@@ -1,47 +1,6 @@
-var PendingDatatablesManaged = function () {
+var RefundDatatablesManaged = function () {
     
     var initTable = function () {
-        
-        var table = MainDataTableCreator.init('tb_model_pendings',[ [0, "desc"] ],10);
-        
-        table.find('.group-checkable').change(function () {
-            var set = jQuery(this).attr("data-set");
-            var checked = jQuery(this).is(":checked");
-            jQuery(set).each(function () {
-                if (checked) {
-                    $(this).prop("checked", true);
-                    $(this).parents('tr').addClass("active");
-                } else {
-                    $(this).prop("checked", false);
-                    $(this).parents('tr').removeClass("active");
-                }
-            });
-            check_models();
-        });
-
-        table.on('click', 'tbody tr td:not(:first-child)', function () {
-            var action = $(this).parent().find('.checkboxes').is(':checked');
-            if(!action)
-                table.find('.checkboxes').prop('checked',false);
-            $(this).parent().find('.checkboxes').prop('checked',!action);
-            check_models();
-        });
-
-        table.on('change', 'tbody tr .checkboxes', function () {
-            check_models();
-            $(this).parents('tr').toggleClass("active");
-        });
-
-        //PERSONALIZED FUNCTIONS
-        //check/uncheck all
-        var check_models = function(){
-            var set = $('.group-checkable').attr("data-set");
-            var checked = $(set+"[type=checkbox]:checked").length;
-            if(checked >= 1)
-                $('#btn_model_refund').prop("disabled",false);
-            else
-                $('#btn_model_refund').prop("disabled",true);
-        }
         
         //PERSONALIZED FUNCTIONS
         //function refund on load modal
@@ -64,7 +23,7 @@ var PendingDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/refunds/check', 
+                url: '/admin/purchases/check', 
                 data: {ids:ids}, 
                 success: function(data) {
                     if(data.success) 
@@ -160,7 +119,7 @@ var PendingDatatablesManaged = function () {
             jQuery.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
-                url: '/admin/refunds/refund', 
+                url: '/admin/purchases/refund', 
                 data: $('#form_model_refund').serializeArray(), 
                 success: function(data) {
                     if(data.success) 
@@ -197,8 +156,6 @@ var PendingDatatablesManaged = function () {
                 }
             });
         });
-        //init functions
-        check_models();
     }
     return {
         //main function to initiate the module
@@ -212,5 +169,5 @@ var PendingDatatablesManaged = function () {
 }();
 //*****************************************************************************************
 jQuery(document).ready(function() {
-    PendingDatatablesManaged.init();
+    RefundDatatablesManaged.init();
 });
