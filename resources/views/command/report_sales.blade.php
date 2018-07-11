@@ -46,11 +46,13 @@
                 <table>
                   <tr class="theader">
                       <td>DATE/TIME</td>
-                      @if($d['type'] == 'venue')
-                      @else
+                      @if($d['type'] == 'admin')
                       <td>VENUES</td>
                       @endif
                       <td>SHOWS</td>
+                      <td>CHANNEL</td>
+                      <td>PAYMT.</td>
+                      <td>TICKETS</td>
                       <td style='text-align:center'>TRANS.</td>
                       <td style='text-align:center'>TICKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
@@ -62,24 +64,15 @@
                       <td style='text-align:right'>COMM.<br>(C)</td>
                       <td style='text-align:right'>NET<br>@if($d['type']=='admin') (F+C) @else (P-T-M-F-C) @endif</td>
                   </tr>
-                  @foreach($d['table_future'] as $e)
+                @if($d['type'] == 'admin')
+                    @foreach($d['table_future'] as $e)
                     <tr>
                         <td>{{$e->show_time}}</td>
-                        @if($d['type'] == 'venue')
-                        <td>{{$e->event}}</td>
-                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
-                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
-                        @else
                         <td>{{$e->venue}}</td>
                         <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -90,11 +83,119 @@
                         <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
-                        @endif
                     </tr>
-                @endforeach
+                    @endforeach
+                @else 
+                    @foreach($d['table_future'] as $e)
+                    <tr>
+                        <td>{{$e->show_time}}</td>
+                        <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                    @endforeach
+                @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="3" @else colspan="2" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
+                      <td style='text-align:center'>{{$d['total']['transactions']}}</td>
+                      <td style='text-align:center'>{{$d['total']['tickets']}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['paid'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['taxes'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['cc_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['printed_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['fees_incl'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['fees_over'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['commissions'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['total']['amount'],2)}}</td>
+                    </tr>
+              </table>
+            </div>
+            @endforeach
+            
+        @elseif($format == 'event_breakdown')
+            @foreach($data as $d)
+            <div style="page-break-after:always;">
+              <h3 style="text-align:center">
+                <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
+                <br><br>EVENT BREAKDOWN REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
+            </h3><hr>
+            <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( {{$d['date']}} )</p>
+                <table>
+                  <tr class="theader">
+                      <td>DATE/TIME</td>
+                      @if($d['type'] == 'admin')
+                      <td>VENUES</td>
+                      @endif
+                      <td>SHOWS</td>
+                      <td>CHANNEL</td>
+                      <td>PAYMT.</td>
+                      <td>TICKETS</td>
+                      <td style='text-align:center'>TRANS.</td>
+                      <td style='text-align:center'>TICKS.</td>
+                      <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
+                      <td style='text-align:right'>TAXES<br>(T)</td>
+                      <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                      <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
+                      <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
+                      <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
+                      <td style='text-align:right'>COMM.<br>(C)</td>
+                      <td style='text-align:right'>NET<br>@if($d['type']=='admin') (F+C) @else (P-T-M-F-C) @endif</td>
+                  </tr>
+                @if($d['type'] == 'admin')
+                    @foreach($d['table_events'] as $e)
+                    <tr>
+                        <td>{{$e->show_time}}</td>
+                        <td>{{$e->venue}}</td>
+                        <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                    @endforeach
+                @else 
+                    @foreach($d['table_events'] as $e)
+                    <tr>
+                        <td>{{$e->show_time}}</td>
+                        <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                    @endforeach
+                @endif
+                    <tr class="ttotal">
+                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['total']['paid'],2)}}</td>
@@ -473,7 +574,9 @@
                   <tr class="theader">
                         <td>SELLER<br>EMAIL</td>
                         <td>EVENT<br>DATE</td>
+                        @if($d['type'] == 'admin')
                         <td>VENUES</td>
+                        @endif
                         <td>EVENTS</td>
                         <td>PAYMENT</td>
                         <td>TICKET</td>
@@ -488,28 +591,50 @@
                         <td style='text-align:right'>COMM.<br>(C)</td>
                         <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
-                  @foreach($d['table_sellers']['data'] as $e)
-                    <tr>
-                        <td>{{$e->email}}</td>
-                        <td>{{$e->show_time}}</td>
-                        <td>{{$e->venue}}</td>
-                        <td>{{$e->event}}</td>
-                        <td>{{$e->payment_type}}</td>
-                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
-                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
-                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
-                    </tr>
-                  @endforeach
+                  @if($d['type'] == 'admin')
+                    @foreach($d['table_sellers']['data'] as $e)
+                      <tr>
+                          <td>{{$e->email}}</td>
+                          <td>{{$e->show_time}}</td>
+                          <td>{{$e->venue}}</td>
+                          <td>{{$e->event}}</td>
+                          <td>{{$e->payment_type}}</td>
+                          <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                          <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                          <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                      </tr>
+                    @endforeach
+                  @else 
+                    @foreach($d['table_sellers']['data'] as $e)
+                      <tr>
+                          <td>{{$e->email}}</td>
+                          <td>{{$e->show_time}}</td>
+                          <td>{{$e->event}}</td>
+                          <td>{{$e->payment_type}}</td>
+                          <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                          <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                          <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                      </tr>
+                    @endforeach
+                  @endif
                     <tr class="ttotal">
-                        <td colspan="6">Subtotals</td>
+                        <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>Subtotals</td>
                         <td style='text-align:center'>{{number_format($d['table_sellers']['total']['transactions'])}}</td>
                         <td style='text-align:center'>{{number_format($d['table_sellers']['total']['tickets'])}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['paid'],2)}}</td>
@@ -523,7 +648,7 @@
                     </tr>
                     @foreach($d['table_debits']['data'] as $e)
                     <tr>
-                        <td colspan="6">{{$e->status}}</td>
+                        <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -537,7 +662,7 @@
                     </tr>
                     @endforeach
                     <tr class="ttotal">
-                        <td colspan="6">Totals</td>
+                        <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>Totals</td>
                         <td style='text-align:center'>{{number_format($d['table_sellers']['total']['transactions']+$d['table_debits']['total']['transactions'])}}</td>
                         <td style='text-align:center'>{{number_format($d['table_sellers']['total']['tickets']+$d['table_debits']['total']['tickets'])}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['paid']+$d['table_debits']['total']['paid'],2)}}</td>
@@ -560,7 +685,9 @@
                   <tr class="theader">
                         <td>DEBIT<br>ON</td>
                         <td>STATUS</td>
+                        @if($d['type'] == 'admin')
                         <td>VENUES</td>
+                        @endif
                         <td>EVENTS</td>
                         <td>PAYMENT</td>
                         <td>TICKET</td>
@@ -575,28 +702,50 @@
                         <td style='text-align:right'>COMM.<br>(C)</td>
                         <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
-                  @foreach($d['table_refunds']['data'] as $e)
-                    <tr>
-                        <td>{{$e->created}}</td>
-                        <td>{{$e->status}}</td>
-                        <td>{{$e->venue}}</td>
-                        <td>{{$e->event}}</td>
-                        <td>{{$e->payment_type}}</td>
-                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
-                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
-                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
-                    </tr>
-                  @endforeach
+                  @if($d['type'] == 'admin')
+                    @foreach($d['table_refunds']['data'] as $e)
+                      <tr>
+                          <td>{{$e->created}}</td>
+                          <td>{{$e->status}}</td>
+                          <td>{{$e->venue}}</td>
+                          <td>{{$e->event}}</td>
+                          <td>{{$e->payment_type}}</td>
+                          <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                          <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                          <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                      </tr>
+                    @endforeach
+                  @else 
+                    @foreach($d['table_refunds']['data'] as $e)
+                      <tr>
+                          <td>{{$e->created}}</td>
+                          <td>{{$e->status}}</td>
+                          <td>{{$e->event}}</td>
+                          <td>{{$e->payment_type}}</td>
+                          <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                          <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                          <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                          <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                      </tr>
+                    @endforeach
+                  @endif
                     <tr class="ttotal">
-                        <td colspan="6">Totals</td>
+                        <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif >Totals</td>
                         <td style='text-align:center'>{{number_format($d['table_refunds']['total']['transactions'])}}</td>
                         <td style='text-align:center'>{{number_format($d['table_refunds']['total']['tickets'])}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_refunds']['total']['paid'],2)}}</td>
@@ -611,86 +760,6 @@
               </table>
               @endif
               
-              @if(isset($d['table_shows']))
-              <hr><hr><table>
-                  <tr class="ttitle">
-                      <td colspan="9">SHOWS BREAKDOWN ON PERIOD:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
-                  </tr>
-                  <tr class="theader">
-                        <td width="25%" align='left'>SHOWS</td>
-                        <td style='text-align:center'>DATE<br>TIME</td>
-                        <td style='text-align:center'>TICKET</td>
-                        <td style='text-align:center'>TRANS.</td>
-                        <td style='text-align:center'>TICKS.</td>
-                        <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
-                        <td style='text-align:right'>TAXES<br>(T)</td>
-                        <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
-                        <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
-                        <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
-                        <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
-                        <td style='text-align:right'>COMM.<br>(C)</td>
-                        <td style='text-align:right'>NET<br>{{$net}}</td>
-                  </tr>
-                  @foreach($d['table_shows']['data'] as $e)
-                    <tr>
-                          <td width="25%" align='left'>{{$e->name}}</td>
-                          <td style='text-align:center'>{{$e->show_time}}</td>
-                          <td style='text-align:center'>{{$e->ticket_type}} - {{$e->title}}</td>
-                          <td style='text-align:center'>{{number_format($e->transactions)}}</td>
-                          <td style='text-align:center'>{{number_format($e->tickets)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
-                          <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
-                    </tr>
-                  @endforeach
-                  <tr class="ttotal">
-                        <td colspan="3">Subtotals</td>
-                        <td style='text-align:center'>{{number_format($d['table_shows']['total']['transactions'])}}</td>
-                        <td style='text-align:center'>{{number_format($d['table_shows']['total']['tickets'])}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['paid'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['taxes'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['cc_fee'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['printed_fee'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['fees_incl'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['fees_over'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['commissions'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['amount'],2)}}</td>
-                      </tr>
-                    @foreach($d['table_debits']['data'] as $e)
-                    <tr>
-                        <td colspan="3">{{$e->status}}</td>
-                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
-                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
-                    </tr>
-                    @endforeach
-                    <tr class="ttotal">
-                        <td colspan="3">Totals</td>
-                        <td style='text-align:center'>{{number_format($d['table_shows']['total']['transactions']+$d['table_debits']['total']['transactions'])}}</td>
-                        <td style='text-align:center'>{{number_format($d['table_shows']['total']['tickets']+$d['table_debits']['total']['tickets'])}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['paid']+$d['table_debits']['total']['paid'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['taxes']+$d['table_debits']['total']['taxes'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['cc_fee']+$d['table_debits']['total']['cc_fee'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['printed_fee']+$d['table_debits']['total']['printed_fee'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['fees_incl']+$d['table_debits']['total']['fees_incl'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['fees_over']+$d['table_debits']['total']['fees_over'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['commissions']+$d['table_debits']['total']['commissions'],2)}}</td>
-                        <td style='text-align:right'>$ {{number_format($d['table_shows']['total']['amount']+$d['table_debits']['total']['amount'],2)}}</td>
-                    </tr>
-              </table>
-              @endif
               
             </div>
             @endforeach

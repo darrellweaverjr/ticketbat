@@ -91,6 +91,7 @@ class ReportSalesController extends Controller{
                             ->distinct()->get()->toArray();
                 //create each report data
                 $report['sales'][] = $this->report_sales('admin',$venues,'TicketBat Totals');
+                $report['events'][] = $this->report_event_breakdown('admin',null,'TicketBat Totals');
                 $report['future'][] = $this->report_future_liabilities('admin',null,'TicketBat Totals');
             }
             else    //regular other sales
@@ -111,12 +112,14 @@ class ReportSalesController extends Controller{
                 $ven[] = $v->id;
                 $report_venue = [];
                 $report_venue['sales'] = [ $this->report_sales('venue',$v->id,$v->name) ];
+                $report_venue['events'] = [ $this->report_event_breakdown('venue',$v->id,$v->name) ];
                 $report_venue['future'] = [ $this->report_future_liabilities('venue',$v->id,$v->name) ];
 
                 //merge them to admin
                 if($this->only_admin>0)
                 {
                     $report['sales'][] = $report_venue['sales'][0];
+                    $report['events'][] = $report_venue['events'][0];
                     $report['future'][] = $report_venue['future'][0];
                 }
                 //send the emails if available option
@@ -163,7 +166,6 @@ class ReportSalesController extends Controller{
         try {
             $types = $this->create_table_types($type,$e);
             $financial = ($type=='showtime')?  null : $this->report_financial($type,$e);
-            $shows = ($type=='showtime')?  null : $this->create_table_shows($type,$e);
             $channels = $this->create_table_channels($type,$e);
             $tickets = $this->create_table_tickets($type,$e); 
             $sellers = $this->create_table_sellers($type,$e);
@@ -171,56 +173,12 @@ class ReportSalesController extends Controller{
             $debits = $this->create_table_debits($type, $e);
             $refunds = $this->create_table_refunds($type,$e);
             //return
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_types'=>$types,'table_channels'=>$channels,
                      'table_tickets'=>$tickets,'table_financial'=>$financial,'table_debits'=>$debits,'table_sellers'=>$sellers,'table_refunds'=>$refunds];
         } catch (Exception $ex) {
             return [];
         }
     }
-    /*
-     * table_sales_shows
-     */
-    public function create_table_shows($type='admin',$e_id=null)
-    {
-        try {
-            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee) AS amount' :
-                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee-purchases.printed_fee) AS amount';
-            $table = DB::table('shows')
-                        ->join('venues', 'venues.id', '=' ,'shows.venue_id')
-                        ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
-                        ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                        ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
-                        ->join('packages', 'packages.id', '=' ,'tickets.package_id')
-                        ->select(DB::raw('venues.name AS venue, shows.name, tickets.ticket_type, packages.title,
-                                        DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
-                                        purchases.payment_type AS payment_type,
-                                      COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
-                                      SUM(purchases.retail_price) AS retail_price, SUM(purchases.printed_fee) AS printed_fee,
-                                      SUM(purchases.savings) AS savings, SUM(purchases.sales_taxes) AS taxes,
-                                      SUM(purchases.price_paid) AS paid, SUM(purchases.cc_fees) AS cc_fee,
-                                      SUM(purchases.commission_percent) AS commissions,
-                                      SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
-                                      SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                        ->where('purchases.status','<>','Void')
-                        ->groupBy('venues.id')->groupBy('shows.id')->groupBy('show_times.show_time')->groupBy('tickets.id')
-                        ->orderBy('venues.name')->orderBy('shows.name')->orderBy('show_times.show_time')->orderBy('tickets.id');
-
-            if($type=='admin' || empty($e_id))
-                $table->whereDate('show_times.show_time','>=',$this->start_date)->whereDate('show_times.show_time','<=', \Illuminate\Support\Carbon::today());
-            else if(!empty($e_id))
-            {
-                if($type=='venue')
-                    $table->whereDate('show_times.show_time','>=',$this->start_date)->whereDate('show_times.show_time','<=', \Illuminate\Support\Carbon::today())
-                          ->where('venues.id','=',$e_id);
-                else if($type=='showtime')
-                    $table->where('show_times.id','=',$e_id);
-            }
-            $table = $table->distinct()->get()->toArray();  
-            return ['data'=>$table, 'total'=> $this->calc_totals($table)];
-        } catch (Exception $ex) {
-            return [];
-        }
-    }    
     /*
      * table_sales_types
      */
@@ -401,24 +359,36 @@ class ReportSalesController extends Controller{
         }
     }
     /*
-     * table_sales_shows
+     * report_future_liabilities
      */
     public function report_future_liabilities($type,$venue_id=null,$title)
     {
         try {
-            if(empty($venue_id))    //admin
-                $future = $this->create_table_future_liabilities();
-            else
-                $future = $this->create_table_future_liabilities('venue',$venue_id);
+            $start = date('Y-m-d H:i');
+            $future = $this->create_table_event_details($type,$venue_id,$start,null);
             return ['type'=>$type,'title'=>$title,'date'=>date('D, F j, Y',strtotime('today')),'table_future'=>$future['data'],'total'=>$future['total']];
         } catch (Exception $ex) {
             return [];
         }
     }
     /*
-     * table_sales_types
+     * report_events_breakdown
      */
-    public function create_table_future_liabilities($type='admin',$e_id=null)
+    public function report_event_breakdown($type,$venue_id=null,$title)
+    {
+        try {
+            $start = $this->start_date;
+            $end = date('Y-m-d H:i');
+            $events = $this->create_table_event_details($type,$venue_id,$start,$end);
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_events'=>$events['data'],'total'=>$events['total']];
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    /*
+     * table_event_details
+     */
+    public function create_table_event_details($type='admin',$e_id=null,$start_date,$end_date=null)
     {
         try {
             $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee) AS amount' :
@@ -427,23 +397,28 @@ class ReportSalesController extends Controller{
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                             ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
-                            ->select(DB::raw('venues.name AS venue, shows.name AS event, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time,
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->select(DB::raw('DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time, venues.name AS venue, shows.name AS event, purchases.channel, purchases.payment_type, tickets.ticket_type, packages.title,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets, SUM(purchases.printed_fee) AS printed_fee,
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
                                           SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
-                            ->where('purchases.status','<>','Void')
-                            ->where('show_times.show_time','>',date('Y-m-d H:i'))
-                            ->groupBy('show_times.show_time')->groupBy('shows.id')
-                            ->orderBy('show_times.show_time')->orderBy('shows.name');
+                            ->where('purchases.status','<>','Void');
             
             if(!empty($e_id))
             {
                 if($type=='venue')
                     $future->where('venues.id',$e_id);
             }
-            $future = $future->distinct()->get()->toArray();
+            if(!empty($start_date))
+                $future->where('show_times.show_time','>=',$start_date);
+            if(!empty($end_date))
+                $future->where('show_times.show_time','<=',$end_date);
+            $future = $future->groupBy('show_times.id')->groupBy('venues.id')->groupBy('shows.id')->groupBy('purchases.channel')->groupBy('purchases.payment_type')->groupBy('tickets.id')
+                             ->orderBy('show_times.show_time','ASC')->orderBy('venues.name')->orderBy('shows.name')->orderBy('purchases.channel')->orderBy('purchases.payment_type')->orderBy('tickets.id')
+                             ->distinct()->get()->toArray();
             return ['data'=>$future, 'total'=> $this->calc_totals($future)];
         } catch (Exception $ex) {
             return [];
@@ -621,19 +596,28 @@ class ReportSalesController extends Controller{
                 PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
                 $files[] = $file;
             }    
+            //events breakdown report pdf
+            if(isset($report['events']))
+            {
+                $format = 'event_breakdown'; $data = $report['events'];
+                $file = '/tmp/ReportEventBreakdown_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
+                $view = View::make('command.report_sales', compact('data','format'));
+                PDF::loadHTML($view->render())->setPaper('a4', 'landscape')->setWarnings(false)->save($file);
+                $files[] = $file;
+            }
             //future liabilities report pdf
-            if(isset($report['sales']))
+            if(isset($report['future']))
             {
                 $format = 'future_liabilities'; $data = $report['future'];
                 $file = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $view = View::make('command.report_sales', compact('data','format'));
-                PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
+                PDF::loadHTML($view->render())->setPaper('a4', 'landscape')->setWarnings(false)->save($file);
                 $files[] = $file;
             }
             //sales report csv
-            if(!empty($report['sales']) && !empty($report['sales'][0]['table_shows']))
+            if(!empty($report['purchases']))
             {
-                $format = 'csv'; $data = $report['sales'][0]['table_shows'];
+                $format = 'csv'; $data = $report['purchases'];
                 $view = View::make('command.report_sales', compact('data','format'));
                 $url = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.csv';
                 $file= fopen($url, "w"); fwrite($file, $view->render()); fclose($file);
