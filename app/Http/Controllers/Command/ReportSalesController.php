@@ -19,6 +19,8 @@ class ReportSalesController extends Controller{
     protected $days = 1;
     protected $only_admin = 0;
     protected $start_date;
+    protected $end_date;
+    protected $date_format;
     protected $report_date;
     protected $subject;
 
@@ -31,10 +33,11 @@ class ReportSalesController extends Controller{
     {
         $this->days = $days;
         $this->only_admin = $only_admin;
-        $this->start_date = date('Y-m-d',strtotime('-'.$this->days.' days'));
-        $date_format = 'D, F j, Y';
-        $this->report_date = ($this->days<1)? date($date_format,strtotime('now')) :
-                                  date($date_format,strtotime('-'.$this->days.' days')).' - '.date($date_format,strtotime('now'));
+        $this->start_date = date('Y-m-d H:i',strtotime('-'.(24*$this->days).' hours'));
+        $this->end_date = date('Y-m-d H:i',strtotime('now'));
+        $this->date_format = 'D, F j, Y @ g:iA';
+        $this->report_date = ($this->days<1)? date($this->date_format,strtotime($this->end_date)) :
+                                  date($this->date_format,strtotime($this->start_date)).' - '.date($this->date_format,strtotime($this->end_date));
         $this->subject = 'Daily Sales Report ';
     }
     /*
@@ -44,10 +47,9 @@ class ReportSalesController extends Controller{
     {
         try {
             //init main variables
-            $date_format = 'D, F j, Y';
             $showtime = ShowTime::find($show_time_id);
-            $title = $showtime->show->name.' @ '.date('n/d/Y g:iA', strtotime($showtime->show_time)).' - Total Sales';
-            $this->report_date = date($date_format,strtotime('now'));
+            $title = $showtime->show->name.' @ '.date($this->date_format, strtotime($showtime->show_time)).' - Total Sales';
+            $this->report_date = date($this->date_format,strtotime($this->end_date));
             //create report
             $report = ['sales'=>[ $this->report_sales('showtime',$show_time_id,$title) ]];
             $files = $this->create_files($report,$title);
@@ -86,7 +88,7 @@ class ReportSalesController extends Controller{
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over,
                                           SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee) AS amount'))
                             ->where('purchases.status','<>','Void')
-                            ->whereDate('purchases.created','>=',$this->start_date)
+                            ->where('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->orderBy('venues.name')
                             ->distinct()->get()->toArray();
                 //create each report data
@@ -102,7 +104,7 @@ class ReportSalesController extends Controller{
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->select('venues.id','venues.name','venues.accounting_email','venues.daily_sales_emails')
                             ->where('purchases.status','<>','Void')
-                            ->whereDate('purchases.created','>=',$this->start_date)
+                            ->where('purchases.created','>=',$this->start_date)
                             ->groupBy('venues.id')->orderBy('venues.name')
                             ->distinct()->get()->toArray();
             }
@@ -173,7 +175,7 @@ class ReportSalesController extends Controller{
             $debits = $this->create_table_debits($type, $e);
             $refunds = $this->create_table_refunds($type,$e);
             //return
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_types'=>$types,'table_channels'=>$channels,
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'created'=>date($this->date_format,strtotime($this->end_date)),'table_types'=>$types,'table_channels'=>$channels,
                      'table_tickets'=>$tickets,'table_financial'=>$financial,'table_debits'=>$debits,'table_sellers'=>$sellers,'table_refunds'=>$refunds];
         } catch (Exception $ex) {
             return [];
@@ -204,11 +206,11 @@ class ReportSalesController extends Controller{
                             ->groupBy('tickets.ticket_type')->groupBy('packages.title')->orderBy('tickets.id')->orderBy('packages.title');
             
             if($type=='admin' || empty($e_id))
-                $types->whereDate('purchases.created','>=',$this->start_date);
+                $types->where('purchases.created','>=',$this->start_date);
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $types->whereDate('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
+                    $types->where('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
                 else if($type=='showtime')
                     $types->where('show_times.id','=',$e_id);
             }
@@ -241,11 +243,11 @@ class ReportSalesController extends Controller{
                             ->groupBy(DB::raw('payment_type'))->orderBy(DB::raw('payment_type'));
             
             if($type=='admin' || empty($e_id))
-                $types->whereDate('purchases.created','>=',$this->start_date);
+                $types->where('purchases.created','>=',$this->start_date);
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $types->whereDate('purchases.created','>=',$this->start_date)->where('venues.id',$e_id);
+                    $types->where('purchases.created','>=',$this->start_date)->where('venues.id',$e_id);
                 else if($type=='showtime')
                     $types->where('show_times.id','=',$e_id);
             }
@@ -289,11 +291,11 @@ class ReportSalesController extends Controller{
                         ->groupBy('purchases.channel')->orderBy('purchases.channel');
             
             if($type=='admin' || empty($e_id))
-                $table->whereDate('purchases.created','>=',$this->start_date);
+                $table->where('purchases.created','>=',$this->start_date);
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $table->whereDate('purchases.created','>=',$this->start_date)->where('shows.venue_id',$e_id);
+                    $table->where('purchases.created','>=',$this->start_date)->where('shows.venue_id',$e_id);
                 else if($type=='showtime')
                     $table->where('show_times.id','=',$e_id);
             }
@@ -333,11 +335,11 @@ class ReportSalesController extends Controller{
                             ->groupBy('users.email')->orderBy('show_times.show_time','DESC')->orderBy('venues.name')->orderBy('shows.name')->orderBy('purchases.payment_type')->orderBy('tickets.id');
             
             if($type=='admin' || empty($e_id))
-                $sellers->whereDate('purchases.created','>=',$this->start_date);
+                $sellers->where('purchases.created','>=',$this->start_date);
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $sellers->whereDate('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
+                    $sellers->where('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
                 else if($type=='showtime')
                     $sellers->where('show_times.id','=',$e_id);
             }
@@ -364,9 +366,8 @@ class ReportSalesController extends Controller{
     public function report_future_liabilities($type,$venue_id=null,$title)
     {
         try {
-            $start = date('Y-m-d H:i');
-            $future = $this->create_table_event_details($type,$venue_id,$start,null);
-            return ['type'=>$type,'title'=>$title,'date'=>date('D, F j, Y',strtotime('today')),'table_future'=>$future['data'],'total'=>$future['total']];
+            $future = $this->create_table_event_details($type,$venue_id,$this->end_date,null);
+            return ['type'=>$type,'title'=>$title,'date'=>date($this->date_format,strtotime($this->end_date)),'created'=>date($this->date_format,strtotime($this->end_date)),'table_future'=>$future['data'],'total'=>$future['total']];
         } catch (Exception $ex) {
             return [];
         }
@@ -377,10 +378,8 @@ class ReportSalesController extends Controller{
     public function report_event_breakdown($type,$venue_id=null,$title)
     {
         try {
-            $start = $this->start_date;
-            $end = date('Y-m-d H:i');
-            $events = $this->create_table_event_details($type,$venue_id,$start,$end);
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_events'=>$events['data'],'total'=>$events['total']];
+            $events = $this->create_table_event_details($type,$venue_id,$this->start_date,$this->end_date);
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'created'=>date($this->date_format,strtotime($this->end_date)),'table_events'=>$events['data'],'total'=>$events['total']];
         } catch (Exception $ex) {
             return [];
         }
@@ -432,37 +431,37 @@ class ReportSalesController extends Controller{
         try {
             //init
             $start = $this->start_date;
-            $end = date('Y-m-d');
+            $end = $this->end_date;
             $tables = [];
 
             //table sales by period or daily by property    -0
             $_start = $start;
             $_end = $end;
-            $title = ($start==$end)? 'DAILY BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_end)) : 'PERIOD BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j, Y',strtotime($_start)).' - '.date('D, F j, Y',strtotime($_end)) ;
+            $title = ($start==$end)? 'DAILY BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_end)) : 'PERIOD BY PROPERTY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_start)).' - '.date($this->date_format,strtotime($_end)) ;
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up month MTD   -1
-            $_start = date('Y-m-01',strtotime($end));
+            $_start = date('Y-m-01 H:i',strtotime($end));
             $_end = $end;
-            $title = 'ROLL UP MTD CURRENT ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $title = 'ROLL UP MTD CURRENT ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_start)).' - '.date($this->date_format,strtotime($_end)) ;
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up previous month MTD  -2
-            $_start = date('Y-m-d', $this->rollup_date( date('Y-m-01',strtotime($end)) ));
-            $_end = date('Y-m-d', $this->rollup_date($end));
-            $title = 'ROLL UP MTD PERIOD ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $_start = date('Y-m-d H:i', $this->rollup_date( date('Y-m-01',strtotime($end)) ));
+            $_end = date('Y-m-d H:i', $this->rollup_date($end));
+            $title = 'ROLL UP MTD PERIOD ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_start)).' - '.date($this->date_format,strtotime($_end)) ;
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up year YTD    -3
-            $_start = date('Y-01-01',strtotime($end));
+            $_start = date('Y-01-01 H:i',strtotime($end));
             $_end = $end;
-            $title = 'ROLL UP YTD CURRENT ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $title = 'ROLL UP YTD CURRENT ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_start)).' - '.date($this->date_format,strtotime($_end)) ;
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up previous year YTD   -4
-            $_start = date('Y-m-d', $this->rollup_date( date('Y-01-01',strtotime($end)) ));
-            $_end = date('Y-m-d', $this->rollup_date($end));
-            $title = 'ROLL UP YTD PERIOD ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date('D, F j',strtotime($_start)).' - '.date('D, F j',strtotime($_end)) ;
+            $_start = date('Y-m-d H:i', $this->rollup_date( date('Y-01-01',strtotime($end)) ));
+            $_end = date('Y-m-d H:i', $this->rollup_date($end));
+            $title = 'ROLL UP YTD PERIOD ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_start)).' - '.date($this->date_format,strtotime($_end)) ;
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //percent MTD
@@ -497,11 +496,11 @@ class ReportSalesController extends Controller{
                         ->groupBy('venues.id')->orderBy('venues.name');
             
             if($type=='admin' || empty($e_id))
-                $table->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end);
+                $table->where('purchases.created','>=',$start)->where('purchases.created','<=',$end);
             else if(!empty($e_id))
             {
                 if($type=='venue')
-                    $table->whereDate('purchases.created','>=',$start)->whereDate('purchases.created','<=',$end)->where('venues.id',$e_id);
+                    $table->where('purchases.created','>=',$start)->where('purchases.created','<=',$end)->where('venues.id',$e_id);
             }
             $table = $table->distinct()->get()->toArray();
             $data = ['title'=>$title, 'data'=>$table, 'total'=> $this->calc_totals($table)];
@@ -551,17 +550,17 @@ class ReportSalesController extends Controller{
             //filter
             if($type=='admin' || empty($e_id))
             {
-                $debits->whereDate('transaction_refunds.created','>=',$start);
+                $debits->where('transaction_refunds.created','>=',$start);
                 if(!empty($end))
-                    $debits->whereDate('transaction_refunds.created','<=',$end);
+                    $debits->where('transaction_refunds.created','<=',$end);
             }
             else if(!empty($e_id))
             {
                 if($type=='venue')
                 {
-                    $debits->whereDate('transaction_refunds.created','>=',$start);
+                    $debits->where('transaction_refunds.created','>=',$start);
                     if(!empty($end))
-                        $debits->whereDate('transaction_refunds.created','<=',$end);
+                        $debits->where('transaction_refunds.created','<=',$end);
                     $debits->where('venues.id','=',$e_id);
                 }
                 else if($type=='showtime')
@@ -593,7 +592,7 @@ class ReportSalesController extends Controller{
                 $format = 'sales'; $data = $report['sales'];
                 $view= View::make('command.report_sales', compact('data','format'));
                 $file = '/tmp/ReportSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                PDF::loadHTML($view->render())->setPaper('a4', 'portrait')->setWarnings(false)->save($file);
+                PDF::loadHTML($view->render())->setPaper('letter', 'portrait')->setWarnings(false)->save($file);
                 $files[] = $file;
             }    
             //events breakdown report pdf
@@ -602,7 +601,7 @@ class ReportSalesController extends Controller{
                 $format = 'event_breakdown'; $data = $report['events'];
                 $file = '/tmp/ReportEventBreakdown_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $view = View::make('command.report_sales', compact('data','format'));
-                PDF::loadHTML($view->render())->setPaper('a4', 'landscape')->setWarnings(false)->save($file);
+                PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
                 $files[] = $file;
             }
             //future liabilities report pdf
@@ -611,7 +610,7 @@ class ReportSalesController extends Controller{
                 $format = 'future_liabilities'; $data = $report['future'];
                 $file = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $view = View::make('command.report_sales', compact('data','format'));
-                PDF::loadHTML($view->render())->setPaper('a4', 'landscape')->setWarnings(false)->save($file);
+                PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
                 $files[] = $file;
             }
             //sales report csv
@@ -643,7 +642,7 @@ class ReportSalesController extends Controller{
             $email->category('Reports');            
             if(!empty($files))
             {
-                $msg = '<center>Attached is the report for sales completed on '.date('m/d/Y g:ia').'<br><h1>:)</h1></center>';
+                $msg = '<center>Attached is the report for sales completed on '.date($this->date_format, strtotime($this->end_date)).'<br><h1>:)</h1></center>';
                 $email->attachment( $files );
             }
             else

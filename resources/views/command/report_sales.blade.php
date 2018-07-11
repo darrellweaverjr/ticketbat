@@ -40,7 +40,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                 <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                <br><br>FUTURE LIABILITIES REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
+                <br><br>FUTURE LIABILITIES REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( starting on {{$d['date']}} )</p>
                 <table>
@@ -128,7 +128,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                 <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                <br><br>EVENT BREAKDOWN REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
+                <br><br>EVENT BREAKDOWN REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( {{$d['date']}} )</p>
                 <table>
@@ -217,7 +217,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                     <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                    <br><br>SALES REPORT<br><span style="font-size:8px">Created on {{date('n/d/Y g:i A')}}</span>
+                    <br><br>SALES REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
 
@@ -225,8 +225,10 @@
             <hr>@foreach($d['table_financial'] as $t)
             <hr><table>
                   <tr class="ttitle">
-                      <td colspan="7">{{html_entity_decode($t['title'])}}</td>
-                      <td colspan="4" style='text-align:right'>@if(!empty($t['percent'])) @if($t['percent']>0)+ @endif {{$t['percent']}}% NET {{$net}} @endif</td>
+                      <td colspan="11">{{html_entity_decode($t['title'])}}</td>
+                  </tr>
+                  <tr class="ttitle">
+                      <td colspan="11" style='text-align:right'>@if(!empty($t['percent'])) @if($t['percent']>0)+ @endif {{$t['percent']}}% NET {{$net}} @endif</td>
                   </tr>
                   <tr class="theader">
                       <td width="25%">VENUES</td>
@@ -308,7 +310,7 @@
             <hr>@if(isset($d['table_types']))
             <hr><table>
                   <tr class="ttitle">
-                      <td colspan="7">PAYMENT METHOD REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                      <td colspan="11">PAYMENT METHOD REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
                       <td>TYPE</td>
@@ -415,7 +417,7 @@
               @if(isset($d['table_channels']))
               <hr><table>
                   <tr class="ttitle">
-                      <td colspan="7">CHANNEL SALES:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                      <td colspan="11">CHANNEL SALES:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
                       <td>CHANNEL</td>
@@ -492,7 +494,7 @@
               @if(isset($d['table_tickets']))
               <hr><table>
                   <tr class="ttitle">
-                      <td colspan="7">TICKETS REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                      <td colspan="11">TICKETS REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
                         <td>TYPE</td>
@@ -569,7 +571,7 @@
               @if(isset($d['table_sellers']))
               <hr><table>
                   <tr class="ttitle">
-                      <td colspan="7">POS SELLERS REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                      <td colspan="16">POS SELLERS REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
                         <td>SELLER<br>EMAIL</td>
@@ -680,7 +682,7 @@
               @if(isset($d['table_refunds']))
               <hr><table>
                   <tr class="ttitle">
-                      <td colspan="7">DEBITS REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
+                      <td colspan="16">DEBITS REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
                         <td>DEBIT<br>ON</td>
