@@ -165,11 +165,14 @@ class ReportSalesController extends Controller{
             $financial = ($type=='showtime')?  null : $this->report_financial($type,$e);
             $shows = ($type=='showtime')?  null : $this->create_table_shows($type,$e);
             $channels = $this->create_table_channels($type,$e);
-            $tickets = $this->create_table_tickets($type,$e);         
+            $tickets = $this->create_table_tickets($type,$e); 
+            $sellers = $this->create_table_sellers($type,$e);
             //debits
-            $debits = $this->create_table_debits($type, $e, null, null);
+            $debits = $this->create_table_debits($type, $e);
+            $refunds = $this->create_table_refunds($type,$e);
             //return
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,'table_tickets'=>$tickets,'table_financial'=>$financial,'table_debits'=>$debits];
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'table_shows'=>$shows,'table_types'=>$types,'table_channels'=>$channels,
+                     'table_tickets'=>$tickets,'table_financial'=>$financial,'table_debits'=>$debits,'table_sellers'=>$sellers,'table_refunds'=>$refunds];
         } catch (Exception $ex) {
             return [];
         }
@@ -217,7 +220,7 @@ class ReportSalesController extends Controller{
         } catch (Exception $ex) {
             return [];
         }
-    }
+    }    
     /*
      * table_sales_types
      */
@@ -338,6 +341,61 @@ class ReportSalesController extends Controller{
             }
             $table = $table->distinct()->get()->toArray();
             return ['data'=>$table, 'total'=> $this->calc_totals($table)];
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    /*
+     * table_sales_sellers
+     */
+    public function create_table_sellers($type='admin',$e_id=null)
+    {
+        try {
+            $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee) AS amount' :
+                                        'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee-purchases.printed_fee) AS amount';
+            //get all records
+            $sellers = DB::table('venues')
+                            ->join('shows', 'venues.id', '=' ,'shows.venue_id')
+                            ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
+                            ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
+                            ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                            ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->join('users', 'users.id', '=' ,'purchases.user_id')
+                            ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
+                            ->select(DB::raw('users.email, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time, venues.name AS venue, shows.name AS event, purchases.payment_type, tickets.ticket_type, packages.title, 
+                                          SUM(purchases.printed_fee) AS printed_fee,
+                                          COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
+                                          SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
+                                          SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
+                                          SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
+                                          SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
+                            ->where('purchases.status','<>','Void')
+                            ->where('user_types.user_type','=','Seller')
+                            ->groupBy('users.id')->groupBy('show_times.id')->groupBy('venues.id')->groupBy('shows.id')->groupBy('purchases.payment_type')->groupBy('tickets.id')
+                            ->groupBy('users.email')->orderBy('show_times.show_time','DESC')->orderBy('venues.name')->orderBy('shows.name')->orderBy('purchases.payment_type')->orderBy('tickets.id');
+            
+            if($type=='admin' || empty($e_id))
+                $sellers->whereDate('purchases.created','>=',$this->start_date);
+            else if(!empty($e_id))
+            {
+                if($type=='venue')
+                    $sellers->whereDate('purchases.created','>=',$this->start_date)->where('venues.id','=',$e_id);
+                else if($type=='showtime')
+                    $sellers->where('show_times.id','=',$e_id);
+            }
+            $sellers = $sellers->distinct()->get()->toArray();   
+            return ['data'=>$sellers, 'total'=> $this->calc_totals($sellers)];
+        } catch (Exception $ex) {
+            return [];
+        }
+    }
+    /*
+     * table_sales_refunds
+     */
+    public function create_table_refunds($type='admin',$e_id=null)
+    {
+        try {
+            return $this->create_table_debits($type,$e_id,null,null,$breakdown=true);
         } catch (Exception $ex) {
             return [];
         }
@@ -486,7 +544,7 @@ class ReportSalesController extends Controller{
     /*
      * table_refunds
      */
-    public function create_table_debits($type='admin',$e_id=null,$start=null,$end=null)
+    public function create_table_debits($type='admin',$e_id=null,$start=null,$end=null,$breakdown=false)
     {
         try {
             if(empty($start))
@@ -504,7 +562,8 @@ class ReportSalesController extends Controller{
                                 $join->on('transaction_refunds.purchase_id', '=', 'purchases.id')
                                      ->where('transaction_refunds.result','=','Approved');
                             })
-                            ->select(DB::raw('purchases.status, SUM(transaction_refunds.printed_fee)*-1 AS printed_fee,
+                            ->select(DB::raw('DATE_FORMAT(transaction_refunds.created, "%c/%e/%y %l:%i%p") AS created, venues.name AS venue, shows.name AS event, transaction_refunds.payment_type, tickets.ticket_type, packages.title, purchases.status, 
+                                          SUM(transaction_refunds.printed_fee)*-1 AS printed_fee,
                                           COUNT(transaction_refunds.id)*-1 AS transactions, SUM(transaction_refunds.quantity)*-1 AS tickets,
                                           SUM(transaction_refunds.amount)*-1 AS paid, SUM(transaction_refunds.sales_taxes)*-1 AS taxes,
                                           SUM(transaction_refunds.commission_percent)*-1 AS commissions, SUM(purchases.cc_fees)*-1 AS cc_fee,
@@ -513,9 +572,8 @@ class ReportSalesController extends Controller{
                             ->where(function($query) {
                                 $query->where('purchases.status','=','Refunded')
                                       ->orWhere('purchases.status','=','Chargeback');
-                            })
-                            ->groupBy('purchases.status');
-            
+                            });
+            //filter
             if($type=='admin' || empty($e_id))
             {
                 $debits->whereDate('transaction_refunds.created','>=',$start);
@@ -534,6 +592,12 @@ class ReportSalesController extends Controller{
                 else if($type=='showtime')
                     $debits->where('show_times.id','=',$e_id);
             }
+            //breakdown or regular summary
+            if($breakdown)
+                $debits = $debits->groupBy('transaction_refunds.id')
+                                 ->orderBy('transaction_refunds.created','DESC');
+            else
+                $debits = $debits->groupBy('purchases.status');
             $debits = $debits->distinct()->get()->toArray();   
             return ['data'=>$debits, 'total'=> $this->calc_totals($debits)];
         } catch (Exception $ex) {
