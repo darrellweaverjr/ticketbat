@@ -475,7 +475,8 @@ class ReportSalesController extends Controller{
     {
         try {
             $future = $this->create_table_event_details($type,$venue_id,$this->end_date,null);
-            return ['type'=>$type,'title'=>$title,'date'=>date($this->date_format,strtotime($this->end_date)),'created'=>date($this->date_format,strtotime($this->end_date)),'table_future'=>$future];
+            $consig = $this->create_table_event_details($type,$venue_id,$this->end_date,null,true);
+            return ['type'=>$type,'title'=>$title,'date'=>date($this->date_format,strtotime($this->end_date)),'created'=>date($this->date_format,strtotime($this->end_date)),'table_future'=>$future,'table_consignments'=>$consig];
         } catch (Exception $ex) {
             return [];
         }
@@ -488,7 +489,8 @@ class ReportSalesController extends Controller{
     {
         try {
             $events = $this->create_table_event_details($type,$venue_id,$this->start_date,$this->end_date);
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'created'=>date($this->date_format,strtotime($this->end_date)),'table_events'=>$events];
+            $consig = $this->create_table_event_details($type,$venue_id,$this->start_date,$this->end_date,true);
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'created'=>date($this->date_format,strtotime($this->end_date)),'table_events'=>$events,'table_consignments'=>$consig];
         } catch (Exception $ex) {
             return [];
         }
@@ -496,12 +498,12 @@ class ReportSalesController extends Controller{
     /*
      * table_event_details
      */
-    public function create_table_event_details($type='admin',$e_id=null,$start_date,$end_date=null)
+    public function create_table_event_details($type='admin',$e_id=null,$start_date,$end_date=null,$onlyConsign=false)
     {
         try {
             $amount = ($type=='admin')? 'SUM(purchases.commission_percent+purchases.processing_fee+purchases.printed_fee) AS amount' :
                                         'SUM(purchases.price_paid-purchases.sales_taxes-purchases.cc_fees-purchases.commission_percent-purchases.processing_fee-purchases.printed_fee) AS amount';
-            $future = DB::table('venues')
+            $events = DB::table('venues')
                             ->join('shows', 'venues.id', '=' ,'shows.venue_id')
                             ->join('show_times', 'shows.id', '=' ,'show_times.show_id')
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
@@ -514,20 +516,27 @@ class ReportSalesController extends Controller{
                                           SUM( IF(purchases.inclusive_fee>0, ROUND(purchases.processing_fee,2), 0) ) AS fees_incl,
                                           SUM( IF(purchases.inclusive_fee>0, 0, ROUND(purchases.processing_fee,2)) ) AS fees_over, '.$amount))
                             ->where('purchases.status','<>','Void');
+            if($onlyConsign)
+                $events->where(function($query) {
+                            $query->where('purchases.channel','=','Consignment')
+                                  ->orWhere('purchases.payment_type','=','Consignment');
+                        });
+            else
+                $events->where('purchases.channel','<>','Consignment')->where('purchases.payment_type','<>','Consignment');
             
             if(!empty($e_id))
             {
                 if($type=='venue')
-                    $future->where('venues.id',$e_id);
+                    $events->where('venues.id',$e_id);
             }
             if(!empty($start_date))
-                $future->where('show_times.show_time','>=',$start_date);
+                $events->where('show_times.show_time','>=',$start_date);
             if(!empty($end_date))
-                $future->where('show_times.show_time','<=',$end_date);
-            $future = $future->groupBy('show_times.id')->groupBy('venues.id')->groupBy('shows.id')->groupBy('purchases.channel')->groupBy('purchases.payment_type')->groupBy('tickets.id')
+                $events->where('show_times.show_time','<=',$end_date);
+            $events = $events->groupBy('show_times.id')->groupBy('venues.id')->groupBy('shows.id')->groupBy('purchases.channel')->groupBy('purchases.payment_type')->groupBy('tickets.id')
                              ->orderBy('show_times.show_time','ASC')->orderBy('venues.name')->orderBy('shows.name')->orderBy('purchases.channel')->orderBy('purchases.payment_type')->orderBy('tickets.id')
                              ->distinct()->get()->toArray();
-            return ['data'=>$future, 'total'=> $this->calc_totals($future)];
+            return ['data'=>$events, 'total'=> $this->calc_totals($events)];
         } catch (Exception $ex) {
             return [];
         }
