@@ -475,7 +475,7 @@ class ReportSalesController extends Controller{
     {
         try {
             $future = $this->create_table_event_details($type,$venue_id,$this->end_date,null);
-            return ['type'=>$type,'title'=>$title,'date'=>date($this->date_format,strtotime($this->end_date)),'created'=>date($this->date_format,strtotime($this->end_date)),'table_future'=>$future['data'],'total'=>$future['total']];
+            return ['type'=>$type,'title'=>$title,'date'=>date($this->date_format,strtotime($this->end_date)),'created'=>date($this->date_format,strtotime($this->end_date)),'table_future'=>$future];
         } catch (Exception $ex) {
             return [];
         }
@@ -488,7 +488,7 @@ class ReportSalesController extends Controller{
     {
         try {
             $events = $this->create_table_event_details($type,$venue_id,$this->start_date,$this->end_date);
-            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'created'=>date($this->date_format,strtotime($this->end_date)),'table_events'=>$events['data'],'total'=>$events['total']];
+            return ['type'=>$type,'title'=>$title,'date'=>$this->report_date,'created'=>date($this->date_format,strtotime($this->end_date)),'table_events'=>$events];
         } catch (Exception $ex) {
             return [];
         }

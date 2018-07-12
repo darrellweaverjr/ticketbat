@@ -44,7 +44,8 @@
                 <br><br>FUTURE LIABILITIES REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( starting on {{$d['date']}} )</p>
-                <table>
+                @if(isset($d['table_future']))
+                <hr><table>
                   <tr class="theader">
                       <td>DATE/TIME</td>
                       @if($d['type'] == 'admin')
@@ -66,7 +67,7 @@
                       <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
                 @if($d['type'] == 'admin')
-                    @foreach($d['table_future'] as $e)
+                    @foreach($d['table_future']['data'] as $e)
                     <tr>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
@@ -87,7 +88,7 @@
                     </tr>
                     @endforeach
                 @else 
-                    @foreach($d['table_future'] as $e)
+                    @foreach($d['table_future']['data'] as $e)
                     <tr>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
@@ -109,18 +110,19 @@
                 @endif
                     <tr class="ttotal">
                       <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
-                      <td style='text-align:center'>{{$d['total']['transactions']}}</td>
-                      <td style='text-align:center'>{{$d['total']['tickets']}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['paid'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['taxes'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['cc_fee'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['printed_fee'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['fees_incl'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['fees_over'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['commissions'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['amount'],2)}}</td>
+                      <td style='text-align:center'>{{$d['table_future']['total']['transactions']}}</td>
+                      <td style='text-align:center'>{{$d['table_future']['total']['tickets']}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['paid'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['taxes'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['cc_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['printed_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['fees_incl'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['fees_over'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['commissions'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_future']['total']['amount'],2)}}</td>
                     </tr>
               </table>
+            @endif
             </div>
             @endforeach
             
@@ -133,7 +135,8 @@
                 <br><br>EVENT BREAKDOWN REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( {{$d['date']}} )</p>
-                <table>
+                @if(isset($d['table_events']))
+                <hr><table>
                   <tr class="theader">
                       <td>DATE/TIME</td>
                       @if($d['type'] == 'admin')
@@ -155,7 +158,7 @@
                       <td style='text-align:right'>NET<br>{{$net}}</td>
                   </tr>
                 @if($d['type'] == 'admin')
-                    @foreach($d['table_events'] as $e)
+                    @foreach($d['table_events']['data'] as $e)
                     <tr>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
@@ -176,7 +179,7 @@
                     </tr>
                     @endforeach
                 @else 
-                    @foreach($d['table_events'] as $e)
+                    @foreach($d['table_events']['data'] as $e)
                     <tr>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
@@ -198,18 +201,19 @@
                 @endif
                     <tr class="ttotal">
                       <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
-                      <td style='text-align:center'>{{$d['total']['transactions']}}</td>
-                      <td style='text-align:center'>{{$d['total']['tickets']}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['paid'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['taxes'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['cc_fee'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['printed_fee'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['fees_incl'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['fees_over'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['commissions'],2)}}</td>
-                      <td style='text-align:right'>$ {{number_format($d['total']['amount'],2)}}</td>
+                      <td style='text-align:center'>{{$d['table_events']['total']['transactions']}}</td>
+                      <td style='text-align:center'>{{$d['table_events']['total']['tickets']}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['paid'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['taxes'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['cc_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['printed_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['fees_incl'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['fees_over'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['commissions'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_events']['total']['amount'],2)}}</td>
                     </tr>
               </table>
+               @endif 
             </div>
             @endforeach
             
@@ -435,7 +439,7 @@
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
 
-            <hr>@if(isset($d['table_types']))
+            @if(isset($d['table_types']))
             <hr><table>
                   <tr class="ttitle">
                       <td colspan="11">PAYMENT METHOD REVIEW:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
@@ -710,7 +714,7 @@
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
 
             @if(isset($d['table_financial']))
-            <hr>@foreach($d['table_financial'] as $t)
+            @foreach($d['table_financial'] as $t)
             <hr><table>
                   <tr class="ttitle">
                       <td colspan="11">{{html_entity_decode($t['title'])}}</td>
