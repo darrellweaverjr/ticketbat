@@ -46,6 +46,9 @@
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( starting on {{$d['date']}} )</p>
                 @if(isset($d['table_future']))
                 <hr><table>
+                    <tr class="ttitle">
+                      <td colspan="15">SALES WITHOUT CONSIGNMENTS</td>
+                    </tr>
                   <tr class="theader">
                       <td>DATE/TIME</td>
                       @if($d['type'] == 'admin')
@@ -126,6 +129,9 @@
             
             @if(isset($d['table_consignments']))
                 <hr><table>
+                    <tr class="ttitle">
+                      <td colspan="15">CONSIGNMENT SALES</td>
+                    </tr>
                   <tr class="theader">
                       <td>DATE/TIME</td>
                       @if($d['type'] == 'admin')
@@ -215,7 +221,7 @@
                 <br><br>EVENT BREAKDOWN REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( {{$d['date']}} )</p>
-                @if(isset($d['table_events']))
+                @if(isset($d['table_events']) && !empty($d['table_events']['data']))
                 <hr><table>
                   <tr class="theader">
                       <td>DATE/TIME</td>
@@ -295,7 +301,7 @@
               </table>
                @endif 
                               
-               @if(isset($d['table_consignments']))
+               @if(isset($d['table_consignments']) && !empty($d['table_consignments']['data']))
                 <hr><table>
                   <tr class="theader">
                       <td>DATE/TIME</td>
@@ -391,7 +397,7 @@
               @if(isset($d['table_refunds']))
               <hr><table>
                   <tr class="theader">
-                        <td>DEBIT<br>ON</td>
+                        <td>DATE<br>TIME</td>
                         <td>STATUS</td>
                         @if($d['type'] == 'admin')
                         <td>VENUES</td>
@@ -543,6 +549,7 @@
                       </tr>
                     @endforeach
                   @endif
+                    @if(!empty($d['table_sellers']['data']) && !empty($d['table_debits']['data']))
                     <tr class="ttotal">
                         <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>Subtotals</td>
                         <td style='text-align:center'>{{number_format($d['table_sellers']['total']['transactions'])}}</td>
@@ -556,6 +563,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['commissions'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_sellers']['total']['amount'],2)}}</td>
                     </tr>
+                    @endif
                     @foreach($d['table_debits']['data'] as $e)
                     <tr>
                         <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>{{$e->status}}</td>
@@ -663,6 +671,7 @@
                     </tr>
                   @endforeach
                   @endif
+                    @if(!empty($d['table_types']['data']) && !empty($d['table_debits']['data']))
                     <tr class="ttotal">
                         <td>Subtotals</td>
                         <td style='text-align:center'>{{number_format($d['table_types']['total']['transactions'])}}</td>
@@ -676,6 +685,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['commissions'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_types']['total']['amount'],2)}}</td>
                     </tr>
+                    @endif
                     @foreach($d['table_debits']['data'] as $e)
                     <tr>
                         <td>{{$e->status}}</td>
@@ -740,6 +750,7 @@
                         <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
                     </tr>
                   @endforeach
+                    @if(!empty($d['table_channels']['data']) && !empty($d['table_debits']['data']))
                     <tr class="ttotal">
                         <td>Subtotals</td>
                         <td style='text-align:center'>{{number_format($d['table_channels']['total']['transactions'])}}</td>
@@ -753,6 +764,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['commissions'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_channels']['total']['amount'],2)}}</td>
                     </tr>
+                    @endif
                     @foreach($d['table_debits']['data'] as $e)
                     <tr>
                         <td>{{$e->status}}</td>
@@ -817,6 +829,7 @@
                         <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
                     </tr>
                   @endforeach
+                    @if(!empty($d['table_tickets']['data']) && !empty($d['table_debits']['data']))
                     <tr class="ttotal">
                         <td>Subtotals</td>
                         <td style='text-align:center'>{{number_format($d['table_tickets']['total']['transactions'])}}</td>
@@ -830,6 +843,7 @@
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['commissions'],2)}}</td>
                         <td style='text-align:right'>$ {{number_format($d['table_tickets']['total']['amount'],2)}}</td>
                     </tr>
+                    @endif
                     @foreach($d['table_debits']['data'] as $e)
                     <tr>
                         <td>{{$e->status}}</td>
@@ -913,7 +927,7 @@
                   </tr>
                   @endif
                   @endforeach
-                  @if($d['type'] == 'admin')
+                  @if($d['type'] == 'admin' && !empty($t['data']) && !empty($t['debits']))
                   <tr class="ttotal">
                       <td width="25%" style='text-align:left'>Subtotals</td>
                       <td style='text-align:center'>{{number_format($t['total']['transactions'])}}</td>
