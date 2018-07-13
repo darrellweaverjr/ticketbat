@@ -566,7 +566,7 @@ class ReportSalesController extends Controller{
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up previous month MTD  -2
-            $_start = date('Y-m-d H:i', $this->rollup_date( date('Y-m-01',strtotime($end)) ));
+            $_start = date('Y-m-d H:i', $this->rollup_date( date('Y-m-01 H:i',strtotime($end)) ));
             $_end = date('Y-m-d H:i', $this->rollup_date($end));
             $title = 'ROLL UP MTD PERIOD ('.date('F Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_start)).' - '.date($this->date_format,strtotime($_end)) ;
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
@@ -578,13 +578,12 @@ class ReportSalesController extends Controller{
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //table roll up previous year YTD   -4
-            $_start = date('Y-m-d H:i', $this->rollup_date( date('Y-01-01',strtotime($end)) ));
+            $_start = date('Y-m-d H:i', $this->rollup_date( date('Y-01-01 H:i',strtotime($end)) ));
             $_end = date('Y-m-d H:i', $this->rollup_date($end));
             $title = 'ROLL UP YTD PERIOD ('.date('Y',strtotime($_end)).'):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.date($this->date_format,strtotime($_start)).' - '.date($this->date_format,strtotime($_end)) ;
             $tables[] = $this->create_table_financial($_start,$_end,$title,$e_id,$type);
 
             //percent MTD
-
             $tables[1]['percent'] = (end($tables[2]['total'])>0)? round(( end($tables[1]['total']) - end($tables[2]['total']) ) / end($tables[2]['total']) * 100,1) : 100;
             //percent YTD
             $tables[3]['percent'] = (end($tables[4]['total'])>0)? round(( end($tables[3]['total']) - end($tables[4]['total']) ) / end($tables[4]['total']) * 100,1) : 100;
@@ -593,6 +592,7 @@ class ReportSalesController extends Controller{
             $financial = $tables;
             //debits
             $debits = $this->create_table_debits($type, $e_id);
+            
             //return
             return ['type'=>$type,'title'=>$title_,'date'=>$this->report_date,'created'=>date($this->date_format,strtotime($this->end_date)),'table_financial'=>$financial,'table_debits'=>$debits];
         } catch (Exception $ex) {
