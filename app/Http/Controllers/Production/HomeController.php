@@ -115,7 +115,16 @@ class HomeController extends Controller
                     $categories[] = $c;
                 }
             }
-
+            
+            //order multidimensional arrays by key
+            function build_sorter($key) {
+                return function ($a, $b) use ($key) {
+                    return strnatcmp($a[$key], $b[$key]);
+                };
+            }
+            //order arrays
+            usort($venues, build_sorter('name'));
+            usort($cities, build_sorter('city'));
             //return view
             return view('production.home.index', compact('sliders', 'shows', 'categories', 'cities', 'venues'));
 
