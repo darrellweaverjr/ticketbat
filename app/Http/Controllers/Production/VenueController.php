@@ -47,7 +47,7 @@ class VenueController extends Controller
                         ->whereNotNull('venues.logo_url');
             if(!is_null($options['venues']))
                 $_venues = $_venues->whereIn('venues.id',$options['venues']);
-            $_venues = $_venues->groupBy('venues.id')->distinct()->get();
+            $_venues = $_venues->groupBy('venues.id')->orderBy('venues.name','ASC')->distinct()->get();
             
             foreach ($_venues as $v)
             {
