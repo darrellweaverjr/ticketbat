@@ -778,7 +778,9 @@ class ReportSalesController extends Controller{
             $year = date('o', $ts) - 1;
             $week = date('W', $ts);
             $day = date('N', $ts);
-            return strtotime($year.'W'.$week.$day);
+            $hour = date('H', $ts);
+            $min = date('i', $ts);
+            return strtotime($year.'W'.$week.$day.' '.$hour.':'.$min);
         } catch (Exception $ex) {
             return '';
         }
