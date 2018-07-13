@@ -147,7 +147,7 @@ class UserSellerController extends Controller
             //init
             $input = Input::all(); 
             $current = date('Y-m-d H:i:s');
-            if(isset($input) && !empty($input['user_id']) && isset($input['open_drawer']) && isset($input['send_report']))
+            if(isset($input) && !empty($input['user_id']) && isset($input['open_drawer']))
             {
                 $drawer = UserSeller::where('user_id',$input['user_id'])->first(); 
                 if(!$drawer || $drawer->open_drawer==0)
@@ -170,18 +170,8 @@ class UserSellerController extends Controller
                         $tally->time_out = $current;
                         $tally->cash_out = $cash_out;
                         $tally->save();
-                        //create and send the reports
-                        /*$report_msg = '';
-                        if(!empty($input['send_report']))
-                        {
-                            $events = explode(',', $purchases->events);
-                            if(empty($events))
-                            
-                            $control = new ShoppingcartController;
-                            $response = $control->pos_email_report($show_time_id=null,$report=null);
-                        }*/
                         //return
-                        $response = ['success'=>true,'cash_out'=>$cash_out,'msg'=>'Session closed successfully!<br><b>'.$report_msg.'</b>'];
+                        $response = ['success'=>true,'cash_out'=>$cash_out,'msg'=>'Session closed successfully!'];
                     }
                     else
                         $response = ['success'=>false,'msg'=>'That session was already closed before!'];

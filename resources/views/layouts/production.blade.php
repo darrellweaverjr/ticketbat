@@ -143,7 +143,6 @@
                                         <a href="/user/consignments" title="View your consignment tickets">
                                         <i class="icon-tag"></i>&nbsp;&nbsp;&nbsp;My Consignments</a>
                                     </li>
-                                    @endif
                                     @if(isset($seller_drawer_status))
                                         @if($seller_drawer_status==0)
                                         <li>
@@ -164,6 +163,7 @@
                                             <a id="open_seller_report" title="Send report.">
                                             <i class="icon-docs"></i>&nbsp;&nbsp;&nbsp;Send report</a>
                                         </li>
+                                    @endif
                                     @endif
                                     <li>
                                         <a id="btn_logout" title="Log out session">

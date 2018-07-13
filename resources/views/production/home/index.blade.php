@@ -138,7 +138,7 @@
         </div>
         <!-- END SEARCH BAR-->
         <!-- BEGIN SHOWS GRID-->
-        <div class="row">
+        <div class="row" style="min-height:200px">
 
             <div class="portfolio-content body_grid color-panel text-center ">
                 <div class="home-page-panel">
