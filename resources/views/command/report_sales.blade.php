@@ -219,7 +219,7 @@
               </table>
                @endif 
                
-               @if(isset($d['table_debits']))
+               @if(isset($d['table_debits']) && !empty($d['table_debits']['data']))
                 <hr><table>
                     <tr class="ttitle">
                       <td colspan="15">DEBITS</td>
@@ -483,7 +483,7 @@
               </table>
                @endif 
                
-               @if(isset($d['table_debits']))
+               @if(isset($d['table_debits']) && !empty($d['table_debits']['data']))
                 <hr><table>
                     <tr class="ttitle">
                       <td colspan="15">DEBITS</td>
