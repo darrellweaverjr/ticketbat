@@ -26,6 +26,9 @@
                 border-top: 1px solid #DDD;
                 line-height: 2.5;
             }
+            .tdebit {
+                background-color: #CCCCCC;
+            }
             .ttitle {
                 font-weight:bold;
                 font-size:13px!important;
@@ -50,16 +53,17 @@
                       <td colspan="15">SALES WITHOUT CONSIGNMENTS</td>
                     </tr>
                   <tr class="theader">
-                      <td>DATE/TIME</td>
+                      <td>DATE<br>TIME</td>
                       @if($d['type'] == 'admin')
                       <td>VENUES</td>
                       @endif
                       <td>SHOWS</td>
-                      <td>CHANNEL</td>
-                      <td>PAYMT.</td>
-                      <td>TICKETS</td>
-                      <td style='text-align:center'>TRANS.</td>
-                      <td style='text-align:center'>TICKS.</td>
+                      <td>CH.</td>
+                      <td>PMT.</td>
+                      <td>TYPE</td>
+                      <td>ST.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -71,13 +75,14 @@
                   </tr>
                 @if($d['type'] == 'admin')
                     @foreach($d['table_future']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -92,12 +97,13 @@
                     @endforeach
                 @else 
                     @foreach($d['table_future']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -112,7 +118,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_future']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_future']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_future']['total']['paid'],2)}}</td>
@@ -133,16 +139,17 @@
                       <td colspan="15">CONSIGNMENT SALES</td>
                     </tr>
                   <tr class="theader">
-                      <td>DATE/TIME</td>
+                      <td>DATE<br>TIME</td>
                       @if($d['type'] == 'admin')
                       <td>VENUES</td>
                       @endif
                       <td>SHOWS</td>
-                      <td>CHANNEL</td>
-                      <td>PAYMT.</td>
-                      <td>TICKETS</td>
-                      <td style='text-align:center'>TRANS.</td>
-                      <td style='text-align:center'>TICKS.</td>
+                      <td>CH.</td>
+                      <td>PMT.</td>
+                      <td>TYPE</td>
+                      <td>ST.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -154,13 +161,14 @@
                   </tr>
                 @if($d['type'] == 'admin')
                     @foreach($d['table_consignments']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -175,12 +183,13 @@
                     @endforeach
                 @else 
                     @foreach($d['table_consignments']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -195,7 +204,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_consignments']['total']['paid'],2)}}</td>
@@ -209,6 +218,93 @@
                     </tr>
               </table>
                @endif 
+               
+               @if(isset($d['table_debits']))
+                <hr><table>
+                    <tr class="ttitle">
+                      <td colspan="15">DEBITS</td>
+                    </tr>
+                  <tr class="theader">
+                      <td>DATE<br>TIME</td>
+                      @if($d['type'] == 'admin')
+                      <td>VENUES</td>
+                      @endif
+                      <td>SHOWS</td>
+                      <td>CH.</td>
+                      <td>PMT.</td>
+                      <td>TYPE</td>
+                      <td>ST.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
+                      <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
+                      <td style='text-align:right'>TAXES<br>(T)</td>
+                      <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                      <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
+                      <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
+                      <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
+                      <td style='text-align:right'>COMM.<br>(C)</td>
+                      <td style='text-align:right'>NET<br>{{$net}}</td>
+                  </tr>
+                @if($d['type'] == 'admin')
+                    @foreach($d['table_debits']['data'] as $e)
+                    <tr>
+                        <td>{{$e->show_time}}</td>
+                        <td>{{$e->venue}}</td>
+                        <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                    @endforeach
+                @else 
+                    @foreach($d['table_debits']['data'] as $e)
+                    <tr>
+                        <td>{{$e->show_time}}</td>
+                        <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                    @endforeach
+                @endif
+                    <tr class="ttotal">
+                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
+                      <td style='text-align:center'>{{$d['table_debits']['total']['transactions']}}</td>
+                      <td style='text-align:center'>{{$d['table_debits']['total']['tickets']}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['paid'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['taxes'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['cc_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['printed_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['fees_incl'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['fees_over'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['commissions'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['amount'],2)}}</td>
+                    </tr>
+              </table>
+               @endif 
+               
             </div>
             @endforeach
             
@@ -224,16 +320,17 @@
                 @if(isset($d['table_events']) && !empty($d['table_events']['data']))
                 <hr><table>
                   <tr class="theader">
-                      <td>DATE/TIME</td>
+                      <td>DATE<br>TIME</td>
                       @if($d['type'] == 'admin')
                       <td>VENUES</td>
                       @endif
                       <td>SHOWS</td>
-                      <td>CHANNEL</td>
-                      <td>PAYMT.</td>
-                      <td>TICKETS</td>
-                      <td style='text-align:center'>TRANS.</td>
-                      <td style='text-align:center'>TICKS.</td>
+                      <td>CH.</td>
+                      <td>PMT.</td>
+                      <td>TYPE</td>
+                      <td>ST.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -245,13 +342,14 @@
                   </tr>
                 @if($d['type'] == 'admin')
                     @foreach($d['table_events']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -266,12 +364,13 @@
                     @endforeach
                 @else 
                     @foreach($d['table_events']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -286,7 +385,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_events']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_events']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_events']['total']['paid'],2)}}</td>
@@ -304,16 +403,17 @@
                @if(isset($d['table_consignments']) && !empty($d['table_consignments']['data']))
                 <hr><table>
                   <tr class="theader">
-                      <td>DATE/TIME</td>
+                      <td>DATE<br>TIME</td>
                       @if($d['type'] == 'admin')
                       <td>VENUES</td>
                       @endif
                       <td>SHOWS</td>
-                      <td>CHANNEL</td>
-                      <td>PAYMT.</td>
-                      <td>TICKETS</td>
-                      <td style='text-align:center'>TRANS.</td>
-                      <td style='text-align:center'>TICKS.</td>
+                      <td>CH.</td>
+                      <td>PMT.</td>
+                      <td>TYPE</td>
+                      <td>ST.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -325,13 +425,14 @@
                   </tr>
                 @if($d['type'] == 'admin')
                     @foreach($d['table_consignments']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -346,12 +447,13 @@
                     @endforeach
                 @else 
                     @foreach($d['table_consignments']['data'] as $e)
-                    <tr>
+                    <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
                         <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
@@ -366,7 +468,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_consignments']['total']['paid'],2)}}</td>
@@ -377,6 +479,92 @@
                       <td style='text-align:right'>$ {{number_format($d['table_consignments']['total']['fees_over'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_consignments']['total']['commissions'],2)}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_consignments']['total']['amount'],2)}}</td>
+                    </tr>
+              </table>
+               @endif 
+               
+               @if(isset($d['table_debits']))
+                <hr><table>
+                    <tr class="ttitle">
+                      <td colspan="15">DEBITS</td>
+                    </tr>
+                  <tr class="theader">
+                      <td>DATE<br>TIME</td>
+                      @if($d['type'] == 'admin')
+                      <td>VENUES</td>
+                      @endif
+                      <td>SHOWS</td>
+                      <td>CH.</td>
+                      <td>PMT.</td>
+                      <td>TYPE</td>
+                      <td>ST.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
+                      <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
+                      <td style='text-align:right'>TAXES<br>(T)</td>
+                      <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
+                      <td style='text-align:right'>PRNT<br>FEE<br>(F)</td>
+                      <td style='text-align:right'>FEES<br>INC.<br>(F)</td>
+                      <td style='text-align:right'>FEES<br>OVR.<br>(F)</td>
+                      <td style='text-align:right'>COMM.<br>(C)</td>
+                      <td style='text-align:right'>NET<br>{{$net}}</td>
+                  </tr>
+                @if($d['type'] == 'admin')
+                    @foreach($d['table_debits']['data'] as $e)
+                    <tr>
+                        <td>{{$e->show_time}}</td>
+                        <td>{{$e->venue}}</td>
+                        <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                    @endforeach
+                @else 
+                    @foreach($d['table_debits']['data'] as $e)
+                    <tr>
+                        <td>{{$e->show_time}}</td>
+                        <td>{{$e->event}}</td>
+                        <td>{{$e->channel}}</td>
+                        <td>{{$e->payment_type}}</td>
+                        <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->status}}</td>
+                        <td style='text-align:center'>{{number_format($e->transactions)}}</td>
+                        <td style='text-align:center'>{{number_format($e->tickets)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->paid,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->taxes,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->cc_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->printed_fee,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_incl,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->fees_over,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->commissions,2)}}</td>
+                        <td style='text-align:right'>$ {{number_format($e->amount,2)}}</td>
+                    </tr>
+                    @endforeach
+                @endif
+                    <tr class="ttotal">
+                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
+                      <td style='text-align:center'>{{$d['table_debits']['total']['transactions']}}</td>
+                      <td style='text-align:center'>{{$d['table_debits']['total']['tickets']}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['paid'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['taxes'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['cc_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['printed_fee'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['fees_incl'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['fees_over'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['commissions'],2)}}</td>
+                      <td style='text-align:right'>$ {{number_format($d['table_debits']['total']['amount'],2)}}</td>
                     </tr>
               </table>
                @endif 
@@ -398,15 +586,15 @@
               <hr><table>
                   <tr class="theader">
                         <td>DATE<br>TIME</td>
-                        <td>STATUS</td>
+                        <td>ST.</td>
                         @if($d['type'] == 'admin')
                         <td>VENUES</td>
                         @endif
-                        <td>EVENTS</td>
-                        <td>PAYMENT</td>
-                        <td>TICKET</td>
-                        <td style='text-align:center'>TRANS.</td>
-                        <td style='text-align:center'>TICKS.</td>
+                        <td>SHOWS</td>
+                        <td>PMT.</td>
+                        <td>TYPE</td>
+                        <td style='text-align:center'>TRNS.</td>
+                        <td style='text-align:center'>TCKS.</td>
                         <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                         <td style='text-align:right'>TAXES<br>(T)</td>
                         <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -488,16 +676,16 @@
               @if(isset($d['table_sellers']))
               <hr><table>
                   <tr class="theader">
-                        <td>SELLER<br>EMAIL</td>
-                        <td>EVENT<br>DATE</td>
+                        <td>SELLER</td>
+                        <td>DATE</td>
                         @if($d['type'] == 'admin')
                         <td>VENUES</td>
                         @endif
-                        <td>EVENTS</td>
-                        <td>PAYMENT</td>
-                        <td>TICKET</td>
-                        <td style='text-align:center'>TRANS.</td>
-                        <td style='text-align:center'>TICKS.</td>
+                        <td>SHOWS</td>
+                        <td>PMT.</td>
+                        <td>TYPE</td>
+                        <td style='text-align:center'>TRNS.</td>
+                        <td style='text-align:center'>TCKS.</td>
                         <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                         <td style='text-align:right'>TAXES<br>(T)</td>
                         <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -615,8 +803,8 @@
                 </tr>
                   <tr class="theader">
                       <td>TYPE</td>
-                      <td style='text-align:center'>TRANS.</td>
-                      <td style='text-align:center'>TICKS.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -723,9 +911,9 @@
                       <td colspan="11">CHANNEL SALES:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$d['date']}}</td>
                 </tr>
                   <tr class="theader">
-                      <td>CHANNEL</td>
-                      <td style='text-align:center'>TRANS.</td>
-                      <td style='text-align:center'>TICKS.</td>
+                      <td>CH.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -803,8 +991,8 @@
                 </tr>
                   <tr class="theader">
                         <td>TYPE</td>
-                        <td style='text-align:center'>TRANS.</td>
-                        <td style='text-align:center'>TICKS.</td>
+                        <td style='text-align:center'>TRNS.</td>
+                        <td style='text-align:center'>TCKS.</td>
                         <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                         <td style='text-align:right'>TAXES<br>(T)</td>
                         <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
@@ -899,8 +1087,8 @@
                   </tr>
                   <tr class="theader">
                       <td width="25%">VENUES</td>
-                      <td style='text-align:center'>TRANS.</td>
-                      <td style='text-align:center'>TICKS.</td>
+                      <td style='text-align:center'>TRNS.</td>
+                      <td style='text-align:center'>TCKS.</td>
                       <td style='text-align:right'>TOTAL<br>PAID<br>(P)</td>
                       <td style='text-align:right'>TAXES<br>(T)</td>
                       <td style='text-align:right'>C.C.<br>FEE<br>(M)</td>
