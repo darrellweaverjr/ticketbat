@@ -58,6 +58,7 @@ var TableDatatablesManaged = function () {
                         ref_disab = true; 
                 });
                 $('#btn_model_refund').prop("disabled",ref_disab);
+                $('#btn_model_process').prop("disabled",ref_disab);
             }
             else
             {

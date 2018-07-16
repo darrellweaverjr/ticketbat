@@ -123,9 +123,12 @@ class RefundController extends Controller{
                         foreach ($id as $i)
                         {
                             $data = DB::table('purchases')
-                                    ->leftJoin('transaction_refunds', 'purchases.id', '=', 'transaction_refunds.purchase_id')
+                                    ->leftJoin('transaction_refunds', function($join){
+                                        $join->on('transaction_refunds.purchase_id', '=', 'purchases.id')
+                                             ->where('transaction_refunds.result','=','Approved');
+                                    })
                                     ->select(DB::raw('purchases.id, purchases.price_paid, SUM( COALESCE(transaction_refunds.amount,0) ) AS refunded '))
-                                    ->where('transaction_refunds.result','=','Approved')->where('purchases.id',$i)->orderBy('purchases.id')->groupBy('purchases.id')->first();
+                                    ->where('purchases.id','=',$i)->groupBy('purchases.id')->orderBy('purchases.id')->first();
                             $purchases[$i] = (!empty($data))? ['paid'=>$data->price_paid,'refunded'=>$data->refunded,'available'=>$data->price_paid-$data->refunded] : ['paid'=>0,'refunded'=>0,'available'=>0];
                         }
                     }

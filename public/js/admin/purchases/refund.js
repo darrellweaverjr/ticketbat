@@ -59,6 +59,7 @@ var RefundDatatablesManaged = function () {
                         {
                             $('#purchase_details').css('display','block');
                             $('#refund_details').css('display','none');
+                            $('#purchase_details').empty();
                             $.each(data.purchases,function(k, v) {
                                 $('#purchase_details').append('<h3 class="col-md-6"><b>#'+k+'</b> => $'+v.paid+' ($'+v.refunded+') = <b>$'+v.available+'</b></h3>');
                             });                            
