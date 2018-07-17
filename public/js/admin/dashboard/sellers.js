@@ -17,16 +17,8 @@ var TableDatatablesButtons = function () {
                     className: 'btn sbold yellow',
                     orientation: 'landscape',
                     customize: function ( win ) {
-                        var t = '<hr><div style="font-size:14px">Venue: '+$('#form_model_search select[name="venue"] option:selected').text()+'<br>'+
-                                'Show: '+$('#form_model_search select[name="show"] option:selected').text()+'<br>'+
-                                'Show Time: '+$('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val()+'<br>'+
-                                'Sold Date: '+$('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val()+'</div>';
-                        t = t + '<hr><table width="100%"><thead><tr>';
-                        $.each($('#totals').clone(),function(k, v) {
-                            t = t + '<th valign="top" style="text-align:right" width="16.5%">'+v.innerHTML+'</th>';
-                        });
-                        t = t + '</tr></thead></table><hr>';
-                        $(win.document.body).find('h1').append(t + $('#tb_descriptions').html());
+                        var t = FilterSearchHtml.init();
+                        $(win.document.body).find('h1').append(t);
                         $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
                     }
                 },

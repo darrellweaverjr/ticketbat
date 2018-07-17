@@ -18,32 +18,9 @@ var TableDatatablesButtons = function () {
                     orientation: 'landscape',
                     customize: function ( win ) {
                         var graph = ($('#form_model_search input[name="replace_chart"]:checked').length)? 'Yes' : 'No';
-                        var coupons = ($('#form_model_search input[name="coupon_report"]:checked').length)? 'Yes' : 'No';
-                        var f_venue = $('#form_model_search select[name="venue"] option:selected').text();
-                        var f_show = $('#form_model_search select[name="show"] option:selected').text();
-                        var f_st = $('#form_model_search input[name="showtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="showtime_end_date"]').val();
-                        var f_sd = $('#form_model_search input[name="soldtime_start_date"]').val()+' <-> '+$('#form_model_search input[name="soldtime_end_date"]').val();
-                        var f_paymt = $('#form_model_search [name="payment_type[]"]:checked').map(function() { return $(this).attr('data-value'); } ).get().join(',');
-                        var f_usr = $('#form_model_search select[name="user"] option:selected').text();
-                        var f_mirr = $('#form_model_search input[name="mirror_period"]').val();
-                        var t = '<hr><div style="font-size:12px;float:left">Venue: '+f_venue+'<br>'+
-                                'Show: '+f_show+'<br>'+
-                                'Show Time: '+f_st+'<br>'+
-                                'Sold Date: '+f_sd+'<br>'+
-                                'Payment Types: '+f_paymt+'<br>'+
-                                '</div><div style="font-size:12px;float:left">User: '+f_usr+'<br>'+
-                                'Qty of mirror period: '+f_mirr+'<br>'+
-                                'Show Graph instead of Table: '+graph+'<br>'+
-                                'Show Coupon\'s Report: '+coupons+'</div>';
-                        t = t + '<hr>'+$('#form_model_search .row').html();
-                        t = t + '<hr>'+$('#tb_summary').html();
+                        var t = FilterSearchHtml.init();
                         if(graph=='Yes')
-                        {
                             t = t + '<hr>'+$('#ticket_sales_charts').addClass('compact').html();
-                            $(win.document.body).find('table').addClass('compact').css('display','none');
-                        }
-                        if(coupons=='Yes')
-                            t = t + '<hr>'+$('#tb_coupon').addClass('compact').html();
                         $(win.document.body).find('h1').append(t);
                         $(win.document.body).find('table').addClass('compact').css('font-size','9pt');
                     }
@@ -112,7 +89,7 @@ var TableDatatablesButtons = function () {
                         csv = $.merge(summary,split_csv).join("\n");
                         return csv;
                     }
-                },
+                }/*,
                 {
                     text: 'Toggle Total Details <i class="fa fa-list"></i>',
                     className: 'btn sbold purple',
@@ -120,7 +97,7 @@ var TableDatatablesButtons = function () {
                         $('#tb_summary').toggle('display');
                         $('#tb_coupon').toggle('display');
                     }
-                }
+                }*/
             ];
         MainDataTableCreator.init('tb_model',[  ],10,false,buttons);
         
@@ -143,7 +120,7 @@ var TableDatatablesButtons = function () {
         // chart sales
 	$('#ticket_sales_chart_sales').highcharts({
             chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: 'Sales', x: -20 },
+            title: { text: 'Credits', x: -20 },
             xAxis: { categories: purchased },
             yAxis: { title: { text: 'Quantity' },
                      plotLines: [{ value: 0, width: 1, color: '#808080' }]
@@ -160,7 +137,7 @@ var TableDatatablesButtons = function () {
         // charts refunds
 	$('#ticket_sales_chart_refunds').highcharts({
             chart : { style: { fontFamily: 'Open Sans' } },
-            title: { text: 'Refunds & Chargeback', x: -20 },
+            title: { text: 'Debits', x: -20 },
             xAxis: { categories: purchased_ },
             yAxis: { title: { text: 'Quantity' },
                      plotLines: [{ value: 0, width: 1, color: '#808080' }]

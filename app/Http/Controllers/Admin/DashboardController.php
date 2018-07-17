@@ -98,8 +98,8 @@ class DashboardController extends Controller
             $where = $data['where'];
             $search = $data['search'];
             //coupon's report
-            if(!empty($search['coupon_report']))
-                $coupons = $this->coupons($data);
+            /*if(!empty($search['coupon_report']))
+                $coupons = $this->coupons($data);*/
             //credit
             if(!in_array($search['statu'], ['Refunded','Chargeback']))
             {
@@ -239,7 +239,7 @@ class DashboardController extends Controller
             else
                 $data = [];            
             $total = array_merge($total_c,$total_d);   
-            
+            /*
             //calculate totals
             function calc_totals($data)
             {
@@ -429,6 +429,8 @@ class DashboardController extends Controller
             }
             for ($i=0;$i<=$search['mirror_period'];$i++)
                 $summary[] = cal_summary($i,$where,$search,$search['mirror_type']);
+             
+             */
             //remove conditios of date for the graph, to show 1 year ago
             $where = DashboardController::clear_date_sold($where);
             $start = date('Y-m-d', strtotime('-1 year'));
@@ -469,7 +471,6 @@ class DashboardController extends Controller
                     ->whereRaw(DB::raw('DATE_FORMAT(transaction_refunds.created,"%Y%m") >= '.$start))
                     ->groupBy(DB::raw('DATE_FORMAT(transaction_refunds.created,"%Y%m")'))->get()->toJson();  
             //return view
-                   // dd($graph_credit);
             return view('admin.dashboard.ticket_sales',compact('data','total','graph_credit','graph_debit','summary','coupons','search'));
         } catch (Exception $ex) {
             throw new Exception('Error Dashboard Ticket Sales: '.$ex->getMessage());

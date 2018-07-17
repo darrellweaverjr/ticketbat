@@ -207,6 +207,7 @@
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="ticket_sales_chart_refunds" data-info="{{$graph_debit}}" style="height:200px;"></div>
     </div>    
     <!-- BEGIN TOTAL TABLE FOR PRINT-->
+    <!-- 
     <div id="tb_summary" class="row portlet-body" style="display:none;" >
         @foreach($summary as $summ)
         <h5 class="bold">@php echo $summ['title'] @endphp</h5>
@@ -250,7 +251,9 @@
         </table>
         @endforeach
     </div>
+    -->
     <!-- BEGIN COUPONS TABLE FOR PRINT-->
+    <!--
     <div id="tb_coupon" class="row portlet-body" style="display:none;" >
         @if(!empty($coupons))
         <h5 class="bold">Coupons Report</h5>
@@ -327,6 +330,7 @@
         </table>
         @endif
     </div>
+    -->
     <!-- END TOTAL TABLE FOR PRINT-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
