@@ -375,7 +375,7 @@ class Purchase extends Model
                                 $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
                             
                             else if($change=='ACTIVATED')
-                                $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVED</b></h1>' ;
+                                $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVATED</b></h1>' ;
                             else
                                 $top = '';
                         }
