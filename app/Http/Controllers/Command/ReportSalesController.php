@@ -673,55 +673,73 @@ class ReportSalesController extends Controller{
             //financial report pdf
             if(isset($report['financial']))
             {
+                $name_report = 'Sales Financial Report';
                 $format = 'financial'; $data = $report['financial'];
-                $view= View::make('command.report_sales', compact('data','format'));
                 $file = '/tmp/ReportSalesFinancial_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                PDF::loadHTML($view->render())->setPaper('letter', 'portrait')->setWarnings(false)->save($file);
+                $view = View::make('command.report_sales', compact('data','format','name_report'));
+                $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'portrait')->setWarnings(false)->save($file);
+                $pdf->getDomPDF()->get_canvas()->page_text(35, 770, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+                $pdf->save($file);                
                 $files[] = $file;
             }    
             //sales report pdf
             if(isset($report['sales']))
             {
+                $name_report = 'Sales Breakdown Report';
                 $format = 'sales'; $data = $report['sales'];
-                $view= View::make('command.report_sales', compact('data','format'));
                 $file = '/tmp/ReportSalesBreakdown_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                PDF::loadHTML($view->render())->setPaper('letter', 'portrait')->setWarnings(false)->save($file);
+                $view = View::make('command.report_sales', compact('data','format','name_report'));
+                $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'portrait')->setWarnings(false)->save($file);
+                $pdf->getDomPDF()->get_canvas()->page_text(35, 770, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+                $pdf->save($file);                
                 $files[] = $file;
             }    
             //events breakdown report pdf
             if(isset($report['events']))
             {
+                $name_report = 'Events Breakdown Report';
                 $format = 'event_breakdown'; $data = $report['events'];
                 $file = '/tmp/ReportEventBreakdown_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                $view = View::make('command.report_sales', compact('data','format'));
-                PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $view = View::make('command.report_sales', compact('data','format','name_report'));
+                $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $pdf->getDomPDF()->get_canvas()->page_text(35, 590, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+                $pdf->save($file);                
                 $files[] = $file;
             }
             //sellers report pdf
             if(isset($report['sellers']))
             {
+                $name_report = 'Sellers POS Report';
                 $format = 'sellers'; $data = $report['sellers'];
                 $file = '/tmp/ReportSellersPOS_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                $view = View::make('command.report_sales', compact('data','format'));
-                PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $view = View::make('command.report_sales', compact('data','format','name_report'));
+                $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $pdf->getDomPDF()->get_canvas()->page_text(35, 590, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+                $pdf->save($file);                
                 $files[] = $file;
             }
             //debits report pdf
             if(isset($report['debits']))
             {
+                $name_report = 'Debits Report';
                 $format = 'debits'; $data = $report['debits'];
                 $file = '/tmp/ReportDebits_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                $view = View::make('command.report_sales', compact('data','format'));
-                PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $view = View::make('command.report_sales', compact('data','format','name_report'));
+                $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $pdf->getDomPDF()->get_canvas()->page_text(35, 590, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+                $pdf->save($file);                
                 $files[] = $file;
             }
             //future liabilities report pdf
             if(isset($report['future']))
             {
+                $name_report = 'Future Liabilities Report';
                 $format = 'future_liabilities'; $data = $report['future'];
                 $file = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
-                $view = View::make('command.report_sales', compact('data','format'));
-                PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $view = View::make('command.report_sales', compact('data','format','name_report'));
+                $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
+                $pdf->getDomPDF()->get_canvas()->page_text(35, 590, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+                $pdf->save($file);                
                 $files[] = $file;
             }
             //sales report csv

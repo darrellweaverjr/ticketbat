@@ -44,7 +44,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                 <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                <br><br>FUTURE LIABILITIES REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
+                <br><br>{{strtoupper($name_report)}}<br><span style="font-size:8px">Created on {{$d['created']}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( starting on {{$d['date']}} )</p>
                 @if(isset($d['table_future']))
@@ -314,7 +314,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                 <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                <br><br>EVENT BREAKDOWN REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
+                <br><br>{{strtoupper($name_report)}}<br><span style="font-size:8px">Created on {{$d['created']}}</span>
             </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{html_entity_decode($d['title'])}} ( {{$d['date']}} )</p>
                 @if(isset($d['table_events']) && !empty($d['table_events']['data']))
@@ -579,7 +579,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                     <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                    <br><br>DEBITS REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
+                    <br><br>{{strtoupper($name_report)}}<br><span style="font-size:8px">Created on {{$d['created']}}</span>
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
               @if(isset($d['table_refunds']))
@@ -670,7 +670,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                     <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                    <br><br>SELLERS POS REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
+                    <br><br>{{strtoupper($name_report)}}<br><span style="font-size:8px">Created on {{$d['created']}}</span>
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
               @if(isset($d['table_sellers']))
@@ -792,7 +792,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                     <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                    <br><br>SALES BREAKDOWN REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
+                    <br><br>{{strtoupper($name_report)}}<br><span style="font-size:8px">Created on {{$d['created']}}</span>
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
 
@@ -1072,7 +1072,7 @@
             <div style="page-break-after:always;">
               <h3 style="text-align:center">
                     <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
-                    <br><br>SALES FINANCIAL REPORT<br><span style="font-size:8px">Created on {{$d['created']}}</span>
+                    <br><br>{{strtoupper($name_report)}}<br><span style="font-size:8px">Created on {{$d['created']}}</span>
                 </h3><hr>
             <p class="ttitle">@if($d['type'] == 'venue') Venue: @endif {{$d['title']}} ( {{$d['date']}} )</p>
 
@@ -1162,9 +1162,8 @@
               @endforeach
             @endif            
             </div>
-            @endforeach
-            
-            
-            
+            @endforeach           
+                        
         @endif
+        
 @endif
