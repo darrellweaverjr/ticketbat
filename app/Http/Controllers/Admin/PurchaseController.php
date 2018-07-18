@@ -169,6 +169,7 @@ class PurchaseController extends Controller{
                             $target['t_price_paid'] += Util::round($target['t_p_processing_fee']);
                         $target['t_sales_taxes'] = Util::round($target['t_price_paid'] * $showtime->show->venue->default_sales_taxes_percent/100);
                         $target['t_price_paid'] += Util::round($target['t_sales_taxes']);
+                        $target['t_price_paid'] = Util::round($target['t_price_paid']);
                         return ['success'=>true,'target'=>$target];
                     }
                     else
