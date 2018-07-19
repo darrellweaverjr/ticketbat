@@ -242,7 +242,6 @@ class DiscountController extends Controller{
                 {
                     $discount->discount_showtimes()->detach();
                     $discount->discount_tickets()->detach();
-                    $discount->discount_shows()->detach();
                     $discount->user_discounts()->detach();
                 }
                 if(!$discount->delete())

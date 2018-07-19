@@ -34,13 +34,6 @@ class Discount extends Model
     }
     //RELATIONSHIPS MANY-MANY
     /**
-     * The discount_shows that belong to the discount.
-     */
-    public function discount_shows()
-    {
-        return $this->belongsToMany('App\Http\Models\Show','discount_shows','discount_id','show_id');
-    }
-    /**
      * The discount_tickets that belong to the discount.
      */
     public function discount_tickets()

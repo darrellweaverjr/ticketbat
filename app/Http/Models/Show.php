@@ -81,13 +81,6 @@ class Show extends Model
     {
         return $this->belongsToMany('App\Http\Models\Video','show_videos','show_id','video_id');
     }
-    /**
-     * The discount_shows that belong to the show.
-     */
-    public function discount_shows()
-    {
-        return $this->belongsToMany('App\Http\Models\Discount','discount_shows','show_id','discount_id');
-    }
     //PERSONALIZED METHODS
     /**
      * Set the image_url for the current show.
