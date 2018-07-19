@@ -78,7 +78,6 @@ class BrokenImageClean extends Command
                 DB::table('show_awards')->where('image_id', $i->id )->delete();
                 DB::table('show_images')->where('image_id', $i->id )->delete();
                 DB::table('stage_image_ticket_type')->where('image_id', $i->id )->delete();
-                DB::table('user_images')->where('image_id', $i->id )->delete();
                 DB::table('venue_images')->where('image_id', $i->id )->delete();
             }
             DB::table('images')
