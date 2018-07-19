@@ -541,12 +541,15 @@ class ShoppingcartController extends Controller
                 
                 $tcks = DB::table('tickets')
                     ->join('packages', 'packages.id', '=', 'tickets.package_id')
+                    ->join('shows', 'tickets.show_id', '=', 'shows.id')
+                    ->join('venues', 'venues.id', '=', 'shows.venue_id')
+                    ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                     ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                       tickets.retail_price,
                                                       (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p 
                                                        WHERE p.ticket_id = tickets.id AND p.show_time_id = '.$show_time_id.')) ELSE null END) AS max_available'))
                     ->where('tickets.show_id', $show_id)->where('tickets.is_active', '>', 0)
-                    ->where('tickets.only_pos', '>=', 0)
+                    ->where($options['where'])
                     ->whereRaw(DB::raw('tickets.id NOT IN (SELECT ticket_id FROM soldout_tickets WHERE show_time_id = '.$show_time_id.')'))
                     ->where(function ($query) use ($show_time_id) {
                         $query->whereNull('tickets.max_tickets')
