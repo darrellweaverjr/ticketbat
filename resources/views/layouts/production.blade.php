@@ -216,7 +216,7 @@
                     <a class="menu_foot" data-toggle="modal" href="#modal_contact_us" title="If you have any issues, please, let us know" >Contact Us</a>
                 </div>
                 <div class="copyright pull-right">
-                    &copy; 2015-{{date('Y')}}  TicketBat. All rights reserved.
+                    &copy; 2014-{{date('Y')}}  TicketBat. All rights reserved.
                 </div>
                 <div class="scroll-to-top">
                     <i class="icon-arrow-up"></i>
