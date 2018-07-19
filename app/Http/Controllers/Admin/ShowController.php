@@ -495,11 +495,6 @@ class ShowController extends Controller{
                         foreach ($banners as $b)
                             Image::remove_image($b->file);
                         $banners = Banner::where('parent_id',$venue->id)->where('belongto','show')->delete();
-                        //merchandise(merchandise_photos)
-                        $merchandise = DB::table('merchandise')->where('show_id',$show->id)->get();
-                        foreach ($merchandise as $m)
-                            DB::table('merchandise_photos')->where('ticket_id',$m->id)->delete();
-                        $merchandise = DB::table('merchandise')->where('show_id',$show->id)->delete();
                         //show_awards
                         $show_awards = DB::table('show_awards')->where('show_id',$show->id)->delete();
                         //show_bands
