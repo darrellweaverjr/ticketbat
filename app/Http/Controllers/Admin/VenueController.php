@@ -368,8 +368,6 @@ class VenueController extends Controller{
                         foreach ($stages as $s)
                             Image::remove_image($s->image_url);
                         $stages = Stage::where('venue_id',$venue->id)->delete();
-                        //venue_checks
-                        $venue_checks = DB::table('venue_checks')->where('venue_id',$venue->id)->delete();
                         //venue_images(images)
                         $venue_images = DB::table('venue_images')->where('venue_id',$venue->id)->get();
                         foreach ($venue_images as $i)
