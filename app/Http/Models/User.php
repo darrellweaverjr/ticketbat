@@ -93,13 +93,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Http\Models\Discount','user_discounts','user_id','discount_id');
     }
-    /**
-     * The user_images that belong to the user.
-     */
-    public function user_images()
-    {
-        return $this->belongsToMany('App\Http\Models\Image','user_images','user_id','image_id');
-    }
     //PERSONALIZED
     /**
      * Set a random passoword for current user.

@@ -42,13 +42,6 @@ class Image extends Model
         return $this->belongsToMany('App\Http\Models\Show','show_awards','image_id','show_id')->withPivot('url','updated');
     }
     /**
-     * The user_images that belong to the image.
-     */
-    public function user_images()
-    {
-        return $this->belongsToMany('App\Http\Models\User','user_images','image_id','user_id');
-    }
-    /**
      * The venue_images that belong to the image.
      */
     public function venue_images()
