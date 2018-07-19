@@ -53,11 +53,6 @@ class BrokenImageClean extends Command
                     ->where('file','like','/uploads/%')
                     ->delete();
             $progressbar->advance(); 
-            //deals
-            DB::table('deals')
-                    ->where('image_url','like','/uploads/%')
-                    ->delete();
-            $progressbar->advance(); 
             //shows
             DB::table('shows')
                     ->where('sponsor_logo_id','like','/uploads/%')
