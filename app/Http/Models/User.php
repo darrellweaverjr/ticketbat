@@ -260,11 +260,11 @@ class User extends Authenticatable
                     $send_welcome_email = true;
                     //create user
                     $user = new User;
-                    $user->user_type_id = 2;
+                    $user->user_type_id = 3;    //customer
                     $user->is_active = 1;
                     $user->force_password_reset = 0;
                     $user->email = trim($info['email']);
-                    $user->audit_user_id = 2;
+                    $user->audit_user_id = 2;   //website-account
                     $location = new Location;
                     $location->created = $current;
                 }
