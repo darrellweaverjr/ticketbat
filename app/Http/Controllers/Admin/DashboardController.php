@@ -65,8 +65,6 @@ class DashboardController extends Controller
                 return redirect('/admin/consignments');
             if(!empty($permits['ACLS']))
                 return redirect('/admin/acls');
-            if(!empty($permits['RESTAURANTS']))
-                return redirect('/admin/restaurants');
             
         }
         return redirect()->route('logout');

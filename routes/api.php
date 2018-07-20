@@ -38,13 +38,4 @@ Route::group(['prefix' => 'app','middleware' => 'app.security:1','namespace' => 
 Route::group(['prefix' => 'feed','middleware' => 'cors','namespace' => 'Feed'], function () {
     //venue
     Route::match(['options','get'], 'venue/events/{venue_id}', 'VenueController@events');
-    //restaurant
-    Route::match(['options','get'], 'restaurant/general/{restaurant_id}', 'RestaurantController@general');
-    Route::match(['options','get'], 'restaurant/menu/{restaurant_id}', 'RestaurantController@menu');
-    Route::match(['options','post'], 'restaurant/reservations', 'RestaurantController@reservations');
-    Route::match(['options','get'], 'restaurant/specials/{restaurant_id}', 'RestaurantController@specials');
-    Route::match(['options','get'], 'restaurant/awards/{restaurant_id}', 'RestaurantController@awards');
-    Route::match(['options','get'], 'restaurant/reviews/{restaurant_id}', 'RestaurantController@reviews');
-    Route::match(['options','get'], 'restaurant/comments/{restaurant_id}', 'RestaurantController@comments');
-    Route::match(['options','get'], 'restaurant/albums/{restaurant_id}', 'RestaurantController@albums');
 });

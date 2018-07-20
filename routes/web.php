@@ -104,19 +104,6 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('consignments/view/{type}/{id}', 'ConsignmentController@view')->middleware('permissions:CONSIGNMENTS');
     Route::post('consignments/save', 'ConsignmentController@save')->middleware('permissions:CONSIGNMENTS');
     Route::match(['get','post'], 'consignments', 'ConsignmentController@index')->middleware('permissions:CONSIGNMENTS');
-    //restaurants
-    Route::post('restaurants/reservations', 'RestaurantController@reservations')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/menu', 'RestaurantController@menu')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/media', 'RestaurantController@media')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/items', 'RestaurantController@items')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/specials', 'RestaurantController@specials')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/awards', 'RestaurantController@awards')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/reviews', 'RestaurantController@reviews')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/comments', 'RestaurantController@comments')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/albums', 'RestaurantController@albums')->middleware('permissions:RESTAURANTS');
-    Route::post('RestaurantController@save')->middleware('permissions:RESTAURANTS');
-    Route::post('restaurants/remove', 'RestaurantController@remove')->middleware('permissions:RESTAURANTS');
-    Route::match(['get','post'], 'restaurants', 'RestaurantController@index')->middleware('permissions:RESTAURANTS');
     //acls
     Route::post('acls/commands', 'AclController@commands')->middleware('permissions:ACLS');
     Route::post('acls/save', 'AclController@save')->middleware('permissions:ACLS');

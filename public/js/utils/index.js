@@ -90,10 +90,6 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             var fixWidth = 160;
             var fixHeight = 600;
             break;
-        case 'restaurants.items':
-            var fixWidth = 600;
-            var fixHeight = 600;
-            break;
         default:
             var fixWidth = 600;
             var fixHeight = 600;
