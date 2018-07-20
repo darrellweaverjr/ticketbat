@@ -564,8 +564,10 @@ class Purchase extends Model
                 $purchase->retail_price = $i->retail_price;
                 $purchase->commission_percent = $i->commission;
                 $purchase->processing_fee = $i->processing_fee;
-                $purchase->price_paid = $i->total_cost;
                 $purchase->inclusive_fee = (!empty($i->inclusive_fee))? 1 : 0;
+                //total paid
+                $fee = ($purchase->inclusive_fee>0)? 0 : $purchase->processing_fee;
+                $purchase->price_paid = Util::round( $purchase->quantity*$purchase->retail_price-$purchase->savings+$fee+$purchase->printed_fee+$purchase->sales_taxes );
                 $purchase->payment_type = ($purchase->retail_price<0.01 && $purchase->price_paid<0.01)? 'Free event' : ( (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None' );
                 //taxes and other fees
                 $purchase->sales_taxes = $i->sales_taxes;
@@ -575,6 +577,7 @@ class Purchase extends Model
                 $purchase->created = $current;
                 $purchase->merchandise = ($i->product_type=='merchandise')? 1 : 0;
                 $purchase->channel = ($app)? 'App' : ((Auth::check() && in_array(Auth::user()->user_type_id,explode(',',env('SELLER_OPTION_USER_TYPE')))? 'POS' : 'Web'));
+                
                 if($purchase->save())
                 {
                     //get id for receipts
