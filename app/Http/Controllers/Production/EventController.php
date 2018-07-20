@@ -143,8 +143,10 @@ class EventController extends Controller
                 ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name, show_reviews.review, show_reviews.rating, show_reviews.created'))
                 ->where('show_reviews.show_id', $event->show_id)->where('show_reviews.status', 'Approved')
                 ->orderBy('show_reviews.created', 'DESC')->get();
+            //meta data
+            $meta = ['description'=>$event->short_description];
             //return view
-            return view('production.events.index', compact('event'));
+            return view('production.events.index', compact('event','meta'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Event Index: ' . $ex->getMessage());
         }

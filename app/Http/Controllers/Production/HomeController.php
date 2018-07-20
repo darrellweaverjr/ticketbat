@@ -125,8 +125,11 @@ class HomeController extends Controller
             //order arrays
             usort($venues, build_sorter('name'));
             usort($cities, build_sorter('city'));
+            //meta data
+            $meta = ['description'=>'Ticketbat - show tickets, concerts, outdoor adventures and club shows.  Low fees and easy, find it all on Ticketbat',
+                     'keywords'=>'Event Tickets, Vegas Shows, Club Shows, Concert tix, Discount Tickets.'];
             //return view
-            return view('production.home.index', compact('sliders', 'shows', 'categories', 'cities', 'venues'));
+            return view('production.home.index', compact('sliders', 'shows', 'categories', 'cities', 'venues','meta'));
 
         } catch (Exception $ex) {
             throw new Exception('Error Production Home Index: ' . $ex->getMessage());

@@ -13,9 +13,20 @@
 
         <!-- GTM HEAD TAG -->
         @includeIf('production.general.gtm-head')
-
-        <meta charset="utf-8" />
+        
+        <title>@yield('title') - TicketBat.com</title>
+        
+        <meta charset="utf-8" />        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        @if(isset($meta))
+            @foreach($meta as $name=>$content)
+        <meta name="{{$name}}" content="{{$content}}">    
+            @endforeach
+        @endif
+        
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ;
                           img-src *  'self' blob: {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
@@ -23,9 +34,8 @@
                           font-src 'self' http://fonts.gstatic.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com https://www.facebook.com;
                           script-src 'self' 'unsafe-inline' 'unsafe-eval' {{env('IMAGE_URL_OLDTB_SERVER')}} https://www.google-analytics.com/analytics.js http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js https://www.googletagmanager.com/gtm.js https://connect.facebook.net/signals/config/1412841365444572; ">
-        <title>@yield('title') - TicketBat</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        
+        
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <meta content="{{config('app.theme')}}img/no-image.jpg" name="broken-image" />
 

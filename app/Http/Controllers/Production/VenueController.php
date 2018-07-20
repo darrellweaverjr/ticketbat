@@ -120,8 +120,10 @@ class VenueController extends Controller
                 if(!empty($s->logo_url))
                     $s->logo_url = Image::view_image($s->logo_url);
             }
+            //meta data
+            $meta = ['description'=>$venue->description];
             //return view
-            return view('production.venues.view',compact('venue'));
+            return view('production.venues.view',compact('venue','meta'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Venue View: '.$ex->getMessage());
         }
