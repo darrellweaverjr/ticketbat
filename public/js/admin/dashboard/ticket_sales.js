@@ -147,7 +147,7 @@ var TableDatatablesButtons = function () {
                     name: 'Transactions',
                     data: qty_
             }, {
-                    name: 'Profit',
+                    name: 'Debits',
                     data: amount_
             }]
 	});
