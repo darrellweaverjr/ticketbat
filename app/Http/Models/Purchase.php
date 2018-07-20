@@ -567,7 +567,7 @@ class Purchase extends Model
                 $purchase->inclusive_fee = (!empty($i->inclusive_fee))? 1 : 0;
                 //total paid
                 $fee = ($purchase->inclusive_fee>0)? 0 : $purchase->processing_fee;
-                $purchase->price_paid = Util::round( $purchase->quantity*$purchase->retail_price-$purchase->savings+$fee+$purchase->printed_fee+$purchase->sales_taxes );
+                $purchase->price_paid = Util::round( $purchase->retail_price-$purchase->savings+$fee+$purchase->printed_fee+$purchase->sales_taxes );
                 $purchase->payment_type = ($purchase->retail_price<0.01 && $purchase->price_paid<0.01)? 'Free event' : ( (!empty($shoppingcart['payment_type']))? $shoppingcart['payment_type'] : 'None' );
                 //taxes and other fees
                 $purchase->sales_taxes = $i->sales_taxes;
