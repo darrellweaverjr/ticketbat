@@ -165,7 +165,7 @@
             @if($purchase['restrictions'] != 'None')
             <div class="tb-ticket-top-sect">
                 <div class="tb-customer-intro-cust">
-                    <span class="tb-order-subtitle">Restrictions:</span> <span class="tb-customer-txt">{{$purchase['restrictions']}} YEARS OLD TO ATTENT THE EVENT.</span>
+                    <span class="tb-order-subtitle">Restrictions:</span> <span class="tb-customer-txt">{{$purchase['restrictions']}} YEARS OLD TO ATTEND THE EVENT.</span>
                 </div>
             </div><br><br>
             @endif
