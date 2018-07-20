@@ -167,7 +167,7 @@ class Purchase extends Model
                             ->leftJoin('transactions', 'transactions.id', '=', 'purchases.transaction_id')
                             ->leftJoin('ticket_number', 'ticket_number.purchases_id', '=', 'purchases.id')
                             ->select(DB::raw('purchases.*, purchases.quantity AS qty, tickets.ticket_type AS ticket_type_type, show_times.time_alternative,
-                                    show_times.show_time, discounts.code, packages.title, locations.lat, locations.lng, tickets.inclusive_fee,
+                                    show_times.show_time, discounts.code, discounts.description AS disc_description,  packages.title, locations.lat, locations.lng, tickets.inclusive_fee,
                                     shows.name AS show_name, shows.slug, shows.restrictions, shows.emails, shows.printed_tickets, shows.ticket_info AS s_ticket_info,
                                     shows.individual_emails AS s_individual_emails, shows.manifest_emails AS s_manifest_emails, show_times.show_id,
                                     shows.daily_sales_emails AS s_daily_sales_emails, tickets.retail_price AS price_each,

@@ -157,7 +157,7 @@
         
         <div class="container">
             <div class="header">
-                <img alt="TicketBat.com" height="50" width="300" src={{$logo}}/>
+                <img alt="TicketBat.com" height="50" width="300" src="{{$logo}}"/>
             </div>
             <div class="tb-title">
                 Your Ticketbat purchase for <span class="tb-highlight-color">{{$purchase['show_name']}}</span> on <span class="tb-highlight-color">{{date('m/d/Y g:ia',strtotime($purchase['show_time']))}}</span> is confirmed. Have a great time!
@@ -165,7 +165,7 @@
             @if($purchase['restrictions'] != 'None')
             <div class="tb-ticket-top-sect">
                 <div class="tb-customer-intro-cust">
-                    <span class="tb-order-subtitle">Restrictions:</span> <span class="tb-customer-txt">{{$purchase['restrictions']}}</span>
+                    <span class="tb-order-subtitle">Restrictions:</span> <span class="tb-customer-txt">{{$purchase['restrictions']}} YEARS OLD TO ATTENT THE EVENT.</span>
                 </div>
             </div><br><br>
             @endif
@@ -189,10 +189,10 @@
                             </div>
                         </td>
                         <td valign="top">
-                            <div class="show-details">
-                                <span class="tb-highlight-color">Package: {{$purchase['title']}}</span><br>
+                            <div class="show-details">                                
                                 <span class="tb-highlight-color-blue">{{$purchase['show_name']}}</span><br>
-                                {{$purchase['qty']}} - {{$purchase['ticket_type_type']}}
+                                <span>{{$purchase['qty']}} - {{$purchase['ticket_type_type']}} @if($purchase['title']!='None') <i>"{{$purchase['title']}}"</i> @endif</span><br>
+                                @if(!empty($purchase['code']) && $purchase['code']!='0000')<span class="tb-highlight-color">Discount: {{$purchase['code']}} <br><i><small>"{{$purchase['disc_description']}}"</small></i></span>@endif
                             </div>
                         </td>
                         <td valign="top">
