@@ -67,6 +67,7 @@ class NGCBController extends Controller{
                                           purchases.commission_percent AS commissions,
                                           ROUND(purchases.processing_fee+purchases.commission_percent+purchases.printed_fee,2) AS profit, 1 AS display'))
                         ->where($where)
+                        ->where('venues.let','>',0)
                         ->groupBy('purchases.id')->orderBy('purchases.id','DESC')->get();  
                 $credit_ = $credit->toArray();
                 $total_c = ['purchases'=>array_sum(array_column($credit_,'purchases')),
@@ -136,6 +137,7 @@ class NGCBController extends Controller{
                             $query->where('purchases.status','=','Refunded')
                                   ->orWhere('purchases.status','=','Chargeback');
                         })
+                        ->where('venues.let','>',0)
                         ->groupBy('purchases.id')->groupBy('transaction_refunds.id')
                         ->orderBy('purchases.id','DESC')->orderBy('transaction_refunds.id','DESC')->get(); 
                 $debit_ = $debit->toArray(); 
