@@ -159,7 +159,7 @@
                         </thead>
                         <tbody>
                             @foreach($data as $d)
-                            <tr>
+                            <tr @if(empty($d->time_out)) class="warning" @endif>
                                 <td style="text-align:center">{{$d->email}}</td>
                                 <td style="text-align:center">{{$d->time_in}}</td>
                                 <td style="text-align:center">{{$d->time_out}}</td>
