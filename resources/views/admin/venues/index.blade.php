@@ -200,6 +200,13 @@
                                                         <input type="checkbox" class="make-switch" name="is_featured" data-size="small" value="1" data-on-text="ON" data-off-text="OFF" data-on-color="primary" data-off-color="danger">
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">LET</label>
+                                                    <div class="col-md-2">
+                                                        <input type="hidden" name="let" value="0"/>
+                                                        <input type="checkbox" class="make-switch" name="let" data-size="small" value="1" data-on-text="Yes" data-off-text="No" data-on-color="primary" data-off-color="danger">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">

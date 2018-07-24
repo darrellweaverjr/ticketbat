@@ -298,6 +298,7 @@ class VenueController extends Controller{
                 }
                 else
                     return ['success'=>false,'msg'=>'There was an error saving the venue.<br>You must set up a header for it.'];
+                $venue->let = (empty($input['let']))? 0 : 1;
                 $venue->save();
                 //return
                 if(isset($input['id']) && $input['id'])
