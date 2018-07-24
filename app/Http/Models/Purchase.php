@@ -572,6 +572,8 @@ class Purchase extends Model
                 //taxes and other fees
                 $purchase->sales_taxes = $i->sales_taxes;
                 $purchase->printed_fee = $shoppingcart['printed'];
+                //reset printed fee to 0, only asigned to the first purchase item, to avoid repet it
+                $shoppingcart['printed'] = 0;
                 $purchase->cc_fees = ($purchase->payment_type=='Credit')? Util::round($purchase->price_paid*env('USAEPAY_CREDIT_CARD_FEE_PERCENT',0)/100) : 0.00;
                 $purchase->updated = $current;
                 $purchase->created = $current;
