@@ -13,12 +13,24 @@ use App\Http\Models\Purchase;
  * @author ivan
  */
 class NGCBController extends Controller{
+    
     /**
      * Return default view.
      *
      * @return view
      */
     public function index()
+    {
+        return redirect('admin/ngcb/sales');
+    }
+    
+    
+    /**
+     * Return default view.
+     *
+     * @return view
+     */
+    public function sales()
     {
         try {
             //init
@@ -171,7 +183,7 @@ class NGCBController extends Controller{
             $total = array_merge($total_c,$total_d);   
  
             //return view
-            return view('admin.ngcb.index',compact('data','total','search'));
+            return view('admin.ngcb.sales',compact('data','total','search'));
         } catch (Exception $ex) {
             throw new Exception('Error NGCB Index: '.$ex->getMessage());
         }

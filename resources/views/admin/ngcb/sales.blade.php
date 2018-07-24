@@ -307,8 +307,6 @@
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/highcharts.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
 <script src="/js/admin/purchases/filter.js" type="text/javascript"></script>
-<script src="/js/admin/ngcb/index.js" type="text/javascript"></script>
+<script src="/js/admin/ngcb/sales.js" type="text/javascript"></script>
 @endsection

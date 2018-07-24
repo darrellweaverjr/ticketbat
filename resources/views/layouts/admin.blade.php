@@ -168,7 +168,18 @@
                                 <a href="/admin/ngcb" class="nav-link nav-toggle">
                                     <i class="icon-game-controller"></i>
                                     <span class="title">NGCB</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow open"></span>
                                 </a>
+                                <ul class="sub-menu">
+                                    <li class="nav-item active">
+                                        <a href="/admin/ngcb/sales" class="nav-link">
+                                            <i class="icon-bar-chart"></i>
+                                            <span class="title">Sales</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             @endif
                             @if(array_key_exists('USERS', Auth::user()->user_type->getACLs()))
