@@ -786,19 +786,23 @@ class DashboardController extends Controller
                         $join->on('transaction_refunds.purchase_id', '=', 'purchases.id')
                              ->where('transaction_refunds.result','=','Approved');
                     })
+                    ->leftJoin('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
+                    ->leftJoin('show_times', 'show_times.id', '=' ,'purchases.show_time_id')
+                    ->leftJoin('shows', 'shows.id', '=' ,'show_times.show_id')
+                    ->leftJoin('customers', 'customers.id', '=' ,'purchases.customer_id')
+                    ->leftJoin('transactions', 'transactions.id', '=' ,'purchases.transaction_id')
                     ->select(DB::raw('users.email, seller_tally.*, 
                                      COUNT(purchases.id) AS t_trans, SUM(COALESCE(purchases.quantity,0)) AS t_tick, SUM(COALESCE(purchases.price_paid,0)) AS t_tot, 
                                      COUNT( IF(purchases.payment_type="Cash",purchases.id,null) ) AS s_trans, SUM(COALESCE(IF(purchases.payment_type="Cash",purchases.quantity,null),0)) AS s_tick, SUM(COALESCE(IF(purchases.payment_type="Cash",purchases.price_paid,null),0)) AS s_tot, 
                                      COUNT( IF(purchases.payment_type="Credit",purchases.id,null) ) AS c_trans, SUM(COALESCE(IF(purchases.payment_type="Credit",purchases.quantity,null),0)) AS c_tick, SUM(COALESCE(IF(purchases.payment_type="Credit",purchases.price_paid,null),0)) AS c_tot, 
                                      COUNT(transaction_refunds.id) AS r_trans, SUM(COALESCE(transaction_refunds.quantity,0)) AS r_tick, SUM(COALESCE(transaction_refunds.amount,0)) AS r_tot'))
-                    ->where(DashboardController::clear_date_sold($where));
-                    
+                    ;//->where(DashboardController::clear_date_sold($where));
             //conditions
             if(!empty($search['soldtime_start_date']) && !empty($search['soldtime_end_date']))
             {
                 $data->where(DB::raw('DATE(seller_tally.time_in)'),'>=',date('Y-m-d',strtotime($search['soldtime_start_date'])))
                      ->where(DB::raw('DATE(seller_tally.time_in)'),'<=',date('Y-m-d',strtotime($search['soldtime_end_date'])));
-            }                    
+            }                  
             $data = $data->groupBy('seller_tally.id')->orderBy('seller_tally.id','DESC')->get()->toArray();
             //calculate totals
             $total = array( 't_trans'=>array_sum(array_column($data,'t_trans')),
