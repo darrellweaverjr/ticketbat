@@ -143,10 +143,12 @@ class EventController extends Controller
                 ->select(DB::raw('CONCAT(users.first_name," ",users.last_name) AS name, show_reviews.review, show_reviews.rating, show_reviews.created'))
                 ->where('show_reviews.show_id', $event->show_id)->where('show_reviews.status', 'Approved')
                 ->orderBy('show_reviews.created', 'DESC')->get();
+            //fbq
+            $fbq_events = json_encode([$event->name], JSON_UNESCAPED_SLASHES );
             //meta data
             $meta = ['description'=>$event->short_description];
             //return view
-            return view('production.events.index', compact('event','meta'));
+            return view('production.events.index', compact('event','meta','fbq_events'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Event Index: ' . $ex->getMessage());
         }
@@ -355,8 +357,10 @@ class EventController extends Controller
                 $event->for_sale = 0;
             //get styles from cloud
             $ticket_types_css = file_get_contents(env('IMAGE_URL_AMAZON_SERVER') . '/' . $this->style_url);
+            //fbq
+            $fbq_events = json_encode([$event->name], JSON_UNESCAPED_SLASHES );
             //return view
-            return view('production.events.buy', compact('event', 'has_coupon', 'ticket_types_css'));
+            return view('production.events.buy', compact('event', 'has_coupon', 'ticket_types_css','fbq_events'));
         } catch (Exception $ex) {
             throw new Exception('Error Production Buy Index: ' . $ex->getMessage());
         }

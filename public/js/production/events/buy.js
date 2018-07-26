@@ -89,6 +89,9 @@ var FunctionsManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
+                        // Facebook track adding the shopping cart
+                        fbq('track', 'AddToCart');
+                        // Continue code
                         ShoppingcartQtyItems.init();
                         Countdown.reset();
                         swal({

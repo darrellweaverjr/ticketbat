@@ -173,7 +173,7 @@ class PurchaseController extends Controller
      */
     public function complete()
     {
-        $receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
+        $receipts=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note= $fbq_events = [];
         $sent_to = $purchases = null;
         $send_welcome_email = $totals = $transaction = 0;
         $sent_receipts = $print_receipt = false;
@@ -200,6 +200,7 @@ class PurchaseController extends Controller
                 $conversion_code = $data['conversion_code'];
                 $ua_conversion_code = $data['ua_conversion_code'];
                 $banners = $data['banners'];
+                $fbq_events = json_encode($data['fbq_events'], JSON_UNESCAPED_SLASHES );
                 Session::forget('change');
             }
         } catch (Exception $ex) {
@@ -208,7 +209,7 @@ class PurchaseController extends Controller
             //return
             return response()
                         ->view('production.shoppingcart.complete',compact('sent_to','sent_receipts','print_receipt','purchases','purchased','send_welcome_email','seller','after_purchase_note',
-                                                                          'analytics','totals','transaction','conversion_code','ua_conversion_code','banners'))
+                                                                          'analytics','totals','transaction','conversion_code','ua_conversion_code','banners','fbq_events'))
                         ->withHeaders([
                             'Cache-Control' => 'nocache, no-store, max-age=0, must-revalidate',
                             'Pragma' => 'no-cache',
@@ -222,7 +223,7 @@ class PurchaseController extends Controller
      */
     public function receipts($purchasex=null,$seller=0)
     {
-        $receipts=$print_receipt=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=[];
+        $receipts=$print_receipt=$purchased=$analytics=$conversion_code=$ua_conversion_code=$banners=$after_purchase_note=$fbq_events=[];
         $sent_to = null;
         $sent_receipts = false;
         $totals = $transaction = 0;
@@ -276,6 +277,9 @@ class PurchaseController extends Controller
                         if(empty($after_purchase_note[$p->show_time->show->id]) && !empty($p->show_time->show->after_purchase_note))
                             $after_purchase_note[$p->show_time->show->id] = $p->show_time->show->after_purchase_note;
                     }
+                    //$fbq_events
+                    if(!in_array($p->ticket->show->name, $fbq_events))
+                        $fbq_events[] = $p->ticket->show->name;
                 }
             }
             //sent email
@@ -287,7 +291,7 @@ class PurchaseController extends Controller
             if(!empty($purchasex))
                 return ['success'=>true, 'receipts'=>$receipts, 'print_receipt'=>$print_receipt, 'purchased'=>$purchased, 'sent_to'=>$sent_to, 'banners'=>$banners,'after_purchase_note'=>$after_purchase_note,
                         'sent_receipts'=>$sent_receipts, 'analytics'=>$analytics, 'totals'=>$totals, 'transaction'=>$transaction,
-                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code];
+                        'ua_conversion_code'=>$ua_conversion_code, 'conversion_code'=>$conversion_code, 'fbq_events'=>$fbq_events];
             return ['success'=>true, 'sent_receipts'=>$sent_receipts];
         }
     }

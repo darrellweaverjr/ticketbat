@@ -67,7 +67,13 @@ class ShoppingcartController extends Controller
             //default enum
             $cart['countries'] = Country::get(['code','name']);  
             $cart['regions'] = Region::where('country','US')->get(['code','name']); 
-            return view('production.shoppingcart.index',compact('cart'));
+            //fbq
+            $fbq_events = [];
+            foreach($cart['items'] as $i)
+                if(!in_array($i->name, $fbq_events))
+                    $fbq_events[] = $i->name;
+            $fbq_events = json_encode($fbq_events, JSON_UNESCAPED_SLASHES );
+            return view('production.shoppingcart.index',compact('cart','fbq_events'));
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }

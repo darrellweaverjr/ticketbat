@@ -75,7 +75,7 @@
     <body class="page-header-fixed" style="background-color:black!important">
 
     <!--  GTM BODY TAG  -->
-    @includeIf('production.general.gtm-body')
+    @includeIf('production.general.gtm-body', ['fbq_events'=>(!empty($fbq_events))? $fbq_events : null])
     <!-- END BODY TAG -->
 
     <!-- NEED TO BRING BACK ALL GA CONVERSION CODES  -->
