@@ -279,7 +279,8 @@ class Purchase extends Model
         $html .= '<b>Payment type:</b> '.$purchase->payment_type.'<br>';        
         $html .= '<b>Amount:</b> $ '.$purchase->price_paid.' <b>/</b> $ '.$purchase->amount.'<br><br>';
         $html .= '<b>Cardholder:</b> '.$purchase->card_holder.'<br><br>';
-        $html .= '<b>Reason to refund:</b> '.$purchase->refunded_reason.'<br>';
+        if(!$refunded)
+            $html .= '<b>Reason to refund:</b> '.$purchase->refunded_reason.'<br>';
         //send to
         $acc_email = explode(',', $purchase->accounting_email);
         $oth_email = explode(',', $purchase->emails);
