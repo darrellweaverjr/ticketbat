@@ -251,7 +251,7 @@ class Purchase extends Model
     /**
      * Get the purchase receipt info.
      */
-    public function set_pending()
+    public function set_pending($refunded=false)
     {
         //get purchase info mix
         $purchase = DB::table('purchases')
@@ -268,8 +268,9 @@ class Purchase extends Model
                             ->groupBy('purchases.id')->first();
         if(!$purchase)
             return false;
-        $html  = '<b>PURCHASE PENDING TO REFUND</b><br><br>';
-        $html .= '<b>Status changed by:</b> '.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.')<br><br>';
+        $html  = ($refunded)? '<b>PURCHASE REFUNDED</b><br><br>' : '<b>PURCHASE PENDING TO REFUND</b><br><br>';
+        if(!$refunded)
+            $html .= '<b>Status changed by:</b> '.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.')<br><br>';
         $html .= '<b>Customer:</b> '.$purchase->first_name.' '.$purchase->last_name.'<br>';
         $html .= '<b>Email:</b> <a href="mailto:'.$purchase->email.'" target="_top">'.$purchase->email.'</a> <b>Phone:</b> '.$purchase->phone.'<br><br>';
         $html .= '<b>Order #:</b> '.$purchase->id.'<br>';
@@ -283,10 +284,11 @@ class Purchase extends Model
         $acc_email = explode(',', $purchase->accounting_email);
         $oth_email = explode(',', $purchase->emails);
         $accoun_tb = explode(',', env('MAIL_ACCOUNTING_TO',''));
-        $others_tb = explode(',', env('MAIL_PURCHASE_PENDING',''));        
-        $to = array_unique( array_merge($acc_email,$oth_email,$accoun_tb,$others_tb) );        
+        $others_tb = ($refunded)? [$purchase->email, Auth::user()->email] : explode(',', env('MAIL_PURCHASE_PENDING',''));        
+        $to = array_unique( array_merge($acc_email,$oth_email,$accoun_tb,$others_tb) );   
         //send email
-        $email = new EmailSG(null, $to, 'TicketBat Admin: Purchase pending to refund request');
+        $subject = ($refunded)? 'TicketBat Admin: Purchase refunded' : 'TicketBat Admin: Purchase pending to refund request';
+        $email = new EmailSG(null, $to, $subject);
         $email->category('Custom');
         $email->body('custom',['body'=>$html]);
         $email->template('46388c48-5397-440d-8f67-48f82db301f7');
@@ -371,9 +373,10 @@ class Purchase extends Model
                             $totals['printed_fee']+=$receipt['purchase']->printed_fee;
                             $totals['sales_taxes']+=$receipt['purchase']->sales_taxes;
                             //show on top if change status
-                            if($change=='CANCELED' || $change=='REFUNDED')
+                            if($change=='CANCELED')
                                 $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN CANCELLED</b></h1>' ;
-                            
+                            /*else if($change=='REFUNDED')
+                                $top = '<h1><b style="color:red">THIS PURCHASE HAS BEEN REFUNDED</b></h1>' ;*/
                             else if($change=='ACTIVATED')
                                 $top = '<h1><b style="color:green">THIS PURCHASE HAS BEEN ACTIVATED</b></h1>' ;
                             else
@@ -440,7 +443,7 @@ class Purchase extends Model
                     $p = $receipts[0]['purchase'];
                     if($p->s_individual_emails == 1 && !empty($p->emails))
                     {
-                        if($change=='REFUNDED')
+                        /*if($change=='REFUNDED')
                         {
                             $subject = 'TicketBat :: Credit Card Dispute # '.$receipt['purchase']->id;
                             $top_copy  = '<b style="color:red">Credit Card Dispute<br><br>';
@@ -448,7 +451,7 @@ class Purchase extends Model
                             $top_copy .= 'If the guest was a no show, DO NOT RETURN the tickets.  The Settlement Team will make the adjustment.<br><br>';
                             $top_copy .= 'Please reply to this email.</b><br><br>';
                         }
-                        else if($type_email=='changed')
+                        else */if($type_email=='changed')
                         {
                             $subject = 'TicketBat :: Date Changed for order #'.$receipt['purchase']->id;
                             $top_copy = $top ;

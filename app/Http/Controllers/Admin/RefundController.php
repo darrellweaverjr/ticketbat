@@ -335,7 +335,11 @@ class RefundController extends Controller{
                         
                         //response true
                         if(!isset($response[$i]))
+                        {
                             $response[$i] = 'Done successfully!';
+                            //send an email to the customer                            
+                            $receipt = $purchase->set_pending(true);
+                        }
                     }
                     
                     $msg = '';

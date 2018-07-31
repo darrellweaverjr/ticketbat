@@ -39,6 +39,7 @@ class EmailSG {
                 }
                 if (is_array($to) && count($to) > 0) 
                 {
+                    $to = array_unique( $to );   
                     //check if there is individual email
                     if(empty($data))
                     {
