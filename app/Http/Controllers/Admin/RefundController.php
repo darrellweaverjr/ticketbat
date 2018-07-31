@@ -247,18 +247,18 @@ class RefundController extends Controller{
                                                 $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                                 $purchase->refunded_reason = null;
                                                 $purchase->save();
-                                                $response[$i] = 'Done successfully!<br>'.$refunded['msg'];
+                                                $response[$i] = ['success'=>true, 'msg'=>'Done successfully!<br>'.$refunded['msg']];
                                             }
                                             else
                                             {
                                                 $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount;
                                                 $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                                 $purchase->save();
-                                                $response[$i] = 'Intent to refund failed ('.$purchase->payment_type.').<br>'.$refunded['msg'];
+                                                $response[$i] = ['success'=>false, 'msg'=>'Intent to refund failed ('.$purchase->payment_type.').<br>'.$refunded['msg']] ;
                                             }
                                         }
                                         else
-                                            $response[$i] = 'That purchase has no a valid transaction.';
+                                            $response[$i] = ['success'=>false, 'msg'=>'That purchase has no a valid transaction.'];
                                     }
                                     //refund cash
                                     else
@@ -271,14 +271,14 @@ class RefundController extends Controller{
                                             $purchase->status = 'Refunded';
                                             $purchase->refunded_reason = null;
                                             $purchase->save();
-                                            $response[$i] = 'Done successfully!';
+                                            $response[$i] = ['success'=>true, 'msg'=>'Done successfully!'];  
                                         }
                                         else
                                         {
                                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to refund $'.$amount;
                                             $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                             $purchase->save();
-                                            $response[$i] = 'Intent to refund failed ('.$purchase->payment_type.').';
+                                            $response[$i] = ['success'=>false, 'msg'=>'Intent to refund failed ('.$purchase->payment_type.').'];
                                         }
                                     } 
                                 }
@@ -293,14 +293,14 @@ class RefundController extends Controller{
                                         $purchase->status = 'Refunded';
                                         $purchase->refunded_reason = null;
                                         $purchase->save();
-                                        $response[$i] = 'Done successfully!';
+                                        $response[$i] = ['success'=>true, 'msg'=>'Done successfully!'];  
                                     }
                                     else
                                     {
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to manually refund $'.$amount;
                                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                         $purchase->save();
-                                        $response[$i] = 'Intent to manually refund failed ('.$purchase->payment_type.').';
+                                        $response[$i] = ['success'=>false, 'msg'=>'Intent to manually refund failed ('.$purchase->payment_type.').'];
                                     }
                                 }
                                 //update status chargeback
@@ -314,37 +314,39 @@ class RefundController extends Controller{
                                         $purchase->status = 'Refunded';
                                         $purchase->refunded_reason = null;
                                         $purchase->save();
-                                        $response[$i] = 'Done successfully!';
+                                        $response[$i] = ['success'=>true, 'msg'=>'Done successfully!'];  
                                     }
                                     else
                                     {
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Intented to manually Chargeback $'.$amount;
                                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
                                         $purchase->save();
-                                        $response[$i] = 'Intent to manually Chargeback failed ('.$purchase->payment_type.').';
+                                        $response[$i] = ['success'=>false, 'msg'=>'Intent to manually chargeback failed ('.$purchase->payment_type.').'];
                                     }
                                 }
                                 else
-                                    $response[$i] = 'Invalid action.';
+                                    $response[$i] = ['success'=>false, 'msg'=>'Invalid action.']; 
                             }
                             else
-                                $response[$i] = 'No amount to be refunded.';
+                                $response[$i] = ['success'=>false, 'msg'=>'No amount to be refunded.']; 
                         }
                         else
-                            $response[$i] = 'Not found in the system.';
+                            $response[$i] = ['success'=>false, 'msg'=>'Not found in the system.']; 
                         
                         //response true
                         if(!isset($response[$i]))
-                        {
-                            $response[$i] = 'Done successfully!';
-                            //send an email to the customer                            
-                            $receipt = $purchase->set_pending(true);
-                        }
+                            $response[$i] = ['success'=>false, 'msg'=>'No action made!']; 
                     }
                     
                     $msg = '';
                     foreach ($response as $k=>$v)
-                        $msg .= '<br><b>Order #'.$k.' :</b> '.$v;
+                    {
+                        //creating message
+                        $msg .= '<br><b>Order #'.$k.' :</b> '.$v['msg'];
+                        //send an email to the customer of the refunded ones    
+                        if($v['success'])
+                            $purchase->set_pending(true);
+                    }
                     return ['success'=>true, 'msg'=>$msg];
                 }
                 return ['success'=>false, 'msg'=>'You must select a valid purchase(s) to process.'];
