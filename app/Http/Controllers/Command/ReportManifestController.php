@@ -183,8 +183,7 @@ class ReportManifestController extends Controller{
                                             SUM(purchases.quantity) AS num_people'))
                             ->where('manifest_emails.manifest_type', '=', 'Primary')
                             ->where('purchases.status','=','Active')
-                            ->whereDate('show_times.show_time','=',$query_date)
-                            ->havingRaw( '"'.$this->date_manifest.'" BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
+                            ->whereRaw('"'.$this->date_manifest.'" BETWEEN DATE_SUB(show_times.show_time, INTERVAL 15 MINUTE) AND show_times.show_time')
                             ->havingRaw('COUNT(purchases.id) != manifest_emails.num_purchases')
                             ->groupBy('show_times.id')->distinct()->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
@@ -201,11 +200,10 @@ class ReportManifestController extends Controller{
                                 $query->where('purchases.status','=','Active')
                                       ->orWhereNull('purchases.id');
                             })
-                            ->whereDate('show_times.show_time','=',$query_date)
-                            ->havingRaw( '"'.$this->date_manifest.'" BETWEEN DATE_ADD(show_times.show_time, INTERVAL 10 MINUTE) AND show_times.show_time')
+                            ->whereRaw('"'.$this->date_manifest.'" BETWEEN DATE_ADD(show_times.show_time, INTERVAL 30 MINUTE) AND DATE_ADD(show_times.show_time, INTERVAL 40 MINUTE)')
                             ->havingRaw('COUNT(purchases.id) < 1')
                             ->groupBy('show_times.id')->distinct()->get()->toArray();
-                    $info = ['dates'=>$dates,'type'=>'Primary','subject'=>'Last Minute Manifest for '];
+                    $info = ['dates'=>$dates,'type'=>'NoSales','subject'=>'No Sales Manifest for '];
                     break;
                 default:break;
             }   
