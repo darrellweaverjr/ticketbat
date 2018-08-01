@@ -757,7 +757,7 @@ class Purchase extends Model
                 //search invoice
                 $data['search']['invoice'] = (!empty($input['invoice']))? trim($input['invoice']) : '';
                 if(!empty($input['invoice']))
-                    $data['where'][] = ['transactions.invoice','=',$data['search']['invoice']];
+                    $data['where'][] = ['transactions.invoice_num','=',$data['search']['invoice']];
                 //search authcode
                 $data['search']['authcode'] = (!empty($input['authcode']))? trim($input['authcode']) : '';
                 if(!empty($input['authcode']))
