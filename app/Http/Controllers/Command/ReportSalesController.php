@@ -211,7 +211,7 @@ class ReportSalesController extends Controller{
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
-                            ->select(DB::raw('tickets.ticket_type, packages.title, SUM(purchases.printed_fee) AS printed_fee,
+                            ->select(DB::raw('tickets.ticket_type, IF(packages.title="None", "", packages.title) AS title, SUM(purchases.printed_fee) AS printed_fee,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
                                           SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
@@ -352,7 +352,7 @@ class ReportSalesController extends Controller{
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
                             ->join('users', 'users.id', '=' ,'purchases.user_id')
                             ->join('user_types', 'user_types.id', '=' ,'users.user_type_id')
-                            ->select(DB::raw('users.email, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time, venues.name AS venue, shows.name AS event, purchases.payment_type, tickets.ticket_type, packages.title, 
+                            ->select(DB::raw('users.email, DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time, venues.name AS venue, shows.name AS event, purchases.payment_type, tickets.ticket_type, IF(packages.title="None", "", packages.title) AS title, 
                                           SUM(purchases.printed_fee) AS printed_fee,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets,
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
@@ -425,7 +425,7 @@ class ReportSalesController extends Controller{
                                 $join->on('transaction_refunds.purchase_id', '=', 'purchases.id')
                                      ->where('transaction_refunds.result','=','Approved');
                             })
-                            ->select(DB::raw('DATE_FORMAT(transaction_refunds.created, "%c/%e/%y %l:%i%p") AS created, venues.name AS venue, shows.name AS event, transaction_refunds.payment_type, tickets.ticket_type, packages.title, purchases.status, 
+                            ->select(DB::raw('DATE_FORMAT(transaction_refunds.created, "%c/%e/%y %l:%i%p") AS created, venues.name AS venue, shows.name AS event, transaction_refunds.payment_type, tickets.ticket_type, IF(packages.title="None", "", packages.title) AS title, purchases.status, 
                                           DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time, purchases.channel,
                                           SUM(transaction_refunds.printed_fee)*-1 AS printed_fee,
                                           COUNT(transaction_refunds.id)*-1 AS transactions, SUM(transaction_refunds.quantity)*-1 AS tickets,
@@ -532,8 +532,9 @@ class ReportSalesController extends Controller{
                             ->join('purchases', 'show_times.id', '=' ,'purchases.show_time_id')
                             ->join('tickets', 'tickets.id', '=' ,'purchases.ticket_id')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')
+                            ->join('discounts', 'discounts.id', '=' ,'purchases.discount_id')
                             ->select(DB::raw('DATE_FORMAT(show_times.show_time, "%c/%e/%y %l:%i%p") AS show_time, venues.name AS venue, shows.name AS event, purchases.channel, purchases.payment_type, 
-                                          tickets.ticket_type, packages.title, LEFT(purchases.status,1) AS status,
+                                          tickets.ticket_type, IF(packages.title="None", "", packages.title) AS title, LEFT(purchases.status,1) AS status, discounts.code,
                                           COUNT(purchases.id) AS transactions, SUM(purchases.quantity) AS tickets, SUM(purchases.printed_fee) AS printed_fee,
                                           SUM(purchases.price_paid) AS paid, SUM(purchases.sales_taxes) AS taxes,
                                           SUM(purchases.commission_percent) AS commissions, SUM(purchases.cc_fees) AS cc_fee,
@@ -557,8 +558,8 @@ class ReportSalesController extends Controller{
                 $events->where('show_times.show_time','>=',$start_date);
             if(!empty($end_date))
                 $events->where('show_times.show_time','<=',$end_date);
-            $events = $events->groupBy('show_times.id')->groupBy('venues.id')->groupBy('shows.id')->groupBy('purchases.channel')->groupBy('purchases.payment_type')->groupBy('tickets.id')->groupBy('purchases.status')
-                             ->orderBy('show_times.show_time','ASC')->orderBy('venues.name')->orderBy('shows.name')->orderBy('purchases.channel')->orderBy('purchases.payment_type')->orderBy('tickets.id')->orderBy('purchases.status')
+            $events = $events->groupBy('show_times.id')->groupBy('venues.id')->groupBy('shows.id')->groupBy('purchases.channel')->groupBy('purchases.payment_type')->groupBy('tickets.id')->groupBy('discounts.id')->groupBy('purchases.status')
+                             ->orderBy('show_times.show_time','ASC')->orderBy('venues.name')->orderBy('shows.name')->orderBy('purchases.channel')->orderBy('purchases.payment_type')->orderBy('tickets.ticket_type')->orderBy('discounts.code')->orderBy('purchases.status')
                              ->distinct()->get()->toArray();
             return ['data'=>$events, 'total'=> $this->calc_totals($events)];
         } catch (Exception $ex) {
@@ -721,9 +722,9 @@ class ReportSalesController extends Controller{
             //debits report pdf
             if(isset($report['debits']))
             {
-                $name_report = 'Debits Report';
+                $name_report = 'Refunds & Chargebacks Report';
                 $format = 'debits'; $data = $report['debits'];
-                $file = '/tmp/ReportDebits_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
+                $file = '/tmp/ReportRefundsChargebacks_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $view = View::make('command.report_sales', compact('data','format','name_report'));
                 $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
                 $pdf->getDomPDF()->get_canvas()->page_text(35, 590, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
@@ -733,9 +734,9 @@ class ReportSalesController extends Controller{
             //future liabilities report pdf
             if(isset($report['future']))
             {
-                $name_report = 'Future Liabilities Report';
+                $name_report = 'Future Sales Report';
                 $format = 'future_liabilities'; $data = $report['future'];
-                $file = '/tmp/ReportFutureLiabilities_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
+                $file = '/tmp/ReportFutureSales_'.preg_replace('/[^a-zA-Z0-9\_]/','_',$name).'_'.date('Y-m-d').'_'.date('U').'.pdf';
                 $view = View::make('command.report_sales', compact('data','format','name_report'));
                 $pdf = PDF::loadHTML($view->render())->setPaper('letter', 'landscape')->setWarnings(false)->save($file);
                 $pdf->getDomPDF()->get_canvas()->page_text(35, 590, $name_report." | Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));

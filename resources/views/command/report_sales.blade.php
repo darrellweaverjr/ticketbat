@@ -50,7 +50,7 @@
                 @if(isset($d['table_future']))
                 <hr><table>
                     <tr class="ttitle">
-                      <td colspan="15">SALES WITHOUT CONSIGNMENTS</td>
+                      <td colspan="16">SALES WITHOUT CONSIGNMENTS</td>
                     </tr>
                   <tr class="theader">
                       <td>DATE<br>TIME</td>
@@ -61,6 +61,7 @@
                       <td>CH.</td>
                       <td>PMT.</td>
                       <td>TYPE</td>
+                      <td>DISC.</td>
                       <td>ST.</td>
                       <td style='text-align:center'>TRNS.</td>
                       <td style='text-align:center'>TCKS.</td>
@@ -82,6 +83,7 @@
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->code}}</td>
                         <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
@@ -103,6 +105,7 @@
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->code}}</td>
                         <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
@@ -118,7 +121,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="8" @else colspan="7" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_future']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_future']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_future']['total']['paid'],2)}}</td>
@@ -144,7 +147,6 @@
                       <td>VENUES</td>
                       @endif
                       <td>SHOWS</td>
-                      <td>CH.</td>
                       <td>PMT.</td>
                       <td>TYPE</td>
                       <td>ST.</td>
@@ -165,7 +167,6 @@
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
                         <td>{{$e->event}}</td>
-                        <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
                         <td>{{$e->status}}</td>
@@ -186,7 +187,6 @@
                     <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
-                        <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
                         <td>{{$e->status}}</td>
@@ -204,7 +204,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_consignments']['total']['paid'],2)}}</td>
@@ -222,7 +222,7 @@
                @if(isset($d['table_debits']) && !empty($d['table_debits']['data']))
                 <hr><table>
                     <tr class="ttitle">
-                      <td colspan="15">DEBITS</td>
+                      <td colspan="15">REFUNDS & CHARGEBACKS</td>
                     </tr>
                   <tr class="theader">
                       <td>DATE<br>TIME</td>
@@ -328,6 +328,7 @@
                       <td>CH.</td>
                       <td>PMT.</td>
                       <td>TYPE</td>
+                      <td>DISC.</td>
                       <td>ST.</td>
                       <td style='text-align:center'>TRNS.</td>
                       <td style='text-align:center'>TCKS.</td>
@@ -349,6 +350,7 @@
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->code}}</td>
                         <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
@@ -370,6 +372,7 @@
                         <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
+                        <td>{{$e->code}}</td>
                         <td>{{$e->status}}</td>
                         <td style='text-align:center'>{{number_format($e->transactions)}}</td>
                         <td style='text-align:center'>{{number_format($e->tickets)}}</td>
@@ -385,7 +388,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="8" @else colspan="7" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_events']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_events']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_events']['total']['paid'],2)}}</td>
@@ -408,7 +411,6 @@
                       <td>VENUES</td>
                       @endif
                       <td>SHOWS</td>
-                      <td>CH.</td>
                       <td>PMT.</td>
                       <td>TYPE</td>
                       <td>ST.</td>
@@ -429,7 +431,6 @@
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->venue}}</td>
                         <td>{{$e->event}}</td>
-                        <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
                         <td>{{$e->status}}</td>
@@ -450,7 +451,6 @@
                     <tr @if(in_array($e->status,['R','C'])) class="tdebit" @endif>
                         <td>{{$e->show_time}}</td>
                         <td>{{$e->event}}</td>
-                        <td>{{$e->channel}}</td>
                         <td>{{$e->payment_type}}</td>
                         <td>{{$e->ticket_type}} - {{$e->title}}</td>
                         <td>{{$e->status}}</td>
@@ -468,7 +468,7 @@
                     @endforeach
                 @endif
                     <tr class="ttotal">
-                      <td @if($d['type'] == 'admin') colspan="7" @else colspan="6" @endif>TOTALS:</td>
+                      <td @if($d['type'] == 'admin') colspan="6" @else colspan="5" @endif>TOTALS:</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['transactions']}}</td>
                       <td style='text-align:center'>{{$d['table_consignments']['total']['tickets']}}</td>
                       <td style='text-align:right'>$ {{number_format($d['table_consignments']['total']['paid'],2)}}</td>
@@ -486,7 +486,7 @@
                @if(isset($d['table_debits']) && !empty($d['table_debits']['data']))
                 <hr><table>
                     <tr class="ttitle">
-                      <td colspan="15">DEBITS</td>
+                      <td colspan="15">REFUNDS & CHARGEBACKS</td>
                     </tr>
                   <tr class="theader">
                       <td>DATE<br>TIME</td>
