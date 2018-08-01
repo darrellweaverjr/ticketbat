@@ -127,6 +127,7 @@ class ReportManifestController extends Controller{
         try {
             $info = ['dates'=>[],'type'=>'','subject'=>''];
             $query_date = date('Y-m-d',strtotime($this->date_manifest));
+            $previous_date = $this->previous_date;
             //init variables
             switch ($type)                      
             {
@@ -200,7 +201,12 @@ class ReportManifestController extends Controller{
                                 $query->where('purchases.status','=','Active')
                                       ->orWhereNull('purchases.id');
                             })
-                            ->whereRaw('"'.$this->date_manifest.'" BETWEEN DATE_ADD(show_times.show_time, INTERVAL 30 MINUTE) AND DATE_ADD(show_times.show_time, INTERVAL 40 MINUTE)')
+                            ->where(function($query) use ($previous_date,$query_date) {
+                                if(!$previous_date)
+                                    $query->whereRaw('"'.$this->date_manifest.'" BETWEEN DATE_ADD(show_times.show_time, INTERVAL 30 MINUTE) AND DATE_ADD(show_times.show_time, INTERVAL 40 MINUTE)');
+                                else
+                                    $query->whereDate('show_times.show_time','=',$query_date);
+                            })
                             ->havingRaw('COUNT(purchases.id) < 1')
                             ->groupBy('show_times.id')->distinct()->get()->toArray();
                     $info = ['dates'=>$dates,'type'=>'NoSales','subject'=>'No Sales Manifest for '];
