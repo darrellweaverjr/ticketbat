@@ -247,7 +247,7 @@ class PurchaseController extends Controller
                         if(empty($sent_to))
                             $sent_to = ['id'=>$p->user_id, 'email'=>$p->customer->email];
                         $purchased[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'schedule'=>date('l, F j, Y @ g:i A', strtotime($p->show_time->show_time)),
-                                        'slug'=>$p->ticket->show->slug,'show_time_id'=>$p->show_time->id,'ticket_id'=>$p->ticket->id];
+                                        'slug'=>$p->ticket->show->slug,'show_time_id'=>$p->show_time->id,'ticket_id'=>$p->ticket->id,'ticket_type'=>$p->ticket_type];
                         $analytics[] = ['qty'=>$p->quantity,'event'=>$p->ticket->show->name,'ticket_type'=>$p->ticket->ticket_type,'ticket_id'=>$p->ticket->id,
                                         'show_id'=>$p->ticket->show->id,'venue'=>$p->ticket->show->venue->name,'price'=>$p->price_paid,'id'=>$p->id];
                         $totals += $p->price_paid;

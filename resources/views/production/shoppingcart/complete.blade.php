@@ -22,7 +22,7 @@
             </h4>
             <p class="margin-top-20">
                 @foreach($purchased as $p)
-                <i style="padding-left:10px" class="fa fa-ticket"></i> <strong> {{$p['qty']}}</strong> @if($p['qty']>1) tickets @else ticket @endif for <strong>{{$p['event']}}</strong> on <strong>{{$p['schedule']}}</strong><br>
+                <i style="padding-left:10px" class="fa fa-ticket"></i> <strong> {{$p['qty']}}</strong> @if($p['qty']>1) tickets @else ticket @endif <strong>{{$p['ticket_type']}}</strong> on <strong>{{$p['schedule']}}</strong><br>
                     @if($seller>0)
                     <a class="btn btn-info btn-lg uppercase add_pay" style="float:right;margin-top:-35px;margin-left:10px" data-ticket="{{$p['ticket_id']}}" data-show_time="{{$p['show_time_id']}}" ><i class="fa fa-backward icon-arrow-left"></i> Add & pay</a>
                     <a class="btn btn-info btn-lg uppercase" style="float:right;margin-top:-35px;margin-left:10px" href="/buy/{{$p['slug']}}/{{$p['show_time_id']}}" ><i class="fa fa-backward icon-arrow-left"></i> Buy Page</a>
