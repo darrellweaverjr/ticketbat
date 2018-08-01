@@ -100,13 +100,12 @@ var TableDatatablesManaged = function () {
         //on change input manual calc
         $('#target_purchase input[type="number"], #target_purchase select[name="t_p_inclusive_fee"]').bind('change','click',function() {
             var incl = $('#target_purchase select[name="t_p_inclusive_fee"]').val();
-            var qty = $('#target_purchase input[name="t_quantity"]').val();
             var price = $('#target_purchase input[name="t_p_retail_price"]').val();
             var fee = (incl>0)? 0 : $('#target_purchase input[name="t_p_processing_fee"]').val();
             var disc = $('#target_purchase input[name="t_savings"]').val();
             var print = $('#target_purchase input[name="t_printed_fee"]').val();
             var tax = $('#target_purchase input[name="t_sales_taxes"]').val();
-            var paid = parseInt(qty)*parseFloat(price) + parseFloat(fee) - parseFloat(disc) + parseFloat(print) + parseFloat(tax);
+            var paid = parseFloat(price) + parseFloat(fee) - parseFloat(disc) + parseFloat(print) + parseFloat(tax);
             $('#target_purchase input[name="t_price_paid"]').val(parseFloat(paid).toFixed(2));    
         });
         
