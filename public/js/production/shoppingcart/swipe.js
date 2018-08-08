@@ -62,7 +62,7 @@ var SwipeFunctions = function () {
                 return true;
             }
             else {
-                alert('Could not be correctly read the card.');
+                alert('Card swipe did not work. Please, try the card manually.');
                 return false;
             }
         }
