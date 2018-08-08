@@ -18,111 +18,50 @@
     <!-- END PAGE TITLE-->
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
-    <div class="row" id="totals">
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="display col-md-4">
-                <div class="number text-right">
-                    <small>CASH TRANS.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['s_trans'])}}">0</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>CASH TICKT.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['s_tick'])}}">0</span> 
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>CASH TOT.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['s_tot'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="display col-md-4">
-                <div class="number text-right">
-                    <small>CRED TRANS.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['c_trans'])}}">0</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>CRED TICKT.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['c_tick'])}}">0</span> 
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>CRED TOT.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['c_tot'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="display col-md-4">
-                <div class="number text-right">
-                    <small>REF TRANS.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['r_trans'])}}">0</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>REF TICKT.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['r_tick'])}}">0</span> 
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>REF TOT.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['r_tot'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="display col-md-4">
-                <div class="number text-right">
-                    <small>TOT TRANS.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['t_trans'])}}">0</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>TOT TICKT.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['t_tick'])}}">0</span> 
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-center">
-                    <small>TOT TOT.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['t_tot'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
+    <div class="row col-md-12" id="totals1">
+        <div class="portlet-body">
+            <table width="100%" class="table table-hover table-borderless table-condensed table-header-fixed table-responsive">
+                <tr>
+                    <th class="success" colspan="3" style='text-align:center'>CASH</th>
+                    <th class="warning" colspan="3" style='text-align:center'>CREDIT</th>
+                    <th class="danger" colspan="3" style='text-align:center'>REFUNDS</th>
+                    <th class="info" colspan="3" style='text-align:center'>TOTAL</th>
+                <tr>
+                    <th class="success" style='text-align:center'>TRANS.</th>
+                    <th class="success" style='text-align:center'>TICKS</th>
+                    <th class="success" style='text-align:right'>AMOUNT</th>
+                    
+                    <th class="warning" style='text-align:center'>TRANS.</th>
+                    <th class="warning" style='text-align:center'>TICKS</th>
+                    <th class="warning" style='text-align:right'>AMOUNT</th>
+                    
+                    <th class="danger" style='text-align:center'>TRANS.</th>
+                    <th class="danger" style='text-align:center'>TICKS</th>
+                    <th class="danger" style='text-align:right'>AMOUNT</th>
+                    
+                    <th class="info" style='text-align:center'>TRANS.</th>
+                    <th class="info" style='text-align:center'>TICKS</th>
+                    <th class="info" style='text-align:right'>AMOUNT</th>
+                </tr>
+                <tr>
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['s_trans'])}}">0</span></th>
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['s_tick'])}}">0</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['s_tot'],2)}}">0.00</span></th>
+                    
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['c_trans'])}}">0</span></th>
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['c_tick'])}}">0</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['c_tot'],2)}}">0.00</span></th>
+                    
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['r_trans'])}}">0</span></th>
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['r_tick'])}}">0</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['r_tot'],2)}}">0.00</span></th>
+                    
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['t_trans'])}}">0</span></th>
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['t_tick'])}}">0</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['t_tot'],2)}}">0.00</span></th>
+                </tr>
+            </table>
+        </div> 
     </div>
     <!-- END DASHBOARD STATS 1-->
     <!-- BEGIN EXAMPLE TABLE PORTLET-->

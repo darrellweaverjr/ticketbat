@@ -577,7 +577,7 @@ class DashboardController extends Controller
      *
      * @return view
      */
-    public function future_liabilities()
+    public function future_sales()
     {
         try {
             //init
@@ -639,9 +639,9 @@ class DashboardController extends Controller
                             'sales_taxes'=>array_sum(array_column($data,'sales_taxes')),
                             'commissions'=>array_sum(array_column($data,'commissions')));
             //return view
-            return view('admin.dashboard.future_liabilities',compact('data','total','search'));
+            return view('admin.dashboard.future_sales',compact('data','total','search'));
         } catch (Exception $ex) {
-            throw new Exception('Error Dashboard Future Liabilities: '.$ex->getMessage());
+            throw new Exception('Error Dashboard Future Sales: '.$ex->getMessage());
         }
     }
 

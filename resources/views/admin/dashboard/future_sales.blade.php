@@ -1,4 +1,4 @@
-@php $page_title='Channels' @endphp
+@php $page_title='Future Sales' @endphp
 @extends('layouts.admin')
 @section('title')
   {!! $page_title !!}
@@ -13,7 +13,7 @@
     <!-- BEGIN PAGE HEADER-->
     <!-- BEGIN PAGE TITLE-->
     <h1 class="page-title"> {{$page_title}}
-        <small>statistics, charts and reports (by default the last 30 days).</small>
+        <small> for events that have not passed yet.</small>
     </h1>
     <!-- END PAGE TITLE-->
     <!-- END PAGE HEADER-->
@@ -55,22 +55,6 @@
         </div> 
     </div>
     <!-- END DASHBOARD STATS 1-->
-    <div class="row">
-       <div class="col-md-6">
-           <div class="portlet light portlet-fit bordered">
-               <div class="portlet-body responsive">
-                   <div id="chart_channel"  data-info="{{$graph['channel']}}" class="chart" style="height:250px;"></div>
-               </div>
-           </div>
-       </div>
-       <div class="col-md-6">
-           <div class="portlet light portlet-fit bordered">
-               <div class="portlet-body responsive">
-                   <div id="chart_show"  data-info="{{$graph['show']}}" class="chart" style="height:250px;"></div>
-               </div>
-           </div>
-       </div>
-   </div>
     <!-- BEGIN EXAMPLE TABLE PORTLET-->
     <div class="row">
         <div class="col-md-12">
@@ -84,17 +68,10 @@
                     <table class="table table-striped table-bordered table-hover" id="tb_model">
                         <thead>
                             <tr>
-                                @if($search['order']=='channel')
                                 <th style="text-align:center">Venue</th>
                                 <th style="text-align:center">Show</th>
-                                <th style="text-align:center">Channel</th>
-                                @else
-                                <th style="text-align:center">Channel</th>
-                                <th style="text-align:center">Venue</th>
-                                <th style="text-align:center">Show</th>
-                                @endif
                                 <th style="text-align:center">Qty<br>Sold</th>
-                                <th style="text-align:center">Purch.</th>
+                                <th style="text-align:center">Purchases</th>
                                 <th style="text-align:center">Total<br>Revenue</th>
                                 <th style="text-align:center">Sales<br>Taxes</th>
                                 @if(Auth::user()->user_type_id != 5)
@@ -112,15 +89,8 @@
                         <tbody>
                             @foreach($data as $d)
                             <tr>
-                                @if($search['order']=='channel')
                                 <td>{{$d->venue_name}}</td>
-                                <td>{{$d->show_name}}</td>
-                                <td>{{$d->channel}}</td>
-                                @else
-                                <td>{{$d->channel}}</td>
-                                <td>{{$d->venue_name}}</td>
-                                <td>{{$d->show_name}}</td>
-                                @endif
+                                <td>{{$d->name}}</td>
                                 <td style="text-align:center">{{number_format($d->tickets)}}</td>
                                 <td style="text-align:center">{{number_format($d->purchases)}}</td>
                                 <td style="text-align:right">$ {{number_format($d->revenue,2)}}</td>
@@ -145,13 +115,11 @@
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN INCLUDE FILTER SEARCH-->
-    @includeIf('admin.purchases.filter', ['search'=>$search,'action'=>'/admin/dashboard/channels','order'=>1])
+    @includeIf('admin.purchases.filter', ['search'=>$search,'action'=>'/admin/dashboard/future_sales'])
     <!-- END INCLUDE FILTER SEARCH-->
 @endsection
 
 @section('scripts')
-<script src="{{config('app.theme')}}js/amcharts.js" type="text/javascript"></script>
-<script src="{{config('app.theme')}}js/pie.js" type="text/javascript"></script>
 <script src="/js/admin/purchases/filter.js" type="text/javascript"></script>
-<script src="/js/admin/dashboard/channels.js" type="text/javascript"></script>
+<script src="/js/admin/dashboard/future_sales.js" type="text/javascript"></script>
 @endsection

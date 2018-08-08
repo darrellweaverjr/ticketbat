@@ -143,9 +143,9 @@
                                         </a>
                                     </li>
                                     <li class="nav-item start open">
-                                        <a href="/admin/dashboard/future_liabilities" class="nav-link">
+                                        <a href="/admin/dashboard/future_sales" class="nav-link">
                                             <i class="icon-graph"></i>
-                                            <span class="title">Future Liabilities</span>
+                                            <span class="title">Future Sales</span>
                                         </a>
                                     </li>
                                     <li class="nav-item start open">

@@ -18,117 +18,41 @@
     <!-- END PAGE TITLE-->
     <!-- END PAGE HEADER-->
     <!-- BEGIN DASHBOARD STATS 1-->
-    <div class="row" id="totals">
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="display col-md-3">
-                <div class="number text-left">
-                    <small>-</small>
-                    <h4 class="bold">TOTAL</h4>
-                </div>
-            </div>
-            <div class="display col-md-5">
-                <div class="number text-right">
-                    <small>TOTAL CHARGED</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['price_paids'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-2">
-                <div class="number text-center">
-                    <small>TRANS.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['purchases'])}}">0</span> 
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-2">
-                <div class="number text-center">
-                    <small>TICKS.</small>
-                    <h4 class="bold">
-                        <span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-        <div class="dashboard-stat2 col-lg-2 col-md-2 col-sm-6 col-xs-12">
-            <div class="display col-md-6">
-                <div class="number text-right">
-                    <small>DISCOUNTS</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-6">
-                <div class="number text-right">
-                    <small>TAXES</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-        </div>
-        <div class="dashboard-stat2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="display col-md-4">
-                <div class="number text-right">
-                    <small >C.C. FEE</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['cc_fees'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-right">
-                    <small>VEN.REV.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-4">
-                <div class="number text-right">
-                    <small>PRNT FEE</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['printed_fee'],2)}}">0.00</span>
-                    </h4>
-                </div>                    
-            </div>
-        </div>
-        <div class="dashboard-stat2 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-            <div class="display col-md-3">
-                <div class="number text-right">
-                    <small>COMMIS.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}">0.00</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="display col-md-3">
-                <div class="number text-right">
-                    <small>FEE INC.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_incl'],2)}}">0.00</span>
-                    </h4>
-                </div>                    
-            </div>
-            <div class="display col-md-3">
-                <div class="number text-right">
-                    <small>FEE OVER</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['fees_over'],2)}}">0.00</span>
-                    </h4>
-                </div>                    
-            </div>
-            <div class="display col-md-3">
-                <div class="number text-right">
-                    <small>TB.REV.</small>
-                    <h4 class="bold">
-                        $ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees_incl']+$total['fees_over']+$total['printed_fee'],2)}}">0.00</span>
-                    </h4>
-                </div>                    
-            </div>
-        </div>
+    <div class="row col-md-12" id="totals">
+        <div class="portlet-body">
+            <table width="100%" class="table table-hover table-borderless table-condensed table-header-fixed table-responsive">
+                <tr>
+                    <th>-</th>
+                    <th style='text-align:right'>TOTAL CHARGED</th>
+                    <th style='text-align:center'>TRANS.</th>
+                    <th style='text-align:center'>TICKS</th>
+                    <th style='text-align:right'>DISCOUNTS</th>
+                    <th style='text-align:right'>TAXES</th>
+                    <th style='text-align:right'>C.C.FEE</th>
+                    <th style='text-align:right'>VEN.REV.</th>
+                    <th style='text-align:right'>PRNT FEE</th>
+                    <th style='text-align:right'>COMMIS.</th>
+                    <th style='text-align:right'>FEE INCL.</th>
+                    <th style='text-align:right'>FEE OVER</th>
+                    <th style='text-align:right'>TB.REV.</th>
+                </tr>
+                <tr>
+                    <th>TOTAL</th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['price_paids'],2)}}">0.00</span></th>
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['purchases'])}}">0</span></th>
+                    <th style='text-align:center'><span data-counter="counterup" data-value="{{number_format($total['tickets'])}}">0</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['discounts'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['sales_taxes'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['cc_fees'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['to_show'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['printed_fee'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['commissions'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['fees_incl'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['fees_over'],2)}}">0.00</span></th>
+                    <th style='text-align:right'>$ <span data-counter="counterup" data-value="{{number_format($total['commissions']+$total['fees_incl']+$total['fees_over']+$total['printed_fee'],2)}}">0.00</span></th>
+                </tr>
+            </table>
+        </div> 
     </div>
     <!-- END DASHBOARD STATS 1-->
     <!-- BEGIN DESCRIPTION TABLE FOR PRINT-->
