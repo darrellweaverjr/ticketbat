@@ -102,7 +102,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN ADD MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:1000px !important;">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Add Consignment</center></h4>
@@ -289,7 +289,7 @@
     <!-- END ADD MODAL-->
     <!-- BEGIN EDIT MODAL-->
     <div id="modal_model_update2" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:1000px !important;">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-yellow">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title">Edit Consignment</center></h4>

@@ -108,7 +108,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN UPDATE MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:1000px !important;">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center id="modal_model_update_title"></center></h4>
@@ -1171,7 +1171,7 @@
     <!-- END TOGGLE SHOWTIMES MODAL-->
     <!-- BEGIN ADD/REMOVE SHOWTIMES MODAL-->
     <div id="modal_model_show_times" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:1000px !important;">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Show Time</center></h4>
@@ -1371,7 +1371,7 @@
     <!-- END MOVE SHOWTIMES MODAL-->
     <!-- BEGIN ADD/EDIT CONTRACTS MODAL-->
     <div id="modal_model_show_contracts" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:1000px !important;">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Add Contracts</center></h4>

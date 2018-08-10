@@ -1,6 +1,6 @@
 <!-- BEGIN SEARCH MODAL-->
 <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:1000px !important;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content portlet">
             <div class="modal-header alert-block bg-grey-salsa">
                 <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Ticket Type:</label>
+                                    <label class="control-label col-md-3">T.Type:</label>
                                     <div class="col-md-9 show-error">
                                         <div class="input-group">
                                             <select class="form-control" name="ticket_type" style="width: 321px !important">

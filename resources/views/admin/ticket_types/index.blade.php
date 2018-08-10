@@ -139,7 +139,7 @@
     <!-- END UPDATE MODAL-->
     <!-- BEGIN STYLE MODAL-->
     <div id="modal_model_style" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:1000px !important;">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-purple">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Styles</center></h4>
