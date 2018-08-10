@@ -101,7 +101,7 @@ var FunctionsManaged = function () {
                         },function(){
                             // Facebook track adding the shopping cart
                             FBPixel.init();
-                            location.reload(); 
+                            //location.reload(); 
                         });
                     }
                     else{
@@ -141,7 +141,7 @@ var FBPixel = function () {
     return {
         //main function to initiate the module
         init: function () {
-            fbq('track', 'AddToCart');       
+            fbq('track', 'AddToCart', {event: fbq_events[0]});       
         }
     };
 }();
