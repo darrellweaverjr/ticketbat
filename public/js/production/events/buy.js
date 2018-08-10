@@ -89,9 +89,6 @@ var FunctionsManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        // Facebook track adding the shopping cart
-                        //fbq('track', 'AddToCart');
-                        // Continue code
                         ShoppingcartQtyItems.init();
                         Countdown.reset();
                         swal({
@@ -102,6 +99,8 @@ var FunctionsManaged = function () {
                             type: "success",
                             showConfirmButton: false
                         },function(){
+                            // Facebook track adding the shopping cart
+                            FBPixel.init();
                             location.reload(); 
                         });
                     }
@@ -127,12 +126,22 @@ var FunctionsManaged = function () {
         //autoselect first one
         update_stage_images( $('#tickets_accordion a.accordion-toggle')[0] );
         $('#form_model_update input:radio.default_radio').attr('checked',true).trigger('change');
-        update_price();
+        update_price();        
     }
     return {
         //main function to initiate the module
         init: function () {
             initFunctions();        
+        }
+    };
+}();
+//*****************************************************************************************
+var FBPixel = function () {
+    
+    return {
+        //main function to initiate the module
+        init: function () {
+            fbq('track', 'AddToCart');       
         }
     };
 }();
