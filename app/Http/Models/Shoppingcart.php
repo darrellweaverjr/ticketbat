@@ -498,6 +498,9 @@ class Shoppingcart extends Model
     public static function add_item($show_time_id,$ticket_id,$qty,$s_token,$seat_id=null)
     {
         try {
+            //check qty
+            if(!is_numeric($qty))
+                return ['success'=>false, 'msg'=>'That quantity of tickets is not valid!'];
             //get pricing first
             if(empty($seat_id))
             {
@@ -586,6 +589,9 @@ class Shoppingcart extends Model
     public static function update_item($shoppingcart_id,$qty,$s_token)
     {
         try {
+            //check qty
+            if(!is_numeric($qty))
+                return ['success'=>false, 'msg'=>'That quantity of tickets is not valid!'];
             //get item to update
             $item = Shoppingcart::where('id','=',$shoppingcart_id)->where('session_id','=',$s_token)->first();
             if($item)
