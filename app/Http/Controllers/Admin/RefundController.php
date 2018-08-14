@@ -211,6 +211,7 @@ class RefundController extends Controller{
                     return ['success'=>false, 'msg'=>'You must select a valid amount to process.'];
                 if(!empty($id))
                 {
+                    $msg = '';
                     //try to refund each purchase 
                     foreach ($id as $i)
                     {
@@ -333,20 +334,18 @@ class RefundController extends Controller{
                         else
                             $response[$i] = ['success'=>false, 'msg'=>'Not found in the system.']; 
                         
-                        //response true
+                        //make response when no condition
                         if(!isset($response[$i]))
                             $response[$i] = ['success'=>false, 'msg'=>'No action made!']; 
-                    }
-                    
-                    $msg = '';
-                    foreach ($response as $k=>$v)
-                    {
+                        
+                        //send an email to the customer of the refunded ones   
+                        $emailSent = ($response[$i]['success'])? $purchase->set_pending(true) : false;
+                        $emailSent = ($emailSent)? '<i class="icon-envelope"></i><i class="icon-check"></i>' : '<i class="icon-envelope"></i><i class="icon-close"></i>';
+                        
                         //creating message
-                        $msg .= '<br><b>Order #'.$k.' :</b> '.$v['msg'];
-                        //send an email to the customer of the refunded ones    
-                        if($v['success'])
-                            $purchase->set_pending(true);
+                        $msg .= '<br><b>Order #'.$i.' :</b> '.$emailSent.' '.$response[$i]['msg'];
                     }
+                    //return
                     return ['success'=>true, 'msg'=>$msg];
                 }
                 return ['success'=>false, 'msg'=>'You must select a valid purchase(s) to process.'];

@@ -46,9 +46,67 @@ class TransactionRefund extends Model
      */
     public static function usaepay($purchase,$user,$amount,$description=null,$created,$input=[])
     {
-        try {            
-            function connect_usaepay($command,$ref_num,$amount,$description)
+        try {      
+            //init
+            $ref_num = $purchase->transaction->refnum;
+            $tran = null;
+            //total refund
+            if($amount==$purchase->price_paid)
             {
+                $operation = TransactionRefund::connect_usaepay('void',$ref_num,$amount,$description);
+                if($operation['success'])
+                {
+                    TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
+                    $purchase->status = 'Void';
+                    $purchase->save();
+                    return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was voided by USAePay.</b>'];
+                }
+                else 
+                {
+                    $operation = TransactionRefund::connect_usaepay('refund',$ref_num,$amount,$description);   
+                    TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
+                    if($operation['success'])
+                    {
+                        $purchase->status = 'Refunded';
+                        $purchase->save();
+                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
+                    }
+                    else
+                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.' througth USAePay.</b>'];
+                }
+            }
+            //partial refund
+            else
+            {
+                $refunded_on = date('Y-m-d H:i:s', strtotime($purchase->created.' +5 days'));
+                //if more than 5 days make the refund
+                if($refunded_on >= date('now'))
+                {
+                    $operation = TransactionRefund::connect_usaepay('refund',$ref_num,$amount,$description);   
+                    TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
+                    if($operation['success'])
+                    {
+                        $purchase->status = 'Refunded';
+                        $purchase->save();
+                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
+                    }
+                    else
+                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.' througth USAePay.</b>'];
+                }
+                else
+                    return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.'.<br>You have to wait for 5 days to the transaction be settled on USAePay to refund it.</b>'];
+            }
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
+    /*
+     * connect with usaepay
+     */
+    public static function connect_usaepay($command,$ref_num,$amount,$description)
+    {
+        try {  
                 //init params
                 $tran=new umTransaction();
                 $tran->testmode=env('USAEPAY_TEST',1);
@@ -65,10 +123,18 @@ class TransactionRefund extends Model
                 //process
                 $success = ($tran->Process() && $tran->result=='Approved');
                 return ['success'=>$success,'tran'=>$tran];
-            }
-            //store into DB
-            function store_refund($tran,$purchase,$user,$description,$created,$input)
-            {
+                
+        } catch (Exception $ex) {
+            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+        }
+    }
+    
+    /*
+     * connect with usaepay
+     */
+    public static function store_refund($tran,$purchase,$user,$description,$created,$input)
+    {
+        try {  
                 $transaction = new TransactionRefund;
                 $transaction->purchase_id = $purchase->id;
                 $transaction->user_id = $user->id;
@@ -107,58 +173,11 @@ class TransactionRefund extends Model
                     $transaction->commission_percent = (isset($input['commission_percent']))? $input['commission_percent'] : $purchase->commission_percent;
                 }
                 $transaction->save();
-            }
-            //init
-            $ref_num = $purchase->transaction->refnum;
-            $tran = null;
-            //total refund
-            if($amount==$purchase->price_paid)
-            {
-                $operation = connect_usaepay('void',$ref_num,$amount,$description);
-                if($operation['success'])
-                {
-                    store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
-                    $purchase->status = 'Void';
-                    $purchase->save();
-                    return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was voided by USAePay.</b>'];
-                }
-                else 
-                {
-                    $operation = connect_usaepay('refund',$ref_num,$amount,$description);   
-                    store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
-                    if($operation['success'])
-                    {
-                        $purchase->status = 'Refunded';
-                        $purchase->save();
-                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
-                    }
-                    else
-                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.' througth USAePay.</b>'];
-                }
-            }
-            //partial refund
-            else
-            {
-                $refunded_on = date('Y-m-d H:i:s', strtotime($purchase->created.' +5 days'));
-                //if more than 5 days make the refund
-                if($refunded_on >= date('now'))
-                {
-                    $operation = connect_usaepay('refund',$ref_num,$amount,$description);   
-                    store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
-                    if($operation['success'])
-                    {
-                        $purchase->status = 'Refunded';
-                        $purchase->save();
-                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
-                    }
-                    else
-                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.' througth USAePay.</b>'];
-                }
-                else
-                    return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.'.<br>You have to wait for 5 days to the transaction be settled on USAePay to refund it.</b>'];
-            }
+                
         } catch (Exception $ex) {
-            return ['success'=>false, 'msg'=>'There is an error with the server!'];
+            
         }
     }
+    
+    
 }
