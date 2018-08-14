@@ -81,6 +81,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::get('manifests/view/{format}/{id}', 'ManifestController@view')->middleware('permissions:MANIFESTS');
     Route::match(['get','post'], 'manifests', 'ManifestController@index')->middleware('permissions:MANIFESTS');
     //contact logs
+    Route::post('contacts/save', 'ContactController@save')->middleware('permissions:CONTACTS');
     Route::match(['get','post'], 'contacts', 'ContactController@index')->middleware('permissions:CONTACTS');
     //purchases
     Route::post('purchases/check', 'RefundController@check')->middleware('permissions:REFUNDS');

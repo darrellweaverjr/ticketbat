@@ -36,18 +36,19 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model">
+                    <table class="table table-striped table-bordered table-hover table-checkable" id="tb_model" data-status="{{json_encode($status,true)}}">
                         <thead>
                             <tr>
-                                <th width="7%">ID</th>
-                                <th width="8%">Date</th>
+                                <th width="5%">ID</th>
+                                <th width="5%">Date</th>
                                 <th width="15%">Client</th>
                                 <th width="70%">Message</th>
+                                <th width="5%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($contacts as $index=>$c)
-                            <tr>
+                            <tr data-id="{{$c->id}}">
                                 <td class="text-center">{{$c->id}}</td>
                                 <td class="text-center">{{date('m/d/Y g:ia',strtotime($c->created))}}</td>
                                 <td>
@@ -63,6 +64,7 @@
                                     </i></small></p>
                                     <p>{{$c->message}}</p> 
                                 </td>
+                                <td data-status="{{$c->status}}"><center>{{$c->status}}</center></td>
                             </tr>
                             @endforeach
                         </tbody>
