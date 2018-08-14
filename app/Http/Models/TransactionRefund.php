@@ -57,8 +57,7 @@ class TransactionRefund extends Model
                 if($operation['success'])
                 {
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
-                    $purchase->status = 'Void';
-                    $purchase->save();
+                    Purchase::where('id',$purchase->id)->update(['status'=>'Void']);
                     return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was voided by USAePay.</b>'];
                 }
                 else 
@@ -67,8 +66,7 @@ class TransactionRefund extends Model
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
                     if($operation['success'])
                     {
-                        $purchase->status = 'Refunded';
-                        $purchase->save();
+                        Purchase::where('id',$purchase->id)->update(['status'=>'Refunded']);
                         return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
                     }
                     else
@@ -86,8 +84,7 @@ class TransactionRefund extends Model
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
                     if($operation['success'])
                     {
-                        $purchase->status = 'Refunded';
-                        $purchase->save();
+                        Purchase::where('id',$purchase->id)->update(['status'=>'Refunded']);
                         return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
                     }
                     else
