@@ -681,7 +681,7 @@ class Purchase extends Model
                     $default_end_date = date('m/d/Y');
                 }
                 else
-                    $default_start_date = $default_end_date = '';
+                    $default_start_date = $default_end_date = '';       
                 $data['search']['soldtime_start_date'] = (isset($input['soldtime_start_date']))? $input['soldtime_start_date'] : $default_start_date;
                 $data['search']['soldtime_end_date'] = (isset($input['soldtime_end_date']))? $input['soldtime_end_date'] : $default_end_date;
                 if(!empty($data['search']['soldtime_start_date']) && !empty($data['search']['soldtime_end_date']))

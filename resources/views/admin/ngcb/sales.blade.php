@@ -301,8 +301,65 @@
         </div>
     </div>
     <!-- END EXAMPLE TABLE PORTLET-->
+    <!-- BEGIN REPORT Q MODAL-->
+    <div id="modal_model_quarter" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content portlet">
+                <div class="modal-header alert-block bg-grey-salsa">
+                    <h4 class="modal-title bold uppercase" style="color:white;"><center>Report Quarter</center></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group show-error">
+                        <div class="input-group mt-radio-list">
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q0_custom" disabled="true"/>Custom period
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q1_current" data-start="{{date('01/01/Y')}}" data-end="{{date('03/31/Y')}}"/>Q1 / {{date('Y')}}
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q2_current" data-start="{{date('04/01/Y')}}" data-end="{{date('06/30/Y')}}"/>Q2 / {{date('Y')}}
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q3_current" data-start="{{date('07/01/Y')}}" data-end="{{date('09/30/Y')}}"/>Q3 / {{date('Y')}}
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q4_current" data-start="{{date('10/01/Y')}}" data-end="{{date('12/31/Y')}}"/>Q4 / {{date('Y')}}
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q1_previous" data-start="{{date('01/01/')}}{{date('Y')-1}}" data-end="{{date('03/31/')}}{{date('Y')-1}}"/>Q1 / {{date('Y')-1}}
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q1_previous" data-start="{{date('04/01/')}}{{date('Y')-1}}" data-end="{{date('06/30/')}}{{date('Y')-1}}"/>Q2 / {{date('Y')-1}}
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q1_previous" data-start="{{date('07/01/')}}{{date('Y')-1}}" data-end="{{date('09/30/')}}{{date('Y')-1}}"/>Q3 / {{date('Y')-1}}
+                                <span></span>
+                            </label>
+                            <label class="mt-radio">
+                                <input type="radio" name="report_quarter" value="Q1_previous" data-start="{{date('10/01/')}}{{date('Y')-1}}" data-end="{{date('12/31/')}}{{date('Y')-1}}"/>Q4 / {{date('Y')-1}}
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn sbold dark btn-outline">Cancel</button>
+                    <button type="submit"  id="btn_model_quarter" class="btn sbold grey-salsa">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END REPORT Q MODAL-->
     <!-- BEGIN INCLUDE FILTER SEARCH-->
-    @includeIf('admin.purchases.filter', ['search'=>$search,'action'=>'/admin/ngcb','printing'=>1])
+    @includeIf('admin.purchases.filter', ['search'=>$search,'action'=>'/admin/ngcb/sales','printing'=>1])
     <!-- END INCLUDE FILTER SEARCH-->
 @endsection
 

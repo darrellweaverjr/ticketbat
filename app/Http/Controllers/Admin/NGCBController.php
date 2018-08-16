@@ -37,7 +37,7 @@ class NGCBController extends Controller{
             $input = Input::all();
             $data = $total = array();
             //conditions to search
-            $data = Purchase::filter_options('REPORTS', $input, '-7');
+            $data = Purchase::filter_options('NGCB', $input, '-7');
             $where = $data['where'];
             $search = $data['search'];
             //credit
