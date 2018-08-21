@@ -101,7 +101,7 @@ var FunctionsManaged = function () {
                         },function(){
                             // Facebook track adding the shopping cart
                             FBPixel.init();
-                            //location.reload(); 
+                            location.reload(); 
                         });
                     }
                     else{
