@@ -319,8 +319,9 @@
                                                 <div class="col-md-5">
                                                     <select class="form-control" name="printed_tickets">
                                                         <option value="0">E-tickets only</option>
-                                                        <option value="1">Mail tickets</option>
-                                                        <option value="2">No e-tickets (will call only)</option>
+                                                        <option value="1">Mail & e-mail tickets</option>
+                                                        <option value="2">Mail tickets only</option>
+                                                        <option value="3">No tickets (will call only)</option>
                                                     </select>
                                                 </div>
                                             </div>

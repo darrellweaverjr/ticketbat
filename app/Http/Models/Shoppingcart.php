@@ -196,8 +196,8 @@ class Shoppingcart extends Model
                 //loop for all items to calculate
                 foreach ($items as $i)
                 {
-                    //printed tickets
-                    if($i->printed_tickets==1)
+                    //printed tickets if e and mail(1) or only mail(2)
+                    if(in_array($i->printed_tickets,[1,2]))
                         $printed_tickets['shows'][] = $i->name;
                     //get amex only for pay
                     if($amex_only!=1)

@@ -331,7 +331,7 @@ class Purchase extends Model
                         $pdf_receipts[] = $pdfUrlR;
 
                         //create pdf tickets if no printed tickets           
-                        if($receipt['purchase']->printed_tickets == 0)
+                        if($receipt['purchase']->printed_tickets < 2)
                         {
                             $tickets = $receipt['tickets'];
                             $type = 'C';
