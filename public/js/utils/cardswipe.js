@@ -142,7 +142,6 @@
 		state = IDLE;
 	};
 
-
 	// Processes the scanned card
 	var processScan = function () {
          //alert("Process scan");

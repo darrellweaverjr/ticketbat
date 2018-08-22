@@ -1,27 +1,6 @@
 var SwipeFunctions = function () {
 
     var initFunctions = function () {
-
-        $('a[href="#tab_swipe"]').on('click', function(ev) {
-            //reset form here too
-            $('#swipe_msg').html('Swipe the card now.');
-            $('#modal_swipe_card').modal('show');
-            //process data
-            var readCard = function (rawData) {                    
-                    if($('#modal_swipe_card').is(':visible'))
-                    {
-                        $('#swipe_msg').html('Data read.');
-                        var cardData = valid_swipe_credit_card(rawData);
-                        if(cardData)
-                            $('#modal_swipe_card').modal('hide');                        
-                        return cardData;
-                    }
-            };            
-            // Initialize the plugin.
-            $.cardswipe({
-                    parser: readCard
-            });
-        });
         
         //event to check swipe
         function valid_swipe_credit_card(card_data)
@@ -61,7 +40,34 @@ var SwipeFunctions = function () {
                 $('#swipe_msg').html('Card swipe did not work. Please, try the card manually.');
                 return false;
             }
-        }
+        };
+
+        //process data
+        function readCard(rawData) {                    
+            if($('#modal_swipe_card').is(':visible'))
+            {
+                $('#swipe_msg').html('Data read.');
+                var cardData = valid_swipe_credit_card(rawData);
+                if(cardData)
+                    $('#modal_swipe_card').modal('hide');                        
+                return cardData;
+            }
+        };   
+
+        // Initialize the plugin to swipe card
+        $.cardswipe({
+            parser: readCard
+        });
+
+        $('a[href="#tab_swipe"]').on('click', function(ev) {
+            //reset form here too
+            $('#swipe_msg').html('Swipe the card now.');
+            $('#modal_swipe_card').modal('show');
+                     
+            
+        });
+        
+        
 
     }
     return {
