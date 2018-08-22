@@ -141,7 +141,8 @@ var FBPixel = function () {
     return {
         //main function to initiate the module
         init: function () {
-            fbq('track', 'AddToCart', {event: fbq_events[0]});       
+            if (typeof(fbq) != 'undefined' && fbq != null )
+                fbq('track', 'AddToCart', {event: fbq_events[0]});       
         }
     };
 }();
