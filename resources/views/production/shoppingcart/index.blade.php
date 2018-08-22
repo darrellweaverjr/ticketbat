@@ -308,6 +308,7 @@
     <script src="{{config('app.theme')}}js/datatables.min.js" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/datatables.bootstrap.js" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/jquery.cubeportfolio.min.js" type="text/javascript"></script>
+    <script src="/js/utils/cardswipe.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/skip.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/card.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/swipe.js?v=1522349999" type="text/javascript"></script>
