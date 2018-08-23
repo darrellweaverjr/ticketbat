@@ -51,20 +51,18 @@
 
 <!-- BEGIN SWIPE CARD MODAL -->
 <div id="modal_swipe_card" class="modal fade" aria-hidden="true">
-    <div class="modal-dialog" style="width:326px !important;">
+    <div class="modal-dialog" >
         <div class="modal-content text-center">
             <div class="modal-header">
                 <h3 class="modal-title" id="swipe_msg"></h3>
             </div>
             <div class="modal-body">
-                <img src="{{config('app.theme')}}img/card/swipe-bg.jpg">
-                <strong style="color:#578ebe">
-                    If the card swipe doesn't work properly,<br> please, <br> close this form and try the card manually.
-                </strong>
+                <img src="{{config('app.theme')}}img/card/swipe-bg.jpg" style="width:100%;height:100%;"><hr>
+                <h4 class="sbold" style="color:#578ebe"><i>If the card swipe doesn't work properly, please, close this form and try the card manually.</i></h4>
             </div>
             <div class="modal-footer">
                 
-                <button type="button" data-dismiss="modal" class="btn dark btn-outline btn-block">Cancel</button>
+                <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline btn-block">Cancel</button>
             </div>
         </div>
     </div>
