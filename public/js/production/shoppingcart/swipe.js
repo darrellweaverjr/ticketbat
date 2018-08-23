@@ -44,15 +44,24 @@ var SwipeFunctions = function () {
 
         //process data
         function readCard(rawData) {                    
-            if($('#modal_swipe_card').is(':visible'))
+           if($('#modal_swipe_card').is(':visible'))
             {
-                $('#swipe_msg').html('Data read.');
+                $('#swipe_msg').html('Data read.'); 
                 var cardData = valid_swipe_credit_card(rawData);
                 if(cardData)
                     $('#modal_swipe_card').modal('hide');                        
                 return cardData;
             }
         };   
+        
+        //events when modal open and close
+        $('#modal_swipe_card').on('shown.bs.modal', function (e) {
+            $.cardswipe('disable');
+            $.cardswipe('enable');
+        });
+        $('#modal_swipe_card').on('hidden.bs.modal', function (e) {
+            $.cardswipe('disable');
+        });
 
         // Initialize the plugin to swipe card
         $.cardswipe({
@@ -63,11 +72,7 @@ var SwipeFunctions = function () {
             //reset form here too
             $('#swipe_msg').html('Swipe the card now.');
             $('#modal_swipe_card').modal('show');
-                     
-            
         });
-        
-        
 
     }
     return {

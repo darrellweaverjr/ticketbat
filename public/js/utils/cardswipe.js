@@ -37,7 +37,6 @@
 		switch (state) {
 			case IDLE:
 				// Look for '%'
-                                //$('#swipe_msg').html('Waiting to swipe the card.');
                                 document.getElementById('swipe_msg').innerHTML = 'Waiting to swipe the card.';
 				if (e.which == 37) {
 					state = PENDING;
@@ -54,7 +53,6 @@
 			case PENDING:
 				// Look for format code character, A-Z. Almost always B for cards
 				// used by the general public.
-                                //$('#swipe_msg').html('Starting reading the card.');
                                 document.getElementById('swipe_msg').innerHTML = 'Starting reading the card.';
 				//if (e.which >= 65 && e.which <= 90) {
 					state = READING;
@@ -78,7 +76,6 @@
 
 			case READING:
 			    //alert("Reading");
-                                //$('#swipe_msg').html('Reading the card stripe.');
                                 document.getElementById('swipe_msg').innerHTML = 'Reading the card stripe.';
 				processCode(e.which);
 				startTimer();
@@ -100,7 +97,6 @@
 					break;
 
 			case DISCARD:
-                                //$('#swipe_msg').html('Waiting to finalize the reading.');
                                 document.getElementById('swipe_msg').innerHTML = 'Waiting to finalize the reading.';
 				e.preventDefault();
 				e.stopPropagation();
@@ -145,7 +141,6 @@
 	// Processes the scanned card
 	var processScan = function () {
          //alert("Process scan");
-                //$('#swipe_msg').html('Processing scanned data.');
                 document.getElementById('swipe_msg').innerHTML = 'Processing scanned data.';
 		var rawData = scanbuffer.join('');
          
