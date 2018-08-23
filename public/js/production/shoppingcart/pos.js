@@ -66,7 +66,7 @@ var POSbuy = function () {
                                 product += '<br><b class="label-warning uppercase">'+v.name+'</b>';
                             product += '</h4>';
                             var rowItem = '<td>'+product+'</td>';
-                            var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.total_cost)).toFixed(2))+'<br>'+(parseFloat(v.processing_fee)).toFixed(2)+'</td>';
+                            var rowSubtotal = '<td style="text-align:right">$'+((parseFloat(v.total_cost)).toFixed(2))+'<br>$'+(parseFloat(v.processing_fee)).toFixed(2)+'</td>';
                             var rowTaxes = '<td style="text-align:right">$'+(parseFloat(v.sales_taxes)).toFixed(2)+'<br><b>$'+((parseFloat(v.total)).toFixed(2))+'</b></td>';
                             var rowBtn = '<td style="text-align:center"><button type="button" class="btn btn-lg btn-danger"><i class="fa fa-remove icon-ban"></i></button></td>';
                             $('#tb_items').append('<tr data-id="'+v.id+'">'+rowItem+rowSubtotal+rowTaxes+rowBtn+'</tr>');

@@ -389,6 +389,7 @@
     <script src="{{config('app.theme')}}js/bootstrap-touchspin.min.js" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/jquery.waypoints.min.js" type="text/javascript"></script>
     <script src="{{config('app.theme')}}js/jquery.counterup.min.js" type="text/javascript"></script>
+    <script src="/js/utils/cardswipe.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/skip.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/card.js?v=1522349999" type="text/javascript"></script>
     <script src="/js/production/shoppingcart/swipe.js?v=1522349999" type="text/javascript"></script>
