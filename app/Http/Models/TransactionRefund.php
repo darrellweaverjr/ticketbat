@@ -78,7 +78,7 @@ class TransactionRefund extends Model
             {
                 $refunded_on = date('Y-m-d H:i:s', strtotime($purchase->created.' +5 days'));
                 //if more than 5 days make the refund
-                if($refunded_on >= date('now'))
+                if(date('now') >= $refunded_on)
                 {
                     $operation = TransactionRefund::connect_usaepay('refund',$ref_num,$amount,$description);   
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
