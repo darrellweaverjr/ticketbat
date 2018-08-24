@@ -5,7 +5,7 @@ var SwipeFunctions = function () {
         //event to check swipe
         function valid_swipe_credit_card(card_data)
         {
-            $('#swipe_msg').html('Processing data.');
+            $('#swipe_msg').html('Data read. Starting to process information.');
             var card_tracks = card_data.split("?");
             var valid_track1 = /^%B[^\^\W]{0,19}\^[^\^]{2,26}\^\d{4}\w{3}[^?]+\?\w?$/.test(card_tracks[0]+'?');
             var valid_track2 = /;[^=]{0,19}=\d{4}\w{3}[^?]+\?\w?/.test(card_tracks[1]+'?');
@@ -33,45 +33,32 @@ var SwipeFunctions = function () {
                 $('#tab_swipe input[name="card"]').val(card_number);
                 $('#tab_swipe input[name="month"]').val(month);
                 $('#tab_swipe input[name="year"]').val(year);
-                $('#swipe_msg').html('Card processed correctly.');
+                $('#swipe_msg').html('Card processed correctly.<br>You can continue or swipe again.');
                 return true;
             }
             else {
-                $('#swipe_msg').html('Card swipe did not work. Please, try the card manually.');
+                $('#swipe_msg').html('Card swipe did not work.<br>Please, try manually.');
                 return false;
             }
         };
 
-        //process data
-        function readCard(rawData) {                    
-           if($('#modal_swipe_card').is(':visible'))
-            {
-                $('#swipe_msg').html('Data read.'); 
-                var cardData = valid_swipe_credit_card(rawData);
-                if(cardData)
-                    $('#modal_swipe_card').modal('hide');                        
-                return cardData;
-            }
-        };   
-        
-        //events when modal open and close
-        $('#modal_swipe_card').on('shown.bs.modal', function (e) {
-            $.cardswipe('disable');
-            $.cardswipe('enable');
-        });
-        $('#modal_swipe_card').on('hidden.bs.modal', function (e) {
-            $.cardswipe('disable');
-        });
-
         // Initialize the plugin to swipe card
         $.cardswipe({
-            parser: readCard
+            parser: function(rawData) {
+                if($('#tabs_payment').find('.tab-pane.active:not(.hidden)').find('form').attr('id') == 'form_swipe')
+                    return valid_swipe_credit_card(rawData); 
+                return false;
+            }
         });
 
-        $('a[href="#tab_swipe"]').on('click', function(ev) {
+        $('a[href^="#tab_"]').on('click', function(ev) {
             //reset form here too
-            $('#swipe_msg').html('Swipe the card now.');
-            $('#modal_swipe_card').modal('show');
+            $.cardswipe('disable');            
+            if( $(this).attr('href')=='#tab_swipe' )
+            {
+                $('#swipe_msg').html('Swipe the card now.');
+                $.cardswipe('enable');
+            }
         });
 
     }

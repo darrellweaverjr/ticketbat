@@ -1,4 +1,17 @@
 <div class="row">
+    
+    <div class="alert alert-info text-center">
+            If the card swipe doesn't work properly, please, close this form and try the card manually.
+    </div>
+    <div class="row text-center">
+        <div class="col-sm-3">
+            <img src="{{config('app.theme')}}img/card/swipe-bg.jpg" style="width:90%;height:90%;">
+        </div>
+        <div class="col-sm-9">
+            <h2 class="sbold" id="swipe_msg"></h2>
+        </div>
+    </div><hr>
+    
     <!-- BEGIN FORM-->
     <form method="post" id="form_swipe" class="form-horizontal">
         <div class="alert alert-danger display-hide">
@@ -48,23 +61,3 @@
     </form>
     <!-- END FORM-->
 </div>
-
-<!-- BEGIN SWIPE CARD MODAL -->
-<div id="modal_swipe_card" class="modal fade" aria-hidden="true">
-    <div class="modal-dialog" >
-        <div class="modal-content text-center">
-            <div class="modal-header">
-                <h3 class="modal-title" id="swipe_msg"></h3>
-            </div>
-            <div class="modal-body">
-                <img src="{{config('app.theme')}}img/card/swipe-bg.jpg" style="width:100%;height:100%;"><hr>
-                <h4 class="sbold" style="color:#578ebe"><i>If the card swipe doesn't work properly, please, close this form and try the card manually.</i></h4>
-            </div>
-            <div class="modal-footer">
-                
-                <button type="button" data-dismiss="modal" class="btn btn-lg dark btn-outline btn-block">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- END SWIPE CARD MODAL -->
