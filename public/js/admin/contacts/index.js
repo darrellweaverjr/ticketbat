@@ -1,9 +1,9 @@
 var TableDatatablesManaged = function () {
-    
+
     var initTable = function () {
-        
+
         MainDataTableCreator.init('tb_model',[ [0, "desc"] ],10);
-        
+
         //PERSONALIZED FUNCTIONS
         //start_end_date
         $('#start_end_date').daterangepicker({
@@ -35,8 +35,8 @@ var TableDatatablesManaged = function () {
                 $( "#form_model_search" ).submit();
         });
         $('#start_end_date span').html(moment($('#form_model_search [name="start_date"]').val()).format('MMMM D, YYYY') + ' - ' + moment($('#form_model_search [name="end_date"]').val()).format('MMMM D, YYYY'));
-        $('#start_end_date').show(); 
-        
+        $('#start_end_date').show();
+
         //reset all selects
         function reset_purchase_status()
         {
@@ -63,7 +63,7 @@ var TableDatatablesManaged = function () {
             select+= '</select>';
             status.html(select);
         });
-        
+
         //function on status select
         $(document).on('change', '#tb_model select[name="status"]', function(ev){
             var id = $(this).data('id');
@@ -87,6 +87,10 @@ var TableDatatablesManaged = function () {
                         {
                             $('#tb_model select[name="status"]').parent('td').data('status',status);
                             $('#tb_model select[name="status"]').val(  status  );
+                            if(status!='Pending')
+                                $('#tb_model select[name="status"]').parent('tr').removeClass('warning');
+                            else
+                                $('#tb_model select[name="status"]').parent('tr').addClass('warning');
                             swal({
                                 title: "<span style='color:green;'>Updated!</span>",
                                 text: data.msg,
@@ -118,7 +122,7 @@ var TableDatatablesManaged = function () {
                 });
             }
         });
-        
+
     }
     return {
         //main function to initiate the module
@@ -126,7 +130,7 @@ var TableDatatablesManaged = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-            initTable();        
+            initTable();
         }
     };
 }();

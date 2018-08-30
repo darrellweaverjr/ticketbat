@@ -48,7 +48,7 @@
                         </thead>
                         <tbody>
                             @foreach($contacts as $index=>$c)
-                            <tr data-id="{{$c->id}}">
+                            <tr data-id="{{$c->id}}" @if($c->status=='Pending') class="warning" @endif>
                                 <td class="text-center">{{$c->id}}</td>
                                 <td class="text-center">{{date('m/d/Y g:ia',strtotime($c->created))}}</td>
                                 <td>
@@ -62,7 +62,7 @@
                                         @if($c->show_name)Show: <b>{{$c->show_name}}</b> @if($c->show_time) - Date/Time: <b>{{date('l, F jS, Y h:i A',strtotime($c->show_time))}}</b> @endif <br>@endif
                                         @if($c->system_info)System: <b>{{$c->system_info}}</b>@endif
                                     </i></small></p>
-                                    <p>{{$c->message}}</p> 
+                                    <p>{{$c->message}}</p>
                                 </td>
                                 <td data-status="{{$c->status}}"><center>{{$c->status}}</center></td>
                             </tr>
