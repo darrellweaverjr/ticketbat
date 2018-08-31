@@ -12,6 +12,7 @@ use App\Mail\EmailSG;
 use App\Http\Models\Util;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -59,9 +60,6 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AuthenticationException) {
             return $this->unauthenticated($request, $exception);
         }
-        if ($exception instanceof NotFoundHttpException) {
-            return response()->view('errors.default', [], 404);
-        }
         if(env('ERROR_SEND_INFO'))
         {
             Log::info('View with the error showed to the user. Redirect to home page if it is production');
@@ -105,7 +103,8 @@ class Handler extends ExceptionHandler
             Log::info($message);
             Log::debug($message);
          */
-        if (!($exception instanceof AuthenticationException) && !($exception instanceof TokenMismatchException))
+        if (!($exception instanceof AuthenticationException) && !($exception instanceof TokenMismatchException) 
+        && !($exception instanceof NotFoundHttpException) && !($exception instanceof MethodNotAllowedHttpException))
         {
             Log::error($exception);
             $email = new EmailSG(['TicketBat Admin',env('MAIL_ERROR_FROM')],env('MAIL_ERROR_TO'),env('MAIL_ERROR_SUBJECT'));
@@ -129,11 +128,7 @@ class Handler extends ExceptionHandler
     public static function sendReport($excludeException=false)
     {
         if(!preg_match('/\/admin\//',url()->current()) && !preg_match('/\/api\//',url()->current()))
-        {
-            if(!$excludeException)
-                return (!($excludeException instanceof TokenMismatchException) && !($excludeException instanceof NotFoundHttpException));
-            return true;
-        }
+            return (!$excludeException);
         return true;
     }
 }
