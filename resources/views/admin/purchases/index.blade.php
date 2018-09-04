@@ -30,6 +30,9 @@
                             <button id="btn_model_search" class="btn sbold grey-salsa">Filter
                                 <i class="fa fa-filter"></i>
                             </button>
+                            <button id="btn_model_resend" class="btn sbold bg-blue" disabled="true">Re-send
+                                <i class="fa fa-send"></i>
+                            </button>
                             <button id="btn_model_email" class="btn sbold bg-green" disabled="true">Email
                                 <i class="fa fa-envelope"></i>
                             </button>
@@ -231,6 +234,9 @@
     <!-- BEGIN INCLUDE FILTER SEARCH-->
     @includeIf('admin.purchases.filter', ['search'=>$search,'action'=>'/admin/purchases'])
     <!-- END INCLUDE FILTER SEARCH-->
+    <!-- BEGIN RESEND MODAL -->
+    @includeIf('admin.purchases.resend')
+    <!-- END RESEND MODAL -->
     <!-- BEGIN EMAIL MODAL -->
     @includeIf('admin.purchases.email')
     <!-- END EMAIL MODAL -->

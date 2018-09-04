@@ -475,7 +475,40 @@ class PurchaseController extends Controller{
         }
     }
     /**
-     * Updated purchase.
+     * Resend receipt.
+     *
+     * @void
+     */
+    public function resend()
+    {
+        try {
+            //init
+            $input = Input::all();
+            //save all record
+            if($input && !empty($input['id']) && !empty($input['email']))
+            {
+                if(filter_var($input['email'], FILTER_VALIDATE_EMAIL))
+                {
+                    $purchase = Purchase::find($input['id']);
+                    if($purchase)
+                    {
+                        $receipt = $purchase->get_receipt();
+                        $sent = Purchase::email_receipts('Re-sending: TicketBat Purchase',[$receipt],'receipt',null,false,false,$input['email'],false);
+                        if($sent)
+                            return ['success'=>true,'msg'=>'Email sent successfully!'];
+                        return ['success'=>false,'msg'=>'There was an error sending the email.'];
+                    }
+                    return ['success'=>false,'msg'=>'There was an error sending the email.<br>Invalid purchase.'];
+                }
+                return ['success'=>false,'msg'=>'There was an error sending the email.<br>Invalid email.'];
+            }
+            return ['success'=>false,'msg'=>'There was an error sending the email.<br>The server could not retrieve the data.'];
+        } catch (Exception $ex) {
+            throw new Exception('Error Purchases Email: '.$ex->getMessage());
+        }
+    }
+    /**
+     * send custom email.
      *
      * @void
      */

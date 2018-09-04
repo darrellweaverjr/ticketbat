@@ -574,75 +574,104 @@ var TableDatatablesManaged = function () {
         $('#btn_model_email').on('click', function(ev) {
             var set = $('.group-checkable').attr("data-set");
             var id = $(set+"[type=checkbox]:checked")[0].id;
-            swal({
-                title: "Send Email to Customers",
-                text: "Select the email type",
-                type: "info",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Re-send Receipt",
-                cancelButtonText: "Send Custom",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-              function(isConfirm) {
-                if (isConfirm) {
-                    if(id)
-                    {
-                        swal({
-                            title: "Sending email",
-                            text: "Please, wait.",
-                            type: "info",
-                            showConfirmButton: false
-                        });
-                        jQuery.ajax({
-                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                            type: 'POST',
-                            url: '/admin/purchases/email',
-                            data: {id:id,action:'receipt'},
-                            success: function(data) {
-                                if(data.success)
-                                {
-                                    swal({
-                                        title: "<span style='color:green;'>Email Sent Successfully!</span>",
-                                        text: data.msg,
-                                        html: true,
-                                        timer: 1500,
-                                        type: "success",
-                                        showConfirmButton: false
-                                    });
-                                }
-                                else swal({
-                                        title: "<span style='color:red;'>Error!</span>",
-                                        text: data.msg,
-                                        html: true,
-                                        type: "error"
-                                    });
-                            },
-                            error: function(){
-                                swal({
-                                    title: "<span style='color:red;'>Error!</span>",
-                                    text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
-                                    html: true,
-                                    type: "error"
-                                });
-                            }
-                        });
-                    }
-                    else
-                    {
+            if(id)
+            {
+                $("#form_model_email").trigger('reset');
+                $('#modal_model_email').modal('show');
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Please, you must select at least one purchase first.",
+                    html: true,
+                    type: "error"
+                });
+            }
+        });
+        $('#btn_model_resend').on('click', function(ev) {
+            var set = $('.group-checkable').attr("data-set");
+            var id = $(set+"[type=checkbox]:checked")[0].id;
+            var email = $(set+"[type=checkbox]:checked")[0].value;
+            if(id)
+            {
+                $("#form_model_resend").trigger('reset');
+                $("#form_model_resend input[name='purchase_id']").val(id);
+                $("#form_model_resend input[name='email']").val(email);
+                $('#modal_model_resend').modal('show');
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Please, you must select at least one purchase first.",
+                    html: true,
+                    type: "error"
+                });
+            }
+        });
+        //function resend email
+        $('#btn_resend_email').on('click', function(ev) {
+            var id = $("#form_model_resend input[name='purchase_id']").val();
+            var email = $("#form_model_resend input[name='email']").val();
+            $('#modal_model_resend').modal('hide');
+            if(id && email)
+            {
+                swal({
+                    title: "Sending email",
+                    text: "Please, wait.",
+                    type: "info",
+                    showConfirmButton: false
+                });
+                jQuery.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '/admin/purchases/resend',
+                    data: {id:id,email:email},
+                    success: function(data) {
+                        if(data.success)
+                        {
+                            swal({
+                                title: "<span style='color:green;'>Email Sent Successfully!</span>",
+                                text: data.msg,
+                                html: true,
+                                timer: 1500,
+                                type: "success",
+                                showConfirmButton: false
+                            });
+                        }
+                        else swal({
+                                title: "<span style='color:red;'>Error!</span>",
+                                text: data.msg,
+                                html: true,
+                                type: "error"
+                            },function(){
+                                $('#modal_model_resend').modal('show');
+                            });
+                    },
+                    error: function(){
                         swal({
                             title: "<span style='color:red;'>Error!</span>",
-                            text: "Please, you must select the purchase first.",
+                            text: "There was an error trying to send the email!<br>The request could not be sent to the server.",
                             html: true,
                             type: "error"
+                        },function(){
+                            $('#modal_model_resend').modal('show');
                         });
                     }
-                } else {
-                    $("#form_model_email").trigger('reset');
-                    $('#modal_model_email').modal('show');
-                }
-            });
+                });
+            }
+            else
+            {
+                swal({
+                    title: "<span style='color:red;'>Error!</span>",
+                    text: "Please, you must select the purchase first.",
+                    html: true,
+                    type: "error"
+                },function(){
+                    $('#modal_model_resend').modal('show');
+                });
+            }
         });
         //function send custom email
         $('#btn_send_custom').on('click', function(ev) {

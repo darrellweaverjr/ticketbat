@@ -87,6 +87,7 @@ Route::group(['prefix' => 'admin','middleware' => 'auth','namespace' => 'Admin']
     Route::post('purchases/check', 'RefundController@check')->middleware('permissions:REFUNDS');
     Route::post('purchases/refund', 'RefundController@refund')->middleware('permissions:REFUNDS');
     Route::post('purchases/filter', 'PurchaseController@filter')->middleware('permissions:PURCHASES');
+    Route::post('purchases/resend', 'PurchaseController@resend')->middleware('permissions:REFUNDS');
     Route::post('purchases/email', 'PurchaseController@email')->middleware('permissions:PURCHASES');
     Route::get('purchases/tickets/{type}/{ids}', 'PurchaseController@tickets')->middleware('permissions:PURCHASES');
     Route::post('purchases/save', 'PurchaseController@save')->middleware('permissions:PURCHASES');
