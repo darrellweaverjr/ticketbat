@@ -457,7 +457,7 @@
     <!-- END EDIT MODAL-->
     <!-- BEGIN SEARCH MODAL-->
     <div id="modal_model_search" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:470px !important;">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-grey-salsa">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Filter Panel</center></h4>
@@ -551,7 +551,7 @@
     <!-- END SEARCH MODAL-->
     <!-- BEGIN TICKETS MODAL-->
     <div id="modal_model_tickets" class="modal fade" tabindex="1">
-        <div class="modal-dialog" style="width:470px !important;">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-red">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>View Tickets</center></h4>

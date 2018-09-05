@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="mt-radio-list" >
                                 <label class="mt-radio mt-radio-single mt-radio-outline" style="color:blue;">
-                                    <input type="radio" name="type" value="current_purchase" checked="true" />Refund through USAePay.
+                                    <input type="radio" name="type" value="current_purchase" checked="true" />Refund through bank account.
                                     <span></span>
                                 </label>
                                 <label class="mt-radio mt-radio-single mt-radio-outline" style="color:red;">
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <div class="row" id="refund_details">
-                            <table class="table table-striped table-responsive table-bordered table-hover table-checkable" style="width:800px !important;">
+                            <table class="table table-responsive table-condensed table-both-scroll" style="font-size:8px!important">
                                 <thead>
                                     <tr>
                                         <th width="10%">ID</th>

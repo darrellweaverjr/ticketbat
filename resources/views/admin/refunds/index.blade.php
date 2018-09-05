@@ -114,7 +114,7 @@
     <!-- END UPDATE MODAL-->
     <!-- BEGIN EDIT MODAL-->
     <div id="modal_model_edit" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:500px !important;">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-yellow">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Edit Refund</center></h4>

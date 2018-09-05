@@ -118,7 +118,7 @@
     <!-- END UPDATE MODAL-->
     <!-- BEGIN RESEND MODAL-->
     <div id="modal_model_resend" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:500px !important;">
+        <div class="modal-dialog">
             <div class="modal-content portlet">
                 <div id="modal_model_update_header" class="modal-header alert-block bg-purple">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Re-send Manifest</center></h4>
@@ -169,7 +169,7 @@
     <!-- END RESEND MODAL-->
     <!-- BEGIN GENERATE MODAL-->
     <div id="modal_generate_manifest" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" style="width:500px !important;">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-purple">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Generate Manifest</center></h4>

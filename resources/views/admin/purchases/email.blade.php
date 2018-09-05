@@ -1,6 +1,6 @@
 <!-- BEGIN EMAIL MODAL-->
 <div id="modal_model_email" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:700px !important;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content portlet">
             <div class="modal-header alert-block bg-green">
                 <h4 class="modal-title bold uppercase" style="color:white;"><center>Custom Email</center></h4>

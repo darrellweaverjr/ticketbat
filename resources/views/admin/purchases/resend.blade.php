@@ -12,7 +12,7 @@
                     <input type="hidden" name="purchase_id" value="" />
                     <div class="form-body">
                         <div class="row" style="padding:20px">
-                            <input type="email" value="" name="email" class="form-control input-lg" placeholder="abc@gmail.com">
+                            <input type="email" value="" name="email" class="form-control input-lg input-block-level" placeholder="abc@gmail.com">
                         </div>
                     </div>
                     <div class="form-actions">
