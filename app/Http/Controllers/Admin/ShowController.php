@@ -322,7 +322,7 @@ class ShowController extends Controller{
                     $show = Show::find($input['id']);
                     $show->updated = $current;
                     if(preg_match('/media\/preview/',$input['sponsor_logo_id']))
-                        $show->delete_image_file();
+                        $show->delete_image_file('sponsor');
                 }
                 else
                 {
