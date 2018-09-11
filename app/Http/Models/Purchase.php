@@ -233,6 +233,10 @@ class Purchase extends Model
                     $tickets[] = array_merge($main_info,$extra_info);
                 }
             }
+            //order tickets by number
+            usort($tickets, function ($i1, $i2) {
+                return $i1['number'] <=> $i2['number'];
+            });
         }
         //get banners from shows, if not then banners from venues
         $use = ['show_id'=>$this->ticket->show_id, 'venue_id'=>$this->ticket->show->venue_id];
