@@ -102,7 +102,7 @@
     <!-- END EXAMPLE TABLE PORTLET-->
     <!-- BEGIN ADD MODAL-->
     <div id="modal_model_update" class="modal fade" tabindex="1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog  modal-lg">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content portlet">
                 <div class="modal-header alert-block bg-green">
                     <h4 class="modal-title bold uppercase" style="color:white;"><center>Add Consignment</center></h4>
@@ -118,14 +118,14 @@
                             <div class="alert alert-danger">
                                 <center>
                                     <input type="hidden" name="purchase" value="1" />
-                                    <h2 style="color:red">This option is ONLY for pre-sales that create tickets now.<br>For other options use the POS system.</h2>
+                                    <h4 style="color:red">This option is ONLY for pre-sales that create tickets now.<br>For other options use the POS system.</h4>
                                 </center>
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     <label class="control-label">
                                         <span class="required">General</span>
-                                    </label><hr>
+                                    </label><br>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Venue
                                             <span class="required">*</span>
@@ -151,8 +151,7 @@
                                         <div class="col-md-9 show-error">
                                             <select class="form-control" name="show_time_id"></select>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
+                                        
                                         <label class="control-label col-md-3">Seller
                                             <span class="required">*</span>
                                         </label>
@@ -182,7 +181,7 @@
                                     </div>
                                     <label class="control-label">
                                         <span class="required">Section</span>
-                                    </label><hr>
+                                    </label><br>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">T.Type
                                             <span class="required">*</span>
@@ -199,44 +198,51 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="number" style="width:75px" value="1" name="start_seat" required="true">
+                                            <input type="number" style="width:65px" value="1" name="start_seat" required="true">
                                         </div>
                                         <div class="col-md-4">
-                                            <input type="number" style="width:80px" value="1" name="end_seat" required="true">
+                                            <input type="number" style="width:65px" value="1" name="end_seat" required="true">
                                         </div>
                                         <label class="control-label col-md-3">Seat #</label>
                                         <div class="col-md-9 show-error">
                                             <input type="hidden" name="show_seat" value="0" />
-                                            <input type="checkbox" class="make-switch" name="show_seat" value="1"  data-size="medium" data-on-text="Show # on tickets" data-off-text="Hide # on tickets" data-on-color="primary" data-off-color="warning">
+                                            <input type="checkbox" class="make-switch input-lg" name="show_seat" value="1"  data-size="small" data-on-text="Show on tick" data-off-text="Hide on tick" data-on-color="primary" data-off-color="warning">
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">S.Pric($)
+                                        
+                                        <label class="control-label col-md-3">Price($)
                                             <span class="required">*</span>
                                         </label>
-                                        <div class="col-md-3 show-error">
-                                            <input type="number" style="width:90px" name="retail_price" value="0.00" step="0.01" class="form-control" />
+                                        <div class="col-md-9 show-error">
+                                            <input type="number" name="retail_price" value="0.00" step="0.01" class="form-control" />
                                         </div>
-                                        <label class="control-label col-md-3">Comm(%)</label>
-                                        <div class="col-md-3 show-error">
-                                            <input type="number" style="width:80px" name="percent_commission" value="0.00" step="0.01" class="form-control" />
+                                        
+                                        <label class="control-label col-md-3">Com (%)</label>
+                                        <div class="col-md-4 show-error">
+                                            <input type="number" name="percent_commission" value="0.00" step="0.01" class="form-control" />
                                         </div>
-                                        <label class="control-label col-md-3">P.Fee($)
-                                            <span class="required">*</span>
-                                        </label>
-                                        <div class="col-md-3 show-error">
-                                            <input type="number" style="width:90px" name="processing_fee" value="0.00" step="0.01" class="form-control" />
+                                        <label class="control-label col-md-1">($)</label>
+                                        <div class="col-md-4 show-error">
+                                            <input type="number" name="fixed_commission" value="0.00" step="0.01" class="form-control" />
                                         </div>
-                                        <label class="control-label col-md-3">Comm($)</label>
-                                        <div class="col-md-3 show-error">
-                                            <input type="number" style="width:80px" name="fixed_commission" value="0.00" step="0.01" class="form-control" />
+                                        
+                                        <label class="control-label col-md-3">Fee (%)</label>
+                                        <div class="col-md-4 show-error">
+                                            <input type="number" name="percent_processing_fee" value="0.00" step="0.01" class="form-control" disabled="true" />
                                         </div>
+                                        <label class="control-label col-md-1">($)</label>
+                                        <div class="col-md-4 show-error">
+                                            <input type="number" name="processing_fee" value="0.00" step="0.01" class="form-control" />
+                                        </div>
+                                        <label class="control-label col-md-3">Inclusive</label>
+                                        <div class="col-md-9 show-error">
+                                            <input type="hidden" name="inclusive" value="0" />
+                                            <input type="checkbox" class="make-switch input-lg" name="inclusive" value="1"  data-size="small" data-on-text="Incl. fee" data-off-text="Over price" data-on-color="primary" data-off-color="danger">
+                                        </div>
+                                        
                                         <label class="control-label col-md-3">Collect($)</label>
-                                        <div class="col-md-3 show-error">
-                                            <input type="number" style="width:90px" name="collect_price" value="0.00" step="0.01" class="form-control" />
+                                        <div class="col-md-9 show-error">
+                                            <input type="number" name="collect_price" value="0.00" step="0.01" class="form-control" />
                                         </div>
-                                        <label class="control-label col-md-3"></label>
-                                        <div class="col-md-3 show-error"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3"></label>
@@ -250,7 +256,7 @@
                                 <div class="col-md-7">
                                     <label class="control-label">
                                         <span class="required">Seats</span>
-                                    </label><hr>
+                                    </label><br>
                                     <div style="max-height:560px; overflow: auto;">
                                         <table class="table table-striped table-bordered table-hover table-checkable">
                                             <thead>

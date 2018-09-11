@@ -51,9 +51,13 @@ class ConsignmentController extends Controller{
                                 ->join('shows', 'shows.id', '=' ,'show_times.show_id')
                                 ->leftJoin('seats', 'seats.consignment_id', '=' ,'consignments.id')
                                 ->leftJoin('tickets', 'tickets.id', '=' ,'seats.ticket_id')
+                                ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email,
                                         COUNT(seats.id) AS qty,
-                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                        IF(purchases.inclusive_fee, 
+                                            ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))),2),
+                                            ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2)
+                                        )AS total'))
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
                                                  ->orWhere('seats.status','<>','Voided');
@@ -177,7 +181,10 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email,
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
-                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                        IF(purchases.inclusive_fee, 
+                                            ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))),2),
+                                            ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2)
+                                        )AS total'))
                                 ->where($where)
                                 ->where(function($query)
                                 {
@@ -205,7 +212,10 @@ class ConsignmentController extends Controller{
                                 ->leftJoin('purchases', 'purchases.id', '=' ,'seats.purchase_id')
                                 ->select(DB::raw('consignments.*,shows.name AS show_name,users.first_name,users.last_name,show_times.show_time,users.email,
                                         COUNT(seats.id) AS qty, (CASE WHEN (consignments.created = purchases.created) THEN 1 ELSE 0 END) as purchase,
-                                        ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2) AS total'))
+                                        IF(purchases.inclusive_fee, 
+                                            ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))),2),
+                                            ROUND(SUM(COALESCE(seats.retail_price,COALESCE(tickets.retail_price,0))+COALESCE(seats.processing_fee,COALESCE(tickets.processing_fee,0))),2)
+                                        )AS total'))
                                 ->where($where)
                                 ->where(function ($query) {
                                     return $query->whereNull('seats.status')
@@ -251,6 +261,7 @@ class ConsignmentController extends Controller{
             //save all record
             if($input)
             {
+                $input['inclusive'] = (empty($input['inclusive']))? 0 : 1;
                 if(isset($input['id']) && $input['id'])
                 {
                     $consignment = Consignment::find($input['id']);
@@ -301,7 +312,10 @@ class ConsignmentController extends Controller{
                                                      $purchase->increment('quantity',1);
                                                      $purchase->increment('retail_price',$t->retail_price);
                                                      $purchase->increment('processing_fee',$t->processing_fee);
-                                                     $purchase->increment('price_paid',$t->retail_price+$t->processing_fee);
+                                                     if($purchase->inclusive_fee)
+                                                        $purchase->increment('price_paid',$t->retail_price);
+                                                     else
+                                                        $purchase->increment('price_paid',$t->retail_price+$t->processing_fee);
                                                      $purchase->increment('commission_percent',$comm);
                                                  }
                                              }
@@ -313,7 +327,10 @@ class ConsignmentController extends Controller{
                                                      $purchase->decrement('quantity',1);
                                                      $purchase->decrement('retail_price',$t->retail_price);
                                                      $purchase->decrement('processing_fee',$t->processing_fee);
-                                                     $purchase->decrement('price_paid',$t->retail_price+$t->processing_fee);
+                                                     if($purchase->inclusive_fee)
+                                                        $purchase->decrement('price_paid',$t->retail_price);
+                                                     else
+                                                        $purchase->decrement('price_paid',$t->retail_price+$t->processing_fee);
                                                      $purchase->decrement('commission_percent',$comm);
                                                  }
                                              }
@@ -389,6 +406,7 @@ class ConsignmentController extends Controller{
                                         $purchaseTo->updated = $current;
                                         $purchaseTo->created = $current;
                                         $purchaseTo->channel = 'Consignment';
+                                        $purchaseTo->inclusive_fee = $purchaseFrom->inclusive_fee;
                                         $purchaseTo->save();
                                     }
                                 }
@@ -418,13 +436,19 @@ class ConsignmentController extends Controller{
                                     $purchaseFrom->decrement('quantity',1);
                                     $purchaseFrom->decrement('retail_price',$purchase_seat->retail_price);
                                     $purchaseFrom->decrement('processing_fee',$purchase_seat->processing_fee);
-                                    $purchaseFrom->decrement('price_paid',$purchase_seat->retail_price+$purchase_seat->processing_fee);
+                                    if($purchaseFrom->inclusive_fee)
+                                        $purchaseFrom->decrement('price_paid',$purchase_seat->retail_price);
+                                    else
+                                        $purchaseFrom->decrement('price_paid',$purchase_seat->retail_price+$purchase_seat->processing_fee);
                                     $purchaseFrom->decrement('commission_percent',$comm);
                                     //increment new
                                     $purchaseTo->increment('quantity',1);
                                     $purchaseTo->increment('retail_price',$purchase_seat->retail_price);
                                     $purchaseTo->increment('processing_fee',$purchase_seat->processing_fee);
-                                    $purchaseTo->increment('price_paid',$purchase_seat->retail_price+$purchase_seat->processing_fee);
+                                    if($purchaseTo->inclusive_fee)
+                                        $purchaseTo->increment('price_paid',$purchase_seat->retail_price);
+                                    else
+                                        $purchaseTo->increment('price_paid',$purchase_seat->retail_price+$purchase_seat->processing_fee);
                                     $purchaseTo->increment('commission_percent',$comm);
                                 }
                                 DB::table('seats')->where('id',$s)->update($updates);
@@ -524,6 +548,7 @@ class ConsignmentController extends Controller{
                         $purchase->updated = $current;
                         $purchase->created = $current;
                         $purchase->channel = 'Consignment';
+                        $purchase->inclusive_fee = $input['inclusive'];
                         $purchase->save();
                     }
                     //create consignments seats
@@ -595,7 +620,10 @@ class ConsignmentController extends Controller{
                                     $purchase->retail_price += $ret_pric;
                                     $purchase->processing_fee += $pro_fees;
                                     $purchase->commission_percent += $commission;
-                                    $purchase->price_paid += $ret_pric + $pro_fees;
+                                    if($purchase->inclusive_fee)
+                                        $purchase->price_paid += $ret_pric;
+                                    else
+                                        $purchase->price_paid += $ret_pric + $pro_fees;
                                     $purchase->ticket_id = $ticket->id;
                                     $purchase->save();
                                 }
