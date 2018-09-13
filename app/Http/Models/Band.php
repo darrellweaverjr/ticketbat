@@ -70,7 +70,14 @@ class Band extends Model
             $media = ['twitter'=>'','facebook'=>'','googleplus'=>'','yelpbadge'=>'','youtube'=>'','instagram'=>''];
             if ($url && $url != '' && (!filter_var($url, FILTER_VALIDATE_URL) === false)) {
                 //get content from url
-                $html = file_get_contents(urldecode ($url));
+                $url = urldecode ($url);
+                //curl search for image
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+                $html = curl_exec($ch);
+                curl_close($ch);
+                //$html = file_get_contents(urldecode ($url));
                 libxml_use_internal_errors( true);            
                 $doc = new \DOMDocument;
                 $doc->loadHTML( $html);
