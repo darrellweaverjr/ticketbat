@@ -66,7 +66,8 @@ class LoginController extends Controller
                 Auth::logout();            
         } 
         $this->incrementLoginAttempts($request);
-        return $this->sendFailedLoginResponse($request);
+        $this->sendFailedLoginResponse($request);
+        return back();
     }
     /**
      * Log the user out of the application.

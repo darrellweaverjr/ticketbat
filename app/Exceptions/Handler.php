@@ -13,6 +13,7 @@ use App\Http\Models\Util;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -103,7 +104,7 @@ class Handler extends ExceptionHandler
             Log::info($message);
             Log::debug($message);
          */
-        if (!($exception instanceof AuthenticationException) && !($exception instanceof TokenMismatchException) 
+        if (!($exception instanceof AuthenticationException) && !($exception instanceof TokenMismatchException) && !($exception instanceof ValidationException) 
         && !($exception instanceof NotFoundHttpException) && !($exception instanceof MethodNotAllowedHttpException))
         {
             Log::error($exception);
