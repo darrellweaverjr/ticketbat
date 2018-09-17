@@ -66,8 +66,8 @@ class Band extends Model
      */
     public static function load_social_media($url)
     {
+        $media = ['twitter'=>'','facebook'=>'','googleplus'=>'','yelpbadge'=>'','youtube'=>'','instagram'=>''];
         try {
-            $media = ['twitter'=>'','facebook'=>'','googleplus'=>'','yelpbadge'=>'','youtube'=>'','instagram'=>''];
             if ($url && $url != '' && (!filter_var($url, FILTER_VALIDATE_URL) === false)) {
                 //get content from url
                 $html = file_get_contents(urldecode ($url));
@@ -115,9 +115,10 @@ class Band extends Model
                     }
                 }
             } 
-            return $media;
         } catch (Exception $ex) {
-            throw new Exception('Error Bands load_social_media: '.$ex->getMessage());
+            
+        } finally {
+            return $media;
         }
     }
 }
