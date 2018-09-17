@@ -66,8 +66,7 @@ class LoginController extends Controller
                 Auth::logout();            
         } 
         $this->incrementLoginAttempts($request);
-        //$this->sendFailedLoginResponse($request);
-        return back();
+        return $this->sendFailedLoginResponse($request);
     }
     /**
      * Log the user out of the application.
@@ -78,5 +77,19 @@ class LoginController extends Controller
     {
         Auth::logout();
         return redirect()->route('home');
+    }
+    /**
+    * Get the failed login response instance.
+    *
+    * @param \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+       return redirect()->back()
+           ->withInput($request->only($this->username(), 'remember'))
+           ->withErrors([
+               $this->username() => [trans('auth.failed')]
+           ]);
     }
 }
