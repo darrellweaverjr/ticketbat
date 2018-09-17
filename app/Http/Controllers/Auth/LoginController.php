@@ -66,7 +66,7 @@ class LoginController extends Controller
                 Auth::logout();            
         } 
         $this->incrementLoginAttempts($request);
-        $this->sendFailedLoginResponse($request);
+        //$this->sendFailedLoginResponse($request);
         return back();
     }
     /**
