@@ -339,7 +339,7 @@ class RefundController extends Controller{
                             $response[$i] = ['success'=>false, 'msg'=>'No action made!']; 
                         
                         //send an email to the customer of the refunded ones   
-                        $emailSent = ($response[$i]['success'])? $purchase->set_pending(true) : false;
+                        $emailSent = ($response[$i]['success'])? $purchase->set_pending(true,$input['amount']) : false;
                         $emailSent = ($emailSent)? '<i class="icon-envelope"></i><i class="icon-check"></i>' : '<i class="icon-envelope"></i><i class="icon-close"></i>';
                         
                         //creating message

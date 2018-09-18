@@ -255,7 +255,7 @@ class Purchase extends Model
     /**
      * Get the purchase receipt info.
      */
-    public function set_pending($refunded=false)
+    public function set_pending($refunded=false,$amount=null)
     {
         //get purchase info mix
         $purchase = DB::table('purchases')
@@ -273,6 +273,7 @@ class Purchase extends Model
         if(!$purchase)
             return false;
         $html  = ($refunded)? '<b>PURCHASE REFUNDED</b><br><br>' : '<b>PURCHASE PENDING TO REFUND</b><br><br>';
+        $purchase->price_paid = (!empty($amount))? $amount : $purchase->price_paid;
         if(!$refunded)
             $html .= '<b>Status changed by:</b> '.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.')<br><br>';
         $html .= '<b>Customer:</b> '.$purchase->first_name.' '.$purchase->last_name.'<br>';
