@@ -339,6 +339,7 @@ class RefundController extends Controller{
                             $response[$i] = ['success'=>false, 'msg'=>'No action made!']; 
                         
                         //if refunded, send an email to the customer of the refunded ones and re-do tickets   
+                        $emailSent = '<i class="icon-envelope"></i><i class="icon-close"></i>';
                         if($response[$i]['success'])
                         {
                             //qty tickets availables
@@ -357,7 +358,8 @@ class RefundController extends Controller{
                             $tickets = implode(',',range(1,$purchase->quantity - $data->refunded));
                             DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
                             //send email
-                            $email = ($purchase->set_pending(true))? '<i class="icon-envelope"></i><i class="icon-check"></i>' : '<i class="icon-envelope"></i><i class="icon-close"></i>';
+                            if($purchase->set_pending(true))
+                                $emailSent = '<i class="icon-envelope"></i><i class="icon-check"></i>';
                         }
                         
                         //creating message
