@@ -338,9 +338,27 @@ class RefundController extends Controller{
                         if(!isset($response[$i]))
                             $response[$i] = ['success'=>false, 'msg'=>'No action made!']; 
                         
-                        //send an email to the customer of the refunded ones   
-                        $emailSent = ($response[$i]['success'])? $purchase->set_pending(true,$input['amount']) : false;
-                        $emailSent = ($emailSent)? '<i class="icon-envelope"></i><i class="icon-check"></i>' : '<i class="icon-envelope"></i><i class="icon-close"></i>';
+                        //if refunded, send an email to the customer of the refunded ones and re-do tickets   
+                        if($response[$i]['success'])
+                        {
+                            //qty tickets availables
+                            $data = DB::table('purchases')
+                                    ->leftJoin('transaction_refunds', 'purchases.id', '=', 'transaction_refunds.purchase_id')
+                                    ->select(DB::raw('SUM( COALESCE(transaction_refunds.quantity,0) ) AS refunded '))
+                                    ->where('purchases.id',$purchase->id)
+                                    ->where(function($query) {
+                                        $query->where('transaction_refunds.result','=','Approved')
+                                              ->orWhereNull('transaction_refunds.id');
+                                    })
+                                    ->orderBy('purchases.id')->groupBy('purchases.id')->first();
+                            //remove old tickets
+                            DB::table('ticket_number')->where('purchases_id',$purchase->id)->delete();
+                            //create new tickets
+                            $tickets = implode(',',range(1,$purchase->quantity - $data->refunded));
+                            DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
+                            //send email
+                            $email = ($purchase->set_pending(true))? '<i class="icon-envelope"></i><i class="icon-check"></i>' : '<i class="icon-envelope"></i><i class="icon-close"></i>';
+                        }
                         
                         //creating message
                         $msg .= '<br><b>Order #'.$i.' :</b> '.$emailSent.' '.$response[$i]['msg'];
