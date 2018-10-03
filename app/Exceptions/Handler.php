@@ -104,9 +104,9 @@ class Handler extends ExceptionHandler
             Log::info($message);
             Log::debug($message);
          */
-        if (!($exception instanceof AuthenticationException) && !($exception instanceof TokenMismatchException) && !($exception instanceof ValidationException) 
+        /*if (!($exception instanceof AuthenticationException) && !($exception instanceof TokenMismatchException) && !($exception instanceof ValidationException) 
         && !($exception instanceof NotFoundHttpException) && !($exception instanceof MethodNotAllowedHttpException))
-        {
+        {*/
             Log::error($exception);
             $email = new EmailSG(['TicketBat Admin',env('MAIL_ERROR_FROM')],env('MAIL_ERROR_TO'),env('MAIL_ERROR_SUBJECT'));
             $client = Util::system_info();
@@ -117,7 +117,7 @@ class Handler extends ExceptionHandler
             $email->html($html);
             $email->send();
             Log::info('Email sent to '.env('MAIL_ERROR_TO').' with the error message.');
-        }
+        //}
     }
     /**
      * Flag to say enable or disable send errors email to the admin.
