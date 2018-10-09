@@ -46,9 +46,7 @@ var ContactFunctions = function () {
                                 title: "<span style='color:green;'>Send!</span>",
                                 text: data.msg,
                                 html: true,
-                                timer: 1500,
-                                type: "success",
-                                showConfirmButton: false
+                                type: "success"
                             });
                         }
                         else{
