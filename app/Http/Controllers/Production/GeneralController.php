@@ -19,6 +19,7 @@ class GeneralController extends Controller
     public function contact()
     {
         try {
+            
             $info = Input::all();
             if(!empty($info['name']) && !empty($info['email']) && !empty($info['message']))
             {
@@ -33,7 +34,10 @@ class GeneralController extends Controller
                 $contact->message = $info['message'];
                 $contact->save();
                 if($contact->email_us())
-                    return ['success'=>true, 'msg'=>'Email sent successfully! An administrator will contact you soon.'];
+                {
+                    $msg = "Thanks for your email!<br>We've received your request (".$contact->id.").<br>We will get back to you as soon as we can, which will be no later than 48 business hours.";
+                    return ['success'=>true, 'msg'=>$msg];
+                }
                 return ['success'=>false, 'msg'=>'There was an error sending the email. Please try later!'];
             }
             return ['success'=>false, 'msg'=>'You must fill out correctly the form!'];
