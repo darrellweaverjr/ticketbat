@@ -35,7 +35,7 @@ class GeneralController extends Controller
                 $contact->save();
                 if($contact->email_us())
                 {
-                    $msg = "Thanks for your email!<br>We've received your request (".$contact->id.").<br>We will get back to you as soon as we can, which will be no later than 48 business hours.";
+                    $msg = "We've received your request (".$contact->id.").<br>We will get back to you as soon as we can, which will be no later than 48 business hours.";
                     return ['success'=>true, 'msg'=>$msg];
                 }
                 return ['success'=>false, 'msg'=>'There was an error sending the email. Please try later!'];

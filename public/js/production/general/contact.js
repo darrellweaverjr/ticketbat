@@ -43,7 +43,7 @@ var ContactFunctions = function () {
                         {
                             $('#form_contact_us').trigger('reset');
                             swal({
-                                title: "<span style='color:green;'>Send!</span>",
+                                title: "<span style='color:green;'>Thanks for your email!</span>",
                                 text: data.msg,
                                 html: true,
                                 type: "success"
