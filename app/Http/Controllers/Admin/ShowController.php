@@ -491,10 +491,10 @@ class ShowController extends Controller{
                         }
                         $tickets = Ticket::where('show_id',$show->id)->delete();
                         //banners
-                        $banners = Banner::where('parent_id',$venue->id)->where('belongto','show')->get();
+                        $banners = Banner::where('parent_id',$show->id)->where('belongto','show')->get();
                         foreach ($banners as $b)
                             Image::remove_image($b->file);
-                        $banners = Banner::where('parent_id',$venue->id)->where('belongto','show')->delete();
+                        $banners = Banner::where('parent_id',$show->id)->where('belongto','show')->delete();
                         //show_awards
                         $show_awards = DB::table('show_awards')->where('show_id',$show->id)->delete();
                         //show_bands
@@ -670,7 +670,7 @@ class ShowController extends Controller{
                 $ticket->processing_fee = $input['processing_fee'];
                 $ticket->percent_pf = $input['percent_pf'];
                 $ticket->max_tickets = (!empty($input['max_tickets']))? $input['max_tickets'] : null;
-                $ticket->is_active = (!empty($input['is_active']))? 1 : 0; 
+                $ticket->is_active = (!empty($input['is_active']))? 1 : 0;
                 $ticket->avail_hours = (!empty($input['avail_hours']))? $input['avail_hours'] : null;
                 if(isset($input['fixed_commission']) && $input['fixed_commission'] != 0.00 && $input['fixed_commission'] != '0.00')
                 {
