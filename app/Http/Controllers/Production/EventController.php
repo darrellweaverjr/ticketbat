@@ -38,7 +38,7 @@ class EventController extends Controller
                 ->select(DB::raw('shows.id as show_id, shows.slug, shows.on_sale, shows.short_description, shows.description, shows.url, shows.header_url AS header,
                                           shows.facebook, shows.twitter,shows.googleplus, shows.yelpbadge, shows.youtube, shows.instagram, venues.header_url,
                                           venues.name as venue, shows.name, locations.*, shows.presented_by, shows.starting_at, shows.regular_price, shows.sponsor,
-                                          shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id, shows.ua_conversion_code,
+                                          shows.sponsor_logo_id, venues.cutoff_text, shows.restrictions, shows.venue_id, shows.ua_conversion_code, shows.ext_slug,
                                           IF(shows.restrictions!="None",shows.restrictions,venues.restrictions) AS restrictions'))
                 ->where('shows.is_active', '>', 0)->where('venues.is_featured', '>', 0)
                 ->where(function ($query) {
@@ -49,6 +49,10 @@ class EventController extends Controller
             if (!$event) {
                 return redirect()->route('index');
             }
+						//redirect if $slug
+						if (!empty($event->ext_slug) && filter_var($event->ext_slug, FILTER_VALIDATE_URL)) {
+						    return redirect()->to($event->ext_slug);
+						}
             //funnel
             $input = Input::all();
             if (!empty($input['funnel']) && in_array($input['funnel'], [0, 1])) {
@@ -166,7 +170,7 @@ class EventController extends Controller
             $options = Util::display_options_by_user();
             $qty_tickets_sell = 20;
             $stock_avail_warning = 75;
-            if(empty($slug) || empty($product)) 
+            if(empty($slug) || empty($product))
                 return redirect()->route('index');
             //get all records
             $event = DB::table('shows')
@@ -174,7 +178,7 @@ class EventController extends Controller
                 ->join('stages', 'stages.id', '=', 'shows.stage_id')
                 ->join('show_times', 'show_times.show_id', '=', 'shows.id')
                 ->join('tickets', 'tickets.show_id', '=', 'shows.id')
-                ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, shows.ticket_limit,
+                ->select(DB::raw('shows.id as show_id, show_times.id AS show_time_id, shows.name, shows.ticket_limit, show_times.slug as ext_slug,
                                           venues.name AS venue, stages.image_url, DATE_FORMAT(show_times.show_time,"%W, %M %d, %Y @ %l:%i %p") AS show_time,
                                           show_times.time_alternative, shows.amex_only_ticket_types, stages.id AS stage_id, stages.ticket_order,
                                           CASE WHEN (NOW()>shows.amex_only_start_date) && NOW()<shows.amex_only_end_date THEN 1 ELSE 0 END AS amex_only,
@@ -195,6 +199,10 @@ class EventController extends Controller
             if (!$event) {
                 return redirect()->route('index');
             }
+						//redirect if $slug
+						if (!empty($event->ext_slug) && filter_var($event->ext_slug, FILTER_VALIDATE_URL)) {
+						    return redirect()->to($event->ext_slug);
+						}
             //formats
             $event->image_url = Image::view_image($event->image_url);
             $event->amex_only_ticket_types = (!empty($event->amex_only_ticket_types)) ? explode(',', $event->amex_only_ticket_types) : [];
@@ -216,7 +224,7 @@ class EventController extends Controller
             $coupon = array_merge(Shoppingcart::tickets_coupon($s_token), Util::tickets_coupon());
             $has_coupon = 0;
             //checkings for qty if ticket limit by customer
-            if (!empty($event->ticket_limit)) 
+            if (!empty($event->ticket_limit))
             {
                 $event->ticket_left = $event->ticket_limit;
                 $event->ticket_reserved = 0;
@@ -265,7 +273,7 @@ class EventController extends Controller
                 ->join('packages', 'packages.id', '=', 'tickets.package_id')
                 ->select(DB::raw('tickets.id AS ticket_id, packages.title, tickets.ticket_type, tickets.ticket_type_class,
                                                   tickets.retail_price,
-                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p 
+                                                  (CASE WHEN (tickets.max_tickets > 0) THEN (tickets.max_tickets-(SELECT COALESCE(SUM(p.quantity),0) FROM purchases p
                                                             WHERE p.ticket_id = tickets.id AND p.show_time_id = ' . $event->show_time_id . ')) ELSE null END) AS max_available'))
                 ->where('tickets.show_id', $event->show_id)->where('tickets.is_active', '>', 0)
                 ->where(function ($query) {
@@ -280,11 +288,11 @@ class EventController extends Controller
                           ->orWhere('tickets.max_tickets', '>', 0);
                 })
                 ->groupBy('tickets.id')->orderBy('tickets.is_default', 'DESC')->get();
-            
+
             foreach ($tickets as $t) {
                 //id
                 $id = preg_replace("/[^A-Za-z0-9]/", '_', $t->ticket_type);
-                
+
                 //checking qty
                 if(is_null($t->max_available))  //unlimited
                 {
@@ -312,9 +320,9 @@ class EventController extends Controller
                 }
                 else //soldout
                     $t->max_available = 0;
-                
+
                 //if there is tickets availables
-                if ($t->max_available >= 0) {   
+                if ($t->max_available >= 0) {
                     //amex
                     $amex_only = ($event->amex_only > 0 && in_array($t->ticket_type, $event->amex_only_ticket_types)) ? 1 : 0;
                     //password
@@ -331,13 +339,13 @@ class EventController extends Controller
                         $has_coupon = 1;
                     } else
                         $t->coupon = 0;
-                    
+
                     //fill out tickets
                     if (isset($event->tickets[$id]))
                         $event->tickets[$id]['tickets'][] = $t;
-                    else 
+                    else
                         $event->tickets[$id] = ['type' => $t->ticket_type, 'class' => $t->ticket_type_class, 'amex_only' => $amex_only, 'password' => $pass, 'tickets' => [$t]];
-                } 
+                }
             }
             //order the ticket types according to the stage order
             if (!empty($event->ticket_order)) {
