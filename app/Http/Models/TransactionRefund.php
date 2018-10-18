@@ -85,13 +85,13 @@ class TransactionRefund extends Model
                     if($operation['success'])
                     {
                         Purchase::where('id',$purchase->id)->update(['status'=>'Refunded']);
-                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
+                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded.</b>'];
                     }
                     else
-                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.' througth USAePay.</b>'];
+                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.'.</b>'];
                 }
                 else
-                    return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.'.<br>You have to wait for 5 days to the transaction be settled on USAePay to refund it.</b>'];
+                    return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.'.<br>You have to wait for 5 days to the transaction be settled to refund it.</b>'];
             }
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
