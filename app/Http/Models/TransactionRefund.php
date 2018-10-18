@@ -46,7 +46,7 @@ class TransactionRefund extends Model
      */
     public static function usaepay($purchase,$user,$amount,$description=null,$created,$input=[])
     {
-        try {      
+        try {
             //init
             $ref_num = $purchase->transaction->refnum;
             $tran = null;
@@ -60,9 +60,9 @@ class TransactionRefund extends Model
                     Purchase::where('id',$purchase->id)->update(['status'=>'Void']);
                     return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was voided by USAePay.</b>'];
                 }
-                else 
+                else
                 {
-                    $operation = TransactionRefund::connect_usaepay('refund',$ref_num,$amount,$description);   
+                    $operation = TransactionRefund::connect_usaepay('refund',$ref_num,$amount,$description);
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
                     if($operation['success'])
                     {
@@ -76,11 +76,11 @@ class TransactionRefund extends Model
             //partial refund
             else
             {
-                $refunded_on = date('Y-m-d H:i:s', strtotime($purchase->created.' +5 days'));
+                $refunded_on = date('Y-m-d', strtotime($purchase->created.' +5 days'));
                 //if more than 5 days make the refund
-                if(date('now') >= $refunded_on)
+                if(date('Y-m-d') >= $refunded_on)
                 {
-                    $operation = TransactionRefund::connect_usaepay('refund',$ref_num,$amount,$description);   
+                    $operation = TransactionRefund::connect_usaepay('refund',$ref_num,$amount,$description);
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
                     if($operation['success'])
                     {
@@ -97,13 +97,13 @@ class TransactionRefund extends Model
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
-    
+
     /*
      * connect with usaepay
      */
     public static function connect_usaepay($command,$ref_num,$amount,$description)
     {
-        try {  
+        try {
                 //init params
                 $tran=new umTransaction();
                 $tran->testmode=env('USAEPAY_TEST',1);
@@ -113,25 +113,25 @@ class TransactionRefund extends Model
                 //command
                 $tran->command = $command;
                 //refund info
-                $tran->refnum=$ref_num;	
+                $tran->refnum=$ref_num;
                 $tran->amount=$amount;
                 if(!empty($description))
                     $tran->description=$description;
                 //process
                 $success = ($tran->Process() && $tran->result=='Approved');
                 return ['success'=>$success,'tran'=>$tran];
-                
+
         } catch (Exception $ex) {
             return ['success'=>false, 'msg'=>'There is an error with the server!'];
         }
     }
-    
+
     /*
      * connect with usaepay
      */
     public static function store_refund($tran,$purchase,$user,$description,$created,$input)
     {
-        try {  
+        try {
                 $transaction = new TransactionRefund;
                 $transaction->purchase_id = $purchase->id;
                 $transaction->user_id = $user->id;
@@ -170,11 +170,11 @@ class TransactionRefund extends Model
                     $transaction->commission_percent = (isset($input['commission_percent']))? $input['commission_percent'] : $purchase->commission_percent;
                 }
                 $transaction->save();
-                
+
         } catch (Exception $ex) {
-            
+
         }
     }
-    
-    
+
+
 }
