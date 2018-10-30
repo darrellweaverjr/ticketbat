@@ -295,7 +295,7 @@ var FormValidation = function () {
             // advance validation
             var rules = {
                 ticket_type: {
-                    minlength: 2,
+                    minlength: 3,
                     maxlength: 20,
                     required: true
                 }

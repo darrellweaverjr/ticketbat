@@ -258,7 +258,7 @@ var FormValidation = function () {
             // advance validation
             var rules = {
                 title: {
-                    minlength: 4,
+                    minlength: 3,
                     maxlength: 100,
                     required: true
                 },
