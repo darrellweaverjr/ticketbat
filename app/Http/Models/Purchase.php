@@ -556,6 +556,13 @@ class Purchase extends Model
             $errors_ids=[];
             foreach ($shoppingcart['items'] as $i)
             {
+                //check discount type N for N when only 1 item
+                if($i->discount_id != 1 && $i->number_of_items==1)
+                {
+                    $d = Discount::find($i->discount_id);
+                    if($d && $d->discount_type=='N for N')
+                        $i->discount_id = 1;
+                }
                 //create purchase
                 $purchase = new Purchase;
                 $purchase->user_id = $client['user_id'];
