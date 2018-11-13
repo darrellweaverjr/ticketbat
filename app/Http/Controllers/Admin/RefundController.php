@@ -228,7 +228,7 @@ class RefundController extends Controller{
                                               ->orWhereNull('transaction_refunds.id');
                                     })
                                     ->orderBy('purchases.id')->groupBy('purchases.id')->first();
-                            $available = $purchase->price_paid - $data->refunded;
+                            $available = (!empty($data) && !empty($data->refunded))? $purchase->price_paid - $data->refunded : $purchase->price_paid;
                             $amount = (!empty($input['amount']) && $input['amount']>0 && $input['amount']<$available)? $input['amount'] : $available;
                             //return ['success'=>false, 'msg'=>$amount];
                             if($amount>0)
@@ -355,7 +355,8 @@ class RefundController extends Controller{
                             //remove old tickets
                             DB::table('ticket_number')->where('purchases_id',$purchase->id)->delete();
                             //create new tickets
-                            $tickets = implode(',',range(1,$purchase->quantity - $data->refunded));
+                            $tickets_qty = (!empty($data) && !empty($data->refunded))? $purchase->quantity - $data->refunded : $purchase->quantity;
+                            $tickets = implode(',',range(1,$tickets_qty));
                             DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
                             //send email
                             if($purchase->set_pending(true))

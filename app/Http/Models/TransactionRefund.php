@@ -58,7 +58,7 @@ class TransactionRefund extends Model
                 {
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
                     Purchase::where('id',$purchase->id)->update(['status'=>'Void']);
-                    return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was voided by USAePay.</b>'];
+                    return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was voided by Bank.</b>'];
                 }
                 else
                 {
@@ -67,10 +67,10 @@ class TransactionRefund extends Model
                     if($operation['success'])
                     {
                         Purchase::where('id',$purchase->id)->update(['status'=>'Refunded']);
-                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by USAePay.</b>'];
+                        return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded by Bank.</b>'];
                     }
                     else
-                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.' througth USAePay.</b>'];
+                        return ['success'=>false, 'msg'=>'<b>The system could not refund purchase #'.$purchase->id.' througth Bank.</b>'];
                 }
             }
             //partial refund
