@@ -265,7 +265,7 @@ var FormValidation = function () {
             var rules = {
                 slug: {
                     minlength: 5,
-                    maxlength: 50,
+                    maxlength: 100,
                     required: true
                 },
                 alt: {
