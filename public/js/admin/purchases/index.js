@@ -54,7 +54,7 @@ var TableDatatablesManaged = function () {
                 var ref_disab = false;
                 $.each($(set+"[type=checkbox]:checked") ,function(k, v) {
                     var status = $(v).closest('tr').find('td[data-status]').data('status');
-                    if(status.indexOf('Pending') != 0)
+                    if(!(status.indexOf('Pending') == 0 || status=='Active'))
                         ref_disab = true; 
                 });
                 $('#btn_model_refund').prop("disabled",ref_disab);
