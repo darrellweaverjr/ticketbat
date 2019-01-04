@@ -964,6 +964,7 @@ var TableDatatablesManaged = function () {
         }
         $('#btn_model_ticket_add').on('click', function(ev) {            
             toggle_default_tickets();
+            $('#form_model_show_tickets input[name="id"]:hidden').val('').trigger('change');
             $('#modal_model_show_tickets').modal('show');
         });
         $('#form_model_show_tickets .make-switch:checkbox[name="only_posx"]').on('switchChange.bootstrapSwitch', function (event, state) {
