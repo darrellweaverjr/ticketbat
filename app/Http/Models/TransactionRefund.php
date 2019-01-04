@@ -44,14 +44,14 @@ class TransactionRefund extends Model
     /*
      * make transaction
      */
-    public static function usaepay($purchase,$user,$amount,$description=null,$created,$input=[])
+    public static function usaepay($purchase,$user,$amount,$description=null,$created,$input=[], $partial=false)
     {
         try {
             //init
             $ref_num = $purchase->transaction->refnum;
             $tran = null;
             //total refund
-            if($amount==$purchase->price_paid)
+            if(!$partial)
             {
                 $operation = TransactionRefund::connect_usaepay('void',$ref_num,$amount,$description);
                 if($operation['success'])
@@ -84,7 +84,7 @@ class TransactionRefund extends Model
                     TransactionRefund::store_refund($operation['tran'],$purchase,$user,$description,$created,$input);
                     if($operation['success'])
                     {
-                        Purchase::where('id',$purchase->id)->update(['status'=>'Refunded']);
+                        Purchase::where('id',$purchase->id)->update(['status'=>'Active']);
                         return ['success'=>true, 'msg'=>'<b>Purchase #'.$purchase->id.' was refunded.</b>'];
                     }
                     else

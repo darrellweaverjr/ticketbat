@@ -230,7 +230,7 @@ class RefundController extends Controller{
                                     ->orderBy('purchases.id')->groupBy('purchases.id')->first();
                             $available = (!empty($data) && !empty($data->refunded))? $purchase->price_paid - $data->refunded : $purchase->price_paid;
                             $amount = (!empty($input['amount']) && $input['amount']>0 && $input['amount']<$available)? $input['amount'] : $available;
-                            //return ['success'=>false, 'msg'=>$amount];
+                            $partial = ($available > $amount)? true : false;
                             if($amount>0)
                             {
                                 //check action to process
@@ -241,7 +241,7 @@ class RefundController extends Controller{
                                     {
                                         if($purchase->transaction && $purchase->transaction->trans_result=='Approved')
                                         {
-                                            $refunded = TransactionRefund::usaepay($purchase, $user, $amount, $description, $current, $input);
+                                            $refunded = TransactionRefund::usaepay($purchase, $user, $amount, $description, $current, $input, $partial);
                                             if($refunded['success'])
                                             {
                                                 $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
@@ -269,7 +269,7 @@ class RefundController extends Controller{
                                         {
                                             $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Refunded $'.$amount;
                                             $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                            $purchase->status = 'Refunded';
+                                            $purchase->status = ($partial)? 'Active' : 'Refunded';
                                             $purchase->refunded_reason = null;
                                             $purchase->save();
                                             $response[$i] = ['success'=>true, 'msg'=>'Done successfully!'];  
@@ -291,7 +291,7 @@ class RefundController extends Controller{
                                     {
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually refunded $'.$amount;
                                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                        $purchase->status = 'Refunded';
+                                        $purchase->status = ($partial)? 'Active' : 'Refunded';
                                         $purchase->refunded_reason = null;
                                         $purchase->save();
                                         $response[$i] = ['success'=>true, 'msg'=>'Done successfully!'];  
@@ -312,7 +312,7 @@ class RefundController extends Controller{
                                     {
                                         $note = '&nbsp;<br><b>'.$user->first_name.' '.$user->last_name.' ('.date('m/d/Y g:i a',strtotime($current)).'): </b> Manually Chargeback $'.$amount;
                                         $purchase->note = ($purchase->note)? $purchase->note.$note : $note;
-                                        $purchase->status = 'Refunded';
+                                        $purchase->status = ($partial)? 'Active' : 'Chargeback';
                                         $purchase->refunded_reason = null;
                                         $purchase->save();
                                         $response[$i] = ['success'=>true, 'msg'=>'Done successfully!'];  
