@@ -166,7 +166,7 @@
                                     <div class="btn btn-warning uppercase show_section_btnbuy"><span style="color:#000;margin-top:5px;"><b>Free</b></span></div>
                                 @endif
                                 <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
-                                <a class="cbp-l-grid-projects-desc1 uppercase1 text-center show_section_caption1">
+                                <a class="text-center" style="color:black!important">
                                     <small>
                                     Next on {{date('M j, Y @ g:i A', strtotime($s->show_time))}}<br>
                                     in {{$s->venue}}
