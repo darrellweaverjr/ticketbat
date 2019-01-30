@@ -95,11 +95,11 @@
                     <!-- END LOGO -->
                     <!-- BEGIN RESPONSIVE MENU TOGGLER -->
                     <div class="navbar-header" >
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <div type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
-                        </button>
+                        </div>
                     </div>
                     <!-- END RESPONSIVE MENU TOGGLER -->
                     <!-- BEGIN HORIZANTAL MENU -->

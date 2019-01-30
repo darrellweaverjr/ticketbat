@@ -125,8 +125,13 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
             bgColor: 'black',
             bgOpacity: .7,
             setSelect: [fixWidth, fixHeight, 0, 0],
+            //allowSelect: true,
+                    allowMove: true,
+                   // allowResize: true,
+                    aspectRatio: 0  ,
             minSize: [fixWidth, fixHeight],
-            maxSize: [fixWidth, fixHeight]
+            maxSize: [fixWidth, fixHeight],
+            boxWidth: maxWidth, boxHeight: maxHeight
         });
     }
 
@@ -174,6 +179,7 @@ var FormImageUpload = function (image_type, modal_callback, image_callback) {
                         $('#image_preview img').css('width', fixWidth + 'px');
                         $('#image_preview img').css('height', fixHeight + 'px');
                     }
+                     $('#image_preview img').css('float', 'right');
                 }
 
                 //setAction(image);

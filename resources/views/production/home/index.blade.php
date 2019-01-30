@@ -22,7 +22,7 @@
                 @endforeach
             </ol>
             <!-- Wrapper for slides -->
-            <div class="carousel-inner" role="listbox">
+            <div class="carousel-inner">
                 @foreach($sliders as $index=>$s)
                     <div class="item @if(!$index) active @endif" data-filter="{{$s->filter}}">
                         <a href="{{$s->slug}}"><img style="margin:auto" src="{{$s->image_url}}" alt="{{$s->alt}}"></a>
@@ -53,9 +53,9 @@
                             <div class="widget-thumb-wrap">
 
                                 <div class="widget-thumb-body">
-                                    <span class="widget-thumb-subtitle"><i class="icon-magnifier"></i> Search</span>
+                                    <span class="widget-thumb-wrap"><i class="icon-magnifier"></i> Search</span>
                                     <span class="widget-thumb-body-stat">
-                                        <input type="text" class="form-control" name="filter_name" placeholder="Find an event">
+                                        <input type="text" class="form-control" name="filter_name" placeholder="Find an event" aria-label="Seach event by name">
                                 </span>
                                 </div>
                             </div>
@@ -66,9 +66,9 @@
                             <div class="widget-thumb-wrap">
 
                                 <div class="widget-thumb-body">
-                                    <span class="widget-thumb-subtitle"><i class="icon-directions"></i> City</span>
+                                    <span class="widget-thumb-wrap"><i class="icon-directions"></i> City</span>
                                     <span class="widget-thumb-body-stat">
-                                    <select class="form-control" name="filter_city">
+                                    <select class="form-control" name="filter_city" aria-label="Filter by city">
                                         <option selected value="">All</option>
                                         @foreach($cities as $c)
                                             <option data-country="{{$c['country']}}" data-state="{{$c['state']}}" value="{{$c['city']}}">{{$c['city']}}</option>
@@ -84,9 +84,9 @@
                             <div class="widget-thumb-wrap">
 
                                 <div class="widget-thumb-body">
-                                    <span class="widget-thumb-subtitle"><i class="icon-pointer"></i> Venue</span>
+                                    <span class="widget-thumb-wrap"><i class="icon-pointer"></i> Venue</span>
                                     <span class="widget-thumb-body-stat">
-                                    <select class="form-control" name="filter_venue" data-content='@php echo str_replace("'"," ",json_encode($venues));@endphp'>
+                                    <select class="form-control" name="filter_venue" data-content='@php echo str_replace("'"," ",json_encode($venues));@endphp' aria-label="Filter by venue">
                                         <option selected value="">All</option>
                                         @foreach($venues as $v)
                                             <option value="{{$v['id']}}">{{$v['name']}}</option>
@@ -102,9 +102,9 @@
                             <div class="widget-thumb-wrap">
 
                                 <div class="widget-thumb-body">
-                                    <span class="widget-thumb-subtitle"><i class="icon-tag"></i> Genre</span>
+                                    <span class="widget-thumb-wrap"><i class="icon-tag"></i> Genre</span>
                                     <span class="widget-thumb-body-stat">
-                                    <select class="form-control" name="filter_category">
+                                    <select class="form-control" name="filter_category" aria-label="Filter by category">
                                         <option selected value="">All</option>
                                         @foreach($categories as $c)
                                             <option value="{{$c->id}}" data-parent="{{$c->id_parent}}">{{html_entity_decode($c->name)}} {{$c->subs}}</option>
@@ -120,12 +120,12 @@
                             <div class="widget-thumb-wrap">
 
                                 <div class="widget-thumb-body">
-                                    <span class="widget-thumb-subtitle"><i class="icon-calendar"></i> Date</span>
+                                    <span class="widget-thumb-wrap"><i class="icon-calendar"></i> Date</span>
                                     <span class="widget-thumb-body-stat">
                                     <div id="filter_date" class="pull-left tooltips btn btn-fit-height" style="margin-top:-7px!important;font-size:13px">
                                         <span style="margin-left:-13px;font-weight:bold!important;" class="thin"></span>
-                                        <input type="hidden" name="filter_start_date">
-                                        <input type="hidden" name="filter_end_date">
+                                        <input type="hidden" name="filter_start_date" aria-label="Filter by start date">
+                                        <input type="hidden" name="filter_end_date" aria-label="Filter by end date">
                                     </div>
                                 </span>
                                 </div>
