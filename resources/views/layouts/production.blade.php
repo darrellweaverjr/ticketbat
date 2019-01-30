@@ -95,11 +95,11 @@
                     <!-- END LOGO -->
                     <!-- BEGIN RESPONSIVE MENU TOGGLER -->
                     <div class="navbar-header" >
-                        <div type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" aria-label="Menu">
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
-                        </div>
+                        </button>
                     </div>
                     <!-- END RESPONSIVE MENU TOGGLER -->
                     <!-- BEGIN HORIZANTAL MENU -->
@@ -220,11 +220,9 @@
             <!-- END CONTAINER -->
             <!-- BEGIN FOOTER -->
             <div class="page-footer fixed-panel">
-                <div class="page-footer-inner">
                     <a class="menu_foot" data-toggle="modal" href="#modal_privacy" title="Watch out our privacy policy">Privacy</a> &nbsp;|&nbsp;
                     <a class="menu_foot" data-toggle="modal" href="#modal_terms" title="Check our terms of use">Terms</a> &nbsp;|&nbsp;
                     <a class="menu_foot" data-toggle="modal" href="#modal_contact_us" title="If you have any issues, please, let us know" >Contact Us</a>
-                </div>
                 <div class="copyright pull-right">
                     &copy; 2014-{{date('Y')}}  TicketBat. All rights reserved.
                 </div>

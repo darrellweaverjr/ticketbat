@@ -153,9 +153,10 @@
                                         <div class="cbp-l-caption-alignCenter">
                                             <div class="cbp-l-caption-body">
                                                 @if(!($s->price=='0.00'))
-                                                    <span class="cbp-l-caption-buttonLeft btn info">@if($s->time_alternative) {{$s->time_alternative}} @else Starting at <b>${{$s->price}}</b> @endif</span>
+                                                <span style="color:whitesmoke!important">@if($s->time_alternative) {{$s->time_alternative}} @else Starting at <b>${{$s->price}}</b> @endif</span>
+                                                @else
+                                                <span style="color:whitesmoke!important">GET TICKETS <i class="fa fa-arrow-circle-right"></i></span>
                                                 @endif
-                                                <span class="cbp-l-caption-buttonRight btn info">GET TICKETS <i class="fa fa-arrow-circle-right"></i></span>
                                             </div>
                                         </div>
                                     </div>
@@ -165,8 +166,12 @@
                                     <div class="btn btn-warning uppercase show_section_btnbuy"><span style="color:#000;margin-top:5px;"><b>Free</b></span></div>
                                 @endif
                                 <div class="cbp-l-grid-projects-title uppercase text-center show_section_caption ">{{$s->name}}</div>
-                                <a class="cbp-l-grid-projects-desc uppercase text-center show_section_caption"><b class="date_venue_on">Next
-                                        on {{date('M j, Y @ g:i A', strtotime($s->show_time))}}</b><br><b>in {{$s->venue}}</b></a>
+                                <a class="cbp-l-grid-projects-desc1 uppercase1 text-center show_section_caption1">
+                                    <small>
+                                    Next on {{date('M j, Y @ g:i A', strtotime($s->show_time))}}<br>
+                                    in {{$s->venue}}
+                                    </small>
+                                </a>
                             </div>
                         @endforeach
                     </div>
