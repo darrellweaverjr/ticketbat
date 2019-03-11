@@ -90,7 +90,7 @@ class PurchaseController extends Controller{
                                 ->where('purchases.id','=',$input['id'])->first();
                 $showtimes = DB::table('show_times')->select('id','show_time')
                                 ->where('show_id','=',$current->show_id)->where('is_active','=',1)->where('show_times.show_time','>',date('Y-m-d H:i:s',strtotime($root_setting)))
-                                ->orderBy('show_times.show_time')->get();
+                                ->orderBy('show_times.show_time','ASC')->get();
                 $tickets = DB::table('tickets')
                                 ->join('packages','packages.id','=','tickets.package_id')
                                 ->select('tickets.id','tickets.ticket_type','packages.title')
@@ -102,7 +102,7 @@ class PurchaseController extends Controller{
                                 ->select('discounts.id','discounts.code','discounts.description')
                                 ->where('purchases.id','=',$current->purchase_id)
                                 ->orWhere('discounts.id','=',1)
-                                ->orderBy('discounts.code')->get();
+                                ->orderBy('discounts.code','ASC')->get();
                 return ['success'=>true,'current'=>$current,'tickets'=>$tickets,'showtimes'=>$showtimes,'discounts'=>$discounts];
             }
             else if(isset($input) && isset($input['purchase_id']))
@@ -221,7 +221,10 @@ class PurchaseController extends Controller{
                                         $query->whereIn('shows.venue_id',[Auth::user()->venues_edit])
                                               ->orWhere('shows.audit_user_id','=',Auth::user()->id);
                                     })
-                                    ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
+                                    ->orderBy('purchases.created')
+                                    ->orderBy('purchases.transaction_id')
+                                    ->orderBy('purchases.user_id')
+                                    ->orderBy('purchases.price_paid')
                                     ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
                                     ->groupBy('purchases.id')
                                     ->get();
@@ -253,7 +256,10 @@ class PurchaseController extends Controller{
                                                       customers.first_name, customers.last_name, customers.email, customers.phone,
                                                       show_times.show_time, shows.name AS show_name, packages.title, COUNT( ticket_number.id ) AS shared'))
                                     ->where($where)
-                                    ->orderBy('purchases.created','purchases.transaction_id','purchases.user_id','purchases.price_paid')
+                                    ->orderBy('purchases.created')
+                                    ->orderBy('purchases.transaction_id')
+                                    ->orderBy('purchases.user_id')
+                                    ->orderBy('purchases.price_paid')
                                     ->havingRaw('method IN ("'.implode('","',$search['payment_type']).'")')
                                     ->groupBy('purchases.id')
                                     ->get();
@@ -651,7 +657,7 @@ class PurchaseController extends Controller{
             //init
             $input = Input::all();
             if(!empty($input['venue_id']))
-                $values = Show::where('venue_id',$input['venue_id'])->orderBy('name')->get(['id','name']);
+                $values = Show::where('venue_id',$input['venue_id'])->orderBy('name','asc')->get(['id','name']);
             else if(!empty($input['show_id']))
                 $values = DB::table('tickets')
                             ->join('packages', 'packages.id', '=' ,'tickets.package_id')

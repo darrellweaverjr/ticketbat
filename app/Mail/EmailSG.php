@@ -2,106 +2,60 @@
 
 namespace App\Mail;
 
-use SendGrid;
 use App\Exceptions\Handler;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class EmailSG sends emails thru SendGrid
  *
  * @author ivan
  */
-class EmailSG {
-
-    protected $mail;
-    protected $sendGrid;
-
-    //builder1 regular email
-    public function __construct($from, $to, $subject, $data=null) {
-        try {
-            //init
-            $this->sendGrid = new \SendGrid(env('MAIL_SENDGRID_API_KEY'));
-            //from
-            if (isset($from)) 
+class EmailSG extends \SendGrid {
+    
+    private $emails = [];
+    
+    //main constructor, pass target and subject
+    public function __construct($from, $to, $subject) {
+        //create object
+        parent::__construct(env('MAIL_SENDGRID_API_KEY'));
+        //from
+        if (isset($from)) 
+        {
+            if (is_array($from)) 
+                $_from = [$from[1], $from[0]];
+            else 
+                $_from = [$from, env('MAIL_FROM_NAME')];
+        }
+        else    
+            $_from = [env('MAIL_FROM'), env('MAIL_FROM_NAME')];
+        //to
+        if(!is_array($to))
+            $to = explode(',', $to);
+        foreach ($to as $t)
+        {
+            $t = $this->filter($t);
+            if ($t)
             {
-                if (is_array($from)) 
-                    $_from = new SendGrid\Email($from[0], $from[1]);
-                else 
-                    $_from = new SendGrid\Email(env('MAIL_FROM_NAME'), $from);
+                $email = new \SendGrid\Mail\Mail(); 
+                $email->setFrom($_from[0], $_from[1]);
+                $email->setSubject($subject);
+                $email->addTo($t);
+                $this->emails[] = $email;
             }
-            else    
-                $_from = new SendGrid\Email(env('MAIL_FROM_NAME'), env('MAIL_FROM'));
-            //to
-            $_personalizations = [];
-            if (isset($to)) {
-                if (is_string($to)) {
-                    $to = explode(",", $to);
-                }
-                if (is_array($to) && count($to) > 0) 
-                {
-                    $to = array_unique( $to );   
-                    //check if there is individual email
-                    if(empty($data))
-                    {
-                        $personalization = new SendGrid\Personalization();
-                        foreach ($to as $p => $t) 
-                        {
-                            $mail = $this->filter($t);
-                            if($mail)
-                                $personalization->addTo($mail);
-                        }
-                        $_personalizations[] = $personalization;
-                    }
-                    //check if there is multiple email batch list
-                    else
-                    {
-                        foreach ($to as $p => $t) 
-                        {
-                            $mail = $this->filter($t);
-                            if($mail)
-                            {
-                                $personalization = new SendGrid\Personalization();
-                                $personalization->addTo($mail);
-                                foreach ($data as $k => $v)
-                                    $personalization->addSubstitution(':'.$k, strval($v[$p]));
-                                $_personalizations[] = $personalization;
-                            }
-                        }
-                    }                    
-                } else
-                    return false;
-            } else
-                return false;
-            if(!count($_personalizations))
-                return false;
-            else
-                $_to = $_personalizations[0]->getTos()[0];
-            //subject
-            if (isset($subject)) {
-                $_subject = $subject;
-            }
-            else $_subject = '';
-            //configure object mail
-            $this->mail = new SendGrid\Mail($_from, $_subject, $_to, new SendGrid\Content('text/plain',' '));
-            foreach ($_personalizations as $index=>$p)
-                $this->mail->personalization[$index] = $p;
-        } catch (Exception $ex) {
-            throw new Exception('Error creating EmailSG: '.$ex->getMessage());
         }
     }
-
+    
     public function filter($e) {
         try {
             $email = null;
             if (!filter_var($e, FILTER_VALIDATE_EMAIL) === false) {
                 if ( env('APP_ENV','development') != 'production'  ) {
                     if (strpos(env('MAIL_TEST'), trim($e)) !== FALSE) {
-                        $email = new SendGrid\Email(null, $e);
+                        $email = $e;
                     } else {
-                        $email = new SendGrid\Email(null, env('MAIL_ADMIN'));
+                        $email = env('MAIL_ADMIN');
                     }
                 } else {
-                    $email = new SendGrid\Email(null, $e);
+                    $email = $e;
                 }
             } 
             return $email;
@@ -112,7 +66,8 @@ class EmailSG {
 
     public function subject($subject) {
         try {
-            $this->mail->setSubject($subject);
+            foreach ($this->emails as $email)
+                $email->setSubject($subject);
         } catch (Exception $ex) {
             throw new Exception('Error adding subject EmailSG: '.$ex->getMessage());
         }        
@@ -120,7 +75,8 @@ class EmailSG {
     
     public function reply($replyto) {
         try {
-            $this->mail->setReplyTo(new SendGrid\ReplyTo($replyto));
+            foreach ($this->emails as $email)
+                $email->setReplyTo ($replyto);
         } catch (Exception $ex) {
             throw new Exception('Error adding reply EmailSG: '.$ex->getMessage());
         }        
@@ -129,11 +85,12 @@ class EmailSG {
     public function bcc($bcc) {
         try {
             if (is_array($bcc)) {
-                $email = new SendGrid\Email($bcc[0], $bcc[1]);
+                foreach ($this->emails as $email)
+                    $email->addBcc($bcc[1], $bcc[0]);
             } else {
-                $email = new SendGrid\Email(null, $bcc);
+                foreach ($this->emails as $email)
+                    $email->addBcc($bcc);
             }
-            $this->mail->personalization[0]->addBcc($email);
         } catch (Exception $ex) {
             throw new Exception('Error adding bcc EmailSG: '.$ex->getMessage());
         }        
@@ -142,11 +99,12 @@ class EmailSG {
     public function cc($cc) {
         try {
             if (is_array($cc)) {
-                $email = new SendGrid\Email($cc[0], $cc[1]);
+                foreach ($this->emails as $email)
+                    $email->addCc ($cc[1], $cc[0]);
             } else {
-                $email = new SendGrid\Email(null, $cc);
+                foreach ($this->emails as $email)
+                    $email->addCc ($cc);
             }
-            $this->mail->personalization[0]->addCc($email);
         } catch (Exception $ex) {
             throw new Exception('Error adding cc EmailSG: '.$ex->getMessage());
         }        
@@ -154,7 +112,8 @@ class EmailSG {
 
     public function category($category) {
         try {
-            $this->mail->addCategory($category);
+            foreach ($this->emails as $email)
+                $email->addCategory ($category);
         } catch (Exception $ex) {
             throw new Exception('Error adding category EmailSG: '.$ex->getMessage());
         }        
@@ -167,10 +126,9 @@ class EmailSG {
             }
             if (is_array($attach) && count($attach) > 0) {
                 foreach ($attach as $a) {
-                    $attachment = new SendGrid\Attachment();
-                    $attachment->setContent(base64_encode(file_get_contents($a)));
-                    $attachment->setFilename($a);
-                    $this->mail->addAttachment($attachment);
+                    $attachment = new \SendGrid\Mail\Attachment(base64_encode(file_get_contents($a)), null, $a);
+                    foreach ($this->emails as $email)
+                        $email->addAttachment ($attachment);
                 }
                 return true;
             } else
@@ -182,7 +140,8 @@ class EmailSG {
 
     public function view($view) {
         try {
-            $this->html($view->render());
+            foreach ($this->emails as $email)
+                $email->addContent ("text/html", $view->render());
         } catch (Exception $ex) {
             throw new Exception('Error adding view EmailSG: '.$ex->getMessage());
         }        
@@ -190,8 +149,8 @@ class EmailSG {
 
     public function html($html) {
         try {
-            $content = new SendGrid\Content("text/html", $html);
-            $this->mail->addContent($content);
+            foreach ($this->emails as $email)
+                $email->addContent ("text/html", $html);
         } catch (Exception $ex) {
             throw new Exception('Error adding html EmailSG: '.$ex->getMessage());
         }        
@@ -199,8 +158,8 @@ class EmailSG {
 
     public function text($text) {
         try {
-            $content = new SendGrid\Content("text/plain", $text);
-            $this->mail->addContent($content);
+            foreach ($this->emails as $email)
+                $email->addContent ("text/plain", $text);
         } catch (Exception $ex) {
             throw new Exception('Error adding text EmailSG: '.$ex->getMessage());
         }        
@@ -208,7 +167,8 @@ class EmailSG {
 
     public function template($template) {
         try {
-            $this->mail->setTemplateId($template);
+            foreach ($this->emails as $email)
+                $email->setTemplateId ($template);
         } catch (Exception $ex) {
             throw new Exception('Error adding template EmailSG: '.$ex->getMessage());
         }        
@@ -218,7 +178,8 @@ class EmailSG {
         try {
             if (is_array($sections)) {               
                 foreach ($sections as $k=>$e) {
-                    $this->mail->addSection(':'.$k, $e);
+                    foreach ($this->emails as $email)
+                        $email->addSection (':'.$k, $e);
                 }
             } else
                 return false;
@@ -233,7 +194,8 @@ class EmailSG {
                 $this->html('<html><body></body></html>');
                 $data = $this->replace($type, $body);
                 foreach ($data as $e) {
-                    $this->mail->personalization[0]->addSubstitution($e['variable'], $e['value']);
+                    foreach ($this->emails as $email)
+                        $email->addSubstitution ($e['variable'], $e['value']);
                 }
             } else
                 return false;
@@ -244,23 +206,19 @@ class EmailSG {
 
     public function send($debug=false) {
         try {
-            $response = $this->sendGrid->client->mail()->send()->post($this->mail); 
-            if($debug)return $response;
-            switch (true)
+            $result = true;
+            $debug = '';
+            foreach ($this->emails as $email)
             {
-                case (int)$response->statusCode() == 202: 
-                    //Log::info('Email sent thru SendGrid successfully');
-                    return true;
-                case (int)$response->statusCode() >= 500: 
-                    Log::error('Error sending email made by SendGrid');
-                    return false;
-                case (int)$response->statusCode() >= 400: 
-                    Log::error('Error sending email with the request on SendGrid');
-                    return false;
-                default: 
-                    Log::warning('Successful request on SendGrid');
-                    return false;
+                $response = parent::send($email);
+                //result
+                $result = ($response->statusCode()==202 && $result);
+                //debug
+                if($debug)
+                    $debug.= json_encode($response)."\n";
             }
+            //debug
+            return ($debug)? $debug : $result;
         } catch (Exception $ex) { 
             Handler::reportException($ex);
             return false;

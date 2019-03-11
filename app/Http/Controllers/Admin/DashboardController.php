@@ -373,7 +373,7 @@ class DashboardController extends Controller
                             ->where(DashboardController::clear_date_sold($where));
                 if(!empty($start_date) && !empty($end_date))
                     $summary_credit = $summary_credit->whereBetween(DB::raw('DATE(purchases.created)'),[$start_date,$end_date]);
-                $summary_credit = $summary_credit->groupBy('channel','method')->orderBy('channel','method')->get()->toArray();
+                $summary_credit = $summary_credit->groupBy('channel','method')->orderBy('channel')->orderBy('method')->get()->toArray();
                 
                 foreach ($summary_credit as $d)
                 {

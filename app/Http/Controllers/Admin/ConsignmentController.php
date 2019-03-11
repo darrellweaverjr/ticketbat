@@ -196,7 +196,8 @@ class ConsignmentController extends Controller{
                                                  ->orWhere('seats.status','<>','Voided');
                                 })
                                 ->groupBy('consignments.id')
-                                ->orderBy('shows.name','show_times.show_time')
+                                ->orderBy('shows.name')
+                                ->orderBy('show_times.show_time')
                                 ->get();
                         $search['venues'] = Venue::whereIn('id',explode(',',Auth::user()->venues_edit))->orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::whereIn('venue_id',explode(',',Auth::user()->venues_edit))->orWhere('audit_user_id',Auth::user()->id)->orderBy('name')->get(['id','name','venue_id']);
@@ -222,7 +223,8 @@ class ConsignmentController extends Controller{
                                                  ->orWhere('seats.status','<>','Voided');
                                 })
                                 ->groupBy('consignments.id')
-                                ->orderBy('shows.name','show_times.show_time')
+                                ->orderBy('shows.name')
+                                ->orderBy('show_times.show_time')
                                 ->get();
                         $search['venues'] = Venue::orderBy('name')->get(['id','name']);
                         $search['shows'] = Show::orderBy('name')->get(['id','name','venue_id']);
