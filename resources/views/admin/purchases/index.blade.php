@@ -44,11 +44,9 @@
                             <button id="btn_model_note" class="btn sbold bg-red" disabled="true">Note
                                 <i class="fa fa-plus"></i>
                             </button>
-                            @if(in_array(Auth::user()->id, explode(',', env('ROOT_USER_ID'))))
                             <button id="btn_model_edit" class="btn sbold bg-purple" disabled="true">Edit
                                 <i class="fa fa-edit"></i>
                             </button>
-                            @endif
                             <button id="btn_model_share" class="btn sbold bg-purple" disabled="true">Share
                                 <i class="fa fa-share"></i>
                             </button>
