@@ -108,7 +108,7 @@ class TransactionRefund extends Model
                 $tran=new umTransaction();
                 $tran->testmode=env('USAEPAY_TEST',1);
                 $tran->key=env('USAEPAY_KEY_REFUND','1AGjBQ3Z5Iq10NB154PAZ04I1xnWPdZv');
-                $tran->pin=env('USAEPAY_PIN_REFUND','4826');;
+                $tran->pin=env('USAEPAY_PIN_REFUND','4826');
                 $tran->ip=Request::getClientIp();
                 //command
                 $tran->command = $command;

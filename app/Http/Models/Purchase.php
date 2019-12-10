@@ -273,7 +273,8 @@ class Purchase extends Model
         if(!$purchase)
             return false;
         $html  = ($refunded)? '<b>PURCHASE REFUNDED</b><br><br>' : '<b>PURCHASE PENDING TO REFUND</b><br><br>';
-        $purchase->price_paid = (!empty($amount))? $amount : $purchase->price_paid;
+        if(!isset($amount))
+            $amount = $purchase->price_paid;
         if(!$refunded)
             $html .= '<b>Status changed by:</b> '.Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->email.')<br><br>';
         $html .= '<b>Customer:</b> '.$purchase->first_name.' '.$purchase->last_name.'<br>';
@@ -282,7 +283,7 @@ class Purchase extends Model
         $html .= '<b>Tickets:</b> '.$purchase->qty.' / '.$purchase->ticket_type.'<br>';
         $html .= '<b>Transaction date/time:</b> '.$purchase->created.'<br>';
         $html .= '<b>Payment type:</b> '.$purchase->payment_type.'<br>';        
-        $html .= '<b>Amount:</b> $ '.$purchase->price_paid.' <b>/</b> $ '.$purchase->amount.'<br><br>';
+        $html .= '<b>Amount:</b> $ '.$amount.' <b>/</b> $ '.$purchase->price_paid.'<br><br>';
         $html .= '<b>Cardholder:</b> '.$purchase->card_holder.'<br><br>';
         if(!$refunded)
             $html .= '<b>Reason to refund:</b> '.$purchase->refunded_reason.'<br>';

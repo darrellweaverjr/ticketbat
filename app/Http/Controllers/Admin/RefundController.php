@@ -215,6 +215,7 @@ class RefundController extends Controller{
                     //try to refund each purchase 
                     foreach ($id as $i)
                     {
+                        $amount = $input['amount'];
                         $purchase = Purchase::find($i);
                         if($purchase)
                         {
@@ -359,7 +360,7 @@ class RefundController extends Controller{
                             $tickets = implode(',',range(1,$tickets_qty));
                             DB::table('ticket_number')->insert( ['purchases_id'=>$purchase->id,'customers_id'=>$purchase->customer_id,'tickets'=>$tickets] );
                             //send email
-                            if($purchase->set_pending(true))
+                            if($purchase->set_pending(true,$amount))
                                 $emailSent = '<i class="icon-envelope"></i><i class="icon-check"></i>';
                         }
                         
