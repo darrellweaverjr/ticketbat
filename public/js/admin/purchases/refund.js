@@ -28,7 +28,7 @@ var RefundDatatablesManaged = function () {
                 success: function(data) {
                     if(data.success) 
                     {
-                        $('#form_model_refund [name="id"]').val(ids); swal.close();
+                        $('#form_model_refund [name="id"]').val(ids); 
                         if(data.qty==1)
                         {
                             $('#purchase_details').css('display','none');
@@ -64,6 +64,7 @@ var RefundDatatablesManaged = function () {
                                 $('#purchase_details').append('<h3 class="col-md-6"><b>#'+k+'</b> => $'+v.paid+' ($'+v.refunded+') = <b>$'+v.available+'</b></h3>');
                             });                            
                         }
+                        swal.close();
                         $('#modal_model_refund').modal('show');
                     }
                     else swal({
@@ -94,19 +95,29 @@ var RefundDatatablesManaged = function () {
             //if change qty
             if($(this).attr('name')=='quantity')
             {
-                var qty = $(this).val();
-                $('#tb_foot_pendings input[name="retail_price"]').val( parseFloat(qty * $('#tb_foot_pendings input[name="ticket_price"]').val() ).toFixed(2) );
-                $('#tb_foot_pendings input[name="processing_fee"]').val( parseFloat(qty * $('#tb_foot_pendings input[name="ticket_fee"]').val() ).toFixed(2) );
+                var qty = parseInt( $(this).val() );
+                $(this).val(qty);
+                var ticket_price = $('#tb_foot_pendings input[name="ticket_price"]').val();
+                var ticket_fee = $('#tb_foot_pendings input[name="ticket_fee"]').val();
+                $('#tb_foot_pendings input[name="retail_price"]').val( (qty * parseFloat(ticket_price)).toFixed(2) );
+                $('#tb_foot_pendings input[name="processing_fee"]').val( (qty * parseFloat(ticket_fee)).toFixed(2) );
             }
             //calculate subtotal without taxes
             var reta = $('#tb_foot_pendings input[name="retail_price"]').val();
+            $('#tb_foot_pendings input[name="retail_price"]').val( parseFloat(reta).toFixed(2) );
             var fees = $('#tb_foot_pendings input[name="processing_fee"]').val();
+            $('#tb_foot_pendings input[name="processing_fee"]').val( parseFloat(fees).toFixed(2) );
             var savi = $('#tb_foot_pendings input[name="savings"]').val();
-            var prin = $('#tb_foot_pendings input[name="printed_fee"]').val();    
+            $('#tb_foot_pendings input[name="savings"]').val( parseFloat(savi).toFixed(2) );
+            var prin = $('#tb_foot_pendings input[name="printed_fee"]').val();  
+            $('#tb_foot_pendings input[name="printed_fee"]').val( parseFloat(prin).toFixed(2) );  
+            var percent = $('#tb_foot_pendings input[name="sales_percent"]').val();
+            $('#tb_foot_pendings input[name="sales_percent"]').val( parseFloat(percent).toFixed(2) );
             var subt = parseFloat(reta)+parseFloat(fees)-parseFloat(savi)+parseFloat(prin); 
-            var taxes = parseFloat( subt* $('#tb_foot_pendings input[name="sales_percent"]').val() ).toFixed(2);
-            $('#tb_foot_pendings input[name="sales_taxes"]').val( taxes );
-            $('#tb_foot_pendings input[name="amount"]').val( parseFloat( subt+taxes ).toFixed(2) );
+            var taxes =  subt * parseFloat(percent) ;
+            $('#tb_foot_pendings input[name="sales_taxes"]').val( (taxes).toFixed(2) );
+            $('#tb_foot_pendings input[name="amount"]').val( (subt+taxes).toFixed(2) );
+            
         });
         //function send
         $('#btn_model_process').on('click', function(ev) {

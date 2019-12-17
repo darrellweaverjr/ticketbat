@@ -139,17 +139,17 @@ class RefundController extends Controller{
                         {
                             $refundx = TransactionRefund::where('purchase_id',$id)->where('result','=','Approved')
                                                     ->get(['id','quantity','retail_price','processing_fee','savings','commission_percent','printed_fee','sales_taxes','amount','created'])->toArray();
-                            $available = ['quantity'=>$purchase->quantity - array_sum(array_column($refundx,'quantity')),
-                                          'retail_price'=>$purchase->retail_price - array_sum(array_column($refundx,'retail_price')),
-                                          'processing_fee'=>$purchase->processing_fee - array_sum(array_column($refundx,'processing_fee')),
-                                          'savings'=>$purchase->savings - array_sum(array_column($refundx,'savings')),
-                                          'commission_percent'=>$purchase->commission_percent - array_sum(array_column($refundx,'commission_percent')),
-                                          'printed_fee'=>$purchase->printed_fee - array_sum(array_column($refundx,'printed_fee')),
-                                          'sales_taxes'=>$purchase->sales_taxes - array_sum(array_column($refundx,'sales_taxes')),
-                                          'amount'=>$purchase->price_paid - array_sum(array_column($refundx,'amount')),
-                                        'ticket_price'=>$purchase->retail_price/$purchase->quantity,
-                                        'ticket_fee'=>($purchase->inclusive_fee<1)? $purchase->processing_fee/$purchase->quantity : 0,
-                                        'sales_percent'=>$purchase->sales_taxes/($purchase->price_paid-$purchase->sales_taxes)];
+                            $available = ['quantity'=> number_format( $purchase->quantity - array_sum(array_column($refundx,'quantity')) ,0),
+                                          'retail_price'=> number_format( $purchase->retail_price - array_sum(array_column($refundx,'retail_price')) ,2),
+                                          'processing_fee'=> number_format( $purchase->processing_fee - array_sum(array_column($refundx,'processing_fee')) ,2),
+                                          'savings'=> number_format( $purchase->savings - array_sum(array_column($refundx,'savings')) ,2),
+                                          'commission_percent'=> number_format( $purchase->commission_percent - array_sum(array_column($refundx,'commission_percent')) ,2),
+                                          'printed_fee'=> number_format( $purchase->printed_fee - array_sum(array_column($refundx,'printed_fee')) ,2),
+                                          'sales_taxes'=> number_format( $purchase->sales_taxes - array_sum(array_column($refundx,'sales_taxes')) ,2),
+                                          'amount'=> number_format( $purchase->price_paid - array_sum(array_column($refundx,'amount')) ,2),
+                                        'ticket_price'=> number_format( $purchase->retail_price/$purchase->quantity ,2),
+                                        'ticket_fee'=>($purchase->inclusive_fee<1)?  number_format( $purchase->processing_fee/$purchase->quantity ,2) : 0,
+                                        'sales_percent'=> number_format( $purchase->sales_taxes/($purchase->price_paid-$purchase->sales_taxes),2)];
                         }
                         else
                             $available = [ 'quantity'=>0,'retail_price'=>0,'processing_fee'=>0,'savings'=>0,'commission_percent'=>0,'printed_fee'=>0,'sales_taxes'=>0,'amount'=>0 ];
