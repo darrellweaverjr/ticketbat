@@ -195,8 +195,9 @@ class DiscountController extends Controller{
                 $discount->save();
                 //update intermediate table with tickets
                 if(isset($input['tickets']) && $input['tickets'] && count($input['tickets']))
-                {                    
-                    $discount->discount_tickets()->sync($input['tickets']);
+                {
+                    $tickets = array_unique($input['tickets']);
+                    $discount->discount_tickets()->sync( $tickets );
                     if($input['multiple']>0)
                     {
                         if($input['discount_scope']!='N for N')
@@ -212,8 +213,10 @@ class DiscountController extends Controller{
                 else
                     $discount->discount_tickets()->detach();
                 //update intermediate table with showtimes
-                if(isset($input['showtimes']) && $input['showtimes'] && count($input['showtimes']))
-                    $discount->discount_showtimes()->sync($input['showtimes']);
+                if(isset($input['showtimes']) && $input['showtimes'] && count($input['showtimes'])) {
+                    $showtimes = array_unique($input['showtimes']);
+                    $discount->discount_showtimes()->sync( $showtimes );
+                }
                 else
                     $discount->discount_showtimes()->detach();
                 //return

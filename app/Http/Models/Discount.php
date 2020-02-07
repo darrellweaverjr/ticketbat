@@ -60,9 +60,9 @@ class Discount extends Model
     public static function get_coupon($code)
     {
         return DB::table('discounts')
-                            ->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
-                            ->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
-                            ->leftJoin('discount_show_times', 'discount_show_times.discount_id', '=' ,'discounts.id')
+                            //->join('discount_tickets', 'discount_tickets.discount_id', '=' ,'discounts.id')
+                            //->join('tickets', 'discount_tickets.ticket_id', '=' ,'tickets.id')
+                            ->join('discount_show_times', 'discount_show_times.discount_id', '=' ,'discounts.id')   //leftJoin in pass
                             ->select(DB::raw('discounts.id, discounts.code, discounts.description, discounts.start_num, discounts.coupon_type,
                                               discounts.discount_type, discounts.discount_scope, discounts.end_num, GROUP_CONCAT(discount_show_times.show_time_id) AS showtimes'))
                             ->where('discounts.code',$code)->groupBy('discounts.id')->first();
