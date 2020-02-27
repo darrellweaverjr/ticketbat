@@ -6,7 +6,7 @@ var CheckValidURL = function (url) {
 //*****************************************************************************************
 //check valid email
 var CheckValidEmail = function (email) {
-    return email.match('[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$');
+    return email.match('^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$');
 };
 //*****************************************************************************************
 var MainFormValidation = function () {
