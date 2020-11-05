@@ -13,20 +13,20 @@
 
         <!-- GTM HEAD TAG -->
         @includeIf('production.general.gtm-head')
-        
+
         <title>@yield('title') - TicketBat.com</title>
-        
-        <meta charset="utf-8" />        
+
+        <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        
+
         <meta name="csrf-token" content="{{ csrf_token() }}">
         @if(isset($meta))
             @foreach($meta as $name=>$content)
-        <meta name="{{$name}}" content="{{$content}}">    
+        <meta name="{{$name}}" content="{{$content}}">
             @endforeach
         @endif
-        
+
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com ;
                           img-src *  'self' blob: {{env('IMAGE_URL_AMAZON_SERVER')}} https://d3ofbylanic3d6.cloudfront.net https://s3-us-west-2.amazonaws.com;
@@ -34,8 +34,8 @@
                           font-src 'self' http://fonts.gstatic.com;
                           frame-src 'self' https://www.youtube.com https://vimeo.com https://player.vimeo.com https://www.facebook.com;
                           script-src 'self' 'unsafe-inline' 'unsafe-eval' {{env('IMAGE_URL_OLDTB_SERVER')}} https://www.google-analytics.com/analytics.js http://freegeoip.net/json/ https://maps.google.com https://maps.gstatic.com https://maps.googleapis.com https://connect.facebook.net/en_US/fbevents.js https://www.googletagmanager.com/gtm.js https://connect.facebook.net/signals/config/1412841365444572; ">
-        
-        
+
+
         <meta content="{{ config('app.name', 'TicketBat.com') }}" name="author" />
         <meta content="{{config('app.theme')}}img/no-image.jpg" name="broken-image" />
 
@@ -69,6 +69,34 @@
         <link rel="apple-touch-icon" href="{{ asset('/themes/img/favicon.ico') }}" />
         <link rel="apple-touch-icon-precomposed" href="{{ asset('/themes/img/favicon.ico') }}" />
         @yield('styles')
+
+        <script type="text/javascript">
+            adroll_adv_id = "L2DZJ45JL5BEZKARYKAIJR";
+            adroll_pix_id = "HMVQSHJWAFEA5FCSYRRQH5";
+            adroll_version = "2.0";
+
+            (function(w, d, e, o, a) {
+                w.__adroll_loaded = true;
+                w.adroll = w.adroll || [];
+                w.adroll.f = [ 'setProperties', 'identify', 'track' ];
+                var roundtripUrl = "https://s.adroll.com/j/" + adroll_adv_id
+                        + "/roundtrip.js";
+                for (a = 0; a < w.adroll.f.length; a++) {
+                    w.adroll[w.adroll.f[a]] = w.adroll[w.adroll.f[a]] || (function(n) {
+                        return function() {
+                            w.adroll.push([ n, arguments ])
+                        }
+                    })(w.adroll.f[a])
+                }
+
+                e = d.createElement('script');
+                o = d.getElementsByTagName('script')[0];
+                e.async = 1;
+                e.src = roundtripUrl;
+                o.parentNode.insertBefore(e, o);
+            })(window, document);
+            adroll.track("pageView");
+        </script>
     </head>
     <!-- END HEAD -->
 
@@ -159,7 +187,7 @@
                                             <a data-toggle="modal" href="#modal_seller_open" title="Open your drawer for this shift.">
                                             <i class="icon-shuffle"></i>&nbsp;&nbsp;&nbsp;Open drawer</a>
                                         </li>
-                                        @else 
+                                        @else
                                         <li>
                                             <a data-toggle="modal" href="#modal_seller_close" title="Close your drawer for this shift.">
                                             <i class="icon-close"></i>&nbsp;&nbsp;&nbsp;Close drawer</a>
@@ -190,7 +218,7 @@
                             @endif
                             <li class="dropdown-notification @if(preg_match('/\/shoppingcart/',url()->current())) active @endif">
                                 <a href="/shoppingcart/viewcart" class="menu_nav" title="View/pay you items in the shopping cart">
-                                    <i class="icon-basket"></i> Shopping Cart 
+                                    <i class="icon-basket"></i> Shopping Cart
                                     @if (!(Auth::check() && in_array(Auth::user()->user_type_id, explode(',', env('POS_OPTION_USER_TYPE')))))
                                     <span class="badge badge-danger"><b id="shoppingcart_qty_items" style="font-size:14px">Loading</b></span>
                                     @endif
