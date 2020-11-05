@@ -70,6 +70,25 @@
         <link rel="apple-touch-icon-precomposed" href="{{ asset('/themes/img/favicon.ico') }}" />
         @yield('styles')
 
+        <!-- Global site tag (gtag.js) - Google Ads: 983429774 -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-983429774"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'AW-983429774');
+        </script>
+
+        <!-- Event snippet for ORDER-NEW conversion page -->
+        <script>
+          gtag('event', 'conversion', {
+              'send_to': 'AW-983429774/RD12CLGRj10QjuX31AM',
+              'transaction_id': ''
+          });
+        </script>
+
+
         <script type="text/javascript">
             adroll_adv_id = "L2DZJ45JL5BEZKARYKAIJR";
             adroll_pix_id = "HMVQSHJWAFEA5FCSYRRQH5";
